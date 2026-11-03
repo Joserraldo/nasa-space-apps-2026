@@ -84,14 +84,15 @@ Objetivo: que cada persona abra una terminal, le diga a su agente quién es, y e
 
 ## C2. Cronograma del fin de semana (14-15 nov, ~48 h)
 
+Igual que el §14 del PLAN. El 13 nov se leen datasets y Guía de Entrega, **sin código**.
+
 | Bloque | Meta | Puerta para pasar |
 |---|---|---|
-| Sáb 0-2 h | Contratos + scaffold + mocks (Fase 1) | Todos los roles compilan contra `/contracts` |
-| Sáb 2-12 h | Rebanada vertical: 1 misión, 3 expertos, IA 1-2 | Se juega de punta a punta en `develop` |
-| Sáb 12 h → Dom 8 h | Datos reales, semillas, dificultades, IA 3-4 (por turnos de sueño) | Dos PCs dan escenarios distintos |
-| Dom 8-14 h | Pulido: voz, bilingüe, accesibilidad; prueba con primos | Ajustes hechos |
-| **Dom 14 h** | **Congelar funciones**: solo arreglos | — |
-| Dom 14-22 h | Video, página de datos NASA, respaldo offline, `main` | Formulario enviado antes de las 23:59 |
+| Sáb 14, mañana | Contratos + scaffold + mocks + deploy vacío en Cloudflare (Fase 1) | Todos compilan contra `/contracts` y hay link vivo |
+| Sáb 14, tarde y noche | Rebanada vertical: 1 misión, 3 expertos, IA 1-2, datos reales | Un primo la juega completa sin ayuda |
+| Dom 15, mañana | Semillas, dificultades, voz, bilingüe | Dos PCs dan escenarios distintos |
+| **Dom 15, 13:00** | **Congelar funciones**: solo arreglos | — |
+| Dom 15, tarde | Video, página de datos NASA, respaldo offline, `main` | **Formulario enviado antes de las 20:00** (cierra 23:59) |
 
 Los loops siguen corriendo mientras el humano duerme solo si alguien revisa los PRs al despertar; si no, páralos.
 
