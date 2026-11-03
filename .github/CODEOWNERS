@@ -1,0 +1,30 @@
+# Dueños por carpeta. Reemplazar @usuario-rolN por el usuario real de GitHub el día 1.
+# Mientras tanto, todo lo revisa el coordinador.
+*                 @Joserraldo
+
+# Rol 1 — Diseño de juego y misiones
+# /design/        @usuario-rol1
+# /missions/      @usuario-rol1
+
+# Rol 2 — Motor y simulación
+# /engine/        @usuario-rol2
+
+# Rol 3 — Agentes expertos
+# /agents/        @usuario-rol3
+
+# Rol 4 — Datos NASA y ciencia
+# /data/          @usuario-rol4
+# /docs/science/  @usuario-rol4
+
+# Rol 5 — Frontend, voz, arte y accesibilidad
+# /ui/            @usuario-rol5
+# /assets/        @usuario-rol5
+
+# Rol 6 — Integración, QA, despliegue y pitch
+# /infra/         @usuario-rol6
+# /tests/e2e/     @usuario-rol6
+# /pitch/         @usuario-rol6
+# /.github/       @usuario-rol6
+
+# Contratos compartidos: requieren a los tres dueños
+# /contracts/     @usuario-rol2 @usuario-rol3 @usuario-rol4
