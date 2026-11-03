@@ -14,7 +14,7 @@
 - Entregable: `docs/decisiones/motor.md`.
 
 ## Tareas de arranque (Fase 1, el día que empieza el hackathon)
-1. Junto a roles 3 y 4: escribir `/contracts` (GameState, Action, Seed) — issue `contrato`.
+1. Junto a roles 3 y 4: escribir `/contracts` en TypeScript + Zod (PLAN §13) (GameState, Action, Seed) — issue `contrato`.
 2. RNG con semilla determinista + generador de escenario (sitio, tormenta, averías, objetivo).
 3. Bucle de turnos: `aplicarAccion(estado, accion) → estado` puro, con cola de efectos con retraso.
 4. Registro de causas (para la pantalla final): cada cambio guarda su origen (decisión o mala suerte).

@@ -12,7 +12,7 @@
 - Entregable: `docs/ideas/marca.md`.
 
 ## Fase 0 (ahora, solo documentos — nada de código del juego)
-1. Esqueleto de la app (sobre el stack de D3) e i18n es/en desde el primer commit.
+1. Esqueleto React + Vite + TS (PLAN §13; PixiJS solo para la escena animada) e i18n es/en desde el primer commit.
 2. HUD de los 3 recursos (energía, soporte vital, blindaje).
 3. Panel de tripulación: botones por experto + caja de texto (siempre funcionan).
 4. Voz con Web Speech API detrás de un interruptor (Chrome/Edge); sin guardar audio.

@@ -244,9 +244,9 @@ Todo es investigación y documentos, sin código del juego.
 |---|---|---|---|---|
 | D1 | Nombre del juego | Ver sección 9 | Todos (votación) | |
 | D2 | Nombre de la IA de la base | IRIS, Orbi, Chispa, Faro, Nodo | Todos | |
-| D3 | Motor/stack web | Phaser / PixiJS / React + canvas | Rol 2 | |
+| D3 | Motor/stack web | React + Vite + PixiJS (recomendado, ver 13) / Phaser | Rol 2 | |
 | D4 | Modelo del clasificador | Qwen flash / DeepSeek / otro | Rol 3 | |
-| D5 | Hosting y serverless | Vercel / Netlify / Cloudflare | Rol 6 | |
+| D5 | Hosting y serverless | Cloudflare (recomendado, ver 13) / Vercel | Rol 6 | |
 | D6 | Estilo visual | Pixel art / vector plano / cartoon 2D | Rol 5 | |
 | D7 | Nombres y diseño de los 5 tripulantes | | Roles 1 y 5 | |
 | D8 | Catálogo de tormentas reales | | Rol 4 | |
@@ -329,40 +329,70 @@ Copiar y llenar en `docs/ideas/<nombre>.md`:
 ## 13. Stack e infraestructura (propuesta para D3, D4, D5)
 
 ### 13.1 ¿Necesitamos máquina virtual? No.
-El juego corre **completo en el navegador del niño**. No hay servidor propio que mantener.
+El juego corre **completo en el navegador del niño**. No hay servidor propio que mantener ni VM que se caiga en la demo.
 
-| Pieza | Dónde corre | Costo | ¿Necesita VM? |
+| Pieza | Dónde corre | Costo | ¿VM? |
 |---|---|---|---|
 | Juego (motor, UI, voz, progreso) | Navegador del jugador | 0 | No |
-| Hosting del sitio | Vercel (CDN) | 0 (plan gratis) | No |
-| Clasificador de órdenes (LLM) | API externa (Qwen / DeepSeek), llamada desde una función serverless | Centavos (~300 tokens por orden) | No |
-| Proxy de datos NASA (oculta la API key) | Función serverless de Vercel | 0 | No |
-| Datos NASA de respaldo | JSON estáticos en el repo | 0 | No |
+| Sitio estático | **Cloudflare Pages** (CDN global) | 0 | No |
+| API: clasificador LLM, proxy NASA | **Cloudflare Workers** (Pages Functions) | 0 hasta 100k peticiones/día | No |
+| Base de datos | **Cloudflare D1** (SQLite) | 0 en plan gratis | No |
+| Límite de uso por IP / caché NASA | **Cloudflare KV** | 0 | No |
+| LLM del clasificador | API externa (Qwen / DeepSeek) | Centavos (~300 tokens por orden) | No |
 
-- **Las VMs de 8 GB no hacen falta.** Solo servirían para correr un modelo de IA propio (p. ej. con Ollama), y eso es más lento, más frágil en la demo y más trabajo que una API. Se descarta salvo que la API falle por completo.
-- **Modelo dentro del navegador (WebLLM / transformers.js): descartado.** Descarga cientos de MB y va mal en PCs de colegio. El plan B ya cubre el caso sin API: atajos, palabras clave y botones (sección 2.3).
-- Cada integrante solo necesita su PC con **Node.js 22 LTS**, Git y Claude Code. Sirve cualquier PC con 8 GB de RAM.
+- **Las VMs de 8 GB no hacen falta.** Solo servirían para correr un modelo de IA propio (Ollama), que es más lento, más frágil en la demo y más trabajo que una API. Descartado.
+- **Modelo dentro del navegador (WebLLM / transformers.js): descartado.** Descarga cientos de MB y va mal en PCs de colegio. El plan B sin API ya existe: atajos, palabras clave y botones (sección 2.3).
+- **¿Por qué Cloudflare y no Vercel?** Todo en un solo proveedor (sitio + API + base de datos + KV), plan gratis amplio y sin límite de ancho de banda: sirve para la demo y para seguirlo como negocio después.
+- Cada integrante solo necesita su PC con **Node.js 22 LTS**, Git y Claude Code. Cualquier PC con 8 GB de RAM sirve.
 
-### 13.2 Stack recomendado
+### 13.2 ¿React o Phaser?
+**React.** Es un juego por turnos de decisiones: HUD de recursos, diálogos con la tripulación, botones, tarjetas de ciencia. Eso es interfaz, y React la hace mejor:
+- **Accesible:** botones y texto reales del DOM, que funcionan con teclado, lector de pantalla, zoom y traducción. En Phaser todo es un canvas y hay que reconstruir la accesibilidad a mano.
+- **Más amigable para el equipo y los agentes:** más gente lo conoce y Claude lo escribe con menos errores.
+- **Liviano:** carga rápido en PCs viejos.
+
+Phaser conviene para juegos de acción (física, plataformas, colisiones). Aquí no los hay. Para que la base "se vea juego", se mete **PixiJS** solo en la escena animada (cúpula, tormenta, partículas), dentro de un componente de React.
+
+### 13.3 Stack recomendado
 | Capa | Elección | Por qué |
 |---|---|---|
-| Lenguaje | **TypeScript** en todo | Los contratos (`/contracts`) se vuelven tipos que el compilador vigila entre los 6 agentes |
-| Monorepo | **npm workspaces** (`contracts`, `engine`, `agents`, `data`, `ui`) | Cada rol es un paquete con su carpeta; encaja con CODEOWNERS |
-| UI | **React + Vite** | Juego por turnos con HUD, paneles y diálogos: es más interfaz que acción. Lo conoce la mayoría |
-| Escena animada (opcional) | **PixiJS** dentro de un componente React, solo para la base y efectos | Animaciones bonitas sin pasar todo a un motor de juego |
-| Motor | **TypeScript puro**, sin dependencias de UI | Determinista por semilla (`seedrandom`), se prueba sin navegador |
-| Validación de contratos | **Zod** | Valida el JSON del clasificador y de NASA en tiempo de ejecución |
-| Clasificador | API de Qwen o DeepSeek con salida JSON, detrás de `/api/classify` | La clave nunca llega al navegador; límite de uso por IP |
+| Lenguaje | **TypeScript** en todo | Los contratos (`/contracts`) son tipos que el compilador vigila entre los 6 agentes |
+| Monorepo | **npm workspaces** (`contracts`, `engine`, `agents`, `data`, `ui`, `infra`) | Cada rol es un paquete en su carpeta; encaja con CODEOWNERS |
+| UI | **React + Vite** | Ver 13.2 |
+| Escena animada | **PixiJS** (opcional) | Efectos sin pasar todo a un motor de juego |
+| Motor | **TypeScript puro**, sin dependencias de UI | Determinista por semilla, se prueba sin navegador |
+| Validación | **Zod** | Valida el JSON del clasificador y de NASA en tiempo de ejecución |
+| API | **Hono** sobre Cloudflare Workers | Pequeño, rápido y hecho para Workers |
 | Voz | **Web Speech API** del navegador | Gratis; texto y botones siempre disponibles |
 | i18n | Archivos JSON `es` / `en` | Bilingüe desde el día 1 |
-| Progreso | `localStorage` | Sin cuentas |
-| Pruebas | **Vitest** (motor, agentes, datos) + **Playwright** (e2e) | Rápidos y en CI |
+| Progreso del jugador | `localStorage` | Sin cuentas |
+| Pruebas | **Vitest** + **Playwright** (e2e) | Rápidos y en CI |
 | CI | GitHub Actions: tipos + tests + build en cada PR | Nadie rompe `develop` |
-| Deploy | **Vercel**: preview por PR, producción desde `main` | Link público para jueces |
+| Deploy | Cloudflare Pages: preview por PR, producción desde `main` | Link público para jueces |
 
-**Alternativa considerada:** Phaser. Mejor para juegos de acción con física; aquí sobra y obliga a hacer la interfaz dentro del canvas, que es más difícil de volver accesible.
+### 13.4 Qué guarda la base de datos (D1)
+Privacidad primero: **nada personal de niños, sin cuentas, sin audio.**
+- **Hackathon:** catálogo de tormentas reales curado, semilla del día, estadísticas anónimas de partidas (qué decisiones se toman, dónde fallan) para balancear y mostrar en el pitch.
+- **Después, como negocio:** cuentas de **docentes** (no de niños), códigos de salón para que una clase juegue la misma semilla y compare estrategias, y un panel del docente. Esto **no** se construye en el hackathon; queda anotado.
 
-### 13.3 Qué decide cada rol el día 1
-- Rol 2 confirma React + Vite + PixiJS opcional (D3) en `docs/decisiones/D3-motor.md`.
-- Rol 3 compara Qwen vs DeepSeek con 30 órdenes reales de niños (D4).
-- Rol 6 confirma Vercel (D5) y fija el tope de gasto de la API (D10).
+### 13.5 Qué decide cada rol el día 1 (13 nov)
+- Rol 2 confirma React + Vite + PixiJS (D3) en `docs/decisiones/D3-motor.md`.
+- Rol 3 compara Qwen vs DeepSeek con 30 órdenes de niños (D4).
+- Rol 6 confirma Cloudflare (D5) y fija el tope de gasto de la API (D10).
+
+---
+
+## 14. Calendario del hackathon (por confirmar con `docs/reglas.md`)
+| Día | Foco | Listo cuando... |
+|---|---|---|
+| Antes del 13 nov | Solo docs, cuentas, repo, decisiones de la sección 8 | Todas las decisiones tomadas |
+| **13 nov** (sale la data) | Contratos + esqueleto + mocks + deploy vacío en Cloudflare | Todos compilan contra `/contracts` y hay un link vivo |
+| **14 nov** | Rebanada vertical: una misión, 3 expertos, IA niveles 1-2, datos reales | Un primo la juega completa sin ayuda |
+| **15 nov** | Semillas, dificultades, voz, bilingüe; **congelar funciones en la noche** | Dos PCs dan escenarios distintos |
+| **16 nov** | Solo arreglos, pitch y video; enviar formulario con margen | Formulario enviado |
+
+### Pitch y video (Rol 6, con apoyo de todos)
+- **Guion de 2 minutos:** problema → el niño juega → la IA se daña → la tripulación → datos reales de NASA → cadena de causas → cierre.
+- **Video:** grabación real del juego + narración. Se puede producir con Claude (HyperFrames para títulos, gráficas animadas de los datos de NASA y subtítulos).
+- El guion y el storyboard se escriben **antes** del 13 (es documento, no código). La grabación se hace el 15-16 con el juego congelado.
+- Contar en el pitch cómo trabajamos: 6 personas, cada una con su agente de Claude, contratos y CODEOWNERS.

@@ -15,10 +15,10 @@
 
 ## Tareas de arranque (Fase 1, el día que empieza el hackathon)
 1. Cambiar `CLAUDE.md` a FASE 1, llenar personas y CODEOWNERS, crear issues de arranque.
-2. Scaffold del monorepo según D3/D5 (workspaces por carpeta) + scripts `lint`, `test`, `build`.
+2. Scaffold del monorepo (PLAN §13: npm workspaces, TypeScript, React + Vite, Hono en Cloudflare Workers) + scripts `lint`, `test`, `build`.
 3. CI en GitHub Actions: lint + tests + build en cada PR a `develop`.
-4. Deploy de previsualización por PR y de `main`.
-5. Función serverless del clasificador con límite de uso (clave solo en variables de entorno).
+4. Cloudflare Pages: preview por PR y producción desde `main`; D1 + KV configurados.
+5. Worker (Hono) del clasificador con límite de uso por IP en KV (clave solo en variables de entorno).
 6. Smoke e2e: abrir juego → jugar un turno → ver pantalla final. Esqueleto del pitch en `/pitch`.
 
 ## Notas / decisiones que afectan este rol
