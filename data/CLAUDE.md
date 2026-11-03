@@ -19,7 +19,7 @@
 3. Script de pipeline DONKI → `/data/curated/*.json` (respaldo offline, no en vivo en la demo).
 4. Tarjetas de fuente (es/en) por evento: qué pasó, fecha, instrumento, link.
 5. Glosario para niños en `/docs/science/glosario.md`; verificación científica de los textos de los expertos.
-6. El 13 de noviembre: cambiar el origen de mocks a datos reales.
+6. El 14 de noviembre (los datos salen el 13): cambiar el origen de mocks a datos reales.
 
 ## Notas / decisiones que afectan este rol
 - _(vacío)_

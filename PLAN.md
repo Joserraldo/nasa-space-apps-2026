@@ -1,7 +1,7 @@
 # 🚀 Plan de equipo: NASA Space Apps 2026
 **Reto:** Build a Junior Astronaut Mission Trainer
 **Equipo:** 6 personas, cada una con su agente de Claude
-**Estado:** Planeación (los datasets/repos de NASA llegan el **13 de noviembre**)
+**Estado:** Planeación. Los datasets de NASA salen el **13 de noviembre**; el hackathon es el **14 y 15 de noviembre de 2026** y la entrega cierra el **15 nov a las 23:59 hora local**.
 
 > ⚠️ **Regla del reto:** "No empiecen a trabajar en sus proyectos hasta que empiece el hackathon."
 > Antes del inicio: **solo planeación, investigación, documentos, cuentas y repo vacío** (README, este plan, plantillas de issues, `CODEOWNERS`).
@@ -132,7 +132,7 @@ Si una parte se demora, **dos personas pueden ir a la misma área** (lo más pro
 1. **Cada humano controla a su agente.** Los agentes abren issues y PRs. **Ningún agente hace merge: lo hace su humano** después de revisión de otra persona.
 2. **Cada agente solo edita su carpeta** (`CODEOWNERS` + un `CLAUDE.md` por rol).
 3. **Contratos primero.** `/contracts` es el único origen de los tipos compartidos (`GameState`, `Action`, `SpaceWeatherEvent`, `ClassifierOutput`, `Seed`). Cambiarlo requiere aprobación de los dueños afectados.
-4. **Mocks desde el día 1.** El rol 4 entrega datos falsos con la forma correcta; el resto construye contra ellos. El 13 de noviembre solo se cambia el origen.
+4. **Mocks desde el día 1.** El rol 4 entrega datos falsos con la forma correcta; el resto construye contra ellos. El 14 de noviembre solo se cambia el origen a los datos reales (publicados el 13).
 5. **Dependencias explícitas.** Si un agente necesita algo de otro, abre un issue con la etiqueta `bloquea:<rol>` y sigue con otra tarea mientras tanto.
 6. **PRs pequeños** (menos de ~300 líneas), con descripción y captura o prueba.
 
@@ -231,7 +231,7 @@ Todo es investigación y documentos, sin código del juego.
 | 0. Preparación (hoy → inicio) | Equipo, repo vacío, ideas, decisiones | Todas las decisiones de la sección 8 tomadas |
 | 1. Arranque | Contratos + esqueleto + mocks | Todos los roles compilan contra `/contracts` |
 | 2. Rebanada vertical | Una misión de punta a punta, 3 expertos, IA nivel 1-2 | Un primo la juega completa sin ayuda |
-| 3. Expansión | Datos reales (13 nov), semillas, dificultades, 5 expertos, IA niveles 3-4 | Dos PCs dan escenarios distintos |
+| 3. Expansión | Datos reales (publicados el 13 nov), semillas, dificultades, 5 expertos, IA niveles 3-4 | Dos PCs dan escenarios distintos |
 | 4. Pulido | Voz, bilingüe, accesibilidad, balance | Pruebas con primos y ajustes hechos |
 | 5. Entrega | Video, explicación de datasets, demo con respaldo offline | Formulario de Space Apps enviado |
 
@@ -375,24 +375,28 @@ Privacidad primero: **nada personal de niños, sin cuentas, sin audio.**
 - **Hackathon:** catálogo de tormentas reales curado, semilla del día, estadísticas anónimas de partidas (qué decisiones se toman, dónde fallan) para balancear y mostrar en el pitch.
 - **Después, como negocio:** cuentas de **docentes** (no de niños), códigos de salón para que una clase juegue la misma semilla y compare estrategias, y un panel del docente. Esto **no** se construye en el hackathon; queda anotado.
 
-### 13.5 Qué decide cada rol el día 1 (13 nov)
+### 13.5 Qué confirma cada rol el día 1 (14 nov, a primera hora)
+Las comparaciones se hacen antes, en documentos; el 14 solo se confirma y se arranca.
 - Rol 2 confirma React + Vite + PixiJS (D3) en `docs/decisiones/D3-motor.md`.
 - Rol 3 compara Qwen vs DeepSeek con 30 órdenes de niños (D4).
 - Rol 6 confirma Cloudflare (D5) y fija el tope de gasto de la API (D10).
 
 ---
 
-## 14. Calendario del hackathon (por confirmar con `docs/reglas.md`)
-| Día | Foco | Listo cuando... |
+## 14. Calendario del hackathon
+Fechas oficiales: hackathon **14-15 nov 2026** (portada de spaceappschallenge.org, verificado el 2 nov). La entrega abre el sáb 14 a las 9:00 y cierra el **dom 15 a las 23:59 hora local** (según `docs/reglas.md`; confirmar en la Guía de Entrega del 13 nov). **No hay 16.** Son ~36 horas de código, así que todo lo que sea documento se deja listo antes.
+
+| Cuándo | Foco | Listo cuando... |
 |---|---|---|
-| Antes del 13 nov | Solo docs, cuentas, repo, decisiones de la sección 8 | Todas las decisiones tomadas |
-| **13 nov** (sale la data) | Contratos + esqueleto + mocks + deploy vacío en Cloudflare | Todos compilan contra `/contracts` y hay un link vivo |
-| **14 nov** | Rebanada vertical: una misión, 3 expertos, IA niveles 1-2, datos reales | Un primo la juega completa sin ayuda |
-| **15 nov** | Semillas, dificultades, voz, bilingüe; **congelar funciones en la noche** | Dos PCs dan escenarios distintos |
-| **16 nov** | Solo arreglos, pitch y video; enviar formulario con margen | Formulario enviado |
+| Hasta el 12 nov | Solo docs, cuentas, repo, decisiones de la sección 8, guion y storyboard del pitch | Todas las decisiones tomadas |
+| **13 nov** (sale la data) | Bajar y leer datasets y Guía de Entrega; ajustar docs. **Sin código del juego** | Cada rol sabe qué datos usa y qué pide el formulario |
+| **14 nov, mañana** | Contratos + esqueleto + mocks + deploy vacío en Cloudflare | Todos compilan contra `/contracts` y hay un link vivo |
+| **14 nov, tarde y noche** | Rebanada vertical: una misión, 3 expertos, IA niveles 1-2, datos reales | Un primo la juega completa sin ayuda |
+| **15 nov, mañana** | Semillas, dificultades, voz, bilingüe; **congelar funciones a las 13:00** | Dos PCs dan escenarios distintos |
+| **15 nov, tarde** | Solo arreglos, grabación del video y pitch; **enviar el formulario antes de las 20:00** | Formulario enviado con margen |
 
 ### Pitch y video (Rol 6, con apoyo de todos)
 - **Guion de 2 minutos:** problema → el niño juega → la IA se daña → la tripulación → datos reales de NASA → cadena de causas → cierre.
 - **Video:** grabación real del juego + narración. Se puede producir con Claude (HyperFrames para títulos, gráficas animadas de los datos de NASA y subtítulos).
-- El guion y el storyboard se escriben **antes** del 13 (es documento, no código). La grabación se hace el 15-16 con el juego congelado.
+- El guion y el storyboard se escriben **antes** del 13 (es documento, no código). La grabación se hace el 15 en la tarde, con el juego congelado.
 - Contar en el pitch cómo trabajamos: 6 personas, cada una con su agente de Claude, contratos y CODEOWNERS.
