@@ -9,7 +9,7 @@ Este archivo debe bastar para que otra sesión (u otro humano) retome la coordin
 ## Resumen
 
 - **Reto:** Build a Junior Astronaut Mission Trainer. **Juego:** Solar Shield (IA de la base: Iris).
-- **Roles (13 nov, tarde):** `motor` (+diseño y misiones) Santiago y Camilo · `ui` María Paula · `agentes` José · `infra` (integración, QA, despliegue y pitch) José · `datos` Daniel y Jaime. Santiago es además el orquestador. Tabla completa en el [README](../README.md).
+- **Roles (13 nov, tarde):** `motor` (+diseño y misiones) Jaime y Camilo · `ui` María Paula · `agentes` José · `infra` (integración, QA, despliegue y pitch) José · `datos` Daniel. Santiago es el orquestador y apoya el rol atrasado. Tabla completa en el [README](../README.md).
 - **Idioma base del juego:** inglés; el español es la segunda lengua.
 - **Ramas:** `feat/<slug>-<tema>` desde `develop`; PRs < ~300 líneas hacia `develop`; el merge es automático cuando pasa el CI "Tipos y tests" (auto-merge activado el 13 nov; ver protección de `develop` y `main`).
 - **Contratos:** `/contracts` va en v0.2.0 (`GameState`, `Action`, `Seed`, `SpaceWeatherEvent`, `ClassifierOutput`); discusión en el issue #17 (dueños: motor, agentes, datos).
@@ -66,7 +66,7 @@ Semilla fija de demo, ~2 min, completa en ES y EN. Se convierte en issue `p0` pa
 
 1. **Código antes del inicio oficial.** El 13 nov entraron a `develop` motor, contratos y pipeline de datos; el enunciado y `reglas.md` dicen que no se empieza antes del 14 nov a las 9:00. Riesgo de descalificación. Decide Santiago; lo prudente es preguntar al organizador y guardar la respuesta en [reglas.md](reglas.md).
 2. **Información oficial sin confirmar:** Guía de Entrega, política de IA, licencia, criterios de juicio, formato del video, idioma, repo público o no, jurado local.
-3. **Cambio de roles en la víspera:** quien escribió el motor (Jaime) pasa a datos y lo reciben Santiago y Camilo. Mitigación: nota de traspaso en `engine/ESTADO.md` y Jaime revisa los primeros PRs de `engine/`. Además **José lleva `agentes` e `infra` a la vez**, y `agentes` es el diferenciador y todavía no tiene código: si se atrasa, se reparte `infra`.
+3. **Dos roles con una sola persona:** `datos` queda solo con Daniel (tokens 🟡) y **José lleva `agentes` e `infra` a la vez**, y `agentes` es el diferenciador y todavía no tiene código: si se atrasa, se reparte `infra`.
 4. **Iris que falla** necesita guion y pruebas, no solo código (agentes + motor). El guion espera el OK de José.
 5. **Límites de tokens desconocidos:** falta el inventario de [modelos.md](modelos.md).
 6. **Sin despliegue:** no hay link vivo; faltan la cuenta de Cloudflare (Santiago) y el flujo de despliegue con sus secretos (José).
