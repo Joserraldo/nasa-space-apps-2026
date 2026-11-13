@@ -1,30 +1,34 @@
-# Dueños por carpeta. Reemplazar @usuario-rolN por el usuario real de GitHub el día 1.
-# Mientras tanto, todo lo revisa el coordinador.
+# Dueños por carpeta (roles del 13 nov: 5 de construcción + orquestador).
+# La última regla que coincide es la que manda.
 *                 @Joserraldo
 
-# Rol 1 — Diseño de juego y misiones
-# /design/        @usuario-rol1
-# /missions/      @usuario-rol1
+# Orquestador + Integración, infra y pitch — Santiago Cabeza
+/infra/                 @kcitas
+/pitch/                 @kcitas
+/.github/               @kcitas
+/docs/ORQUESTACION.md   @kcitas
+/docs/modelos.md        @kcitas
+/docs/ia-uso.md         @kcitas
+/docs/reglas.md         @kcitas
 
-# Rol 2 — Motor y simulación
-# /engine/        @usuario-rol2
+# Motor + Diseño de juego — Jaime
+/engine/          @JaimeMrF
+/design/          @JaimeMrF
 
-# Rol 3 — Agentes expertos
-# /agents/        @usuario-rol3
+# Mecánicas y aseguramiento de calidad — María Paula
+/missions/        @Paulasaah
+/tests/           @Paulasaah
 
-# Rol 4 — Datos NASA y ciencia
-# /data/          @usuario-rol4
-# /docs/science/  @usuario-rol4
+# Agentes expertos — José
+/agents/          @Joserraldo
 
-# Rol 5 — Frontend, voz, arte y accesibilidad
-# /ui/            @usuario-rol5
-# /assets/        @usuario-rol5
+# Datos NASA y ciencia — Daniel
+/data/            @Daniverd15
+/docs/science/    @Daniverd15
 
-# Rol 6 — Integración, QA, despliegue y pitch
-# /infra/         @usuario-rol6
-# /tests/e2e/     @usuario-rol6
-# /pitch/         @usuario-rol6
-# /.github/       @usuario-rol6
+# Frontend, voz, arte y accesibilidad — Camilo
+/ui/              @CamiloM21
+/assets/          @CamiloM21
 
 # Contratos compartidos: requieren a los tres dueños
-# /contracts/     @usuario-rol2 @usuario-rol3 @usuario-rol4
+/contracts/       @JaimeMrF @Joserraldo @Daniverd15
