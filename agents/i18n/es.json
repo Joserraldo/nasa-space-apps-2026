@@ -62,5 +62,15 @@
   "agentes.iris.verificar.silencio": "Iris se quedó callada. La radiación le pegó en los circuitos.",
   "agentes.iris.verificar.experto_equivocado": "Iris te mandó con la persona equivocada. Para una tormenta, pregúntale a la Meteoróloga o a la Doctora.",
   "agentes.iris.verificar.accion_peligrosa": "¡Cuidado! Si le quitamos energía al escudo en plena tormenta, la radiación entra. Iris no está pensando bien.",
-  "agentes.iris.verificar.reparar": "Yo la puedo arreglar. Cuesta energía, pero una computadora que dice mentiras es peor que no tener computadora."
+  "agentes.iris.verificar.reparar": "Yo la puedo arreglar. Cuesta energía, pero una computadora que dice mentiras es peor que no tener computadora.",
+  "agentes.satelite.ingeniera.altura": "Batería {bateria} %. Si vuelas más alto ves más terreno, pero los detalles se ven borrosos. Como mirar una ciudad desde un avión.",
+  "agentes.satelite.ingeniera.bateriaBaja": "¡Batería {bateria} %! En la sombra del planeta los paneles no cargan, como un celular olvidado a oscuras.",
+  "agentes.satelite.meteorologa.senal": "Señal con la Tierra {senal} %. Un mensaje tarda minutos en llegar, así que planea con tiempo.",
+  "agentes.satelite.meteorologa.tormenta": "Escudo del satélite {escudo} %. La tormenta lo va gastando poco a poco.",
+  "agentes.satelite.doctora.microgravedad": "Aquí arriba todos flotan: eso es microgravedad. Se siente como la bajada de una montaña rusa, todo el tiempo.",
+  "agentes.aterrizaje.ingeniera.luz": "Yo voto por {sitioKey}. Más sol es más energía para los paneles. ¡La energía es vida!",
+  "agentes.aterrizaje.doctora.blindaje": "Yo prefiero {sitioKey}. El terreno de alrededor frena parte de la radiación, como un paraguas de roca.",
+  "agentes.aterrizaje.ia_base.plano": "Para aterrizar seguro, {sitioKey} es el más plano. Aterrizar en una pendiente es como estacionar en una loma.",
+  "agentes.aterrizaje.cierre.discrepan": "Cada experto prefiere un lugar distinto. Ningún sitio es perfecto: elige lo que más le importa a tu misión.",
+  "agentes.aterrizaje.cierre.coinciden": "Esta vez todos están de acuerdo. ¡Eso casi nunca pasa!"
 }
