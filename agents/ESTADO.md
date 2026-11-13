@@ -1,5 +1,5 @@
 # Estado — rol 3 (Agentes expertos)
-**Actualizado:** 13 nov 2026 · **Rama:** feat/agentes-iris · **PR:** #47 (escena 6), Iris abriendo
+**Actualizado:** 13 nov 2026 · **Rama:** feat/agentes-fase-satelite · **PR:** #49 (Iris), satélite abriendo
 
 ## Hecho (últimas iteraciones)
 - #43 capa sin modelo (regex en/es, 30/30) · #44 tres expertos con plantillas en/es y fuente · #46 data/ en CI.
@@ -8,7 +8,7 @@
 
 ## Qué sigue (issue #41)
 - Integrar con ui: cola de diálogos y quién llama a `escenaTormenta` / `irisDanada` (abrir issue bloquea:ui).
-- Consejos en fase satélite y aterrizaje; tics en todas las respuestas; Matemático "¿Y si…?" con el simulador del motor.
+- Fase satélite hecha (consejosSatelite); falta aterrizaje. Tics en todas las respuestas; Matemático "¿Y si…?" con el simulador del motor.
 - Evals con b.ai (subagente corriendo) → resultado en D4.
 
 ## Bloqueos

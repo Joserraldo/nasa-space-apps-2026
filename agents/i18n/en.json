@@ -62,5 +62,10 @@
   "agentes.iris.verificar.silencio": "Iris went quiet. The radiation hit her circuits.",
   "agentes.iris.verificar.experto_equivocado": "Iris sent you to the wrong person. For a storm, ask the Meteorologist or the Doctor.",
   "agentes.iris.verificar.accion_peligrosa": "Careful! If we take energy from the shield during a storm, the radiation gets in. Iris is not thinking straight.",
-  "agentes.iris.verificar.reparar": "I can fix her. It costs energy, but a computer that lies is worse than no computer."
+  "agentes.iris.verificar.reparar": "I can fix her. It costs energy, but a computer that lies is worse than no computer.",
+  "agentes.satelite.ingeniera.altura": "Battery {bateria}%. Fly higher and you see more ground, but the details get blurry. Like looking at a city from a plane.",
+  "agentes.satelite.ingeniera.bateriaBaja": "Battery {bateria}%! In the planet's shadow the panels don't charge, like a phone left in the dark.",
+  "agentes.satelite.meteorologa.senal": "Signal with Earth {senal}%. A message takes minutes to get there, so plan ahead.",
+  "agentes.satelite.meteorologa.tormenta": "Satellite shield {escudo}%. The storm wears it down little by little.",
+  "agentes.satelite.doctora.microgravedad": "Up here everyone floats: that's microgravity. It feels like the drop of a roller coaster, all the time."
 }
