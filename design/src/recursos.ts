@@ -1,4 +1,4 @@
-import type { Difficulty, Resource, Resources, Site } from "@solar-shield/contracts";
+import type { Difficulty, Equipment, Resource, Resources, Site } from "@solar-shield/contracts";
 
 /**
  * Tablas de balance. Solo datos, nada de lógica (design/CLAUDE.md).
@@ -33,7 +33,9 @@ export type TipoAccionConCosto =
   | "subir_escudo"
   | "refugiarse"
   | "salida_exterior"
-  | "ajustar_orbita";
+  | "ajustar_orbita"
+  | "colocar_modulo"
+  | "enviar_telemetria";
 
 export interface CostoAccion {
   /** Efecto inmediato (el costo). Al menos un recurso baja. */
@@ -86,6 +88,41 @@ export const COSTOS_ACCION: Record<TipoAccionConCosto, CostoAccion> = {
     retrasado: { blindaje: 5, soporte_vital: 2 },
     causaKey: "causa.ajustar_orbita",
   },
+  colocar_modulo: {
+    // Base: montar cuesta energía y tiempo de tripulación. El beneficio depende del módulo (MODULOS).
+    inmediato: { energia: -6, soporte_vital: -3 },
+    retrasado: {},
+    causaKey: "causa.colocar_modulo",
+  },
+  enviar_telemetria: {
+    // La antena gasta energía; el consejo de la Tierra llega con retraso (RETRASO_COMUNICACIONES).
+    inmediato: { energia: -5, soporte_vital: -1 },
+    retrasado: { blindaje: 6 },
+    causaKey: "causa.enviar_telemetria",
+  },
+};
+
+/** Qué aporta cada módulo al colocarlo (beneficio con retraso). Ninguno es gratis: el costo está en COSTOS_ACCION. */
+export const MODULOS: Record<Equipment, Partial<Record<Resource, number>>> = {
+  panel_solar: { energia: 14 },
+  bateria: { energia: 8, blindaje: 2 },
+  reciclador_agua: { soporte_vital: 12 },
+  invernadero: { soporte_vital: 10, energia: -2 },
+  escudo: { blindaje: 14, energia: -3 },
+  antena: { blindaje: 4, soporte_vital: 3 },
+  ia_base: { energia: -2, blindaje: 5 },
+};
+
+/**
+ * Retraso de comunicaciones con la Tierra, en ticks de juego. En Marte la luz tarda 4-24 min
+ * reales (PLAN §2.2), comprimidos al ritmo del juego; en la Luna es casi inmediato.
+ */
+export const RETRASO_COMUNICACIONES: Record<Site, number> = {
+  marte_jezero: 2,
+  marte_polo_norte: 2,
+  luna_polo_sur: 1,
+  luna_lado_visible: 1,
+  outpost_sorpresa: 3,
 };
 
 /** Retraso de consecuencias en ticks (PLAN §2.6). */
