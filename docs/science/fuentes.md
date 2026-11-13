@@ -23,6 +23,28 @@ Consultas hechas con la clave del equipo desde un script. Las muestras están en
   - 10 oct 2024: GST `2024-10-10T15:00:00-GST-001`, **Kp 8.67** (antes estaba NO VERIFICADO en §4 #7).
   - **Sep 2017 [V]:** X9.3 `2017-09-06T11:53:00-FLR-001` (pico 12:02Z; corrige el "NO VERIFICADO" de §4 #3) y X8.2 `2017-09-10T15:35:00-FLR-001` con una CME a 2650 km/s. La corrida ENLIL más reciente (`13117`) ya no incluye a Marte, aunque una anterior (`13114`) sí la incluía. Que RAD o MAVEN midieran algo en Marte sigue **NO VERIFICADO** (no viene de DONKI).
 
+## 0b. Recursos oficiales del reto y lo verificado (2026-11-13)
+
+Lista oficial (pestaña Resources del reto, copiada en ORQUESTACION): NASA Open APIs (APOD, Mars Rover Photos, DONKI) · DONKI · OSDR search · OSDR RadLab · Mars Trek · CSA (socio, no NASA).
+
+| Recurso | Estado [V] | Lo que usamos |
+|---|---|---|
+| DONKI | FLR solo vía `ccmc.gsfc.nasa.gov/DONKI-API` (404 en api.nasa.gov). CME, GST, SEP y ENLIL en api.nasa.gov. CORS `*`. Límite 2500/h | 8 tormentas en `data/curated` |
+| **OSDR RadLab** | **Sí tiene Marte y Luna**, no solo la ISS (corrige ORQUESTACION). Marte: `MSL-RAD-Surface` (Curiosity). Luna: `CRaTER-D1D2` (LRO, 2009–2024) e instrumentos de Artemis I (EAD-MU01, HERA-HSU1/2, M42-SN127). `absorbed_dose_rate` en µGy/h. Para RAD **no hay** `dose_equivalent_rate`. Sin datos de RAD en oct 2024 (respuesta vacía). Sin cabecera CORS para otros orígenes | `medicionMarte` de las tormentas |
+| OSDR search | Funciona. CORS solo para `osdr.nasa.gov` (el navegador no puede llamarla) | 3 tarjetas (OSD-772, OSD-546, OSD-360) |
+| Mars Trek | Funciona: catálogo, WMTS y ArcGIS ImageServer (`trekarcgis`), sin clave | Mapa de Jezero (`data/terreno/jezero`) |
+| **Mars Rover Photos** | **Caído:** `api.nasa.gov/mars-photos/...` devuelve 404 "No such app" | No se usa |
+
+**RAD en Marte durante tormentas [V, RadLab]** (dosis absorbida, medias diarias UTC, µGy/h):
+- 20 may 2024: fondo 4,1 → **79,7** el mismo día (pico de muestra 304), factor 19,4. CME de origen en DONKI: `2024-05-20T05:36:00-CME-001` (halo rápido; según la nota de DONKI, salió de la cara oculta del Sol). DONKI no tiene FLR ni SEP de ese evento.
+- 10 sep 2017: fondo 7,9 → **17,9** el 11 sep (pico 23,2), factor 2,3. Después baja a ~6,6 (14 sep).
+- 14 may 2024 (X8.7, que el modelo ENLIL mandaba a Marte): **sin aumento** (factor 0,9).
+
+**Dosis de referencia [V en fuente primaria]** (`data/ciencia/radiacion.json`):
+- Marte, superficie: **0,64 ± 0,12 mSv/día** (7 ago 2012 – 1 jun 2013). Cita: Reitz, Matthiä, Hassler et al. 2016, ICES2016 (https://elib.dlr.de/106090/). La página da esta cita, no el artículo de *Science* de 2014.
+- Luna, superficie: **1369 µSv/día**, medido por LND en Chang’e-4 (**CNSA**). En el mismo periodo, la ISS (DOSIS 3D DOSTEL) dio **731 µSv/día**. Zhang et al. 2020, *Sci. Adv.* 6(39) eaaz1334, texto completo en PMC7518862. El resumen da la dosis absorbida: 13,2 ± 1 µGy/h en silicio.
+- Las comparaciones Marte/ISS son aproximadas porque se midieron en años distintos (ciclo solar distinto).
+
 ## 1. DONKI (Database Of Notifications, Knowledge, Information)
 
 ### Acceso y URLs

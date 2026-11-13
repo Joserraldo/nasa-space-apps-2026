@@ -8,14 +8,16 @@
  *    análisis isMostAccurate más reciente (time21_5). SEP: hora = eventTime; se rechazan
  *    instrumentos "MODEL:" (son pronósticos, no mediciones). GST: hora = startTime; kpMax = máx. Kp.
  *  - Cadena: cada fase debe estar enlazada en DONKI (linkedEvents) con alguna fase anterior.
+ *  - RAD: si RadLab cubre la ventana, medicionMarte (ver medicionMarte()); factor ≥ 1,5 → "observado".
  *  - Marte: la última WSA-ENLIL completada que usa la CME como entrada (las corridas nuevas
  *    reemplazan a las viejas). Si su impactList incluye Mars → "modelado"; si no → "escenario".
  */
-import { readFileSync, writeFileSync } from "node:fs";
+import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { z } from "zod";
 import { DonkiCME, DonkiEnlil, DonkiFLR, DonkiGST, DonkiSEP } from "../src/donki";
-import { TormentaSchema, type Fase, type Tormenta } from "../src/tormenta";
+import { RadlabRespuesta } from "../src/radlab";
+import { TormentaSchema, UMBRAL_OBSERVADO, type Fase, type Tormenta } from "../src/tormenta";
 import { leerConfig, RAIZ } from "./config";
 
 type Crudo = Record<string, unknown> & { linkedEvents?: { activityID: string }[] | null };
@@ -30,6 +32,7 @@ function cargar(grupo: string) {
     SEP: leer("SEP", DonkiSEP),
     GST: leer("GST", DonkiGST),
     ENLIL: leer("WSAEnlilSimulations", DonkiEnlil),
+    RAD: existsSync(join(dir, "RAD.json")) ? RadlabRespuesta.parse(JSON.parse(readFileSync(join(dir, "RAD.json"), "utf-8"))) : null,
     consultadoEl: JSON.parse(readFileSync(join(dir, "consulta.json"), "utf-8")).consultadoEl as string,
   };
 }
@@ -87,6 +90,40 @@ function fase(g: Grupo, id: string): { fase: Fase; crudo: Crudo; region: number 
   };
 }
 
+const DIA_MS = 86_400_000;
+const r1 = (x: number) => Math.round(x * 10) / 10;
+
+/**
+ * RAD en Marte alrededor de la hora t0 (inicio de la tormenta):
+ *  fondo = media de las muestras en los 5 días antes; pico = la mayor media diaria (UTC) en los
+ *  3 días después; factor = pico / fondo. Solo si hay muestras en ambos lados.
+ *  (Primero se probó con 5 días después: le atribuía al X9.3 del 6 sep 2017 el pico del 11 sep,
+ *  que es del X8.2 del 10 sep. Con 3 días cada pico queda con su tormenta.)
+ */
+export function medicionMarte(g: Grupo, t0: string, url: string) {
+  if (!g.RAD) return undefined;
+  const ini = Date.parse(t0);
+  const muestras = g.RAD.data.map(([ts, , v]) => ({ t: Date.parse(`${ts}Z`), dia: ts.slice(0, 10), v }));
+  const antes = muestras.filter((m) => m.t >= ini - 5 * DIA_MS && m.t < ini);
+  const despues = muestras.filter((m) => m.t >= ini && m.t < ini + 3 * DIA_MS);
+  if (antes.length < 20 || despues.length < 20) return undefined;
+  const fondo = antes.reduce((s, m) => s + m.v, 0) / antes.length;
+  const porDia = new Map<string, number[]>();
+  for (const m of despues) porDia.set(m.dia, [...(porDia.get(m.dia) ?? []), m.v]);
+  const [diaPico, valores] = [...porDia].sort((a, b) => b[1].reduce((s, v) => s + v, 0) / b[1].length - a[1].reduce((s, v) => s + v, 0) / a[1].length)[0];
+  const pico = valores.reduce((s, v) => s + v, 0) / valores.length;
+  return {
+    instrumento: "MSL-RAD-Surface" as const,
+    unidad: "µGy/h" as const,
+    fondo: r1(fondo),
+    pico: r1(pico),
+    picoMuestra: r1(Math.max(...valores)),
+    diaPico,
+    factor: r1(pico / fondo),
+    url,
+  };
+}
+
 function llegadaMarte(g: Grupo, cme?: Fase) {
   if (!cme) return undefined;
   const ultima = ultimaEnlil(g, cme.hora);
@@ -109,6 +146,9 @@ export function curar(): Tormenta[] {
       if (!enlazada) throw new Error(`${t.id}: ${f.fase.idFuente} no está enlazada en DONKI con las fases anteriores`);
     });
     const marte = llegadaMarte(g, fases.find((f) => f.fase.tipo === "CME")?.fase);
+    const consulta = JSON.parse(readFileSync(join(RAIZ, "raw", t.grupo, "consulta.json"), "utf-8"));
+    const medicion = medicionMarte(g, fases[0].fase.hora, consulta.consultas?.RAD ?? "https://visualization.osdr.nasa.gov/radlab/");
+    const observado = Boolean(medicion && medicion.factor >= UMBRAL_OBSERVADO);
     const tieneKp = fases.some((f) => f.fase.tipo === "GST");
     return TormentaSchema.parse({
       version: "0.2.0",
@@ -116,13 +156,18 @@ export function curar(): Tormenta[] {
       estadoDato: "curado",
       nombreKey: `datos.tormenta.${t.id}.nombre`,
       queOcurrioKey: `datos.tormenta.${t.id}.queOcurrio`,
-      marcoMarte: marte ? "modelado" : "escenario",
+      marcoMarte: observado ? "observado" : marte ? "modelado" : "escenario",
       llegadaMarte: marte,
+      medicionMarte: medicion,
       regionActiva: fases.find((f) => f.region)?.region ?? null,
       fases: fases.map((f) => f.fase),
       fuente: {
         nombreKey: "fuente.donki",
-        dueno: tieneKp ? "NASA CCMC (DONKI); índice Kp: NOAA" : "NASA CCMC (DONKI)",
+        dueno: [
+          "NASA CCMC (DONKI)",
+          tieneKp ? "índice Kp: NOAA" : "",
+          medicion ? "radiación en Marte: RAD de MSL Curiosity (NASA) vía OSDR RadLab" : "",
+        ].filter(Boolean).join("; "),
         url: "https://ccmc.gsfc.nasa.gov/tools/DONKI/",
         consultadoEl: g.consultadoEl,
       },

@@ -1,0 +1,40 @@
+{
+  "version": "0.2.0",
+  "id": "2024-05-20-marte",
+  "estadoDato": "curado",
+  "nombreKey": "datos.tormenta.2024-05-20-marte.nombre",
+  "queOcurrioKey": "datos.tormenta.2024-05-20-marte.queOcurrio",
+  "marcoMarte": "observado",
+  "medicionMarte": {
+    "instrumento": "MSL-RAD-Surface",
+    "unidad": "µGy/h",
+    "fondo": 4.1,
+    "pico": 79.7,
+    "picoMuestra": 304,
+    "diaPico": "2024-05-20",
+    "factor": 19.4,
+    "url": "https://visualization.osdr.nasa.gov/radlab/api/?instrument_id=MSL-RAD-Surface&timestamp>=2024-05-03&timestamp<2024-05-26&absorbed_dose_rate>0&format=json"
+  },
+  "regionActiva": null,
+  "fases": [
+    {
+      "tipo": "CME",
+      "idFuente": "2024-05-20T05:36:00-CME-001",
+      "hora": "2024-05-20T05:36Z",
+      "velocidadKmS": 1927,
+      "observadoEn": "Sol",
+      "instrumentos": [
+        "SOHO: LASCO/C2",
+        "SOHO: LASCO/C3",
+        "STEREO A: SECCHI/COR2"
+      ],
+      "url": "https://ccmc.gsfc.nasa.gov/DONKI/view/CME/31034/-1"
+    }
+  ],
+  "fuente": {
+    "nombreKey": "fuente.donki",
+    "dueno": "NASA CCMC (DONKI); radiación en Marte: RAD de MSL Curiosity (NASA) vía OSDR RadLab",
+    "url": "https://ccmc.gsfc.nasa.gov/tools/DONKI/",
+    "consultadoEl": "2026-11-13"
+  }
+}

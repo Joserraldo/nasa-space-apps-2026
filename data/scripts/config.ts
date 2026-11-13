@@ -14,6 +14,8 @@ export const ConfigSchema = z
       z.object({
         grupo: z.string().regex(/^[a-z0-9-]+$/),
         ventanas: z.record(z.enum(ENDPOINTS), z.tuple([Fecha, Fecha])),
+        /** Ventana de RAD (MSL Curiosity, superficie de Marte) en OSDR RadLab. */
+        radlab: z.tuple([Fecha, Fecha]).optional(),
       }),
     ),
     rutaDorada: z.string(),

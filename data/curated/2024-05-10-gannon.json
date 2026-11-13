@@ -5,6 +5,16 @@
   "nombreKey": "datos.tormenta.2024-05-10-gannon.nombre",
   "queOcurrioKey": "datos.tormenta.2024-05-10-gannon.queOcurrio",
   "marcoMarte": "escenario",
+  "medicionMarte": {
+    "instrumento": "MSL-RAD-Surface",
+    "unidad": "µGy/h",
+    "fondo": 4.8,
+    "pico": 4.9,
+    "picoMuestra": 6,
+    "diaPico": "2024-05-12",
+    "factor": 1,
+    "url": "https://visualization.osdr.nasa.gov/radlab/api/?instrument_id=MSL-RAD-Surface&timestamp>=2024-05-03&timestamp<2024-05-26&absorbed_dose_rate>0&format=json"
+  },
   "regionActiva": 13664,
   "fases": [
     {
@@ -55,7 +65,7 @@
   ],
   "fuente": {
     "nombreKey": "fuente.donki",
-    "dueno": "NASA CCMC (DONKI); índice Kp: NOAA",
+    "dueno": "NASA CCMC (DONKI); índice Kp: NOAA; radiación en Marte: RAD de MSL Curiosity (NASA) vía OSDR RadLab",
     "url": "https://ccmc.gsfc.nasa.gov/tools/DONKI/",
     "consultadoEl": "2026-11-13"
   }

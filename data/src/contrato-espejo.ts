@@ -48,5 +48,9 @@ export const SpaceWeatherEventSchema = z.object({
   llegadaMarte: z
     .object({ idFuente: z.string(), offsetHoras: z.number().nonnegative(), rozando: z.boolean() })
     .optional(),
+  /** propuesta datos: lo que midió RAD (Curiosity) en Marte. Dosis absorbida en µGy/h, nunca mSv. */
+  medicionMarte: z
+    .object({ unidad: z.literal("µGy/h"), fondo: z.number(), pico: z.number(), factor: z.number(), offsetHorasPico: z.number() })
+    .optional(),
 });
 export type SpaceWeatherEvent = z.infer<typeof SpaceWeatherEventSchema>;

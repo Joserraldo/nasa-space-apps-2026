@@ -4,7 +4,17 @@
   "estadoDato": "curado",
   "nombreKey": "datos.tormenta.2017-09-10-x82.nombre",
   "queOcurrioKey": "datos.tormenta.2017-09-10-x82.queOcurrio",
-  "marcoMarte": "escenario",
+  "marcoMarte": "observado",
+  "medicionMarte": {
+    "instrumento": "MSL-RAD-Surface",
+    "unidad": "µGy/h",
+    "fondo": 7.9,
+    "pico": 17.9,
+    "picoMuestra": 23.2,
+    "diaPico": "2017-09-11",
+    "factor": 2.3,
+    "url": "https://visualization.osdr.nasa.gov/radlab/api/?instrument_id=MSL-RAD-Surface&timestamp>=2017-09-01&timestamp<2017-09-20&absorbed_dose_rate>0&format=json"
+  },
   "regionActiva": 12673,
   "fases": [
     {
@@ -44,7 +54,7 @@
   ],
   "fuente": {
     "nombreKey": "fuente.donki",
-    "dueno": "NASA CCMC (DONKI)",
+    "dueno": "NASA CCMC (DONKI); radiación en Marte: RAD de MSL Curiosity (NASA) vía OSDR RadLab",
     "url": "https://ccmc.gsfc.nasa.gov/tools/DONKI/",
     "consultadoEl": "2026-11-13"
   }

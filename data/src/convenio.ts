@@ -55,6 +55,13 @@ export function aConvenio(t: Tormenta): SpaceWeatherEvent {
       offsetHoras: horasEntre(inicio, t.llegadaMarte.hora),
       rozando: t.llegadaMarte.rozando,
     },
+    medicionMarte: t.medicionMarte && {
+      unidad: t.medicionMarte.unidad,
+      fondo: t.medicionMarte.fondo,
+      pico: t.medicionMarte.pico,
+      factor: t.medicionMarte.factor,
+      offsetHorasPico: Math.max(0, horasEntre(inicio, `${t.medicionMarte.diaPico}T12:00Z`)),
+    },
   };
   return SpaceWeatherEventSchema.parse(ev);
 }

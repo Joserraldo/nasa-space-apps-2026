@@ -2,6 +2,7 @@
  * Descarga DONKI → data/raw/<grupo>/<ENDPOINT>.json (respaldo offline, no en vivo).
  * Uso: npm run descargar [-- <grupo>]
  * La clave sale de NASA_API_KEY (variable de entorno o ../.env). Nunca se imprime ni se guarda.
+ * RAD (Curiosity) sale de OSDR RadLab, sin clave.
  * FLR va al servicio directo de CCMC porque api.nasa.gov/DONKI/FLR da 404 (ver samples/README.md).
  */
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
@@ -18,6 +19,7 @@ function clave(): string {
   throw new Error("Falta NASA_API_KEY (variable de entorno o .env en la raíz)");
 }
 
+const RADLAB = "https://visualization.osdr.nasa.gov/radlab/api/";
 const dias = (a: string, b: string) => (Date.parse(b) - Date.parse(a)) / 86_400_000;
 
 function url(endpoint: string, ini: string, fin: string, key: string): { real: string; publica: string } {
@@ -48,6 +50,16 @@ async function main() {
       writeFileSync(join(dir, `${endpoint}.json`), JSON.stringify(datos) + "\n");
       consultas[endpoint] = publica;
       console.log(`${t.grupo}/${endpoint}: ${Array.isArray(datos) ? datos.length : "?"} registros`);
+    }
+    if (t.radlab) {
+      const [ini, fin] = t.radlab;
+      const u = `${RADLAB}?instrument_id=MSL-RAD-Surface&timestamp>=${ini}&timestamp<${fin}&absorbed_dose_rate>0&format=json`;
+      const r = await fetch(u);
+      if (!r.ok) throw new Error(`${t.grupo}/RAD: HTTP ${r.status} en ${u}`);
+      const datos = await r.json();
+      writeFileSync(join(dir, "RAD.json"), JSON.stringify(datos) + "\n");
+      consultas.RAD = u;
+      console.log(`${t.grupo}/RAD: ${datos.data?.length ?? 0} muestras`);
     }
     const hoy = new Date().toISOString().slice(0, 10);
     writeFileSync(join(dir, "consulta.json"), JSON.stringify({ consultadoEl: hoy, consultas }, null, 2) + "\n");
