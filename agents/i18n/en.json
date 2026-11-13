@@ -51,5 +51,16 @@
   "agentes.escena6.doctora.costo": "While we hide, nobody looks after the base. That has a cost too.",
   "agentes.escena6.ingeniera.contra": "Wait! If we all hide, nobody fixes anything. Better to put energy into the shield and keep working.",
   "agentes.escena6.ingeniera.costo": "We have {energia}% energy. Boosting the shield uses {gasto} of it.",
-  "agentes.escena6.elige": "Two experts, two plans. Neither one is free. You are the commander: you decide."
+  "agentes.escena6.elige": "Two experts, two plans. Neither one is free. You are the commander: you decide.",
+  "agentes.iris.falla.glitch": "Bzzt... krrr... *Iris blinks* Radiation is tickling my circuits.",
+  "agentes.iris.falla.numero": "Shield at {valor}%. Everything is perfect, commander!",
+  "agentes.iris.falla.numeroConsejo": "We could turn the shield down to save energy. Trust me. Probably.",
+  "agentes.iris.falla.silencio": "Rebooting... rebooting... I forgot what I was saying.",
+  "agentes.iris.falla.experto": "For this problem, call {expertoKey}. Yes. Definitely. Maybe.",
+  "agentes.iris.falla.peligrosa": "Idea! Send all the energy to life support. The plants will love it.",
+  "agentes.iris.verificar.numero": "Wait. Iris said the shield is at {dicho}%, but my meter says {real}%. The radiation scrambled her numbers!",
+  "agentes.iris.verificar.silencio": "Iris went quiet. The radiation hit her circuits.",
+  "agentes.iris.verificar.experto_equivocado": "Iris sent you to the wrong person. For a storm, ask the Meteorologist or the Doctor.",
+  "agentes.iris.verificar.accion_peligrosa": "Careful! If we take energy from the shield during a storm, the radiation gets in. Iris is not thinking straight.",
+  "agentes.iris.verificar.reparar": "I can fix her. It costs energy, but a computer that lies is worse than no computer."
 }
