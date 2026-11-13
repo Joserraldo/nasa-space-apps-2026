@@ -47,3 +47,10 @@
 | `agentes.aterrizaje.ingeniera.luz`, `agentes.aterrizaje.ia_base.plano` | Correctos (más sol, más energía; aterrizar en pendiente es arriesgado) |
 | `agentes.aterrizaje.doctora.blindaje` ("el suelo alrededor bloquea parte de la radiación") | Correcto para el sitio que hoy gana en blindaje (pie de la pared sur, 0,71). Ojo: el puntaje también premia estar más abajo (más aire encima). Si cambian los sitios, sugerencia: "Más abajo hay más aire encima, y las paredes tapan parte del cielo." / "Lower down there's more air above you, and the walls cover part of the sky." |
 | Falta la tarjeta | Los puntajes son **derivados por el equipo**. El diálogo debería llevar `fuente: fuenteTerreno()` (nuevo en datos), y ui debería mostrar la nota `datos.terreno.derivado` |
+
+## Tutoriales de Iris (#71) — revisado el 2026-11-13
+| Texto | Revisión |
+|---|---|
+| `agentes.iris.sistema.panel_solar`, `.bateria`, `.reciclador_agua`, `.invernadero`, `.antena`, `.ia_base` | Correctos (la batería guarda energía para la noche; las plantas dan algo de oxígeno; los mensajes tardan minutos, 3–22 [V]; la radiación puede alterar la electrónica) |
+| `agentes.iris.sistema.escudo` ("funciona mejor con más energía") | **Matiz:** en la vida real, el blindaje contra la radiación es sobre todo **materia** (agua, roca, paredes gruesas) y no usa energía. Que use energía es una regla del juego. Sugerencia: "The shield blocks part of the radiation, like thick walls or water. In our base it also uses energy to work better." / "El escudo frena parte de la radiación, como las paredes gruesas o el agua. En nuestra base además usa energía para funcionar mejor." |
+| `agentes.iris.tutorial.*`, `agentes.iris.pista.*` | Sin cifras de NASA; correctos |
