@@ -1,0 +1,246 @@
+{
+  "version": "0.1.0",
+  "id": "jezero",
+  "nombreKey": "datos.terreno.jezero.nombre",
+  "bbox": {
+    "oeste": 76.9,
+    "sur": 17.7,
+    "este": 78.3,
+    "norte": 19.1
+  },
+  "dem": {
+    "archivo": "elevacion.bin",
+    "ancho": 280,
+    "alto": 280,
+    "metrosPorPixel": 289,
+    "minM": -3093,
+    "maxM": -501
+  },
+  "imagenes": {
+    "sombreado": "sombreado.jpg",
+    "ctx": [
+      {
+        "archivo": "ctx/201_730.png",
+        "oeste": 76.640625,
+        "norte": 19.3359375,
+        "grados": 0.3515625
+      },
+      {
+        "archivo": "ctx/201_731.png",
+        "oeste": 76.9921875,
+        "norte": 19.3359375,
+        "grados": 0.3515625
+      },
+      {
+        "archivo": "ctx/201_732.png",
+        "oeste": 77.34375,
+        "norte": 19.3359375,
+        "grados": 0.3515625
+      },
+      {
+        "archivo": "ctx/201_733.png",
+        "oeste": 77.6953125,
+        "norte": 19.3359375,
+        "grados": 0.3515625
+      },
+      {
+        "archivo": "ctx/201_734.png",
+        "oeste": 78.046875,
+        "norte": 19.3359375,
+        "grados": 0.3515625
+      },
+      {
+        "archivo": "ctx/202_730.png",
+        "oeste": 76.640625,
+        "norte": 18.984375,
+        "grados": 0.3515625
+      },
+      {
+        "archivo": "ctx/202_731.png",
+        "oeste": 76.9921875,
+        "norte": 18.984375,
+        "grados": 0.3515625
+      },
+      {
+        "archivo": "ctx/202_732.png",
+        "oeste": 77.34375,
+        "norte": 18.984375,
+        "grados": 0.3515625
+      },
+      {
+        "archivo": "ctx/202_733.png",
+        "oeste": 77.6953125,
+        "norte": 18.984375,
+        "grados": 0.3515625
+      },
+      {
+        "archivo": "ctx/202_734.png",
+        "oeste": 78.046875,
+        "norte": 18.984375,
+        "grados": 0.3515625
+      },
+      {
+        "archivo": "ctx/203_730.png",
+        "oeste": 76.640625,
+        "norte": 18.6328125,
+        "grados": 0.3515625
+      },
+      {
+        "archivo": "ctx/203_731.png",
+        "oeste": 76.9921875,
+        "norte": 18.6328125,
+        "grados": 0.3515625
+      },
+      {
+        "archivo": "ctx/203_732.png",
+        "oeste": 77.34375,
+        "norte": 18.6328125,
+        "grados": 0.3515625
+      },
+      {
+        "archivo": "ctx/203_733.png",
+        "oeste": 77.6953125,
+        "norte": 18.6328125,
+        "grados": 0.3515625
+      },
+      {
+        "archivo": "ctx/203_734.png",
+        "oeste": 78.046875,
+        "norte": 18.6328125,
+        "grados": 0.3515625
+      },
+      {
+        "archivo": "ctx/204_730.png",
+        "oeste": 76.640625,
+        "norte": 18.28125,
+        "grados": 0.3515625
+      },
+      {
+        "archivo": "ctx/204_731.png",
+        "oeste": 76.9921875,
+        "norte": 18.28125,
+        "grados": 0.3515625
+      },
+      {
+        "archivo": "ctx/204_732.png",
+        "oeste": 77.34375,
+        "norte": 18.28125,
+        "grados": 0.3515625
+      },
+      {
+        "archivo": "ctx/204_733.png",
+        "oeste": 77.6953125,
+        "norte": 18.28125,
+        "grados": 0.3515625
+      },
+      {
+        "archivo": "ctx/204_734.png",
+        "oeste": 78.046875,
+        "norte": 18.28125,
+        "grados": 0.3515625
+      },
+      {
+        "archivo": "ctx/205_730.png",
+        "oeste": 76.640625,
+        "norte": 17.9296875,
+        "grados": 0.3515625
+      },
+      {
+        "archivo": "ctx/205_731.png",
+        "oeste": 76.9921875,
+        "norte": 17.9296875,
+        "grados": 0.3515625
+      },
+      {
+        "archivo": "ctx/205_732.png",
+        "oeste": 77.34375,
+        "norte": 17.9296875,
+        "grados": 0.3515625
+      },
+      {
+        "archivo": "ctx/205_733.png",
+        "oeste": 77.6953125,
+        "norte": 17.9296875,
+        "grados": 0.3515625
+      },
+      {
+        "archivo": "ctx/205_734.png",
+        "oeste": 78.046875,
+        "norte": 17.9296875,
+        "grados": 0.3515625
+      }
+    ]
+  },
+  "sitios": [
+    {
+      "id": "llanura-central",
+      "nombreKey": "datos.terreno.sitio.llanura-central.nombre",
+      "descripcionKey": "datos.terreno.sitio.llanura-central.descripcion",
+      "lon": 77.7,
+      "lat": 18.4,
+      "elevacionM": -2652,
+      "pendienteGrados": 1,
+      "horizonteGrados": 1,
+      "puntajes": {
+        "plano": 0.9,
+        "luz": 0.9,
+        "blindaje": 0.61
+      }
+    },
+    {
+      "id": "cerca-de-perseverance",
+      "nombreKey": "datos.terreno.sitio.cerca-de-perseverance.nombre",
+      "descripcionKey": "datos.terreno.sitio.cerca-de-perseverance.descripcion",
+      "lon": 77.3956,
+      "lat": 18.465,
+      "elevacionM": -2457,
+      "pendienteGrados": 2.5,
+      "horizonteGrados": 2.1,
+      "puntajes": {
+        "plano": 0.75,
+        "luz": 0.79,
+        "blindaje": 0.59
+      }
+    },
+    {
+      "id": "pie-de-la-pared-sur",
+      "nombreKey": "datos.terreno.sitio.pie-de-la-pared-sur.nombre",
+      "descripcionKey": "datos.terreno.sitio.pie-de-la-pared-sur.descripcion",
+      "lon": 77.75,
+      "lat": 18.07,
+      "elevacionM": -2618,
+      "pendienteGrados": 6.1,
+      "horizonteGrados": 4.7,
+      "puntajes": {
+        "plano": 0.39,
+        "luz": 0.53,
+        "blindaje": 0.71
+      }
+    },
+    {
+      "id": "sobre-el-borde-oeste",
+      "nombreKey": "datos.terreno.sitio.sobre-el-borde-oeste.nombre",
+      "descripcionKey": "datos.terreno.sitio.sobre-el-borde-oeste.descripcion",
+      "lon": 77.268,
+      "lat": 18.45,
+      "elevacionM": -1782,
+      "pendienteGrados": 8.6,
+      "horizonteGrados": 0.9,
+      "puntajes": {
+        "plano": 0.14,
+        "luz": 0.91,
+        "blindaje": 0.37
+      }
+    }
+  ],
+  "fuente": {
+    "nombreKey": "fuente.marsTrek",
+    "dueno": "NASA Mars Trek (JPL); DEM MOLA (NASA) + HRSC (ESA/DLR); imagen CTX (NASA/JPL/MSSS)",
+    "urls": [
+      "https://trek.nasa.gov/mars/"
+    ],
+    "consultadoEl": "2026-11-13",
+    "estadoDato": "curado",
+    "derivadoKey": "datos.terreno.derivado"
+  }
+}

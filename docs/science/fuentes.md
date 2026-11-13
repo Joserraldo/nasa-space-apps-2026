@@ -2,6 +2,49 @@
 
 Investigación del 2026-11-02. Solo documentación, sin código. Convención: **[V]** = verificado en una fuente consultada; **NO VERIFICADO** = viene de memoria o de una sola fuente secundaria, hay que comprobarlo antes de usarlo. Nota: durante la investigación `api.nasa.gov` devolvió 503 y `curl` no tuvo salida desde este equipo, así que **no se pudo probar ninguna respuesta real de DONKI**; los campos se marcan según su fuente.
 
+## 0. Verificado con llamadas reales (2026-11-13)
+
+Consultas hechas con la clave del equipo desde un script. Las muestras están en `data/samples/` (ver su README).
+- **CORS [V]:** `api.nasa.gov/DONKI` y `ccmc.gsfc.nasa.gov/DONKI-API` responden `Access-Control-Allow-Origin: *`. Decisión: igual no se llama desde el navegador.
+- **Límite [V]:** `X-RateLimit-Limit: 2500` por hora con clave personal (corrige el "1000" de terceros de la §1).
+- **FLR [V]:** `api.nasa.gov/DONKI/FLR` devuelve **404**. Funciona `https://ccmc.gsfc.nasa.gov/DONKI-API/get/FLR?startDate=…&endDate=…`, sin clave. CME, GST y SEP funcionan en api.nasa.gov.
+- **Campos [V]:** FLR, CME, GST y SEP, tal como están en la §1, más `link`, `linkedEvents`, `submissionTime` y `versionId`. `linkedEvents[].activityID` **sí existe** en FLR, GST y SEP.
+- **Tormenta de mayo de 2024 [V], IDs reales:**
+  - GST `2024-05-10T15:00:00-GST-001`, Kp máximo 9.0 (fuente del Kp: NOAA). Enlazada a CMEs del 8 may, entre ellas `2024-05-08T05:36:00-CME-001`. https://ccmc.gsfc.nasa.gov/DONKI/view/GST/30693/-1
+  - CME `2024-05-08T05:36:00-CME-001`: halo completo hacia la Tierra desde AR 13664, 870 km/s (análisis "most accurate").
+  - FLR X3.9 `2024-05-10T06:27:00-FLR-001`, pico 06:54Z. https://ccmc.gsfc.nasa.gov/DONKI/view/FLR/30666/-1
+  - SEP `2024-05-09T13:59:00-SEP-001` (enlazada a FLR `2024-05-09T08:45:00-FLR-001`, X2.2).
+- **14 de mayo de 2024 [V]:** FLR X8.7 `2024-05-14T16:46:00-FLR-001`, pico 16:51Z, región 13664. https://ccmc.gsfc.nasa.gov/DONKI/view/FLR/30849/-1. Coincide con SWPC (§4 #5).
+- **Numeración de regiones [V]:** DONKI usa 5 cifras (`13664`) y NOAA usa "AR 3664". Es la misma región.
+- **Marte en DONKI [V]:** las simulaciones `WSAEnlilSimulations` traen `impactList` con `location: "Mars"`, `arrivalTime` e `isGlancingBlow`. Es un **modelo** (predicción), no una medición en Marte. **Corrección:** antes escribí "mayo de 2024 no tiene impacto en Marte", pero la consulta del 8–10 de mayo era demasiado corta. Con ventanas más amplias sí hay corridas con Marte (ej. `WSA-ENLIL/30869/1` para la CME del X8.7).
+- **Catálogo curado [V]** (7 tormentas, `data/curated/`): todo sale de `data/raw` por código (`npm run curar`), y una prueba lo regenera para comprobarlo. Las reglas están en `docs/science/pipeline.md`.
+  - X8.7 del 14 may 2024 (ruta dorada): FLR `2024-05-14T16:46:00-FLR-001` → CME `2024-05-14T17:00:00-CME-001` (2119 km/s). Llegada a Marte según `WSA-ENLIL/30869/1`: 2024-05-16T20:47Z, directa. Ninguna corrida la manda a la Tierra.
+  - X5.8 del 11 may 2024: hacia Marte según ENLIL `30801`. Gran tormenta de mayo 2024: Kp 9 en la Tierra. X9.0 del 3 oct 2024: Kp 7.33 (Tierra) y Marte según ENLIL.
+  - 10 oct 2024: GST `2024-10-10T15:00:00-GST-001`, **Kp 8.67** (antes estaba NO VERIFICADO en §4 #7).
+  - **Sep 2017 [V]:** X9.3 `2017-09-06T11:53:00-FLR-001` (pico 12:02Z; corrige el "NO VERIFICADO" de §4 #3) y X8.2 `2017-09-10T15:35:00-FLR-001` con una CME a 2650 km/s. La corrida ENLIL más reciente (`13117`) ya no incluye a Marte, aunque una anterior (`13114`) sí la incluía. Que RAD o MAVEN midieran algo en Marte sigue **NO VERIFICADO** (no viene de DONKI).
+
+## 0b. Recursos oficiales del reto y lo verificado (2026-11-13)
+
+Lista oficial (pestaña Resources del reto, copiada en ORQUESTACION): NASA Open APIs (APOD, Mars Rover Photos, DONKI) · DONKI · OSDR search · OSDR RadLab · Mars Trek · CSA (socio, no NASA).
+
+| Recurso | Estado [V] | Lo que usamos |
+|---|---|---|
+| DONKI | FLR solo vía `ccmc.gsfc.nasa.gov/DONKI-API` (404 en api.nasa.gov). CME, GST, SEP y ENLIL en api.nasa.gov. CORS `*`. Límite 2500/h | 8 tormentas en `data/curated` |
+| **OSDR RadLab** | **Sí tiene Marte y Luna**, no solo la ISS (corrige ORQUESTACION). Marte: `MSL-RAD-Surface` (Curiosity). Luna: `CRaTER-D1D2` (LRO, 2009–2024) e instrumentos de Artemis I (EAD-MU01, HERA-HSU1/2, M42-SN127). `absorbed_dose_rate` en µGy/h. Para RAD **no hay** `dose_equivalent_rate`. Sin datos de RAD en oct 2024 (respuesta vacía). Sin cabecera CORS para otros orígenes | `medicionMarte` de las tormentas |
+| OSDR search | Funciona. CORS solo para `osdr.nasa.gov` (el navegador no puede llamarla) | 3 tarjetas (OSD-772, OSD-546, OSD-360) |
+| Mars Trek | Funciona: catálogo, WMTS y ArcGIS ImageServer (`trekarcgis`), sin clave | Mapa de Jezero (`data/terreno/jezero`) |
+| **Mars Rover Photos** | **Caído:** `api.nasa.gov/mars-photos/...` devuelve 404 "No such app" | No se usa |
+
+**RAD en Marte durante tormentas [V, RadLab]** (dosis absorbida, medias diarias UTC, µGy/h):
+- 20 may 2024: fondo 4,1 → **79,7** el mismo día (pico de muestra 304), factor 19,4. CME de origen en DONKI: `2024-05-20T05:36:00-CME-001` (halo rápido; según la nota de DONKI, salió de la cara oculta del Sol). DONKI no tiene FLR ni SEP de ese evento.
+- 10 sep 2017: fondo 7,9 → **17,9** el 11 sep (pico 23,2), factor 2,3. Después baja a ~6,6 (14 sep).
+- 14 may 2024 (X8.7, que el modelo ENLIL mandaba a Marte): **sin aumento** (factor 0,9).
+
+**Dosis de referencia [V en fuente primaria]** (`data/ciencia/radiacion.json`):
+- Marte, superficie: **0,64 ± 0,12 mSv/día** (7 ago 2012 – 1 jun 2013). Cita: Reitz, Matthiä, Hassler et al. 2016, ICES2016 (https://elib.dlr.de/106090/). La página da esta cita, no el artículo de *Science* de 2014.
+- Luna, superficie: **1369 µSv/día**, medido por LND en Chang’e-4 (**CNSA**). En el mismo periodo, la ISS (DOSIS 3D DOSTEL) dio **731 µSv/día**. Zhang et al. 2020, *Sci. Adv.* 6(39) eaaz1334, texto completo en PMC7518862. El resumen da la dosis absorbida: 13,2 ± 1 µGy/h en silicio.
+- Las comparaciones Marte/ISS son aproximadas porque se midieron en años distintos (ciclo solar distinto).
+
 ## 1. DONKI (Database Of Notifications, Knowledge, Information)
 
 ### Acceso y URLs

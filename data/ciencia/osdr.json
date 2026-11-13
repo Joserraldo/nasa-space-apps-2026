@@ -1,0 +1,34 @@
+{
+  "version": "0.1.0",
+  "consultadoEl": "2026-11-13",
+  "consulta": "https://osdr.nasa.gov/osdr/data/search?term=<ID>&type=cgene",
+  "tarjetas": [
+    {
+      "id": "OSD-772",
+      "tema": "comida",
+      "tituloOriginal": "PH-04 Chile Peppers in Space",
+      "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-772",
+      "dueno": "NASA (Kennedy Space Center), datos en NASA OSDR",
+      "tituloKey": "datos.ciencia.OSD-772.titulo",
+      "textoKey": "datos.ciencia.OSD-772.texto"
+    },
+    {
+      "id": "OSD-546",
+      "tema": "huesos",
+      "tituloOriginal": "SCD – Stem Cell Differentiation Toward Osteoblast Onboard the International Space Station",
+      "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-546",
+      "dueno": "Experimento seleccionado por la ESA; datos en NASA OSDR",
+      "tituloKey": "datos.ciencia.OSD-546.titulo",
+      "textoKey": "datos.ciencia.OSD-546.texto"
+    },
+    {
+      "id": "OSD-360",
+      "tema": "radiacion",
+      "tituloOriginal": "Effects of low dose space radiation exposures on the splenic metabolome",
+      "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-360",
+      "dueno": "Estudio en tierra financiado en parte por NASA (beca NNX15AD65G); datos en NASA OSDR",
+      "tituloKey": "datos.ciencia.OSD-360.titulo",
+      "textoKey": "datos.ciencia.OSD-360.texto"
+    }
+  ]
+}

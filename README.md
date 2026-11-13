@@ -1,6 +1,3 @@
-# Miguel Miguel Miguel Miguel Phonk 🗣️🗣️
-
-
 # NASA Space Apps 2026 — Junior Astronaut Mission Trainer
 
 > Un juego web donde un niño de 7 a 12 años dirige una base en la Luna o en Marte, habla con una **tripulación de expertos** y sobrevive a **tormentas solares reales** de NASA.

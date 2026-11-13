@@ -1,0 +1,30 @@
+{
+  "name": "@solar-shield/data",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit",
+    "descargar": "tsx scripts/descargar.ts",
+    "curar": "tsx scripts/curar.ts",
+    "jezero:descargar": "tsx scripts/jezero-descargar.ts",
+    "jezero:curar": "tsx scripts/jezero-curar.ts"
+  },
+  "dependencies": {
+    "zod": "3.23.8"
+  },
+  "devDependencies": {
+    "@types/node": "22.9.0",
+    "tsx": "^4.19.2",
+    "typescript": "5.6.3",
+    "vitest": "2.1.5"
+  },
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./i18n/es.json": "./i18n/es.json",
+    "./i18n/en.json": "./i18n/en.json"
+  }
+}
