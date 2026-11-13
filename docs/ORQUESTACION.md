@@ -9,7 +9,7 @@ Este archivo debe bastar para que otra sesión (u otro humano) retome la coordin
 ## Resumen
 
 - **Reto:** Build a Junior Astronaut Mission Trainer. **Juego:** Solar Shield (IA de la base: Iris).
-- **Roles (13 nov, tarde):** `motor` (+diseño y misiones) Jaime y Camilo · `ui` María Paula · `agentes` José · `infra` (integración, QA, despliegue y pitch) José · `datos` Daniel. Santiago es el orquestador y apoya el rol atrasado. Tabla completa en el [README](../README.md).
+- **Roles definitivos (13 nov, tarde):** `diseno` (diseño de juego y misiones) Santiago y Camilo · `motor` Jaime · `ui` María Paula · `agentes` José · `infra` (integración, QA, despliegue y pitch) José · `datos` Daniel. Santiago es además el orquestador. Tabla completa en el [README](../README.md).
 - **Idioma base del juego:** inglés; el español es la segunda lengua.
 - **Ramas:** `feat/<slug>-<tema>` desde `develop`; PRs < ~300 líneas hacia `develop`; el merge es automático cuando pasa el CI "Tipos y tests" (auto-merge activado el 13 nov; ver protección de `develop` y `main`).
 - **Contratos:** `/contracts` va en v0.2.0 (`GameState`, `Action`, `Seed`, `SpaceWeatherEvent`, `ClassifierOutput`); discusión en el issue #17 (dueños: motor, agentes, datos).
@@ -74,12 +74,10 @@ Semilla fija de demo, ~2 min, completa en ES y EN. Se convierte en issue `p0` pa
 
 ## Pendientes de documentos (no los toca `infra` sin su dueño)
 
-- `design/CLAUDE.md` pone la rebanada vertical en "Luna polo sur"; lo decidido es Marte/Jezero.
-- `ui/CLAUDE.md` tiene las tareas de arranque bajo "Fase 0" y la sección de arranque vacía.
-- `missions/` y `tests/` no tienen `CLAUDE.md` ni `ESTADO.md`.
+- Los `CLAUDE.md` de carpeta ya están al día con los roles definitivos (13 nov, tarde).
 - PLAN §2.6 (dificultad elegible, turnos) y §13 (sin Three.js) no reflejan las decisiones del 13 nov. La guía de agentes dice "~48 h"; son ~36.
 - Faltan los `docs/decisiones/D*.md` de lo decidido el 13 nov; los issues D1–D11 siguen abiertos.
-- No existe `.claude/settings.json` (plantilla en `infra/`).
+- `.claude/settings.json` existe desde el 13 nov (copiado de `infra/claude-settings.plantilla.json`): bloquea merge y push a `main`/`develop` desde Claude Code.
 
 ## Necesito de un humano
 

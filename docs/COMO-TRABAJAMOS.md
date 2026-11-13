@@ -6,15 +6,18 @@ Estándar del equipo desde el 13 nov en la tarde, decidido por Santiago. Aplica 
 
 | Rol | Personas | Carpetas |
 |---|---|---|
-| `motor` (diseño de juego y misiones + motor y simulación) | Jaime y Camilo | `design/`, `missions/`, `engine/` |
+| `diseno` (diseño de juego y misiones) | Santiago y Camilo | `design/`, `missions/` |
+| `motor` (motor y simulación) | Jaime | `engine/` |
 | `ui` (pantallas, voz, arte, accesibilidad) | María Paula | `ui/`, `assets/` |
 | `agentes` (tripulación de expertos, Iris, clasificador) | José | `agents/` |
 | `infra` (integración, QA, despliegue y pitch) | José | `infra/`, `tests/`, `pitch/`, `.github/` |
 | `datos` (NASA y ciencia) | Daniel | `data/`, `docs/science/` |
 
-Santiago es el orquestador: coordina, desbloquea, mantiene los documentos de coordinación de `docs/` y entra a apoyar el rol que vaya atrasado (hoy, `ui`). Suplente del orquestador: Jaime.
+Santiago es además el orquestador: coordina, desbloquea y mantiene los documentos de coordinación de `docs/`. Suplente del orquestador: Jaime.
 
-**Motor.** Jaime escribió el motor que está en `develop` y sigue a cargo; Camilo entra con él. Jaime le explica el motor a Camilo antes de que Camilo abra su primer PR en `engine/`, y Camilo arranca por `design/` y `missions/` (tablas y misión de Jezero), que es donde el motor tiene menos.
+**Estos roles son definitivos.** No se vuelven a cambiar.
+
+**Diseño y motor trabajan en pareja.** El motor (Jaime) lee las tablas y misiones que escriben Santiago y Camilo en `design/` y `missions/`; ningún número del juego vive en `engine/`. Lo que diseño necesite del motor se pide con un issue `bloquea:motor`, y al revés con `bloquea:diseño`.
 
 **José lleva dos roles.** Si `agentes` se atrasa, lo primero que se reparte es `infra` (pitch y pruebas), no los expertos.
 

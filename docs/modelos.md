@@ -10,9 +10,9 @@ Dicho por Santiago el 13 nov: **todos tienen OpenCode; Daniel tiene además Code
 
 | Persona | Rol | Herramienta | Modelo principal | Límite aproximado |
 |---|---|---|---|---|
-| Santiago (`kcitas`) | orquestador, apoyo al rol atrasado | Claude Code, OpenCode | Fable para coordinar | por confirmar |
+| Santiago (`kcitas`) | orquestador, diseño | Claude Code, OpenCode | Fable para coordinar; Opus para diseño | por confirmar |
+| Camilo (`CamiloM21`) | diseño | OpenCode | Opus | por confirmar |
 | Jaime (`JaimeMrF`) | motor | OpenCode | Opus | por confirmar |
-| Camilo (`CamiloM21`) | motor | OpenCode | Opus | por confirmar |
 | María Paula (`Paulasaah`) | ui | OpenCode | Opus | por confirmar |
 | José (`Joserraldo`) | agentes, infra | OpenCode | Opus | por confirmar |
 | Daniel (`Daniverd15`) | datos | OpenCode, Codex | Opus | por confirmar |
@@ -42,7 +42,8 @@ La sesión principal es Opus en todos los roles. Lo que cambia es qué se queda 
 | Rol | Se queda en Opus | Delega a subagentes |
 |---|---|---|
 | `ui` (María Paula) | flujo de pantallas de la ruta dorada, conexión con el motor, accesibilidad | componentes repetitivos, textos `en`/`es`, estilos |
-| `motor` (Jaime, Camilo) | contratos, cola de efectos, balance, misiones, depuración | tablas de datos, tests, simulaciones por semilla |
+| `diseno` (Santiago, Camilo) | balance, misión de Jezero, umbrales adaptativos | tablas en JSON, textos `en`/`es`, simulaciones por semilla |
+| `motor` (Jaime) | contratos, cola de efectos, semilla dorada, depuración | tests, documentación de la API |
 | `agentes` (José) | contrato `ClassifierOutput`, lógica de expertos, avería guionada de Iris | plantillas de frases, frases de eval, regex |
 | `infra` (José) | integración, despliegue, guion del pitch | flujos de CI, pruebas e2e, documentación |
 | `datos` (Daniel) | qué dato respalda qué mecánica, verificación de cifras | JSON curados, glosario, tarjetas de fuente |

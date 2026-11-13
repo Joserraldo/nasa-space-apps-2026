@@ -1,26 +1,26 @@
-# Rol 3: Agentes expertos
-**Humano responsable:** José (`Joserraldo`)
+# Rol: Agentes expertos (la tripulación)
+**Humano responsable:** José (`Joserraldo`), que también lleva `infra`. Este rol es el diferenciador del juego: va antes que `infra`.
 **Slug de ramas:** `agentes` → `feat/agentes-<tema>`
 **Etiqueta de issues:** `rol:agentes`
-**Posees:** `/agents`
+**Posees:** `/agents` (y `/contracts` como co-dueño).
 **No toques:** todo lo demás (abre issue `bloquea:<rol>`).
-**Contratos que consumes:** `GameState` (solo lectura, recortado), `SpaceWeatherEvent`
-**Contratos que produces:** `ClassifierOutput` (co-dueño de `/contracts`)
-**Definición de "hecho":** Funciona sin modelo (atajos/botones); salida JSON validada; evals con frases reales de niños pasan.
+**Contratos que consumes:** `GameState` (solo lectura, recortado), `SpaceWeatherEvent`, referencias de dosis de `data/`.
+**Contratos que produces:** `ClassifierOutput`; la API de integración documentada en `agents/README.md` (la usan `ui` y `motor`).
+**Definición de "hecho":** funciona sin modelo (atajos, regex, botones); salida JSON validada con Zod; cada respuesta de experto trae la fuente del dato; textos `en` base y `es`; evals con frases de niños pasan.
 
-## Fase 0 (ahora, solo documentos — nada de código del juego)
-- Probar en un playground (FUERA del repo) qué modelo pequeño clasifica mejor órdenes de niños en español (D4).
-- Listar intenciones (enum cerrado) y 30-50 frases de ejemplo de niños.
-- Nombre de la IA de la base (D2) — propuestas.
-- Entregable: `docs/ideas/agentes.md`.
+## Ya hecho (en `develop`)
+Capa sin modelo con regex `en`/`es` (#43) · Ingeniera, Doctora y Meteoróloga como código con plantillas (#44) · escena de la tormenta real donde Doctora e Ingeniera se contradicen (#47) · avería guionada de Iris y reparación con la Ingeniera (#49) · README con la API para `ui` y `motor` (#50).
 
-## Tareas de arranque (Fase 1, el día que empieza el hackathon)
-1. Contrato `ClassifierOutput` { experto, accion, parametros, confianza } — issue `contrato`.
-2. Capa 1 sin modelo: botones, teclas, palabras clave y regex (es/en).
-3. Expertos como código: Ingeniera, Doctora, Meteoróloga leen estado + datos y responden con plantillas de personalidad.
-4. Pregunta de aclaración cuando confianza < 0.6.
-5. IA de la base niveles 1-2 (tutorial y pistas).
-6. Interfaz de la función serverless del clasificador (la implementa/despliega rol 6) y set de evals.
+## Tareas, en este orden
+1. Rebasar y fusionar lo que está abierto (#51 clasificador con modelo y evals, #52 consejos en la fase satélite).
+2. Sentarte con María Paula (`ui`) para que el panel de tripulación use tu API tal cual está; ajustar lo que le falte a la API, no a la pantalla.
+3. Pregunta de aclaración cuando la confianza < 0.6 ("¿te refieres al escudo o a la energía?").
+4. Iris nivel 1–2 (tutorial y pistas) como texto corto con analogía, 1–2 frases por sistema de la base.
+5. Matemático "¿Y si…?" (simula la acción y muestra el costo antes de hacerla): solo cuando la ruta dorada ya se juegue.
+6. Evals con 30 frases de niños en `en` y `es`; se corren sin red y, con modelo, dentro del tope de gasto que fije Santiago (D10).
 
 ## Notas / decisiones que afectan este rol
-- _(vacío)_
+- El modelo solo clasifica (`{experto, accion, parametros, confianza}`); los expertos son código y nunca inventan números. Nunca presentar la salida del modelo como "según NASA".
+- Personajes originales, tono de ciencia divertida y tierna, nunca grosero. Los expertos nunca mueren; los astronautas con nombre sí corren riesgo (según nivel adaptativo).
+- Las averías de Iris las dictan reglas del estado, nunca el modelo.
+- Clave del modelo: secreto `BAI_API_KEY` del repo; solo la usa el Worker de `infra`.
