@@ -1,0 +1,1075 @@
+{
+ "fecha": "2026-11-13",
+ "pasadas": 1,
+ "resumenes": [
+  {
+   "model": "qwen3.8-flash",
+   "jsonValido": 26,
+   "expertoOk": 25,
+   "accionOk": 24,
+   "paramsOk": 27,
+   "fueraDeTemaOk": 2,
+   "p50ms": 6026,
+   "p95ms": 15012,
+   "tokensPromedio": 596,
+   "usoJsonObject": false,
+   "n": 30,
+   "filas": [
+    {
+     "n": 1,
+     "frase": "sube el escudo ya!!!",
+     "ms": 15015,
+     "tokens": null,
+     "valido": false,
+     "jsonObject": false,
+     "error": "timeout",
+     "obtenido": {
+      "experto": "ia_base",
+      "accion": "fuera_de_tema",
+      "parametros": {}
+     },
+     "expertoOk": false,
+     "accionOk": false,
+     "paramsOk": false
+    },
+    {
+     "n": 2,
+     "frase": "ponle un poquito mas de energia al aire",
+     "ms": 9941,
+     "tokens": 814,
+     "valido": true,
+     "jsonObject": false,
+     "error": null,
+     "obtenido": {
+      "experto": "ingeniera",
+      "accion": "repartir_energia",
+      "parametros": {
+       "destino": "soporte_vital",
+       "cantidad": "poco"
+      }
+     },
+     "expertoOk": true,
+     "accionOk": true,
+     "paramsOk": true
+    },
+    {
+     "n": 3,
+     "frase": "se daño el panel arreglalo",
+     "ms": 5097,
+     "tokens": 491,
+     "valido": true,
+     "jsonObject": false,
+     "error": null,
+     "obtenido": {
+      "experto": "ingeniera",
+      "accion": "reparar",
+      "parametros": {
+       "equipo": "panel_solar"
+      }
+     },
+     "expertoOk": true,
+     "accionOk": true,
+     "paramsOk": true
+    },
+    {
+     "n": 4,
+     "frase": "cuanta bateria queda",
+     "ms": 6026,
+     "tokens": 554,
+     "valido": true,
+     "jsonObject": false,
+     "error": null,
+     "obtenido": {
+      "experto": "ingeniera",
+      "accion": "estado_energia",
+      "parametros": {}
+     },
+     "expertoOk": true,
+     "accionOk": true,
+     "paramsOk": true
+    },
+    {
+     "n": 5,
+     "frase": "la compu de la base esta rara, la puedes componer?",
+     "ms": 6786,
+     "tokens": 671,
+     "valido": true,
+     "jsonObject": false,
+     "error": null,
+     "obtenido": {
+      "experto": "ingeniera",
+      "accion": "reparar",
+      "parametros": {
+       "equipo": "ia_base"
+      }
+     },
+     "expertoOk": true,
+     "accionOk": true,
+     "paramsOk": true
+    },
+    {
+     "n": 6,
+     "frase": "doctora estamos bien?",
+     "ms": 4251,
+     "tokens": 445,
+     "valido": true,
+     "jsonObject": false,
+     "error": null,
+     "obtenido": {
+      "experto": "doctora",
+      "accion": "estado_salud",
+      "parametros": {}
+     },
+     "expertoOk": true,
+     "accionOk": true,
+     "paramsOk": true
+    },
+    {
+     "n": 7,
+     "frase": "todos al refugio rapido",
+     "ms": 3967,
+     "tokens": 398,
+     "valido": true,
+     "jsonObject": false,
+     "error": null,
+     "obtenido": {
+      "experto": "doctora",
+      "accion": "ir_al_refugio",
+      "parametros": {}
+     },
+     "expertoOk": true,
+     "accionOk": true,
+     "paramsOk": true
+    },
+    {
+     "n": 8,
+     "frase": "que es eso de la dosis",
+     "ms": 15003,
+     "tokens": null,
+     "valido": false,
+     "jsonObject": false,
+     "error": "timeout",
+     "obtenido": {
+      "experto": "ia_base",
+      "accion": "fuera_de_tema",
+      "parametros": {}
+     },
+     "expertoOk": false,
+     "accionOk": false,
+     "paramsOk": true
+    },
+    {
+     "n": 9,
+     "frase": "me duele la cabeza al astronauta",
+     "ms": 5016,
+     "tokens": 484,
+     "valido": true,
+     "jsonObject": false,
+     "error": null,
+     "obtenido": {
+      "experto": "doctora",
+      "accion": "estado_salud",
+      "parametros": {}
+     },
+     "expertoOk": true,
+     "accionOk": true,
+     "paramsOk": true
+    },
+    {
+     "n": 10,
+     "frase": "viene una tormenta?",
+     "ms": 5066,
+     "tokens": 445,
+     "valido": true,
+     "jsonObject": false,
+     "error": null,
+     "obtenido": {
+      "experto": "meteorologa",
+      "accion": "pronostico",
+      "parametros": {}
+     },
+     "expertoOk": true,
+     "accionOk": true,
+     "paramsOk": true
+    },
+    {
+     "n": 11,
+     "frase": "q fue esa luz del sol",
+     "ms": 7673,
+     "tokens": 633,
+     "valido": true,
+     "jsonObject": false,
+     "error": null,
+     "obtenido": {
+      "experto": "meteorologa",
+      "accion": "explicar_evento",
+      "parametros": {}
+     },
+     "expertoOk": true,
+     "accionOk": true,
+     "paramsOk": true
+    },
+    {
+     "n": 12,
+     "frase": "cuando llega la llamarada",
+     "ms": 5280,
+     "tokens": 472,
+     "valido": true,
+     "jsonObject": false,
+     "error": null,
+     "obtenido": {
+      "experto": "meteorologa",
+      "accion": "pronostico",
+      "parametros": {}
+     },
+     "expertoOk": true,
+     "accionOk": true,
+     "paramsOk": true
+    },
+    {
+     "n": 13,
+     "frase": "que pasa si apago el laboratorio",
+     "ms": 8703,
+     "tokens": 652,
+     "valido": true,
+     "jsonObject": false,
+     "error": null,
+     "obtenido": {
+      "experto": "matematico",
+      "accion": "que_pasa_si",
+      "parametros": {}
+     },
+     "expertoOk": true,
+     "accionOk": true,
+     "paramsOk": true
+    },
+    {
+     "n": 14,
+     "frase": "y si nos escondemos todos",
+     "ms": 13730,
+     "tokens": 879,
+     "valido": true,
+     "jsonObject": false,
+     "error": null,
+     "obtenido": {
+      "experto": "matematico",
+      "accion": "que_pasa_si",
+      "parametros": {
+       "accion": "ir_al_refugio"
+      }
+     },
+     "expertoOk": true,
+     "accionOk": true,
+     "paramsOk": true
+    },
+    {
+     "n": 15,
+     "frase": "ayudaaa no se que hacer",
+     "ms": 4661,
+     "tokens": 452,
+     "valido": true,
+     "jsonObject": false,
+     "error": null,
+     "obtenido": {
+      "experto": "ia_base",
+      "accion": "ayuda",
+      "parametros": {}
+     },
+     "expertoOk": true,
+     "accionOk": true,
+     "paramsOk": true
+    },
+    {
+     "n": 16,
+     "frase": "hola",
+     "ms": 4132,
+     "tokens": 445,
+     "valido": true,
+     "jsonObject": false,
+     "error": null,
+     "obtenido": {
+      "experto": "ia_base",
+      "accion": "saludo",
+      "parametros": {}
+     },
+     "expertoOk": true,
+     "accionOk": true,
+     "paramsOk": true
+    },
+    {
+     "n": 17,
+     "frase": "otra vez porfa",
+     "ms": 5336,
+     "tokens": 470,
+     "valido": true,
+     "jsonObject": false,
+     "error": null,
+     "obtenido": {
+      "experto": "ia_base",
+      "accion": "repetir",
+      "parametros": {}
+     },
+     "expertoOk": true,
+     "accionOk": true,
+     "paramsOk": true
+    },
+    {
+     "n": 18,
+     "frase": "cuentame un chiste de popo",
+     "ms": 3960,
+     "tokens": 443,
+     "valido": true,
+     "jsonObject": false,
+     "error": null,
+     "obtenido": {
+      "experto": "ia_base",
+      "accion": "fuera_de_tema",
+      "parametros": {}
+     },
+     "expertoOk": true,
+     "accionOk": true,
+     "paramsOk": true
+    },
+    {
+     "n": 19,
+     "frase": "quien gano el partido",
+     "ms": 4143,
+     "tokens": 417,
+     "valido": true,
+     "jsonObject": false,
+     "error": null,
+     "obtenido": {
+      "experto": "ia_base",
+      "accion": "fuera_de_tema",
+      "parametros": {}
+     },
+     "expertoOk": true,
+     "accionOk": true,
+     "paramsOk": true
+    },
+    {
+     "n": 20,
+     "frase": "raise the shield",
+     "ms": 15012,
+     "tokens": null,
+     "valido": false,
+     "jsonObject": false,
+     "error": "timeout",
+     "obtenido": {
+      "experto": "ia_base",
+      "accion": "fuera_de_tema",
+      "parametros": {}
+     },
+     "expertoOk": false,
+     "accionOk": false,
+     "paramsOk": false
+    },
+    {
+     "n": 21,
+     "frase": "is a storm coming",
+     "ms": 13274,
+     "tokens": 1086,
+     "valido": true,
+     "jsonObject": false,
+     "error": null,
+     "obtenido": {
+      "experto": "meteorologa",
+      "accion": "pronostico",
+      "parametros": {}
+     },
+     "expertoOk": true,
+     "accionOk": true,
+     "paramsOk": true
+    },
+    {
+     "n": 22,
+     "frase": "everyone hide now",
+     "ms": 4859,
+     "tokens": 536,
+     "valido": true,
+     "jsonObject": false,
+     "error": null,
+     "obtenido": {
+      "experto": "doctora",
+      "accion": "ir_al_refugio",
+      "parametros": {}
+     },
+     "expertoOk": true,
+     "accionOk": true,
+     "paramsOk": true
+    },
+    {
+     "n": 23,
+     "frase": "fix the antenna please",
+     "ms": 3333,
+     "tokens": 437,
+     "valido": true,
+     "jsonObject": false,
+     "error": null,
+     "obtenido": {
+      "experto": "ingeniera",
+      "accion": "reparar",
+      "parametros": {
+       "equipo": "antena"
+      }
+     },
+     "expertoOk": true,
+     "accionOk": true,
+     "paramsOk": true
+    },
+    {
+     "n": 24,
+     "frase": "what if we turn off the lab",
+     "ms": 15010,
+     "tokens": null,
+     "valido": false,
+     "jsonObject": false,
+     "error": "timeout",
+     "obtenido": {
+      "experto": "ia_base",
+      "accion": "fuera_de_tema",
+      "parametros": {}
+     },
+     "expertoOk": false,
+     "accionOk": false,
+     "paramsOk": true
+    },
+    {
+     "n": 25,
+     "frase": "mas oxigeno pero no tanto",
+     "ms": 8816,
+     "tokens": 659,
+     "valido": true,
+     "jsonObject": false,
+     "error": null,
+     "obtenido": {
+      "experto": "ingeniera",
+      "accion": "repartir_energia",
+      "parametros": {
+       "destino": "soporte_vital",
+       "cantidad": "medio"
+      }
+     },
+     "expertoOk": true,
+     "accionOk": true,
+     "paramsOk": false
+    },
+    {
+     "n": 26,
+     "frase": "la doctora dice que nos escondamos, hazlo",
+     "ms": 5151,
+     "tokens": 482,
+     "valido": true,
+     "jsonObject": false,
+     "error": null,
+     "obtenido": {
+      "experto": "doctora",
+      "accion": "ir_al_refugio",
+      "parametros": {}
+     },
+     "expertoOk": true,
+     "accionOk": true,
+     "paramsOk": true
+    },
+    {
+     "n": 27,
+     "frase": "pon todo en el escudo y nada en el lab",
+     "ms": 12202,
+     "tokens": 860,
+     "valido": true,
+     "jsonObject": false,
+     "error": null,
+     "obtenido": {
+      "experto": "ingeniera",
+      "accion": "repartir_energia",
+      "parametros": {
+       "destino": "blindaje",
+       "cantidad": "mucho"
+      }
+     },
+     "expertoOk": true,
+     "accionOk": true,
+     "paramsOk": true
+    },
+    {
+     "n": 28,
+     "frase": "el sol esta enojado?",
+     "ms": 7982,
+     "tokens": 619,
+     "valido": true,
+     "jsonObject": false,
+     "error": null,
+     "obtenido": {
+      "experto": "meteorologa",
+      "accion": "explicar_evento",
+      "parametros": {}
+     },
+     "expertoOk": true,
+     "accionOk": false,
+     "paramsOk": true
+    },
+    {
+     "n": 29,
+     "frase": "hay radiacion mala aqui?",
+     "ms": 7890,
+     "tokens": 739,
+     "valido": true,
+     "jsonObject": false,
+     "error": null,
+     "obtenido": {
+      "experto": "meteorologa",
+      "accion": "pronostico",
+      "parametros": {}
+     },
+     "expertoOk": false,
+     "accionOk": false,
+     "paramsOk": true
+    },
+    {
+     "n": 30,
+     "frase": "arregla a la ia que esta loca",
+     "ms": 10130,
+     "tokens": 907,
+     "valido": true,
+     "jsonObject": false,
+     "error": null,
+     "obtenido": {
+      "experto": "ingeniera",
+      "accion": "reparar",
+      "parametros": {
+       "equipo": "ia_base"
+      }
+     },
+     "expertoOk": true,
+     "accionOk": true,
+     "paramsOk": true
+    }
+   ]
+  },
+  {
+   "model": "deepseek-v4.1-flash",
+   "jsonValido": 7,
+   "expertoOk": 7,
+   "accionOk": 7,
+   "paramsOk": 20,
+   "fueraDeTemaOk": 2,
+   "p50ms": 2865,
+   "p95ms": 3159,
+   "tokensPromedio": 624,
+   "usoJsonObject": false,
+   "n": 30,
+   "filas": [
+    {
+     "n": 1,
+     "frase": "sube el escudo ya!!!",
+     "ms": 2922,
+     "tokens": null,
+     "valido": false,
+     "jsonObject": false,
+     "error": "error de red o JSON roto",
+     "obtenido": {
+      "experto": "ia_base",
+      "accion": "fuera_de_tema",
+      "parametros": {}
+     },
+     "expertoOk": false,
+     "accionOk": false,
+     "paramsOk": false
+    },
+    {
+     "n": 2,
+     "frase": "ponle un poquito mas de energia al aire",
+     "ms": 3143,
+     "tokens": null,
+     "valido": false,
+     "jsonObject": false,
+     "error": "error de red o JSON roto",
+     "obtenido": {
+      "experto": "ia_base",
+      "accion": "fuera_de_tema",
+      "parametros": {}
+     },
+     "expertoOk": false,
+     "accionOk": false,
+     "paramsOk": false
+    },
+    {
+     "n": 3,
+     "frase": "se daño el panel arreglalo",
+     "ms": 2661,
+     "tokens": null,
+     "valido": false,
+     "jsonObject": false,
+     "error": "error de red o JSON roto",
+     "obtenido": {
+      "experto": "ia_base",
+      "accion": "fuera_de_tema",
+      "parametros": {}
+     },
+     "expertoOk": false,
+     "accionOk": false,
+     "paramsOk": false
+    },
+    {
+     "n": 4,
+     "frase": "cuanta bateria queda",
+     "ms": 2881,
+     "tokens": 632,
+     "valido": true,
+     "jsonObject": false,
+     "error": null,
+     "obtenido": {
+      "experto": "ingeniera",
+      "accion": "estado_energia",
+      "parametros": {}
+     },
+     "expertoOk": true,
+     "accionOk": true,
+     "paramsOk": true
+    },
+    {
+     "n": 5,
+     "frase": "la compu de la base esta rara, la puedes componer?",
+     "ms": 2865,
+     "tokens": null,
+     "valido": false,
+     "jsonObject": false,
+     "error": "error de red o JSON roto",
+     "obtenido": {
+      "experto": "ia_base",
+      "accion": "fuera_de_tema",
+      "parametros": {}
+     },
+     "expertoOk": false,
+     "accionOk": false,
+     "paramsOk": false
+    },
+    {
+     "n": 6,
+     "frase": "doctora estamos bien?",
+     "ms": 3189,
+     "tokens": null,
+     "valido": false,
+     "jsonObject": false,
+     "error": "error de red o JSON roto",
+     "obtenido": {
+      "experto": "ia_base",
+      "accion": "fuera_de_tema",
+      "parametros": {}
+     },
+     "expertoOk": false,
+     "accionOk": false,
+     "paramsOk": true
+    },
+    {
+     "n": 7,
+     "frase": "todos al refugio rapido",
+     "ms": 2785,
+     "tokens": null,
+     "valido": false,
+     "jsonObject": false,
+     "error": "error de red o JSON roto",
+     "obtenido": {
+      "experto": "ia_base",
+      "accion": "fuera_de_tema",
+      "parametros": {}
+     },
+     "expertoOk": false,
+     "accionOk": false,
+     "paramsOk": true
+    },
+    {
+     "n": 8,
+     "frase": "que es eso de la dosis",
+     "ms": 2826,
+     "tokens": null,
+     "valido": false,
+     "jsonObject": false,
+     "error": "error de red o JSON roto",
+     "obtenido": {
+      "experto": "ia_base",
+      "accion": "fuera_de_tema",
+      "parametros": {}
+     },
+     "expertoOk": false,
+     "accionOk": false,
+     "paramsOk": true
+    },
+    {
+     "n": 9,
+     "frase": "me duele la cabeza al astronauta",
+     "ms": 2951,
+     "tokens": null,
+     "valido": false,
+     "jsonObject": false,
+     "error": "error de red o JSON roto",
+     "obtenido": {
+      "experto": "ia_base",
+      "accion": "fuera_de_tema",
+      "parametros": {}
+     },
+     "expertoOk": false,
+     "accionOk": false,
+     "paramsOk": true
+    },
+    {
+     "n": 10,
+     "frase": "viene una tormenta?",
+     "ms": 2686,
+     "tokens": null,
+     "valido": false,
+     "jsonObject": false,
+     "error": "error de red o JSON roto",
+     "obtenido": {
+      "experto": "ia_base",
+      "accion": "fuera_de_tema",
+      "parametros": {}
+     },
+     "expertoOk": false,
+     "accionOk": false,
+     "paramsOk": true
+    },
+    {
+     "n": 11,
+     "frase": "q fue esa luz del sol",
+     "ms": 2908,
+     "tokens": null,
+     "valido": false,
+     "jsonObject": false,
+     "error": "error de red o JSON roto",
+     "obtenido": {
+      "experto": "ia_base",
+      "accion": "fuera_de_tema",
+      "parametros": {}
+     },
+     "expertoOk": false,
+     "accionOk": false,
+     "paramsOk": true
+    },
+    {
+     "n": 12,
+     "frase": "cuando llega la llamarada",
+     "ms": 2883,
+     "tokens": null,
+     "valido": false,
+     "jsonObject": false,
+     "error": "error de red o JSON roto",
+     "obtenido": {
+      "experto": "ia_base",
+      "accion": "fuera_de_tema",
+      "parametros": {}
+     },
+     "expertoOk": false,
+     "accionOk": false,
+     "paramsOk": true
+    },
+    {
+     "n": 13,
+     "frase": "que pasa si apago el laboratorio",
+     "ms": 2946,
+     "tokens": null,
+     "valido": false,
+     "jsonObject": false,
+     "error": "error de red o JSON roto",
+     "obtenido": {
+      "experto": "ia_base",
+      "accion": "fuera_de_tema",
+      "parametros": {}
+     },
+     "expertoOk": false,
+     "accionOk": false,
+     "paramsOk": true
+    },
+    {
+     "n": 14,
+     "frase": "y si nos escondemos todos",
+     "ms": 3000,
+     "tokens": null,
+     "valido": false,
+     "jsonObject": false,
+     "error": "error de red o JSON roto",
+     "obtenido": {
+      "experto": "ia_base",
+      "accion": "fuera_de_tema",
+      "parametros": {}
+     },
+     "expertoOk": false,
+     "accionOk": false,
+     "paramsOk": false
+    },
+    {
+     "n": 15,
+     "frase": "ayudaaa no se que hacer",
+     "ms": 2789,
+     "tokens": 624,
+     "valido": true,
+     "jsonObject": false,
+     "error": null,
+     "obtenido": {
+      "experto": "ia_base",
+      "accion": "ayuda",
+      "parametros": {}
+     },
+     "expertoOk": true,
+     "accionOk": true,
+     "paramsOk": true
+    },
+    {
+     "n": 16,
+     "frase": "hola",
+     "ms": 2575,
+     "tokens": 614,
+     "valido": true,
+     "jsonObject": false,
+     "error": null,
+     "obtenido": {
+      "experto": "ia_base",
+      "accion": "saludo",
+      "parametros": {}
+     },
+     "expertoOk": true,
+     "accionOk": true,
+     "paramsOk": true
+    },
+    {
+     "n": 17,
+     "frase": "otra vez porfa",
+     "ms": 2747,
+     "tokens": 618,
+     "valido": true,
+     "jsonObject": false,
+     "error": null,
+     "obtenido": {
+      "experto": "ia_base",
+      "accion": "repetir",
+      "parametros": {}
+     },
+     "expertoOk": true,
+     "accionOk": true,
+     "paramsOk": true
+    },
+    {
+     "n": 18,
+     "frase": "cuentame un chiste de popo",
+     "ms": 2705,
+     "tokens": 623,
+     "valido": true,
+     "jsonObject": false,
+     "error": null,
+     "obtenido": {
+      "experto": "ia_base",
+      "accion": "fuera_de_tema",
+      "parametros": {}
+     },
+     "expertoOk": true,
+     "accionOk": true,
+     "paramsOk": true
+    },
+    {
+     "n": 19,
+     "frase": "quien gano el partido",
+     "ms": 3018,
+     "tokens": 634,
+     "valido": true,
+     "jsonObject": false,
+     "error": null,
+     "obtenido": {
+      "experto": "ia_base",
+      "accion": "fuera_de_tema",
+      "parametros": {}
+     },
+     "expertoOk": true,
+     "accionOk": true,
+     "paramsOk": true
+    },
+    {
+     "n": 20,
+     "frase": "raise the shield",
+     "ms": 3090,
+     "tokens": null,
+     "valido": false,
+     "jsonObject": false,
+     "error": "error de red o JSON roto",
+     "obtenido": {
+      "experto": "ia_base",
+      "accion": "fuera_de_tema",
+      "parametros": {}
+     },
+     "expertoOk": false,
+     "accionOk": false,
+     "paramsOk": false
+    },
+    {
+     "n": 21,
+     "frase": "is a storm coming",
+     "ms": 2934,
+     "tokens": 626,
+     "valido": true,
+     "jsonObject": false,
+     "error": null,
+     "obtenido": {
+      "experto": "meteorologa",
+      "accion": "pronostico",
+      "parametros": {}
+     },
+     "expertoOk": true,
+     "accionOk": true,
+     "paramsOk": true
+    },
+    {
+     "n": 22,
+     "frase": "everyone hide now",
+     "ms": 2848,
+     "tokens": null,
+     "valido": false,
+     "jsonObject": false,
+     "error": "error de red o JSON roto",
+     "obtenido": {
+      "experto": "ia_base",
+      "accion": "fuera_de_tema",
+      "parametros": {}
+     },
+     "expertoOk": false,
+     "accionOk": false,
+     "paramsOk": true
+    },
+    {
+     "n": 23,
+     "frase": "fix the antenna please",
+     "ms": 2814,
+     "tokens": null,
+     "valido": false,
+     "jsonObject": false,
+     "error": "error de red o JSON roto",
+     "obtenido": {
+      "experto": "ia_base",
+      "accion": "fuera_de_tema",
+      "parametros": {}
+     },
+     "expertoOk": false,
+     "accionOk": false,
+     "paramsOk": false
+    },
+    {
+     "n": 24,
+     "frase": "what if we turn off the lab",
+     "ms": 2944,
+     "tokens": null,
+     "valido": false,
+     "jsonObject": false,
+     "error": "error de red o JSON roto",
+     "obtenido": {
+      "experto": "ia_base",
+      "accion": "fuera_de_tema",
+      "parametros": {}
+     },
+     "expertoOk": false,
+     "accionOk": false,
+     "paramsOk": true
+    },
+    {
+     "n": 25,
+     "frase": "mas oxigeno pero no tanto",
+     "ms": 2803,
+     "tokens": null,
+     "valido": false,
+     "jsonObject": false,
+     "error": "error de red o JSON roto",
+     "obtenido": {
+      "experto": "ia_base",
+      "accion": "fuera_de_tema",
+      "parametros": {}
+     },
+     "expertoOk": false,
+     "accionOk": false,
+     "paramsOk": false
+    },
+    {
+     "n": 26,
+     "frase": "la doctora dice que nos escondamos, hazlo",
+     "ms": 2672,
+     "tokens": null,
+     "valido": false,
+     "jsonObject": false,
+     "error": "error de red o JSON roto",
+     "obtenido": {
+      "experto": "ia_base",
+      "accion": "fuera_de_tema",
+      "parametros": {}
+     },
+     "expertoOk": false,
+     "accionOk": false,
+     "paramsOk": true
+    },
+    {
+     "n": 27,
+     "frase": "pon todo en el escudo y nada en el lab",
+     "ms": 2775,
+     "tokens": null,
+     "valido": false,
+     "jsonObject": false,
+     "error": "error de red o JSON roto",
+     "obtenido": {
+      "experto": "ia_base",
+      "accion": "fuera_de_tema",
+      "parametros": {}
+     },
+     "expertoOk": false,
+     "accionOk": false,
+     "paramsOk": false
+    },
+    {
+     "n": 28,
+     "frase": "el sol esta enojado?",
+     "ms": 3159,
+     "tokens": null,
+     "valido": false,
+     "jsonObject": false,
+     "error": "error de red o JSON roto",
+     "obtenido": {
+      "experto": "ia_base",
+      "accion": "fuera_de_tema",
+      "parametros": {}
+     },
+     "expertoOk": false,
+     "accionOk": false,
+     "paramsOk": true
+    },
+    {
+     "n": 29,
+     "frase": "hay radiacion mala aqui?",
+     "ms": 2999,
+     "tokens": null,
+     "valido": false,
+     "jsonObject": false,
+     "error": "error de red o JSON roto",
+     "obtenido": {
+      "experto": "ia_base",
+      "accion": "fuera_de_tema",
+      "parametros": {}
+     },
+     "expertoOk": false,
+     "accionOk": false,
+     "paramsOk": true
+    },
+    {
+     "n": 30,
+     "frase": "arregla a la ia que esta loca",
+     "ms": 2861,
+     "tokens": null,
+     "valido": false,
+     "jsonObject": false,
+     "error": "error de red o JSON roto",
+     "obtenido": {
+      "experto": "ia_base",
+      "accion": "fuera_de_tema",
+      "parametros": {}
+     },
+     "expertoOk": false,
+     "accionOk": false,
+     "paramsOk": false
+    }
+   ]
+  }
+ ]
+}
