@@ -18,7 +18,8 @@ import indiceCurado from "../curated/index.json";
 import jezeroJson from "../terreno/jezero/jezero.json";
 import radiacionJson from "../ciencia/radiacion.json";
 import osdrJson from "../ciencia/osdr.json";
-import { OsdrSchema, RadiacionSchema, type Osdr, type Radiacion } from "./ciencia";
+import artemisJson from "../ciencia/artemis.json";
+import { ArtemisSchema, OsdrSchema, RadiacionSchema, type Artemis, type Osdr, type Radiacion } from "./ciencia";
 import { TerrenoSchema, type Terreno } from "./terreno";
 import { aConvenio } from "./convenio";
 import { TormentaSchema, type Tormenta } from "./tormenta";
@@ -53,3 +54,6 @@ export const terrenoJezero: Terreno = TerrenoSchema.parse(jezeroJson);
 export const radiacion: Radiacion = RadiacionSchema.parse(radiacionJson);
 /** Tarjetas de ciencia con ID real de estudio de OSDR. */
 export const tarjetasOsdr: Osdr = OsdrSchema.parse(osdrJson);
+
+/** Artemis I: dosis absorbida dentro de Orion (HERA, vía RadLab). µGy/h, nunca mSv. */
+export const artemis: Artemis = ArtemisSchema.parse(artemisJson);

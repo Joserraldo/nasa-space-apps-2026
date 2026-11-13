@@ -40,6 +40,8 @@ Lista oficial (pestaña Resources del reto, copiada en ORQUESTACION): NASA Open 
 - 10 sep 2017: fondo 7,9 → **17,9** el 11 sep (pico 23,2), factor 2,3. Después baja a ~6,6 (14 sep).
 - 14 may 2024 (X8.7, que el modelo ENLIL mandaba a Marte): **sin aumento** (factor 0,9).
 
+**Artemis I en RadLab [V, 2026-11-13]** (el enunciado oficial nombra los datos de Artemis): `Artemis-I-HERA-HSU1`, del 2022-11-16T06:51 al 2022-12-11T16:58, 36 583 muestras de dosis **absorbida** en µGy/h. Mediana de crucero 16,68 (días intermedios); pico de **8012,58 µGy/h** el 2022-11-16T07:27, unas 480 veces la mediana. La causa del pico no se afirma (sin fuente verificada). Script: `data/scripts/artemis.ts`; resumen en `data/ciencia/artemis.json`.
+
 **Dosis de referencia [V en fuente primaria]** (`data/ciencia/radiacion.json`):
 - Marte, superficie: **0,64 ± 0,12 mSv/día** (7 ago 2012 – 1 jun 2013). Cita: Reitz, Matthiä, Hassler et al. 2016, ICES2016 (https://elib.dlr.de/106090/). La página da esta cita, no el artículo de *Science* de 2014.
 - Luna, superficie: **1369 µSv/día**, medido por LND en Chang’e-4 (**CNSA**). En el mismo periodo, la ISS (DOSIS 3D DOSTEL) dio **731 µSv/día**. Zhang et al. 2020, *Sci. Adv.* 6(39) eaaz1334, texto completo en PMC7518862. El resumen da la dosis absorbida: 13,2 ± 1 µGy/h en silicio.

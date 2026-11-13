@@ -103,5 +103,7 @@
   "datos.region.marte_polo_norte.nombre": "Polo norte de Marte",
   "datos.region.marte_polo_norte.descripcion": "Cerca del polo norte de Marte el Sol nunca sube mucho: en pleno verano llega como máximo a unos 33 grados sobre el horizonte, y en invierno hay días en que no sale. Por eso conseguir energía solar cuesta más.",
   "datos.region.derivado": "La altura del Sol la calculó el equipo a partir de la inclinación del eje de Marte (25,19°, NASA). Para esta región no tenemos mapa del terreno.",
-  "fuente.nssdc": "NASA NSSDC (ficha técnica de Marte)"
+  "fuente.nssdc": "NASA NSSDC (ficha técnica de Marte)",
+  "datos.artemis.titulo": "Radiación en el viaje de Artemis I",
+  "datos.artemis.texto": "En 2022 la nave Orión de la misión Artemis I viajó alrededor de la Luna sin tripulantes, con detectores de radiación dentro. Durante casi todo el viaje la radiación fue parecida día tras día, pero poco después del despegue llegó a ser unas 480 veces más fuerte por un rato."
 }
