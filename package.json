@@ -1,0 +1,17 @@
+{
+  "name": "solar-shield",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Juego web educativo para NASA Space Apps 2026 (monorepo npm workspaces)",
+  "workspaces": ["contracts", "engine"],
+  "scripts": {
+    "typecheck": "tsc -b contracts engine",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "devDependencies": {
+    "typescript": "^5.6.3",
+    "vitest": "^2.1.8"
+  },
+  "engines": { "node": ">=22" }
+}
