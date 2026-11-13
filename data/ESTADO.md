@@ -1,11 +1,12 @@
 # Estado — datos
-**Actualizado:** 2026-11-13 · **Rama:** feat/datos-contrato-v02 · **PR:** #34 · #16 #19 #23 #25 #26 #27 fusionados
+**Actualizado:** 2026-11-13 · **Rama:** feat/datos-estricto · **PR:** #34 → #35 → #37 → #39 estricto (apilados) · #16 #19 #23 #25 #26 #27 fusionados
 ## Hecho
 - 8 tormentas DONKI + RAD. Ruta dorada 2024-05-20, medida en Marte (×19,4). Jezero (Trek), dosis [V], 3 tarjetas OSDR, glosario, auditoría.
+- Artemis I (HERA, RadLab): resumen y tarjeta es/en (el enunciado oficial pide datos de Artemis).
 - Contrato v0.2.0 (#29) con los opcionales de datos: espejo eliminado, data/ reexporta /contracts.
 ## Qué sigue
-- P3: regiones extra de Marte (Gale, Valles Marineris, polo norte) por semilla (el motor ya sortea región, #31).
-- Revisar con agentes los textos de la Meteoróloga y la Doctora.
+- P3 `marte_polo_norte`: plan B hecho (tarjeta de luz por latitud, sin mapa). Opcional: Gale (equirectangular, sí exporta).
+- Revisión científica de los textos de agentes: hecha (#40). Ya está fusionada en la punta de la pila (#39): los PR entran en cualquier orden sin conflicto.
 ## Bloqueos / no verificado
-- #28: el CI no corre data/ (espera a infra). Mars Rover Photos caído. RAD sin datos en oct 2024.
+- #28: diff de raíz ya probado (109 tests en verde con data como workspace); falta que infra lo aplique. El motor espera esto para usar eventosCurados. Mars Rover Photos caído. RAD sin datos en oct 2024.
 Tokens: 🟡

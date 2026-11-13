@@ -3,9 +3,9 @@
   "private": true,
   "version": "0.1.0",
   "description": "Juego web educativo para NASA Space Apps 2026 (monorepo npm workspaces)",
-  "workspaces": ["contracts", "design", "engine"],
+  "workspaces": ["contracts", "design", "engine", "agents", "data"],
   "scripts": {
-    "typecheck": "tsc -b contracts design engine",
+    "typecheck": "tsc -b contracts design engine agents data",
     "test": "vitest run",
     "test:watch": "vitest"
   },

@@ -1,5 +1,5 @@
 # Rol 6: Integración, QA, despliegue y pitch
-**Humano responsable:** _por asignar_
+**Humano responsable:** José (`Joserraldo`). Santiago (`kcitas`) orquesta desde `docs/ORQUESTACION.md`.
 **Slug de ramas:** `infra` → `feat/infra-<tema>`
 **Etiqueta de issues:** `rol:infra`
 **Posees:** `/infra`, `/tests/e2e`, `/pitch`, `/.github`

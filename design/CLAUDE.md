@@ -1,5 +1,5 @@
 # Rol 1: Diseño de juego y misiones
-**Humano responsable:** _por asignar_
+**Humano responsable:** Jaime (`JaimeMrF`) y Camilo (`CamiloM21`). Desde el 13 nov esta carpeta y `missions/` son del rol `motor`.
 **Slug de ramas:** `diseno` → `feat/diseno-<tema>`
 **Etiqueta de issues:** `rol:diseño`
 **Posees:** `/design`, `/missions`
