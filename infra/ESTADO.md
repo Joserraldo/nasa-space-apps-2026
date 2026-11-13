@@ -10,7 +10,7 @@
 ## Qué sigue
 - Flujo de despliegue a Cloudflare desde GitHub Actions (cuando Santiago tenga la cuenta: token e ID como secretos del repo).
 - Incluir `data/` en el CI (#28; el PR #39 de datos prepara su parte).
-- Prueba e2e de la ruta dorada cuando exista la pantalla.
+- Prueba e2e de la ruta dorada escrita (Playwright, ver tests/README.md); conectar al CI cuando se mezcle #68.
 
 ## Bloqueos
 - Cuenta de Cloudflare (Santiago). Guía de Entrega y criterios de juicio sin confirmar.
