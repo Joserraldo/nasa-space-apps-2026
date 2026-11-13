@@ -11,10 +11,10 @@ import { RAIZ } from "./config";
 const URL_RADLAB =
   "https://visualization.osdr.nasa.gov/radlab/api/?instrument_id=Artemis-I-HERA-HSU1&absorbed_dose_rate>0&format=json";
 
-const mediana = (v: number[]) => {
+const mediana = (v: number[]): number => {
   const s = [...v].sort((a, b) => a - b);
   const m = Math.floor(s.length / 2);
-  return s.length % 2 ? s[m] : (s[m - 1] + s[m]) / 2;
+  return s.length % 2 ? s[m]! : (s[m - 1]! + s[m]!) / 2;
 };
 const r2 = (x: number) => Math.round(x * 100) / 100;
 
@@ -32,8 +32,8 @@ export function resumir(data: [string, string, number][], consultadoEl: string) 
     instrumento: "Artemis-I-HERA-HSU1",
     unidad: "µGy/h" as const,
     magnitud: "dosis absorbida" as const,
-    desde: data[0][0],
-    hasta: data[data.length - 1][0],
+    desde: data[0]![0],
+    hasta: data[data.length - 1]![0],
     muestras: data.length,
     medianaCrucero,
     pico: { valor: r2(pico[2]), hora: pico[0] },

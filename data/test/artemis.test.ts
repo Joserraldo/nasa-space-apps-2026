@@ -11,7 +11,7 @@ describe("Artemis I (HERA vía RadLab)", () => {
     expect(artemis.unidad).toBe("µGy/h");
     expect(artemis.vecesPicoSobreCrucero).toBe(Math.round(artemis.pico.valor / artemis.medianaCrucero));
     expect(Math.max(...artemis.diario.map((d) => d.maximo))).toBe(artemis.pico.valor);
-    expect(artemis.pico.hora.startsWith(artemis.diario[0].dia)).toBe(true); // el pico es el primer día
+    expect(artemis.pico.hora.startsWith(artemis.diario[0]!.dia)).toBe(true); // el pico es el primer día
   });
 
   it("resumir() aplica las reglas (mediana sin primer día ni dos últimos)", () => {
