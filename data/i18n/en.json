@@ -105,5 +105,7 @@
   "datos.region.derivado": "The team calculated the Sun's height from the tilt of Mars's axis (25.19°, NASA). We don't have a terrain map for this region.",
   "fuente.nssdc": "NASA NSSDC (Mars fact sheet)",
   "datos.artemis.titulo": "Radiation on the Artemis I trip",
-  "datos.artemis.texto": "In 2022 the Orion spacecraft of the Artemis I mission traveled around the Moon with no crew and radiation detectors inside. For most of the trip the radiation was about the same day after day, but shortly after launch it was about 480 times stronger for a while."
+  "datos.artemis.texto": "In 2022 the Orion spacecraft of the Artemis I mission traveled around the Moon with no crew and radiation detectors inside. For most of the trip the radiation was about the same day after day, but shortly after launch it was about 480 times stronger for a while.",
+  "fuente.dosis.marte": "RAD on the Curiosity rover (NASA), from Reitz et al. 2016",
+  "fuente.dosis.lunaIss": "Zhang et al. 2020, China's Chang’e-4 mission (CNSA), not NASA"
 }

@@ -117,15 +117,15 @@ En todas: **fallar muestra la cadena de causas y una tarjeta de ciencia real.** 
 
 ## 3. Equipo y roles
 
-Actualizado el 13 nov (tarde) por decisión de Santiago, que además es el orquestador del equipo. Cómo se trabaja día a día: [docs/COMO-TRABAJAMOS.md](docs/COMO-TRABAJAMOS.md).
+Actualizado el 13 nov (tarde) por decisión de Santiago, que es el orquestador del equipo y apoya el rol que vaya atrasado. Cómo se trabaja día a día: [docs/COMO-TRABAJAMOS.md](docs/COMO-TRABAJAMOS.md).
 
 | Slug | Rol | Posee (carpetas) | Personas (GitHub) |
 |---|---|---|---|
-| `motor` | **Diseño de juego y misiones + Motor y simulación**: GameState, ticks, semilla, balance, tablas de recursos, mazo de eventos y misiones | `/design`, `/missions`, `/engine` | Santiago Cabeza (`kcitas`) y Camilo (`CamiloM21`) |
+| `motor` | **Diseño de juego y misiones + Motor y simulación**: GameState, ticks, semilla, balance, tablas de recursos, mazo de eventos y misiones | `/design`, `/missions`, `/engine` | Jaime Alejandro Vega Barbosa (`JaimeMrF`) y Camilo (`CamiloM21`) |
 | `ui` | **Frontend, voz, arte y accesibilidad** | `/ui`, `/assets` | María Paula Saavedra Martínez (`Paulasaah`) |
 | `agentes` | **Agentes expertos**: clasificador, expertos como código, IA de la base, evals | `/agents` | José (`Joserraldo`) |
 | `infra` | **Integración, QA, despliegue y pitch**: CI, Cloudflare, pruebas e2e, video, formulario | `/infra`, `/tests`, `/pitch`, `/.github` | José (`Joserraldo`) |
-| `datos` | **Datos NASA y ciencia**: pipeline DONKI/RadLab → JSON curados, mocks, tarjetas de fuente, glosario | `/data`, `/docs/science` | Daniel (`Daniverd15`) y Jaime Alejandro Vega Barbosa (`JaimeMrF`) |
+| `datos` | **Datos NASA y ciencia**: pipeline DONKI/RadLab → JSON curados, mocks, tarjetas de fuente, glosario | `/data`, `/docs/science` | Daniel (`Daniverd15`) |
 
 `/contracts` es de `motor`, `agentes` y `datos`. Donde otro documento todavía diga "rol N" o `mecanicas`: 1 (diseño), 2 y `mecanicas` = hoy `motor`; 3 = `agentes`; 4 = `datos`; 5 = `ui`; 6 = `infra`. Revisión cruzada sugerida: `motor`↔`ui`, `agentes`↔`datos`.
 

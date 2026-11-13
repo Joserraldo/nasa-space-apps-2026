@@ -63,3 +63,10 @@ export const ArtemisSchema = z.object({
   fuente: z.object({ nombreKey: z.string(), dueno: z.string(), url: z.string().url(), consultadoEl: z.string().regex(/^\d{4}-\d{2}-\d{2}$/) }),
 });
 export type Artemis = z.infer<typeof ArtemisSchema>;
+
+/** Clave i18n de la fuente de cada referencia de dosis (la tarjeta la muestra ui). */
+export const FUENTE_DOSIS: Record<string, string> = {
+  "marte-superficie": "fuente.dosis.marte",
+  "luna-superficie": "fuente.dosis.lunaIss",
+  iss: "fuente.dosis.lunaIss",
+};
