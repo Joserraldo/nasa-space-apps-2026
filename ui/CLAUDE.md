@@ -19,8 +19,7 @@
 3. Panel de tripulación: retrato 2D simple, burbuja de texto y botones por experto. Caja de texto que pasa por los atajos de `agents/`.
 4. Pantallas de la ruta dorada: elegir sitio (3 criterios) → colocar módulos → tormenta con pausa y tarjeta de fuente → los dos expertos se contradicen → decidir y enviar telemetría.
 5. Pantalla final: cadena de causas (decisión vs. mala suerte) y tarjeta de ciencia.
-6. Pasos nave → satélite y dibujo de ruta: de último y en 2D simple.
-7. Voz (Web Speech API) solo como mejora, detrás de un interruptor; sin guardar audio.
+6. Voz (Web Speech API) solo como mejora, detrás de un interruptor; sin guardar audio.
 
 ## Accesibilidad (desde el primer componente)
 Teclado y botones grandes · texto grande y fuente legible · nunca solo color (color + ícono + forma) · respetar `prefers-reduced-motion`.
