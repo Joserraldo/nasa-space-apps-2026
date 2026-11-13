@@ -1,11 +1,12 @@
-# Estado — rol 1 (Diseño de juego y misiones)
-**Actualizado:** — · **Rama:** — · **PR:** ninguno
+# Estado — diseño de juego y misiones
+**Actualizado:** 13 nov 2026, tarde · **Rama:** — · **PR:** ninguno · **Responsables:** Santiago y Camilo
+**Tokens:** 🟢
 
 ## Hecho (últimas iteraciones)
-- Carpeta creada (foundation).
+- Rol creado como está hoy (13 nov). Las tablas que ya hay en `design/` las escribió Jaime desde el motor.
 
 ## Qué sigue
-- Ver "Fase 0" / "Tareas de arranque" en CLAUDE.md.
+- Misión de Jezero en `missions/` y tabla de recursos (ver `design/CLAUDE.md` y #41).
 
 ## Bloqueos
 - ninguno
