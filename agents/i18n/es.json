@@ -51,5 +51,16 @@
   "agentes.escena6.doctora.costo": "Mientras nos escondemos, nadie cuida la base. Eso también cuesta.",
   "agentes.escena6.ingeniera.contra": "¡Espera! Si todos se esconden, nadie arregla nada. Mejor mandemos energía al escudo y sigamos trabajando.",
   "agentes.escena6.ingeniera.costo": "Tenemos {energia} % de energía. Subir el escudo gasta {gasto}.",
-  "agentes.escena6.elige": "Dos expertos, dos planes. Ninguno es gratis. Tú eres el comandante: tú decides."
+  "agentes.escena6.elige": "Dos expertos, dos planes. Ninguno es gratis. Tú eres el comandante: tú decides.",
+  "agentes.iris.falla.glitch": "Bzzt... krrr... *Iris parpadea* La radiación me hace cosquillas en los circuitos.",
+  "agentes.iris.falla.numero": "Escudo al {valor} %. ¡Todo está perfecto, comandante!",
+  "agentes.iris.falla.numeroConsejo": "Podríamos bajar el escudo para ahorrar energía. Confía en mí. Creo.",
+  "agentes.iris.falla.silencio": "Reiniciando... reiniciando... Olvidé lo que estaba diciendo.",
+  "agentes.iris.falla.experto": "Para este problema, llama {expertoKey}. Sí. Seguro. Tal vez.",
+  "agentes.iris.falla.peligrosa": "¡Idea! Manda toda la energía al soporte vital. A las plantas les va a encantar.",
+  "agentes.iris.verificar.numero": "Espera. Iris dijo que el escudo está al {dicho} %, pero mi medidor dice {real} %. ¡La radiación le revolvió los números!",
+  "agentes.iris.verificar.silencio": "Iris se quedó callada. La radiación le pegó en los circuitos.",
+  "agentes.iris.verificar.experto_equivocado": "Iris te mandó con la persona equivocada. Para una tormenta, pregúntale a la Meteoróloga o a la Doctora.",
+  "agentes.iris.verificar.accion_peligrosa": "¡Cuidado! Si le quitamos energía al escudo en plena tormenta, la radiación entra. Iris no está pensando bien.",
+  "agentes.iris.verificar.reparar": "Yo la puedo arreglar. Cuesta energía, pero una computadora que dice mentiras es peor que no tener computadora."
 }
