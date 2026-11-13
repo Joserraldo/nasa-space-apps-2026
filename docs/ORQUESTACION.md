@@ -43,11 +43,9 @@ motor 🟢 · datos 🟢 · agentes 🔴 · ui 🔴 · infra 🟡
 
 1. **Lo que el jurado ve es la pantalla, y no existe.** El riesgo ya no es el motor: es llegar al domingo con un simulador probado y nada que jugar. Todo el equipo empuja hacia `ui` y `agentes`.
 2. **El diferenciador es la tripulación de expertos**, y debe verse en el primer minuto: dos expertos que se contradicen con datos reales, y el niño decide. Se cuenta con honestidad: los consejos los calcula código a partir de datos de NASA; el modelo de lenguaje solo entiende la frase del niño. Eso es una fortaleza ante el jurado, no una debilidad.
-3. **El enunciado pide dirigir un puesto avanzado.** La fase de satélite no está en el enunciado: en la demo dura segundos, y la primera decisión con costo en la base llega antes de 60 s.
-4. **Tenemos un dato que casi nadie tendrá:** la tormenta del 20 may 2024, que el instrumento RAD de Curiosity midió en la superficie de Marte. Ese evento es el centro de la demo, con su tarjeta de fuente.
-5. **El enunciado nombra el retraso de comunicaciones y la producción de alimentos.** Los dos deben aparecer en la ruta dorada, aunque sea en su forma más simple (telemetría que tarda en llegar; invernadero dentro de Soporte vital).
-6. **"A simple game that teaches a real constraint beats a beautiful one that doesn't"** es texto literal del enunciado. El 3D es lo último, no lo primero.
-7. **La explicación corta de qué datos de NASA se usaron y por qué** es un punto que el enunciado premia y `datos` ya tiene casi listo: va dentro del juego y en la entrega.
+3. **Tenemos un dato que casi nadie tendrá:** la tormenta del 20 may 2024, que el instrumento RAD de Curiosity midió en la superficie de Marte. Ese evento es el centro de la demo, con su tarjeta de fuente.
+4. **El enunciado nombra el retraso de comunicaciones y la producción de alimentos.** Los dos deben aparecer en la ruta dorada, aunque sea en su forma más simple (telemetría que tarda en llegar; invernadero dentro de Soporte vital).
+5. **La explicación corta de qué datos de NASA se usaron y por qué** es un punto que el enunciado premia y `datos` ya tiene casi listo: va dentro del juego y en la entrega.
 
 ## Ruta dorada (propuesta, sin aprobar)
 

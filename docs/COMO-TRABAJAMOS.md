@@ -27,7 +27,7 @@ El motor y los datos van adelantados; **la pantalla y la tripulación todavía n
 
 1. **La ruta dorada jugable en pantalla**, de principio a fin, con la tormenta real que Curiosity midió en Marte (evento curado `2024-05-20-marte`).
 2. **La tripulación de expertos a la vista desde el primer minuto.** Es lo que nos distingue: los expertos acompañan al jugador, se contradicen y cada consejo sale de un dato real con su fuente.
-3. Todo lo demás (más regiones, 3D, Luna, atlas) espera a que 1 y 2 funcionen.
+3. Todo lo demás (más regiones, Luna, atlas) espera a que 1 y 2 funcionen.
 
 `motor` y `datos` no añaden funciones nuevas hasta que la ruta dorada se juegue en pantalla: su trabajo es darle a `ui` y a `agentes` lo que pidan.
 

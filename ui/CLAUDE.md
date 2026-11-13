@@ -19,14 +19,12 @@
 3. Panel de tripulación: retrato 2D simple, burbuja de texto y botones por experto. Caja de texto que pasa por los atajos de `agents/`.
 4. Pantallas de la ruta dorada: elegir sitio (3 criterios) → colocar módulos → tormenta con pausa y tarjeta de fuente → los dos expertos se contradicen → decidir y enviar telemetría.
 5. Pantalla final: cadena de causas (decisión vs. mala suerte) y tarjeta de ciencia.
-6. Pasos nave → satélite y dibujo de ruta: de último y en 2D simple.
-7. Voz (Web Speech API) solo como mejora, detrás de un interruptor; sin guardar audio.
+6. Voz (Web Speech API) solo como mejora, detrás de un interruptor; sin guardar audio.
 
 ## Accesibilidad (desde el primer componente)
 Teclado y botones grandes · texto grande y fuente legible · nunca solo color (color + ícono + forma) · respetar `prefers-reduced-motion`.
 
 ## Notas / decisiones que afectan este rol
 - Inglés es el idioma base; español segundo. Ningún texto visible quemado en el código.
-- 2D primero; el 3D es Capa 1 y se decide después de que la ruta dorada se juegue.
 - Arte: assets CC0 o propios; cada pieza registra su licencia en `assets/LICENCIAS.md`. Nada de franquicias existentes.
 - Propuesta de marca y tripulación de Camilo: rama `feat/ui-marca` (D6, D7).
