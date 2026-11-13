@@ -4,3 +4,4 @@ export { aAccion, ENERGIA_POR_CANTIDAD } from "./a-accion.js";
 export { responder, type VistaAgente, type Contexto } from "./expertos.js";
 export type { Dialogo, Linea, ReferenciaDosis } from "./dialogo.js";
 export { escenaTormenta, type EscenaTormenta } from "./escenas.js";
+export { irisDanada, verificarIris, formaFalla, numeroFalso, type FormaFalla, type Falla, type DialogoIris } from "./iris.js";
