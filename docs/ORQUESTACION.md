@@ -1,6 +1,6 @@
 # Orquestación
 
-Este archivo debe bastar para que otra sesión (u otro humano) retome la coordinación sin el chat original. Lo mantiene el orquestador (`infra`, Santiago Cabeza). **Suplente del orquestador:** por nombrar.
+Este archivo debe bastar para que otra sesión (u otro humano) retome la coordinación sin el chat original. Lo mantiene el orquestador (`infra`, Santiago Cabeza). **Suplente del orquestador:** Jaime (`JaimeMrF`).
 
 **Actualizado:** 13 nov 2026 (víspera, FASE 0: solo documentos).
 
@@ -51,6 +51,8 @@ Semilla fija de demo, ~2 min, completa en ES y EN. Se convierte en issue `p0` pa
 3. **Datos sin probar:** ningún ID de DONKI se ha verificado con una llamada real; varias cifras de [science/fuentes.md](science/fuentes.md) siguen NO VERIFICADAS.
 4. **Iris que falla** necesita guion y pruebas, no solo código (agentes + mecanicas).
 5. **Límites de tokens desconocidos:** falta el inventario de [modelos.md](modelos.md).
+6. **Retraso de comunicaciones:** el enunciado oficial lo nombra entre las decisiones del objetivo y en el plan estaba en la Capa 2. Decidir cómo aparece en la ruta dorada (ver [reglas.md](reglas.md)).
+7. **Jaime es suplente del orquestador y dueño de `motor`**, el rol del que dependen todos los demás.
 
 ## Pendientes de documentos (no los toca `infra` sin su dueño)
 
