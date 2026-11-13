@@ -11,12 +11,14 @@ import { leerConfig, RAIZ } from "./config";
 
 function clave(): string {
   if (process.env.NASA_API_KEY) return process.env.NASA_API_KEY;
-  const env = join(RAIZ, "..", ".env");
-  if (existsSync(env)) {
+  // Convención del equipo: cada persona guarda su clave en .env.local (data/CLAUDE.md). .env queda de respaldo.
+  for (const archivo of [".env.local", ".env"]) {
+    const env = join(RAIZ, "..", archivo);
+    if (!existsSync(env)) continue;
     const m = /^NASA_API_KEY=(.+)$/m.exec(readFileSync(env, "utf-8"));
     if (m?.[1]) return m[1].trim().replace(/^"|"$/g, "");
   }
-  throw new Error("Falta NASA_API_KEY (variable de entorno o .env en la raíz)");
+  throw new Error("Falta NASA_API_KEY (variable de entorno, o .env.local / .env en la raíz)");
 }
 
 const RADLAB = "https://visualization.osdr.nasa.gov/radlab/api/";

@@ -1,12 +1,12 @@
 # Estado — datos
-**Actualizado:** 2026-11-13 · **Rama:** feat/datos-fuente-terreno · **PR:** #55 → #65 → #69 fuenteTerreno (apilados) · issue #66
-## Hecho
-- 8 tormentas DONKI + RAD. Ruta dorada 2024-05-20, medida en Marte (×19,4). Jezero (Trek), dosis [V], 3 tarjetas OSDR, glosario, auditoría.
-- Artemis I (HERA, RadLab): resumen y tarjeta es/en (el enunciado oficial pide datos de Artemis).
-- Contrato v0.2.0 (#29) con los opcionales de datos: espejo eliminado, data/ reexporta /contracts.
-## Qué sigue
-- #41 ruta dorada: tarjeta de fuente del 20 may y "datos usados" en en/es (PR nuevo). Regiones nuevas en pausa por el #41.
-- Retraso Marte–Tierra [V+cálculo]: 3,0–22,3 min (corrige el "4–24" de PLAN y design). Textos de los expertos revisados hasta el #71: correctos, salvo un matiz del escudo (#71). Falta la tarjeta del terreno en aterrizaje (fuenteTerreno). Falta que agentes use referenciaDosis() (#45).
-## Bloqueos / no verificado
-- Ninguno. ui (#68, borrador) revisado: usa bien i18n y etiquetas; le sugerí tarjetaTormenta, DATOS_USADOS_KEYS y el retraso. Mars Rover Photos caído. RAD sin datos en oct 2024.
+**Actualizado:** 2026-11-13 · **Rama:** feat/datos-fuente-terreno · **PR:** #55 → #65 → #69 (apilados) · issue #66
+## Hecho (tareas 1–3 de data/CLAUDE.md)
+- 1: tarjeta de fuente de 2024-05-20-marte en en/es, lista para ui: tarjetaTormenta() (#55).
+- 2: "qué datos usamos y por qué" en en/es: DATOS_USADOS_KEYS (#55) + docs/science/datos-usados.md.
+- 3: cifras y textos de los expertos revisados hasta el #71: los de NASA están [V]; matiz del escudo comentado en #71.
+- Extra para la ruta dorada: retraso Marte–Tierra 3–22 min [V] (#65), fuenteTerreno() para aterrizaje (#69). El script de descarga lee .env.local.
+## Qué sigue (tarea 4)
+- Lo que pidan ui (#68: le sugerí tarjetaTormenta, DATOS_USADOS_KEYS y el retraso) y motor (#66). En pausa: regiones, Artemis, polo norte.
+## Bloqueos
+- Ninguno. Esperan revisión el #55, el #65 y el #69.
 Tokens: 🟡
