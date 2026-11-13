@@ -1,5 +1,5 @@
 # Rol 4: Datos NASA y ciencia
-**Humano responsable:** Daniel (`Daniverd15`)
+**Humano responsable:** Daniel (`Daniverd15`) y Jaime (`JaimeMrF`)
 **Slug de ramas:** `datos` → `feat/datos-<tema>`
 **Etiqueta de issues:** `rol:datos`
 **Posees:** `/data`, `/docs/science`
