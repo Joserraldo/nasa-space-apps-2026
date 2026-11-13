@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 /** Versión del contrato. Súbela en cada cambio incompatible. */
-export const CONTRACTS_VERSION = "0.1.0";
+export const CONTRACTS_VERSION = "0.2.0";
 
 /**
  * Seed: texto que determina todo el escenario (sitio, tormenta, averías,
