@@ -11,6 +11,7 @@ Para el formulario de entrega y para la pantalla "Qué aprendimos hoy". En el ju
 | Radiación medida en la superficie de Marte durante tormentas | **NASA OSDR RadLab**, instrumento **RAD** del rover Curiosity (misión MSL), cráter Gale | Demostrar que la tormenta de la ruta dorada (20 may 2024) sí se midió en Marte: unas 19 veces el nivel normal ese día |
 | Altura del suelo de Jezero, relieve sombreado e imagen CTX | **NASA Mars Trek** (DEM de MOLA, NASA, más HRSC, ESA/DLR; imagen CTX de MRO, NASA) | Mapa para dibujar la ruta y elegir el sitio. Pendiente, luz y blindaje los calcula el equipo a partir de la altura y se marcan como derivados |
 | Dosis diaria de referencia (mSv/día) | Marte: RAD/Curiosity (NASA), Reitz et al. 2016. Luna e ISS: Zhang et al. 2020 (instrumento LND de Chang’e-4, **CNSA, no NASA**; ISS con DOSIS 3D) | Consejos de la Doctora y comparación Luna / ISS / Marte |
+| Radiación dentro de la nave Orión en Artemis I (2022) | **NASA OSDR RadLab**, instrumento HERA de la misión Artemis I (NASA) | Tarjeta de ciencia: qué tan distinta es la radiación según el momento del viaje |
 | 3 estudios de ciencia espacial (OSD-772, OSD-546, OSD-360) | **NASA OSDR** (OSD-546 es un experimento seleccionado por la ESA) | Tarjetas de ciencia al final: comida, huesos y radiación |
 
 **Por qué estos datos:** el reto pide consecuencias visibles ligadas a clima espacial real. DONKI da la tormenta con su fecha e ID, RadLab muestra lo que esa tormenta hizo en Marte, Mars Trek da el lugar real donde vive la base, y OSDR explica por qué importa el blindaje y la comida. Separamos siempre lo **medido**, lo **modelado** y lo **derivado por el equipo**.
@@ -33,6 +34,7 @@ All data are **real and curated, not live**: downloaded on 2026-11-13 and bundle
 - **NASA OSDR RadLab (RAD, Curiosity rover, Gale Crater):** the radiation actually *measured* on the Martian surface. On 20 May 2024 the daily mean was about 19× the background, which proves our golden-path storm reached Mars.
 - **NASA Mars Trek (MOLA + HRSC elevation, CTX image):** the real Jezero map. Slope, sunlight and shielding scores are *derived by the team* from elevation.
 - **Reference doses (mSv/day):** Mars from RAD/Curiosity (NASA; Reitz et al. 2016). Moon and ISS from Zhang et al. 2020 (Chang’e-4 LND, **CNSA, not NASA**).
+- **NASA OSDR RadLab, Artemis I (HERA):** absorbed dose inside Orion in 2022. Steady during the cruise, about 480× higher for a while shortly after launch.
 - **NASA OSDR studies OSD-772, OSD-546 (ESA-selected), OSD-360:** end-of-game science cards on food, bones and radiation.
 
 We always label what is **measured**, **modeled** or **derived**.

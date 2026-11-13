@@ -20,7 +20,7 @@ import { RadlabRespuesta } from "../src/radlab";
 import { TormentaSchema, UMBRAL_OBSERVADO, type Fase, type Tormenta } from "../src/tormenta";
 import { leerConfig, RAIZ } from "./config";
 
-type Crudo = Record<string, unknown> & { linkedEvents?: { activityID: string }[] | null };
+type Crudo = Record<string, unknown> & { linkedEvents?: { activityID: string }[] | null | undefined };
 
 function cargar(grupo: string) {
   const dir = join(RAIZ, "raw", grupo);
@@ -110,8 +110,11 @@ export function medicionMarte(g: Grupo, t0: string, url: string) {
   const fondo = antes.reduce((s, m) => s + m.v, 0) / antes.length;
   const porDia = new Map<string, number[]>();
   for (const m of despues) porDia.set(m.dia, [...(porDia.get(m.dia) ?? []), m.v]);
-  const [diaPico, valores] = [...porDia].sort((a, b) => b[1].reduce((s, v) => s + v, 0) / b[1].length - a[1].reduce((s, v) => s + v, 0) / a[1].length)[0];
-  const pico = valores.reduce((s, v) => s + v, 0) / valores.length;
+  const media = (v: number[]) => v.reduce((s, x) => s + x, 0) / v.length;
+  const mejor = [...porDia].sort((a, b) => media(b[1]) - media(a[1]))[0];
+  if (!mejor) return undefined;
+  const [diaPico, valores] = mejor;
+  const pico = media(valores);
   return {
     instrumento: "MSL-RAD-Surface" as const,
     unidad: "µGy/h" as const,
@@ -147,7 +150,7 @@ export function curar(): Tormenta[] {
     });
     const marte = llegadaMarte(g, fases.find((f) => f.fase.tipo === "CME")?.fase);
     const consulta = JSON.parse(readFileSync(join(RAIZ, "raw", t.grupo, "consulta.json"), "utf-8"));
-    const medicion = medicionMarte(g, fases[0].fase.hora, consulta.consultas?.RAD ?? "https://visualization.osdr.nasa.gov/radlab/");
+    const medicion = medicionMarte(g, fases[0]!.fase.hora, consulta.consultas?.RAD ?? "https://visualization.osdr.nasa.gov/radlab/");
     const observado = Boolean(medicion && medicion.factor >= UMBRAL_OBSERVADO);
     const tieneKp = fases.some((f) => f.fase.tipo === "GST");
     return TormentaSchema.parse({

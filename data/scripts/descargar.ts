@@ -14,7 +14,7 @@ function clave(): string {
   const env = join(RAIZ, "..", ".env");
   if (existsSync(env)) {
     const m = /^NASA_API_KEY=(.+)$/m.exec(readFileSync(env, "utf-8"));
-    if (m) return m[1].trim().replace(/^"|"$/g, "");
+    if (m?.[1]) return m[1].trim().replace(/^"|"$/g, "");
   }
   throw new Error("Falta NASA_API_KEY (variable de entorno o .env en la raíz)");
 }
