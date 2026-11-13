@@ -2,5 +2,5 @@
   "extends": "../tsconfig.base.json",
   "compilerOptions": { "rootDir": ".", "outDir": "dist", "resolveJsonModule": true },
   "include": ["src", "i18n/*.json"],
-  "references": [{ "path": "../contracts" }]
+  "references": [{ "path": "../contracts" }, { "path": "../engine" }]
 }
