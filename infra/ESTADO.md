@@ -1,5 +1,5 @@
 # Estado — infra (integración, QA, despliegue y pitch)
-**Actualizado:** 13 nov 2026, tarde · **Responsable:** José (desde el 13 nov; antes Santiago)
+**Actualizado:** 13 nov 2026, noche · **Responsable:** José · **Rama:** feat/infra-deploy-pages
 **Tokens:** por reportar
 
 ## Hecho (últimas iteraciones)
@@ -8,7 +8,7 @@
 - Borrador de `pitch/criterios.md`.
 
 ## Qué sigue
-- Flujo de despliegue a Cloudflare desde GitHub Actions (cuando Santiago tenga la cuenta: token e ID como secretos del repo).
+- Despliegue a Pages escrito (`.github/workflows/deploy.yml`, página de espera): se activa solo al guardar los secretos de Cloudflare.
 - Incluir `data/` en el CI (#28; el PR #39 de datos prepara su parte).
 - Prueba e2e de la ruta dorada cuando exista la pantalla.
 
