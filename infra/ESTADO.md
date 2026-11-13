@@ -5,7 +5,7 @@
 ## Hecho (últimas iteraciones)
 - CI de tipos y tests en cada PR (#22).
 - Secreto `BAI_API_KEY` guardado en el repo (clave del clasificador); ningún flujo lo usa todavía.
-- Borrador de `pitch/criterios.md`.
+- Borrador de `pitch/criterios.md` y de `pitch/guion-video.md` (guion de 2 min sobre la ruta dorada, con plan de grabación).
 
 ## Qué sigue
 - Flujo de despliegue a Cloudflare desde GitHub Actions (cuando Santiago tenga la cuenta: token e ID como secretos del repo).
