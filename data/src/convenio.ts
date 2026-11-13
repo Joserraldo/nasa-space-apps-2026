@@ -1,5 +1,5 @@
 /** Tormenta (registro de datos) → SpaceWeatherEvent (contrato). Función pura. */
-import { SpaceWeatherEventSchema, type SpaceWeatherEvent } from "./contrato-espejo";
+import { SpaceWeatherEventSchema, type SpaceWeatherEvent } from "./contrato";
 import { intensidadFase, redondear } from "./intensidad";
 import type { Fase, Tormenta } from "./tormenta";
 

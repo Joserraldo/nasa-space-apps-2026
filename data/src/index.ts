@@ -23,7 +23,7 @@ import { TerrenoSchema, type Terreno } from "./terreno";
 import { aConvenio } from "./convenio";
 import { TormentaSchema, type Tormenta } from "./tormenta";
 
-export * from "./contrato-espejo";
+export * from "./contrato";
 export * from "./tormenta";
 export * from "./intensidad";
 export * from "./terreno";
