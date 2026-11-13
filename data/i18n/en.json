@@ -107,5 +107,19 @@
   "datos.artemis.titulo": "Radiation on the Artemis I trip",
   "datos.artemis.texto": "In 2022 the Orion spacecraft of the Artemis I mission traveled around the Moon with no crew and radiation detectors inside. For most of the trip the radiation was about the same day after day, but shortly after launch it was about 480 times stronger for a while.",
   "fuente.dosis.marte": "RAD on the Curiosity rover (NASA), from Reitz et al. 2016",
-  "fuente.dosis.lunaIss": "Zhang et al. 2020, China's Chang’e-4 mission (CNSA), not NASA"
+  "fuente.dosis.lunaIss": "Zhang et al. 2020, China's Chang’e-4 mission (CNSA), not NASA",
+  "datos.tarjeta.fecha": "Date: {fecha} (UTC)",
+  "datos.tarjeta.id": "DONKI ID: {id}",
+  "datos.tarjeta.fase.clase": "{tipoKey}: class {clase}",
+  "datos.tarjeta.fase.velocidad": "{tipoKey}: {velocidad} km/s",
+  "datos.tarjeta.fase.kp": "{tipoKey}: Kp {kp} (measured on Earth)",
+  "datos.tarjeta.fase.simple": "{tipoKey}",
+  "datos.tarjeta.tipo.FLR": "Solar flash (flare)",
+  "datos.tarjeta.tipo.CME": "Solar cloud (CME)",
+  "datos.tarjeta.tipo.SEP": "Energetic particles",
+  "datos.tarjeta.tipo.GST": "Magnetic storm on Earth",
+  "datos.tarjeta.tipo.RBE": "Radiation belt boost",
+  "datos.tarjeta.medicion": "On Mars, Curiosity measured {pico} µGy/h on {dia}, about {factor} times a normal day ({fondo} µGy/h).",
+  "datos.tarjeta.modelo": "NASA's model calculated it would reach Mars on {fecha}.",
+  "datos.tarjeta.fuente": "Source: {duenoKey} · retrieved {consultado}"
 }
