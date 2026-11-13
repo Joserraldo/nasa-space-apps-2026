@@ -10,12 +10,12 @@
 
 ## Plan por puertas (ajustado el 13 nov con ORQUESTACION, criterios y los CLAUDE.md de motor, agentes y ui)
 
-**Hecho clave:** la rebanada vertical es en **Marte (Jezero)**. El Kp de DONKI mide la Tierra, no Marte, y DONKI no marca ningún impacto en Marte en mayo de 2024 [V, ENLIL]. Por eso cada evento dice **dónde** se observó y si en el juego es "observado en Marte" o "escenario: llega a tu base".
+**Hecho clave:** la rebanada vertical es en **Marte (Jezero)**. El Kp de DONKI mide la Tierra, no Marte. Lo que DONKI sí dice de Marte sale de las simulaciones WSA-ENLIL (`impactList` con `Mars`), que son un modelo y no una medición [V]. Por eso cada evento lleva `marcoMarte`: observado | modelado | escenario.
 
 **P1 (sáb 12:00): que nadie me espere**
-1. Contrato `SpaceWeatherEvent` v0.2 (#15) aprobado por motor y agentes, y movido a `/contracts`. Cambios: `observedAt` por fase, `marsFraming` (observed | scenario), `offsetHours` calculado por código, `SourceCard` exportada aparte y con `owner`.
+1. Contrato `SpaceWeatherEvent` v0.2 (#15) aprobado por motor y agentes, y movido a `/contracts`. Cambios: `observedAt` por fase, `marcoMarte` (observado | modelado | escenario), `offsetHours` calculado por código, `SourceCard` exportada aparte y con `owner`.
 2. Mocks v0.2 en `data/mock`: 3 tormentas, más 1 tarjeta de terreno y 1 de dosis, para que ui pinte tarjetas desde la hora 1.
-3. 1 tormenta [V] con ID real (mayo 2024 ya está). Verificar septiembre 2017 en DONKI porque es candidata a "observada en Marte".
+3. ✅ 7 tormentas [V] curadas (PR #23). Ruta dorada: X8.7 del 14 may 2024, que según ENLIL llega a Marte.
 
 **P2 (sáb 22:00): datos de la ruta dorada**
 4. Script `data/scripts/donki.ts` (Node, clave por variable de entorno, ventanas ≤30 días) que guarda lo crudo en `data/raw` y lo normalizado en `data/curated/*.json`, validado con Zod. Más `data/curated/index.json` en orden fijo, para que el motor sortee por semilla.
