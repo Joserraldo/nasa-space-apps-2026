@@ -107,8 +107,9 @@ Los loops siguen corriendo mientras el humano duerme solo si alguien revisa los 
 
 ## E. Permisos y seguridad
 
-- El repo trae una plantilla de permisos compartidos en `infra/claude-settings.plantilla.json`. El coordinador la copia una vez a `.claude/settings.json` (`mkdir -p .claude && cp infra/claude-settings.plantilla.json .claude/settings.json`), revisa y sube. Deja correr `git`, `gh issue`, `gh pr create/view/list` y `npm` sin preguntar, y **bloquea** `gh pr merge`, `git push` a `main`/`develop` y `git push --force`.
-- Cada quien puede añadir lo suyo en `.claude/settings.local.json` (no se sube a git).
+- El repo trae `.claude/settings.json` compartido (viene de `infra/claude-settings.plantilla.json`): deja correr `git`, `gh issue`, `gh pr create/view/list` y `npm` sin preguntar, y **bloquea** `git push` a `main`/`develop` y `git push --force`.
+- **Fusionar PRs solo lo hace Santiago** (él o su agente, cuando él lo ordena). Para que el agente de nadie más pueda fusionar, cada una de las otras personas copia la plantilla a su archivo personal una sola vez: `cp infra/claude-settings.plantilla.json .claude/settings.local.json`. Ese archivo no se sube a git y añade el bloqueo de `gh pr merge`. Santiago no lo copia.
+- Cada quien puede añadir lo suyo en `.claude/settings.local.json`.
 - Claves (NASA API key, modelo): solo en `.env.local`, que está en `.gitignore`. Nunca en el chat del equipo ni en commits.
 
 ## F. Si dos personas usan agentes en el mismo PC

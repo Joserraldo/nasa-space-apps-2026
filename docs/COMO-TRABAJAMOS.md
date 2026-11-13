@@ -59,7 +59,7 @@ Cómo se configuran los subagentes y su modelo depende de la herramienta: revís
 4. Actualiza tu `ESTADO.md` (máximo 15 líneas).
 5. Si necesitas algo de otro rol: issue `bloquea:<rol>` y sigues con otra cosa.
 
-Nadie empuja directo a `develop` ni a `main`. `contracts/` solo cambia con un issue `contrato`.
+Nadie empuja directo a `develop` ni a `main`. **Los PRs los fusiona Santiago** (él mismo o su agente, cuando él lo ordena); el resto de agentes tiene el merge bloqueado en su `settings.local.json` (ver `docs/GUIA-AGENTES.md` §E). `contracts/` solo cambia con un issue `contrato`.
 
 ## 6. Cloudflare y claves
 
