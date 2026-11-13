@@ -29,6 +29,7 @@ export * from "./intensidad";
 export * from "./terreno";
 export * from "./radlab";
 export * from "./ciencia";
+export * from "./region";
 export { aConvenio, magnitud } from "./convenio";
 
 /** Mocks validados al cargarse: si alguien rompe un JSON, falla aquí y no en la pantalla. */

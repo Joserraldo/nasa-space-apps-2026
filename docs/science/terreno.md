@@ -29,5 +29,6 @@ La tarjeta debe decir (clave `datos.terreno.derivado`): la altura es una medida 
   - El `exportImage` del servicio polar `_NP` devuelve error 400 con todos los formatos (bsq, tiff, png).
   - El DEM MOLA equirectangular (`mola128_mola64_merge...`) no tiene datos por encima de ~83,5° N (devuelve −32768), y entre 76 y 79° N, cerca de 120° O, da valores raros que no se usan.
   - El DEM mezclado MOLA+HRSC también da error para la franja 76–90° N.
-- **Próximo intento:** recuadro bajo 83° N con el DEM equirectangular y corrección de la longitud por fila (cos de la latitud), o las teselas WMTS polares de Trek. Si no sale en una iteración más, plan B: el polo norte sin mapa propio y con puntajes marcados como "derivados por el equipo".
+- Segundo intento, también fallido: el DEM MOLA equirectangular no tiene datos por encima de ~82,5° N, y la fila de 82,4° N sale casi constante (≈ −2000 m), lo que parece un artefacto del borde. El DEM mezclado da error 400 en 80–83,4° N.
+- **Plan B (implementado, `data/src/region.ts`):** polo norte **sin mapa ni sitios**. Solo una tarjeta con la luz por latitud (82° N de referencia): Sol máximo en verano ≈ 33,2°, y noche polar porque 82° > 64,81° (90 − 25,19). Son cálculos del equipo a partir de la inclinación [V]. **No se afirma nada del hielo** (sin fuente verificada).
 - El hielo no se ve en el DEM. Si se nombra, irá con su fuente (por verificar); si no, no se afirma.
