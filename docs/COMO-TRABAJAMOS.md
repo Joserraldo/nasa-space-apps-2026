@@ -6,15 +6,17 @@ Estándar del equipo desde el 13 nov en la tarde, decidido por Santiago. Aplica 
 
 | Rol | Personas | Carpetas |
 |---|---|---|
-| `infra` (orquestador, despliegue, pitch) | Santiago | `infra/`, `pitch/`, `.github/`, docs de coordinación |
+| `motor` (diseño de juego y misiones + motor y simulación) | Santiago y Camilo | `design/`, `missions/`, `engine/` |
 | `ui` (pantallas, voz, arte, accesibilidad) | María Paula | `ui/`, `assets/` |
-| `motor` (motor, diseño, mecánicas y QA) | Camilo, con apoyo de Santiago | `engine/`, `design/`, `missions/`, `tests/` |
 | `agentes` (tripulación de expertos, Iris, clasificador) | José | `agents/` |
+| `infra` (integración, QA, despliegue y pitch) | José | `infra/`, `tests/`, `pitch/`, `.github/` |
 | `datos` (NASA y ciencia) | Daniel y Jaime | `data/`, `docs/science/` |
 
-Suplente del orquestador: Jaime.
+Santiago es además el orquestador: coordina, desbloquea y mantiene los documentos de coordinación de `docs/`. Suplente del orquestador: Jaime.
 
-**Traspaso del motor.** Jaime escribió el motor que hoy está en `develop` y pasa a datos. Antes de cambiar de carpeta deja en `engine/ESTADO.md` lo que está a medias y lo que no es obvio, y el primer día revisa los PRs de `engine/` de Camilo.
+**Traspaso del motor.** Jaime escribió el motor que hoy está en `develop` y pasa a datos. Antes de cambiar de carpeta deja en `engine/ESTADO.md` lo que está a medias y lo que no es obvio, y el primer día revisa los PRs de `engine/` de Santiago y Camilo.
+
+**José lleva dos roles.** Si `agentes` se atrasa, lo primero que se reparte es `infra` (pitch y pruebas), no los expertos.
 
 ## 2. Qué construimos primero
 
@@ -62,7 +64,7 @@ Nadie empuja directo a `develop` ni a `main`. `contracts/` solo cambia con un is
 
 - **El despliegue sale de GitHub.** Cada cambio que entra a `develop` se publica solo en un link de prueba; lo que entra a `main` es producción. Tú "subes" tu trabajo fusionando tu PR.
 - **El juego no llama a la API de NASA mientras se juega.** Los datos ya están curados en `data/curated/`. Solo el pipeline de `datos` usa la API, con la clave personal de cada quien en su `.env.local`.
-- **La única clave de producción es la del modelo del clasificador.** Vive como secreto en Cloudflare y la pone Santiago. El navegador nunca la ve.
+- **La única clave de producción es la del modelo del clasificador.** Ya está guardada como secreto cifrado del repo con el nombre `BAI_API_KEY` (13 nov). Ningún flujo la usa todavía: el flujo de despliegue la leerá con ese nombre y la pasará a Cloudflare. El navegador nunca la ve.
 - **Para probar en tu máquina** usa tus propias claves en `.env.local`. Nunca en el chat, en issues ni en commits.
 
-Pendiente de montar (lo hace `infra`): el flujo de despliegue en GitHub Actions. Necesita dos secretos del repo (token y ID de cuenta de Cloudflare) que solo puede guardar José, porque es el único con permisos de administrador.
+Pendiente de montar (lo hace José, que lleva `infra` y es el administrador del repo): el flujo de despliegue en GitHub Actions. Necesita dos secretos del repo (token y ID de la cuenta de Cloudflare). Santiago crea la cuenta y le pasa esos dos valores a José por un canal privado, nunca por el chat del equipo.

@@ -117,17 +117,17 @@ En todas: **fallar muestra la cadena de causas y una tarjeta de ciencia real.** 
 
 ## 3. Equipo y roles
 
-Actualizado el 13 nov (tarde) por decisión de Santiago: **Motor, Diseño y Mecánicas/QA son un solo rol**. Son 4 roles de construcción más el orquestador. Cómo se trabaja día a día: [docs/COMO-TRABAJAMOS.md](docs/COMO-TRABAJAMOS.md).
+Actualizado el 13 nov (tarde) por decisión de Santiago, que además es el orquestador del equipo. Cómo se trabaja día a día: [docs/COMO-TRABAJAMOS.md](docs/COMO-TRABAJAMOS.md).
 
 | Slug | Rol | Posee (carpetas) | Personas (GitHub) |
 |---|---|---|---|
-| `infra` | **Orquestador + Integración, infra y pitch**: repo, CI, Cloudflare, tablero, video, formulario | `/infra`, `/pitch`, `/.github`, docs de coordinación | Santiago Cabeza (`kcitas`) |
+| `motor` | **Diseño de juego y misiones + Motor y simulación**: GameState, ticks, semilla, balance, tablas de recursos, mazo de eventos y misiones | `/design`, `/missions`, `/engine` | Santiago Cabeza (`kcitas`) y Camilo (`CamiloM21`) |
 | `ui` | **Frontend, voz, arte y accesibilidad** | `/ui`, `/assets` | María Paula Saavedra Martínez (`Paulasaah`) |
-| `motor` | **Motor, diseño, mecánicas y QA**: GameState, ticks, semilla, balance, mazo de eventos y misiones, pruebas de "ninguna acción gratis", simulaciones por semilla, e2e | `/engine`, `/design`, `/missions`, `/tests` | Camilo (`CamiloM21`), con apoyo de Santiago (`kcitas`) |
 | `agentes` | **Agentes expertos**: clasificador, expertos como código, IA de la base, evals | `/agents` | José (`Joserraldo`) |
+| `infra` | **Integración, QA, despliegue y pitch**: CI, Cloudflare, pruebas e2e, video, formulario | `/infra`, `/tests`, `/pitch`, `/.github` | José (`Joserraldo`) |
 | `datos` | **Datos NASA y ciencia**: pipeline DONKI/RadLab → JSON curados, mocks, tarjetas de fuente, glosario | `/data`, `/docs/science` | Daniel (`Daniverd15`) y Jaime Alejandro Vega Barbosa (`JaimeMrF`) |
 
-`/contracts` es de `motor`, `agentes` y `datos`. Donde otro documento todavía diga "rol N" o `mecanicas`: 1 = diseño y `mecanicas` = hoy `motor`, 2 = `motor`, 3 = `agentes`, 4 = `datos`, 5 = `ui`, 6 = `infra`. Revisión cruzada sugerida: `motor`↔`ui`, `agentes`↔`datos`; `infra` revisa lo que cruza carpetas.
+`/contracts` es de `motor`, `agentes` y `datos`. Donde otro documento todavía diga "rol N" o `mecanicas`: 1 (diseño), 2 y `mecanicas` = hoy `motor`; 3 = `agentes`; 4 = `datos`; 5 = `ui`; 6 = `infra`. Revisión cruzada sugerida: `motor`↔`ui`, `agentes`↔`datos`.
 
 Si una parte se demora, **dos personas pueden ir a la misma área** (lo más probable: `/agents` y `/ui`). Se reasigna en la reunión diaria.
 

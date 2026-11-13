@@ -22,14 +22,14 @@
 
 ## Roles y carpetas
 
-Cuatro roles de construcción más el orquestador (decisión de Santiago, 13 nov en la tarde: Motor, Diseño y Mecánicas/QA son un solo rol). Cómo se trabaja: [docs/COMO-TRABAJAMOS.md](docs/COMO-TRABAJAMOS.md).
+Roles definidos por Santiago el 13 nov en la tarde. Santiago es además el orquestador del equipo. Cómo se trabaja: [docs/COMO-TRABAJAMOS.md](docs/COMO-TRABAJAMOS.md).
 
 | Rol | Slug (ramas) | Carpetas | Personas (GitHub) |
 |---|---|---|---|
-| Orquestador + Integración, infra y pitch | `infra` | [infra/](infra/), [pitch/](pitch/), [.github/](.github/), docs de coordinación | Santiago Cabeza (`kcitas`) |
+| Diseño de juego y misiones + Motor y simulación | `motor` | [design/](design/), [missions/](missions/), [engine/](engine/) | Santiago Cabeza (`kcitas`) y Camilo (`CamiloM21`) |
 | Frontend, voz, arte y accesibilidad | `ui` | [ui/](ui/), [assets/](assets/) | María Paula Saavedra Martínez (`Paulasaah`) |
-| Motor, diseño, mecánicas y QA | `motor` | [engine/](engine/), [design/](design/), [missions/](missions/), [tests/](tests/) | Camilo (`CamiloM21`), con apoyo de Santiago (`kcitas`) |
 | Agentes expertos | `agentes` | [agents/](agents/) | José (`Joserraldo`) |
+| Integración, QA, despliegue y pitch | `infra` | [infra/](infra/), [tests/](tests/), [pitch/](pitch/), [.github/](.github/) | José (`Joserraldo`) |
 | Datos NASA y ciencia | `datos` | [data/](data/), [docs/science/](docs/science/) | Daniel (`Daniverd15`) y Jaime Alejandro Vega Barbosa (`JaimeMrF`) |
 
 Compartido: [contracts/](contracts/) (dueños: motor, agentes y datos). Coordinación: [docs/ORQUESTACION.md](docs/ORQUESTACION.md), modelos por tarea en [docs/modelos.md](docs/modelos.md), registro de uso de IA en [docs/ia-uso.md](docs/ia-uso.md). Si tu herramienta es Codex u OpenCode, empieza por [AGENTS.md](AGENTS.md).

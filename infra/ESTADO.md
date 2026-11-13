@@ -1,16 +1,16 @@
-# Estado — infra (orquestador + integración, infra y pitch)
-**Actualizado:** 13 nov 2026, tarde · **Rama:** feat/infra-enunciado · **PR:** #36
-**Tokens:** 🟢
+# Estado — infra (integración, QA, despliegue y pitch)
+**Actualizado:** 13 nov 2026, tarde · **Responsable:** José (desde el 13 nov; antes Santiago)
+**Tokens:** por reportar
 
 ## Hecho (últimas iteraciones)
-- Roles nuevos (4 + orquestador) en README, PLAN §3, CODEOWNERS y los `CLAUDE.md` de carpeta.
-- `docs/COMO-TRABAJAMOS.md`: prioridades, inglés como idioma base, Opus y subagentes, Cloudflare y claves.
-- `docs/ORQUESTACION.md`: semáforo real, análisis de cómo ganar y riesgos. Enunciado oficial en `docs/reglas.md`.
+- CI de tipos y tests en cada PR (#22).
+- Secreto `BAI_API_KEY` guardado en el repo (clave del clasificador); ningún flujo lo usa todavía.
+- Borrador de `pitch/criterios.md`.
 
 ## Qué sigue
-- Flujo de despliegue a Cloudflare desde GitHub Actions (cuando haya cuenta y secretos).
-- Issue de la RUTA DORADA y issues por rol con los roles nuevos.
-- Incluir `data/` en el CI (#28).
+- Flujo de despliegue a Cloudflare desde GitHub Actions (cuando Santiago tenga la cuenta: token e ID como secretos del repo).
+- Incluir `data/` en el CI (#28; el PR #39 de datos prepara su parte).
+- Prueba e2e de la ruta dorada cuando exista la pantalla.
 
 ## Bloqueos
-- Decisión de Santiago sobre el inicio (código antes del 14 nov). Cuenta de Cloudflare y secretos del repo (José). Guía de Entrega y criterios de juicio.
+- Cuenta de Cloudflare (Santiago). Guía de Entrega y criterios de juicio sin confirmar.

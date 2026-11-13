@@ -1,5 +1,5 @@
 # Rol 2: Motor y simulación
-**Humano responsable:** Camilo (`CamiloM21`), con apoyo de Santiago (`kcitas`). Traspaso de Jaime: ver `ESTADO.md`.
+**Humano responsable:** Santiago (`kcitas`) y Camilo (`CamiloM21`). Traspaso de Jaime: ver `ESTADO.md`.
 **Slug de ramas:** `motor` → `feat/motor-<tema>`
 **Etiqueta de issues:** `rol:motor`
 **Posees:** `/engine`
