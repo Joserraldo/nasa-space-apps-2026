@@ -37,7 +37,7 @@ Details, URLs and dates are in [datos-nasa.md](datos-nasa.md). All data was quer
 
 Licenses are the `license` field recorded in `package-lock.json`. Libraries used only to build and test (TypeScript, Vitest, tsx, @types/node) are not shipped to players.
 
-**POR VERIFICAR:** the front end and server libraries are not in the repo yet (`ui/` has no `package.json`; `infra/` has no Worker). The plan names React, Vite, PixiJS or Three.js and Hono (Cloudflare Workers), but the exact list, versions and licenses must be re-read from the final `package-lock.json` before sending. Add each one to the table above.
+**POR VERIFICAR:** the front end and server libraries are not in the repo yet (`ui/` has no `package.json`; the classifier Worker (`infra/worker`, PR #76) uses no framework, only `fetch` (no Hono)). The plan names React, Vite, PixiJS or Three.js and Hono (Cloudflare Workers), but the exact list, versions and licenses must be re-read from the final `package-lock.json` before sending. Add each one to the table above.
 
 ## 3. Fonts, images, sounds, 3D models
 

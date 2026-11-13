@@ -26,7 +26,7 @@ The first layer is not a model: buttons, shortcuts and **regex** in English and 
 ### Privacy and keys
 - The API key lives only on the server side (a Cloudflare Worker environment variable; GitHub secret `BAI_API_KEY` for the repo). **Never in the browser or in the code.**
 - The Worker forwards only the phrase: no IP, no identifiers. It rate-limits per IP (KV).
-- **POR VERIFICAR:** the Worker is **not built yet** (`infra` task 2). Confirm before sending that the endpoint exists as described, or change this section to say the classifier is not part of the submitted build.
+- The Worker is written and tested with a fake model (`infra/worker`, PR #76: 5 tests, zero paid calls). **POR VERIFICAR:** that it is deployed (`wrangler deploy`, KV namespace) in the submitted build, or say the classifier is not part of it.
 - **No audio of minors is stored.** Voice uses the browser's Web Speech API; speech is turned into text and discarded; the game keeps no recordings. Note that the browser itself (for example Chrome) may process speech on its own provider's service; that is why text and buttons always work. **POR VERIFICAR:** wording about browser processing.
 - No accounts, no personal data. Progress is saved only in the player's own browser.
 
@@ -63,4 +63,4 @@ We compared two small models on 30 children's phrases (1 pass each, 60 calls; sc
 
 **Desarrollo asistido por IA.** Usamos agentes de código (Claude Code, OpenCode, Codex) bajo revisión humana. Los agentes proponen mediante PR; **un humano revisa y hace el merge**. Los datos de NASA los descarga y cura código con pruebas.
 
-**POR VERIFICAR:** si el Worker existe en la versión entregada; estado final del clasificador (con o sin modelo); tabla completa de herramientas por persona; texto oficial de la política de IA; wording sobre el reconocimiento de voz del navegador; assets generados con IA (ninguno registrado).
+**POR VERIFICAR:** si el Worker (ya escrito y probado, PR #76) está desplegado en la versión entregada; estado final del clasificador (con o sin modelo); tabla completa de herramientas por persona; texto oficial de la política de IA; wording sobre el reconocimiento de voz del navegador; assets generados con IA (ninguno registrado).
