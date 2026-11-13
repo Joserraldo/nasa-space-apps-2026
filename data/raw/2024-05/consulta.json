@@ -1,10 +1,11 @@
 {
   "consultadoEl": "2026-11-13",
   "consultas": {
-    "FLR": "https://ccmc.gsfc.nasa.gov/DONKI-API/get/FLR?startDate=2024-05-08&endDate=2024-05-15",
-    "CME": "https://api.nasa.gov/DONKI/CME?startDate=2024-05-08&endDate=2024-05-15",
+    "FLR": "https://ccmc.gsfc.nasa.gov/DONKI-API/get/FLR?startDate=2024-05-08&endDate=2024-05-21",
+    "CME": "https://api.nasa.gov/DONKI/CME?startDate=2024-05-08&endDate=2024-05-21",
     "SEP": "https://api.nasa.gov/DONKI/SEP?startDate=2024-05-09&endDate=2024-05-12",
     "GST": "https://api.nasa.gov/DONKI/GST?startDate=2024-05-09&endDate=2024-05-13",
-    "WSAEnlilSimulations": "https://api.nasa.gov/DONKI/WSAEnlilSimulations?startDate=2024-05-08&endDate=2024-05-15"
+    "WSAEnlilSimulations": "https://api.nasa.gov/DONKI/WSAEnlilSimulations?startDate=2024-05-08&endDate=2024-05-21",
+    "RAD": "https://visualization.osdr.nasa.gov/radlab/api/?instrument_id=MSL-RAD-Surface&timestamp>=2024-05-03&timestamp<2024-05-26&absorbed_dose_rate>0&format=json"
   }
 }

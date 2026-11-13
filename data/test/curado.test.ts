@@ -41,16 +41,27 @@ describe("tormentas curadas", () => {
 
   it("textos es/en para cada tormenta y cada marco", () => {
     for (const t of tormentasCuradas)
-      for (const k of [t.nombreKey, t.queOcurrioKey, t.fuente.nombreKey, `datos.marco.${t.marcoMarte}`]) {
+      for (const k of [t.nombreKey, t.queOcurrioKey, t.fuente.nombreKey, `datos.marco.${t.marcoMarte}`, "datos.medicion.rad", "datos.medicion.sinAumento", "fuente.radlab"]) {
         expect(es[k], k).toBeTruthy();
         expect(en[k], k).toBeTruthy();
       }
   });
 
-  it("la ruta dorada existe y llega a Marte según el modelo", () => {
+  it("la ruta dorada existe y se MIDIÓ en Marte (RAD)", () => {
     expect(eventoRutaDorada.id).toBe(ID_RUTA_DORADA);
-    expect(eventoRutaDorada.marcoMarte).toBe("modelado");
-    expect(eventoRutaDorada.llegadaMarte?.offsetHoras).toBeGreaterThan(0);
+    expect(eventoRutaDorada.marcoMarte).toBe("observado");
+    expect(eventoRutaDorada.medicionMarte?.unidad).toBe("µGy/h");
+    expect(eventoRutaDorada.medicionMarte!.factor).toBeGreaterThanOrEqual(1.5);
+  });
+
+  it("observado solo con medición ≥ 1,5× y unidades de dosis absorbida", () => {
+    for (const t of tormentasCuradas) {
+      if (t.marcoMarte === "observado") expect(t.medicionMarte!.factor).toBeGreaterThanOrEqual(1.5);
+      if (t.medicionMarte) {
+        expect(t.medicionMarte.unidad).toBe("µGy/h");
+        expect(t.fuente.dueno).toContain("RadLab");
+      }
+    }
   });
 
   it("raw no contiene la clave de la API", () => {
