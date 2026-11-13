@@ -25,16 +25,18 @@
 
 ## Roles y carpetas
 
-| # | Rol | Slug (ramas) | Carpetas | Persona |
-|---|---|---|---|---|
-| 1 | Diseño de juego y misiones | `diseno` | [design/](design/), [missions/](missions/) | _por asignar_ |
-| 2 | Motor y simulación | `motor` | [engine/](engine/) | _por asignar_ |
-| 3 | Agentes expertos | `agentes` | [agents/](agents/) | _por asignar_ |
-| 4 | Datos NASA y ciencia | `datos` | [data/](data/), [docs/science/](docs/science/) | _por asignar_ |
-| 5 | Frontend, voz, arte y accesibilidad | `ui` | [ui/](ui/), [assets/](assets/) | _por asignar_ |
-| 6 | Integración, QA, despliegue y pitch | `infra` | [infra/](infra/), [tests/e2e/](tests/e2e/), [pitch/](pitch/), [.github/](.github/) | _por asignar_ |
+Cinco roles de construcción más el orquestador (decisión del equipo, 13 nov: Diseño se funde en Motor y nace el rol de Mecánicas y QA).
 
-Compartido: [contracts/](contracts/) (dueños: roles 2, 3 y 4).
+| Rol | Slug (ramas) | Carpetas | Persona (GitHub) |
+|---|---|---|---|
+| Orquestador + Integración, infra y pitch | `infra` | [infra/](infra/), [pitch/](pitch/), [.github/](.github/), docs de coordinación | Santiago Cabeza (`kcitas`) |
+| Motor + Diseño de juego | `motor` | [engine/](engine/), [design/](design/) | Jaime Alejandro Vega Barbosa (`JaimeMrF`) |
+| Mecánicas y aseguramiento de calidad | `mecanicas` | [missions/](missions/), [tests/](tests/) | María Paula Saavedra Martínez (`Paulasaah`) |
+| Agentes expertos | `agentes` | [agents/](agents/) | José (`Joserraldo`) |
+| Datos NASA y ciencia | `datos` | [data/](data/), [docs/science/](docs/science/) | Daniel (`Daniverd15`) |
+| Frontend, voz, arte y accesibilidad | `ui` | [ui/](ui/), [assets/](assets/) | Camilo (`CamiloM21`) |
+
+Compartido: [contracts/](contracts/) (dueños: motor, agentes y datos). Coordinación: [docs/ORQUESTACION.md](docs/ORQUESTACION.md), modelos por tarea en [docs/modelos.md](docs/modelos.md), registro de uso de IA en [docs/ia-uso.md](docs/ia-uso.md). Si tu herramienta es Codex u OpenCode, empieza por [AGENTS.md](AGENTS.md).
 
 ## Flujo de trabajo (resumen)
 

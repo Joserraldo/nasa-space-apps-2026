@@ -117,14 +117,18 @@ En todas: **fallar muestra la cadena de causas y una tarjeta de ciencia real.** 
 
 ## 3. Equipo y roles
 
-| # | Rol | Posee (carpetas) | Persona |
+Actualizado el 13 nov por decisión del equipo: **Diseño se funde en Motor** y se crea el rol **Mecánicas y QA**. Son 5 roles de construcción más el orquestador.
+
+| Slug | Rol | Posee (carpetas) | Persona (GitHub) |
 |---|---|---|---|
-| 1 | **Diseño de juego y misiones**: recursos, balance, dificultades, semillas, eventos | `/design`, `/missions` | _por asignar_ |
-| 2 | **Motor y simulación**: GameState, turnos, acciones, generador por semilla | `/engine` | _por asignar_ |
-| 3 | **Agentes expertos**: clasificador, esquemas, plantillas, IA de la base, evals | `/agents` | _por asignar_ |
-| 4 | **Datos NASA y ciencia**: pipeline DONKI/OSDR, JSON de respaldo, glosario, verificación | `/data`, `/docs/science` | _por asignar_ |
-| 5 | **Frontend, voz, arte y accesibilidad** | `/ui`, `/assets` | _por asignar_ |
-| 6 | **Integración, QA, pruebas con primos, despliegue y pitch** | `/infra`, `/pitch`, `/tests/e2e` | _por asignar_ |
+| `infra` | **Orquestador + Integración, infra y pitch**: repo, CI, Cloudflare, tablero, video, formulario | `/infra`, `/pitch`, `/.github`, docs de coordinación | Santiago Cabeza (`kcitas`) |
+| `motor` | **Motor + Diseño de juego**: GameState, ticks, semilla, balance base, tablas de recursos | `/engine`, `/design` | Jaime Alejandro Vega Barbosa (`JaimeMrF`) |
+| `mecanicas` | **Mecánicas y aseguramiento de calidad**: mazo de eventos y misiones, curvas de dificultad, pruebas de "ninguna acción gratis", simulaciones por semilla, bugs | `/missions`, `/tests` | María Paula Saavedra Martínez (`Paulasaah`) |
+| `agentes` | **Agentes expertos**: clasificador, expertos como código, IA de la base, evals | `/agents` | José (`Joserraldo`) |
+| `datos` | **Datos NASA y ciencia**: pipeline DONKI/RadLab → JSON curados, mocks, tarjetas de fuente, glosario | `/data`, `/docs/science` | Daniel (`Daniverd15`) |
+| `ui` | **Frontend, voz, arte y accesibilidad** | `/ui`, `/assets` | Camilo (`CamiloM21`) |
+
+`/contracts` es de `motor`, `agentes` y `datos`. Donde otro documento todavía diga "rol N": 1 = diseño (hoy `motor`; `/missions` pasó a `mecanicas`), 2 = `motor`, 3 = `agentes`, 4 = `datos`, 5 = `ui`, 6 = `infra` (las pruebas pasaron a `mecanicas`). Revisión cruzada sugerida: `motor`↔`mecanicas`, `agentes`↔`ui`, `datos`↔`infra`.
 
 Si una parte se demora, **dos personas pueden ir a la misma área** (lo más probable: `/agents` y `/ui`). Se reasigna en la reunión diaria.
 
@@ -145,7 +149,7 @@ fix/<rol>-<tema>
 ```
 
 ### Etiquetas de issues
-`rol:diseño` `rol:motor` `rol:agentes` `rol:datos` `rol:ui` `rol:infra` · `bloquea:<rol>` · `contrato` · `decisión` · `idea` · `bug` · `p0` `p1` `p2`
+`rol:motor` `rol:mecanicas` `rol:agentes` `rol:datos` `rol:ui` `rol:infra` (`rol:diseño` queda en desuso: usar `rol:motor`) · `bloquea:<rol>` · `contrato` · `decisión` · `idea` · `bug` · `p0` `p1` `p2`
 
 ### Tablero (GitHub Projects)
 Columnas: **Ideas → Por hacer → En curso → En revisión → Hecho**. Vista agrupada por rol.
