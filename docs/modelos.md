@@ -10,12 +10,12 @@ Dicho por Santiago el 13 nov: **todos tienen OpenCode; Daniel tiene además Code
 
 | Persona | Rol | Herramienta | Modelo principal | Límite aproximado |
 |---|---|---|---|---|
-| Santiago (`kcitas`) | orquestador, motor | Claude Code, OpenCode | Fable 5.2 para coordinar | por confirmar |
+| Santiago (`kcitas`) | orquestador, apoyo al rol atrasado | Claude Code, OpenCode | Fable para coordinar | por confirmar |
+| Jaime (`JaimeMrF`) | motor | OpenCode | Opus | por confirmar |
 | Camilo (`CamiloM21`) | motor | OpenCode | Opus | por confirmar |
 | María Paula (`Paulasaah`) | ui | OpenCode | Opus | por confirmar |
 | José (`Joserraldo`) | agentes, infra | OpenCode | Opus | por confirmar |
 | Daniel (`Daniverd15`) | datos | OpenCode, Codex | Opus | por confirmar |
-| Jaime (`JaimeMrF`) | datos | OpenCode | Opus | por confirmar |
 
 ## Escalera por demanda de la tarea
 
@@ -42,10 +42,10 @@ La sesión principal es Opus en todos los roles. Lo que cambia es qué se queda 
 | Rol | Se queda en Opus | Delega a subagentes |
 |---|---|---|
 | `ui` (María Paula) | flujo de pantallas de la ruta dorada, conexión con el motor, accesibilidad | componentes repetitivos, textos `en`/`es`, estilos |
-| `motor` (Santiago, Camilo) | contratos, cola de efectos, balance, misiones, depuración | tablas de datos, tests, simulaciones por semilla |
+| `motor` (Jaime, Camilo) | contratos, cola de efectos, balance, misiones, depuración | tablas de datos, tests, simulaciones por semilla |
 | `agentes` (José) | contrato `ClassifierOutput`, lógica de expertos, avería guionada de Iris | plantillas de frases, frases de eval, regex |
 | `infra` (José) | integración, despliegue, guion del pitch | flujos de CI, pruebas e2e, documentación |
-| `datos` (Daniel, Jaime) | qué dato respalda qué mecánica, verificación de cifras | JSON curados, glosario, tarjetas de fuente |
+| `datos` (Daniel) | qué dato respalda qué mecánica, verificación de cifras | JSON curados, glosario, tarjetas de fuente |
 
 ## Reglas de gasto
 
