@@ -1,5 +1,5 @@
 # Estado — datos
-**Actualizado:** 2026-11-13 · **Rama:** feat/datos-ciencia · **PR:** #16 → #23 → #25 → (ciencia) apilados · plan #19 · contrato #17
+**Actualizado:** 2026-11-13 · **Rama:** feat/datos-ciencia · **PR:** #23 (base develop) → #25 → #26 apilados · D8 #27 · contrato #17 · #16 y #19 fusionados
 
 ## Hecho
 - Pipeline DONKI + RadLab → 8 tormentas curadas. Ruta dorada: 2024-05-20, que RAD MIDIÓ en Marte (×19,4).
@@ -9,9 +9,10 @@
 
 ## Qué sigue
 - Cuando el #18 se fusione: borrar contrato-espejo e importar de @solar-shield/contracts.
+- P3 pendiente: regiones extra de Marte (Gale, Valles Marineris, polo norte), segundas en el orden de recorte.
 - Revisar con agentes los textos de la Meteoróloga y la Doctora (ciencia) y con ui la carga de imágenes.
 
 ## Bloqueos / no verificado
-- #17 sin aprobar los opcionales de datos. Mars Rover Photos caído (404). RAD sin datos en oct 2024.
+- #28: el CI no corre las pruebas de data/ (espera a infra). #17: opcionales de datos sin aprobar. Mars Rover Photos caído (404). RAD sin datos en oct 2024.
 
 Tokens: 🟡
