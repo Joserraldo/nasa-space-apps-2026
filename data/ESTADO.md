@@ -1,5 +1,5 @@
 # Estado — rol 4 (Datos NASA y ciencia)
-**Actualizado:** 2026-11-13 · **Rama:** feat/datos-mocks · **PR:** (abriendo)
+**Actualizado:** 2026-11-13 · **Rama:** feat/datos-mocks · **PR:** #16 · contrato #15
 
 ## Hecho
 - Propuesta del contrato SpaceWeatherEvent v0.1.0 (Zod) en data/src y 3 mocks en data/mock. Las pruebas pasan.
