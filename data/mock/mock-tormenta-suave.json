@@ -1,0 +1,51 @@
+{
+  "schemaVersion": "0.1.0",
+  "dataStatus": "mock",
+  "id": "mock-tormenta-suave",
+  "name": {
+    "es": "Tormenta de prueba suave",
+    "en": "Gentle test storm"
+  },
+  "startTime": "2000-03-01T00:00Z",
+  "endTime": "2000-03-04T00:00Z",
+  "activeRegionNum": null,
+  "phases": [
+    {
+      "type": "CME",
+      "donkiId": "MOCK-2000-03-01T00:00:00-CME-001",
+      "time": "2000-03-01T00:00Z",
+      "speedKmS": 500,
+      "instruments": [
+        "MOCK"
+      ]
+    },
+    {
+      "type": "GST",
+      "donkiId": "MOCK-2000-03-03T06:00:00-GST-001",
+      "time": "2000-03-03T06:00Z",
+      "kpMax": 5,
+      "instruments": [
+        "MOCK"
+      ]
+    }
+  ],
+  "source": {
+    "title": {
+      "es": "Tormenta de prueba suave",
+      "en": "Gentle test storm"
+    },
+    "whatHappened": {
+      "es": "Una nube lenta del Sol tarda casi tres días en llegar y solo mueve un poco la brújula.",
+      "en": "A slow cloud from the Sun takes almost three days to arrive and only nudges the compass."
+    },
+    "provider": "MOCK (equipo Solar Shield)",
+    "links": [
+      "https://ccmc.gsfc.nasa.gov/tools/DONKI/"
+    ],
+    "retrievedAt": "2026-11-13",
+    "label": {
+      "es": "Datos de prueba inventados (no son reales)",
+      "en": "Made-up test data (not real)"
+    }
+  }
+}

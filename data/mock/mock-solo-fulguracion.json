@@ -1,0 +1,42 @@
+{
+  "schemaVersion": "0.1.0",
+  "dataStatus": "mock",
+  "id": "mock-solo-fulguracion",
+  "name": {
+    "es": "Destello de prueba sin tormenta",
+    "en": "Test flash without a storm"
+  },
+  "startTime": "2000-02-01T10:00Z",
+  "endTime": "2000-02-01T11:00Z",
+  "activeRegionNum": 10002,
+  "phases": [
+    {
+      "type": "FLR",
+      "donkiId": "MOCK-2000-02-01T10:00:00-FLR-001",
+      "time": "2000-02-01T10:15Z",
+      "classType": "X8.0",
+      "instruments": [
+        "MOCK"
+      ]
+    }
+  ],
+  "source": {
+    "title": {
+      "es": "Destello de prueba sin tormenta",
+      "en": "Test flash without a storm"
+    },
+    "whatHappened": {
+      "es": "El Sol brilla muchísimo un momento, pero la nube no viene hacia nosotros.",
+      "en": "The Sun flashes very bright for a moment, but the cloud is not coming our way."
+    },
+    "provider": "MOCK (equipo Solar Shield)",
+    "links": [
+      "https://ccmc.gsfc.nasa.gov/tools/DONKI/"
+    ],
+    "retrievedAt": "2026-11-13",
+    "label": {
+      "es": "Datos de prueba inventados (no son reales)",
+      "en": "Made-up test data (not real)"
+    }
+  }
+}

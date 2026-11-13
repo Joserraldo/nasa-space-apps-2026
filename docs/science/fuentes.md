@@ -2,6 +2,21 @@
 
 Investigación del 2026-11-02. Solo documentación, sin código. Convención: **[V]** = verificado en una fuente consultada; **NO VERIFICADO** = viene de memoria o de una sola fuente secundaria, hay que comprobarlo antes de usarlo. Nota: durante la investigación `api.nasa.gov` devolvió 503 y `curl` no tuvo salida desde este equipo, así que **no se pudo probar ninguna respuesta real de DONKI**; los campos se marcan según su fuente.
 
+## 0. Verificado con llamadas reales (2026-11-13)
+
+Consultas hechas con la clave del equipo desde un script. Las muestras están en `data/samples/` (ver su README).
+- **CORS [V]:** `api.nasa.gov/DONKI` y `ccmc.gsfc.nasa.gov/DONKI-API` responden `Access-Control-Allow-Origin: *`. Decisión: igual no se llama desde el navegador.
+- **Límite [V]:** `X-RateLimit-Limit: 2500` por hora con clave personal (corrige el "1000" de terceros de la §1).
+- **FLR [V]:** `api.nasa.gov/DONKI/FLR` devuelve **404**. Funciona `https://ccmc.gsfc.nasa.gov/DONKI-API/get/FLR?startDate=…&endDate=…`, sin clave. CME, GST y SEP funcionan en api.nasa.gov.
+- **Campos [V]:** FLR, CME, GST y SEP, tal como están en la §1, más `link`, `linkedEvents`, `submissionTime` y `versionId`. `linkedEvents[].activityID` **sí existe** en FLR, GST y SEP.
+- **Tormenta de mayo de 2024 [V], IDs reales:**
+  - GST `2024-05-10T15:00:00-GST-001`, Kp máximo 9.0 (fuente del Kp: NOAA). Enlazada a CMEs del 8 may, entre ellas `2024-05-08T05:36:00-CME-001`. https://ccmc.gsfc.nasa.gov/DONKI/view/GST/30693/-1
+  - CME `2024-05-08T05:36:00-CME-001`: halo completo hacia la Tierra desde AR 13664, 870 km/s (análisis "most accurate").
+  - FLR X3.9 `2024-05-10T06:27:00-FLR-001`, pico 06:54Z. https://ccmc.gsfc.nasa.gov/DONKI/view/FLR/30666/-1
+  - SEP `2024-05-09T13:59:00-SEP-001` (enlazada a FLR `2024-05-09T08:45:00-FLR-001`, X2.2).
+- **14 de mayo de 2024 [V]:** FLR X8.7 `2024-05-14T16:46:00-FLR-001`, pico 16:51Z, región 13664. https://ccmc.gsfc.nasa.gov/DONKI/view/FLR/30849/-1. Coincide con SWPC (§4 #5).
+- **Numeración de regiones [V]:** DONKI usa 5 cifras (`13664`) y NOAA usa "AR 3664". Es la misma región.
+
 ## 1. DONKI (Database Of Notifications, Knowledge, Information)
 
 ### Acceso y URLs
