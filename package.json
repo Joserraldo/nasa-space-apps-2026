@@ -12,7 +12,7 @@
     "missions"
   ],
   "scripts": {
-    "typecheck": "tsc -b contracts design engine agents data missions",
+    "typecheck": "tsc -b contracts design engine agents data missions infra/worker",
     "test": "vitest run",
     "test:watch": "vitest"
   },
