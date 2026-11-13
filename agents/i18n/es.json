@@ -77,5 +77,22 @@
   "agentes.titulo.doctora": "Doctora de radiación",
   "agentes.titulo.meteorologa": "Meteoróloga solar",
   "agentes.titulo.matematico": "Matemático",
-  "agentes.titulo.ia_base": "Iris"
+  "agentes.titulo.ia_base": "Iris",
+  "agentes.iris.tutorial.tormenta": "Llegó una tormenta. Llama {expertoKey}: ella sabe qué está haciendo el Sol.",
+  "agentes.iris.tutorial.energia": "La energía se está acabando. Llama {expertoKey}: ella decide adónde va la energía.",
+  "agentes.iris.tutorial.blindaje": "El escudo está débil. Llama {expertoKey}: ella le puede mandar más energía.",
+  "agentes.iris.tutorial.soporte": "El soporte vital está bajo. Llama {expertoKey}: ella cuida a la tripulación.",
+  "agentes.iris.tutorial.calma": "Todo tranquilo. Buen momento para preguntarle {expertoKey} cómo va la base.",
+  "agentes.iris.pista.tormenta": "Algo viene del Sol... ¿quién sabe de eso?",
+  "agentes.iris.pista.energia": "Mmm, esto huele a energía...",
+  "agentes.iris.pista.blindaje": "El escudo se ve delgado. ¿Quién lo cuida?",
+  "agentes.iris.pista.soporte": "El aire y el agua están bajando... ¿quién cuida a la tripulación?",
+  "agentes.iris.pista.calma": "Todo está en silencio. ¿Demasiado silencio?",
+  "agentes.iris.sistema.panel_solar": "Los paneles solares convierten la luz del Sol en energía. Sin sol no hay energía: como una planta.",
+  "agentes.iris.sistema.bateria": "La batería guarda energía para la noche, como una botella de agua que llenas antes de un viaje.",
+  "agentes.iris.sistema.reciclador_agua": "El reciclador limpia el agua usada para volver a usarla. En Marte cada gota cuenta.",
+  "agentes.iris.sistema.invernadero": "El invernadero da comida y algo de oxígeno. Las plantas necesitan luz, agua y cuidado.",
+  "agentes.iris.sistema.escudo": "El escudo frena parte de la radiación. Funciona mejor con más energía.",
+  "agentes.iris.sistema.antena": "La antena habla con la Tierra. Los mensajes tardan minutos en llegar, porque el espacio es enorme.",
+  "agentes.iris.sistema.ia_base": "¡Esa soy yo, Iris! Ayudo, pero la radiación me puede confundir. Revisa siempre lo que digo."
 }
