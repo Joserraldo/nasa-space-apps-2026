@@ -67,5 +67,10 @@
   "agentes.satelite.ingeniera.bateriaBaja": "Battery {bateria}%! In the planet's shadow the panels don't charge, like a phone left in the dark.",
   "agentes.satelite.meteorologa.senal": "Signal with Earth {senal}%. A message takes minutes to get there, so plan ahead.",
   "agentes.satelite.meteorologa.tormenta": "Satellite shield {escudo}%. The storm wears it down little by little.",
-  "agentes.satelite.doctora.microgravedad": "Up here everyone floats: that's microgravity. It feels like the drop of a roller coaster, all the time."
+  "agentes.satelite.doctora.microgravedad": "Up here everyone floats: that's microgravity. It feels like the drop of a roller coaster, all the time.",
+  "agentes.aterrizaje.ingeniera.luz": "I vote for {sitioKey}. More sun means more energy for the panels. Energy is life!",
+  "agentes.aterrizaje.doctora.blindaje": "I prefer {sitioKey}. The ground around it blocks part of the radiation, like an umbrella made of rock.",
+  "agentes.aterrizaje.ia_base.plano": "For a safe landing, {sitioKey} is the flattest. Landing on a slope is like parking on a hill.",
+  "agentes.aterrizaje.cierre.discrepan": "Each expert likes a different place. No site is perfect: pick what matters most to your mission.",
+  "agentes.aterrizaje.cierre.coinciden": "This time everyone agrees. That almost never happens!"
 }
