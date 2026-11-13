@@ -1,0 +1,38 @@
+{
+  "version": "0.2.0",
+  "id": "mock-tormenta-marte",
+  "estadoDato": "mock",
+  "nombreKey": "datos.tormenta.mock-tormenta-marte.nombre",
+  "queOcurrioKey": "datos.tormenta.mock-tormenta-marte.queOcurrio",
+  "marcoMarte": "observado",
+  "regionActiva": null,
+  "fases": [
+    {
+      "tipo": "CME",
+      "idFuente": "MOCK-2000-03-01T00:00:00-CME-001",
+      "hora": "2000-03-01T00:00Z",
+      "observadoEn": "Sol",
+      "instrumentos": [
+        "MOCK"
+      ],
+      "url": "https://ccmc.gsfc.nasa.gov/tools/DONKI/",
+      "velocidadKmS": 500
+    },
+    {
+      "tipo": "SEP",
+      "idFuente": "MOCK-2000-03-02T06:00:00-SEP-001",
+      "hora": "2000-03-02T06:00Z",
+      "observadoEn": "Marte",
+      "instrumentos": [
+        "MOCK"
+      ],
+      "url": "https://ccmc.gsfc.nasa.gov/tools/DONKI/"
+    }
+  ],
+  "fuente": {
+    "nombreKey": "fuente.mock",
+    "dueno": "MOCK (equipo Solar Shield)",
+    "url": "https://ccmc.gsfc.nasa.gov/tools/DONKI/",
+    "consultadoEl": "2026-11-13"
+  }
+}

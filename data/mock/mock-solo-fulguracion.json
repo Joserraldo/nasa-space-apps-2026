@@ -1,0 +1,28 @@
+{
+  "version": "0.2.0",
+  "id": "mock-solo-fulguracion",
+  "estadoDato": "mock",
+  "nombreKey": "datos.tormenta.mock-solo-fulguracion.nombre",
+  "queOcurrioKey": "datos.tormenta.mock-solo-fulguracion.queOcurrio",
+  "marcoMarte": "escenario",
+  "regionActiva": 10002,
+  "fases": [
+    {
+      "tipo": "FLR",
+      "idFuente": "MOCK-2000-02-01T10:00:00-FLR-001",
+      "hora": "2000-02-01T10:15Z",
+      "observadoEn": "Sol",
+      "instrumentos": [
+        "MOCK"
+      ],
+      "url": "https://ccmc.gsfc.nasa.gov/tools/DONKI/",
+      "claseGoes": "X8.0"
+    }
+  ],
+  "fuente": {
+    "nombreKey": "fuente.mock",
+    "dueno": "MOCK (equipo Solar Shield)",
+    "url": "https://ccmc.gsfc.nasa.gov/tools/DONKI/",
+    "consultadoEl": "2026-11-13"
+  }
+}

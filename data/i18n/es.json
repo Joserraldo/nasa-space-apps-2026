@@ -1,0 +1,15 @@
+{
+  "fuente.donki": "NASA CCMC · DONKI (base de datos de clima espacial)",
+  "fuente.mock": "Datos de prueba del equipo",
+  "datos.etiqueta.curado": "Datos reales curados, no en vivo",
+  "datos.etiqueta.mock": "Datos de prueba inventados (no son reales)",
+  "datos.marco.observado": "Esta tormenta también se midió en Marte.",
+  "datos.marco.escenario": "Esta tormenta real pasó cerca de la Tierra. En el juego imaginamos que llega a tu base.",
+  "datos.aviso": "Proyecto no oficial, no avalado por NASA.",
+  "datos.tormenta.mock-tormenta-fuerte.nombre": "Tormenta de prueba fuerte",
+  "datos.tormenta.mock-tormenta-fuerte.queOcurrio": "Una explosión grande en el Sol lanza una nube de partículas. Llega en un día y medio.",
+  "datos.tormenta.mock-solo-fulguracion.nombre": "Destello de prueba sin tormenta",
+  "datos.tormenta.mock-solo-fulguracion.queOcurrio": "El Sol brilla muchísimo un momento, pero la nube no viene hacia nosotros.",
+  "datos.tormenta.mock-tormenta-marte.nombre": "Tormenta de prueba en Marte",
+  "datos.tormenta.mock-tormenta-marte.queOcurrio": "Una nube lenta del Sol llega a Marte y trae partículas rápidas."
+}
