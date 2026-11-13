@@ -24,7 +24,7 @@ function fasePrincipal(t: Tormenta): Fase {
 
 export function aConvenio(t: Tormenta): SpaceWeatherEvent {
   const inicio = t.fases[0].hora;
-  const fin = t.fases[t.fases.length - 1].hora;
+  const fin = [t.fases[t.fases.length - 1].hora, t.llegadaMarte?.hora ?? ""].sort().pop()!;
   const principal = fasePrincipal(t);
   const valores = t.fases.map(intensidadFase).filter((x): x is number => x !== null);
   const ev: SpaceWeatherEvent = {
@@ -50,6 +50,11 @@ export function aConvenio(t: Tormenta): SpaceWeatherEvent {
       observadoEn: f.observadoEn,
     })),
     marcoMarte: t.marcoMarte,
+    llegadaMarte: t.llegadaMarte && {
+      idFuente: t.llegadaMarte.idFuente,
+      offsetHoras: horasEntre(inicio, t.llegadaMarte.hora),
+      rozando: t.llegadaMarte.rozando,
+    },
   };
   return SpaceWeatherEventSchema.parse(ev);
 }

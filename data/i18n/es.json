@@ -11,5 +11,21 @@
   "datos.tormenta.mock-solo-fulguracion.nombre": "Destello de prueba sin tormenta",
   "datos.tormenta.mock-solo-fulguracion.queOcurrio": "El Sol brilla muchísimo un momento, pero la nube no viene hacia nosotros.",
   "datos.tormenta.mock-tormenta-marte.nombre": "Tormenta de prueba en Marte",
-  "datos.tormenta.mock-tormenta-marte.queOcurrio": "Una nube lenta del Sol llega a Marte y trae partículas rápidas."
+  "datos.tormenta.mock-tormenta-marte.queOcurrio": "Una nube lenta del Sol llega a Marte y trae partículas rápidas.",
+  "datos.marco.modelado": "El modelo WSA-ENLIL de la NASA calculó que esta nube llegaría a Marte. Es un cálculo, no una medición.",
+  "datos.marco.rozando": "Según el modelo, solo la rozaría.",
+  "datos.tormenta.2024-05-14-x87.nombre": "El destello gigante del 14 de mayo de 2024",
+  "datos.tormenta.2024-05-14-x87.queOcurrio": "El Sol lanzó uno de sus destellos más fuertes de estos años y una nube de partículas rapidísima. No venía hacia la Tierra, pero el modelo de la NASA calculó que llegaría a Marte.",
+  "datos.tormenta.2024-05-11-x58.nombre": "El destello del 11 de mayo de 2024",
+  "datos.tormenta.2024-05-11-x58.queOcurrio": "La misma mancha del Sol que pintó auroras en la Tierra lanzó otro destello fuerte y una nube rápida. Llegaron partículas muy energéticas cerca de la Tierra, y el modelo de la NASA calculó que la nube alcanzaría Marte.",
+  "datos.tormenta.2024-05-10-gannon.nombre": "La gran tormenta de mayo de 2024",
+  "datos.tormenta.2024-05-10-gannon.queOcurrio": "Varias nubes del Sol chocaron con la Tierra una tras otra. La tormenta magnética llegó al nivel más alto de la escala y se vieron auroras en muchos lugares.",
+  "datos.tormenta.2024-10-03-x90.nombre": "El destello X9.0 de octubre de 2024",
+  "datos.tormenta.2024-10-03-x90.queOcurrio": "Fue el destello más fuerte de este ciclo del Sol hasta ese día. Su nube causó una tormenta magnética en la Tierra, y el modelo de la NASA calculó que también llegaría a Marte.",
+  "datos.tormenta.2024-10-10-g4.nombre": "La tormenta del 10 de octubre de 2024",
+  "datos.tormenta.2024-10-10-g4.queOcurrio": "Una nube rápida del Sol trajo partículas muy energéticas y una tormenta magnética fuerte en la Tierra. El modelo de la NASA calculó que también llegaría a Marte.",
+  "datos.tormenta.2017-09-06-x93.nombre": "El destello X9.3 de septiembre de 2017",
+  "datos.tormenta.2017-09-06-x93.queOcurrio": "Una mancha del Sol lanzó un destello enorme y una nube que llegó a la Tierra y causó una tormenta magnética.",
+  "datos.tormenta.2017-09-10-x82.nombre": "El destello X8.2 de septiembre de 2017",
+  "datos.tormenta.2017-09-10-x82.queOcurrio": "La misma mancha lanzó otro destello enorme y una nube rapidísima. Llegaron partículas muy energéticas cerca de la Tierra."
 }

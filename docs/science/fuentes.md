@@ -16,6 +16,12 @@ Consultas hechas con la clave del equipo desde un script. Las muestras están en
   - SEP `2024-05-09T13:59:00-SEP-001` (enlazada a FLR `2024-05-09T08:45:00-FLR-001`, X2.2).
 - **14 de mayo de 2024 [V]:** FLR X8.7 `2024-05-14T16:46:00-FLR-001`, pico 16:51Z, región 13664. https://ccmc.gsfc.nasa.gov/DONKI/view/FLR/30849/-1. Coincide con SWPC (§4 #5).
 - **Numeración de regiones [V]:** DONKI usa 5 cifras (`13664`) y NOAA usa "AR 3664". Es la misma región.
+- **Marte en DONKI [V]:** las simulaciones `WSAEnlilSimulations` traen `impactList` con `location: "Mars"`, `arrivalTime` e `isGlancingBlow`. Es un **modelo** (predicción), no una medición en Marte. **Corrección:** antes escribí "mayo de 2024 no tiene impacto en Marte", pero la consulta del 8–10 de mayo era demasiado corta. Con ventanas más amplias sí hay corridas con Marte (ej. `WSA-ENLIL/30869/1` para la CME del X8.7).
+- **Catálogo curado [V]** (7 tormentas, `data/curated/`): todo sale de `data/raw` por código (`npm run curar`), y una prueba lo regenera para comprobarlo. Las reglas están en `docs/science/pipeline.md`.
+  - X8.7 del 14 may 2024 (ruta dorada): FLR `2024-05-14T16:46:00-FLR-001` → CME `2024-05-14T17:00:00-CME-001` (2119 km/s). Llegada a Marte según `WSA-ENLIL/30869/1`: 2024-05-16T20:47Z, directa. Ninguna corrida la manda a la Tierra.
+  - X5.8 del 11 may 2024: hacia Marte según ENLIL `30801`. Gran tormenta de mayo 2024: Kp 9 en la Tierra. X9.0 del 3 oct 2024: Kp 7.33 (Tierra) y Marte según ENLIL.
+  - 10 oct 2024: GST `2024-10-10T15:00:00-GST-001`, **Kp 8.67** (antes estaba NO VERIFICADO en §4 #7).
+  - **Sep 2017 [V]:** X9.3 `2017-09-06T11:53:00-FLR-001` (pico 12:02Z; corrige el "NO VERIFICADO" de §4 #3) y X8.2 `2017-09-10T15:35:00-FLR-001` con una CME a 2650 km/s. La corrida ENLIL más reciente (`13117`) ya no incluye a Marte, aunque una anterior (`13114`) sí la incluía. Que RAD o MAVEN midieran algo en Marte sigue **NO VERIFICADO** (no viene de DONKI).
 
 ## 1. DONKI (Database Of Notifications, Knowledge, Information)
 

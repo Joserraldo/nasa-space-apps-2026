@@ -42,7 +42,11 @@ export const SpaceWeatherEventSchema = z.object({
   fuente: SourceCardSchema,
   /** propuesta datos */
   fases: z.array(SpaceWeatherPhaseSchema).optional(),
-  /** propuesta datos: "observado" = también se midió en Marte; "escenario" = pasó cerca de la Tierra y el juego imagina que llega a la base. */
-  marcoMarte: z.enum(["observado", "escenario"]).optional(),
+  /** propuesta datos: "observado" = se midió en Marte; "modelado" = DONKI predice llegada a Marte; "escenario" = pasó cerca de la Tierra y el juego imagina que llega a la base. */
+  marcoMarte: z.enum(["observado", "modelado", "escenario"]).optional(),
+  /** propuesta datos: llegada a Marte predicha por WSA-ENLIL (DONKI). Es un modelo, no una medición. */
+  llegadaMarte: z
+    .object({ idFuente: z.string(), offsetHoras: z.number().nonnegative(), rozando: z.boolean() })
+    .optional(),
 });
 export type SpaceWeatherEvent = z.infer<typeof SpaceWeatherEventSchema>;

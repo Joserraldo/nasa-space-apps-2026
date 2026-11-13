@@ -1,0 +1,47 @@
+{
+  "version": "0.2.0",
+  "id": "2024-05-14-x87",
+  "estadoDato": "curado",
+  "nombreKey": "datos.tormenta.2024-05-14-x87.nombre",
+  "queOcurrioKey": "datos.tormenta.2024-05-14-x87.queOcurrio",
+  "marcoMarte": "modelado",
+  "llegadaMarte": {
+    "idFuente": "WSA-ENLIL/30869/1",
+    "hora": "2024-05-16T20:47Z",
+    "rozando": false,
+    "url": "https://ccmc.gsfc.nasa.gov/DONKI/view/WSA-ENLIL/30869/-1"
+  },
+  "regionActiva": 13664,
+  "fases": [
+    {
+      "tipo": "FLR",
+      "idFuente": "2024-05-14T16:46:00-FLR-001",
+      "hora": "2024-05-14T16:51Z",
+      "claseGoes": "X8.7",
+      "observadoEn": "Sol",
+      "instrumentos": [
+        "GOES-P: EXIS 1.0-8.0"
+      ],
+      "url": "https://ccmc.gsfc.nasa.gov/DONKI/view/FLR/30849/-1"
+    },
+    {
+      "tipo": "CME",
+      "idFuente": "2024-05-14T17:00:00-CME-001",
+      "hora": "2024-05-14T17:00Z",
+      "velocidadKmS": 2119,
+      "observadoEn": "Sol",
+      "instrumentos": [
+        "SOHO: LASCO/C2",
+        "SOHO: LASCO/C3",
+        "STEREO A: SECCHI/COR2"
+      ],
+      "url": "https://ccmc.gsfc.nasa.gov/DONKI/view/CME/30867/-1"
+    }
+  ],
+  "fuente": {
+    "nombreKey": "fuente.donki",
+    "dueno": "NASA CCMC (DONKI)",
+    "url": "https://ccmc.gsfc.nasa.gov/tools/DONKI/",
+    "consultadoEl": "2026-11-13"
+  }
+}

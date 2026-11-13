@@ -1,0 +1,10 @@
+{
+  "consultadoEl": "2026-11-13",
+  "consultas": {
+    "FLR": "https://ccmc.gsfc.nasa.gov/DONKI-API/get/FLR?startDate=2017-09-05&endDate=2017-09-11",
+    "CME": "https://api.nasa.gov/DONKI/CME?startDate=2017-09-05&endDate=2017-09-11",
+    "SEP": "https://api.nasa.gov/DONKI/SEP?startDate=2017-09-06&endDate=2017-09-11",
+    "GST": "https://api.nasa.gov/DONKI/GST?startDate=2017-09-07&endDate=2017-09-09",
+    "WSAEnlilSimulations": "https://api.nasa.gov/DONKI/WSAEnlilSimulations?startDate=2017-09-05&endDate=2017-09-12"
+  }
+}

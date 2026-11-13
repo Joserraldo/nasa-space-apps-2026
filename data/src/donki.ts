@@ -68,3 +68,17 @@ export const DonkiSEP = z
     link: z.string().url(),
   })
   .passthrough();
+
+export const DonkiEnlil = z
+  .object({
+    simulationID: z.string(),
+    modelCompletionTime: z.string(),
+    link: z.string().url(),
+    cmeInputs: z
+      .array(z.object({ cmeStartTime: z.string(), speed: z.number().nullable(), isMostAccurate: z.boolean() }).passthrough())
+      .nullable(),
+    impactList: z
+      .array(z.object({ location: z.string(), arrivalTime: z.string(), isGlancingBlow: z.boolean() }).passthrough())
+      .nullable(),
+  })
+  .passthrough();

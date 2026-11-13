@@ -34,7 +34,15 @@ export const TormentaSchema = z
     estadoDato: z.enum(["mock", "curado"]),
     nombreKey: z.string(),
     queOcurrioKey: z.string(),
-    marcoMarte: z.enum(["observado", "escenario"]),
+    /**
+     * observado = medido en Marte · modelado = la simulación WSA-ENLIL de DONKI predice llegada a Marte
+     * · escenario = pasó cerca de la Tierra y el juego imagina que llega a la base.
+     */
+    marcoMarte: z.enum(["observado", "modelado", "escenario"]),
+    /** Llegada a Marte según WSA-ENLIL (modelo, no medición). Solo con marcoMarte "modelado". */
+    llegadaMarte: z
+      .object({ idFuente: z.string(), hora: HoraUtc, rozando: z.boolean(), url: z.string().url() })
+      .optional(),
     /** Numeración de DONKI (5 cifras: 13664 = "AR 3664" de NOAA). */
     regionActiva: z.number().int().positive().nullable(),
     fases: z.array(FaseSchema).min(1),
@@ -51,6 +59,8 @@ export const TormentaSchema = z
       ctx.addIssue({ code: "custom", message: "un mock solo lleva IDs MOCK-" });
     if (t.estadoDato === "curado" && mock.includes(true))
       ctx.addIssue({ code: "custom", message: "un curado no lleva IDs MOCK-" });
+    if ((t.marcoMarte === "modelado") !== Boolean(t.llegadaMarte))
+      ctx.addIssue({ code: "custom", message: "marcoMarte modelado ⇔ llegadaMarte" });
     const horas = t.fases.map((f) => f.hora);
     if (horas.join() !== [...horas].sort().join())
       ctx.addIssue({ code: "custom", message: "fases fuera de orden" });

@@ -11,5 +11,21 @@
   "datos.tormenta.mock-solo-fulguracion.nombre": "Test flash without a storm",
   "datos.tormenta.mock-solo-fulguracion.queOcurrio": "The Sun flashes very bright for a moment, but the cloud is not coming our way.",
   "datos.tormenta.mock-tormenta-marte.nombre": "Test storm at Mars",
-  "datos.tormenta.mock-tormenta-marte.queOcurrio": "A slow cloud from the Sun reaches Mars and brings fast particles."
+  "datos.tormenta.mock-tormenta-marte.queOcurrio": "A slow cloud from the Sun reaches Mars and brings fast particles.",
+  "datos.marco.modelado": "NASA's WSA-ENLIL model calculated that this cloud would reach Mars. It is a calculation, not a measurement.",
+  "datos.marco.rozando": "According to the model, it would only graze it.",
+  "datos.tormenta.2024-05-14-x87.nombre": "The giant flash of May 14, 2024",
+  "datos.tormenta.2024-05-14-x87.queOcurrio": "The Sun let out one of its strongest flashes in years and a super-fast cloud of particles. It was not heading to Earth, but NASA's model calculated it would reach Mars.",
+  "datos.tormenta.2024-05-11-x58.nombre": "The flash of May 11, 2024",
+  "datos.tormenta.2024-05-11-x58.queOcurrio": "The same sunspot that painted auroras on Earth let out another strong flash and a fast cloud. Very energetic particles arrived near Earth, and NASA's model calculated the cloud would reach Mars.",
+  "datos.tormenta.2024-05-10-gannon.nombre": "The great storm of May 2024",
+  "datos.tormenta.2024-05-10-gannon.queOcurrio": "Several clouds from the Sun hit Earth one after another. The magnetic storm reached the top of the scale and people saw auroras in many places.",
+  "datos.tormenta.2024-10-03-x90.nombre": "The X9.0 flash of October 2024",
+  "datos.tormenta.2024-10-03-x90.queOcurrio": "It was the strongest flash of this solar cycle up to that day. Its cloud caused a magnetic storm on Earth, and NASA's model calculated it would also reach Mars.",
+  "datos.tormenta.2024-10-10-g4.nombre": "The storm of October 10, 2024",
+  "datos.tormenta.2024-10-10-g4.queOcurrio": "A fast cloud from the Sun brought very energetic particles and a strong magnetic storm on Earth. NASA's model calculated it would also reach Mars.",
+  "datos.tormenta.2017-09-06-x93.nombre": "The X9.3 flash of September 2017",
+  "datos.tormenta.2017-09-06-x93.queOcurrio": "A sunspot let out a huge flash and a cloud that reached Earth and caused a magnetic storm.",
+  "datos.tormenta.2017-09-10-x82.nombre": "The X8.2 flash of September 2017",
+  "datos.tormenta.2017-09-10-x82.queOcurrio": "The same sunspot let out another huge flash and a super-fast cloud. Very energetic particles arrived near Earth."
 }
