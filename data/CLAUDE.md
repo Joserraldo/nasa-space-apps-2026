@@ -13,9 +13,9 @@
 **Hecho clave:** la rebanada vertical es en **Marte (Jezero)**. El Kp de DONKI mide la Tierra, no Marte. Lo que DONKI sí dice de Marte sale de las simulaciones WSA-ENLIL (`impactList` con `Mars`), que son un modelo y no una medición [V]. Por eso cada evento lleva `marcoMarte`: observado | modelado | escenario.
 
 **P1 (sáb 12:00): que nadie me espere**
-1. Contrato `SpaceWeatherEvent` v0.2 (#15) aprobado por motor y agentes, y movido a `/contracts`. Cambios: `observedAt` por fase, `marcoMarte` (observado | modelado | escenario), `offsetHours` calculado por código, `SourceCard` exportada aparte y con `owner`.
+1. Contrato `SpaceWeatherEvent` v0.2 (#15) aprobado por motor y agentes, y movido a `/contracts`. Cambios: `observedAt` por fase, `marcoMarte` (observado = RAD lo midió | modelado = ENLIL | escenario), `offsetHours` calculado por código, `SourceCard` exportada aparte y con `owner`.
 2. Mocks v0.2 en `data/mock`: 3 tormentas, más 1 tarjeta de terreno y 1 de dosis, para que ui pinte tarjetas desde la hora 1.
-3. ✅ 7 tormentas [V] curadas (PR #23). Ruta dorada: X8.7 del 14 may 2024, que según ENLIL llega a Marte.
+3. ✅ 8 tormentas [V] curadas (PR #23 y #26). Ruta dorada: 2024-05-20, medida en Marte por RAD (×19,4).
 
 **P2 (sáb 22:00): datos de la ruta dorada**
 4. Script `data/scripts/donki.ts` (Node, clave por variable de entorno, ventanas ≤30 días) que guarda lo crudo en `data/raw` y lo normalizado en `data/curated/*.json`, validado con Zod. Más `data/curated/index.json` en orden fijo, para que el motor sortee por semilla.
