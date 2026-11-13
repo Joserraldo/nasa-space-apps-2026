@@ -1,5 +1,5 @@
 # Estado — datos
-**Actualizado:** 2026-11-13 · **Rama:** feat/datos-comunicaciones · **PR:** #55 tarjeta → retraso Marte–Tierra (apilado) · #45 fusionado
+**Actualizado:** 2026-11-13 · **Rama:** feat/datos-comunicaciones · **PR:** #55 tarjeta → #65 retraso Marte–Tierra (apilado) · issue #66 · #45 fusionado
 ## Hecho
 - 8 tormentas DONKI + RAD. Ruta dorada 2024-05-20, medida en Marte (×19,4). Jezero (Trek), dosis [V], 3 tarjetas OSDR, glosario, auditoría.
 - Artemis I (HERA, RadLab): resumen y tarjeta es/en (el enunciado oficial pide datos de Artemis).
