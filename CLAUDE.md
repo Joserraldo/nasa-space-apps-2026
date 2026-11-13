@@ -24,7 +24,7 @@
 ## Producto
 - Público: niños de 7 a 12 años. Lenguaje simple, tono de ciencia divertida, nada grosero ni inapropiado.
 - Nada de personajes, nombres o estética de franquicias existentes (ni Jarvis, ni Rick and Morty, etc.).
-- Bilingüe español/inglés desde el día 1: ningún texto visible quemado en el código, todo pasa por i18n.
+- Bilingüe inglés/español desde el día 1: ningún texto visible quemado en el código, todo pasa por i18n. **El inglés es el idioma base**: cada texto se escribe primero en inglés, es el idioma por defecto y el de respaldo; el español es la segunda lengua y se elige con el selector.
 - Todo dato de NASA lleva su fuente citada. Si es estático, no se presenta como "en vivo".
 - Nada de claves en el código ni en el navegador. Variables de entorno; el modelo se llama solo desde serverless.
 - No se guarda audio de menores. Se transcribe y se descarta.
