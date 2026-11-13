@@ -4,7 +4,13 @@
  * Textos visibles: solo claves i18n (data/i18n/{es,en}.json).
  */
 import { z } from "zod";
-import { SpaceWeatherKindSchema } from "./contrato-espejo";
+import type { SpaceWeatherKind } from "./contrato";
+
+/** Mismo enum que el contrato (local para no mezclar dos copias de zod). La línea siguiente falla al compilar si difieren. */
+const SpaceWeatherKindSchema = z.enum(["CME", "FLR", "SEP", "GST", "RBE"]);
+type Igual<A, B> = [A] extends [B] ? ([B] extends [A] ? true : false) : false;
+const _mismoEnum: Igual<z.infer<typeof SpaceWeatherKindSchema>, SpaceWeatherKind> = true;
+void _mismoEnum;
 
 /** Una tormenta cuenta como "observada en Marte" si RAD sube al menos 1,5× sobre su fondo. */
 export const UMBRAL_OBSERVADO = 1.5;

@@ -45,3 +45,21 @@ export const OsdrSchema = z.object({
   tarjetas: z.array(TarjetaOsdrSchema).min(1),
 });
 export type Osdr = z.infer<typeof OsdrSchema>;
+
+/** Resumen de la dosis absorbida en Artemis I (HERA, vía RadLab), calculado por scripts/artemis.ts. */
+export const ArtemisSchema = z.object({
+  version: z.literal("0.1.0"),
+  mision: z.literal("Artemis I"),
+  instrumento: z.string(),
+  unidad: z.literal("µGy/h"),
+  magnitud: z.literal("dosis absorbida"),
+  desde: z.string(),
+  hasta: z.string(),
+  muestras: z.number().int().positive(),
+  medianaCrucero: z.number().positive(),
+  pico: z.object({ valor: z.number().positive(), hora: z.string() }),
+  vecesPicoSobreCrucero: z.number().int().positive(),
+  diario: z.array(z.object({ dia: z.string(), mediana: z.number(), maximo: z.number() })).min(1),
+  fuente: z.object({ nombreKey: z.string(), dueno: z.string(), url: z.string().url(), consultadoEl: z.string().regex(/^\d{4}-\d{2}-\d{2}$/) }),
+});
+export type Artemis = z.infer<typeof ArtemisSchema>;

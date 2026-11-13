@@ -40,8 +40,8 @@ async function main() {
   writeFileSync(join(dir, "sombreado.jpg"), await bajar(urlSombra));
 
   const paso = 180 / 2 ** NIVEL_CTX;
-  const cols = [Math.floor((oeste + 180) / paso), Math.floor((este + 180) / paso)];
-  const filas = [Math.floor((90 - norte) / paso), Math.floor((90 - sur) / paso)];
+  const cols: [number, number] = [Math.floor((oeste + 180) / paso), Math.floor((este + 180) / paso)];
+  const filas: [number, number] = [Math.floor((90 - norte) / paso), Math.floor((90 - sur) / paso)];
   const teselas: { archivo: string; oeste: number; norte: number; grados: number }[] = [];
   for (let f = filas[0]; f <= filas[1]; f++)
     for (let c = cols[0]; c <= cols[1]; c++) {

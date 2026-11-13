@@ -1,0 +1,25 @@
+# Revisión científica de los textos de los expertos (rol datos → agentes)
+
+**Revisado:** 2026-11-13, sobre `docs/ideas/agentes.md` (PR #24). Es una sugerencia: los textos los decide agentes. Las cifras citadas están verificadas en `docs/science/fuentes.md`.
+
+## Lo que está bien
+- *Dosis* = "como el sol en la piel: poquito no pasa nada, mucho rato quema". Buena analogía: la dosis se acumula con el tiempo.
+- *Microgravedad* = "como estar siempre en la bajada de la montaña rusa". Correcta (caída libre).
+- `ir_al_refugio` ante una tormenta: es lo que se planea para astronautas. Bien.
+- La falla 4 de la IA ("apaga el blindaje para ahorrar") enseña bien a verificar.
+
+## Lo que conviene ajustar
+| Dónde | Problema | Sugerencia (es / en) |
+|---|---|---|
+| *Llamarada* = "un estornudo de luz del Sol" | Bien para el destello, pero el niño puede creer que el destello es lo que llega a la base. Lo que viaja días es la **nube** (CME); las partículas rápidas llegan antes | "El destello es luz; la nube de partículas viene después, y esa es la que hay que esperar con el escudo." / "The flash is light; the particle cloud comes later, and that's the one to wait for with the shield." |
+| Microgravedad en una base en Marte | En la superficie de Marte **no** hay microgravedad: la gravedad es el **38 %** de la de la Tierra (0,380 [V], NASA NSSDC). Microgravedad es en la nave o en la ISS | Usarla solo en la fase de nave/satélite. En la base: "En Marte pesas como un tercio de lo que pesas en la Tierra." / "On Mars you weigh about a third of what you weigh on Earth." |
+| Frase de eval 9: "me duele la cabeza al astronauta" → `estado_salud` | Bien como intención, pero la Doctora **no** debe atribuir síntomas leves a la radiación (solo dosis muy altas causan síntomas) | Plantilla neutra: "Vamos a revisarlo. La radiación no se siente; por eso la medimos con el dosímetro." / "Let's check. You can't feel radiation; that's why we measure it with the dosimeter." |
+| La Meteoróloga y el "Kp" | El Kp mide la Tierra, no Marte | En Marte no decir "Kp". Usar `marcoMarte`: **observado** → "Curiosity midió la subida"; **modelado** → "el modelo calcula que llega en X horas (es un cálculo)"; **escenario** → "pasó cerca de la Tierra; imaginamos que llega" |
+| `pronostico` | Los datos son históricos curados, no en vivo | No decir "ahora mismo en el Sol". Sí decir "esta tormenta real pasó el <fecha>" con la tarjeta de fuente |
+| `explicar_dosis` | No mezclar unidades | Dosis para personas en **mSv/día** (`radiacion`). Lo que mide un detector en una tormenta, en **µGy/h** (`medicionMarte`). Nunca convertir uno en otro |
+
+## Textos listos para reutilizar (ya están en `data/i18n`, es/en)
+- Glosario: `datos.glosario.<palabra>.palabra` y `.def` (19 palabras: destello, nube solar, partículas energéticas, dosis, blindaje, modelo, medición…).
+- Marco de la tormenta: `datos.marco.observado | modelado | escenario | rozando`.
+- Medición en Marte: `datos.medicion.rad`, `datos.medicion.sinAumento`.
+- Dosis comparadas: `datos.radiacion.comparacion`. Polo norte: `datos.region.marte_polo_norte.descripcion`. Artemis I: `datos.artemis.texto`.

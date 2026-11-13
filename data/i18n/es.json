@@ -99,5 +99,11 @@
   "datos.usados.trek": "El mapa de Jezero viene de NASA Mars Trek: la altura del suelo es real, y con ella calculamos qué tan plano, soleado y protegido es cada lugar.",
   "datos.usados.osdr": "Las tarjetas de ciencia cuentan experimentos reales guardados en NASA OSDR.",
   "datos.usados.dosis": "Las dosis de radiación vienen de artículos científicos: la de Marte, del rover Curiosity (NASA); las de la Luna y la Estación Espacial, de un estudio de la misión china Chang’e-4.",
-  "datos.usados.noEnVivo": "Todos estos datos están guardados en el juego: son reales, pero no en vivo."
+  "datos.usados.noEnVivo": "Todos estos datos están guardados en el juego: son reales, pero no en vivo.",
+  "datos.region.marte_polo_norte.nombre": "Polo norte de Marte",
+  "datos.region.marte_polo_norte.descripcion": "Cerca del polo norte de Marte el Sol nunca sube mucho: en pleno verano llega como máximo a unos 33 grados sobre el horizonte, y en invierno hay días en que no sale. Por eso conseguir energía solar cuesta más.",
+  "datos.region.derivado": "La altura del Sol la calculó el equipo a partir de la inclinación del eje de Marte (25,19°, NASA). Para esta región no tenemos mapa del terreno.",
+  "fuente.nssdc": "NASA NSSDC (ficha técnica de Marte)",
+  "datos.artemis.titulo": "Radiación en el viaje de Artemis I",
+  "datos.artemis.texto": "En 2022 la nave Orión de la misión Artemis I viajó alrededor de la Luna sin tripulantes, con detectores de radiación dentro. Durante casi todo el viaje la radiación fue parecida día tras día, pero poco después del despegue llegó a ser unas 480 veces más fuerte por un rato."
 }
