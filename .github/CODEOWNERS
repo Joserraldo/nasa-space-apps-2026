@@ -1,34 +1,35 @@
-# Dueños por carpeta (roles del 13 nov: 5 de construcción + orquestador).
-# La última regla que coincide es la que manda.
+# Dueños por carpeta (roles del 13 nov en la tarde).
+# La última regla que coincide es la que manda. Con dos dueños, basta la revisión de uno.
 *                 @Joserraldo
 
-# Orquestador + Integración, infra y pitch — Santiago Cabeza
-/infra/                 @kcitas
-/pitch/                 @kcitas
-/.github/               @kcitas
-/docs/ORQUESTACION.md   @kcitas
-/docs/modelos.md        @kcitas
-/docs/ia-uso.md         @kcitas
-/docs/reglas.md         @kcitas
+# Orquestación (documentos de coordinación) — Santiago
+/docs/ORQUESTACION.md      @kcitas
+/docs/COMO-TRABAJAMOS.md   @kcitas
+/docs/modelos.md           @kcitas
+/docs/ia-uso.md            @kcitas
+/docs/reglas.md            @kcitas
 
-# Motor + Diseño de juego — Jaime
-/engine/          @JaimeMrF
-/design/          @JaimeMrF
+# Diseño de juego y misiones + Motor y simulación — Santiago y Camilo
+/design/          @kcitas @CamiloM21
+/missions/        @kcitas @CamiloM21
+/engine/          @kcitas @CamiloM21
 
-# Mecánicas y aseguramiento de calidad — María Paula
-/missions/        @Paulasaah
-/tests/           @Paulasaah
+# Frontend, voz, arte y accesibilidad — María Paula
+/ui/              @Paulasaah
+/assets/          @Paulasaah
 
 # Agentes expertos — José
 /agents/          @Joserraldo
 
-# Datos NASA y ciencia — Daniel
-/data/            @Daniverd15
-/docs/science/    @Daniverd15
+# Integración, QA, despliegue y pitch — José
+/infra/           @Joserraldo
+/tests/           @Joserraldo
+/pitch/           @Joserraldo
+/.github/         @Joserraldo
 
-# Frontend, voz, arte y accesibilidad — Camilo
-/ui/              @CamiloM21
-/assets/          @CamiloM21
+# Datos NASA y ciencia — Daniel y Jaime
+/data/            @Daniverd15 @JaimeMrF
+/docs/science/    @Daniverd15 @JaimeMrF
 
-# Contratos compartidos: requieren a los tres dueños
-/contracts/       @JaimeMrF @Joserraldo @Daniverd15
+# Contratos compartidos: motor, agentes y datos
+/contracts/       @kcitas @CamiloM21 @Joserraldo @Daniverd15 @JaimeMrF

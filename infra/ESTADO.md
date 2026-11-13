@@ -1,14 +1,16 @@
-# Estado — infra (orquestador + integración, infra y pitch)
-**Actualizado:** 13 nov 2026 · **Rama:** feat/infra-vispera · **PR:** #14
-**Tokens:** 🟢
+# Estado — infra (integración, QA, despliegue y pitch)
+**Actualizado:** 13 nov 2026, tarde · **Responsable:** José (desde el 13 nov; antes Santiago)
+**Tokens:** por reportar
 
 ## Hecho (últimas iteraciones)
-- Roles nuevos (5 + orquestador) en README, CODEOWNERS y PLAN §3.
-- Creados `AGENTS.md`, `docs/ORQUESTACION.md`, `docs/modelos.md`, `docs/ia-uso.md` y `pitch/criterios.md`.
+- CI de tipos y tests en cada PR (#22).
+- Secreto `BAI_API_KEY` guardado en el repo (clave del clasificador); ningún flujo lo usa todavía.
+- Borrador de `pitch/criterios.md`.
 
 ## Qué sigue
-- Sábado 9:00 (tras el cambio a FASE 1): issue `contrato`, issue de la RUTA DORADA, issues de arranque por rol y mensajes de arranque.
-- Scaffold, CI y link vivo en Cloudflare antes de las 12:00.
+- Flujo de despliegue a Cloudflare desde GitHub Actions (cuando Santiago tenga la cuenta: token e ID como secretos del repo).
+- Incluir `data/` en el CI (#28; el PR #39 de datos prepara su parte).
+- Prueba e2e de la ruta dorada cuando exista la pantalla.
 
 ## Bloqueos
-- Faltan textos oficiales (Guía de Entrega, FAQ, criterios), inventario de modelos y cuentas de Cloudflare. Detalle en `docs/ORQUESTACION.md`.
+- Cuenta de Cloudflare (Santiago). Guía de Entrega y criterios de juicio sin confirmar.

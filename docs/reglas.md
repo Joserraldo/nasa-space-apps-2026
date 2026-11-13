@@ -57,6 +57,19 @@ Investigado el 2026-11-02. Limitación importante: las páginas oficiales de spa
 - Etiquetas: Intermediate, Beginner/Youth.
 - Recursos/datasets oficiales y criterios de juicio: NO CONFIRMADO (se publican el 13 nov).
 
+### Enunciado confirmado (pestaña Details, pegada por Santiago el 13 nov 2026)
+
+Esto reemplaza el resumen de arriba donde no coincidan. Sigue sin confirmar: Guía de Entrega, FAQ y criterios de juicio.
+
+- **Objetivo, literal:** "design and build an interactive game or app that lets kids ages 7–12 manage a lunar or Martian outpost, making real decisions about life support, radiation shielding, power budgeting, food production, and communication delay".
+- **El retraso de comunicaciones está en la lista de decisiones del objetivo.** En nuestro plan, Control de Misión con retraso estaba en la Capa 2: hay que decidir cómo se ve el retraso en la ruta dorada.
+- **Dificultad:** Intermediate, Beginner/Youth. **Temas:** Games, Planets & Moons, Software, Space Exploration, Sun.
+- **Formato abierto:** navegador, móvil o escritorio. Se pide un prototipo que funcione y que muestre el trade-off con claridad.
+- **Datos que nombra el enunciado:** DONKI (actividad solar y riesgo de radiación), OSDR (dosimetría y hallazgos de salud de astronautas), datos de Artemis y de misiones en la superficie de Marte. Acepta datos "live or archived"; un dataset real curado es válido si no se presenta como en vivo.
+- **Consideraciones (opcionales):** lenguaje simple con términos explicados en contexto (dosis de radiación, microgravedad, sol); sin descarga ni cuenta; atribución de fuentes dentro de la herramienta; ninguna opción "segura" sin costo; dos o tres recursos centrales; "a simple game that teaches a real constraint beats a beautiful one that doesn't".
+- **Lo que destaca una solución:** consecuencias ligadas a datos reales de clima espacial; rejugabilidad sin que fallar se sienta como castigo; una explicación corta de qué datasets de NASA se usaron y por qué.
+- El enunciado avisa que pueden añadirse recursos a la pestaña Resources antes del inicio.
+
 ## Sedes locales (Colombia / Bucaramanga)
 
 - Lista oficial: https://www.spaceappschallenge.org/2026/local-events/ (no abierta; NO CONFIRMADO si hay sede colombiana).

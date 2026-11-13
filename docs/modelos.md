@@ -6,14 +6,16 @@ Santiago decide qué modelo y herramienta usa cada persona; el orquestador prepa
 
 No se supone nada: cada fila la dicta la persona.
 
-| Persona | Rol | Herramienta | Modelos disponibles | Límite aproximado |
+Dicho por Santiago el 13 nov: **todos tienen OpenCode; Daniel tiene además Codex; la sesión principal de cada persona va con Opus**, y es Opus quien lanza los subagentes (ver [COMO-TRABAJAMOS.md](COMO-TRABAJAMOS.md) §4). Antes había dicho que los seis usan Claude y tres tienen además ChatGPT. Falta saber qué otros modelos tiene cada uno y cuánto límite le queda.
+
+| Persona | Rol | Herramienta | Modelo principal | Límite aproximado |
 |---|---|---|---|---|
-| Santiago (`kcitas`) | infra | Claude Code | Fable 5.2 (resto por confirmar) | por confirmar |
-| Jaime (`JaimeMrF`) | motor | por confirmar | por confirmar | por confirmar |
-| María Paula (`Paulasaah`) | mecanicas | por confirmar | por confirmar | por confirmar |
-| José (`Joserraldo`) | agentes | por confirmar | por confirmar | por confirmar |
-| Daniel (`Daniverd15`) | datos | por confirmar | por confirmar | por confirmar |
-| Camilo (`CamiloM21`) | ui | por confirmar | por confirmar | por confirmar |
+| Santiago (`kcitas`) | orquestador, motor | Claude Code, OpenCode | Fable 5.2 para coordinar | por confirmar |
+| Camilo (`CamiloM21`) | motor | OpenCode | Opus | por confirmar |
+| María Paula (`Paulasaah`) | ui | OpenCode | Opus | por confirmar |
+| José (`Joserraldo`) | agentes, infra | OpenCode | Opus | por confirmar |
+| Daniel (`Daniverd15`) | datos | OpenCode, Codex | Opus | por confirmar |
+| Jaime (`JaimeMrF`) | datos | OpenCode | Opus | por confirmar |
 
 ## Escalera por demanda de la tarea
 
@@ -33,16 +35,17 @@ Reglas de escalado:
 3. La exploración amplia del repo se hace con un modelo pequeño antes de que el alto lea archivos.
 4. Ante la duda en contratos o motor, se sube el nivel: elegir mal es un riesgo de calendario.
 
-## Matriz por persona (PROPUESTA, sin aprobar y sin inventario)
+## Qué hace Opus y qué delega (por rol)
 
-| Persona | Nivel base | Sube a alto para | Baja a pequeño para |
-|---|---|---|---|
-| Jaime (motor) | Alto | — | tablas de recursos, documentación |
-| María Paula (mecanicas) | Intermedio | simulaciones masivas y balance | mazo de eventos como datos |
-| José (agentes) | Intermedio | contrato `ClassifierOutput`, avería guionada de Iris | plantillas y frases de eval |
-| Daniel (datos) | Intermedio | — | JSON curados, glosario, tarjetas de fuente |
-| Camilo (ui) | Intermedio | degradación 3D → 2D | i18n es/en |
-| Santiago (infra) | Fable solo para coordinar | — | CI y Workers van con intermedio |
+La sesión principal es Opus en todos los roles. Lo que cambia es qué se queda en Opus y qué manda a subagentes con un modelo más pequeño.
+
+| Rol | Se queda en Opus | Delega a subagentes |
+|---|---|---|
+| `ui` (María Paula) | flujo de pantallas de la ruta dorada, conexión con el motor, accesibilidad | componentes repetitivos, textos `en`/`es`, estilos |
+| `motor` (Santiago, Camilo) | contratos, cola de efectos, balance, misiones, depuración | tablas de datos, tests, simulaciones por semilla |
+| `agentes` (José) | contrato `ClassifierOutput`, lógica de expertos, avería guionada de Iris | plantillas de frases, frases de eval, regex |
+| `infra` (José) | integración, despliegue, guion del pitch | flujos de CI, pruebas e2e, documentación |
+| `datos` (Daniel, Jaime) | qué dato respalda qué mecánica, verificación de cifras | JSON curados, glosario, tarjetas de fuente |
 
 ## Reglas de gasto
 

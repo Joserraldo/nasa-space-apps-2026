@@ -1,5 +1,5 @@
 # Rol 3: Agentes expertos
-**Humano responsable:** _por asignar_
+**Humano responsable:** José (`Joserraldo`)
 **Slug de ramas:** `agentes` → `feat/agentes-<tema>`
 **Etiqueta de issues:** `rol:agentes`
 **Posees:** `/agents`
