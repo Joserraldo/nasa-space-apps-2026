@@ -1,16 +1,16 @@
 # Estado — rol 3 (Agentes expertos)
-**Actualizado:** 13 nov 2026 · **Rama:** feat/agentes-iris-guia · **PR:** abriendo (issue #59)
+**Actualizado:** 13 nov 2026 · **Rama:** feat/agentes-que-pasa-si · **PR:** abriendo (issue #59, tarea 5)
 
 ## Hecho (últimas iteraciones)
-- Fusionados: #43 regex en/es · #44 3 expertos en/es con fuente · #47 escena 6 · #49 avería de Iris · #50 README · #46 data/ en CI.
-- Evals reales en b.ai (#51): qwen3.8-flash 80 % accion pero p95 15 s; deepseek 23 % (razonamiento sin tokens). D4: sin clasificador; reabrir tras P2.
-- Fase satélite (#52) y aterrizaje: cada voz defiende su criterio (luz, blindaje, plano).
+- Fusionados: #43 regex · #44 3 expertos con fuente · #47 escena 6 · #49 avería de Iris · #52 satélite · #67 aterrizaje/director · #70 títulos · #71 Iris 1-2.
+- #72 abierto (verde, limpio): `conversar()` para el panel de ui; espera merge de Santiago (#73: solo él fusiona).
+- Ahora: `queSiMatematico(accion, antes, despues)`; ui simula con `aplicarAccion` sobre una copia y el Matemático solo lee la diferencia.
 
 ## Qué sigue (issue #41)
-- #67 fusionado: aterrizaje + director + cola. Revisé el borrador de ui (#68, Jaime) y le dejé sugerencias.
-- Matemático "¿Y si…?" con el simulador del motor; acortar frases > 25 palabras.
+- Usar `fuenteTerreno()` (#69, datos) en los consejos de aterrizaje cuando entre.
+- Acortar frases > 25 palabras. Evals con modelo después de P2 (D4/D10).
 
 ## Bloqueos
-- `ENERGIA_POR_CANTIDAD` provisional (debe vivir en design/). ui/ aún vacío.
+- `ENERGIA_POR_CANTIDAD` provisional (debe vivir en design/). Merges dependen de Santiago.
 
-Evals: corridas (13 nov) · Tokens: 🟢
+Evals: sin red en verde (30 frases) · Tokens: 🟢

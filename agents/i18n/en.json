@@ -94,5 +94,10 @@
   "agentes.iris.sistema.invernadero": "The greenhouse grows food and makes some oxygen. Plants need light, water and care.",
   "agentes.iris.sistema.escudo": "The shield blocks part of the radiation. It works better with more energy.",
   "agentes.iris.sistema.antena": "The antenna talks to Earth. Messages take minutes to arrive, because space is huge.",
-  "agentes.iris.sistema.ia_base": "That's me, Iris! I help, but radiation can confuse me. Always check what I say."
+  "agentes.iris.sistema.ia_base": "That's me, Iris! I help, but radiation can confuse me. Always check what I say.",
+  "agentes.recurso.energia": "energy",
+  "agentes.matematico.sube": "With this, {recursoKey} would go up from {desde} to {hasta}.",
+  "agentes.matematico.baja": "With this, {recursoKey} would go down from {desde} to {hasta}.",
+  "agentes.matematico.igual": "Nothing would change in the base.",
+  "agentes.matematico.decides": "It's just math: you decide."
 }

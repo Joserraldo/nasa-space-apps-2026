@@ -94,5 +94,10 @@
   "agentes.iris.sistema.invernadero": "El invernadero da comida y algo de oxígeno. Las plantas necesitan luz, agua y cuidado.",
   "agentes.iris.sistema.escudo": "El escudo frena parte de la radiación. Funciona mejor con más energía.",
   "agentes.iris.sistema.antena": "La antena habla con la Tierra. Los mensajes tardan minutos en llegar, porque el espacio es enorme.",
-  "agentes.iris.sistema.ia_base": "¡Esa soy yo, Iris! Ayudo, pero la radiación me puede confundir. Revisa siempre lo que digo."
+  "agentes.iris.sistema.ia_base": "¡Esa soy yo, Iris! Ayudo, pero la radiación me puede confundir. Revisa siempre lo que digo.",
+  "agentes.recurso.energia": "la energía",
+  "agentes.matematico.sube": "Con esto, {recursoKey} subiría de {desde} a {hasta}.",
+  "agentes.matematico.baja": "Con esto, {recursoKey} bajaría de {desde} a {hasta}.",
+  "agentes.matematico.igual": "No cambiaría nada en la base.",
+  "agentes.matematico.decides": "Es solo una cuenta: tú decides."
 }
