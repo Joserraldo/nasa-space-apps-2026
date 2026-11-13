@@ -1,0 +1,70 @@
+{
+  "version": "0.2.0",
+  "id": "2017-09-06-x93",
+  "estadoDato": "curado",
+  "nombreKey": "datos.tormenta.2017-09-06-x93.nombre",
+  "queOcurrioKey": "datos.tormenta.2017-09-06-x93.queOcurrio",
+  "marcoMarte": "escenario",
+  "medicionMarte": {
+    "instrumento": "MSL-RAD-Surface",
+    "unidad": "µGy/h",
+    "fondo": 7.8,
+    "pico": 8,
+    "picoMuestra": 8.8,
+    "diaPico": "2017-09-08",
+    "factor": 1,
+    "url": "https://visualization.osdr.nasa.gov/radlab/api/?instrument_id=MSL-RAD-Surface&timestamp>=2017-09-01&timestamp<2017-09-20&absorbed_dose_rate>0&format=json"
+  },
+  "regionActiva": 12673,
+  "fases": [
+    {
+      "tipo": "FLR",
+      "idFuente": "2017-09-06T11:53:00-FLR-001",
+      "hora": "2017-09-06T12:02Z",
+      "claseGoes": "X9.3",
+      "observadoEn": "Sol",
+      "instrumentos": [
+        "GOES15: SEM/XRS 1.0-8.0"
+      ],
+      "url": "https://ccmc.gsfc.nasa.gov/DONKI/view/FLR/13010/-1"
+    },
+    {
+      "tipo": "CME",
+      "idFuente": "2017-09-06T12:24:00-CME-001",
+      "hora": "2017-09-06T12:24Z",
+      "velocidadKmS": 1238,
+      "observadoEn": "Sol",
+      "instrumentos": [
+        "STEREO A: SECCHI/COR2"
+      ],
+      "url": "https://ccmc.gsfc.nasa.gov/DONKI/view/CME/13013/-1"
+    },
+    {
+      "tipo": "SEP",
+      "idFuente": "2017-09-06T23:30:00-SEP-001",
+      "hora": "2017-09-06T23:30Z",
+      "observadoEn": "Tierra",
+      "instrumentos": [
+        "SOHO: COSTEP 15.8-39.8 MeV"
+      ],
+      "url": "https://ccmc.gsfc.nasa.gov/DONKI/view/SEP/13081/-1"
+    },
+    {
+      "tipo": "GST",
+      "idFuente": "2017-09-07T21:00:00-GST-001",
+      "hora": "2017-09-07T21:00Z",
+      "kpMax": 8,
+      "observadoEn": "Tierra",
+      "instrumentos": [
+        "Kp: NOAA"
+      ],
+      "url": "https://ccmc.gsfc.nasa.gov/DONKI/view/GST/13054/-1"
+    }
+  ],
+  "fuente": {
+    "nombreKey": "fuente.donki",
+    "dueno": "NASA CCMC (DONKI); índice Kp: NOAA; radiación en Marte: RAD de MSL Curiosity (NASA) vía OSDR RadLab",
+    "url": "https://ccmc.gsfc.nasa.gov/tools/DONKI/",
+    "consultadoEl": "2026-11-13"
+  }
+}

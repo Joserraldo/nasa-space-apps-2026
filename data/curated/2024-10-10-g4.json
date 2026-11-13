@@ -1,0 +1,68 @@
+{
+  "version": "0.2.0",
+  "id": "2024-10-10-g4",
+  "estadoDato": "curado",
+  "nombreKey": "datos.tormenta.2024-10-10-g4.nombre",
+  "queOcurrioKey": "datos.tormenta.2024-10-10-g4.queOcurrio",
+  "marcoMarte": "modelado",
+  "llegadaMarte": {
+    "idFuente": "WSA-ENLIL/33939/1",
+    "hora": "2024-10-12T09:44Z",
+    "rozando": false,
+    "url": "https://ccmc.gsfc.nasa.gov/DONKI/view/WSA-ENLIL/33939/-1"
+  },
+  "regionActiva": 13848,
+  "fases": [
+    {
+      "tipo": "FLR",
+      "idFuente": "2024-10-09T01:25:00-FLR-001",
+      "hora": "2024-10-09T01:56Z",
+      "claseGoes": "X1.8",
+      "observadoEn": "Sol",
+      "instrumentos": [
+        "GOES-P: EXIS 1.0-8.0"
+      ],
+      "url": "https://ccmc.gsfc.nasa.gov/DONKI/view/FLR/33863/-1"
+    },
+    {
+      "tipo": "CME",
+      "idFuente": "2024-10-09T02:12:00-CME-001",
+      "hora": "2024-10-09T02:12Z",
+      "velocidadKmS": 1473,
+      "observadoEn": "Sol",
+      "instrumentos": [
+        "SOHO: LASCO/C2",
+        "SOHO: LASCO/C3",
+        "STEREO A: SECCHI/COR2"
+      ],
+      "url": "https://ccmc.gsfc.nasa.gov/DONKI/view/CME/33873/-1"
+    },
+    {
+      "tipo": "SEP",
+      "idFuente": "2024-10-09T03:50:00-SEP-001",
+      "hora": "2024-10-09T03:50Z",
+      "observadoEn": "Tierra",
+      "instrumentos": [
+        "GOES-P: SEISS >100 MeV"
+      ],
+      "url": "https://ccmc.gsfc.nasa.gov/DONKI/view/SEP/33868/-1"
+    },
+    {
+      "tipo": "GST",
+      "idFuente": "2024-10-10T15:00:00-GST-001",
+      "hora": "2024-10-10T15:00Z",
+      "kpMax": 8.67,
+      "observadoEn": "Tierra",
+      "instrumentos": [
+        "Kp: NOAA"
+      ],
+      "url": "https://ccmc.gsfc.nasa.gov/DONKI/view/GST/33913/-1"
+    }
+  ],
+  "fuente": {
+    "nombreKey": "fuente.donki",
+    "dueno": "NASA CCMC (DONKI); índice Kp: NOAA",
+    "url": "https://ccmc.gsfc.nasa.gov/tools/DONKI/",
+    "consultadoEl": "2026-11-13"
+  }
+}

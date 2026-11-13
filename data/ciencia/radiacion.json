@@ -1,0 +1,48 @@
+{
+  "version": "0.1.0",
+  "consultadoEl": "2026-11-13",
+  "referencias": [
+    {
+      "id": "marte-superficie",
+      "lugarKey": "datos.radiacion.marte-superficie.lugar",
+      "valor": 0.64,
+      "incertidumbre": 0.12,
+      "unidad": "mSv/día",
+      "magnitud": "dosis equivalente",
+      "periodo": "2012-08-07/2013-06-01",
+      "instrumento": "RAD (rover Curiosity, misión MSL)",
+      "dueno": "NASA (misión MSL)",
+      "cita": "Reitz G., Matthiä D., Hassler D. M., Wimmer-Schweingruber R., Ehresmann B., Zeitlin C., Guo J., Koehler J. (2016). Radiation Measurements of the Mars Science Lab Radiation Assessment Detector (MSL-RAD) on the Surface of Mars. 46th International Conference on Environmental Systems (ICES2016), Viena, 437, pp. 3504–3512.",
+      "url": "https://elib.dlr.de/106090/",
+      "esNasa": true
+    },
+    {
+      "id": "luna-superficie",
+      "lugarKey": "datos.radiacion.luna-superficie.lugar",
+      "valor": 1.369,
+      "incertidumbre": null,
+      "unidad": "mSv/día",
+      "magnitud": "dosis equivalente",
+      "periodo": "2019 (misión Chang’e-4)",
+      "instrumento": "LND (módulo Chang’e-4)",
+      "dueno": "CNSA (China). No es un dato de NASA",
+      "cita": "Zhang S., Wimmer-Schweingruber R. F., Yu J., et al. (2020). First measurements of the radiation dose on the lunar surface. Science Advances 6(39), eaaz1334. doi:10.1126/sciadv.aaz1334",
+      "url": "https://europepmc.org/article/PMC/PMC7518862",
+      "esNasa": false
+    },
+    {
+      "id": "iss",
+      "lugarKey": "datos.radiacion.iss.lugar",
+      "valor": 0.731,
+      "incertidumbre": null,
+      "unidad": "mSv/día",
+      "magnitud": "dosis equivalente",
+      "periodo": "el mismo periodo que la medición de Chang’e-4 (2019)",
+      "instrumento": "DOSIS 3D DOSTEL (Estación Espacial Internacional)",
+      "dueno": "Dato citado en Zhang et al. 2020 (no es una medición de NASA)",
+      "cita": "Zhang S., Wimmer-Schweingruber R. F., Yu J., et al. (2020). First measurements of the radiation dose on the lunar surface. Science Advances 6(39), eaaz1334. doi:10.1126/sciadv.aaz1334",
+      "url": "https://europepmc.org/article/PMC/PMC7518862",
+      "esNasa": false
+    }
+  ]
+}
