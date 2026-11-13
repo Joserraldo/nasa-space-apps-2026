@@ -1,5 +1,5 @@
 # Estado — infra (orquestador + integración, infra y pitch)
-**Actualizado:** 13 nov 2026 · **Rama:** feat/infra-vispera · **PR:** ver abajo
+**Actualizado:** 13 nov 2026 · **Rama:** feat/infra-vispera · **PR:** #14
 **Tokens:** 🟢
 
 ## Hecho (últimas iteraciones)
