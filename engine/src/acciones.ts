@@ -16,6 +16,7 @@ import {
   RETRASO_POR_DIFICULTAD,
   TICKS_POR_DIA,
 } from "@solar-shield/design";
+import { actualizarIa, repararIa } from "./ia.js";
 import { ajustarAltura, avanzarOrbita, senalDeDano } from "./orbita.js";
 import { elegir, enteroEntre, siguiente } from "./rng.js";
 
@@ -108,6 +109,9 @@ export function aplicarAccion(estado: GameState, accionCruda: unknown): GameStat
   if (accion.tipo === "ajustar_orbita" && s.orbita) {
     s = { ...s, orbita: ajustarAltura(s.orbita, accion.deltaAlturaKm) };
   }
+  if (accion.tipo === "reparar") {
+    s = accion.equipo === "ia_base" ? repararIa(s) : { ...s, equipos: { ...s.equipos, [accion.equipo]: "ok" } };
+  }
   return s;
 }
 
@@ -162,6 +166,9 @@ export function avanzarTick(estado: GameState): GameState {
     s = aplicarDeltas(s, ev.elegido.deltas, "mala_suerte", ev.elegido.descripcionKey);
   }
   s = { ...s, rngEstado: rng };
+
+  const huboDecision = estado.causas.some((c) => c.tick === estado.tick && c.origen === "decision");
+  s = actualizarIa(s, huboDecision, senal);
 
   if (RECURSOS.some((r) => s.recursos[r] <= 0)) s = { ...s, resultado: "fallo" };
   else if (s.dia > DIAS_PARA_GANAR) s = { ...s, resultado: "exito" };

@@ -67,6 +67,17 @@ export const OrbitSchema = z.object({
 });
 export type Orbit = z.infer<typeof OrbitSchema>;
 
+/** Métricas que alimentan la IA adaptativa. Se calculan por reglas del estado, nunca por azar. */
+export const PerformanceSchema = z.object({
+  /** Ticks seguidos con todos los recursos sanos. */
+  rachaAciertos: z.number().int().nonnegative(),
+  /** Ticks recientes con algún recurso en peligro. */
+  erroresRecientes: z.number().int().nonnegative(),
+  /** Ticks seguidos sin tomar una decisión. */
+  ticksSinAccion: z.number().int().nonnegative(),
+});
+export type Performance = z.infer<typeof PerformanceSchema>;
+
 export const GameStateSchema = z.object({
   version: z.string(),
   seed: SeedSchema,
@@ -80,6 +91,7 @@ export const GameStateSchema = z.object({
   equipos: z.record(EquipmentSchema, EquipmentStatusSchema),
   tripulacion: z.array(CrewMemberSchema),
   iaBase: BaseAiLevelSchema,
+  rendimiento: PerformanceSchema,
   tormenta: SpaceWeatherEventSchema.nullable(),
   orbita: OrbitSchema.nullable(),
   efectosPendientes: z.array(PendingEffectSchema),
