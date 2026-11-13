@@ -1,0 +1,60 @@
+{
+  "version": "0.2.0",
+  "id": "mock-tormenta-fuerte",
+  "estadoDato": "mock",
+  "nombreKey": "datos.tormenta.mock-tormenta-fuerte.nombre",
+  "queOcurrioKey": "datos.tormenta.mock-tormenta-fuerte.queOcurrio",
+  "marcoMarte": "escenario",
+  "regionActiva": 10001,
+  "fases": [
+    {
+      "tipo": "FLR",
+      "idFuente": "MOCK-2000-01-01T00:00:00-FLR-001",
+      "hora": "2000-01-01T00:20Z",
+      "observadoEn": "Sol",
+      "instrumentos": [
+        "MOCK"
+      ],
+      "url": "https://ccmc.gsfc.nasa.gov/tools/DONKI/",
+      "claseGoes": "X5.0"
+    },
+    {
+      "tipo": "CME",
+      "idFuente": "MOCK-2000-01-01T00:40:00-CME-001",
+      "hora": "2000-01-01T00:40Z",
+      "observadoEn": "Sol",
+      "instrumentos": [
+        "MOCK"
+      ],
+      "url": "https://ccmc.gsfc.nasa.gov/tools/DONKI/",
+      "velocidadKmS": 1500
+    },
+    {
+      "tipo": "SEP",
+      "idFuente": "MOCK-2000-01-01T03:00:00-SEP-001",
+      "hora": "2000-01-01T03:00Z",
+      "observadoEn": "Tierra",
+      "instrumentos": [
+        "MOCK"
+      ],
+      "url": "https://ccmc.gsfc.nasa.gov/tools/DONKI/"
+    },
+    {
+      "tipo": "GST",
+      "idFuente": "MOCK-2000-01-02T12:00:00-GST-001",
+      "hora": "2000-01-02T12:00Z",
+      "observadoEn": "Tierra",
+      "instrumentos": [
+        "MOCK"
+      ],
+      "url": "https://ccmc.gsfc.nasa.gov/tools/DONKI/",
+      "kpMax": 9
+    }
+  ],
+  "fuente": {
+    "nombreKey": "fuente.mock",
+    "dueno": "MOCK (equipo Solar Shield)",
+    "url": "https://ccmc.gsfc.nasa.gov/tools/DONKI/",
+    "consultadoEl": "2026-11-13"
+  }
+}

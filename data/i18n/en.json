@@ -1,0 +1,15 @@
+{
+  "fuente.donki": "NASA CCMC · DONKI (space weather database)",
+  "fuente.mock": "Team test data",
+  "datos.etiqueta.curado": "Real curated data, not live",
+  "datos.etiqueta.mock": "Made-up test data (not real)",
+  "datos.marco.observado": "This storm was also measured at Mars.",
+  "datos.marco.escenario": "This real storm happened near Earth. In the game, we imagine it reaches your base.",
+  "datos.aviso": "Unofficial project, not endorsed by NASA.",
+  "datos.tormenta.mock-tormenta-fuerte.nombre": "Strong test storm",
+  "datos.tormenta.mock-tormenta-fuerte.queOcurrio": "A big explosion on the Sun throws out a cloud of particles. It arrives in a day and a half.",
+  "datos.tormenta.mock-solo-fulguracion.nombre": "Test flash without a storm",
+  "datos.tormenta.mock-solo-fulguracion.queOcurrio": "The Sun flashes very bright for a moment, but the cloud is not coming our way.",
+  "datos.tormenta.mock-tormenta-marte.nombre": "Test storm at Mars",
+  "datos.tormenta.mock-tormenta-marte.queOcurrio": "A slow cloud from the Sun reaches Mars and brings fast particles."
+}
