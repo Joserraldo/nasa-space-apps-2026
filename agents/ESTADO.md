@@ -1,5 +1,5 @@
 # Estado — rol 3 (Agentes expertos)
-**Actualizado:** 13 nov 2026 · **Rama:** feat/agentes-conversar · **PR:** abriendo (issue #59)
+**Actualizado:** 13 nov 2026 · **Rama:** feat/agentes-conversar · **PR:** #72 (issue #59)
 
 ## Hecho (últimas iteraciones)
 - Fusionados: #43 regex en/es · #44 3 expertos en/es con fuente · #47 escena 6 · #49 avería de Iris · #50 README · #46 data/ en CI.
