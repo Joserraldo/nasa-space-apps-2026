@@ -16,6 +16,7 @@ import {
   RETRASO_POR_DIFICULTAD,
   TICKS_POR_DIA,
 } from "@solar-shield/design";
+import { ajustarAltura, avanzarOrbita, senalDeDano } from "./orbita.js";
 import { elegir, enteroEntre, siguiente } from "./rng.js";
 
 const RECURSOS: readonly Resource[] = ["energia", "soporte_vital", "blindaje"];
@@ -104,6 +105,9 @@ export function aplicarAccion(estado: GameState, accionCruda: unknown): GameStat
     });
   }
   s = { ...s, rngEstado: rng, efectosPendientes: [...s.efectosPendientes, ...nuevos] };
+  if (accion.tipo === "ajustar_orbita" && s.orbita) {
+    s = { ...s, orbita: ajustarAltura(s.orbita, accion.deltaAlturaKm) };
+  }
   return s;
 }
 
@@ -139,9 +143,14 @@ export function avanzarTick(estado: GameState): GameState {
   for (const e of listos) s = aplicarDeltas(s, { [e.recurso]: e.delta }, e.origen, e.descripcionKey);
   s = { ...s, efectosPendientes: futuros };
 
-  if (s.tormenta) {
-    const dano = -Math.round(s.tormenta.intensidad * 10);
+  const senal = senalDeDano(s);
+  if (senal > 0) {
+    const dano = -Math.round(senal * 10);
     if (dano !== 0) s = aplicarDeltas(s, { blindaje: dano, energia: Math.ceil(dano / 2) }, "mala_suerte", "causa.tormenta");
+  }
+
+  if (s.orbita) {
+    s = { ...s, orbita: avanzarOrbita(s.orbita, s.tick, senal, s.equipos.antena !== "ok") };
   }
 
   let rng = s.rngEstado;
