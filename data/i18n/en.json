@@ -27,5 +27,16 @@
   "datos.tormenta.2017-09-06-x93.nombre": "The X9.3 flash of September 2017",
   "datos.tormenta.2017-09-06-x93.queOcurrio": "A sunspot let out a huge flash and a cloud that reached Earth and caused a magnetic storm.",
   "datos.tormenta.2017-09-10-x82.nombre": "The X8.2 flash of September 2017",
-  "datos.tormenta.2017-09-10-x82.queOcurrio": "The same sunspot let out another huge flash and a super-fast cloud. Very energetic particles arrived near Earth."
+  "datos.tormenta.2017-09-10-x82.queOcurrio": "The same sunspot let out another huge flash and a super-fast cloud. Very energetic particles arrived near Earth.",
+  "fuente.marsTrek": "NASA Mars Trek (Mars maps)",
+  "datos.terreno.jezero.nombre": "Jezero Crater, Mars",
+  "datos.terreno.derivado": "Ground height is a real measurement (MOLA and HRSC, via Mars Trek). Slope, light and shielding are game values the team calculated from that height; they are not measurements.",
+  "datos.terreno.sitio.llanura-central.nombre": "Central plain",
+  "datos.terreno.sitio.llanura-central.descripcion": "Flat ground and lots of sun, but out in the open: less protection.",
+  "datos.terreno.sitio.cerca-de-perseverance.nombre": "Near Perseverance",
+  "datos.terreno.sitio.cerca-de-perseverance.descripcion": "Close to where the Perseverance rover landed (Mars Trek marker). A bit of everything, nothing perfect.",
+  "datos.terreno.sitio.pie-de-la-pared-sur.nombre": "At the foot of the south wall",
+  "datos.terreno.sitio.pie-de-la-pared-sur.descripcion": "The crater wall covers part of the sky: more protection, but the Sun hides earlier.",
+  "datos.terreno.sitio.sobre-el-borde-oeste.nombre": "On the west rim",
+  "datos.terreno.sitio.sobre-el-borde-oeste.descripcion": "Up high you get tons of sun, but the ground is steep and there is less air above to protect you."
 }

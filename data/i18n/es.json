@@ -27,5 +27,16 @@
   "datos.tormenta.2017-09-06-x93.nombre": "El destello X9.3 de septiembre de 2017",
   "datos.tormenta.2017-09-06-x93.queOcurrio": "Una mancha del Sol lanzó un destello enorme y una nube que llegó a la Tierra y causó una tormenta magnética.",
   "datos.tormenta.2017-09-10-x82.nombre": "El destello X8.2 de septiembre de 2017",
-  "datos.tormenta.2017-09-10-x82.queOcurrio": "La misma mancha lanzó otro destello enorme y una nube rapidísima. Llegaron partículas muy energéticas cerca de la Tierra."
+  "datos.tormenta.2017-09-10-x82.queOcurrio": "La misma mancha lanzó otro destello enorme y una nube rapidísima. Llegaron partículas muy energéticas cerca de la Tierra.",
+  "fuente.marsTrek": "NASA Mars Trek (mapas de Marte)",
+  "datos.terreno.jezero.nombre": "Cráter Jezero, Marte",
+  "datos.terreno.derivado": "La altura del suelo es una medida real (MOLA y HRSC, vía Mars Trek). La inclinación, la luz y el blindaje son valores del juego que el equipo calculó a partir de esa altura; no son mediciones.",
+  "datos.terreno.sitio.llanura-central.nombre": "Llanura central",
+  "datos.terreno.sitio.llanura-central.descripcion": "Suelo plano y mucho sol, pero en campo abierto: tiene menos protección.",
+  "datos.terreno.sitio.cerca-de-perseverance.nombre": "Cerca de Perseverance",
+  "datos.terreno.sitio.cerca-de-perseverance.descripcion": "Cerca de donde aterrizó el rover Perseverance (marcador de Mars Trek). Un poco de todo, nada perfecto.",
+  "datos.terreno.sitio.pie-de-la-pared-sur.nombre": "Al pie de la pared sur",
+  "datos.terreno.sitio.pie-de-la-pared-sur.descripcion": "La pared del cráter tapa parte del cielo: más protección, pero el Sol se esconde antes.",
+  "datos.terreno.sitio.sobre-el-borde-oeste.nombre": "Sobre el borde oeste",
+  "datos.terreno.sitio.sobre-el-borde-oeste.descripcion": "Desde lo alto llega muchísimo sol, pero el suelo es empinado y hay menos aire encima para protegerte."
 }

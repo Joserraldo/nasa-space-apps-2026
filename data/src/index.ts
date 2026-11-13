@@ -14,12 +14,15 @@ import c_2024_10_10_g4 from "../curated/2024-10-10-g4.json";
 import c_2017_09_06_x93 from "../curated/2017-09-06-x93.json";
 import c_2017_09_10_x82 from "../curated/2017-09-10-x82.json";
 import indiceCurado from "../curated/index.json";
+import jezeroJson from "../terreno/jezero/jezero.json";
+import { TerrenoSchema, type Terreno } from "./terreno";
 import { aConvenio } from "./convenio";
 import { TormentaSchema, type Tormenta } from "./tormenta";
 
 export * from "./contrato-espejo";
 export * from "./tormenta";
 export * from "./intensidad";
+export * from "./terreno";
 export { aConvenio, magnitud } from "./convenio";
 
 /** Mocks validados al cargarse: si alguien rompe un JSON, falla aquí y no en la pantalla. */
@@ -32,3 +35,9 @@ export const eventosCurados = tormentasCuradas.map(aConvenio);
 /** Tormenta fija de la semilla dorada (demo y e2e). */
 export const ID_RUTA_DORADA: string = indiceCurado.rutaDorada;
 export const eventoRutaDorada = eventosCurados.find((e) => e.id === ID_RUTA_DORADA)!;
+
+/**
+ * Jezero (Mars Trek). Las rutas de `dem.archivo` e `imagenes` son relativas a data/terreno/jezero/:
+ * la UI las sirve como estáticos. Elevación = medida; pendiente, luz y blindaje = derivados.
+ */
+export const terrenoJezero: Terreno = TerrenoSchema.parse(jezeroJson);
