@@ -1,0 +1,186 @@
+{
+  "consultadoEl": "2026-11-13",
+  "dem": {
+    "capa": "Mars_MOLA_blend200ppx_HRSC_DEM_clon0dd_200mpp_lzw",
+    "url": "https://trek.nasa.gov/mars/trekarcgis/rest/services/Mars_MOLA_blend200ppx_HRSC_DEM_clon0dd_200mpp_lzw/ImageServer/exportImage?bbox=76.9,17.7,78.3,19.1&bboxSR=104905&size=280,280&format=bsq&pixelType=F32&interpolation=RSP_BilinearInterpolation&f=image",
+    "unidad": "m",
+    "tipo": "Int16LE",
+    "ancho": 280,
+    "alto": 280,
+    "bbox": {
+      "oeste": 76.9,
+      "sur": 17.7,
+      "este": 78.3,
+      "norte": 19.1
+    }
+  },
+  "sombreado": {
+    "capa": "Mars_MOLA_blend200ppx_HRSC_Shade_clon0dd_200mpp_lzw",
+    "url": "https://trek.nasa.gov/mars/trekarcgis/rest/services/Mars_MOLA_blend200ppx_HRSC_Shade_clon0dd_200mpp_lzw/ImageServer/exportImage?bbox=76.9,17.7,78.3,19.1&bboxSR=104905&size=1024,1024&format=jpg&f=image",
+    "ancho": 1024,
+    "alto": 1024,
+    "bbox": {
+      "oeste": 76.9,
+      "sur": 17.7,
+      "este": 78.3,
+      "norte": 19.1
+    }
+  },
+  "ctx": {
+    "capa": "Jezero_CTX_BlockAdj_dd",
+    "nivel": 9,
+    "pixeles": 256,
+    "teselas": [
+      {
+        "archivo": "ctx/201_730.png",
+        "oeste": 76.640625,
+        "norte": 19.3359375,
+        "grados": 0.3515625
+      },
+      {
+        "archivo": "ctx/201_731.png",
+        "oeste": 76.9921875,
+        "norte": 19.3359375,
+        "grados": 0.3515625
+      },
+      {
+        "archivo": "ctx/201_732.png",
+        "oeste": 77.34375,
+        "norte": 19.3359375,
+        "grados": 0.3515625
+      },
+      {
+        "archivo": "ctx/201_733.png",
+        "oeste": 77.6953125,
+        "norte": 19.3359375,
+        "grados": 0.3515625
+      },
+      {
+        "archivo": "ctx/201_734.png",
+        "oeste": 78.046875,
+        "norte": 19.3359375,
+        "grados": 0.3515625
+      },
+      {
+        "archivo": "ctx/202_730.png",
+        "oeste": 76.640625,
+        "norte": 18.984375,
+        "grados": 0.3515625
+      },
+      {
+        "archivo": "ctx/202_731.png",
+        "oeste": 76.9921875,
+        "norte": 18.984375,
+        "grados": 0.3515625
+      },
+      {
+        "archivo": "ctx/202_732.png",
+        "oeste": 77.34375,
+        "norte": 18.984375,
+        "grados": 0.3515625
+      },
+      {
+        "archivo": "ctx/202_733.png",
+        "oeste": 77.6953125,
+        "norte": 18.984375,
+        "grados": 0.3515625
+      },
+      {
+        "archivo": "ctx/202_734.png",
+        "oeste": 78.046875,
+        "norte": 18.984375,
+        "grados": 0.3515625
+      },
+      {
+        "archivo": "ctx/203_730.png",
+        "oeste": 76.640625,
+        "norte": 18.6328125,
+        "grados": 0.3515625
+      },
+      {
+        "archivo": "ctx/203_731.png",
+        "oeste": 76.9921875,
+        "norte": 18.6328125,
+        "grados": 0.3515625
+      },
+      {
+        "archivo": "ctx/203_732.png",
+        "oeste": 77.34375,
+        "norte": 18.6328125,
+        "grados": 0.3515625
+      },
+      {
+        "archivo": "ctx/203_733.png",
+        "oeste": 77.6953125,
+        "norte": 18.6328125,
+        "grados": 0.3515625
+      },
+      {
+        "archivo": "ctx/203_734.png",
+        "oeste": 78.046875,
+        "norte": 18.6328125,
+        "grados": 0.3515625
+      },
+      {
+        "archivo": "ctx/204_730.png",
+        "oeste": 76.640625,
+        "norte": 18.28125,
+        "grados": 0.3515625
+      },
+      {
+        "archivo": "ctx/204_731.png",
+        "oeste": 76.9921875,
+        "norte": 18.28125,
+        "grados": 0.3515625
+      },
+      {
+        "archivo": "ctx/204_732.png",
+        "oeste": 77.34375,
+        "norte": 18.28125,
+        "grados": 0.3515625
+      },
+      {
+        "archivo": "ctx/204_733.png",
+        "oeste": 77.6953125,
+        "norte": 18.28125,
+        "grados": 0.3515625
+      },
+      {
+        "archivo": "ctx/204_734.png",
+        "oeste": 78.046875,
+        "norte": 18.28125,
+        "grados": 0.3515625
+      },
+      {
+        "archivo": "ctx/205_730.png",
+        "oeste": 76.640625,
+        "norte": 17.9296875,
+        "grados": 0.3515625
+      },
+      {
+        "archivo": "ctx/205_731.png",
+        "oeste": 76.9921875,
+        "norte": 17.9296875,
+        "grados": 0.3515625
+      },
+      {
+        "archivo": "ctx/205_732.png",
+        "oeste": 77.34375,
+        "norte": 17.9296875,
+        "grados": 0.3515625
+      },
+      {
+        "archivo": "ctx/205_733.png",
+        "oeste": 77.6953125,
+        "norte": 17.9296875,
+        "grados": 0.3515625
+      },
+      {
+        "archivo": "ctx/205_734.png",
+        "oeste": 78.046875,
+        "norte": 17.9296875,
+        "grados": 0.3515625
+      }
+    ]
+  }
+}

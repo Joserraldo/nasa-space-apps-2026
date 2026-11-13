@@ -7,7 +7,9 @@
     "test": "vitest run",
     "typecheck": "tsc --noEmit",
     "descargar": "tsx scripts/descargar.ts",
-    "curar": "tsx scripts/curar.ts"
+    "curar": "tsx scripts/curar.ts",
+    "jezero:descargar": "tsx scripts/jezero-descargar.ts",
+    "jezero:curar": "tsx scripts/jezero-curar.ts"
   },
   "dependencies": {
     "zod": "3.23.8"
