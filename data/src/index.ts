@@ -19,7 +19,8 @@ import jezeroJson from "../terreno/jezero/jezero.json";
 import radiacionJson from "../ciencia/radiacion.json";
 import osdrJson from "../ciencia/osdr.json";
 import artemisJson from "../ciencia/artemis.json";
-import { ArtemisSchema, OsdrSchema, RadiacionSchema, type Artemis, type Osdr, type Radiacion } from "./ciencia";
+import { ArtemisSchema, FUENTE_DOSIS, OsdrSchema, RadiacionSchema, type Artemis, type Osdr, type Radiacion } from "./ciencia";
+import type { SourceCard } from "./contrato";
 import { TerrenoSchema, type Terreno } from "./terreno";
 import { aConvenio } from "./convenio";
 import { TormentaSchema, type Tormenta } from "./tormenta";
@@ -57,3 +58,19 @@ export const tarjetasOsdr: Osdr = OsdrSchema.parse(osdrJson);
 
 /** Artemis I: dosis absorbida dentro de Orion (HERA, vía RadLab). µGy/h, nunca mSv. */
 export const artemis: Artemis = ArtemisSchema.parse(artemisJson);
+
+/**
+ * Referencia de dosis lista para agentes (ReferenciaDosis): valor en mSv/día + SourceCard del contrato.
+ * Uso: responder(salida, vista, { dosisMarte: referenciaDosis("marte-superficie") }).
+ */
+export function referenciaDosis(id: string): { valor: number; unidad: "mSv/día"; fuente: SourceCard } {
+  const r = radiacion.referencias.find((x) => x.id === id);
+  if (!r) throw new Error(`referencia de dosis desconocida: ${id}`);
+  const nombreKey = FUENTE_DOSIS[r.id];
+  if (!nombreKey) throw new Error(`sin clave de fuente para ${id}`);
+  return {
+    valor: r.valor,
+    unidad: r.unidad,
+    fuente: { nombreKey, url: r.url, idFuente: r.id, consultadoEl: radiacion.consultadoEl, dueno: r.dueno, estadoDato: "curado" },
+  };
+}
