@@ -72,5 +72,10 @@
   "agentes.aterrizaje.doctora.blindaje": "Yo prefiero {sitioKey}. El terreno de alrededor frena parte de la radiación, como un paraguas de roca.",
   "agentes.aterrizaje.ia_base.plano": "Para aterrizar seguro, {sitioKey} es el más plano. Aterrizar en una pendiente es como estacionar en una loma.",
   "agentes.aterrizaje.cierre.discrepan": "Cada experto prefiere un lugar distinto. Ningún sitio es perfecto: elige lo que más le importa a tu misión.",
-  "agentes.aterrizaje.cierre.coinciden": "Esta vez todos están de acuerdo. ¡Eso casi nunca pasa!"
+  "agentes.aterrizaje.cierre.coinciden": "Esta vez todos están de acuerdo. ¡Eso casi nunca pasa!",
+  "agentes.titulo.ingeniera": "Ingeniera",
+  "agentes.titulo.doctora": "Doctora de radiación",
+  "agentes.titulo.meteorologa": "Meteoróloga solar",
+  "agentes.titulo.matematico": "Matemático",
+  "agentes.titulo.ia_base": "Iris"
 }

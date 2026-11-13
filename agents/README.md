@@ -39,3 +39,8 @@ frase / botón ─► clasificarConAtajos(texto)  ── null ─► (modelo ví
 
 ## Pruebas
 `npm test` (desde la raíz). Las 30 frases de eval están en `src/atajos.test.ts`.
+
+## Nombres de los expertos
+- `agentes.titulo.<experto>`: para títulos y etiquetas ("Engineer" / "Ingeniera").
+- `agentes.nombre.<experto>`: solo dentro de frases ("call **the Engineer**" / "llama **a la Ingeniera**"), por eso trae artículo y preposición.
+- Para no mostrar la tormenta antes del paso 5, pasar a `responder` la vista de `vistaVisible(estado, tormentaActiva(estado))`.
