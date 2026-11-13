@@ -121,5 +121,7 @@
   "datos.tarjeta.tipo.RBE": "Radiation belt boost",
   "datos.tarjeta.medicion": "On Mars, Curiosity measured {pico} µGy/h on {dia}, about {factor} times a normal day ({fondo} µGy/h).",
   "datos.tarjeta.modelo": "NASA's model calculated it would reach Mars on {fecha}.",
-  "datos.tarjeta.fuente": "Source: {duenoKey} · retrieved {consultado}"
+  "datos.tarjeta.fuente": "Source: {duenoKey} · retrieved {consultado}",
+  "datos.comunicaciones.retraso": "A message between Mars and Earth travels at the speed of light, and it still takes from about 3 to about 22 minutes, depending on where the two planets are. Nothing can go faster!",
+  "datos.comunicaciones.derivado": "The team calculated these times from the closest and farthest Mars–Earth distances (NASA) and the speed of light."
 }
