@@ -6,7 +6,7 @@
 - Contrato v0.2.0 (#29) con los opcionales de datos: espejo eliminado, data/ reexporta /contracts.
 ## Qué sigue
 - P3 `marte_polo_norte`: plan B hecho (tarjeta de luz por latitud, sin mapa). Opcional: Gale (equirectangular, sí exporta).
-- Revisar con agentes los textos de la Meteoróloga y la Doctora.
+- Revisión científica de los textos de agentes: hecha (#40, independiente). Esperar respuesta de agentes.
 ## Bloqueos / no verificado
 - #28: diff de raíz ya probado (109 tests en verde con data como workspace); falta que infra lo aplique. El motor espera esto para usar eventosCurados. Mars Rover Photos caído. RAD sin datos en oct 2024.
 Tokens: 🟡
