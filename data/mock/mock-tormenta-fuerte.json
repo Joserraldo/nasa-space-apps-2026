@@ -1,68 +1,60 @@
 {
-  "schemaVersion": "0.1.0",
-  "dataStatus": "mock",
+  "version": "0.2.0",
   "id": "mock-tormenta-fuerte",
-  "name": {
-    "es": "Tormenta de prueba fuerte",
-    "en": "Strong test storm"
-  },
-  "startTime": "2000-01-01T00:00Z",
-  "endTime": "2000-01-03T12:00Z",
-  "activeRegionNum": 10001,
-  "phases": [
+  "estadoDato": "mock",
+  "nombreKey": "datos.tormenta.mock-tormenta-fuerte.nombre",
+  "queOcurrioKey": "datos.tormenta.mock-tormenta-fuerte.queOcurrio",
+  "marcoMarte": "escenario",
+  "regionActiva": 10001,
+  "fases": [
     {
-      "type": "FLR",
-      "donkiId": "MOCK-2000-01-01T00:00:00-FLR-001",
-      "time": "2000-01-01T00:20Z",
-      "classType": "X5.0",
-      "instruments": [
+      "tipo": "FLR",
+      "idFuente": "MOCK-2000-01-01T00:00:00-FLR-001",
+      "hora": "2000-01-01T00:20Z",
+      "observadoEn": "Sol",
+      "instrumentos": [
         "MOCK"
-      ]
+      ],
+      "url": "https://ccmc.gsfc.nasa.gov/tools/DONKI/",
+      "claseGoes": "X5.0"
     },
     {
-      "type": "CME",
-      "donkiId": "MOCK-2000-01-01T00:40:00-CME-001",
-      "time": "2000-01-01T00:40Z",
-      "speedKmS": 1500,
-      "instruments": [
+      "tipo": "CME",
+      "idFuente": "MOCK-2000-01-01T00:40:00-CME-001",
+      "hora": "2000-01-01T00:40Z",
+      "observadoEn": "Sol",
+      "instrumentos": [
         "MOCK"
-      ]
+      ],
+      "url": "https://ccmc.gsfc.nasa.gov/tools/DONKI/",
+      "velocidadKmS": 1500
     },
     {
-      "type": "SEP",
-      "donkiId": "MOCK-2000-01-01T03:00:00-SEP-001",
-      "time": "2000-01-01T03:00Z",
-      "instruments": [
+      "tipo": "SEP",
+      "idFuente": "MOCK-2000-01-01T03:00:00-SEP-001",
+      "hora": "2000-01-01T03:00Z",
+      "observadoEn": "Tierra",
+      "instrumentos": [
         "MOCK"
-      ]
+      ],
+      "url": "https://ccmc.gsfc.nasa.gov/tools/DONKI/"
     },
     {
-      "type": "GST",
-      "donkiId": "MOCK-2000-01-02T12:00:00-GST-001",
-      "time": "2000-01-02T12:00Z",
-      "kpMax": 9,
-      "instruments": [
+      "tipo": "GST",
+      "idFuente": "MOCK-2000-01-02T12:00:00-GST-001",
+      "hora": "2000-01-02T12:00Z",
+      "observadoEn": "Tierra",
+      "instrumentos": [
         "MOCK"
-      ]
+      ],
+      "url": "https://ccmc.gsfc.nasa.gov/tools/DONKI/",
+      "kpMax": 9
     }
   ],
-  "source": {
-    "title": {
-      "es": "Tormenta de prueba fuerte",
-      "en": "Strong test storm"
-    },
-    "whatHappened": {
-      "es": "Una explosión grande en el Sol lanza una nube de partículas. Llega en un día y medio.",
-      "en": "A big explosion on the Sun throws out a cloud of particles. It arrives in a day and a half."
-    },
-    "provider": "MOCK (equipo Solar Shield)",
-    "links": [
-      "https://ccmc.gsfc.nasa.gov/tools/DONKI/"
-    ],
-    "retrievedAt": "2026-11-13",
-    "label": {
-      "es": "Datos de prueba inventados (no son reales)",
-      "en": "Made-up test data (not real)"
-    }
+  "fuente": {
+    "nombreKey": "fuente.mock",
+    "dueno": "MOCK (equipo Solar Shield)",
+    "url": "https://ccmc.gsfc.nasa.gov/tools/DONKI/",
+    "consultadoEl": "2026-11-13"
   }
 }
