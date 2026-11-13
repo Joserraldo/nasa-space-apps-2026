@@ -1,5 +1,5 @@
 # Rol 5: Frontend, voz, arte y accesibilidad
-**Humano responsable:** _por asignar_
+**Humano responsable:** María Paula (`Paulasaah`)
 **Slug de ramas:** `ui` → `feat/ui-<tema>`
 **Etiqueta de issues:** `rol:ui`
 **Posees:** `/ui`, `/assets`
