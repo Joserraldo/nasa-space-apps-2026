@@ -16,7 +16,7 @@
 5. Conectar `eventosCurados` de `data/` al reto del día.
 6. Lo que `ui` y `agentes` pidan para la ruta dorada.
 
-Nada nuevo fuera de esta lista (regiones, Luna, 3D) hasta que la ruta dorada se juegue en pantalla.
+Nada nuevo fuera de esta lista (regiones, Luna) hasta que la ruta dorada se juegue en pantalla.
 
 ## Notas / decisiones que afectan este rol
 - Tiempo real con pausa, motor por ticks fijos; pausa automática en tormenta, avería, consejo y diálogo.

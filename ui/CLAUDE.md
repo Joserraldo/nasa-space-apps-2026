@@ -27,6 +27,5 @@ Teclado y botones grandes · texto grande y fuente legible · nunca solo color (
 
 ## Notas / decisiones que afectan este rol
 - Inglés es el idioma base; español segundo. Ningún texto visible quemado en el código.
-- 2D primero; el 3D es Capa 1 y se decide después de que la ruta dorada se juegue.
 - Arte: assets CC0 o propios; cada pieza registra su licencia en `assets/LICENCIAS.md`. Nada de franquicias existentes.
 - Propuesta de marca y tripulación de Camilo: rama `feat/ui-marca` (D6, D7).
