@@ -6,6 +6,8 @@ Santiago decide qué modelo y herramienta usa cada persona; el orquestador prepa
 
 No se supone nada: cada fila la dicta la persona.
 
+Dicho por Santiago el 13 nov: **los seis usan Claude y tres tienen además ChatGPT.** Falta saber quiénes son esos tres, qué modelos tiene cada uno y cuánto límite le queda.
+
 | Persona | Rol | Herramienta | Modelos disponibles | Límite aproximado |
 |---|---|---|---|---|
 | Santiago (`kcitas`) | infra | Claude Code | Fable 5.2 (resto por confirmar) | por confirmar |
