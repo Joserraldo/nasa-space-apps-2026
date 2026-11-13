@@ -13,7 +13,7 @@
     "ui"
   ],
   "scripts": {
-    "typecheck": "tsc -b contracts design engine agents data missions ui",
+    "typecheck": "tsc -b contracts design engine agents data missions ui infra/worker",
     "test": "vitest run",
     "test:watch": "vitest",
     "dev": "npm run dev -w ui",
