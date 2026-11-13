@@ -1,0 +1,61 @@
+{
+  "version": "0.2.0",
+  "id": "2017-09-10-x82",
+  "estadoDato": "curado",
+  "nombreKey": "datos.tormenta.2017-09-10-x82.nombre",
+  "queOcurrioKey": "datos.tormenta.2017-09-10-x82.queOcurrio",
+  "marcoMarte": "observado",
+  "medicionMarte": {
+    "instrumento": "MSL-RAD-Surface",
+    "unidad": "µGy/h",
+    "fondo": 7.9,
+    "pico": 17.9,
+    "picoMuestra": 23.2,
+    "diaPico": "2017-09-11",
+    "factor": 2.3,
+    "url": "https://visualization.osdr.nasa.gov/radlab/api/?instrument_id=MSL-RAD-Surface&timestamp>=2017-09-01&timestamp<2017-09-20&absorbed_dose_rate>0&format=json"
+  },
+  "regionActiva": 12673,
+  "fases": [
+    {
+      "tipo": "FLR",
+      "idFuente": "2017-09-10T15:35:00-FLR-001",
+      "hora": "2017-09-10T16:06Z",
+      "claseGoes": "X8.2",
+      "observadoEn": "Sol",
+      "instrumentos": [
+        "GOES15: SEM/XRS 1.0-8.0"
+      ],
+      "url": "https://ccmc.gsfc.nasa.gov/DONKI/view/FLR/13098/-1"
+    },
+    {
+      "tipo": "CME",
+      "idFuente": "2017-09-10T16:09:00-CME-001",
+      "hora": "2017-09-10T16:09Z",
+      "velocidadKmS": 2650,
+      "observadoEn": "Sol",
+      "instrumentos": [
+        "STEREO A: SECCHI/COR2",
+        "SOHO: LASCO/C2",
+        "SOHO: LASCO/C3"
+      ],
+      "url": "https://ccmc.gsfc.nasa.gov/DONKI/view/CME/13107/-1"
+    },
+    {
+      "tipo": "SEP",
+      "idFuente": "2017-09-10T16:25:00-SEP-001",
+      "hora": "2017-09-10T16:25Z",
+      "observadoEn": "Tierra",
+      "instrumentos": [
+        "GOES13: SEM/EPS >100 MeV"
+      ],
+      "url": "https://ccmc.gsfc.nasa.gov/DONKI/view/SEP/13101/-1"
+    }
+  ],
+  "fuente": {
+    "nombreKey": "fuente.donki",
+    "dueno": "NASA CCMC (DONKI); radiación en Marte: RAD de MSL Curiosity (NASA) vía OSDR RadLab",
+    "url": "https://ccmc.gsfc.nasa.gov/tools/DONKI/",
+    "consultadoEl": "2026-11-13"
+  }
+}

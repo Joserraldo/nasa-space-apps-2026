@@ -1,0 +1,72 @@
+{
+  "version": "0.2.0",
+  "id": "2024-05-10-gannon",
+  "estadoDato": "curado",
+  "nombreKey": "datos.tormenta.2024-05-10-gannon.nombre",
+  "queOcurrioKey": "datos.tormenta.2024-05-10-gannon.queOcurrio",
+  "marcoMarte": "escenario",
+  "medicionMarte": {
+    "instrumento": "MSL-RAD-Surface",
+    "unidad": "µGy/h",
+    "fondo": 4.8,
+    "pico": 4.9,
+    "picoMuestra": 6,
+    "diaPico": "2024-05-12",
+    "factor": 1,
+    "url": "https://visualization.osdr.nasa.gov/radlab/api/?instrument_id=MSL-RAD-Surface&timestamp>=2024-05-03&timestamp<2024-05-26&absorbed_dose_rate>0&format=json"
+  },
+  "regionActiva": 13664,
+  "fases": [
+    {
+      "tipo": "FLR",
+      "idFuente": "2024-05-09T08:45:00-FLR-001",
+      "hora": "2024-05-09T09:13Z",
+      "claseGoes": "X2.2",
+      "observadoEn": "Sol",
+      "instrumentos": [
+        "GOES-P: EXIS 1.0-8.0"
+      ],
+      "url": "https://ccmc.gsfc.nasa.gov/DONKI/view/FLR/30605/-1"
+    },
+    {
+      "tipo": "CME",
+      "idFuente": "2024-05-09T09:24:00-CME-001",
+      "hora": "2024-05-09T09:24Z",
+      "velocidadKmS": 1330,
+      "observadoEn": "Sol",
+      "instrumentos": [
+        "SOHO: LASCO/C2",
+        "SOHO: LASCO/C3",
+        "STEREO A: SECCHI/COR2"
+      ],
+      "url": "https://ccmc.gsfc.nasa.gov/DONKI/view/CME/30619/-1"
+    },
+    {
+      "tipo": "SEP",
+      "idFuente": "2024-05-10T13:35:00-SEP-001",
+      "hora": "2024-05-10T13:35Z",
+      "observadoEn": "Tierra",
+      "instrumentos": [
+        "GOES-P: SEISS >10 MeV"
+      ],
+      "url": "https://ccmc.gsfc.nasa.gov/DONKI/view/SEP/30677/-1"
+    },
+    {
+      "tipo": "GST",
+      "idFuente": "2024-05-10T15:00:00-GST-001",
+      "hora": "2024-05-10T15:00Z",
+      "kpMax": 9,
+      "observadoEn": "Tierra",
+      "instrumentos": [
+        "Kp: NOAA"
+      ],
+      "url": "https://ccmc.gsfc.nasa.gov/DONKI/view/GST/30693/-1"
+    }
+  ],
+  "fuente": {
+    "nombreKey": "fuente.donki",
+    "dueno": "NASA CCMC (DONKI); índice Kp: NOAA; radiación en Marte: RAD de MSL Curiosity (NASA) vía OSDR RadLab",
+    "url": "https://ccmc.gsfc.nasa.gov/tools/DONKI/",
+    "consultadoEl": "2026-11-13"
+  }
+}
