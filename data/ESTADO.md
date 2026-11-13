@@ -1,5 +1,5 @@
 # Estado — datos
-**Actualizado:** 2026-11-13 · **Rama:** feat/datos-referencia-dosis · **PR:** #34 → #35 → #37 → #39 → referenciaDosis (apilados) · #16 #19 #23 #25 #26 #27 fusionados
+**Actualizado:** 2026-11-13 · **Rama:** feat/datos-referencia-dosis · **PR:** #34 → #35 → #37 → #39 → #45 referenciaDosis (apilados) · #16 #19 #23 #25 #26 #27 fusionados
 ## Hecho
 - 8 tormentas DONKI + RAD. Ruta dorada 2024-05-20, medida en Marte (×19,4). Jezero (Trek), dosis [V], 3 tarjetas OSDR, glosario, auditoría.
 - Artemis I (HERA, RadLab): resumen y tarjeta es/en (el enunciado oficial pide datos de Artemis).
