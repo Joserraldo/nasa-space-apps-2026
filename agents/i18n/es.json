@@ -16,7 +16,7 @@
   "agentes.equipo.antena": "la antena",
   "agentes.equipo.ia_base": "a Iris",
   "agentes.ingeniera.muletilla": "*cuenta tornillos* ...siete, ocho. Todo cuesta energía, pero lo hago con estilo.",
-  "agentes.ingeniera.energia.ok": "La energía está en {energia} %. Escudo {blindaje} %, soporte vital {soporte} %. Es como una pizza: si le das una porción a uno, quedan menos para los demás.",
+  "agentes.ingeniera.energia.ok": "La energía está en {energia} %. Escudo {blindaje} %, soporte vital {soporte} %. Como una pizza: si uno se lleva más, quedan menos para los demás.",
   "agentes.ingeniera.energia.baja": "¡La energía está en {energia} %! Está muy baja. Escudo {blindaje} %, soporte vital {soporte} %. Apaguemos algo que no necesitemos.",
   "agentes.ingeniera.repartir.ok": "Mando {cantidadKey} energía a {destinoKey}. A otra cosa le llegará menos, ese es el trato.",
   "agentes.ingeniera.repartir.cual": "¿Adónde quieres la energía: al escudo o al soporte vital?",

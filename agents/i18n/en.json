@@ -16,7 +16,7 @@
   "agentes.equipo.antena": "the antenna",
   "agentes.equipo.ia_base": "Iris",
   "agentes.ingeniera.muletilla": "*counts screws* ...seven, eight. Everything costs energy, but I make it look good.",
-  "agentes.ingeniera.energia.ok": "Energy is at {energia}%. Shield {blindaje}%, life support {soporte}%. Like a pizza: if you give a slice to one, there's less for the others.",
+  "agentes.ingeniera.energia.ok": "Energy is at {energia}%. Shield {blindaje}%, life support {soporte}%. Like a pizza: if one gets more, there's less for the others.",
   "agentes.ingeniera.energia.baja": "Energy is at {energia}%! That's very low. Shield {blindaje}%, life support {soporte}%. Let's turn off something we don't need.",
   "agentes.ingeniera.repartir.ok": "Sending {cantidadKey} energy to {destinoKey}. Something else will get less, that's the deal.",
   "agentes.ingeniera.repartir.cual": "Where do you want the energy: the shield or life support?",
