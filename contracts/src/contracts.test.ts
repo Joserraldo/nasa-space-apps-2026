@@ -4,6 +4,7 @@ import {
   ClassifierOutputSchema,
   GameStateSchema,
   SeedSchema,
+  SpaceWeatherEventSchema,
 } from "./index.js";
 
 describe("contracts", () => {
@@ -21,10 +22,28 @@ describe("contracts", () => {
   });
 
   it("ClassifierOutput exige confianza 0-1", () => {
-    const malo = { experto: "ingeniera", accion: "reparar", confianza: 1.5 };
-    expect(ClassifierOutputSchema.safeParse(malo).success).toBe(false);
-    const bueno = { experto: "ingeniera", accion: "reparar", confianza: 0.9 };
-    expect(ClassifierOutputSchema.safeParse(bueno).success).toBe(true);
+    const base = { version: "0", experto: "ingeniera", accion: "reparar", fuente: "regex" };
+    expect(ClassifierOutputSchema.safeParse({ ...base, confianza: 1.5 }).success).toBe(false);
+    expect(ClassifierOutputSchema.safeParse({ ...base, confianza: 0.9 }).success).toBe(true);
+    // Parámetros solo como texto de enum, nunca números libres.
+    expect(ClassifierOutputSchema.safeParse({ ...base, confianza: 0.9, parametros: { cantidad: 30 } }).success).toBe(false);
+    expect(ClassifierOutputSchema.safeParse({ ...base, confianza: 0.9, accion: "volar" }).success).toBe(false);
+  });
+
+  it("SpaceWeatherEvent acepta los opcionales de datos (fases, marcoMarte, medicionMarte)", () => {
+    const ev = {
+      id: "2024-05-20-marte",
+      tipo: "CME",
+      inicio: "2024-05-20T05:36:00Z",
+      duracionHoras: 72,
+      intensidad: 0.9,
+      fuente: { nombreKey: "fuente.donki", url: "https://kauai.ccmc.gsfc.nasa.gov/DONKI/", idFuente: "2024-05-20T05:36:00-CME-001", consultadoEl: "2026-11-13", dueno: "NASA CCMC", estadoDato: "curado" },
+      fases: [{ tipo: "CME", idFuente: "x", offsetHoras: 0, observadoEn: "Sol" }],
+      marcoMarte: "observado",
+      medicionMarte: { unidad: "µGy/h", fondo: 10, pico: 194, factor: 19.4, offsetHorasPico: 40 },
+    };
+    expect(SpaceWeatherEventSchema.safeParse(ev).success).toBe(true);
+    expect(SpaceWeatherEventSchema.safeParse({ ...ev, marcoMarte: "inventado" }).success).toBe(false);
   });
 
   it("GameState rechaza recursos fuera de 0-100", () => {
