@@ -121,5 +121,7 @@
   "datos.tarjeta.tipo.RBE": "Aumento en los cinturones de radiación",
   "datos.tarjeta.medicion": "En Marte, Curiosity midió {pico} µGy/h el {dia}, unas {factor} veces un día normal ({fondo} µGy/h).",
   "datos.tarjeta.modelo": "El modelo de la NASA calculó que llegaría a Marte el {fecha}.",
-  "datos.tarjeta.fuente": "Fuente: {duenoKey} · consultado el {consultado}"
+  "datos.tarjeta.fuente": "Fuente: {duenoKey} · consultado el {consultado}",
+  "datos.comunicaciones.retraso": "Un mensaje entre Marte y la Tierra viaja a la velocidad de la luz, y aun así tarda de unos 3 a unos 22 minutos, según dónde estén los dos planetas. ¡Nada puede ir más rápido!",
+  "datos.comunicaciones.derivado": "El equipo calculó estos tiempos con la distancia mínima y máxima entre Marte y la Tierra (NASA) y la velocidad de la luz."
 }
