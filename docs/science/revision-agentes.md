@@ -40,3 +40,10 @@
 | `agentes.satelite.meteorologa.senal` ("un mensaje tarda minutos") | Correcto: 3–22 min en un sentido [V+cálculo]. Para la cifra, usar `datos.comunicaciones.retraso` (#65) |
 | `agentes.satelite.doctora.microgravedad` | Correcto: en órbita hay caída libre. Se usa en la fase de nave/satélite, no en la base (en Marte la gravedad es el 38 %) |
 | `agentes.satelite.ingeniera.altura`, `agentes.satelite.meteorologa.tormenta` | Analogía y regla de juego: no son cifras de NASA, no llevan tarjeta |
+
+## Consejos de aterrizaje (#67) — revisado el 2026-11-13
+| Texto | Revisión |
+|---|---|
+| `agentes.aterrizaje.ingeniera.luz`, `agentes.aterrizaje.ia_base.plano` | Correctos (más sol, más energía; aterrizar en pendiente es arriesgado) |
+| `agentes.aterrizaje.doctora.blindaje` ("el suelo alrededor bloquea parte de la radiación") | Correcto para el sitio que hoy gana en blindaje (pie de la pared sur, 0,71). Ojo: el puntaje también premia estar más abajo (más aire encima). Si cambian los sitios, sugerencia: "Más abajo hay más aire encima, y las paredes tapan parte del cielo." / "Lower down there's more air above you, and the walls cover part of the sky." |
+| Falta la tarjeta | Los puntajes son **derivados por el equipo**. El diálogo debería llevar `fuente: fuenteTerreno()` (nuevo en datos), y ui debería mostrar la nota `datos.terreno.derivado` |
