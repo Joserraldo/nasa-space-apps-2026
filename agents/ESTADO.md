@@ -1,17 +1,16 @@
 # Estado — rol 3 (Agentes expertos)
-**Actualizado:** 13 nov 2026 · **Rama:** feat/agentes-fase-satelite · **PR:** #49 (Iris), satélite abriendo
+**Actualizado:** 13 nov 2026 · **Rama:** feat/agentes-director · **PR:** #52, #63, director abriendo
 
 ## Hecho (últimas iteraciones)
-- #43 capa sin modelo (regex en/es, 30/30) · #44 tres expertos con plantillas en/es y fuente · #46 data/ en CI.
-- Escena del paso 6 (#47): Doctora (refugio, factor medido por Curiosity) vs Ingeniera (escudo, energía del estado).
-- Iris nivel 3: 4 formas de falla por semilla (la 1.ª siempre número falso) + verificación y reparación con la Ingeniera.
+- Fusionados: #43 regex en/es · #44 3 expertos en/es con fuente · #47 escena 6 · #49 avería de Iris · #50 README · #46 data/ en CI.
+- Evals reales en b.ai (#51): qwen3.8-flash 80 % accion pero p95 15 s; deepseek 23 % (razonamiento sin tokens). D4: sin clasificador; reabrir tras P2.
+- Fase satélite (#52) y aterrizaje: cada voz defiende su criterio (luz, blindaje, plano).
 
 ## Qué sigue (issue #41)
-- Integrar con ui: cola de diálogos y quién llama a `escenaTormenta` / `irisDanada` (abrir issue bloquea:ui).
-- Fase satélite hecha (consejosSatelite); falta aterrizaje. Tics en todas las respuestas; Matemático "¿Y si…?" con el simulador del motor.
-- Evals con b.ai (subagente corriendo) → resultado en D4.
+- Director (`dialogosDelPaso`, `encolar`): ui solo pinta la cola. Falta que ui lo conecte (María Paula).
+- Matemático "¿Y si…?" con el simulador del motor; acortar frases > 25 palabras.
 
 ## Bloqueos
-- `ENERGIA_POR_CANTIDAD` (10/25/45) provisional: debe vivir en design/.
+- `ENERGIA_POR_CANTIDAD` provisional (debe vivir en design/). ui/ aún vacío.
 
-Tokens: 🟢
+Evals: corridas (13 nov) · Tokens: 🟢

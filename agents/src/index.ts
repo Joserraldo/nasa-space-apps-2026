@@ -7,3 +7,5 @@ export { escenaTormenta, type EscenaTormenta } from "./escenas.js";
 export { irisDanada, verificarIris, formaFalla, numeroFalso, type FormaFalla, type Falla, type DialogoIris } from "./iris.js";
 export { clasificarConModelo, type OpcionesClasificador, type ResultadoClasificador } from "./clasificador.js";
 export { consejosSatelite } from "./fases.js";
+export { consejosAterrizaje, type SitioCandidato, type Criterio } from "./aterrizaje.js";
+export { dialogosDelPaso, encolar, vistaVisible, type Momento, type VistaCompleta } from "./director.js";
