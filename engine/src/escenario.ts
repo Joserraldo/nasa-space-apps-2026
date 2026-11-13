@@ -81,6 +81,7 @@ export function crearPartida(seed: Seed, opciones: OpcionesPartida = {}): GameSt
     equipos,
     tripulacion,
     iaBase: dificultad === "hardcore" ? "danada" : "tutorial",
+    rendimiento: { rachaAciertos: 0, erroresRecientes: 0, ticksSinAccion: 0 },
     tormenta,
     orbita: {
       alturaKm: orbitaSorteo.entero,
