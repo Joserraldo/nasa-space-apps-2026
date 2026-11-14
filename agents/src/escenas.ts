@@ -1,4 +1,4 @@
-import type { Action } from "@solar-shield/contracts";
+import type { Action, Expert } from "@solar-shield/contracts";
 import { ENERGIA_POR_CANTIDAD } from "./a-accion.js";
 import type { Dialogo } from "./dialogo.js";
 import type { VistaAgente } from "./expertos.js";
@@ -10,17 +10,31 @@ import type { VistaAgente } from "./expertos.js";
  */
 export interface EscenaTormenta {
   dialogos: Dialogo[];
-  /** Las dos opciones en conflicto, en el orden en que se proponen. */
-  opciones: [Action, Action];
+  /** Opciones en conflicto, en el orden en que se proponen (refugio, escudo y, si la misión la trae, aguantar). */
+  opciones: [Action, Action, ...Action[]];
 }
 
-export function escenaTormenta(v: VistaAgente): EscenaTormenta | null {
+/** Forma mínima de una opción del dilema (estructural con `OpcionDilema` de missions/). */
+export interface OpcionDilemaVista {
+  accion: Action;
+  /** Experto que la defiende; null = nadie la recomienda (ej. aguantar). */
+  defiende: Expert | null;
+}
+
+/**
+ * @param dilema opciones de `MISION_JEZERO.dilemaPaso6.opciones`. Si se pasan, mandan las acciones de la misión;
+ * si no, se usan las de siempre (refugio vs. energía al escudo).
+ */
+export function escenaTormenta(v: VistaAgente, dilema?: readonly OpcionDilemaVista[]): EscenaTormenta | null {
   const t = v.tormenta;
   if (!t) return null;
   const fecha = t.inicio.slice(0, 10);
   const medida = t.medicionMarte && t.medicionMarte.factor >= 1.5 ? Math.round(t.medicionMarte.factor) : null;
-  const refugio: Action = { tipo: "refugiarse" };
-  const escudo: Action = { tipo: "redistribuir_energia", hacia: "blindaje", cantidad: ENERGIA_POR_CANTIDAD.mucho };
+  const de = (e: Expert) => dilema?.find((o) => o.defiende === e)?.accion;
+  const refugio: Action = de("doctora") ?? { tipo: "refugiarse" };
+  const escudo: Action = de("ingeniera") ?? { tipo: "redistribuir_energia", hacia: "blindaje", cantidad: ENERGIA_POR_CANTIDAD.mucho };
+  const sinDefensor = (dilema ?? []).filter((o) => o.defiende === null).map((o) => o.accion);
+  const energia = Math.round(v.recursos.energia);
 
   const meteorologa: Dialogo = {
     experto: "meteorologa",
@@ -52,10 +66,17 @@ export function escenaTormenta(v: VistaAgente): EscenaTormenta | null {
     accion: escudo,
     lineas: [
       { clave: "agentes.escena6.ingeniera.contra" },
-      { clave: "agentes.escena6.ingeniera.costo", vars: { energia: Math.round(v.recursos.energia), gasto: ENERGIA_POR_CANTIDAD.mucho } },
+      // Solo se cita el gasto si la acción lo trae; el costo de subir_escudo vive en design/ y no se inventa aquí.
+      escudo.tipo === "redistribuir_energia"
+        ? { clave: "agentes.escena6.ingeniera.costo", vars: { energia, gasto: escudo.cantidad } }
+        : { clave: "agentes.escena6.ingeniera.costoSinCifra", vars: { energia } },
     ],
   };
-  const iris: Dialogo = { experto: "ia_base", prioridad: "charla", lineas: [{ clave: "agentes.escena6.elige" }] };
+  const iris: Dialogo = {
+    experto: "ia_base",
+    prioridad: "charla",
+    lineas: [...(sinDefensor.length ? [{ clave: "agentes.escena6.aguantar" }] : []), { clave: "agentes.escena6.elige" }],
+  };
 
-  return { dialogos: [meteorologa, doctora, ingeniera, iris], opciones: [refugio, escudo] };
+  return { dialogos: [meteorologa, doctora, ingeniera, iris], opciones: [refugio, escudo, ...sinDefensor] };
 }

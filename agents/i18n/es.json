@@ -128,5 +128,7 @@
   "agentes.iris.pregunta.tormenta.a": "El refugio",
   "agentes.iris.pregunta.tormenta.b": "Afuera, mirando",
   "agentes.iris.pregunta.tormenta.c": "El techo",
-  "agentes.iris.pregunta.tormenta.porque": "El refugio tiene paredes gruesas que frenan más radiación. Pero nadie trabaja mientras nos escondemos."
+  "agentes.iris.pregunta.tormenta.porque": "El refugio tiene paredes gruesas que frenan más radiación. Pero nadie trabaja mientras nos escondemos.",
+  "agentes.escena6.ingeniera.costoSinCifra": "Tenemos {energia} % de energía. Un escudo más fuerte se come una parte.",
+  "agentes.escena6.aguantar": "También puedes aguantar y esperar. Nadie lo recomienda, pero también es una opción."
 }

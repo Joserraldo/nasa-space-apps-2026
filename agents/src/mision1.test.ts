@@ -77,3 +77,27 @@ describe("pregunta de Iris (nivel 2, nunca bloquea)", () => {
     expect(correctas.size).toBeGreaterThan(1);
   });
 });
+
+describe("paso 6 con las opciones de la misión (missions/ #89)", () => {
+  const tormenta = SpaceWeatherEventSchema.parse({
+    id: "2024-05-20-marte", tipo: "CME", inicio: "2024-05-20T05:36:00Z", duracionHoras: 24, intensidad: 0.74,
+    fuente: { nombreKey: "fuente.donki", url: "https://ccmc.gsfc.nasa.gov/tools/DONKI/", idFuente: "x", consultadoEl: "2026-11-13" },
+  });
+  // Misma forma que MISION_JEZERO.dilemaPaso6.opciones (mock hasta que #89 entre a develop).
+  const dilema = [
+    { accion: { tipo: "refugiarse" as const }, defiende: "doctora" as const },
+    { accion: { tipo: "subir_escudo" as const, nivel: 2 }, defiende: "ingeniera" as const },
+    { accion: { tipo: "esperar" as const }, defiende: null },
+  ];
+  const e = escenaTormenta({ ...vista, tormenta }, dilema)!;
+  it("cada experto propone la acción que defiende en la misión y aguantar queda como tercera opción", () => {
+    expect(e.opciones).toEqual(dilema.map((o) => o.accion));
+    expect(e.dialogos[1]?.accion).toEqual({ tipo: "refugiarse" });
+    expect(e.dialogos[2]?.accion).toEqual({ tipo: "subir_escudo", nivel: 2 });
+    expect(e.dialogos[3]?.lineas[0]?.clave).toBe("agentes.escena6.aguantar");
+  });
+  it("sin cifra de gasto inventada para subir_escudo", () => {
+    expect(e.dialogos[2]?.lineas[1]).toEqual({ clave: "agentes.escena6.ingeniera.costoSinCifra", vars: { energia: 49 } });
+    clavesExisten(e.dialogos);
+  });
+});

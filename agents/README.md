@@ -18,7 +18,7 @@ frase / botón ─► clasificarConAtajos(texto)  ── null ─► (modelo ví
 | `clasificarConAtajos(texto)` | Regex en/es sin modelo. `null` = no se entendió → probar el modelo o mostrar botones. |
 | `responder(salida, vista, { dosisMarte })` | Respuesta del experto. `dosisMarte = referenciaDosis("marte-superficie")` de `@solar-shield/data`. |
 | `aAccion(salida)` | Intención → `Action` del motor (o `null` si es una consulta). |
-| `escenaTormenta(vista)` | Paso 6 de la ruta dorada: 4 diálogos en orden y `opciones: [refugiarse, escudo]`. Con invernadero `ok`, la Doctora nombra la comida de mañana (dilema del refugio). |
+| `escenaTormenta(vista, dilema?)` | Paso 6 de la ruta dorada: 4 diálogos en orden y `opciones: [refugiarse, escudo]`. Con `dilema = MISION_JEZERO.dilemaPaso6.opciones`, cada experto propone la acción que defiende en la misión y "aguantar" es la tercera opción. Con invernadero `ok`, la Doctora nombra la comida de mañana (dilema del refugio). |
 | `escenaPolvo(vista, { insight })` | Paso 4b de la misión 1 (mala suerte): polvo en los paneles. `opciones: [salida_exterior panel_solar, esperar]`. El caso real de InSight solo se cita si datos pasa su `SourceCard`. |
 | `preguntaIris(tema, nivel)` / `responderPreguntaIris(p, i \| null)` | Iris nivel 2: pregunta de 3 opciones que **nunca bloquea** (`saltable`). Siempre explica el porqué; `null` = el niño la saltó. |
 | `irisDanada(vista, vez)` | Iris nivel 3: la 1.ª falla siempre es número falso; luego rota por semilla. Trae `falla`. |
