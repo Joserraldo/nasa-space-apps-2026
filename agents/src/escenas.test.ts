@@ -56,3 +56,24 @@ describe("escena del paso 6: dos expertos se contradicen", () => {
     }
   });
 });
+
+describe("cada cifra con su lugar (voces de las misiones de datos)", () => {
+  const crater = { nombreKey: "fuente.crater", url: "https://crater-web.sr.unh.edu/", idFuente: "crater-2024-05-10", consultadoEl: "2026-11-14" };
+
+  it("medición en órbita lunar: frase de órbita, su factor y su propia fuente", () => {
+    const e = escenaTormenta(vista, undefined, { factor: 205.7, lugar: "orbita_luna", fuente: crater })!;
+    expect(e.dialogos[1]?.lineas[0]).toEqual({ clave: "agentes.escena6.doctora.medidaOrbitaLuna", vars: { factor: 206 } });
+    expect(e.dialogos[1]?.fuente).toEqual(crater);
+    expect(en["agentes.escena6.doctora.medidaOrbitaLuna"]).toMatch(/orbit/);
+  });
+
+  it("Kp solo si DONKI lo midió en la Tierra, y la frase dice 'en la Tierra'", () => {
+    const gst = { tipo: "GST" as const, idFuente: "2024-05-10T15:00:00-GST-001", offsetHoras: 20, magnitudTexto: "Kp 9", observadoEn: "Tierra" as const };
+    const con = escenaTormenta({ ...vista, tormenta: { ...tormenta, fases: [gst] } })!;
+    expect(con.dialogos[0]?.lineas.at(-1)).toEqual({ clave: "agentes.escena6.meteorologa.kpTierra", vars: { kp: "Kp 9" } });
+    expect(en["agentes.escena6.meteorologa.kpTierra"]).toMatch(/on Earth/i);
+    expect(es["agentes.escena6.meteorologa.kpTierra"]).toMatch(/en la Tierra/);
+    const sinKp = escenaTormenta(vista)!;
+    expect(sinKp.dialogos[0]?.lineas.some((l) => l.clave.endsWith("kpTierra"))).toBe(false);
+  });
+});

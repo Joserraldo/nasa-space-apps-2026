@@ -18,7 +18,8 @@ frase / botón ─► clasificarConAtajos(texto)  ── null ─► (modelo ví
 | `clasificarConAtajos(texto)` | Regex en/es sin modelo. `null` = no se entendió → probar el modelo o mostrar botones. |
 | `responder(salida, vista, { dosisMarte })` | Respuesta del experto. `dosisMarte = referenciaDosis("marte-superficie")` de `@solar-shield/data`. |
 | `aAccion(salida)` | Intención → `Action` del motor (o `null` si es una consulta). |
-| `escenaTormenta(vista, dilema?)` | Paso 6 de la ruta dorada: 4 diálogos en orden y `opciones: [refugiarse, escudo]`. Con `dilema = MISION_JEZERO.dilemaPaso6.opciones`, cada experto propone la acción que defiende en la misión y "aguantar" es la tercera opción. Con invernadero `ok`, la Doctora nombra la comida de mañana (dilema del refugio). |
+| `escenaTormenta(vista, dilema?, medicion?)` | Paso 6 de la ruta dorada: 4 diálogos en orden y `opciones: [refugiarse, escudo]`. Con `dilema = MISION_JEZERO.dilemaPaso6.opciones`, cada experto propone la acción que defiende en la misión y "aguantar" es la tercera opción. Con invernadero `ok`, la Doctora nombra la comida de mañana (dilema del refugio). |
+| `MedicionCitada { factor, lugar, fuente }` | Cifra de radiación de otro lugar para la Doctora (`lugar: "orbita_luna"` = CRaTER, #95). Sin `fuente` no hay cifra. La Meteoróloga cita el Kp solo si una fase GST se midió en la Tierra. |
 | `escenaPolvo(vista, { insight })` | Paso 4b de la misión 1 (mala suerte): polvo en los paneles. `opciones: [salida_exterior panel_solar, esperar]`. El caso real de InSight solo se cita si datos pasa su `SourceCard`. |
 | `preguntaIris(tema, nivel)` / `responderPreguntaIris(p, i \| null)` | Iris nivel 2: pregunta de 3 opciones que **nunca bloquea** (`saltable`). Siempre explica el porqué; `null` = el niño la saltó. |
 | `irisDanada(vista, vez)` | Iris nivel 3: la 1.ª falla siempre es número falso; luego rota por semilla. Trae `falla`. |
@@ -85,6 +86,14 @@ Una línea por pantalla. `estado` es el `GameState` del motor; ui solo pinta `Di
 | `componentes/Tripulacion.tsx` | `conversar({ texto } \| { experto }, estado, { tormentaActiva: tormentaActiva(estado), dosisMarte: referenciaDosis("marte-superficie"), vecesFallaIris })` — reemplaza `clasificarConAtajos` + `responder` + `PREGUNTA_POR_EXPERTO` (es `preguntaDelBoton`). |
 | Paso 4b (polvo, pantalla nueva o aviso en la base) | `escenaPolvo(estado, { insight })` → pintar `dialogos` y dos botones con `opciones`; `null` = no hay panel, no mostrar nada. |
 | `pantallas/Tormenta.tsx` | `escenaTormenta(estado, MISION_JEZERO.dilemaPaso6.opciones)` (de `@solar-shield/missions`) en vez de `escenaTormenta(estado)`. |
-| Tormenta y polvo: botón "¿Y si…?" | `compararOpciones(estado, opciones.map((accion) => ({ accion, despues: aplicarAccion(copia(estado), accion) })))` (llega con #74). |
+| Tormenta y polvo: botón "¿Y si…?" | `compararOpciones(estado, opciones.map((accion) => ({ accion, despues: aplicarAccion(copia(estado), accion) })))`. |
 | Iris nivel 2 (al colocar un módulo o al revelarse la tormenta) | `preguntaIris(tema, estado.iaBase)` (solo devuelve pregunta con `"pistas"`; si no, `null`) → 3 botones + "saltar"; al elegir, `responderPreguntaIris(p, i)` o `responderPreguntaIris(p, null)`. Nunca bloquea. |
 | Iris dañada (`Tormenta.tsx`) | `irisDanada(estado, vez)` y, al pulsar "verificar", `verificarIris(falla, estado)` (ya conectado). |
+
+### Medición en órbita lunar (cuando entre #95)
+Sin escribir cifras a mano; los ids están en `luna.mediciones` de `@solar-shield/data`:
+```ts
+import { luna, medicionLuna, fuenteCrater } from "@solar-shield/data";
+const m = medicionLuna("<id de la tormenta>");
+escenaTormenta(estado, dilema, m ? { factor: m.factor, lugar: "orbita_luna", fuente: fuenteCrater(m, luna.consultadoEl) } : undefined);
+```
