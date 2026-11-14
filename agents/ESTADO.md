@@ -1,15 +1,13 @@
 # Estado — rol 3 (Agentes expertos)
-**Actualizado:** 14 nov 2026, 19:20 · **Rama:** feat/agentes-iris-acompana · **PR:** sin abrir
+**Actualizado:** 14 nov 2026, 15:25 · **Rama:** feat/agentes-voces-outpost-sorpresa · **PR:** ver abajo (abiertos: #127, #128)
 
-## Hecho (esta iteración)
-- Propuesta `docs/ideas/iris-companera-v8.md` (6 mecánicas, destino por paso).
-- `agents/src/iris-acompana.ts`: `guiaIrisLugar` (destino, ruta, experto, gesto, cara) y `briefingIris`; claves `agentes.iris.acompana.*` y `agentes.iris.lugar.*` en en/es; 22 tests; tabla en README.
-- Antes: voces de Marte polo norte (#97) en `feat/agentes-voces-marte-polo-norte`.
+## Hecho (últimas iteraciones)
+- En develop: expertos con fuente, escenas 4b/6, Iris 1-3, `conversar()`, Matemático, README por pantalla, `MedicionCitada` y Kp en la Tierra.
+- Voces de misiones de datos (pedido de José): #127 Marte polo norte y #128 Luna polo sur, en verde.
+- Esta rama: outpost sorpresa (#99) — la sorpresa con Orion (HERA), zonas de la nave, Gannon con CRaTER ×206 "no en nuestra nave", partículas primero, pregunta de Iris del viaje a Marte (solo con fuente).
 
 ## Qué sigue
-- Que Camilo apruebe las reglas y María Paula la representación; abrir PR hacia develop.
-- Si lo aprueban: issue `contrato` para mover `DestinoIris`/`LugarId` a `contracts/`.
-- Voces Luna polo sur (#98), outpost (#99) y Luna lado visible (#100).
+- Luna lado visible (#100, con #125). Después, detener el loop.
 
 ## Bloqueos
-- `DestinoIris` es copia de `LugarId` de la rama local de ui v8: si ui cambia un id, hay que copiarlo.
+- Las 4 misiones dependen de que Camilo las apruebe. #95 (CRaTER, marte-crucero) y #125/#126 sin fusionar.

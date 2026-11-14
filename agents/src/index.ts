@@ -17,3 +17,4 @@ export { conversar, preguntaDelBoton, PREGUNTA_DEL_BOTON, type Entrada, type Opc
 export { consejosZonasPoloNorte, escenaEscarcha, escenaTormentaPoloNorte, avisoNochePolar, LATITUD_ZONA_POLO_NORTE, type ZonaPoloNorte, type ContextoZonasPoloNorte } from "./voces-polo-norte.js";
 export { escenaTormentaLunaSur, escenaMicrometeorito, avisoControlLuna, TORMENTA_LUNA_POLO_SUR, type EscenaMicrometeorito } from "./voces-luna-polo-sur.js";
 export { guiaIrisLugar, briefingIris, type DestinoIris, type GuiaLugar, type GestoIris, type CaraIris, type BriefingIris } from "./iris-acompana.js";
+export { sorpresaOutpost, consejosZonasNave, escenaTormentaOutpost, TORMENTA_OUTPOST, type ZonaNave } from "./voces-outpost.js";
