@@ -6,7 +6,7 @@ import type { Dialogo } from "./dialogo.js";
  * Nunca bloquea: el niño puede saltarla, y responda lo que responda Iris explica el porqué.
  * No da puntos ni quita recursos: solo enseña a relacionar el problema con el sistema.
  */
-export type TemaPregunta = "panel_solar" | "reciclador_agua" | "invernadero" | "escudo" | "tormenta" | "noche_polar" | "mensaje_luna";
+export type TemaPregunta = "panel_solar" | "reciclador_agua" | "invernadero" | "escudo" | "tormenta" | "noche_polar" | "mensaje_luna" | "luna_vs_marte";
 
 export interface PreguntaIris {
   tema: TemaPregunta;
@@ -27,6 +27,7 @@ const CORRECTA: Record<TemaPregunta, 0 | 1 | 2> = {
   tormenta: 0,
   noche_polar: 1,
   mensaje_luna: 0,
+  luna_vs_marte: 0,
 };
 
 export function preguntaIris(tema: TemaPregunta, nivel: BaseAiLevel): PreguntaIris | null {

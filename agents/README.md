@@ -129,3 +129,11 @@ Propuesta en `docs/ideas/iris-companera-v8.md` (aprueban Camilo y María Paula).
 | `experto` | — | A quién ofrecer al llegar (ausente en `mesa`). |
 
 Prioridad: avería revelada → `taller` · recurso < 30 fuera de tormenta (energía → `taller`, blindaje y soporte → `habitat`) · paso (1-3, 7, 8 `mesa`; 4 `taller`; 5 `sensor`; 6 `habitat`). `"danada"` guía como tutorial; la falla numérica sigue en `irisDanada`.
+## Misión Luna lado visible (#100, depende de que diseño la apruebe)
+| Paso | Llamada |
+|---|---|
+| 3 (sitios Apolo) | `consejosAterrizaje(sitios)` sin cambios, con `terrenoLunaVisible` de #125 y los puntajes que fije diseño. |
+| 4b (antena averiada) | `escenaAntena(estado)`: solo con `antena` averiada; `opciones: [reparar antena, esperar]`. |
+| 5-6 (dilema de la batería de noche) | `escenaTormentaLunaVisible(estado, dilema, crater)` con la `MedicionCitada` de CRaTER (tormenta `TORMENTA_LUNA_VISIBLE`). Matemático: `compararOpciones`. |
+| 7 (llamar a la Tierra) | `avisoControlLuna()` de la misión Luna polo sur. |
+| 8 (una tormenta, tres lugares) | `tresLugares(estado, crater)`: Kp en la Tierra, RAD en Marte y CRaTER en órbita, cada uno con su fuente. Pregunta: `preguntaIris("luna_vs_marte", estado.iaBase)`. |
