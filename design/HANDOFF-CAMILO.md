@@ -1,5 +1,20 @@
 # Traspaso a Camilo: mazo de eventos y mejoras de módulos
 
+## ACTUALIZACIÓN 13 nov, 23:15 — empieza por aquí
+
+Después de escribir este traspaso, Santiago avanzó la misión 1 (propuesta de José, PR #88) en el **PR #89**, apilado sobre tu #86. Lo que ya está hecho ahí y **no tienes que rehacer**:
+- `eventoPolvo` (paso 4b: panel al 50 % hasta limpiarlo con salida al exterior; no sale en la semilla dorada) y `dilemaPaso6` (refugio + apagar invernadero / subir escudo nivel 2 / aguantar) en `missions/src/jezero.ts`, con textos en/es en tu `missions/src/textos.ts`.
+- `MODULOS` con consumo de ⚡ como costo único: reciclador −1, invernadero −3, escudo −3, antena −1 (orden por kW de ARES). El consumo por tick está pedido a Jaime en #90.
+- 7 tarjetas de ciencia y la pregunta final del paso 8. Las que no tienen fuente no se muestran; fuentes pedidas a Daniel en #93.
+- `missions/test/parejas.test.ts`: las 10 parejas de módulos con la semilla dorada. **Hallazgo:** si el niño no actúa en la tormenta, el blindaje llega a 0 en 7 de 10 parejas (fin en el tick 5–6).
+- Estado detallado y números de ARES: `design/ESTADO.md` en la rama `feat/diseno-mision1`.
+
+**Orden de fusión:** tu #86 → #89. Este #85 va aparte. Hay textos duplicados entre #86 (tu `textos.ts`) y #85 (`missions/i18n/`): se queda tu versión y Santiago quita la suya del #85.
+
+**Lo que sigue siendo tuyo:** los cuatro eventos del mazo como tabla de diseño (hoy están quemados en `engine/src/acciones.ts`), los tres niveles de los módulos (necesitan issue `contrato`) y las decisiones de la sección 4. Nuevas decisiones abiertas: criterio "hielo" (no hay dato en Jezero) y si se baja el daño de la tormenta.
+
+---
+
 Para empezar lee solo esto, [DECISIONES.md](DECISIONES.md), tu issue (#56) y los archivos que se nombran abajo. No hace falta auditar el repo otra vez. Si algo de aquí contradice el código o los contratos, **mandan el código y los contratos**: anótalo y pregunta antes de asumir.
 
 ## Estado de partida
