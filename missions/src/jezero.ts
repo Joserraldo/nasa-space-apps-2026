@@ -1,4 +1,4 @@
-import type { Difficulty, Equipment, Expert, MissionGoal, Resource, Site } from "@solar-shield/contracts";
+import type { BaseAction, Difficulty, Equipment, Expert, MissionGoal, Resource, Site } from "@solar-shield/contracts";
 
 /**
  * Misión de la ruta dorada: cráter Jezero, Marte. Solo datos; la lógica vive en engine/.
@@ -54,6 +54,50 @@ export interface FinMision {
   tickLimite: number;
 }
 
+/**
+ * Evento de mala suerte del paso 4b (propuesta #88, viene de la tarea "limpiar paneles" de ARES):
+ * el polvo tapa los paneles y la energía que dan rinde menos hasta que alguien los limpia.
+ * No sale en la semilla dorada, para que el video sea estable.
+ */
+export interface EventoPolvo {
+  /** Clave de la causa que ya existe en el motor y en los textos de diseño. */
+  descripcionKey: "mala_suerte.tormenta_polvo";
+  equipo: Extract<Equipment, "panel_solar">;
+  /** Fracción de la energía del panel que llega mientras hay polvo (0,5 = la mitad, propuesta #88). Valor de juego. */
+  rendimientoPanel: number;
+  /** Cómo se quita: una salida al exterior sobre el panel (cuesta blindaje y soporte vital, ver COSTOS_ACCION). */
+  limpiar: BaseAction;
+  /** Si no se limpia, el polvo sigue hasta el final de la misión. */
+  duraHasta: "limpieza";
+  enSemillaDorada: false;
+  /** Experto que avisa y explica la decisión. */
+  experto: Expert;
+  textoKey: string;
+}
+
+/** Una salida del dilema: la acción que se ejecuta y, si hace falta, un efecto propio del dilema. */
+export interface OpcionDilema {
+  id: string;
+  accion: BaseAction;
+  /**
+   * Efecto extra que el contrato todavía no expresa. Plan B del #88 §5: "apagar el invernadero"
+   * no es una acción; se modela dentro de refugiarse como la comida que el invernadero deja de dar.
+   */
+  extra?: EfectoOpcion;
+  /** Solo aplica `extra` si el jugador construyó este módulo. */
+  extraSiTiene?: Equipment;
+  /** Experto que defiende esta opción (o null si nadie la recomienda). */
+  defiende: Expert | null;
+  textoKey: string;
+}
+
+/** Dilema del paso 6 (propuesta #88): dos expertos se contradicen con la tormenta encima. Ninguna opción es gratis. */
+export interface DilemaPaso6 {
+  paso: 6;
+  preguntaKey: string;
+  opciones: OpcionDilema[];
+}
+
 export interface Mision {
   id: string;
   nombreKey: string;
@@ -76,6 +120,8 @@ export interface Mision {
   sitiosCandidatos: SitioCandidato[];
   averiaIris: AveriaIris;
   fin: FinMision;
+  eventoPolvo: EventoPolvo;
+  dilemaPaso6: DilemaPaso6;
 }
 
 export const MISION_JEZERO: Mision = {
@@ -140,5 +186,42 @@ export const MISION_JEZERO: Mision = {
     exitoCuando: "telemetria_llega",
     falloCuando: "recurso_en_cero",
     tickLimite: 10,
+  },
+  eventoPolvo: {
+    descripcionKey: "mala_suerte.tormenta_polvo",
+    equipo: "panel_solar",
+    rendimientoPanel: 0.5,
+    limpiar: { tipo: "salida_exterior", objetivo: "panel_solar" },
+    duraHasta: "limpieza",
+    enSemillaDorada: false,
+    experto: "ingeniera",
+    textoKey: "mision.jezero.polvo",
+  },
+  dilemaPaso6: {
+    paso: 6,
+    preguntaKey: "mision.jezero.dilema.pregunta",
+    opciones: [
+      {
+        id: "refugio_y_apagar_invernadero",
+        accion: { tipo: "refugiarse" },
+        // Lo que se pierde es justo lo que el invernadero da al construirse (MODULOS.invernadero.soporte_vital = 10).
+        extra: { inmediato: {}, retrasado: { soporte_vital: -10 } },
+        extraSiTiene: "invernadero",
+        defiende: "doctora",
+        textoKey: "mision.jezero.dilema.refugio",
+      },
+      {
+        id: "subir_escudo",
+        accion: { tipo: "subir_escudo", nivel: 2 },
+        defiende: "ingeniera",
+        textoKey: "mision.jezero.dilema.escudo",
+      },
+      {
+        id: "aguantar",
+        accion: { tipo: "esperar" },
+        defiende: null,
+        textoKey: "mision.jezero.dilema.aguantar",
+      },
+    ],
   },
 };

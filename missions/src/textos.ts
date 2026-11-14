@@ -23,6 +23,13 @@ export const TEXTOS_JEZERO: Record<Idioma, Record<string, string>> = {
       "Bumpy landing that uses lots of energy. The crater walls will shield you later.",
     "mision.jezero.sitio.sobre-el-borde-oeste.porque":
       "Very hard to reach. Up high there are no shadows, so your solar panels will pay you back.",
+    "mision.jezero.polvo":
+      "Dust covered the solar panels: they now give half the energy. Clean them on a spacewalk, or keep going with less power?",
+    "mision.jezero.dilema.pregunta": "The storm is here. What do you do?",
+    "mision.jezero.dilema.refugio":
+      "Everyone to the shelter and switch off the greenhouse. The crew is safe, but tomorrow there is less food.",
+    "mision.jezero.dilema.escudo": "Make the shield stronger. It protects the base, but it uses a lot of energy.",
+    "mision.jezero.dilema.aguantar": "Wait it out. It costs almost nothing now, but the radiation keeps hitting the base.",
   },
   es: {
     "mision.jezero.nombre": "Base en el cráter Jezero, Marte",
@@ -42,5 +49,12 @@ export const TEXTOS_JEZERO: Record<Idioma, Record<string, string>> = {
       "Aterrizaje movido que gasta mucha energía. Después, las paredes del cráter te protegen.",
     "mision.jezero.sitio.sobre-el-borde-oeste.porque":
       "Muy difícil de alcanzar. Allá arriba no hay sombras, así que tus paneles solares te lo devuelven.",
+    "mision.jezero.polvo":
+      "El polvo cubrió los paneles solares: ahora dan la mitad de energía. ¿Los limpias en una salida al exterior, o sigues con menos energía?",
+    "mision.jezero.dilema.pregunta": "La tormenta llegó. ¿Qué haces?",
+    "mision.jezero.dilema.refugio":
+      "Todos al refugio y apaguen el invernadero. La tripulación queda a salvo, pero mañana habrá menos comida.",
+    "mision.jezero.dilema.escudo": "Haz el escudo más fuerte. Protege la base, pero gasta mucha energía.",
+    "mision.jezero.dilema.aguantar": "Aguantar. Ahora casi no cuesta nada, pero la radiación sigue golpeando la base.",
   },
 };

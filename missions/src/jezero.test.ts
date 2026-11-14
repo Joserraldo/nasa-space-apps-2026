@@ -69,3 +69,44 @@ describe("misión Jezero", () => {
       for (const k of claves) expect(TEXTOS_JEZERO[idioma][k], `${idioma}:${k}`).toBeTruthy();
   });
 });
+
+describe("misión 1: polvo y dilema del paso 6 (propuesta #88)", () => {
+  it("el polvo baja el rendimiento del panel, no sale en la semilla dorada y limpiarlo es una acción válida", async () => {
+    const { ActionSchema } = await import("@solar-shield/contracts");
+    const p = MISION_JEZERO.eventoPolvo;
+    expect(p.rendimientoPanel).toBeGreaterThan(0);
+    expect(p.rendimientoPanel).toBeLessThan(1);
+    expect(p.enSemillaDorada).toBe(false);
+    expect(ActionSchema.safeParse(p.limpiar).success).toBe(true);
+  });
+
+  it("el dilema tiene 3 salidas válidas, distintas y con al menos dos expertos que se contradicen", async () => {
+    const { ActionSchema } = await import("@solar-shield/contracts");
+    const ops = MISION_JEZERO.dilemaPaso6.opciones;
+    expect(ops).toHaveLength(3);
+    expect(new Set(ops.map((o) => o.id)).size).toBe(3);
+    for (const o of ops) expect(ActionSchema.safeParse(o.accion).success, o.id).toBe(true);
+    const defensores = ops.map((o) => o.defiende).filter((e) => e !== null);
+    expect(new Set(defensores).size).toBeGreaterThanOrEqual(2);
+  });
+
+  it("apagar el invernadero cuesta: el efecto extra solo resta", () => {
+    const refugio = MISION_JEZERO.dilemaPaso6.opciones.find((o) => o.id === "refugio_y_apagar_invernadero")!;
+    expect(refugio.extraSiTiene).toBe("invernadero");
+    const n = neto(refugio.extra!);
+    expect(Object.values(n).every((v) => v <= 0)).toBe(true);
+    expect(Object.values(n).some((v) => v < 0)).toBe(true);
+  });
+
+  it("cada texto del polvo y del dilema existe en inglés y en español", () => {
+    const claves = [
+      MISION_JEZERO.eventoPolvo.textoKey,
+      MISION_JEZERO.dilemaPaso6.preguntaKey,
+      ...MISION_JEZERO.dilemaPaso6.opciones.map((o) => o.textoKey),
+    ];
+    for (const k of claves) {
+      expect(TEXTOS_JEZERO.en[k], k).toBeTruthy();
+      expect(TEXTOS_JEZERO.es[k], k).toBeTruthy();
+    }
+  });
+});
