@@ -34,5 +34,8 @@ for (const idioma of idiomas) {
     .replace('"etiqueta":"Cinematic"', '"etiqueta":"Cinemática"')
     .replaceAll("assets/voces/en/", `assets/voces/${idioma}/`);
   writeFileSync(join(dir, "index.html"), html);
+  // capturas del juego en el idioma del corte (fijas en el HTML, sin depender del script de la escena)
+  const juego = join(dir, "compositions", "juego.html");
+  writeFileSync(juego, readFileSync(juego, "utf8").replaceAll("-en.png\"", `-${idioma}.png"`));
   render(dir, idioma);
 }

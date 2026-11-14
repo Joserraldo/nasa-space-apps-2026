@@ -59,7 +59,7 @@
         "j-r-e-t": "Datos: NASA CCMC DONKI · Evento 2024-05-20T05:36:00-CME-001", "j-r-e-s": "Datos reales curados, no en vivo",
         "j-r-f-t": "La tripulación no se pone de acuerdo", "j-r-g-t": "La radiación confunde a Iris", "j-r-h-t": "Revisa el medidor. Tú decides.",
       } : null;
-      const imgs = Array.from(document.querySelectorAll("#root[data-composition-id='juego'] img"));
+      const imgs = Array.from(document.querySelectorAll("img[id^='j-'][id$='-img']"));
       if (es) {
         for (const id in TXT) { const el = document.getElementById(id); if (el) el.textContent = TXT[id]; }
         for (const im of imgs) im.src = im.getAttribute("src").replace("-en.png", "-es.png");
