@@ -58,5 +58,7 @@
   "sitio.rango.regular": "Regular",
   "sitio.rango.arriesgado": "Arriesgado",
   "causa.aterrizaje": "Aterrizaje",
-  "causa.aterrizaje.desc": "Aterrizar en este sitio costó energía y protección, y algunos sitios te lo devuelven después."
+  "causa.aterrizaje.desc": "Aterrizar en este sitio costó energía y protección, y algunos sitios te lo devuelven después.",
+  "causa.apagar_invernadero": "Invernadero apagado",
+  "causa.apagar_invernadero.desc": "Con todos en el refugio, el invernadero se apagó y por un rato dio menos comida y aire."
 }

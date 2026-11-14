@@ -90,7 +90,8 @@ export function aplicarAccion(estado: GameState, accionCruda: unknown): GameStat
     };
   }
 
-  if (accion.tipo === "colocar_modulo" && !puedeColocar(estado, accion.modulo)) return estado;
+  // Rechazo limpio: si la acción no se puede hacer, devuelve el MISMO estado (ni cobra ni agenda nada).
+  if (!puedeAplicar(estado, accion).ok) return estado;
 
   const { inmediato, retrasado, causaKey } = costoDe(accion);
   let s = aplicarDeltas(estado, inmediato, "decision", causaKey, accion);
@@ -148,6 +149,57 @@ export function puedeColocar(estado: GameState, modulo: string): boolean {
     !ya.includes(modulo) &&
     ya.length < MISION_JEZERO.modulosAColocar
   );
+}
+
+export type MotivoRechazo = "partida_terminada" | "sin_simulaciones" | "modulo_no_permitido" | "recursos_insuficientes";
+export type Permiso = { ok: true } | { ok: false; motivo: MotivoRechazo; recurso?: Resource };
+
+/**
+ * ¿Se puede hacer esta acción ahora? Pura: no cambia nada. ui la usa para apagar botones y decir por qué;
+ * aplicarAccion usa la misma regla, así que una acción rechazada devuelve el mismo estado.
+ * Recursos: el costo inmediato no puede dejar ningún medidor en 0 (`recurso` dice cuál falta).
+ */
+export function puedeAplicar(estado: GameState, accionCruda: unknown): Permiso {
+  const accion = ActionSchema.parse(accionCruda);
+  if (estado.resultado !== "en_curso") return { ok: false, motivo: "partida_terminada" };
+  if (accion.tipo === "simular") {
+    return estado.simulacionesRestantes === 0 ? { ok: false, motivo: "sin_simulaciones" } : { ok: true };
+  }
+  if (accion.tipo === "colocar_modulo" && !puedeColocar(estado, accion.modulo)) return { ok: false, motivo: "modulo_no_permitido" };
+  const { inmediato } = costoDe(accion);
+  for (const r of RECURSOS) {
+    const d = inmediato[r] ?? 0;
+    if (d < 0 && estado.recursos[r] + d <= 0) return { ok: false, motivo: "recursos_insuficientes", recurso: r };
+  }
+  return { ok: true };
+}
+
+/**
+ * Dilema del paso 6: aplica la opción elegida de MISION_JEZERO.dilemaPaso6 por su id.
+ * Hace la acción de la opción y, si la opción trae `extra` y el jugador construyó `extraSiTiene`
+ * (refugio → apagar el invernadero), también ese efecto, con causa "causa.apagar_invernadero".
+ * Opción desconocida o acción rechazada → mismo estado. No es una Action: no cambia contracts/.
+ */
+export function aplicarOpcionDilema(estado: GameState, opcionId: string): GameState {
+  const opcion = MISION_JEZERO.dilemaPaso6.opciones.find((o) => o.id === opcionId);
+  if (!opcion) return estado;
+  let s = aplicarAccion(estado, opcion.accion);
+  if (s === estado) return estado;
+  const aplicaExtra = opcion.extra && (!opcion.extraSiTiene || modulosColocados(estado).includes(opcion.extraSiTiene));
+  if (!opcion.extra || !aplicaExtra) return s;
+  const causaKey = "causa.apagar_invernadero";
+  s = aplicarDeltas(s, opcion.extra.inmediato, "decision", causaKey);
+  const retraso = RETRASO_POR_DIFICULTAD[s.dificultad];
+  let rng = s.rngEstado;
+  const nuevos: PendingEffect[] = [];
+  for (const r of RECURSOS) {
+    const d = opcion.extra.retrasado[r];
+    if (!d) continue;
+    const p = enteroEntre(rng, retraso.min, retraso.max);
+    rng = p.estado;
+    nuevos.push({ id: `${s.tick}-apagar_invernadero-${r}`, aplicaEnTick: s.tick + p.entero, recurso: r, delta: d, origen: "decision", descripcionKey: causaKey, oculto: retraso.ocultos });
+  }
+  return { ...s, rngEstado: rng, efectosPendientes: [...s.efectosPendientes, ...nuevos] };
 }
 
 /**

@@ -8,7 +8,7 @@ import { describe, expect, it } from "vitest";
 import type { Action, GameState } from "@solar-shield/contracts";
 import { DURACION_TORMENTA_TICKS, RETRASO_COMUNICACIONES } from "@solar-shield/design";
 import { MISION_JEZERO } from "@solar-shield/missions";
-import { aplicarAccion, aterrizar, avanzarTick, modulosColocados } from "./acciones.js";
+import { aplicarAccion, aplicarOpcionDilema, aterrizar, avanzarTick, modulosColocados, puedeAplicar } from "./acciones.js";
 import { partidaDorada, telemetriaPendiente } from "./dorada.js";
 
 const r = (s: GameState) => `${s.recursos.energia}/${s.recursos.soporte_vital}/${s.recursos.blindaje}`;
@@ -93,5 +93,36 @@ describe("reglas del motor que pidió ui (#113)", () => {
     s = aplicarAccion(s, { tipo: "colocar_modulo", modulo: "escudo" });
     expect(aplicarAccion(s, { tipo: "colocar_modulo", modulo: "antena" })).toBe(s); // tercero
     expect(modulosColocados(s).sort()).toEqual(["escudo", "panel_solar"]);
+  });
+});
+
+describe("rechazo limpio y dilema del paso 6 (pedido de ui)", () => {
+  it("puedeAplicar dice por qué no: recursos, módulo o partida terminada; aplicarAccion no cambia nada", () => {
+    const base = partidaDorada();
+    expect(puedeAplicar(base, { tipo: "refugiarse" })).toEqual({ ok: true });
+    const pobre: GameState = { ...base, recursos: { ...base.recursos, energia: 8 } };
+    expect(puedeAplicar(pobre, { tipo: "reparar", equipo: "ia_base" })).toEqual({ ok: false, motivo: "recursos_insuficientes", recurso: "energia" });
+    expect(aplicarAccion(pobre, { tipo: "reparar", equipo: "ia_base" })).toBe(pobre);
+    expect(puedeAplicar(pobre, { tipo: "refugiarse" }).ok).toBe(true); // cuesta 3 de energía: sí alcanza
+    expect(puedeAplicar(base, { tipo: "colocar_modulo", modulo: "bateria" })).toEqual({ ok: false, motivo: "modulo_no_permitido" });
+    expect(puedeAplicar({ ...base, resultado: "fallo" }, { tipo: "esperar" })).toEqual({ ok: false, motivo: "partida_terminada" });
+  });
+
+  it("refugio con invernadero construido: se apaga y quita 10 de soporte vital con retraso", () => {
+    let s = aterrizar(partidaDorada(), "llanura-central");
+    s = aplicarAccion(s, { tipo: "colocar_modulo", modulo: "invernadero" });
+    s = aplicarAccion(s, { tipo: "colocar_modulo", modulo: "escudo" });
+    const despues = aplicarOpcionDilema(s, "refugio_y_apagar_invernadero");
+    const extra = despues.efectosPendientes.filter((e) => e.descripcionKey === "causa.apagar_invernadero");
+    expect(extra.map((e) => [e.recurso, e.delta])).toEqual([["soporte_vital", -10]]);
+    expect(despues.recursos).toEqual(aplicarAccion(s, { tipo: "refugiarse" }).recursos);
+  });
+
+  it("refugio sin invernadero es igual a refugiarse; las otras opciones son su acción; id desconocido no hace nada", () => {
+    const s = hastaLaTormenta(); // panel + escudo
+    expect(aplicarOpcionDilema(s, "refugio_y_apagar_invernadero")).toEqual(aplicarAccion(s, { tipo: "refugiarse" }));
+    expect(aplicarOpcionDilema(s, "subir_escudo")).toEqual(aplicarAccion(s, { tipo: "subir_escudo", nivel: 2 }));
+    expect(aplicarOpcionDilema(s, "aguantar")).toEqual(aplicarAccion(s, { tipo: "esperar" }));
+    expect(aplicarOpcionDilema(s, "no-existe")).toBe(s);
   });
 });

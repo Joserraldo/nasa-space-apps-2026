@@ -58,5 +58,7 @@
   "sitio.rango.regular": "Fair",
   "sitio.rango.arriesgado": "Risky",
   "causa.aterrizaje": "Landing",
-  "causa.aterrizaje.desc": "Landing at this site cost energy and protection, and some sites pay you back later."
+  "causa.aterrizaje.desc": "Landing at this site cost energy and protection, and some sites pay you back later.",
+  "causa.apagar_invernadero": "Greenhouse switched off",
+  "causa.apagar_invernadero.desc": "With everyone in the shelter, the greenhouse was switched off, so it gave less food and air for a while."
 }
