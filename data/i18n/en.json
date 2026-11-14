@@ -200,5 +200,8 @@
   "datos.terreno.sitio.nobile.nombre": "Nobile crater",
   "datos.terreno.sitio.nobile.descripcion": "A big crater about 74 km wide, in the south polar region. The ground here is higher than at the other sites.",
   "datos.terreno.sitio.de-gerlache.nombre": "de Gerlache crater",
-  "datos.terreno.sitio.de-gerlache.descripcion": "A crater about 31 km wide, very close to the south pole, with steep ground."
+  "datos.terreno.sitio.de-gerlache.descripcion": "A crater about 31 km wide, very close to the south pole, with steep ground.",
+  "datos.terreno.luna.sombra": "Parts of this crater never see the Sun.",
+  "datos.terreno.luna.hielo": "Some NASA maps mark spots here where there may be ice. Scientists still need to check.",
+  "datos.terreno.luna.frio": "Parts of the ground here stay colder than -163 °C, even in summer."
 }

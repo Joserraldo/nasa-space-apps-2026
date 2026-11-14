@@ -88,4 +88,28 @@ Los relieves coinciden con los de la propuesta #100; las pendientes difieren de 
 
 **Verificación independiente (`identify`, 2026-11-14):** polar vs JSON: −2639,5 / −3145,5 / −2711,5 / −1673 / 760 / −1878 m (diferencias ≤ 10 m); DEM global 128 ppd en la misma lat/lon: −2650 / −3106 / −2717 / −1683 / 756,5 / −1858,5 m (≤ 41 m).
 - Son el **centro del cráter según el nomenclátor**, no un punto de aterrizaje: no son los nombres "cresta soleada / macizo alto…" de la propuesta #98 (esos eran descriptivos, sin coordenadas). Asignarlos a los 4 sitios del juego lo decide diseño.
-- **NO VERIFICADO:** luz (Moon Trek no ofrece capa de iluminación media: se buscaron en los 279 servicios nombres con "illum/sun/light/avg/flux" sin resultado; solo hay temperatura DIVINER), hielo cerca (existen `SP_IceLoc_280m`, `PSR_SP` y DIVINER < 110 K, no usados todavía) y blindaje. Quedan `null` y en `fuente.pendientes`. El ClrShade global reproyectado al polo salió negro, por eso no hay sombreado.
+- **NO VERIFICADO:** luz (Moon Trek no ofrece capa de iluminación media: se buscaron en los 279 servicios nombres con "illum/sun/light/avg/flux" sin resultado) y blindaje. Hielo, sombra y frío: ver la sección siguiente. Quedan `null` y en `fuente.pendientes`. El ClrShade global reproyectado al polo salió negro, por eso no hay sombreado.
+
+### Hielo, sombra permanente y frío en los 6 cráteres (Moon Trek, 2026-11-14)
+`npm run luna-sur:hielo` (sin clave, 1 petición/2 s) guarda `data/terreno/luna-polo-sur/hielo.json` (crudo + URLs); `luna-sur:curar` lo pasa a `hieloSombra` de cada sitio. Todo se consulta en el recuadro de 15,36 km ya usado.
+
+| Capa (Moon Trek) | Qué es [V del servicio] | Qué NO sabemos |
+|---|---|---|
+| `PSR_SP/MapServer/0` | 164 **puntos** (centro de cada región en sombra permanente) con `PSR_ID`, `Area__km2_`, `Coverage__`, `Data_Quali`, `Lunar_Feat`. Los `Features_o` citan imágenes LROC NAC. | Instrumento/artículo: el servicio no lo declara (descripción y copyright vacíos). Parece derivado de LOLA/LROC, **NO VERIFICADO**. Qué significan `Coverage__` y `Data_Quali`: NO VERIFICADO (no se usan). |
+| `SP_IceLoc_280m/MapServer/0` | 1119 puntos (lon, lat) a 280 m con "IceLoc" en el nombre. | Qué mide, instrumento y artículo: no declarados. No sabemos si es detección, modelo o estabilidad térmica. NO VERIFICADO; solo se dice "podría haber hielo". |
+| `DIVINER_summer_/winter_Max_Temp_SP_below110K_240mp/ImageServer` | Ráster F32 (K) a 240 m: temperatura **máxima** de la estación, solo donde es < 110 K; el resto es "sin valor". El nombre indica el instrumento Diviner de LRO. | Cita (¿Paige et al. 2010, Science?) NO VERIFICADO; la capa no la da. "Máx. verano" = verano austral, no distingue "sin dato" de "no frío". |
+
+**Método (derivado por el equipo):** PSR = cuántos centros de región caen en el recuadro (id, área de la región entera, que puede salirse). Hielo = cuántos puntos caen en el recuadro. Frío = fracción de píxeles del ráster con valor (< 110 K) y valor mínimo (este último es medido). 110 K = −163 °C. No hay fracción "en sombra" porque PSR_SP son puntos, no polígonos.
+
+| Cráter | Centros PSR | Puntos de hielo | < 110 K verano / invierno | Mín. K verano / invierno |
+|---|---|---|---|---|
+| Shackleton | 1 (233,7 km²) | 36 | 81 % / 96 % | 81,3 / 53,5 |
+| Haworth | 0 | 20 | 98 % / 100 % | 59,7 / 36,4 |
+| Faustini | 1 (663,9 km²) | 9 | 100 % / 100 % | 56,7 / 43,5 |
+| Malapert | 0 | 0 | 0 % / 3 % | — / 89,5 |
+| Nobile | 0 | 0 | 0,3 % / 2,5 % | 93,9 / 73,1 |
+| de Gerlache | 1 (243,3 km²) | 7 | 77 % / 100 % | 51,0 / 47,2 |
+
+**Textos para niños (en/es, claves `datos.terreno.luna.*`)**: "Parts of this crater never see the Sun" solo si hay ≥ 1 centro PSR (Shackleton, Faustini, de Gerlache); "may be ice… scientists still need to check" solo si hay puntos de hielo (todos menos Malapert y Nobile); "colder than −163 °C, even in summer" solo si ≥ 1 % del recuadro (todos menos Malapert y Nobile). Haworth no tiene centro PSR en el recuadro aunque sea muy frío: no se afirma sombra permanente. Nunca "hay agua para beber".
+
+**Verificación independiente (`returnCountOnly` y `identify`):** hielo 36 / 0 / 7 y PSR 1 / 0 / 1 coinciden para Shackleton / Malapert / de Gerlache; `identify` en el centro de Shackleton = 94,45 K (dentro de 81,3–110); malla 3×3 en de Gerlache: 6 de 9 con valor (87,2 … 63,8 K, todos ≥ 51 K) frente a 77 % del ráster (malla gruesa).

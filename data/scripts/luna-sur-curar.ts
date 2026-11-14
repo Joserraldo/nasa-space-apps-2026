@@ -9,6 +9,39 @@ import { LUNA_SUR_CUADRO, TerrenoLunaPoloSurSchema, type SitioLunaSur, type Terr
 import { RAIZ } from "./config";
 import { REGLAS } from "./jezero-curar";
 
+const ARCGIS = "https://trek.nasa.gov/moon/trekarcgis/rest/services";
+const DIVINER = "LRO Diviner (nombre de la capa; el servicio no da más descripción)";
+
+/** Hielo/sombra/frío desde hielo.json (luna-sur-hielo.ts). Los textos solo se activan si el dato los respalda. */
+function curarHielo(h: any) {
+  const el = h.consultadoEl as string;
+  const regiones = h.psr.regiones as any[];
+  const v = h.diviner.verano, i = h.diviner.invierno;
+  const fv = v.pixelesBajo110K / v.pixelesTotal, fi = i.pixelesBajo110K / i.pixelesTotal;
+  const r3 = (x: number) => Math.round(x * 1000) / 1000;
+  return {
+    sombraPermanente: {
+      capa: "PSR_SP", instrumento: null, consultadoEl: el, url: `${ARCGIS}/PSR_SP/MapServer/0`, origen: "derivado" as const,
+      regionesEnRecuadro: regiones.length, ids: regiones.map((r) => r.id),
+      areaRegionesKm2: Math.round(regiones.reduce((a, r) => a + r.areaKm2, 0) * 10) / 10,
+      textoKey: regiones.length > 0 ? "datos.terreno.luna.sombra" : null,
+    },
+    senalHielo: {
+      capa: "SP_IceLoc_280m", instrumento: null, consultadoEl: el, url: `${ARCGIS}/SP_IceLoc_280m/MapServer/0`, origen: "derivado" as const,
+      puntosEnRecuadro: h.hielo.puntos.length,
+      textoKey: h.hielo.puntos.length > 0 ? "datos.terreno.luna.hielo" : null,
+    },
+    temperatura: {
+      capa: "DIVINER_summer_Max_Temp_SP_below110K_240mp", instrumento: DIVINER, consultadoEl: el,
+      url: `${ARCGIS}/DIVINER_summer_Max_Temp_SP_below110K_240mp/ImageServer`, origen: "derivado" as const,
+      capaInvierno: "DIVINER_winter_Max_Temp_SP_below110K_240mp",
+      fraccionBajo110KVerano: r3(fv), fraccionBajo110KInvierno: r3(fi),
+      minimoMaxVeranoK: v.minimoK, minimoMaxInviernoK: i.minimoK,
+      textoKey: fv >= 0.01 ? "datos.terreno.luna.frio" : null,
+    },
+  };
+}
+
 const DIR = join(RAIZ, "terreno", "luna-polo-sur");
 const r1 = (x: number) => Math.round(x * 10) / 10;
 const r2 = (x: number) => Math.round(x * 100) / 100;
@@ -17,6 +50,8 @@ export function curarLunaSur(): TerrenoLunaPoloSur {
   const consulta = JSON.parse(readFileSync(join(DIR, "consulta.json"), "utf-8"));
   const n = LUNA_SUR_CUADRO.px;
   const paso = LUNA_SUR_CUADRO.ladoM / n; // m por píxel (plano en la proyección; escala 1 en el polo, error < 0,1 % a < 3° del polo)
+  const hielo = JSON.parse(readFileSync(join(DIR, "hielo.json"), "utf-8"));
+  if (hielo.sitios.length !== consulta.sitios.length) throw new Error("hielo.json no coincide con consulta.json");
   const sitios: SitioLunaSur[] = consulta.sitios.map((s: any) => {
     const b = readFileSync(join(DIR, s.id, "elevacion.bin"));
     const h = new Int16Array(b.buffer, b.byteOffset, b.length / 2);
@@ -46,6 +81,7 @@ export function curarLunaSur(): TerrenoLunaPoloSur {
       elevacionM: at(c0, f0),
       pendienteGrados: r1(pendiente),
       relieveM: Math.max(...h) - Math.min(...h),
+      hieloSombra: curarHielo({ consultadoEl: hielo.consultadoEl, ...hielo.sitios.find((x: any) => x.id === s.id) }),
       puntajes: { plano: r2(Math.min(1, Math.max(0, 1 - pendiente / REGLAS.pendienteMaxGrados))), luz: null, blindaje: null },
     };
   });

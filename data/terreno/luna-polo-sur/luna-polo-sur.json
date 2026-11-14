@@ -44,6 +44,43 @@
         "ymin": -15320,
         "xmax": 16070,
         "ymax": 40
+      },
+      "hieloSombra": {
+        "sombraPermanente": {
+          "capa": "PSR_SP",
+          "instrumento": null,
+          "consultadoEl": "2026-11-14",
+          "url": "https://trek.nasa.gov/moon/trekarcgis/rest/services/PSR_SP/MapServer/0",
+          "origen": "derivado",
+          "regionesEnRecuadro": 1,
+          "ids": [
+            "SP_896450_1282030"
+          ],
+          "areaRegionesKm2": 233.7,
+          "textoKey": "datos.terreno.luna.sombra"
+        },
+        "senalHielo": {
+          "capa": "SP_IceLoc_280m",
+          "instrumento": null,
+          "consultadoEl": "2026-11-14",
+          "url": "https://trek.nasa.gov/moon/trekarcgis/rest/services/SP_IceLoc_280m/MapServer/0",
+          "origen": "derivado",
+          "puntosEnRecuadro": 36,
+          "textoKey": "datos.terreno.luna.hielo"
+        },
+        "temperatura": {
+          "capa": "DIVINER_summer_Max_Temp_SP_below110K_240mp",
+          "instrumento": "LRO Diviner (nombre de la capa; el servicio no da más descripción)",
+          "consultadoEl": "2026-11-14",
+          "url": "https://trek.nasa.gov/moon/trekarcgis/rest/services/DIVINER_summer_Max_Temp_SP_below110K_240mp/ImageServer",
+          "origen": "derivado",
+          "capaInvierno": "DIVINER_winter_Max_Temp_SP_below110K_240mp",
+          "fraccionBajo110KVerano": 0.809,
+          "fraccionBajo110KInvierno": 0.96,
+          "minimoMaxVeranoK": 81.3,
+          "minimoMaxInviernoK": 53.5,
+          "textoKey": "datos.terreno.luna.frio"
+        }
       }
     },
     {
@@ -73,6 +110,41 @@
         "ymin": 76431,
         "xmax": -3384,
         "ymax": 91791
+      },
+      "hieloSombra": {
+        "sombraPermanente": {
+          "capa": "PSR_SP",
+          "instrumento": null,
+          "consultadoEl": "2026-11-14",
+          "url": "https://trek.nasa.gov/moon/trekarcgis/rest/services/PSR_SP/MapServer/0",
+          "origen": "derivado",
+          "regionesEnRecuadro": 0,
+          "ids": [],
+          "areaRegionesKm2": 0,
+          "textoKey": null
+        },
+        "senalHielo": {
+          "capa": "SP_IceLoc_280m",
+          "instrumento": null,
+          "consultadoEl": "2026-11-14",
+          "url": "https://trek.nasa.gov/moon/trekarcgis/rest/services/SP_IceLoc_280m/MapServer/0",
+          "origen": "derivado",
+          "puntosEnRecuadro": 20,
+          "textoKey": "datos.terreno.luna.hielo"
+        },
+        "temperatura": {
+          "capa": "DIVINER_summer_Max_Temp_SP_below110K_240mp",
+          "instrumento": "LRO Diviner (nombre de la capa; el servicio no da más descripción)",
+          "consultadoEl": "2026-11-14",
+          "url": "https://trek.nasa.gov/moon/trekarcgis/rest/services/DIVINER_summer_Max_Temp_SP_below110K_240mp/ImageServer",
+          "origen": "derivado",
+          "capaInvierno": "DIVINER_winter_Max_Temp_SP_below110K_240mp",
+          "fraccionBajo110KVerano": 0.978,
+          "fraccionBajo110KInvierno": 1,
+          "minimoMaxVeranoK": 59.7,
+          "minimoMaxInviernoK": 36.4,
+          "textoKey": "datos.terreno.luna.frio"
+        }
       }
     },
     {
@@ -102,6 +174,43 @@
         "ymin": -254,
         "xmax": 92974,
         "ymax": 15106
+      },
+      "hieloSombra": {
+        "sombraPermanente": {
+          "capa": "PSR_SP",
+          "instrumento": null,
+          "consultadoEl": "2026-11-14",
+          "url": "https://trek.nasa.gov/moon/trekarcgis/rest/services/PSR_SP/MapServer/0",
+          "origen": "derivado",
+          "regionesEnRecuadro": 1,
+          "ids": [
+            "SP_871460_0840750"
+          ],
+          "areaRegionesKm2": 663.9,
+          "textoKey": "datos.terreno.luna.sombra"
+        },
+        "senalHielo": {
+          "capa": "SP_IceLoc_280m",
+          "instrumento": null,
+          "consultadoEl": "2026-11-14",
+          "url": "https://trek.nasa.gov/moon/trekarcgis/rest/services/SP_IceLoc_280m/MapServer/0",
+          "origen": "derivado",
+          "puntosEnRecuadro": 9,
+          "textoKey": "datos.terreno.luna.hielo"
+        },
+        "temperatura": {
+          "capa": "DIVINER_summer_Max_Temp_SP_below110K_240mp",
+          "instrumento": "LRO Diviner (nombre de la capa; el servicio no da más descripción)",
+          "consultadoEl": "2026-11-14",
+          "url": "https://trek.nasa.gov/moon/trekarcgis/rest/services/DIVINER_summer_Max_Temp_SP_below110K_240mp/ImageServer",
+          "origen": "derivado",
+          "capaInvierno": "DIVINER_winter_Max_Temp_SP_below110K_240mp",
+          "fraccionBajo110KVerano": 1,
+          "fraccionBajo110KInvierno": 1,
+          "minimoMaxVeranoK": 56.7,
+          "minimoMaxInviernoK": 43.5,
+          "textoKey": "datos.terreno.luna.frio"
+        }
       }
     },
     {
@@ -131,6 +240,41 @@
         "ymin": 146543,
         "xmax": 41322,
         "ymax": 161903
+      },
+      "hieloSombra": {
+        "sombraPermanente": {
+          "capa": "PSR_SP",
+          "instrumento": null,
+          "consultadoEl": "2026-11-14",
+          "url": "https://trek.nasa.gov/moon/trekarcgis/rest/services/PSR_SP/MapServer/0",
+          "origen": "derivado",
+          "regionesEnRecuadro": 0,
+          "ids": [],
+          "areaRegionesKm2": 0,
+          "textoKey": null
+        },
+        "senalHielo": {
+          "capa": "SP_IceLoc_280m",
+          "instrumento": null,
+          "consultadoEl": "2026-11-14",
+          "url": "https://trek.nasa.gov/moon/trekarcgis/rest/services/SP_IceLoc_280m/MapServer/0",
+          "origen": "derivado",
+          "puntosEnRecuadro": 0,
+          "textoKey": null
+        },
+        "temperatura": {
+          "capa": "DIVINER_summer_Max_Temp_SP_below110K_240mp",
+          "instrumento": "LRO Diviner (nombre de la capa; el servicio no da más descripción)",
+          "consultadoEl": "2026-11-14",
+          "url": "https://trek.nasa.gov/moon/trekarcgis/rest/services/DIVINER_summer_Max_Temp_SP_below110K_240mp/ImageServer",
+          "origen": "derivado",
+          "capaInvierno": "DIVINER_winter_Max_Temp_SP_below110K_240mp",
+          "fraccionBajo110KVerano": 0,
+          "fraccionBajo110KInvierno": 0.032,
+          "minimoMaxVeranoK": null,
+          "minimoMaxInviernoK": 89.5,
+          "textoKey": null
+        }
       }
     },
     {
@@ -160,6 +304,41 @@
         "ymin": 77935,
         "xmax": 124008,
         "ymax": 93295
+      },
+      "hieloSombra": {
+        "sombraPermanente": {
+          "capa": "PSR_SP",
+          "instrumento": null,
+          "consultadoEl": "2026-11-14",
+          "url": "https://trek.nasa.gov/moon/trekarcgis/rest/services/PSR_SP/MapServer/0",
+          "origen": "derivado",
+          "regionesEnRecuadro": 0,
+          "ids": [],
+          "areaRegionesKm2": 0,
+          "textoKey": null
+        },
+        "senalHielo": {
+          "capa": "SP_IceLoc_280m",
+          "instrumento": null,
+          "consultadoEl": "2026-11-14",
+          "url": "https://trek.nasa.gov/moon/trekarcgis/rest/services/SP_IceLoc_280m/MapServer/0",
+          "origen": "derivado",
+          "puntosEnRecuadro": 0,
+          "textoKey": null
+        },
+        "temperatura": {
+          "capa": "DIVINER_summer_Max_Temp_SP_below110K_240mp",
+          "instrumento": "LRO Diviner (nombre de la capa; el servicio no da más descripción)",
+          "consultadoEl": "2026-11-14",
+          "url": "https://trek.nasa.gov/moon/trekarcgis/rest/services/DIVINER_summer_Max_Temp_SP_below110K_240mp/ImageServer",
+          "origen": "derivado",
+          "capaInvierno": "DIVINER_winter_Max_Temp_SP_below110K_240mp",
+          "fraccionBajo110KVerano": 0.003,
+          "fraccionBajo110KInvierno": 0.025,
+          "minimoMaxVeranoK": 93.9,
+          "minimoMaxInviernoK": 73.1,
+          "textoKey": null
+        }
       }
     },
     {
@@ -189,6 +368,43 @@
         "ymin": -8047,
         "xmax": -39362,
         "ymax": 7313
+      },
+      "hieloSombra": {
+        "sombraPermanente": {
+          "capa": "PSR_SP",
+          "instrumento": null,
+          "consultadoEl": "2026-11-14",
+          "url": "https://trek.nasa.gov/moon/trekarcgis/rest/services/PSR_SP/MapServer/0",
+          "origen": "derivado",
+          "regionesEnRecuadro": 1,
+          "ids": [
+            "SP_883120_2691430"
+          ],
+          "areaRegionesKm2": 243.3,
+          "textoKey": "datos.terreno.luna.sombra"
+        },
+        "senalHielo": {
+          "capa": "SP_IceLoc_280m",
+          "instrumento": null,
+          "consultadoEl": "2026-11-14",
+          "url": "https://trek.nasa.gov/moon/trekarcgis/rest/services/SP_IceLoc_280m/MapServer/0",
+          "origen": "derivado",
+          "puntosEnRecuadro": 7,
+          "textoKey": "datos.terreno.luna.hielo"
+        },
+        "temperatura": {
+          "capa": "DIVINER_summer_Max_Temp_SP_below110K_240mp",
+          "instrumento": "LRO Diviner (nombre de la capa; el servicio no da más descripción)",
+          "consultadoEl": "2026-11-14",
+          "url": "https://trek.nasa.gov/moon/trekarcgis/rest/services/DIVINER_summer_Max_Temp_SP_below110K_240mp/ImageServer",
+          "origen": "derivado",
+          "capaInvierno": "DIVINER_winter_Max_Temp_SP_below110K_240mp",
+          "fraccionBajo110KVerano": 0.766,
+          "fraccionBajo110KInvierno": 1,
+          "minimoMaxVeranoK": 51,
+          "minimoMaxInviernoK": 47.2,
+          "textoKey": "datos.terreno.luna.frio"
+        }
       }
     }
   ]

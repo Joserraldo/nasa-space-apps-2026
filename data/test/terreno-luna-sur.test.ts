@@ -60,6 +60,54 @@ describe("terreno Luna polo sur", () => {
   });
 });
 
+describe("hielo, sombra permanente y frío (Moon Trek)", () => {
+  const por = Object.fromEntries(t.sitios.map((s) => [s.id, s.hieloSombra!]));
+  it("los 6 sitios traen los tres bloques con capa, fecha y origen", () => {
+    for (const s of t.sitios) {
+      const h = s.hieloSombra!;
+      expect(h, s.id).toBeDefined();
+      expect([h.sombraPermanente.capa, h.senalHielo.capa]).toEqual(["PSR_SP", "SP_IceLoc_280m"]);
+      expect(h.temperatura.capa).toContain("DIVINER");
+      for (const b of [h.sombraPermanente, h.senalHielo, h.temperatura]) {
+        expect(b.consultadoEl).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+        expect(b.url).toContain("trek.nasa.gov/moon/");
+        expect(b.origen).toBe("derivado");
+      }
+      // instrumento no declarado por el servicio: null, no inventado
+      expect(h.sombraPermanente.instrumento).toBeNull();
+      expect(h.senalHielo.instrumento).toBeNull();
+    }
+  });
+  it("resultados guardados (consultados el 2026-11-14)", () => {
+    expect(Object.fromEntries(t.sitios.map((s) => [s.id, [s.hieloSombra!.sombraPermanente.regionesEnRecuadro, s.hieloSombra!.senalHielo.puntosEnRecuadro]]))).toEqual({
+      shackleton: [1, 36], haworth: [0, 20], faustini: [1, 9], malapert: [0, 0], nobile: [0, 0], "de-gerlache": [1, 7],
+    });
+    expect(por["malapert"]!.temperatura.fraccionBajo110KVerano).toBe(0);
+    expect(por["faustini"]!.temperatura.fraccionBajo110KVerano).toBe(1);
+  });
+  it("cada texto solo aparece si el dato lo respalda, y existe en es/en", () => {
+    for (const s of t.sitios) {
+      const h = s.hieloSombra!;
+      expect(h.sombraPermanente.textoKey !== null, s.id + " sombra").toBe(h.sombraPermanente.regionesEnRecuadro > 0);
+      expect(h.senalHielo.textoKey !== null, s.id + " hielo").toBe(h.senalHielo.puntosEnRecuadro > 0);
+      expect(h.temperatura.textoKey !== null, s.id + " frío").toBe(h.temperatura.fraccionBajo110KVerano >= 0.01);
+      for (const k of [h.sombraPermanente.textoKey, h.senalHielo.textoKey, h.temperatura.textoKey].filter((x): x is string => !!x)) {
+        expect(es[k], k).toBeTruthy();
+        expect(en[k], k).toBeTruthy();
+        expect(en[k], k).not.toMatch(/drink/i);
+      }
+    }
+  });
+  it("temperaturas plausibles: mínimos > 0 K y todos < 110 K (la capa solo guarda eso)", () => {
+    for (const s of t.sitios) {
+      const T = s.hieloSombra!.temperatura;
+      for (const m of [T.minimoMaxVeranoK, T.minimoMaxInviernoK]) if (m !== null) { expect(m, s.id).toBeGreaterThan(20); expect(m, s.id).toBeLessThan(110); }
+      expect(T.fraccionBajo110KInvierno, s.id).toBeGreaterThanOrEqual(0);
+      if (T.fraccionBajo110KVerano > 0) expect(T.minimoMaxVeranoK, s.id).not.toBeNull();
+    }
+  });
+});
+
 describe("DEM lunar guardado sin rellenos", () => {
   it("cada elevacion.bin está dentro del rango real de LOLA (−9126 a 10767 m)", () => {
     const raiz = join(__dirname, "..", "terreno");

@@ -214,6 +214,43 @@ export function aPolarSur(lat: number, lon: number): { x: number; y: number } {
   return { x: rho * Math.sin(lon * rad), y: rho * Math.cos(lon * rad) };
 }
 
+/** De dónde sale cada dato de hielo/sombra/temperatura: capa de Moon Trek, instrumento (si la capa lo declara) y fecha. */
+const CapaHieloSchema = z.object({
+  capa: z.string(),
+  /** null = el servicio no lo declara (no se inventa). */
+  instrumento: z.string().nullable(),
+  consultadoEl: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+  url: z.string().url(),
+  /** "derivado" = lo calculó el equipo a partir de la capa; "medido" = valor tal cual de la capa. */
+  origen: z.enum(["medido", "derivado"]),
+});
+export const HieloSombraSchema = z.object({
+  /** PSR_SP: puntos (centros) de regiones en sombra permanente dentro del recuadro; no son polígonos. */
+  sombraPermanente: CapaHieloSchema.extend({
+    regionesEnRecuadro: z.number().int().min(0),
+    ids: z.array(z.string()),
+    /** Área de la región entera (puede salirse del recuadro). */
+    areaRegionesKm2: z.number().min(0),
+    textoKey: z.string().nullable(),
+  }),
+  /** SP_IceLoc_280m: puntos con "señal de hielo" dentro del recuadro. La capa no documenta qué mide. */
+  senalHielo: CapaHieloSchema.extend({
+    puntosEnRecuadro: z.number().int().min(0),
+    textoKey: z.string().nullable(),
+  }),
+  /** DIVINER máximo estacional < 110 K (verano e invierno del sur). */
+  temperatura: CapaHieloSchema.extend({
+    capaInvierno: z.string(),
+    fraccionBajo110KVerano: z.number().min(0).max(1),
+    fraccionBajo110KInvierno: z.number().min(0).max(1),
+    /** El valor más bajo de la capa dentro del recuadro (K): medido. */
+    minimoMaxVeranoK: z.number().nullable(),
+    minimoMaxInviernoK: z.number().nullable(),
+    textoKey: z.string().nullable(),
+  }),
+});
+export type HieloSombra = z.infer<typeof HieloSombraSchema>;
+
 export const SitioLunaSurSchema = SitioLunaSchema.omit({ mision: true, bbox: true, sombreado: true }).extend({
   /** Nombre del accidente en el nomenclátor IAU (capa CombinedNomenclature de Moon Trek). */
   nombreIau: z.string(),
@@ -221,6 +258,8 @@ export const SitioLunaSurSchema = SitioLunaSchema.omit({ mision: true, bbox: tru
   diametroKm: z.number(),
   /** Recuadro en metros de la proyección polar sur (ver WKT_POLAR_SUR). */
   bboxM: z.object({ xmin: z.number(), ymin: z.number(), xmax: z.number(), ymax: z.number() }),
+  /** Hielo, sombra permanente y frío (opcional para no romper datos viejos). */
+  hieloSombra: HieloSombraSchema.optional(),
 });
 export type SitioLunaSur = z.infer<typeof SitioLunaSurSchema>;
 

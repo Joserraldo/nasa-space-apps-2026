@@ -1,0 +1,561 @@
+{
+  "consultadoEl": "2026-11-14",
+  "sitios": [
+    {
+      "id": "shackleton",
+      "psr": {
+        "url": "https://trek.nasa.gov/moon/trekarcgis/rest/services/PSR_SP/MapServer/0/query?geometry=710,-15320,16070,40&geometryType=esriGeometryEnvelope&spatialRel=esriSpatialRelIntersects&returnGeometry=false&f=json&outFields=PSR_ID,Cent__Lat_,Cent__Long,Area__km2_,Lunar_Feat,Coverage__,Data_Quali",
+        "regiones": [
+          {
+            "id": "SP_896450_1282030",
+            "lat": -89.645,
+            "lon": 128.203,
+            "areaKm2": 233.698,
+            "cobertura": 65,
+            "calidad": 1,
+            "rasgo": "Shackleton Crater"
+          }
+        ]
+      },
+      "hielo": {
+        "url": "https://trek.nasa.gov/moon/trekarcgis/rest/services/SP_IceLoc_280m/MapServer/0/query?geometry=710,-15320,16070,40&geometryType=esriGeometryEnvelope&spatialRel=esriSpatialRelIntersects&returnGeometry=false&f=json&outFields=FID,x,y",
+        "puntos": [
+          {
+            "fid": 541,
+            "lon": 173.157226587,
+            "lat": -89.7660458435
+          },
+          {
+            "fid": 546,
+            "lon": 170.537677792,
+            "lat": -89.7739278681
+          },
+          {
+            "fid": 551,
+            "lon": 167.905242923,
+            "lat": -89.7339318526
+          },
+          {
+            "fid": 557,
+            "lon": 146.309932474,
+            "lat": -89.865995862
+          },
+          {
+            "fid": 562,
+            "lon": 149.534455081,
+            "lat": -89.8167427478
+          },
+          {
+            "fid": 563,
+            "lon": 167.195733935,
+            "lat": -89.5807494037
+          },
+          {
+            "fid": 566,
+            "lon": 154.440034828,
+            "lat": -89.7631121427
+          },
+          {
+            "fid": 567,
+            "lon": 156.250505507,
+            "lat": -89.7462211391
+          },
+          {
+            "fid": 568,
+            "lon": 165.963756532,
+            "lat": -89.5785928228
+          },
+          {
+            "fid": 571,
+            "lon": 160.559965172,
+            "lat": -89.6649904567
+          },
+          {
+            "fid": 572,
+            "lon": 161.565051177,
+            "lat": -89.6474127404
+          },
+          {
+            "fid": 575,
+            "lon": 130.236358309,
+            "lat": -89.8417712261
+          },
+          {
+            "fid": 576,
+            "lon": 140.906141114,
+            "lat": -89.808450598
+          },
+          {
+            "fid": 577,
+            "lon": 163.17859011,
+            "lat": -89.5826067704
+          },
+          {
+            "fid": 578,
+            "lon": 165.425783802,
+            "lat": -89.5199809351
+          },
+          {
+            "fid": 581,
+            "lon": 155.695450734,
+            "lat": -89.6839525299
+          },
+          {
+            "fid": 582,
+            "lon": 162.34987578,
+            "lat": -89.570979237
+          },
+          {
+            "fid": 583,
+            "lon": 133.025065989,
+            "lat": -89.8093541363
+          },
+          {
+            "fid": 584,
+            "lon": 156.194056482,
+            "lat": -89.6547113802
+          },
+          {
+            "fid": 585,
+            "lon": 158.459024081,
+            "lat": -89.6204112612
+          },
+          {
+            "fid": 586,
+            "lon": 163.909183651,
+            "lat": -89.4971439981
+          },
+          {
+            "fid": 589,
+            "lon": 150.255118703,
+            "lat": -89.7003581845
+          },
+          {
+            "fid": 590,
+            "lon": 161.200114841,
+            "lat": -89.5386900143
+          },
+          {
+            "fid": 595,
+            "lon": 154.653824058,
+            "lat": -89.6093154944
+          },
+          {
+            "fid": 596,
+            "lon": 161.241349652,
+            "lat": -89.4799274216
+          },
+          {
+            "fid": 605,
+            "lon": 116.565051177,
+            "lat": -89.7922355368
+          },
+          {
+            "fid": 606,
+            "lon": 150.945395901,
+            "lat": -89.6173532318
+          },
+          {
+            "fid": 614,
+            "lon": 154.397812449,
+            "lat": -89.5054532742
+          },
+          {
+            "fid": 621,
+            "lon": 101.768288932,
+            "lat": -89.772215901
+          },
+          {
+            "fid": 627,
+            "lon": 144.904183213,
+            "lat": -89.5798237993
+          },
+          {
+            "fid": 630,
+            "lon": 151.699244234,
+            "lat": -89.4512536326
+          },
+          {
+            "fid": 646,
+            "lon": 138.012787504,
+            "lat": -89.4999847358
+          },
+          {
+            "fid": 647,
+            "lon": 137.231174608,
+            "lat": -89.4937220499
+          },
+          {
+            "fid": 650,
+            "lon": 135.725224299,
+            "lat": -89.4809243531
+          },
+          {
+            "fid": 678,
+            "lon": 122.471192291,
+            "lat": -89.3942726828
+          },
+          {
+            "fid": 679,
+            "lon": 104.995079129,
+            "lat": -89.4613361915
+          }
+        ]
+      },
+      "diviner": {
+        "verano": {
+          "url": "https://trek.nasa.gov/moon/trekarcgis/rest/services/DIVINER_summer_Max_Temp_SP_below110K_240mp/ImageServer/exportImage?bbox=710,-15320,16070,40&size=128,128&format=bsq&pixelType=F32&interpolation=RSP_NearestNeighbor&f=image",
+          "pixelesBajo110K": 13258,
+          "pixelesTotal": 16384,
+          "minimoK": 81.3,
+          "maximoK": 110
+        },
+        "invierno": {
+          "url": "https://trek.nasa.gov/moon/trekarcgis/rest/services/DIVINER_winter_Max_Temp_SP_below110K_240mp/ImageServer/exportImage?bbox=710,-15320,16070,40&size=128,128&format=bsq&pixelType=F32&interpolation=RSP_NearestNeighbor&f=image",
+          "pixelesBajo110K": 15726,
+          "pixelesTotal": 16384,
+          "minimoK": 53.5,
+          "maximoK": 109.1
+        }
+      }
+    },
+    {
+      "id": "haworth",
+      "psr": {
+        "url": "https://trek.nasa.gov/moon/trekarcgis/rest/services/PSR_SP/MapServer/0/query?geometry=-18744,76431,-3384,91791&geometryType=esriGeometryEnvelope&spatialRel=esriSpatialRelIntersects&returnGeometry=false&f=json&outFields=PSR_ID,Cent__Lat_,Cent__Long,Area__km2_,Lunar_Feat,Coverage__,Data_Quali",
+        "regiones": []
+      },
+      "hielo": {
+        "url": "https://trek.nasa.gov/moon/trekarcgis/rest/services/SP_IceLoc_280m/MapServer/0/query?geometry=-18744,76431,-3384,91791&geometryType=esriGeometryEnvelope&spatialRel=esriSpatialRelIntersects&returnGeometry=false&f=json&outFields=FID,x,y",
+        "puntos": [
+          {
+            "fid": 405,
+            "lon": -12.442421375,
+            "lat": -87.3267706044
+          },
+          {
+            "fid": 406,
+            "lon": -12.7500258358,
+            "lat": -87.3902122903
+          },
+          {
+            "fid": 408,
+            "lon": -11.3826428151,
+            "lat": -87.1287848881
+          },
+          {
+            "fid": 417,
+            "lon": -11.9702613735,
+            "lat": -87.3125444141
+          },
+          {
+            "fid": 435,
+            "lon": -10.6441878285,
+            "lat": -87.334397626
+          },
+          {
+            "fid": 438,
+            "lon": -9.99689958895,
+            "lat": -87.2172911169
+          },
+          {
+            "fid": 442,
+            "lon": -8.814274189,
+            "lat": -87.0294561546
+          },
+          {
+            "fid": 449,
+            "lon": -8.88065915052,
+            "lat": -87.2920780522
+          },
+          {
+            "fid": 455,
+            "lon": -7.89708871985,
+            "lat": -87.0926752568
+          },
+          {
+            "fid": 456,
+            "lon": -7.94771531373,
+            "lat": -87.1110691641
+          },
+          {
+            "fid": 457,
+            "lon": -7.97327123257,
+            "lat": -87.12026532
+          },
+          {
+            "fid": 463,
+            "lon": -7.80791767406,
+            "lat": -87.1963980546
+          },
+          {
+            "fid": 476,
+            "lon": -7.19923363837,
+            "lat": -87.3313571287
+          },
+          {
+            "fid": 481,
+            "lon": -5.79785438516,
+            "lat": -86.9654387811
+          },
+          {
+            "fid": 482,
+            "lon": -6.72170911996,
+            "lat": -87.3808243853
+          },
+          {
+            "fid": 490,
+            "lon": -5.16224027095,
+            "lat": -87.0059568935
+          },
+          {
+            "fid": 493,
+            "lon": -5.77202532931,
+            "lat": -87.4135728247
+          },
+          {
+            "fid": 501,
+            "lon": -3.73139699916,
+            "lat": -87.0024587127
+          },
+          {
+            "fid": 505,
+            "lon": -3.74850404635,
+            "lat": -87.3001820435
+          },
+          {
+            "fid": 508,
+            "lon": -3.5246350617,
+            "lat": -87.4311110818
+          }
+        ]
+      },
+      "diviner": {
+        "verano": {
+          "url": "https://trek.nasa.gov/moon/trekarcgis/rest/services/DIVINER_summer_Max_Temp_SP_below110K_240mp/ImageServer/exportImage?bbox=-18744,76431,-3384,91791&size=128,128&format=bsq&pixelType=F32&interpolation=RSP_NearestNeighbor&f=image",
+          "pixelesBajo110K": 16024,
+          "pixelesTotal": 16384,
+          "minimoK": 59.7,
+          "maximoK": 109.3
+        },
+        "invierno": {
+          "url": "https://trek.nasa.gov/moon/trekarcgis/rest/services/DIVINER_winter_Max_Temp_SP_below110K_240mp/ImageServer/exportImage?bbox=-18744,76431,-3384,91791&size=128,128&format=bsq&pixelType=F32&interpolation=RSP_NearestNeighbor&f=image",
+          "pixelesBajo110K": 16384,
+          "pixelesTotal": 16384,
+          "minimoK": 36.4,
+          "maximoK": 67.3
+        }
+      }
+    },
+    {
+      "id": "faustini",
+      "psr": {
+        "url": "https://trek.nasa.gov/moon/trekarcgis/rest/services/PSR_SP/MapServer/0/query?geometry=77614,-254,92974,15106&geometryType=esriGeometryEnvelope&spatialRel=esriSpatialRelIntersects&returnGeometry=false&f=json&outFields=PSR_ID,Cent__Lat_,Cent__Long,Area__km2_,Lunar_Feat,Coverage__,Data_Quali",
+        "regiones": [
+          {
+            "id": "SP_871460_0840750",
+            "lat": -87.146,
+            "lon": 84.075,
+            "areaKm2": 663.93,
+            "cobertura": 97,
+            "calidad": 0,
+            "rasgo": "Faustini Crater"
+          }
+        ]
+      },
+      "hielo": {
+        "url": "https://trek.nasa.gov/moon/trekarcgis/rest/services/SP_IceLoc_280m/MapServer/0/query?geometry=77614,-254,92974,15106&geometryType=esriGeometryEnvelope&spatialRel=esriSpatialRelIntersects&returnGeometry=false&f=json&outFields=FID,x,y",
+        "puntos": [
+          {
+            "fid": 987,
+            "lon": 84.9516403221,
+            "lat": -87.3607266542
+          },
+          {
+            "fid": 997,
+            "lon": 81.6009053521,
+            "lat": -87.2016644726
+          },
+          {
+            "fid": 998,
+            "lon": 87.8860149077,
+            "lat": -87.2297812635
+          },
+          {
+            "fid": 1002,
+            "lon": 88.090847567,
+            "lat": -87.2115465226
+          },
+          {
+            "fid": 1005,
+            "lon": 82.2687017356,
+            "lat": -87.1687960793
+          },
+          {
+            "fid": 1009,
+            "lon": 83.8844964337,
+            "lat": -87.122437808
+          },
+          {
+            "fid": 1013,
+            "lon": 82.2510169439,
+            "lat": -87.0374811631
+          },
+          {
+            "fid": 1016,
+            "lon": 82.2751660737,
+            "lat": -87.0282803985
+          },
+          {
+            "fid": 1018,
+            "lon": 84.3070798353,
+            "lat": -87.0033220807
+          }
+        ]
+      },
+      "diviner": {
+        "verano": {
+          "url": "https://trek.nasa.gov/moon/trekarcgis/rest/services/DIVINER_summer_Max_Temp_SP_below110K_240mp/ImageServer/exportImage?bbox=77614,-254,92974,15106&size=128,128&format=bsq&pixelType=F32&interpolation=RSP_NearestNeighbor&f=image",
+          "pixelesBajo110K": 16384,
+          "pixelesTotal": 16384,
+          "minimoK": 56.7,
+          "maximoK": 101.5
+        },
+        "invierno": {
+          "url": "https://trek.nasa.gov/moon/trekarcgis/rest/services/DIVINER_winter_Max_Temp_SP_below110K_240mp/ImageServer/exportImage?bbox=77614,-254,92974,15106&size=128,128&format=bsq&pixelType=F32&interpolation=RSP_NearestNeighbor&f=image",
+          "pixelesBajo110K": 16384,
+          "pixelesTotal": 16384,
+          "minimoK": 43.5,
+          "maximoK": 79.1
+        }
+      }
+    },
+    {
+      "id": "malapert",
+      "psr": {
+        "url": "https://trek.nasa.gov/moon/trekarcgis/rest/services/PSR_SP/MapServer/0/query?geometry=25962,146543,41322,161903&geometryType=esriGeometryEnvelope&spatialRel=esriSpatialRelIntersects&returnGeometry=false&f=json&outFields=PSR_ID,Cent__Lat_,Cent__Long,Area__km2_,Lunar_Feat,Coverage__,Data_Quali",
+        "regiones": []
+      },
+      "hielo": {
+        "url": "https://trek.nasa.gov/moon/trekarcgis/rest/services/SP_IceLoc_280m/MapServer/0/query?geometry=25962,146543,41322,161903&geometryType=esriGeometryEnvelope&spatialRel=esriSpatialRelIntersects&returnGeometry=false&f=json&outFields=FID,x,y",
+        "puntos": []
+      },
+      "diviner": {
+        "verano": {
+          "url": "https://trek.nasa.gov/moon/trekarcgis/rest/services/DIVINER_summer_Max_Temp_SP_below110K_240mp/ImageServer/exportImage?bbox=25962,146543,41322,161903&size=128,128&format=bsq&pixelType=F32&interpolation=RSP_NearestNeighbor&f=image",
+          "pixelesBajo110K": 0,
+          "pixelesTotal": 16384,
+          "minimoK": null,
+          "maximoK": null
+        },
+        "invierno": {
+          "url": "https://trek.nasa.gov/moon/trekarcgis/rest/services/DIVINER_winter_Max_Temp_SP_below110K_240mp/ImageServer/exportImage?bbox=25962,146543,41322,161903&size=128,128&format=bsq&pixelType=F32&interpolation=RSP_NearestNeighbor&f=image",
+          "pixelesBajo110K": 532,
+          "pixelesTotal": 16384,
+          "minimoK": 89.5,
+          "maximoK": 110
+        }
+      }
+    },
+    {
+      "id": "nobile",
+      "psr": {
+        "url": "https://trek.nasa.gov/moon/trekarcgis/rest/services/PSR_SP/MapServer/0/query?geometry=108648,77935,124008,93295&geometryType=esriGeometryEnvelope&spatialRel=esriSpatialRelIntersects&returnGeometry=false&f=json&outFields=PSR_ID,Cent__Lat_,Cent__Long,Area__km2_,Lunar_Feat,Coverage__,Data_Quali",
+        "regiones": []
+      },
+      "hielo": {
+        "url": "https://trek.nasa.gov/moon/trekarcgis/rest/services/SP_IceLoc_280m/MapServer/0/query?geometry=108648,77935,124008,93295&geometryType=esriGeometryEnvelope&spatialRel=esriSpatialRelIntersects&returnGeometry=false&f=json&outFields=FID,x,y",
+        "puntos": []
+      },
+      "diviner": {
+        "verano": {
+          "url": "https://trek.nasa.gov/moon/trekarcgis/rest/services/DIVINER_summer_Max_Temp_SP_below110K_240mp/ImageServer/exportImage?bbox=108648,77935,124008,93295&size=128,128&format=bsq&pixelType=F32&interpolation=RSP_NearestNeighbor&f=image",
+          "pixelesBajo110K": 50,
+          "pixelesTotal": 16384,
+          "minimoK": 93.9,
+          "maximoK": 109.7
+        },
+        "invierno": {
+          "url": "https://trek.nasa.gov/moon/trekarcgis/rest/services/DIVINER_winter_Max_Temp_SP_below110K_240mp/ImageServer/exportImage?bbox=108648,77935,124008,93295&size=128,128&format=bsq&pixelType=F32&interpolation=RSP_NearestNeighbor&f=image",
+          "pixelesBajo110K": 410,
+          "pixelesTotal": 16384,
+          "minimoK": 73.1,
+          "maximoK": 109.9
+        }
+      }
+    },
+    {
+      "id": "de-gerlache",
+      "psr": {
+        "url": "https://trek.nasa.gov/moon/trekarcgis/rest/services/PSR_SP/MapServer/0/query?geometry=-54722,-8047,-39362,7313&geometryType=esriGeometryEnvelope&spatialRel=esriSpatialRelIntersects&returnGeometry=false&f=json&outFields=PSR_ID,Cent__Lat_,Cent__Long,Area__km2_,Lunar_Feat,Coverage__,Data_Quali",
+        "regiones": [
+          {
+            "id": "SP_883120_2691430",
+            "lat": -88.312,
+            "lon": 269.143,
+            "areaKm2": 243.292,
+            "cobertura": 95,
+            "calidad": 0,
+            "rasgo": "de Gerlache Crater"
+          }
+        ]
+      },
+      "hielo": {
+        "url": "https://trek.nasa.gov/moon/trekarcgis/rest/services/SP_IceLoc_280m/MapServer/0/query?geometry=-54722,-8047,-39362,7313&geometryType=esriGeometryEnvelope&spatialRel=esriSpatialRelIntersects&returnGeometry=false&f=json&outFields=FID,x,y",
+        "puntos": [
+          {
+            "fid": 149,
+            "lon": -92.669889762,
+            "lat": -88.204934876
+          },
+          {
+            "fid": 167,
+            "lon": -95.2900812054,
+            "lat": -88.4884228561
+          },
+          {
+            "fid": 199,
+            "lon": -98.3543508354,
+            "lat": -88.6571234851
+          },
+          {
+            "fid": 200,
+            "lon": -100.304846469,
+            "lat": -88.6495920256
+          },
+          {
+            "fid": 201,
+            "lon": -101.078591418,
+            "lat": -88.6461448163
+          },
+          {
+            "fid": 204,
+            "lon": -99.2645239851,
+            "lat": -88.6726397194
+          },
+          {
+            "fid": 205,
+            "lon": -100.124671655,
+            "lat": -88.6786685968
+          }
+        ]
+      },
+      "diviner": {
+        "verano": {
+          "url": "https://trek.nasa.gov/moon/trekarcgis/rest/services/DIVINER_summer_Max_Temp_SP_below110K_240mp/ImageServer/exportImage?bbox=-54722,-8047,-39362,7313&size=128,128&format=bsq&pixelType=F32&interpolation=RSP_NearestNeighbor&f=image",
+          "pixelesBajo110K": 12544,
+          "pixelesTotal": 16384,
+          "minimoK": 51,
+          "maximoK": 110
+        },
+        "invierno": {
+          "url": "https://trek.nasa.gov/moon/trekarcgis/rest/services/DIVINER_winter_Max_Temp_SP_below110K_240mp/ImageServer/exportImage?bbox=-54722,-8047,-39362,7313&size=128,128&format=bsq&pixelType=F32&interpolation=RSP_NearestNeighbor&f=image",
+          "pixelesBajo110K": 16376,
+          "pixelesTotal": 16384,
+          "minimoK": 47.2,
+          "maximoK": 107.2
+        }
+      }
+    }
+  ]
+}

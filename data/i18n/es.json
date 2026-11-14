@@ -200,5 +200,8 @@
   "datos.terreno.sitio.nobile.nombre": "Cráter Nobile",
   "datos.terreno.sitio.nobile.descripcion": "Un cráter grande de unos 74 km de ancho, en la región del polo sur. Aquí el terreno es más alto que en los otros sitios.",
   "datos.terreno.sitio.de-gerlache.nombre": "Cráter de Gerlache",
-  "datos.terreno.sitio.de-gerlache.descripcion": "Un cráter de unos 31 km de ancho, muy cerca del polo sur, con el suelo muy inclinado."
+  "datos.terreno.sitio.de-gerlache.descripcion": "Un cráter de unos 31 km de ancho, muy cerca del polo sur, con el suelo muy inclinado.",
+  "datos.terreno.luna.sombra": "Partes de este cráter nunca ven el Sol.",
+  "datos.terreno.luna.hielo": "Algunos mapas de la NASA marcan lugares aquí donde podría haber hielo. Los científicos todavía tienen que comprobarlo.",
+  "datos.terreno.luna.frio": "Partes del suelo aquí se mantienen a menos de -163 °C, incluso en verano."
 }
