@@ -8,3 +8,4 @@ export * from "./reto.js";
 export * from "./resumen.js";
 export * from "./dorada.js";
 export * from "./novedades.js";
+export * from "./tormenta.js";
