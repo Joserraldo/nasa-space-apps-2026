@@ -89,3 +89,11 @@ Una línea por pantalla. `estado` es el `GameState` del motor; ui solo pinta `Di
 | Tormenta y polvo: botón "¿Y si…?" | `compararOpciones(estado, opciones.map((accion) => ({ accion, despues: aplicarAccion(copia(estado), accion) })))`. |
 | Iris nivel 2 (al colocar un módulo o al revelarse la tormenta) | `preguntaIris(tema, estado.iaBase)` (solo devuelve pregunta con `"pistas"`; si no, `null`) → 3 botones + "saltar"; al elegir, `responderPreguntaIris(p, i)` o `responderPreguntaIris(p, null)`. Nunca bloquea. |
 | Iris dañada (`Tormenta.tsx`) | `irisDanada(estado, vez)` y, al pulsar "verificar", `verificarIris(falla, estado)` (ya conectado). |
+
+### Medición en órbita lunar (cuando entre #95)
+Sin escribir cifras a mano; los ids están en `luna.mediciones` de `@solar-shield/data`:
+```ts
+import { luna, medicionLuna, fuenteCrater } from "@solar-shield/data";
+const m = medicionLuna("<id de la tormenta>");
+escenaTormenta(estado, dilema, m ? { factor: m.factor, lugar: "orbita_luna", fuente: fuenteCrater(m, luna.consultadoEl) } : undefined);
+```
