@@ -14,7 +14,7 @@
 | Simulacro: 15 s estables con refugio + escudo + oxígeno ON + invernadero OFF | **El mejor dilema de ARES:** apagar el invernadero para aguantar la tormenta | Lo reemplaza la **tormenta real del 20 may 2024** (paso 5). La receta no aparece en un texto de ayuda: la discuten los expertos (paso 6) |
 | Quiz de 3 opciones que nunca bloquea, +XP una vez, siempre explica | Aprender sin castigo | Se convierte en la **tarjeta de ciencia** del paso 8 y en la pregunta de Iris en el nivel 2 (pistas) |
 | Dato pegado a cada misión ("no crea recursos de la nada") | Cada acción enseña algo | Cada módulo tiene su `cienciaKey` con fuente (rol datos) |
-| Gravedad 3.73 / 1.62 m/s² e irradiancia 586 / 1361 W/m² (NSSDCA) | Son las únicas cifras reales de ARES | Se citan en la tarjeta de fuente del sitio. Todo lo demás se declara "valor de juego" |
+| Gravedad 3.73 / 1.62 m/s² e irradiancia 586 / 1361 W/m² | Parecen cifras reales, pero **en el código de ARES no traen fuente** (`src/model.js:12-15`, lo encontró diseño en #89) | Solo se usan si datos las verifica y les pone tarjeta de fuente (NASA NSSDCA, fichas de Marte y Luna). Todo lo demás se declara "valor de juego" |
 | `model.js` puro, serializable, con tests de secuencia completa | Arquitectura | Ya lo hacemos así (`engine/` + `missions/` como datos) |
 | 10 modelos `.glb` MIT (hábitat, paneles, invernadero, rover…) | Arte gratis y con licencia | Opcional para ui (`assets/`), con atribución. La decisión de 2D/3D es de ui (D6) |
 
@@ -44,7 +44,7 @@ Montar cualquier módulo cuesta lo de `COSTOS_ACCION.colocar_modulo` (⚡-6 🫁
 
 | Módulo (`Equipment`) | Beneficio | Costo extra por tick | Equivalente ARES | Lección |
 |---|---|---|---|---|
-| `panel_solar` | ⚡ +14 | rinde la mitad con polvo o con tormenta | Ampliación solar | En Marte llega menos luz que a la Tierra (586 vs 1361 W/m², NSSDCA) |
+| `panel_solar` | ⚡ +14 | rinde la mitad con polvo o con tormenta | Ampliación solar | En Marte llega menos luz que a la Tierra (cifra solo con tarjeta de datos) |
 | `reciclador_agua` | 🫁 +12 | ⚡ -2 | Hielo + reciclador | El agua se recicla, no aparece de la nada |
 | `invernadero` | 🫁 +10 | ⚡ -2; en el paso 6 se apaga o se protege | Cultivar | Las plantas necesitan luz y agua |
 | `escudo` | 🛡️ +14 | ⚡ -3 | Blindaje de regolito | La tierra de Marte bloquea radiación |
@@ -57,7 +57,7 @@ Prueba que diseño debe pasar: con 2 módulos **ninguna pareja gana sin perder a
 - **diseño (Santiago, Camilo):** pasar §2 y §3 a `missions/src/jezero.ts` (sitios con 3 criterios, `eventoPolvo`, `dilemaPaso6`) y a `design/src/recursos.ts`; textos `en`/`es` de la cadena de causas y de las tarjetas de ciencia; cerrar #77 (cuánto es poco, medio y mucho).
 - **motor (Jaime):** leer los nuevos campos de la misión; evento de polvo (multiplica el rendimiento de `panel_solar`); acción "apagar invernadero" si diseño la pide (es un cambio de contrato: issue `contrato`).
 - **agentes (José):** líneas de los expertos para el paso 3 (criterios), el polvo (4b) y el dilema del refugio (6); pregunta de Iris nivel 2 basada en los quizzes de ARES; todo con fuente.
-- **datos (Daniel):** tarjeta de fuente de las constantes NSSDCA (gravedad, irradiancia) y de la tormenta (#61).
+- **datos (Daniel):** verificar y dar tarjeta de fuente a las constantes de ARES (gravedad, irradiancia), que vienen sin fuente y de la tormenta (#61).
 - **ui (María Paula):** decidir si reutiliza los `.glb` de ARES (licencia MIT, con atribución) o se queda en 2D.
 
 ## 5. Riesgos
