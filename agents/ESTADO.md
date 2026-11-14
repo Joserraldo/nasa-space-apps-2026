@@ -1,10 +1,10 @@
 # Estado — rol 3 (Agentes expertos)
-**Actualizado:** 14 nov 2026, 12:45 · **Rama:** feat/agentes-medicion-citada · **PR:** ver abajo (abiertos: #74, #119)
+**Actualizado:** 14 nov 2026, 13:00 · **Rama:** feat/agentes-medicion-citada · **PR:** #120
 
 ## Hecho (últimas iteraciones)
-- En develop: regex en/es, expertos con fuente, escenas 4b/6, Iris 1-3, satélite, aterrizaje, director, `conversar()`, voces misión 1.
-- #119: README con la llamada de cada pantalla de ui; tareas de ui en #118 (`bloquea:ui`).
-- Esta rama: `MedicionCitada` (Doctora dice "en órbita" con CRaTER y su fuente) y Meteoróloga con Kp "en la Tierra" (paso 1 de docs/ideas/voces-misiones-datos.md).
+- En develop: regex en/es, expertos con fuente, escenas 4b/6, Iris 1-3, satélite, aterrizaje, director, `conversar()`, voces misión 1, Matemático `compararOpciones` (#74), README por pantalla (#119).
+- #120: `MedicionCitada` (Doctora dice "en órbita" con CRaTER y su fuente) y Meteoróloga con Kp "en la Tierra"; al día con develop.
+- Tareas de ui en #118 (`bloquea:ui`).
 
 ## Qué sigue
 - Paso 2 del plan de voces: `escenaPanelTapado(causa)` y `escenaAveria(equipo)` (micrometeorito, antena).

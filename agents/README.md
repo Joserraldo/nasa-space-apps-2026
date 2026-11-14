@@ -48,6 +48,25 @@ frase / botón ─► clasificarConAtajos(texto)  ── null ─► (modelo ví
 - `agentes.nombre.<experto>`: solo dentro de frases ("call **the Engineer**" / "llama **a la Ingeniera**"), por eso trae artículo y preposición.
 - Para no mostrar la tormenta antes del paso 5, pasar a `responder` la vista de `vistaVisible(estado, tormentaActiva(estado))`.
 
+## Matemático "¿Y si…?"
+```ts
+const despues = aplicarAccion(estado, accion); // copia: el motor es puro
+const d = queSiMatematico(accion, estado.recursos, despues.recursos);
+```
+Agentes no simula: los números salen del motor y el Matemático solo dice qué sube y qué baja. Trae `accion` para que el jugador confirme.
+
+Para comparar las opciones de una escena (paso 6, polvo 4b):
+```ts
+const d = compararOpciones(estado, escena.opciones.map((accion) => ({ accion, despues: aplicarAccion(estado, accion) })));
+```
+Por opción da una cabecera (`agentes.matematico.opcion` con `accionKey`), lo que cambia ya y lo que el motor dejó en `efectosPendientes` (`luegoSube` / `luegoBaja` con `ticks`). No trae `accion`: el jugador elige con los botones de la escena.
+
+Usos limitados (`SIMULACIONES_POR_DIFICULTAD` en design/; el contador lo lleva ui):
+```ts
+const d = conAvisoUsos(queSiMatematico(accion, antes, despues), restantes); // restantes después de este uso; null = ilimitado
+if (restantes === 0 /* ya antes de pedir */) mostrar(sinUsosMatematico());
+```
+Avisa con 2 o 1 usos restantes y cuando fue el último. Con 0 usos, ui no calcula y muestra `sinUsosMatematico()`.
 ## Panel de tripulación en una línea
 ```ts
 const d = conversar({ texto } /* o { experto: "doctora" } */, estado, {
@@ -56,3 +75,17 @@ const d = conversar({ texto } /* o { experto: "doctora" } */, estado, {
 });
 ```
 Hace todo: atajos/regex, botón → pregunta por defecto, esconde la tormenta antes del paso 5, aclaración si no se entiende e Iris dañada con su falla.
+
+## Qué llama cada pantalla de ui (ruta dorada, #41 / #59)
+Una línea por pantalla. `estado` es el `GameState` del motor; ui solo pinta `Dialogo` y pasa al motor la `accion` que el niño confirme.
+
+| Pantalla (`ui/src/…`) | Llamada |
+|---|---|
+| `pantallas/Satelite.tsx` | `consejosSatelite(estado)` (ya conectado). |
+| `pantallas/ElegirSitio.tsx` | `consejosAterrizaje(sitios)` con los `SitioCandidato` de la misión. |
+| `componentes/Tripulacion.tsx` | `conversar({ texto } \| { experto }, estado, { tormentaActiva: tormentaActiva(estado), dosisMarte: referenciaDosis("marte-superficie"), vecesFallaIris })` — reemplaza `clasificarConAtajos` + `responder` + `PREGUNTA_POR_EXPERTO` (es `preguntaDelBoton`). |
+| Paso 4b (polvo, pantalla nueva o aviso en la base) | `escenaPolvo(estado, { insight })` → pintar `dialogos` y dos botones con `opciones`; `null` = no hay panel, no mostrar nada. |
+| `pantallas/Tormenta.tsx` | `escenaTormenta(estado, MISION_JEZERO.dilemaPaso6.opciones)` (de `@solar-shield/missions`) en vez de `escenaTormenta(estado)`. |
+| Tormenta y polvo: botón "¿Y si…?" | `compararOpciones(estado, opciones.map((accion) => ({ accion, despues: aplicarAccion(copia(estado), accion) })))` (llega con #74). |
+| Iris nivel 2 (al colocar un módulo o al revelarse la tormenta) | `preguntaIris(tema, estado.iaBase)` (solo devuelve pregunta con `"pistas"`; si no, `null`) → 3 botones + "saltar"; al elegir, `responderPreguntaIris(p, i)` o `responderPreguntaIris(p, null)`. Nunca bloquea. |
+| Iris dañada (`Tormenta.tsx`) | `irisDanada(estado, vez)` y, al pulsar "verificar", `verificarIris(falla, estado)` (ya conectado). |
