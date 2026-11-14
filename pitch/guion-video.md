@@ -22,7 +22,7 @@ Reglas del guion (revisadas contra `docs/science/revision-agentes.md`):
 | 0:40–0:55 | Paso 5: llega la tormenta, pausa y tarjeta de fuente (DONKI, ID, fecha). Gráfica del detector de Curiosity | "Then the storm arrives. It is real: May twentieth, twenty twenty-four, with its NASA DONKI record on screen. That day, the RAD detector on the Curiosity rover measured about nineteen times the usual radiation. This is curated real data, not live." | "Data: NASA CCMC DONKI · 2024-05-20T05:36:00-CME-001" · "Curiosity RAD, NASA OSDR RadLab · detector units: µGy/h" · "Curated real data, not live" | Validez |
 | 0:55–1:17 | Paso 6: Doctora ("refugio") e Ingeniera ("escudo") se contradicen, cada una con su dato. Se ve al niño escribir o decir una frase y aparece la etiqueta JSON | "The crew are experts, and they disagree. The Doctor says take shelter. The Engineer says raise the shield. Each one shows its data. The AI only listens: it turns a kid's words into a short label. The experts are code, so no number is ever invented." | "AI only classifies → strict JSON" · "Experts = code + NASA data" · "Doses for people: mSv/day" | Creatividad, Validez |
 | 1:17–1:35 | Paso 6 (Iris): Iris, dañada, da un número que no coincide con el medidor; el niño mira el medidor y llama a la Ingeniera, que la repara | "Then radiation scrambles Iris, the base computer. She gives a number that doesn't match the meter. The kid checks the meter, asks the Engineer, and fixes her. The lesson: don't just obey a machine. Verify." | "Iris is confused by radiation" · "Check the meter" | Creatividad, Impacto |
-| 1:35–1:47 | Paso 7: el jugador decide y envía telemetría; la barra de envío tarda en llegar | "Next, the kid decides and sends a report to Earth. It takes time to arrive, because Mars is far away." | "Communication delay" | Relevancia |
+| 1:35–1:47 | Paso 7: el jugador decide y envía telemetría; la barra de envío tarda en llegar | "Next, the kid decides and sends a report to Earth. A message to Earth takes from about 3 to 22 minutes, even at the speed of light." | "Mars–Earth delay: 3–22 min (NASA NSSDC distances + speed of light)" | Relevancia |
 | 1:47–1:55 | Paso 8: cadena de causas (decisión vs. mala suerte) y tarjeta de ciencia; cambio rápido EN → ES | "At the end, the game shows what caused what: your choices, or bad luck. Every game is different, and it works in English and Spanish." | "Your choice vs. bad luck" · "EN / ES" | Impacto, Relevancia |
 | 1:55–2:00 | Cierre: título; el juego funcionando sin conexión con botones; atribución | "Solar Shield. Learn who to trust when technology fails. It even works without internet." | "Solar Shield" · "Unofficial project, not endorsed by NASA" · "Data: NASA (DONKI, OSDR RadLab, Mars Trek)" | Presentación |
 
@@ -40,7 +40,7 @@ The crew are experts, and they disagree. The Doctor says take shelter. The Engin
 
 Then radiation scrambles Iris, the base computer. She gives a number that doesn't match the meter. The kid checks the meter, asks the Engineer, and fixes her. The lesson: don't just obey a machine. Verify.
 
-Next, the kid decides and sends a report to Earth. It takes time to arrive, because Mars is far away.
+Next, the kid decides and sends a report to Earth. A message to Earth takes from about 3 to 22 minutes, even at the speed of light.
 
 At the end, the game shows what caused what: your choices, or bad luck. Every game is different, and it works in English and Spanish.
 
@@ -60,7 +60,7 @@ La tripulación son expertos, y no se ponen de acuerdo. La Doctora dice que hay 
 
 Después la radiación confunde a Iris, la computadora de la base. Ella da un número que no coincide con el medidor. El niño revisa el medidor, llama a la Ingeniera y la repara. La lección: no obedezcas a una máquina sin más. Verifica.
 
-Luego el niño decide y envía un reporte a la Tierra. Tarda en llegar, porque Marte queda lejos.
+Luego el niño decide y envía un reporte a la Tierra. Un mensaje a la Tierra tarda de unos 3 a 22 minutos, aun a la velocidad de la luz.
 
 Al final, el juego muestra qué causó qué: tus decisiones o la mala suerte. Cada partida es distinta y funciona en inglés y en español.
 
@@ -82,6 +82,7 @@ Solar Shield. Aprende en quién confiar cuando la tecnología falla. Incluso fun
 - [ ] Medición de Curiosity RAD con fuente (OSDR RadLab) y unidad µGy/h; ninguna cifra en mSv junto a ella.
 - [ ] "El modelo solo clasifica a JSON; los expertos son código" dicho y mostrado (0:55).
 - [ ] Iris falla y el niño verifica con el medidor (1:17).
+- [ ] Retraso Marte–Tierra "3–22 min" con su fuente (NSSDC + velocidad de la luz) en el rótulo (1:35); nunca "4–24 min". Cifra en `data/src/comunicaciones.ts` (#65); si la pantalla del paso 7 aún no la muestra, va solo en rótulo y voz.
 - [ ] EN/ES visibles (1:47).
 - [ ] "Funciona sin internet" mostrado (1:55).
 - [ ] "Proyecto no oficial, no avalado por NASA"; sin logo de NASA.
