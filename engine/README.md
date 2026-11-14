@@ -44,6 +44,7 @@ Los números viven en `design/` y la misión en `missions/`; aquí solo hay regl
 ## Reglas que ui no debe repetir (#113, #134)
 
 ```ts
+import { aterrizar, puedeAplicar, aplicarAccion, elegirDilema, modulosColocados, puedeColocar } from "@solar-shield/engine";
 
 s = aterrizar(s, sitioId);                 // paso 3: cobra el costo del sitio una sola vez
 const p = puedeAplicar(s, accion);         // { ok: true } | { ok: false, motivo, recurso? }
