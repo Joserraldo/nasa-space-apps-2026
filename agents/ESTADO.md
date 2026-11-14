@@ -1,14 +1,14 @@
 # Estado — rol 3 (Agentes expertos)
-**Actualizado:** 14 nov 2026, 00:00 · **Rama:** feat/agentes-mision1-voces · **PR:** #92 (abiertos: #74, #75)
+**Actualizado:** 14 nov 2026, 12:45 · **Rama:** feat/agentes-medicion-citada · **PR:** ver abajo (abiertos: #74, #119)
 
 ## Hecho (últimas iteraciones)
-- En develop: regex en/es, 3 expertos con fuente, escena 6, avería de Iris, satélite, aterrizaje, director, títulos, Iris 1-2, `conversar()` (#72).
-- #92 misión 1 (ARES): `escenaPolvo` (4b, con Meteoróloga), dilema del refugio con invernadero, `escenaTormenta(vista, dilema)` con las opciones de #89, `preguntaIris` nivel 2.
-- #74 Matemático: `queSiMatematico`, `compararOpciones` (ya y después), aviso de usos. #75 frases cortas.
+- En develop: regex en/es, expertos con fuente, escenas 4b/6, Iris 1-3, satélite, aterrizaje, director, `conversar()`, voces misión 1.
+- #119: README con la llamada de cada pantalla de ui; tareas de ui en #118 (`bloquea:ui`).
+- Esta rama: `MedicionCitada` (Doctora dice "en órbita" con CRaTER y su fuente) y Meteoróloga con Kp "en la Tierra" (paso 1 de docs/ideas/voces-misiones-datos.md).
 
 ## Qué sigue
-- Voces de las 4 misiones de datos (#97-#100): Doctora con CRaTER "en órbita" (#95), Meteoróloga con Kp "en la Tierra".
-- Matemático y voces conectados en las pantallas de ui.
+- Paso 2 del plan de voces: `escenaPanelTapado(causa)` y `escenaAveria(equipo)` (micrometeorito, antena).
+- Líneas por misión cuando #97-#100 y #95 entren en develop.
 
 ## Bloqueos
-- SourceCard de InSight (#91). Dato de hielo en Jezero (Santiago).
+- #95 (CRaTER) sin fusionar: ui no puede armar `MedicionCitada` real aún. SourceCard de InSight (#91). Pantallas de ui (#118).
