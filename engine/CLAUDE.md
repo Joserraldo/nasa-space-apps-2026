@@ -1,25 +1,24 @@
-# Rol: Motor y simulación
-**Humano responsable:** Jaime (`JaimeMrF`), que escribió el motor.
+# Rol 2: Motor y simulación
+**Humano responsable:** Jaime (`JaimeMrF`)
 **Slug de ramas:** `motor` → `feat/motor-<tema>`
 **Etiqueta de issues:** `rol:motor`
-**Posees:** `/engine` (y `/contracts` como co-dueño). `/design` y `/missions` son del rol `diseno` (Santiago y Camilo): tú lees sus tablas, no las escribes.
+**Posees:** `/engine`
 **No toques:** todo lo demás (abre issue `bloquea:<rol>`).
-**Contratos que consumes:** `SpaceWeatherEvent`, `ClassifierOutput`, eventos curados de `data/`, tablas de `/design` y misiones de `/missions`.
-**Contratos que produces:** `GameState`, `Action`, `Seed`; la función de entrada que usa `ui`.
-**Definición de "hecho":** funciones puras con tests; misma semilla ⇒ misma partida; cero dependencias de UI; ningún número del juego quemado en `engine/` (vienen de `/design`).
+**Contratos que consumes:** `SpaceWeatherEvent`, `ClassifierOutput`, tablas de `/design`
+**Contratos que produces:** `GameState`, `Action`, `Seed` (co-dueño de `/contracts`)
+**Definición de "hecho":** Funciones puras con tests; misma semilla ⇒ misma partida; cero dependencias de UI.
 
-## Tareas, en este orden (detalle en el issue de la RUTA DORADA)
-1. **Semilla dorada:** una semilla fija que produzca Jezero + la tormenta `2024-05-20-marte` + la avería de Iris, con un test que la congele. Es la partida del video: no se rompe nunca.
-2. Una función de entrada para `ui`: estado inicial de la semilla dorada y `aplicarAccion`, con un ejemplo de uso en el README de `engine/`.
-3. Retraso de comunicaciones en la telemetría (el enunciado lo nombra).
-4. Leer la misión de Jezero y el mazo de eventos desde `/missions` cuando diseño los entregue (mientras tanto, lo que ya tienes en código).
-5. Conectar `eventosCurados` de `data/` al reto del día.
-6. Lo que `ui` y `agentes` pidan para la ruta dorada.
+## Fase 0 (ahora, solo documentos — nada de código del juego)
+- Comparar Phaser, PixiJS y React + canvas para un juego por turnos (D3).
+- Forma del `GameState` en papel (markdown, no código).
+- Entregable: `docs/decisiones/motor.md`.
 
-Nada nuevo fuera de esta lista (regiones, Luna) hasta que la ruta dorada se juegue en pantalla.
+## Tareas de arranque (Fase 1, el día que empieza el hackathon)
+1. Junto a roles 3 y 4: escribir `/contracts` en TypeScript + Zod (PLAN §13) (GameState, Action, Seed) — issue `contrato`.
+2. RNG con semilla determinista + generador de escenario (sitio, tormenta, averías, objetivo).
+3. Bucle de turnos: `aplicarAccion(estado, accion) → estado` puro, con cola de efectos con retraso.
+4. Registro de causas (para la pantalla final): cada cambio guarda su origen (decisión o mala suerte).
+5. Tests: misma semilla ⇒ mismo resultado; ninguna acción es gratis.
 
 ## Notas / decisiones que afectan este rol
-- Tiempo real con pausa, motor por ticks fijos; pausa automática en tormenta, avería, consejo y diálogo.
-- Dificultad solo adaptativa, por reglas del estado, sin azar fuera de la semilla.
-- Recursos: ⚡ energía, 🫁 soporte vital (incluye comida), 🛡️ blindaje. Nunca un cuarto medidor.
-- Contratos: v0.2.0, discusión en el issue #17. Cambios solo con issue `contrato`.
+- _(vacío)_
