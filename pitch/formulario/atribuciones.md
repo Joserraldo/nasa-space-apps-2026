@@ -34,10 +34,13 @@ Details, URLs and dates are in [datos-nasa.md](datos-nasa.md). All data was quer
 | Zod | 3.25.76 (data package: 3.23.8) | MIT |
 | tsx | 4.23.15 | MIT |
 | @types/node | 22.9.0 | MIT |
+| React, React DOM (game screen, shipped to players) | 18.3.1 | MIT |
+| Vite, @vitejs/plugin-react (build only) | 5.4.21, 4.7.0 | MIT |
+| @types/react, @types/react-dom (build only) | 18.3.31, 18.3.7 | MIT |
 
 Licenses are the `license` field recorded in `package-lock.json`. Libraries used only to build and test (TypeScript, Vitest, tsx, @types/node) are not shipped to players.
 
-**POR VERIFICAR:** the front end and server libraries are not in the repo yet (`ui/` has no `package.json`; the classifier Worker (`infra/worker`, PR #76) uses no framework, only `fetch` (no Hono)). The plan names React, Vite, PixiJS or Three.js and Hono (Cloudflare Workers), but the exact list, versions and licenses must be re-read from the final `package-lock.json` before sending. Add each one to the table above.
+**POR VERIFICAR:** re-read this table from the final `package-lock.json` before sending. Today (`develop`, 14 nov) the screen uses React (no PixiJS or Three.js) and the Worker (`infra/worker`) uses no framework, only `fetch` (no Hono).
 
 ## 3. Fonts, images, sounds, 3D models
 
@@ -63,4 +66,4 @@ Licenses are the `license` field recorded in `package-lock.json`. Libraries used
 
 ## Resumen en español
 
-Línea obligatoria: **"Datos: NASA (fuente exacta + fecha). Proyecto no oficial, no avalado por NASA."** Sin logo de NASA. Datos: DONKI (NASA CCMC; Kp de NOAA), OSDR RadLab (RAD de Curiosity y HERA de Artemis I), Mars Trek (MOLA de NASA con HRSC de ESA/DLR; CTX de MRO), ficha de Marte de NSSDC, estudios OSDR; dosis de Luna e ISS de Zhang et al. 2020 (CNSA, no NASA). Librerías del repo: TypeScript (Apache-2.0), Vitest, Zod, tsx y @types/node (MIT). Aún no hay fuentes, imágenes, sonidos ni modelos 3D en el repo; las librerías de UI y Worker, los assets y la licencia del proyecto están marcados POR VERIFICAR.
+Línea obligatoria: **"Datos: NASA (fuente exacta + fecha). Proyecto no oficial, no avalado por NASA."** Sin logo de NASA. Datos: DONKI (NASA CCMC; Kp de NOAA), OSDR RadLab (RAD de Curiosity y HERA de Artemis I), Mars Trek (MOLA de NASA con HRSC de ESA/DLR; CTX de MRO), ficha de Marte de NSSDC, estudios OSDR; dosis de Luna e ISS de Zhang et al. 2020 (CNSA, no NASA). Librerías del repo: TypeScript (Apache-2.0), Vitest, Zod, tsx, @types/node, React 18.3.1 y Vite 5.4.21 (MIT). Aún no hay fuentes, imágenes, sonidos ni modelos 3D en el repo; la tabla final de librerías, los assets y la licencia del proyecto están marcados POR VERIFICAR.

@@ -80,10 +80,11 @@ Mars vs. ISS comparisons are approximate: they were measured in different years 
 - **Source:** https://nssdc.gsfc.nasa.gov/planetary/factsheet/marsfact.html (page updated 2025-05-19); queried 2026-11-13.
 - **Values used:** axis tilt 25.19 degrees (used to estimate the Sun's height near the north pole); surface gravity 3.73 m/s², which is 0.380 of Earth's ("on Mars you weigh about a third").
 - **Honest note:** the Sun-height estimate is **derived by the team**; the game has no terrain map for that region.
+- **Mars–Earth communication delay (step 7):** about **3.0 to 22.3 minutes** one way. Computed by code (`data/src/comunicaciones.ts`, `RETRASO_MARTE_MIN`) from the fact sheet's "Distance from Earth" (minimum 54.6, maximum 401.4 million km) divided by the speed of light (299,792.458 km/s, exact SI value). **Derived by the team** from NASA NSSDC values. Do not use "4–24 min" (not verified, see #66).
 
 ## 8. Science cards: NASA OSDR studies
 
-Source: NASA OSDR, `https://osdr.nasa.gov/bio/repo/data/studies/<ID>`. Queried 2026-11-13 via `https://osdr.nasa.gov/osdr/data/search`.
+Source: NASA OSDR, `https://osdr.nasa.gov/bio/repo/data/studies/<ID>`. Study records as returned by the OSDR search API on 2026-11-13 (`https://osdr.nasa.gov/osdr/data/search`), stored in `data/samples/osdr-search.json` (title, description, mission, funding). The card figures (peppers: 137 days, 26 fruits; bones: about 2 weeks, about 50% calcium) are checked against those descriptions in `data/test/ciencia.test.ts`.
 
 | Study | Topic | Title | Owner as recorded in the repo |
 |---|---|---|---|
@@ -103,12 +104,12 @@ Used only as end-of-game science cards, with no claim beyond what each study say
 ## 10. POR VERIFICAR
 
 - **POR VERIFICAR:** that every source above appears in the official Resources list and Submission Guide of the challenge (the Guide is not in the repo; `docs/reglas.md` says it is unconfirmed).
-- **POR VERIFICAR:** OSDR science cards: the repo stores only the query template `https://osdr.nasa.gov/osdr/data/search?term=<ID>&type=cgene` and the date 2026-11-13, not a per-study response date or version.
-- **POR VERIFICAR:** SOHO / STEREO imagery credit text. The game shows only the instrument names stored in DONKI; `docs/science/fuentes.md` §5 says credit must be checked case by case.
+- **Resolved:** OSDR science cards are cited as "study records as returned by the OSDR search API on 2026-11-13" (section 8).
+- **Resolved:** SOHO / STEREO. The game shows **no images** from SOHO or STEREO, only the instrument names that DONKI lists in each event, so no image credit is needed. The only images are from Mars Trek (CTX and shaded relief), attributed in section 5.
 - **POR VERIFICAR:** public URL of the deployed game and of the in-game "NASA data we used and why" page (no deployment exists in the repo yet).
 
 ---
 
 ## Resumen en español
 
-Todo viene de archivos del repo y es **real, curado y no en vivo** (descargado el 2026-11-13). Fuentes: **NASA CCMC DONKI** (8 tormentas con ID, tabla arriba; el Kp lo aporta NOAA y solo vale para la Tierra; las llegadas a Marte de WSA-ENLIL son un cálculo del modelo), **NASA OSDR RadLab** con el instrumento **RAD** del rover Curiosity (el 20 may 2024 la media diaria subió de 4,1 a 79,7 µGy/h, unas 19 veces; es dosis absorbida de un detector y nunca se convierte a mSv) y con **HERA** de Artemis I, **NASA Mars Trek** (mapa de Jezero; pendiente, luz y blindaje los deriva el equipo), dosis de referencia en mSv/día (Marte: NASA, Reitz 2016; Luna e ISS: Zhang 2020, **CNSA, no NASA**), la ficha de Marte de **NASA NSSDC** y 3 estudios de **NASA OSDR** (OSD-772, OSD-546, OSD-360). No usados: Mars Rover Photos (404) y APOD. Los puntos "POR VERIFICAR" están en la sección 10.
+Todo viene de archivos del repo y es **real, curado y no en vivo** (descargado el 2026-11-13). Fuentes: **NASA CCMC DONKI** (8 tormentas con ID, tabla arriba; el Kp lo aporta NOAA y solo vale para la Tierra; las llegadas a Marte de WSA-ENLIL son un cálculo del modelo), **NASA OSDR RadLab** con el instrumento **RAD** del rover Curiosity (el 20 may 2024 la media diaria subió de 4,1 a 79,7 µGy/h, unas 19 veces; es dosis absorbida de un detector y nunca se convierte a mSv) y con **HERA** de Artemis I, **NASA Mars Trek** (mapa de Jezero; pendiente, luz y blindaje los deriva el equipo), dosis de referencia en mSv/día (Marte: NASA, Reitz 2016; Luna e ISS: Zhang 2020, **CNSA, no NASA**), la ficha de Marte de **NASA NSSDC** y 3 estudios de **NASA OSDR** (OSD-772, OSD-546, OSD-360; registros guardados en `data/samples/osdr-search.json`). El retraso Marte–Tierra del paso 7 (unos 3 a 22 min en un sentido) lo calcula el código con las distancias de NSSDC y la velocidad de la luz. El juego no muestra imágenes de SOHO ni STEREO. No usados: Mars Rover Photos (404) y APOD. Los puntos "POR VERIFICAR" están en la sección 10.
