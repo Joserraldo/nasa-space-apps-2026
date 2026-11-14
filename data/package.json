@@ -10,7 +10,8 @@
     "curar": "tsx scripts/curar.ts",
     "jezero:descargar": "tsx scripts/jezero-descargar.ts",
     "jezero:curar": "tsx scripts/jezero-curar.ts",
-    "artemis": "tsx scripts/artemis.ts"
+    "artemis": "tsx scripts/artemis.ts",
+    "luna": "tsx scripts/luna.ts"
   },
   "dependencies": {
     "zod": "3.23.8"
