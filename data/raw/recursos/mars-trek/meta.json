@@ -7,7 +7,8 @@
       "url": "https://trek.nasa.gov/mars/",
       "archivo": "index.md",
       "estado": 200,
-      "caracteres": 59
+      "caracteres": 194,
+      "nota": "Contenido escrito a mano (la página es una aplicación JavaScript)."
     }
   ],
   "nota": "Visor en JavaScript: se usan sus servicios en jezero-descargar.ts."

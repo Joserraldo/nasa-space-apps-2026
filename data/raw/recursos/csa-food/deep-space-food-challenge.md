@@ -1,6 +1,5 @@
 <!-- Fuente: https://www.asc-csa.gc.ca/eng/sciences/food-production/deep-space-food-challenge.asp · Dueño: Agencia Espacial Canadiense (CSA), socio, no NASA · Consultado: 2026-11-14 · Copia estática, no en vivo -->
 
-[Top of page](#top "Top of page")
 
 Deep Space Food Challenge
 =========================
@@ -29,7 +28,6 @@ The [**Deep Space Food Challenge**](https://impact.canada.ca/en/challenges/deep-
 These innovations will not only be used for long-duration space missions, but will also have the potential to benefit people on Earth, particularly in remote and harsh environments, such as Canada's North.
 
 [![](/videos/recherche/1_jmg52fl6/thumbnails/1.jpg)](/videos/recherche/1_jmg52fl6/1_durv04xs.webm)Ok
-
 
 The CSA is involved in food production initiatives that could be applied to long-duration space missions, and also have the potential to benefit people on Earth. (Credits: CSA, NASA, ESA/NASA–T. Pesquet, Arctic Research Foundation, Canacompost Systems, AlgaBloom International Ltd., University of Waterloo, Ecoation Innovative Solutions Inc., McGill University / McGill Advanced bio-Regenerative Toolkit for Long Excursion Trips (MARTLET), University of Guelph, PeaPod Technologies Inc., Noblegen Inc., Concordia University)
 
@@ -119,5 +117,4 @@ Follow us
 * [Linkedin: Canadian Space Agency](https://www.linkedin.com/company/9441729)
 * [RSS](/rss/default_eng.xml)
 
-Date modified:
 :   2026-02-12

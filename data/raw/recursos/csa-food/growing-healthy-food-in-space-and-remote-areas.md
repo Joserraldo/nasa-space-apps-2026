@@ -1,6 +1,5 @@
 <!-- Fuente: https://www.asc-csa.gc.ca/eng/sciences/food-production/growing-healthy-food-in-space-and-remote-areas.asp · Dueño: Agencia Espacial Canadiense (CSA), socio, no NASA · Consultado: 2026-11-14 · Copia estática, no en vivo -->
 
-[Top of page](#top "Top of page")
 
 Growing healthy food in space and in remote areas
 =================================================
@@ -17,7 +16,6 @@ Background
 Astronauts living aboard the [International Space Station](/eng/iss/) (ISS) receive shipments of fresh food every few months. These deliveries supplement [their menu](/eng/astronauts/living-in-space/eating-in-space.asp), adding variety and nutrition—important factors in keeping crewmembers healthy and happy. But as missions venture to more distant destinations like the [Moon](/eng/astronomy/moon-exploration/) or [Mars](/eng/astronomy/mars/), astronauts will need to be more self-sufficient. Greater distances will make resupply trips less frequent or impossible. Instead, space travellers will need to develop "green thumbs" to grow their own food in space.
 
 [![Veggie PONDS experiment – David Saint-Jacques aboard the International Space Station](https://www.asc-csa.gc.ca/images/recherche/tiles/e1949736-ac5c-4c0b-984f-803f32889ac9.jpg)](https://www.asc-csa.gc.ca/eng/multimedia/search/image/watch/15557)
-
 
 CSA astronaut David Saint-Jacques performs a reservoir fill on the Veggie Ponds facility in the Columbus module of the ISS. The goal is to demonstrate plant growth in a newly developed growing system. (Credit: CSA/NASA)
 
@@ -52,5 +50,4 @@ Follow us
 * [Linkedin: Canadian Space Agency](https://www.linkedin.com/company/9441729)
 * [RSS](/rss/default_eng.xml)
 
-Date modified:
 :   2026-07-24

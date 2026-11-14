@@ -7,7 +7,8 @@
       "url": "https://osdr.nasa.gov/bio/repo/",
       "archivo": "index.md",
       "estado": 200,
-      "caracteres": 0
+      "caracteres": 232,
+      "nota": "Contenido escrito a mano (la página es una aplicación JavaScript)."
     }
   ],
   "nota": "Buscador en JavaScript: se usa la search API."

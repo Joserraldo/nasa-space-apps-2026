@@ -1,6 +1,5 @@
 <!-- Fuente: https://www.asc-csa.gc.ca/eng/youth-educators/activities/fitness-and-nutrition/soaring-in-space-with-canada-food-guide.asp · Dueño: Agencia Espacial Canadiense (CSA), socio, no NASA · Consultado: 2026-11-14 · Copia estática, no en vivo -->
 
-[Top of page](#top "Top of page")
 
 Soaring in Space with Canada's Food Guide
 =========================================
@@ -48,7 +47,6 @@ Astronauts aboard the International Space Station (ISS) have three meals and one
 Although astronauts have a hectic work schedule, occasionally they eat meals together and may swap foods from their home country. Crewmembers may celebrate holidays together by eating a traditional meal associated with that holiday. Even when there is no special occasion, eating as a group is a fun way to relax!
 
 [![The Expedition 20 crew members](https://www.asc-csa.gc.ca/images/recherche/tiles/a5993f89-d1f1-4b23-938d-041f9bcbec8d.jpg)](https://www.asc-csa.gc.ca/eng/multimedia/search/image/watch/1254)
-
 
 Canadian Space Agency (CSA) astronaut Robert Thirsk and the crew of Expedition 20/21 share a meal during their six-month mission on board the ISS. (Credit: NASA)
 
@@ -130,5 +128,4 @@ Follow us
 * [Linkedin: Canadian Space Agency](https://www.linkedin.com/company/9441729)
 * [RSS](/rss/default_eng.xml)
 
-Date modified:
 :   2019-09-26

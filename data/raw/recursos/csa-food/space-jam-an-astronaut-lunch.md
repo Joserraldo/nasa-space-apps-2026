@@ -1,6 +1,5 @@
 <!-- Fuente: https://www.asc-csa.gc.ca/eng/youth-educators/activities/fitness-and-nutrition/space-jam-an-astronaut-lunch.asp · Dueño: Agencia Espacial Canadiense (CSA), socio, no NASA · Consultado: 2026-11-14 · Copia estática, no en vivo -->
 
-[Top of page](#top "Top of page")
 
 Space Jam! An Astronaut Lunch
 =============================
@@ -168,5 +167,4 @@ Follow us
 * [Linkedin: Canadian Space Agency](https://www.linkedin.com/company/9441729)
 * [RSS](/rss/default_eng.xml)
 
-Date modified:
 :   2019-09-26

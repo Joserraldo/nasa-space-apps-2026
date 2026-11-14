@@ -1,6 +1,5 @@
 <!-- Fuente: https://www.asc-csa.gc.ca/eng/youth-educators/toolkits/food-production/ · Dueño: Agencia Espacial Canadiense (CSA), socio, no NASA · Consultado: 2026-11-14 · Copia estática, no en vivo -->
 
-[Top of page](#top "Top of page")
 
 Toolkit for educators and youth – Food production on the Moon and in remote areas
 =================================================================================
@@ -81,5 +80,4 @@ Follow us
 * [Linkedin: Canadian Space Agency](https://www.linkedin.com/company/9441729)
 * [RSS](/rss/default_eng.xml)
 
-Date modified:
 :   2026-05-26

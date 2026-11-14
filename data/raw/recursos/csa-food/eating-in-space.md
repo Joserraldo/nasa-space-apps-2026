@@ -1,6 +1,5 @@
 <!-- Fuente: https://www.asc-csa.gc.ca/eng/astronauts/living-in-space/eating-in-space.asp · Dueño: Agencia Espacial Canadiense (CSA), socio, no NASA · Consultado: 2026-11-14 · Copia estática, no en vivo -->
 
-[Top of page](#top "Top of page")
 
 Eating in space
 ===============
@@ -22,7 +21,6 @@ On this page
 
 [![](/videos/recherche/1_pvy8iogo/thumbnails/1.jpg)](/videos/recherche/1_pvy8iogo/1_dzoqoldd.webm)Ok
 
-
 Here is a glimpse of what was on the menu for Canadian Space Agency (CSA) astronaut David Saint-Jacques. (Credits: CSA, NASA)
 
 [Transcript of the video On the menu in orbit](https://www.asc-csa.gc.ca/eng/multimedia/search/video/18312#transcript)
@@ -43,7 +41,6 @@ Food must meet **certain criteria** to be allowed in orbit:
 
 [![Astronaut Food – What do space explorers eat? - Infographic](https://www.asc-csa.gc.ca/images/recherche/tiles/9875091f-b58c-4b1d-ad7b-efda34c58eb6.jpg)](https://www.asc-csa.gc.ca/eng/multimedia/search/image/watch/15774)
 
-
 [Text version – Astronaut Food – What do space explorers eat? – Infographic](https://www.asc-csa.gc.ca/eng/multimedia/search/image/15774#longdesc)
 
 This illustration gives an overview of what food they eat in space and how they prepare it. (Credit: CSA)
@@ -57,7 +54,6 @@ Depending on the astronaut’s weight, gender and specific needs, they consume b
 Just like [physical activity](/eng/astronauts/living-exercising.asp), a healthy diet helps **reduce the negative effects** of microgravity on the human body.
 
 [![The Expedition 20 crew members](/images/astronautes/vivre-dans-l-espace/alimentation-id-1254.jpg)](https://www.asc-csa.gc.ca/eng/multimedia/search/image/watch/1254)
-
 
 Former CSA astronaut Robert Thirsk and his American, Japanese and Russian crewmates share a meal during their six-month mission on board the ISS. (Credit: NASA)
 
@@ -96,7 +92,6 @@ Jeremy Hansen and his [Artemis II](/eng/missions/artemis-ii/) crewmates aboard 
 
 [![](/videos/recherche/20019/thumbnails/1-eng.jpg)](/videos/recherche/20019/1_9vuc3d9i.webm)Ok
 
-
 Canadian Space Agency astronaut Jeremy Hansen demonstrates how best to eat maple syrup in space, to the amusement of his crewmates. (Credit: Canadian Space Agency, NASA)
 
 [Transcript of the video Tutorial: How to enjoy maple syrup in space](https://www.asc-csa.gc.ca/fra/multimedia/recherche/video/20019#transcript)
@@ -124,7 +119,6 @@ Joshua Kutryk aboard the [ISS](/eng/iss/)
 
 [![Five plastic vacuum-sealed packages of food.](https://www.asc-csa.gc.ca/images/recherche/tiles/23da2b87-b0ce-4698-9f65-bd24474a801c.jpg)](https://www.asc-csa.gc.ca/eng/multimedia/search/image/5245)
 
-
 Clockwise: Italian vegetables, shrimp cocktail, vegetable quiche, beef patty, oat cereal in packages developed for rehydration. (Credit: CSA)
 
 How to eat in space
@@ -142,13 +136,11 @@ Aboard the [**Orion capsule**](/eng/missions/artemis-ii/living-aboard-orion.asp)
 
 [![](/videos/recherche/19699/thumbnails/1-eng.jpg)](/videos/recherche/19699/1_w66s9m44.webm)Ok
 
-
 CSA astronaut Jeremy Hansen explains meals are managed aboard Orion. (Credits: CSA, NASA, Fulwell 73 UK Limited)
 
 [Transcript of the video entitled Vlog 20: Eating in space during the Artemis II lunar mission](https://www.asc-csa.gc.ca/eng/multimedia/search/video/19699#transcript)
 
 [![](/videos/recherche/19232/thumbnails/1-eng.jpg)](/videos/recherche/19232/1_ncxebx2k.webm)Ok
-
 
 Samantha McCaig is one of the nutrition specialists at the CSA. (Credit: CSA)
 
@@ -164,7 +156,6 @@ While some treats and canned food are flown in their original packaging, most fo
 Regardless of the format, all packaging includes a little Velcro dot to stick the item to the surfaces – no one wants their food to float away! Once the food is consumed, the packaging is thrown away in the [garbage](https://www.asc-csa.gc.ca/eng/multimedia/search/video/19730) and is brought back to Earth with the astronauts or is released in space to burn in the atmosphere in a cargo ship.
 
 [![Chris Hadfield eating an orange in space](https://www.asc-csa.gc.ca/images/recherche/tiles/02ac338f-98dd-4111-ad3f-e97e0dbe7bba.jpg)](https://www.asc-csa.gc.ca/eng/multimedia/search/image/watch/2547)
-
 
 Following resupply of the ISS by a Soyuz capsule, former CSA astronaut [Chris Hadfield](/eng/astronauts/canadian/former/bio-chris-hadfield.asp) enjoys a blood orange, a rare snack in orbit! (Credits: NASA, CSA)
 
@@ -216,7 +207,6 @@ In the future, when exploring the Moon for longer periods of time as part of the
 
 [![](/videos/recherche/1_h2w68fcq/thumbnails/1.jpg)](/videos/recherche/1_h2w68fcq/1_kpmtzw6y.webm)Ok
 
-
 CSA astronaut David Saint-Jacques shows us how astronauts season their meals aboard the ISS. (Credits: CSA, NASA)
 
 [Transcript of the video How do astronauts season their meals in space?](https://www.asc-csa.gc.ca/eng/multimedia/search/video/18317#transcript)
@@ -243,7 +233,6 @@ In the space kitchen with Chef Chris Hadfield!
 
 [![](/videos/recherche/1_wyojwwhf/thumbnails/1.jpg)](/videos/recherche/1_wyojwwhf/1_qphbnz88.webm)Ok
 
-
 See how to prepare a sandwich in microgravity with three ingredients: tortilla, peanut butter and honey. (Credits : CSA, NASA)
 
 [Transcript of the video Chris Hadfield's space kitchen](https://www.asc-csa.gc.ca/eng/multimedia/search/video/17836#transcript)
@@ -252,7 +241,6 @@ See how to prepare a sandwich in microgravity with three ingredients: tortilla, 
 
 [![](/videos/recherche/1_hrjcbe42/thumbnails/2.jpg)](/videos/recherche/1_hrjcbe42/1_ky3b4gc1.webm)Ok
 
-
 Chris makes like Popeye and transforms dried space greens into a delicious source of nutrients and iron! (Credits : CSA, NASA)
 
 [Transcript of the video Chris' kitchen part deux: space spinach strikes back](https://www.asc-csa.gc.ca/eng/multimedia/search/video/17842#transcript)
@@ -260,7 +248,6 @@ Chris makes like Popeye and transforms dried space greens into a delicious sourc
 ### Dessert
 
 [![](/videos/recherche/1_n51qg9hr/thumbnails/4.jpg)](/videos/recherche/1_n51qg9hr/1_fauq8iit.webm)Ok
-
 
 Chris prepares a chocolate cake and a coffee for dessert. Be careful: it's hot! (Credits : CSA, NASA)
 
@@ -283,5 +270,4 @@ Follow us
 * [Linkedin: Canadian Space Agency](https://www.linkedin.com/company/9441729)
 * [RSS](/rss/default_eng.xml)
 
-Date modified:
 :   2026-09-04

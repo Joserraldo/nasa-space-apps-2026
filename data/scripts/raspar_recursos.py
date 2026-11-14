@@ -84,11 +84,24 @@ def slug(url: str) -> str:
     return re.sub(r"[^a-z0-9]+", "-", p.lower().replace(".asp", "")).strip("-") or "index"
 
 
+# Correos de contacto institucional que sí se pueden guardar; cualquier otro (p. ej. de investigadores) se oculta.
+CORREOS_PERMITIDOS = {"info@asc-csa.gc.ca", "contact-ssd-api@jpl.nasa.gov", "marstrek@jpl.nasa.gov", "genelab-outreach@lists.nasa.gov"}
+# Restos del pie de página de canada.ca que no aportan nada.
+RUIDO = re.compile(r'^\s*(\[Top of page\]\(#top[^)]*\)|.*Date modified:.*)\s*$', re.M)
+
+
+def limpiar(texto: str) -> str:
+    """Oculta correos personales (privacidad) y quita restos de navegación."""
+    texto = re.sub(r"[\w.+-]+@[\w-]+(\.[\w-]+)+",
+                   lambda m: m.group(0) if m.group(0).lower() in CORREOS_PERMITIDOS else "[correo omitido]", texto)
+    return re.sub(r"\n{3,}", "\n\n", RUIDO.sub("", texto))
+
+
 def guardar(carpeta: Path, nombre: str, url: str, r, dueno: str) -> dict:
     carpeta.mkdir(parents=True, exist_ok=True)
     md = ""
     if r.status == 200:
-        md = (r.markdown(css_selector="main") if r.css("main") else r.markdown(main_content_only=True)).strip()
+        md = limpiar((r.markdown(css_selector="main") if r.css("main") else r.markdown(main_content_only=True)).strip())
     (carpeta / f"{nombre}.md").write_text(
         f"<!-- Fuente: {url} · Dueño: {dueno} · Consultado: {HOY} · Copia estática, no en vivo -->\n\n{md}\n", encoding="utf-8", newline="\n")
     return {"url": url, "archivo": f"{nombre}.md", "estado": r.status, "caracteres": len(md)}
@@ -134,7 +147,7 @@ def nasa_apis() -> dict:
     r = pedir(f"{base}json/apis.json")
     for api in r.json() if r.status == 200 else []:
         nombre = "api-" + re.sub(r"[^a-z0-9]+", "-", api["name"].lower()).strip("-")
-        md = markdownify(api.get("html_template", ""), heading_style="ATX").strip()
+        md = limpiar(markdownify(api.get("html_template", ""), heading_style="ATX").strip())
         (carpeta / f"{nombre}.md").write_text(
             f"<!-- Fuente: https://api.nasa.gov/ (assets/json/apis.json, «{api['name']}») · Dueño: NASA · Consultado: {HOY} · Copia estática, no en vivo -->\n\n{md}\n",
             encoding="utf-8", newline="\n")

@@ -73,7 +73,7 @@
       "url": "https://api.nasa.gov/assets/json/apis.json#Open Science Data Repository",
       "archivo": "api-open-science-data-repository.md",
       "estado": 200,
-      "caracteres": 70843
+      "caracteres": 70839
     },
     {
       "url": "https://api.nasa.gov/assets/json/apis.json#Satellite Situation Center",

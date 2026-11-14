@@ -1,6 +1,5 @@
 <!-- Fuente: https://www.asc-csa.gc.ca/eng/youth-educators/tomatosphere.asp · Dueño: Agencia Espacial Canadiense (CSA), socio, no NASA · Consultado: 2026-11-14 · Copia estática, no en vivo -->
 
-[Top of page](#top "Top of page")
 
 TomatosphereTM: Sowing the seeds of discovery through student science
 =====================================================================
@@ -13,13 +12,11 @@ In the program's first 15 years (2001-2016), over three million students acros
 
 [![](/videos/recherche/1_qd2ds2t3/thumbnails/4.jpg)](/videos/recherche/1_qd2ds2t3/1_tzrop8t4.webm)Ok
 
-
 European Space Agency (ESA) astronaut Thomas Pesquet explains the TomatosphereTM project. (Credits: Canadian Space Agency [CSA], NASA, ESA, Let's Talk Science)
 
 [Transcript of the video entitled Food for thought: Let's talk TomatosphereTM with astronaut Thomas Pesquet](https://www.asc-csa.gc.ca/eng/multimedia/search/video/18138#transcript)
 
 [![](/videos/recherche/19319/thumbnails/1-eng.jpg)](/videos/recherche/19319/1_qzxuzh1p.webm)Ok
-
 
 Check out Tomatosphere Adventure, a learning activity from Let's Talk Science! This Minecraft Education game for students aged 10 and up was developed in collaboration with the CSA and Logics Academy. (Credits: CSA, NASA, Logics Academy, Minecraft Education)
 
@@ -49,7 +46,6 @@ How to participate
 
 [![Tomatosphere TM](https://www.asc-csa.gc.ca/images/recherche/tiles/1298babe-653d-4a37-9a00-8f3fe4deaf47.jpg)](https://www.asc-csa.gc.ca/eng/multimedia/search/image/watch/4622)
 
-
 Grade 6 students from Byron Northview Public School in London, Ontario, plant TomatosphereTM seeds with CSA astronaut [Jeremy Hansen](http://www.asc-csa.gc.ca/eng/astronauts/canadian/retired/bio-jeremy-hansen.asp) and Bonnie Schmidt, President and Founder of [Let's Talk Science](http://www.letstalkscience.ca/). (Credit: CSA)
 
 Teaching students to think like scientists
@@ -74,7 +70,6 @@ Why tomatoes? Because they are easy to grow, versatile, nutritious and delicious
 In 2022, there were 528,277 tonnes of fresh tomatoes produced in Canada, second only to the potato as the most-produced vegetable or fruit. And over 294 million kilograms of tomatoes were grown in Canadian greenhouses. (Source: Statistics Canada)
 
 [![David Saint-Jacques participates in the Tomatosphere educational project](https://www.asc-csa.gc.ca/images/recherche/tiles/cea782e6-c66a-46d5-a6fe-d3daa1adf196.jpg)](https://www.asc-csa.gc.ca/eng/multimedia/search/image/watch/14271)
-
 
 CSA astronaut David Saint-Jacques holds a bag of thousands of tomato seeds. These space seeds will be distributed to classes in Canada and the United States, in collaboration with Let's Talk Science. (Credit: CSA/NASA)
 
@@ -109,5 +104,4 @@ Follow us
 * [Linkedin: Canadian Space Agency](https://www.linkedin.com/company/9441729)
 * [RSS](/rss/default_eng.xml)
 
-Date modified:
 :   2025-01-13
