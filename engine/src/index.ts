@@ -7,3 +7,4 @@ export * from "./ia.js";
 export * from "./reto.js";
 export * from "./resumen.js";
 export * from "./dorada.js";
+export * from "./novedades.js";

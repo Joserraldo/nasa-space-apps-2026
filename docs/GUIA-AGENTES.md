@@ -74,7 +74,7 @@ Objetivo: que cada persona abra una terminal, le diga a su agente quién es, y e
 
 | Rol | `<SLUG>` | Etiqueta | Personas |
 |---|---|---|---|
-| Diseño de juego y misiones | `diseno` | `rol:diseño` | Santiago, Camilo |
+| Diseño de juego y misiones | `diseno` | `rol:diseño` | Camilo (Santiago supervisa) |
 | Motor y simulación | `motor` | `rol:motor` | Jaime |
 | Frontend, voz, arte y accesibilidad | `ui` | `rol:ui` | María Paula |
 | Agentes expertos | `agentes` | `rol:agentes` | José |

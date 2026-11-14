@@ -26,7 +26,7 @@ Roles definitivos, fijados por Santiago el 13 nov en la tarde. Santiago es adem�
 
 | Rol | Slug (ramas) | Carpetas | Personas (GitHub) |
 |---|---|---|---|
-| Diseño de juego y misiones | `diseno` | [design/](design/), [missions/](missions/) | Santiago Cabeza (`kcitas`) y Camilo (`CamiloM21`) |
+| Diseño de juego y misiones | `diseno` | [design/](design/), [missions/](missions/) | Camilo (`CamiloM21`); Santiago Cabeza (`kcitas`) supervisa |
 | Motor y simulación | `motor` | [engine/](engine/) | Jaime Alejandro Vega Barbosa (`JaimeMrF`) |
 | Frontend, voz, arte y accesibilidad | `ui` | [ui/](ui/), [assets/](assets/) | María Paula Saavedra Martínez (`Paulasaah`) |
 | Agentes expertos | `agentes` | [agents/](agents/) | José (`Joserraldo`) |

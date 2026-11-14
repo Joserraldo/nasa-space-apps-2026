@@ -1,4 +1,5 @@
 import type { Seed, SpaceWeatherEvent } from "@solar-shield/contracts";
+import { eventosCurados } from "@solar-shield/data";
 import { crearPartida, type OpcionesPartida } from "./escenario.js";
 import { elegir, hashSeed } from "./rng.js";
 import type { CandidatoSitio } from "./sitio.js";
@@ -13,11 +14,11 @@ export function semillaDelDia(fechaISO: string): Seed {
 
 /**
  * Reto del día: misma fecha, mismo escenario para todo un salón. Siempre en Jezero (ruta dorada),
- * dificultad media, con el catálogo curado de datos si se pasa.
+ * dificultad media. Por defecto sortea una tormenta real del catálogo curado de data/.
  */
 export function retoDelDia(
   fechaISO: string,
-  tormentas: readonly SpaceWeatherEvent[] = [],
+  tormentas: readonly SpaceWeatherEvent[] = eventosCurados as readonly SpaceWeatherEvent[],
   extra: OpcionesPartida = {},
 ) {
   return crearPartida(semillaDelDia(fechaISO), { sitio: "marte_jezero", dificultad: "media", tormentas, ...extra });

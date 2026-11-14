@@ -1,4 +1,4 @@
-import type { Difficulty, Equipment, Resource, Resources, Site } from "@solar-shield/contracts";
+import type { Difficulty, Equipment, QuantityWord, Resource, Resources, Site } from "@solar-shield/contracts";
 
 /**
  * Tablas de balance. Solo datos, nada de lógica (design/CLAUDE.md).
@@ -102,20 +102,29 @@ export const COSTOS_ACCION: Record<TipoAccionConCosto, CostoAccion> = {
   },
 };
 
-/** Qué aporta cada módulo al colocarlo (beneficio con retraso). Ninguno es gratis: el costo está en COSTOS_ACCION. */
+/**
+ * Qué aporta cada módulo al colocarlo (beneficio con retraso). Montar cualquiera cuesta lo de
+ * COSTOS_ACCION.colocar_modulo (⚡ −6, 🫁 −3), así que ninguno es gratis.
+ *
+ * Misión 1 (#88 §3): cada módulo que gasta electricidad lleva su consumo como un número negativo de ⚡.
+ * El #88 lo pide "por tick", pero el motor aplica MODULOS una sola vez: aquí va como costo único
+ * (plan B) y el consumo continuo queda pedido a motor. El orden del consumo sale de ARES
+ * (src/model.js:147-149): invernadero 2,8 kW > reciclador 1,2 kW; el escudo y la antena, del #88.
+ * Valores de juego, no de NASA.
+ */
 export const MODULOS: Record<Equipment, Partial<Record<Resource, number>>> = {
   panel_solar: { energia: 14 },
-  bateria: { energia: 8, blindaje: 2 },
-  reciclador_agua: { soporte_vital: 12 },
-  invernadero: { soporte_vital: 10, energia: -2 },
+  bateria: { energia: 8, blindaje: 2 }, // DD-07: el +2 de blindaje no tiene sentido físico; pendiente. No está en la misión 1.
+  reciclador_agua: { soporte_vital: 12, energia: -1 },
+  invernadero: { soporte_vital: 10, energia: -3 },
   escudo: { blindaje: 14, energia: -3 },
-  antena: { blindaje: 4, soporte_vital: 3 },
+  antena: { blindaje: 4, soporte_vital: 3, energia: -1 },
   ia_base: { energia: -2, blindaje: 5 },
 };
 
 /**
- * Retraso de comunicaciones con la Tierra, en ticks de juego. En Marte la luz tarda 4-24 min
- * reales (PLAN §2.2), comprimidos al ritmo del juego; en la Luna es casi inmediato.
+ * Retraso de comunicaciones con la Tierra, en ticks de juego. En Marte la luz tarda 3-22 min
+ * reales en un sentido (NASA NSSDC, verificado por datos, issue #66), comprimidos al ritmo del juego; en la Luna es casi inmediato.
  */
 export const RETRASO_COMUNICACIONES: Record<Site, number> = {
   marte_jezero: 2,
@@ -152,3 +161,14 @@ export const MALA_SUERTE_POR_DIFICULTAD: Record<Difficulty, number> = {
 /** Ticks por día de misión y días para ganar (D9 pendiente; borrador). */
 export const TICKS_POR_DIA = 6;
 export const DIAS_PARA_GANAR = 5;
+
+/**
+ * Cuánta energía mueve la acción `redistribuir_energia` cuando el niño dice
+ * "poco", "medio" o "mucho" (issue #77). El contrato acepta de 5 a 50.
+ * Decidido por diseño (Santiago) el 13 nov: se mantienen los valores de agentes.
+ */
+export const ENERGIA_POR_CANTIDAD: Record<QuantityWord, number> = {
+  poco: 10,
+  medio: 25,
+  mucho: 45,
+};
