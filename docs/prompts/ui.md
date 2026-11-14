@@ -59,3 +59,23 @@ qué necesitas de otro rol. Espera el OK de María Paula.
 Después: /loop 10m Haz UNA iteración como agente del rol ui siguiendo docs/LOOP.md. Prioridad:
 la ruta dorada jugable en pantalla según el issue #58. Solo edita ui/ y assets/.
 ```
+
+## Actualización 14 nov, 18:30: orden de trabajo (manda sobre lo anterior)
+
+El motor ya está listo para la ruta dorada. Funciones que se conectan (detalle en `engine/README.md`):
+- Paso 3: `aterrizar(estado, sitioId)` con los ids de `MISION_JEZERO.sitiosCandidatos`.
+- Paso 4: `puedeAplicar(estado, accion)` antes de construir (devuelve el motivo si no se puede) y `paso`/`aplicarAccion`.
+- Paso 6: `elegirDilema(estado, opcionId)` (PR #144 de Jaime) con los ids de `MISION_JEZERO.dilemaPaso6.opciones`.
+- Paso 7: `telemetriaPendiente(estado)` para mostrar el retraso.
+- Paso 8: `estado.resultado` (`exito` / `fallo`), `resumenPartida(estado)` y `MISION_JEZERO.tarjetasCiencia` (todas con fuente).
+- Las dos partidas de `engine/src/ganable.test.ts` (una gana, otra pierde) deben poder jugarse igual en pantalla.
+
+| Bloque | Qué | Hasta |
+|---|---|---|
+| 0 | **Subir lo local (#142)** en PRs pequeños y conectar la ruta dorada al motor con lo visual que ya existe; login/invitado (#109) | sáb 22:00 (P2) |
+| 1 | Bloque 1 de la guía 3D v8: materiales, cachés, iluminación, niño astronauta, inicio nuevo; probar en un celular y un PC viejo | dom 09:00 |
+| 2 | Bloque 2 de la guía: terreno de Jezero, kit común, 5 módulos según el motor | dom 11:00 (P3: 3D o 2D) |
+| 4 | Bloque 4 de la guía: HUD y CSS v8 y verificación final | dom 13:00 (congelamiento) |
+| 3 | Bloque 3 de la guía (8 estaciones, Iris rover, expertas 3D) | solo si sobra tiempo |
+
+Presupuesto por vista: < 80 draw calls, < 80 000 triángulos, DPR máx 1,5 (calidad baja 1, sin sombras). Degradación automática 3D → 3D liviano → 2D. Atribución de NASA visible en cada dato real. Gravedad de Marte solo con fuente (#141). Pendiente de Santiago: Iris rover, expertas en 3D y si entra el bloque 3.
