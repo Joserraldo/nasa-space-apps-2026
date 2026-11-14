@@ -9,6 +9,7 @@ import {
 } from "@solar-shield/contracts";
 import {
   COSTOS_ACCION,
+  CONSUMO_MODULO_POR_TICK,
   CONSUMO_POR_TICK,
   MODULOS,
   RETRASO_COMUNICACIONES,
@@ -138,6 +139,24 @@ export function modulosColocados(estado: GameState): string[] {
 }
 
 /**
+ * Consumo por tick de los módulos que el jugador construyó y siguen en estado "ok" (#90).
+ * Un módulo averiado o destruido no gasta. La tabla viene de design/ (CONSUMO_MODULO_POR_TICK).
+ */
+export function consumoDeModulos(
+  estado: GameState,
+  tabla: Partial<Record<string, Partial<Record<Resource, number>>>> = CONSUMO_MODULO_POR_TICK,
+): Partial<Record<Resource, number>> {
+  const total: Partial<Record<Resource, number>> = {};
+  for (const m of modulosColocados(estado)) {
+    if (estado.equipos[m as keyof GameState["equipos"]] !== "ok") continue;
+    const c = tabla[m];
+    if (!c) continue;
+    for (const r of RECURSOS) if (c[r]) total[r] = (total[r] ?? 0) + c[r]!;
+  }
+  return total;
+}
+
+/**
  * Regla del motor, no solo de la pantalla (#113): solo módulos de la misión, sin repetir,
  * y como máximo MISION_JEZERO.modulosAColocar. Si no se puede, la acción no hace nada.
  */
@@ -205,6 +224,8 @@ export function avanzarTick(estado: GameState): GameState {
   s = { ...s, dia: Math.floor(s.tick / TICKS_POR_DIA) + 1 };
 
   s = aplicarDeltas(s, CONSUMO_POR_TICK[s.sitio], "sistema", "causa.consumo");
+  // #90: los módulos construidos y en buen estado gastan cada tick lo que diga diseño.
+  s = aplicarDeltas(s, consumoDeModulos(s), "sistema", "causa.consumo");
 
   const listos = s.efectosPendientes.filter((e) => e.aplicaEnTick <= s.tick);
   const futuros = s.efectosPendientes.filter((e) => e.aplicaEnTick > s.tick);
