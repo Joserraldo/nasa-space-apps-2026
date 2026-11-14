@@ -253,18 +253,18 @@ export const MISION_JEZERO: Mision = {
     { id: "tormenta_medida", textoKey: "mision.jezero.ciencia.tormenta", fuenteKey: "fuente.radlab" },
     // Con fuente: terreno de Jezero (Mars Trek); la inclinación es derivada por el equipo (docs/science/terreno.md).
     { id: "sitio_terreno", textoKey: "mision.jezero.ciencia.terreno", fuenteKey: "fuente.marsTrek" },
-    // Sin fuente en el repo todavía: las pide diseño a datos.
-    { id: "panel_polvo", modulo: "panel_solar", textoKey: "mision.jezero.ciencia.panel", fuenteKey: null },
-    { id: "agua_reciclada", modulo: "reciclador_agua", textoKey: "mision.jezero.ciencia.reciclador", fuenteKey: null },
-    { id: "plantas", modulo: "invernadero", textoKey: "mision.jezero.ciencia.invernadero", fuenteKey: null },
-    { id: "escudo_regolito", modulo: "escudo", textoKey: "mision.jezero.ciencia.escudo", fuenteKey: null },
-    { id: "mensajes_tardan", modulo: "antena", textoKey: "mision.jezero.ciencia.antena", fuenteKey: null },
+    // Fuentes verificadas por datos (docs/science/tarjetas-mision1.md, #93 y #104).
+    { id: "panel_polvo", modulo: "panel_solar", textoKey: "mision.jezero.ciencia.panel", fuenteKey: "fuente.jpl.insight" },
+    { id: "agua_reciclada", modulo: "reciclador_agua", textoKey: "mision.jezero.ciencia.reciclador", fuenteKey: "fuente.nasa.agua" },
+    { id: "plantas", modulo: "invernadero", textoKey: "mision.jezero.ciencia.invernadero", fuenteKey: "fuente.osdr" },
+    { id: "escudo_regolito", modulo: "escudo", textoKey: "mision.jezero.ciencia.escudo", fuenteKey: "fuente.dosis.marte" },
+    { id: "mensajes_tardan", modulo: "antena", textoKey: "mision.jezero.ciencia.antena", fuenteKey: "fuente.nssdc" },
   ],
   preguntaFinal: {
     preguntaKey: "mision.jezero.pregunta",
     opcionesKeys: ["mision.jezero.pregunta.a", "mision.jezero.pregunta.b", "mision.jezero.pregunta.c"],
     correcta: 1,
     explicacionKey: "mision.jezero.pregunta.explicacion",
-    fuenteKey: null,
+    fuenteKey: "fuente.nasa.bitflip",
   },
 };
