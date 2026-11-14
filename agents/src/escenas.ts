@@ -41,7 +41,8 @@ export function escenaTormenta(v: VistaAgente): EscenaTormenta | null {
       medida
         ? { clave: "agentes.escena6.doctora.medida", vars: { factor: medida } }
         : { clave: "agentes.escena6.doctora.sinMedida" },
-      { clave: "agentes.escena6.doctora.costo" },
+      // Dilema del refugio (idea de ARES): con invernadero sano, refugiarse lo deja sin cuidar.
+      { clave: v.equipos.invernadero === "ok" ? "agentes.escena6.doctora.costoInvernadero" : "agentes.escena6.doctora.costo" },
     ],
   };
   // La Ingeniera cita la energía del estado del juego: el escudo la gasta.

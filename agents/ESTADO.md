@@ -1,16 +1,15 @@
 # Estado — rol 3 (Agentes expertos)
-**Actualizado:** 13 nov 2026 · **Rama:** feat/agentes-iris-guia · **PR:** abriendo (issue #59)
+**Actualizado:** 14 nov 2026 · **Rama:** feat/agentes-mision1-voces · **PR:** ver abajo · **Loop:** 10 min
 
 ## Hecho (últimas iteraciones)
-- Fusionados: #43 regex en/es · #44 3 expertos en/es con fuente · #47 escena 6 · #49 avería de Iris · #50 README · #46 data/ en CI.
-- Evals reales en b.ai (#51): qwen3.8-flash 80 % accion pero p95 15 s; deepseek 23 % (razonamiento sin tokens). D4: sin clasificador; reabrir tras P2.
-- Fase satélite (#52) y aterrizaje: cada voz defiende su criterio (luz, blindaje, plano).
+- Misión 1 a partir de ARES (docs/ideas/mision-1-ares-mejorada.md, PR #88).
+- `escenaPolvo` (paso 4b): la Ingeniera quiere limpiar y la Doctora recuerda el costo. InSight se cita solo si viene con su fuente.
+- Dilema del refugio en el paso 6: con invernadero sano, la Doctora dice que habrá menos comida.
+- `preguntaIris` nivel 2: 5 temas inspirados en los quizzes de ARES, saltable, siempre explica. 88 tests en verde.
 
-## Qué sigue (issue #41)
-- #67 fusionado: aterrizaje + director + cola. Revisé el borrador de ui (#68, Jaime) y le dejé sugerencias.
-- Matemático "¿Y si…?" con el simulador del motor; acortar frases > 25 palabras.
+## Qué sigue
+- Paso 3: si diseño agrega el criterio "hielo" a los sitios, darle una voz (hoy data/terreno trae plano, luz y blindaje).
+- Matemático "¿Y si…?" con el simulador del motor.
 
 ## Bloqueos
-- `ENERGIA_POR_CANTIDAD` provisional (debe vivir en design/). ui/ aún vacío.
-
-Evals: corridas (13 nov) · Tokens: 🟢
+- SourceCard de InSight (issue a datos). #77 poco/medio/mucho (diseño).
