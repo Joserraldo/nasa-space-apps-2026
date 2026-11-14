@@ -1,5 +1,5 @@
 # Rol 1: Diseño de juego y misiones
-**Humano responsable:** Santiago (`kcitas`) y Camilo (`CamiloM21`)
+**Humano responsable:** Camilo (`CamiloM21`). Santiago (`kcitas`) supervisa y aprueba las decisiones de balance.
 **Slug de ramas:** `diseno` → `feat/diseno-<tema>`
 **Etiqueta de issues:** `rol:diseño`
 **Posees:** `/design`, `/missions`

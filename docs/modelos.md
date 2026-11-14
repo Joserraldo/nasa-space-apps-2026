@@ -10,7 +10,7 @@ Dicho por Santiago el 13 nov: **todos tienen OpenCode; Daniel tiene además Code
 
 | Persona | Rol | Herramienta | Modelo principal | Límite aproximado |
 |---|---|---|---|---|
-| Santiago (`kcitas`) | orquestador, diseño | Claude Code, OpenCode | Fable para coordinar; Opus para diseño | por confirmar |
+| Santiago (`kcitas`) | orquestador y supervisor | Claude Code, OpenCode | Fable para coordinar | por confirmar |
 | Camilo (`CamiloM21`) | diseño | OpenCode | Opus | por confirmar |
 | Jaime (`JaimeMrF`) | motor | OpenCode | Opus | por confirmar |
 | María Paula (`Paulasaah`) | ui | OpenCode | Opus | por confirmar |

@@ -7,7 +7,7 @@ Este archivo debe bastar para que otra sesión (u otro humano) retome la coordin
 ## Resumen
 
 - **Reto:** Build a Junior Astronaut Mission Trainer. **Juego:** Solar Shield (IA de la base: Iris).
-- **Roles (definitivos, 13 nov):** diseño de juego y misiones Santiago y Camilo · motor Jaime · ui María Paula · agentes e infra José · datos Daniel. Santiago es además el orquestador. Tabla completa en el [README](../README.md).
+- **Roles (definitivos, 13 nov):** diseño de juego y misiones Camilo (Santiago supervisa) · motor Jaime · ui María Paula · agentes e infra José · datos Daniel. Santiago es además el orquestador. Tabla completa en el [README](../README.md).
 - **Ramas:** `feat/<slug>-<tema>` desde `develop`; PRs < ~300 líneas hacia `develop`; el merge es automático cuando pasa el CI "Tipos y tests" (auto-merge activado el 13 nov; ver protección de `develop` y `main`).
 - **Contratos:** `/contracts` está vacío. El sábado se abren `GameState`, `Action`, `Seed`, `SpaceWeatherEvent` y `ClassifierOutput` (dueños: motor, agentes, datos).
 - **Canal:** issues, PRs, `ESTADO.md` de cada carpeta y `docs/decisiones/`. Discord para lo humano (`#bloqueos`, `#decisiones`).
