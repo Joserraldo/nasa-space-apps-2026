@@ -110,3 +110,34 @@ describe("misión 1: polvo y dilema del paso 6 (propuesta #88)", () => {
     }
   });
 });
+
+describe("misión 1: tarjetas de ciencia y pregunta final", () => {
+  const fuentesDatos = JSON.parse(
+    readFileSync(fileURLToPath(new URL("../../data/i18n/en.json", import.meta.url)), "utf-8"),
+  ) as Record<string, string>;
+
+  it("cada tarjeta y la pregunta tienen texto en inglés y en español", () => {
+    const p = MISION_JEZERO.preguntaFinal;
+    const claves = [
+      ...MISION_JEZERO.tarjetasCiencia.map((t) => t.textoKey),
+      p.preguntaKey,
+      ...p.opcionesKeys,
+      p.explicacionKey,
+    ];
+    for (const k of claves) {
+      expect(TEXTOS_JEZERO.en[k], k).toBeTruthy();
+      expect(TEXTOS_JEZERO.es[k], k).toBeTruthy();
+    }
+  });
+
+  it("una fuente citada existe de verdad en los textos de datos", () => {
+    for (const t of MISION_JEZERO.tarjetasCiencia) {
+      if (t.fuenteKey !== null) expect(fuentesDatos[t.fuenteKey], t.id).toBeTruthy();
+    }
+  });
+
+  it("cada módulo de la misión tiene su tarjeta de ciencia", () => {
+    const conTarjeta = new Set(MISION_JEZERO.tarjetasCiencia.map((t) => t.modulo).filter(Boolean));
+    for (const m of MISION_JEZERO.modulosDisponibles) expect(conTarjeta.has(m), m).toBe(true);
+  });
+});

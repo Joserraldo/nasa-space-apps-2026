@@ -98,6 +98,28 @@ export interface DilemaPaso6 {
   opciones: OpcionDilema[];
 }
 
+/**
+ * Tarjeta de ciencia (paso 8 y al colocar un módulo). Viene del "dato pegado a cada misión" de ARES (#88 §1).
+ * Cada afirmación necesita fuente: `fuenteKey` apunta a una fuente que ya existe en data/i18n;
+ * si es null, la tarjeta NO se muestra hasta que el rol datos la verifique (issue bloquea:datos).
+ */
+export interface TarjetaCiencia {
+  id: string;
+  /** Módulo al que acompaña, si aplica. */
+  modulo?: Equipment;
+  textoKey: string;
+  fuenteKey: string | null;
+}
+
+/** Pregunta del paso 8 (el quiz de ARES): 3 opciones, nunca bloquea y siempre explica. */
+export interface PreguntaFinal {
+  preguntaKey: string;
+  opcionesKeys: [string, string, string];
+  correcta: 0 | 1 | 2;
+  explicacionKey: string;
+  fuenteKey: string | null;
+}
+
 export interface Mision {
   id: string;
   nombreKey: string;
@@ -122,6 +144,8 @@ export interface Mision {
   fin: FinMision;
   eventoPolvo: EventoPolvo;
   dilemaPaso6: DilemaPaso6;
+  tarjetasCiencia: TarjetaCiencia[];
+  preguntaFinal: PreguntaFinal;
 }
 
 export const MISION_JEZERO: Mision = {
@@ -223,5 +247,24 @@ export const MISION_JEZERO: Mision = {
         textoKey: "mision.jezero.dilema.aguantar",
       },
     ],
+  },
+  tarjetasCiencia: [
+    // Con fuente: la tormenta de la demo la midió el instrumento RAD de Curiosity en Marte (data/curated/2024-05-20-marte.json).
+    { id: "tormenta_medida", textoKey: "mision.jezero.ciencia.tormenta", fuenteKey: "fuente.radlab" },
+    // Con fuente: terreno de Jezero (Mars Trek); la inclinación es derivada por el equipo (docs/science/terreno.md).
+    { id: "sitio_terreno", textoKey: "mision.jezero.ciencia.terreno", fuenteKey: "fuente.marsTrek" },
+    // Sin fuente en el repo todavía: las pide diseño a datos.
+    { id: "panel_polvo", modulo: "panel_solar", textoKey: "mision.jezero.ciencia.panel", fuenteKey: null },
+    { id: "agua_reciclada", modulo: "reciclador_agua", textoKey: "mision.jezero.ciencia.reciclador", fuenteKey: null },
+    { id: "plantas", modulo: "invernadero", textoKey: "mision.jezero.ciencia.invernadero", fuenteKey: null },
+    { id: "escudo_regolito", modulo: "escudo", textoKey: "mision.jezero.ciencia.escudo", fuenteKey: null },
+    { id: "mensajes_tardan", modulo: "antena", textoKey: "mision.jezero.ciencia.antena", fuenteKey: null },
+  ],
+  preguntaFinal: {
+    preguntaKey: "mision.jezero.pregunta",
+    opcionesKeys: ["mision.jezero.pregunta.a", "mision.jezero.pregunta.b", "mision.jezero.pregunta.c"],
+    correcta: 1,
+    explicacionKey: "mision.jezero.pregunta.explicacion",
+    fuenteKey: null,
   },
 };

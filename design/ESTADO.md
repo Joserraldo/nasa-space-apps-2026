@@ -1,5 +1,5 @@
 # Estado — diseño de juego y misiones
-**Actualizado:** 13 nov 2026, 23:00 · **Rama:** feat/diseno-mision1 (apilada sobre #86) · **PR:** #89 · **Responsables:** Santiago y Camilo
+**Actualizado:** 13 nov 2026, 23:15 · **Rama:** feat/diseno-mision1 (apilada sobre #86) · **PR:** #89 · **Responsables:** Santiago y Camilo
 **Tokens:** 🟢
 
 ## Hecho (misión 1, #88)
@@ -7,8 +7,11 @@
 
 - (2) `MODULOS` según el #88 §3: consumo de ⚡ como costo único (plan B): reciclador −1, invernadero −3, escudo −3, antena −1 (orden por kW de ARES). `COSTOS_ACCION` ya movía ≥2 medidores en todas: sin cambios. Consumo por tick pedido a motor en #90. 215/215 pruebas.
 
+- (3) #77 resuelto en #84 · (4) textos de la cadena de causas: hechos en #85 (`design/i18n`).
+- (4) Tarjetas de ciencia (7) y pregunta final del paso 8 en `jezero.ts` + textos en/es. 5 tarjetas y la pregunta sin fuente: no se muestran; pedido a datos en #93. 218/218 pruebas.
+
 ## Qué sigue
-- (3) #77 ya resuelto en #84 · (4) textos de causas y tarjetas de ciencia · (5) prueba de las 10 parejas con Jaime.
+- (5) Prueba de las 10 parejas de módulos con la semilla dorada: coordinar con Jaime (usa el motor).
 
 ## Números de ARES (CamiloM21/ares-mission-trainer, leídos el 13 nov)
 - Potencia (kW): panel 8 (11,6 ampliado), base 2,4, electrólisis 2,2, invernadero 2,8, reciclador 1,2 — `src/model.js:144-149`. Relación útil: invernadero gasta más que nada; reciclador la mitad que electrólisis.
