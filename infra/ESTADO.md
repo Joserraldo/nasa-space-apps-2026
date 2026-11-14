@@ -1,16 +1,16 @@
-# Estado — infra (integración, QA, despliegue y pitch)
-**Actualizado:** 13 nov 2026, tarde · **Responsable:** José (desde el 13 nov; antes Santiago)
-**Tokens:** por reportar
+# Estado — infra
+**Actualizado:** 14 nov 2026, 01:10 · **Rama:** feat/infra-clave-ia-limite · **Responsable:** José
+**Tokens:** 🟢
 
-## Hecho (últimas iteraciones)
-- CI de tipos y tests en cada PR (#22).
-- Secreto `BAI_API_KEY` guardado en el repo (clave del clasificador); ningún flujo lo usa todavía.
-- Borrador de `pitch/criterios.md` y de `pitch/guion-video.md` (guion de 2 min sobre la ruta dorada, con plan de grabación).
+## Hecho
+- Un solo Worker para pantalla y API (`infra/worker/`), producción y preview (#76), despliegue automático por Actions (#78, #105).
+- Secretos `CLOUDFLARE_ACCOUNT_ID` y `CLOUDFLARE_API_TOKEN` guardados en GitHub.
+- `deploy.yml` copia `BAI_API_KEY` de GitHub al Worker en cada despliegue.
+- Límite de la IA activo: 20/min por IP con el limitador nativo de Cloudflare (antes dependía de un KV que nunca se conectó).
 
 ## Qué sigue
-- Flujo de despliegue a Cloudflare desde GitHub Actions (cuando Santiago tenga la cuenta: token e ID como secretos del repo).
-- Incluir `data/` en el CI (#28; el PR #39 de datos prepara su parte).
-- Prueba e2e de la ruta dorada cuando exista la pantalla.
+- Login + invitado con progreso en D1.
 
 ## Bloqueos
-- Cuenta de Cloudflare (Santiago). Guía de Entrega y criterios de juicio sin confirmar.
+- El primer despliegue con el token falló con "Invalid access token": revisar el token con Santiago y volver a guardarlo.
+- Desconectar el Worker de la copia kcitas (Santiago).

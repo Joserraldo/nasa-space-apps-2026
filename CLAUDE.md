@@ -1,6 +1,6 @@
 # Reglas para todos los agentes
 
-## FASE ACTUAL: 0 — PREPARACIÓN (solo documentos)
+## FASE ACTUAL: 1 — CONSTRUCCIÓN (hackathon en curso)
 > Este interruptor lo cambia un humano el día que arranca el hackathon.
 > Mientras diga **FASE 0**: NO escribas código del juego, ni assets finales, ni mecánicas. Solo investigación, documentos y decisiones en `docs/`.
 > Cuando diga **FASE 1+**: sigue las tareas de tu `CLAUDE.md` de carpeta.

@@ -3,7 +3,7 @@ import { aAccion } from "./a-accion.js";
 import type { Dialogo, Linea, ReferenciaDosis } from "./dialogo.js";
 
 /** Lo único del estado que ven los expertos (nunca el modelo). */
-export type VistaAgente = Pick<GameState, "recursos" | "tripulacion" | "tormenta" | "equipos">;
+export type VistaAgente = Pick<GameState, "recursos" | "tripulacion" | "tormenta" | "equipos"> & Partial<Pick<GameState, "iaBase">>;
 
 export interface Contexto {
   /** Dosis en la superficie de Marte (RAD/Curiosity), para la Doctora. */
@@ -27,7 +27,8 @@ function ingeniera(s: ClassifierOutput, v: VistaAgente): Dialogo {
   if (s.accion === "reparar") {
     const equipo = s.parametros.equipo;
     if (!equipo) return { ...base, lineas: [l("agentes.ingeniera.reparar.cual")] };
-    const estado = v.equipos[equipo as keyof typeof v.equipos];
+    // Iris dañada cuenta como averiada aunque el equipo diga "ok" (en la partida dorada arranca así).
+    const estado = equipo === "ia_base" && v.iaBase === "danada" ? "averiado" : v.equipos[equipo as keyof typeof v.equipos];
     const equipoKey = `agentes.equipo.${equipo}`;
     if (estado === "ok") return { ...base, lineas: [l("agentes.ingeniera.reparar.sano", { equipoKey })] };
     const accion = aAccion(s);
