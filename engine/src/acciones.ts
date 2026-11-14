@@ -175,34 +175,6 @@ export function puedeAplicar(estado: GameState, accionCruda: unknown): Permiso {
 }
 
 /**
- * Dilema del paso 6: aplica la opción elegida de MISION_JEZERO.dilemaPaso6 por su id.
- * Hace la acción de la opción y, si la opción trae `extra` y el jugador construyó `extraSiTiene`
- * (refugio → apagar el invernadero), también ese efecto, con causa "causa.apagar_invernadero".
- * Opción desconocida o acción rechazada → mismo estado. No es una Action: no cambia contracts/.
- */
-export function aplicarOpcionDilema(estado: GameState, opcionId: string): GameState {
-  const opcion = MISION_JEZERO.dilemaPaso6.opciones.find((o) => o.id === opcionId);
-  if (!opcion) return estado;
-  let s = aplicarAccion(estado, opcion.accion);
-  if (s === estado) return estado;
-  const aplicaExtra = opcion.extra && (!opcion.extraSiTiene || modulosColocados(estado).includes(opcion.extraSiTiene));
-  if (!opcion.extra || !aplicaExtra) return s;
-  const causaKey = "causa.apagar_invernadero";
-  s = aplicarDeltas(s, opcion.extra.inmediato, "decision", causaKey);
-  const retraso = RETRASO_POR_DIFICULTAD[s.dificultad];
-  let rng = s.rngEstado;
-  const nuevos: PendingEffect[] = [];
-  for (const r of RECURSOS) {
-    const d = opcion.extra.retrasado[r];
-    if (!d) continue;
-    const p = enteroEntre(rng, retraso.min, retraso.max);
-    rng = p.estado;
-    nuevos.push({ id: `${s.tick}-apagar_invernadero-${r}`, aplicaEnTick: s.tick + p.entero, recurso: r, delta: d, origen: "decision", descripcionKey: causaKey, oculto: retraso.ocultos });
-  }
-  return { ...s, rngEstado: rng, efectosPendientes: [...s.efectosPendientes, ...nuevos] };
-}
-
-/**
  * Aterrizar en uno de los sitios candidatos de la misión (paso 3). Cobra su costo una sola vez:
  * el inmediato ahora y el retrasado con el retraso de la dificultad. No es una Action del contrato
  * (no cambia contracts/): la pantalla la llama al confirmar el sitio. Sitio desconocido o ya
