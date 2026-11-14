@@ -79,12 +79,12 @@ Los relieves coinciden con los de la propuesta #100; las pendientes difieren de 
 
 | Sitio | Lat / Lon | Elevación | Pendiente | Relieve | Plano |
 |---|---|---|---|---|---|
-| Shackleton | 88,6 % / sí | −89,63° / 132,32° | −2635 m | 9,1° | 4173 m | 0,09 |
-| Haworth | 86,7 % / sí | −87,20° / −7,49° | −3147 m | 9,2° | 2992 m | 0,08 |
-| Faustini | 100 % / sí | −87,18° / 85,02° | −2713 m | 6,5° | 1095 m | 0,35 |
-| Malapert | 0,9 % / no | −84,80° / 12,31° | −1670 m | 14,3° | 3153 m | 0 |
-| Nobile | 20,3 % / no | −85,24° / 53,65° | 755 m | 9,0° | 1527 m | 0,10 |
-| de Gerlache | 68,4 % / sí | −88,45° / −90,45° | −1868 m | 19,0° | 2028 m | 0 |
+| Shackleton | −89,63° / 132,32° | −2635 m | 9,1° | 4173 m | 0,09 |
+| Haworth | −87,20° / −7,49° | −3147 m | 9,2° | 2992 m | 0,08 |
+| Faustini | −87,18° / 85,02° | −2713 m | 6,5° | 1095 m | 0,35 |
+| Malapert | −84,80° / 12,31° | −1670 m | 14,3° | 3153 m | 0 |
+| Nobile | −85,24° / 53,65° | 755 m | 9,0° | 1527 m | 0,10 |
+| de Gerlache | −88,45° / −90,45° | −1868 m | 19,0° | 2028 m | 0 |
 
 **Verificación independiente (`identify`, 2026-11-14):** polar vs JSON: −2639,5 / −3145,5 / −2711,5 / −1673 / 760 / −1878 m (diferencias ≤ 10 m); DEM global 128 ppd en la misma lat/lon: −2650 / −3106 / −2717 / −1683 / 756,5 / −1858,5 m (≤ 41 m).
 - Son el **centro del cráter según el nomenclátor**, no un punto de aterrizaje: no son los nombres "cresta soleada / macizo alto…" de la propuesta #98 (esos eran descriptivos, sin coordenadas). Asignarlos a los 4 sitios del juego lo decide diseño.
@@ -107,12 +107,12 @@ Los relieves coinciden con los de la propuesta #100; las pendientes difieren de 
 
 | Cráter | Sombra perm. LOLA (fracción / centro) | Centros PSR_SP | Puntos de hielo | < 110 K verano / invierno | Mín. K verano / invierno |
 |---|---|---|---|---|---|
-| Shackleton | 1 (233,7 km²) | 36 | 81 % / 96 % | 81,3 / 53,5 |
-| Haworth | 0 | 20 | 98 % / 100 % | 59,7 / 36,4 |
-| Faustini | 1 (663,9 km²) | 9 | 100 % / 100 % | 56,7 / 43,5 |
-| Malapert | 0 | 0 | 0 % / 3 % | — / 89,5 |
-| Nobile | 0 | 0 | 0,3 % / 2,5 % | 93,9 / 73,1 |
-| de Gerlache | 1 (243,3 km²) | 7 | 77 % / 100 % | 51,0 / 47,2 |
+| Shackleton | 88,6 % / sí | 1 (233,7 km²) | 36 | 81 % / 96 % | 81,3 / 53,5 |
+| Haworth | 86,7 % / sí | 0 | 20 | 98 % / 100 % | 59,7 / 36,4 |
+| Faustini | 100 % / sí | 1 (663,9 km²) | 9 | 100 % / 100 % | 56,7 / 43,5 |
+| Malapert | 0,9 % / no | 0 | 0 | 0 % / 3 % | — / 89,5 |
+| Nobile | 20,3 % / no | 0 | 0 | 0,3 % / 2,5 % | 93,9 / 73,1 |
+| de Gerlache | 68,4 % / sí | 1 (243,3 km²) | 7 | 77 % / 100 % | 51,0 / 47,2 |
 
 **Textos para niños (en/es, claves `datos.terreno.luna.*`)**: "Parts of this crater never see the Sun" solo si la fracción LOLA en sombra permanente es > 1 % (todos menos Malapert, 0,9 %; Haworth y Nobile sí aparecen); "may be ice… scientists still need to check" (`datos.terreno.luna.hielo`) **NO se asigna a ningún sitio**: `SP_IceLoc_280m` no tiene cita verificada (`citaVerificada: false`, pendiente `citaHielo`; el dato crudo se conserva); "colder than −163 °C, even in summer" solo si ≥ 1 % del recuadro (todos menos Malapert y Nobile). Nunca "hay agua para beber".
 
