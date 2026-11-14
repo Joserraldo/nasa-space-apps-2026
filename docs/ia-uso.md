@@ -9,6 +9,8 @@ Cada persona añade una fila cuando empieza a usar una herramienta o un modelo p
 | Persona | Herramienta | Modelo | Para qué | Desde |
 |---|---|---|---|---|
 | Santiago (`kcitas`) | Claude Code | Fable 5.2 | Orquestación: leer el repo, documentos de coordinación de la víspera (roles, modelos, este registro, borrador de criterios del pitch) | 13 nov |
+| Santiago (`kcitas`) | Claude Code | Fable 5.1 / 5.2 y Opus 5.5 (subagentes Haiku para lecturas) | Coordinación del 13 nov: roles y documentos, misión 1 de Jezero en `design/` y `missions/` (polvo, dilema, módulos, tarjetas de ciencia, prueba de parejas), textos en/es, revisión de PRs y resolución de conflictos | 13 nov |
+| Santiago (`kcitas`) | Claude Code | Fable 5.2 | Prototipo 3D de Jezero fuera del repo (Blender, a partir del DEM de Mars Trek); no integrado | 13 nov |
 | _(por confirmar con su autor)_ | por confirmar | por confirmar | Investigación del 2 nov en `docs/reglas.md` y `docs/science/fuentes.md` | 2 nov |
 
 ## Dentro del juego
