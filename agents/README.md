@@ -64,3 +64,11 @@ const d = conAvisoUsos(queSiMatematico(accion, antes, despues), restantes); // r
 if (restantes === 0 /* ya antes de pedir */) mostrar(sinUsosMatematico());
 ```
 Avisa con 2 o 1 usos restantes y cuando fue el último. Con 0 usos, ui no calcula y muestra `sinUsosMatematico()`.
+## Panel de tripulación en una línea
+```ts
+const d = conversar({ texto } /* o { experto: "doctora" } */, estado, {
+  tormentaActiva: tormentaActiva(estado),
+  dosisMarte: referenciaDosis("marte-superficie"),
+});
+```
+Hace todo: atajos/regex, botón → pregunta por defecto, esconde la tormenta antes del paso 5, aclaración si no se entiende e Iris dañada con su falla.

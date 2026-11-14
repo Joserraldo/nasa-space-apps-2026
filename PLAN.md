@@ -121,7 +121,7 @@ Roles definitivos, fijados el 13 nov (tarde) por Santiago, que es además el orq
 
 | Slug | Rol | Posee (carpetas) | Personas (GitHub) |
 |---|---|---|---|
-| `diseno` | **Diseño de juego y misiones**: tablas de recursos y balance, misión de Jezero, mazo de eventos, dificultad adaptativa, textos de la cadena de causas | `/design`, `/missions` | Santiago Cabeza (`kcitas`) y Camilo (`CamiloM21`) |
+| `diseno` | **Diseño de juego y misiones**: tablas de recursos y balance, misión de Jezero, mazo de eventos, dificultad adaptativa, textos de la cadena de causas | `/design`, `/missions` | Camilo (`CamiloM21`); Santiago Cabeza (`kcitas`) supervisa |
 | `motor` | **Motor y simulación**: GameState, ticks, semilla, `aplicarAccion`, órbita, semilla dorada | `/engine` | Jaime Alejandro Vega Barbosa (`JaimeMrF`) |
 | `ui` | **Frontend, voz, arte y accesibilidad** | `/ui`, `/assets` | María Paula Saavedra Martínez (`Paulasaah`) |
 | `agentes` | **Agentes expertos**: clasificador, expertos como código, IA de la base, evals | `/agents` | José (`Joserraldo`) |

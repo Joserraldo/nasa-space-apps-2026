@@ -11,3 +11,4 @@ export { consejosAterrizaje, type SitioCandidato, type Criterio } from "./aterri
 export { dialogosDelPaso, encolar, vistaVisible, type Momento, type VistaCompleta } from "./director.js";
 export { guiaIris, explicarSistema, areaUrgente } from "./iris-guia.js";
 export { queSiMatematico, compararOpciones, avisoUsos, conAvisoUsos, sinUsosMatematico, type OpcionQueSi, type VistaQueSi } from "./que-pasa-si.js";
+export { conversar, preguntaDelBoton, PREGUNTA_DEL_BOTON, type Entrada, type OpcionesConversar } from "./conversar.js";

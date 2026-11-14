@@ -21,23 +21,13 @@ Santiago es además el orquestador: coordina, desbloquea y mantiene los document
 
 **José lleva dos roles.** Si `agentes` se atrasa, lo primero que se reparte es `infra` (pitch y pruebas), no los expertos.
 
-## 2. Qué construimos primero
-
-El motor y los datos van adelantados; **la pantalla y la tripulación todavía no existen**. Un juez solo ve la pantalla. Por eso el orden es:
-
-1. **La ruta dorada jugable en pantalla**, de principio a fin, con la tormenta real que Curiosity midió en Marte (evento curado `2024-05-20-marte`).
-2. **La tripulación de expertos a la vista desde el primer minuto.** Es lo que nos distingue: los expertos acompañan al jugador, se contradicen y cada consejo sale de un dato real con su fuente.
-3. Todo lo demás (más regiones, 3D, Luna, atlas) espera a que 1 y 2 funcionen.
-
-`motor` y `datos` no añaden funciones nuevas hasta que la ruta dorada se juegue en pantalla: su trabajo es darle a `ui` y a `agentes` lo que pidan.
-
-## 3. Idioma
+## 2. Idioma
 
 El inglés es el idioma base. Cada texto se escribe primero en `en`, es el idioma por defecto y el de respaldo. El español se completa después y se elige con el selector. Ningún texto visible va quemado en el código.
 
 Los documentos del equipo, los commits y los PRs siguen en español.
 
-## 4. Tu sesión: Opus dirige, los subagentes ejecutan
+## 3. Tu sesión: Opus dirige, los subagentes ejecutan
 
 Todos tienen OpenCode; Daniel tiene además Codex.
 
@@ -51,7 +41,7 @@ Todos tienen OpenCode; Daniel tiene además Codex.
 
 Cómo se configuran los subagentes y su modelo depende de la herramienta: revísalo en la tuya antes de empezar.
 
-## 5. Ciclo de trabajo
+## 4. Ciclo de trabajo
 
 1. `git fetch origin && git rebase origin/develop`.
 2. Una tarea a la vez, de tu issue de mayor prioridad, en una rama `feat/<slug>-<tema>`.
@@ -61,7 +51,7 @@ Cómo se configuran los subagentes y su modelo depende de la herramienta: revís
 
 Nadie empuja directo a `develop` ni a `main`. `contracts/` solo cambia con un issue `contrato`.
 
-## 6. Cloudflare y claves
+## 5. Cloudflare y claves
 
 **Nadie entra a la cuenta de Cloudflare de Santiago y nadie comparte contraseñas.** No hace falta:
 

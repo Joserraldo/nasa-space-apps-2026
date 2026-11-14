@@ -2,7 +2,7 @@ import type { MissionGoal } from "@solar-shield/contracts";
 
 /**
  * Puntaje de sitio con 3 criterios (datos los calcula desde Mars Trek en data/terreno/*):
- *   plano    = qué tan fácil es aterrizar y construir (pendiente)
+ *   plano    = qué tan fácil es aterrizar y construir (inclinación del terreno en grados; 1 − inclinación/10°)
  *   luz      = cuánto sol llega (horizonte despejado)
  *   blindaje = cuánta protección natural dan las paredes del cráter
  * Los pesos dependen del objetivo de misión. Suman 1. Solo datos.
