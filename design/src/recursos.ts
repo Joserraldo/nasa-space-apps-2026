@@ -114,8 +114,8 @@ export const MODULOS: Record<Equipment, Partial<Record<Resource, number>>> = {
 };
 
 /**
- * Retraso de comunicaciones con la Tierra, en ticks de juego. En Marte la luz tarda 4-24 min
- * reales (PLAN §2.2), comprimidos al ritmo del juego; en la Luna es casi inmediato.
+ * Retraso de comunicaciones con la Tierra, en ticks de juego. En Marte la luz tarda 3-22 min
+ * reales en un sentido (NASA NSSDC, verificado por datos, issue #66), comprimidos al ritmo del juego; en la Luna es casi inmediato.
  */
 export const RETRASO_COMUNICACIONES: Record<Site, number> = {
   marte_jezero: 2,
