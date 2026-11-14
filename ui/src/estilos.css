@@ -1,0 +1,120 @@
+/* Paleta y tipografía de docs/ideas/marca.md (D6). Contrastes WCAG medidos allí. */
+:root {
+  --fondo: #0b1026;
+  --superficie: #1a2350;
+  --superficie-2: #243070;
+  --texto: #f5f7ff;
+  --texto-2: #b8c2e8;
+  --energia: #ffd23f;
+  --vida: #5be37d;
+  --escudo: #3dd6f5;
+  --solar: #ff8a3d;
+  --peligro: #ff5c6c;
+  --borde: 3px solid #060a1c;
+  --radio: 16px;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html, body, #root { height: 100%; margin: 0; }
+body {
+  background: var(--fondo);
+  color: var(--texto);
+  font-family: "Atkinson Hyperlegible", system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-size: 18px;
+  line-height: 1.5;
+}
+h1, h2, h3 { line-height: 1.2; margin: 0 0 0.5rem; }
+h1 { font-size: 2rem; }
+h2 { font-size: 1.5rem; }
+p { margin: 0 0 0.75rem; max-width: 60ch; }
+button {
+  font: inherit;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--fondo);
+  background: var(--texto);
+  border: var(--borde);
+  border-radius: var(--radio);
+  padding: 0.6rem 1.1rem;
+  cursor: pointer;
+  box-shadow: 0 4px 0 #060a1c;
+}
+button:hover { transform: translateY(-1px); }
+button:active { transform: translateY(2px); box-shadow: 0 2px 0 #060a1c; }
+button:focus-visible, input:focus-visible, a:focus-visible { outline: 4px solid var(--energia); outline-offset: 3px; }
+button:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+button.secundario { background: var(--superficie-2); color: var(--texto); }
+button.peligro { background: var(--peligro); }
+button.solar { background: var(--solar); }
+input[type="text"] {
+  font: inherit; font-size: 18px; color: var(--texto); background: var(--fondo);
+  border: var(--borde); border-radius: var(--radio); padding: 0.6rem 0.9rem; flex: 1; min-width: 0;
+}
+a { color: var(--escudo); }
+
+.app { min-height: 100%; display: flex; flex-direction: column; }
+.barra { display: flex; align-items: center; gap: 1rem; padding: 0.75rem 1rem; background: var(--superficie); border-bottom: var(--borde); flex-wrap: wrap; }
+.barra .titulo { font-weight: 700; font-size: 1.25rem; margin-right: auto; }
+.barra select { font: inherit; font-size: 16px; border-radius: 8px; padding: 0.3rem 0.5rem; background: var(--fondo); color: var(--texto); border: 2px solid var(--texto-2); }
+main { flex: 1; padding: 1rem; display: grid; gap: 1rem; grid-template-columns: 1fr; max-width: 1200px; width: 100%; margin: 0 auto; }
+@media (min-width: 900px) { main.juego { grid-template-columns: 2fr 1fr; } }
+.tarjeta { background: var(--superficie); border: var(--borde); border-radius: var(--radio); padding: 1rem; box-shadow: 0 6px 0 #060a1c; }
+.tarjeta.alerta { border-color: var(--solar); box-shadow: 0 6px 0 var(--solar); }
+.fila { display: flex; gap: 0.75rem; flex-wrap: wrap; align-items: center; }
+.columna { display: flex; flex-direction: column; gap: 0.75rem; }
+footer { padding: 0.75rem 1rem; color: var(--texto-2); font-size: 15px; text-align: center; }
+
+/* HUD */
+.hud { display: grid; gap: 0.75rem; grid-template-columns: repeat(3, 1fr); }
+@media (max-width: 600px) { .hud { grid-template-columns: 1fr; } }
+.medidor { background: var(--superficie); border: var(--borde); border-radius: var(--radio); padding: 0.75rem; }
+.medidor .nombre { display: flex; justify-content: space-between; font-weight: 700; }
+.medidor .valor { font-size: 24px; font-variant-numeric: tabular-nums; }
+.medidor .pista { height: 18px; background: var(--fondo); border: 2px solid #060a1c; border-radius: 9px; overflow: hidden; margin-top: 0.4rem; }
+.medidor .relleno { height: 100%; transition: width 0.4s ease; }
+@media (prefers-reduced-motion: reduce) { .medidor .relleno, button { transition: none; } }
+.medidor.energia .relleno { background: var(--energia); }
+.medidor.soporte_vital .relleno { background: var(--vida); }
+.medidor.blindaje .relleno { background: var(--escudo); }
+.medidor.bajo .valor { color: var(--peligro); }
+.medidor .icono { font-size: 1.3rem; }
+
+/* Tripulación */
+.tripulante { display: flex; gap: 0.75rem; align-items: flex-start; }
+.retrato { width: 56px; height: 56px; border-radius: 50%; border: var(--borde); display: grid; place-items: center; font-size: 1.6rem; flex: none; }
+.retrato.ingeniera { background: var(--energia); }
+.retrato.doctora { background: var(--vida); }
+.retrato.meteorologa { background: var(--solar); }
+.retrato.matematico { background: #a78bfa; }
+.retrato.control_mision { background: var(--texto-2); }
+.retrato.ia_base { background: var(--escudo); }
+.retrato.ia_base.danada { background: var(--peligro); }
+.burbuja { background: var(--superficie-2); border: var(--borde); border-radius: var(--radio); padding: 0.6rem 0.9rem; flex: 1; }
+.burbuja.alerta { border-color: var(--solar); }
+.burbuja .nombre { font-weight: 700; color: var(--texto-2); font-size: 15px; }
+.botones-expertos { display: grid; gap: 0.5rem; grid-template-columns: repeat(3, 1fr); }
+.botones-expertos button { font-size: 16px; padding: 0.5rem; }
+
+/* Sitios y módulos */
+.sitios, .modulos { display: grid; gap: 0.75rem; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+.criterio { display: flex; justify-content: space-between; gap: 0.5rem; }
+.criterio .barra-c { flex: 1; height: 12px; background: var(--fondo); border-radius: 6px; overflow: hidden; margin: 0.45rem 0.5rem; border: 2px solid #060a1c; }
+.criterio .barra-c > div { height: 100%; background: var(--texto-2); }
+.delta { font-variant-numeric: tabular-nums; }
+.delta.mas { color: var(--vida); }
+.delta.menos { color: var(--peligro); }
+.fuente { font-size: 15px; color: var(--texto-2); border-top: 2px dashed var(--texto-2); margin-top: 0.75rem; padding-top: 0.5rem; }
+.etiqueta { display: inline-block; font-size: 14px; font-weight: 700; padding: 0.1rem 0.5rem; border-radius: 999px; background: var(--fondo); border: 2px solid var(--texto-2); }
+
+/* Final */
+.barras-origen { display: grid; gap: 0.4rem; }
+.barras-origen .b { display: grid; grid-template-columns: 220px 1fr 60px; align-items: center; gap: 0.5rem; }
+.barras-origen .b .pista { height: 20px; background: var(--fondo); border-radius: 10px; overflow: hidden; border: 2px solid #060a1c; }
+.barras-origen .decision .pista > div { background: var(--energia); height: 100%; }
+.barras-origen .mala_suerte .pista > div { background: var(--peligro); height: 100%; }
+.barras-origen .sistema .pista > div { background: var(--texto-2); height: 100%; }
+.insignia { display: inline-flex; gap: 0.4rem; align-items: center; background: var(--superficie-2); border: var(--borde); border-radius: 999px; padding: 0.3rem 0.8rem; font-weight: 700; }
+.registro { max-height: 220px; overflow: auto; font-size: 15px; color: var(--texto-2); }
+.registro li { margin: 0.15rem 0; }
+.oculto-visual { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }

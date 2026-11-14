@@ -18,7 +18,9 @@ frase / botón ─► clasificarConAtajos(texto)  ── null ─► (modelo ví
 | `clasificarConAtajos(texto)` | Regex en/es sin modelo. `null` = no se entendió → probar el modelo o mostrar botones. |
 | `responder(salida, vista, { dosisMarte })` | Respuesta del experto. `dosisMarte = referenciaDosis("marte-superficie")` de `@solar-shield/data`. |
 | `aAccion(salida)` | Intención → `Action` del motor (o `null` si es una consulta). |
-| `escenaTormenta(vista)` | Paso 6 de la ruta dorada: 4 diálogos en orden y `opciones: [refugiarse, escudo]`. |
+| `escenaTormenta(vista, dilema?)` | Paso 6 de la ruta dorada: 4 diálogos en orden y `opciones: [refugiarse, escudo]`. Con `dilema = MISION_JEZERO.dilemaPaso6.opciones`, cada experto propone la acción que defiende en la misión y "aguantar" es la tercera opción. Con invernadero `ok`, la Doctora nombra la comida de mañana (dilema del refugio). |
+| `escenaPolvo(vista, { insight })` | Paso 4b de la misión 1 (mala suerte): polvo en los paneles. `opciones: [salida_exterior panel_solar, esperar]`. El caso real de InSight solo se cita si datos pasa su `SourceCard`. |
+| `preguntaIris(tema, nivel)` / `responderPreguntaIris(p, i \| null)` | Iris nivel 2: pregunta de 3 opciones que **nunca bloquea** (`saltable`). Siempre explica el porqué; `null` = el niño la saltó. |
 | `irisDanada(vista, vez)` | Iris nivel 3: la 1.ª falla siempre es número falso; luego rota por semilla. Trae `falla`. |
 | `verificarIris(falla, vista)` | La Ingeniera compara con el medidor y propone `reparar ia_base`. |
 
@@ -44,3 +46,12 @@ frase / botón ─► clasificarConAtajos(texto)  ── null ─► (modelo ví
 - `agentes.titulo.<experto>`: para títulos y etiquetas ("Engineer" / "Ingeniera").
 - `agentes.nombre.<experto>`: solo dentro de frases ("call **the Engineer**" / "llama **a la Ingeniera**"), por eso trae artículo y preposición.
 - Para no mostrar la tormenta antes del paso 5, pasar a `responder` la vista de `vistaVisible(estado, tormentaActiva(estado))`.
+
+## Panel de tripulación en una línea
+```ts
+const d = conversar({ texto } /* o { experto: "doctora" } */, estado, {
+  tormentaActiva: tormentaActiva(estado),
+  dosisMarte: referenciaDosis("marte-superficie"),
+});
+```
+Hace todo: atajos/regex, botón → pregunta por defecto, esconde la tormenta antes del paso 5, aclaración si no se entiende e Iris dañada con su falla.

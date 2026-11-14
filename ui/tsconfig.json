@@ -1,0 +1,19 @@
+{
+  "extends": "../tsconfig.base.json",
+  "compilerOptions": {
+    "rootDir": "..",
+    "outDir": "dist-types",
+    "jsx": "react-jsx",
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "resolveJsonModule": true,
+    "emitDeclarationOnly": true,
+    "types": ["vite/client"]
+  },
+  "include": ["src", "i18n/*.json", "../agents/i18n/*.json", "../data/i18n/*.json"],
+  "references": [
+    { "path": "../contracts" },
+    { "path": "../design" },
+    { "path": "../engine" },
+    { "path": "../missions" }
+  ]
+}
