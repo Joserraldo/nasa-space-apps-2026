@@ -86,6 +86,6 @@ Una línea por pantalla. `estado` es el `GameState` del motor; ui solo pinta `Di
 | `componentes/Tripulacion.tsx` | `conversar({ texto } \| { experto }, estado, { tormentaActiva: tormentaActiva(estado), dosisMarte: referenciaDosis("marte-superficie"), vecesFallaIris })` — reemplaza `clasificarConAtajos` + `responder` + `PREGUNTA_POR_EXPERTO` (es `preguntaDelBoton`). |
 | Paso 4b (polvo, pantalla nueva o aviso en la base) | `escenaPolvo(estado, { insight })` → pintar `dialogos` y dos botones con `opciones`; `null` = no hay panel, no mostrar nada. |
 | `pantallas/Tormenta.tsx` | `escenaTormenta(estado, MISION_JEZERO.dilemaPaso6.opciones)` (de `@solar-shield/missions`) en vez de `escenaTormenta(estado)`. |
-| Tormenta y polvo: botón "¿Y si…?" | `compararOpciones(estado, opciones.map((accion) => ({ accion, despues: aplicarAccion(copia(estado), accion) })))` (llega con #74). |
+| Tormenta y polvo: botón "¿Y si…?" | `compararOpciones(estado, opciones.map((accion) => ({ accion, despues: aplicarAccion(copia(estado), accion) })))`. |
 | Iris nivel 2 (al colocar un módulo o al revelarse la tormenta) | `preguntaIris(tema, estado.iaBase)` (solo devuelve pregunta con `"pistas"`; si no, `null`) → 3 botones + "saltar"; al elegir, `responderPreguntaIris(p, i)` o `responderPreguntaIris(p, null)`. Nunca bloquea. |
 | Iris dañada (`Tormenta.tsx`) | `irisDanada(estado, vez)` y, al pulsar "verificar", `verificarIris(falla, estado)` (ya conectado). |
