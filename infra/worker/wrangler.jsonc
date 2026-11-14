@@ -18,6 +18,9 @@
     "BAI_BASE_URL": "https://api.b.ai/v1",
     "BAI_MODEL": "qwen3.8-flash"
   },
+  // Límite de la IA: 20 preguntas por minuto por IP (ver LIMITE_POR_MINUTO en src/clasificar.ts).
+  // Los bindings no se heredan a los entornos: preview repite el suyo con otro namespace.
+  "ratelimits": [{ "name": "LIMITADOR", "namespace_id": "1001", "simple": { "limit": 20, "period": 60 } }],
   "observability": { "enabled": true },
   "env": {
     "preview": {
@@ -26,7 +29,8 @@
         "ENTORNO": "preview",
         "BAI_BASE_URL": "https://api.b.ai/v1",
         "BAI_MODEL": "qwen3.8-flash"
-      }
+      },
+      "ratelimits": [{ "name": "LIMITADOR", "namespace_id": "1002", "simple": { "limit": 20, "period": 60 } }]
     }
   }
 }

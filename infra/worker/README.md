@@ -23,8 +23,10 @@ El link de cada uno es `https://<worker>.<subdominio>.workers.dev`; el subdomini
 
 Desde ahí, `.github/workflows/deploy.yml` publica solo si pasan tipos y pruebas.
 
-## Secretos de la API (los sube Santiago, una vez por entorno)
-Desde `infra/worker/`, con `npx wrangler login` hecho. Wrangler pide el valor y no lo muestra:
+## Secretos de la API
+**`BAI_API_KEY` se sube solo:** si existe como secreto de GitHub (Settings → Secrets → Actions), `deploy.yml` lo copia al Worker en cada despliegue (preview desde develop, producción desde main). Para cambiar la clave basta `gh secret set BAI_API_KEY` y volver a desplegar (`gh workflow run deploy.yml --ref develop`).
+
+A mano (solo si hace falta, o para `NASA_API_KEY`): desde `infra/worker/` en la rama `develop`, en Git Bash, con `npx wrangler login` hecho en la cuenta dueña del Worker. Wrangler pide el valor y no lo muestra:
 
 ```
 npx wrangler secret put BAI_API_KEY                 # producción
@@ -35,7 +37,11 @@ npx wrangler secret put NASA_API_KEY --env preview  # preview
 
 - `BAI_API_KEY`: modelo del clasificador (b.ai, `https://api.b.ai/v1`, modelo `qwen3.8-flash`; ver `docs/decisiones/D4-clasificador.md`).
 - `NASA_API_KEY`: clave de api.nasa.gov. Hoy el juego no llama a NASA en vivo (usa datos curados); queda lista para el banner opcional "Hoy en el Sol".
+- `NASA_API_KEY` hoy no hace falta: nadie la lee todavía.
 - Nunca en el código, en issues, en el chat ni en el navegador. Para probar en local: `infra/worker/.dev.vars` (ignorado por git) con `BAI_API_KEY=...`.
+
+## Límite de uso de la IA
+`/api/clasificar` deja **20 preguntas por minuto por IP** que lleguen al modelo; la 21 recibe `429 {"error":"limite"}`. Los atajos (regex) no gastan cupo. Usa el limitador nativo de Cloudflare (`ratelimits` en `wrangler.jsonc`, binding `LIMITADOR`): gratis, sin KV. La llave es un hash de la IP, nunca la IP en claro. Cuenta por ubicación de Cloudflare, así que es aproximado: sirve contra abuso, no como cuota exacta. Si se cambia el número, cambiar también `LIMITE_POR_MINUTO` en `src/clasificar.ts`.
 
 ## Probar
 - `npm test`: rutas y clasificador con un modelo falso, sin gasto.

@@ -1,13 +1,21 @@
 import { describe, expect, it, vi } from "vitest";
 import { ClassifierOutputSchema } from "@solar-shield/contracts";
-import { LIMITE_POR_MINUTO, manejar, type KV } from "./clasificar.js";
+import { LIMITE_POR_MINUTO, manejar, type Limitador } from "./clasificar.js";
 
 const pedir = (cuerpo: unknown, ip = "203.0.113.7") =>
   new Request("https://x/api/clasificar", { method: "POST", body: JSON.stringify(cuerpo), headers: { "cf-connecting-ip": ip } });
 
-function kvFalso(): KV & { datos: Map<string, string> } {
-  const datos = new Map<string, string>();
-  return { datos, get: async (k) => datos.get(k) ?? null, put: async (k, v) => void datos.set(k, v) };
+// Limitador falso con el mismo contrato que el binding "ratelimits" de Cloudflare.
+function limitadorFalso(): Limitador & { llaves: Map<string, number> } {
+  const llaves = new Map<string, number>();
+  return {
+    llaves,
+    limit: async ({ key }) => {
+      const n = (llaves.get(key) ?? 0) + 1;
+      llaves.set(key, n);
+      return { success: n <= LIMITE_POR_MINUTO };
+    },
+  };
 }
 
 // Modelo falso: nunca se llama a la API real (sin costo).
@@ -39,10 +47,17 @@ describe("Worker /api/clasificar", () => {
     expect((await manejar(pedir({ texto: "a".repeat(201) }), {})).status).toBe(400);
     expect((await manejar(new Request("https://x/api/clasificar"), {})).status).toBe(405);
   });
+  it("los atajos no gastan cupo del límite", async () => {
+    const lim = limitadorFalso();
+    for (let i = 0; i < LIMITE_POR_MINUTO + 5; i++) expect((await manejar(pedir({ texto: "sube el escudo" }), { LIMITADOR: lim })).status).toBe(200);
+    expect(lim.llaves.size).toBe(0);
+  });
   it("limita por IP sin guardar la IP en claro", async () => {
-    const kv = kvFalso();
-    for (let i = 0; i < LIMITE_POR_MINUTO; i++) expect((await manejar(pedir({ texto: "blablabla zzz" }), { LIMITE: kv })).status).toBe(200);
-    expect((await manejar(pedir({ texto: "blablabla zzz" }), { LIMITE: kv })).status).toBe(429);
-    expect([...kv.datos.keys()].join()).not.toContain("203.0.113.7");
+    const lim = limitadorFalso();
+    for (let i = 0; i < LIMITE_POR_MINUTO; i++) expect((await manejar(pedir({ texto: "blablabla zzz" }), { LIMITADOR: lim })).status).toBe(200);
+    expect((await manejar(pedir({ texto: "blablabla zzz" }), { LIMITADOR: lim })).status).toBe(429);
+    expect([...lim.llaves.keys()].join()).not.toContain("203.0.113.7");
+    // Otra IP no se ve afectada.
+    expect((await manejar(pedir({ texto: "blablabla zzz" }, "198.51.100.9"), { LIMITADOR: lim })).status).toBe(200);
   });
 });
