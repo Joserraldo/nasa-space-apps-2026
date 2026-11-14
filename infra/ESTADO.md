@@ -1,17 +1,17 @@
 # Estado — infra
-**Actualizado:** 14 nov 2026, 12:30 · **Rama:** feat/infra-e2e-ruta-dorada · **Responsable:** José
+**Actualizado:** 14 nov 2026, 12:40 · **Rama:** feat/infra-e2e-ruta-dorada · **PR:** #80 (e2e), #79 (guion), #81 (formulario)
 **Tokens:** 🟢
 
-## Hecho
-- Un solo Worker para pantalla y API (`infra/worker/`), con despliegue automático por Actions: `develop` → preview, `main` → producción (#105). Los últimos despliegues de `develop` y `main` salieron en verde.
-- Clave de la IA copiada de GitHub al Worker en cada despliegue y límite de 20/min por IP con el limitador nativo de Cloudflare (#106). Login opcional con progreso en D1 (#108, Santiago).
-- Los 4 PRs que estaban en conflicto, puestos al día con `develop` usando merge (sin force push): #74, #79, #80 y #81. #81 ya describe el Worker único, el limitador y el login en D1.
-- e2e de la ruta dorada (#80) pasa en local contra la `ui` de `develop`: `npm run e2e` (1 test, ~3 s).
+## Hecho (últimas iteraciones)
+- Un solo Worker para pantalla y API, preview (develop) y producción (main) por Actions (#76, #78, #105); límite IA 20/min por IP.
+- e2e de la ruta dorada pasa contra el preview `https://nasa-space-apps-2026-preview.santiago031541.workers.dev` (1 passed, 5 s).
+- Guion (#79): paso 7 con retraso Marte–Tierra 3–22 min (sugerencia de datos, #65).
+- Formulario (#81): OSDR y SOHO/STEREO resueltos, retraso 3,0–22,3 min, React/Vite en atribuciones.
+- #60: marcados despliegue y Worker.
 
 ## Qué sigue
-- Correr el e2e contra la URL de preview (`E2E_BASE_URL=<url> npm run e2e`) y conectarlo al CI.
-- Grabar el video con la URL de preview (`pitch/guion-video.md`, #79) y pasar `develop` → `main`.
-- Cerrar #66 (lo resolvieron #107 y #65) y marcar lo hecho en #60.
+- Cuando #80 entre: job de CI que corra el e2e contra el preview tras el despliegue de develop (#41).
+- Antes de main: decidir LICENSE del proyecto y releer librerías del lockfile final (POR VERIFICAR en #81).
 
 ## Bloqueos
-- Ninguno.
+- Merge de #79, #80 y #81 (Santiago). #66 se puede cerrar (resuelto por #107 y #65): decide José.
