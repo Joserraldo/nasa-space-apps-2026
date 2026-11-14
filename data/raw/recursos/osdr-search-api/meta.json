@@ -8,44 +8,84 @@
       "params": {
         "term": "radiation",
         "type": "cgene",
-        "size": 25
+        "size": 100
       },
       "estado": 200,
       "archivo": "radiation.json",
-      "total": 232
+      "total": 232,
+      "guardados": 232
     },
     {
       "url": "https://osdr.nasa.gov/osdr/data/search",
       "params": {
         "term": "plant",
         "type": "cgene",
-        "size": 25
+        "size": 100
       },
       "estado": 200,
       "archivo": "plant.json",
-      "total": 78
-    },
-    {
-      "url": "https://osdr.nasa.gov/osdr/data/search",
-      "params": {
-        "term": "bone",
-        "type": "cgene",
-        "size": 25
-      },
-      "estado": 200,
-      "archivo": "bone.json",
-      "total": 67
+      "total": 78,
+      "guardados": 78
     },
     {
       "url": "https://osdr.nasa.gov/osdr/data/search",
       "params": {
         "term": "food",
         "type": "cgene",
-        "size": 25
+        "size": 100
       },
       "estado": 200,
       "archivo": "food.json",
-      "total": 152
+      "total": 152,
+      "guardados": 152
+    },
+    {
+      "url": "https://osdr.nasa.gov/osdr/data/search",
+      "params": {
+        "term": "bone",
+        "type": "cgene",
+        "size": 100
+      },
+      "estado": 200,
+      "archivo": "bone.json",
+      "total": 67,
+      "guardados": 67
+    },
+    {
+      "url": "https://osdr.nasa.gov/osdr/data/search",
+      "params": {
+        "term": "muscle",
+        "type": "cgene",
+        "size": 100
+      },
+      "estado": 200,
+      "archivo": "muscle.json",
+      "total": 96,
+      "guardados": 96
+    },
+    {
+      "url": "https://osdr.nasa.gov/osdr/data/search",
+      "params": {
+        "term": "immune",
+        "type": "cgene",
+        "size": 100
+      },
+      "estado": 200,
+      "archivo": "immune.json",
+      "total": 74,
+      "guardados": 74
+    },
+    {
+      "url": "https://osdr.nasa.gov/osdr/data/search",
+      "params": {
+        "term": "sleep",
+        "type": "cgene",
+        "size": 100
+      },
+      "estado": 200,
+      "archivo": "sleep.json",
+      "total": 3,
+      "guardados": 3
     }
   ]
 }

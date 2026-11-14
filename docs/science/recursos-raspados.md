@@ -4,17 +4,17 @@ Copia estática de las páginas de la **pestaña Resources del reto** (lista ofi
 
 - **Script:** `data/scripts/raspar_recursos.py` (Scrapling 0.5.1, BSD-3, solo el fetcher HTTP: sin navegadores, sin antibots, sin logins). Se corre con `python -I data/scripts/raspar_recursos.py [id]` desde un venv fuera del repo con `pip install "scrapling[fetchers,rag]"`.
 - **Cortesía:** respeta `robots.txt` (`urllib.robotparser`), espera 4 s entre peticiones y manda un User-Agent genérico. No usa la clave de NASA.
-- **Lo que necesita JavaScript** (api.nasa.gov, portada de OSDR, Mars Trek) se leyó con Claude in Chrome y se resumió a mano. Por defecto el script no lo pisa.
-- **La pestaña Resources** se leyó con Chrome: desde este equipo `curl` y Python fallan con `SEC_E_UNTRUSTED_ROOT` en spaceappschallenge.org. Resumen en `data/raw/recursos/reto-resources.md`. **Corrección:** la URL del reto es `/2026/challenges/junior-astronaut-mission-trainer/` (la de `docs/reglas.md`, con `build-a-…`, da 404).
-- Se guarda Markdown limpio del `<main>`, no el HTML. OSDR se guarda resumido (ID, título, organismo, factores, resumen ≤600 caracteres): la respuesta completa pesa ~250 KB por búsqueda.
+- **api.nasa.gov** se arma con JavaScript, pero con Claude in Chrome vimos que su contenido sale de archivos estáticos (`assets/json/apis.json`, `assets/html/*.html`). El script los baja directo: la documentación de las 16 APIs, completa. La portada de OSDR y Mars Trek son aplicaciones sin texto propio: solo llevan una nota.
+- **La pestaña Resources** se leyó con Chrome. spaceappschallenge.org falla con error de certificado en curl (Windows) y en curl_cffi (Scrapling): lo más probable es que el servidor mande la cadena incompleta, que Chrome completa solo. No se desactiva la verificación TLS. Resumen en `data/raw/recursos/reto-resources.md`. **Corrección:** la URL del reto es `/2026/challenges/junior-astronaut-mission-trainer/` (la de `docs/reglas.md`, con `build-a-…`, da 404).
+- Se guarda Markdown limpio del `<main>`, no el HTML. OSDR se guarda **completo**, con todas las páginas de cada búsqueda, pero resumido por estudio (ID, título, organismo, factores, resumen ≤600 caracteres): la respuesta original pesa ~250 KB por cada 25 estudios.
 
 | Carpeta en `data/raw/recursos/` | URL | Dueño | Cómo | Para qué sirve en el juego |
 |---|---|---|---|---|
 | `reto-resources.md` | spaceappschallenge.org/2026/challenges/junior-astronaut-mission-trainer/?tab=resources | NASA Space Apps | Chrome | Lista oficial de fuentes (la regla de `data/CLAUDE.md`) |
-| `nasa-open-apis/` | https://api.nasa.gov/ | NASA | Chrome | Límites de la clave; avisos de APIs archivadas; el catálogo incluye Moon Trek |
+| `nasa-open-apis/` (19 archivos) | https://api.nasa.gov/ | NASA | Chrome (notas) + Scrapling (documentación de las 16 APIs) | Límites de la clave; APIs archivadas; documentación de DONKI, OSDR, InSight y Moon/Mars Trek WMTS |
 | `donki/` | https://ccmc.gsfc.nasa.gov/tools/DONKI/ | NASA CCMC | Scrapling | Política de uso y de cita de DONKI; migración de URLs |
 | `osdr-repo/` | https://osdr.nasa.gov/bio/repo/ | NASA OSDR | Chrome | Solo nota: es un buscador |
-| `osdr-search-api/` | https://osdr.nasa.gov/osdr/data/search (`radiation`, `plant`, `bone`, `food`) | NASA OSDR | API | Candidatos para tarjetas de ciencia con ID real de estudio (232 / 78 / 67 / 152 resultados; se guardan los 25 primeros de cada uno) |
+| `osdr-search-api/` | https://osdr.nasa.gov/osdr/data/search: `radiation` 232, `plant` 78, `food` 152, `bone` 67, `muscle` 96, `immune` 74, `sleep` 3 | NASA OSDR | API, todas las páginas | Candidatos para tarjetas de ciencia con ID real de estudio (702 resultados en total; un estudio puede salir en varios temas) |
 | `radlab-data-api/` | https://visualization.osdr.nasa.gov/radlab/gui/data-api/ | NASA OSDR | Scrapling | Documentación de la API de RadLab (la que usa `radlab.ts`) |
 | `mars-trek/` | https://trek.nasa.gov/mars/ | NASA JPL | Nota | Solo nota: es un visor; los datos ya se bajan en `jezero-descargar.ts` |
 | `csa-stem/` | asc-csa.gc.ca/eng/youth-educators/resources-stem-and-youth-organizations.asp | CSA (socio, no NASA) | Scrapling | Actividades STEM bilingües (en/fr) |
