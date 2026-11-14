@@ -44,6 +44,10 @@ Lista oficial (pestaña Resources del reto, copiada en ORQUESTACION): NASA Open 
 
 **Marte, ficha NASA NSSDC [V, 2026-11-13]** (https://nssdc.gsfc.nasa.gov/planetary/factsheet/marsfact.html, actualizada el 19 may 2025): inclinación del eje 25,19°; gravedad superficial 3,73 m/s², que es **0,380** veces la de la Tierra; día de 24,6597 h; semieje mayor 227,956 millones de km (1,524 veces el de la Tierra).
 
+**Tormentas vistas desde la Luna [V, 2026-11-13]:** OSDR RadLab `CRaTER-D1D2` (LRO, NASA; **en órbita lunar, no en la superficie**), dosis absorbida en µGy/h. Misma regla que RAD (`data/src/medicion.ts`). **Gannon, 10 may 2024:** fondo 5,2 → media diaria 1082,5 µGy/h el 11 may (×206,3), fondo limpio. 17 sep 2017 (X8.2): pico 19 481,6 el 11 sep, pero el fondo ya traía la tormenta del 6 sep (`fondoTranquilo: false`, el factor ×27 sale bajo). Sin datos de CRaTER en octubre de 2024. Script `data/scripts/luna.ts`, resultado `data/ciencia/luna.json`.
+
+**Constantes de ARES verificadas [V, NASA NSSDC, 2026-11-13]:** gravedad Marte 3,73 m/s² y Luna 1,62 m/s²; irradiancia solar Marte 586,2 W/m², Luna 1361,0 W/m² (igual que la Tierra). Luna: periodo sinódico 29,53 días; rango de temperatura en el ecuador 95–390 K; distancia media 384 400 km (retraso de luz ≈ 1,3 s, cálculo). Fichas: https://nssdc.gsfc.nasa.gov/planetary/factsheet/moonfact.html (11 ene 2024) y marsfact.html (19 may 2025). Inclinación del eje lunar respecto a la eclíptica: NO VERIFICADO (la ficha no la da).
+
 **Dosis de referencia [V en fuente primaria]** (`data/ciencia/radiacion.json`):
 - Marte, superficie: **0,64 ± 0,12 mSv/día** (7 ago 2012 – 1 jun 2013). Cita: Reitz, Matthiä, Hassler et al. 2016, ICES2016 (https://elib.dlr.de/106090/). La página da esta cita, no el artículo de *Science* de 2014.
 - Luna, superficie: **1369 µSv/día**, medido por LND en Chang’e-4 (**CNSA**). En el mismo periodo, la ISS (DOSIS 3D DOSTEL) dio **731 µSv/día**. Zhang et al. 2020, *Sci. Adv.* 6(39) eaaz1334, texto completo en PMC7518862. El resumen da la dosis absorbida: 13,2 ± 1 µGy/h en silicio.
