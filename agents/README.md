@@ -57,3 +57,10 @@ Para comparar las opciones de una escena (paso 6, polvo 4b):
 const d = compararOpciones(estado, escena.opciones.map((accion) => ({ accion, despues: aplicarAccion(estado, accion) })));
 ```
 Por opción da una cabecera (`agentes.matematico.opcion` con `accionKey`), lo que cambia ya y lo que el motor dejó en `efectosPendientes` (`luegoSube` / `luegoBaja` con `ticks`). No trae `accion`: el jugador elige con los botones de la escena.
+
+Usos limitados (`SIMULACIONES_POR_DIFICULTAD` en design/; el contador lo lleva ui):
+```ts
+const d = conAvisoUsos(queSiMatematico(accion, antes, despues), restantes); // restantes después de este uso; null = ilimitado
+if (restantes === 0 /* ya antes de pedir */) mostrar(sinUsosMatematico());
+```
+Avisa con 2 o 1 usos restantes y cuando fue el último. Con 0 usos, ui no calcula y muestra `sinUsosMatematico()`.

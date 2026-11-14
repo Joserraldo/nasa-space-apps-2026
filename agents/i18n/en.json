@@ -112,5 +112,8 @@
   "agentes.accion.salida_exterior": "go outside",
   "agentes.accion.ajustar_orbita": "adjust the orbit",
   "agentes.accion.colocar_modulo": "place a module",
-  "agentes.accion.enviar_telemetria": "send data to Earth"
+  "agentes.accion.enviar_telemetria": "send data to Earth",
+  "agentes.matematico.usos.pocos": "Careful: I only have {n} calculations left for this mission.",
+  "agentes.matematico.usos.ultimo": "That was my last calculation. From now on, trust the meters and the crew!",
+  "agentes.matematico.usos.ninguno": "I'm out of calculations for this mission. Look at the meters and ask the crew: you can do it!"
 }

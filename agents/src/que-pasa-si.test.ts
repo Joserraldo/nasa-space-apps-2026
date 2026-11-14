@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { aplicarAccion, partidaDorada } from "@solar-shield/engine";
 import en from "../i18n/en.json";
 import es from "../i18n/es.json";
-import { compararOpciones, queSiMatematico } from "./index.js";
+import { avisoUsos, compararOpciones, conAvisoUsos, queSiMatematico, sinUsosMatematico } from "./index.js";
 
 describe("Matemático ¿Y si…?", () => {
   it("lee la diferencia que calcula el motor y deja la decisión al jugador", () => {
@@ -52,6 +52,29 @@ describe("Matemático compara las opciones de una escena", () => {
       expect(es[l.clave as keyof typeof es], l.clave).toBeDefined();
       const k = l.vars?.["accionKey"];
       if (typeof k === "string") expect(en[k as keyof typeof en] && es[k as keyof typeof es], k).toBeTruthy();
+    }
+  });
+});
+
+describe("Matemático: usos limitados (el contador lo lleva ui)", () => {
+  const r = partidaDorada().recursos;
+  const base = queSiMatematico({ tipo: "refugiarse" }, r, r);
+  it("ilimitado o con muchos usos no avisa", () => {
+    expect(avisoUsos(null)).toBeNull();
+    expect(avisoUsos(5)).toBeNull();
+    expect(conAvisoUsos(base, null)).toBe(base);
+  });
+  it("con pocos avisa cuántos quedan; con 0 dice que fue el último", () => {
+    expect(avisoUsos(2)).toEqual({ clave: "agentes.matematico.usos.pocos", vars: { n: 2 } });
+    expect(avisoUsos(1)?.vars).toEqual({ n: 1 });
+    expect(avisoUsos(0)?.clave).toBe("agentes.matematico.usos.ultimo");
+  });
+  it("el aviso va antes del cierre 'tú decides' y las claves existen", () => {
+    const d = conAvisoUsos(base, 0);
+    expect(d.lineas.slice(-2).map((l) => l.clave)).toEqual(["agentes.matematico.usos.ultimo", "agentes.matematico.decides"]);
+    for (const l of [...d.lineas, ...sinUsosMatematico().lineas]) {
+      expect(en[l.clave as keyof typeof en], l.clave).toBeDefined();
+      expect(es[l.clave as keyof typeof es], l.clave).toBeDefined();
     }
   });
 });

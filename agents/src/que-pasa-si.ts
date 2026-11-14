@@ -55,3 +55,29 @@ export function compararOpciones(antes: VistaQueSi, opciones: readonly OpcionQue
   lineas.push({ clave: "agentes.matematico.decides" });
   return { experto: "matematico", prioridad: "consejo", lineas };
 }
+
+/** Desde cuántos usos restantes el Matemático avisa que quedan pocos. Es de presentación, no de balance. */
+const POCOS = 2;
+
+/**
+ * Aviso de usos del "¿Y si…?". El contador lo lleva quien integra (ui), con el límite de
+ * `SIMULACIONES_POR_DIFICULTAD` de design/; aquí solo se elige la frase.
+ * @param restantes usos que quedan DESPUÉS de este cálculo; null = ilimitado (no se avisa).
+ */
+export function avisoUsos(restantes: number | null): Linea | null {
+  if (restantes === null || restantes > POCOS) return null;
+  if (restantes <= 0) return { clave: "agentes.matematico.usos.ultimo" };
+  return { clave: "agentes.matematico.usos.pocos", vars: { n: restantes } };
+}
+
+/** Agrega el aviso de usos justo antes del cierre "tú decides". */
+export function conAvisoUsos(d: Dialogo, restantes: number | null): Dialogo {
+  const aviso = avisoUsos(restantes);
+  if (!aviso) return d;
+  return { ...d, lineas: [...d.lineas.slice(0, -1), aviso, ...d.lineas.slice(-1)] };
+}
+
+/** Cuando ya no quedan usos: el Matemático no calcula y anima a decidir con los medidores y la tripulación. */
+export function sinUsosMatematico(): Dialogo {
+  return { experto: "matematico", prioridad: "charla", lineas: [{ clave: "agentes.matematico.usos.ninguno" }] };
+}

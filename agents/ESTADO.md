@@ -6,6 +6,7 @@
 - #72 abierto (verde, limpio): `conversar()` para el panel de ui; espera merge de Santiago (#73: solo él fusiona).
 - Ahora: `queSiMatematico(accion, antes, despues)`; ui simula con `aplicarAccion` sobre una copia y el Matemático solo lee la diferencia.
 - Iteración 1 del loop del Matemático: `compararOpciones(antes, opciones)` compara lado a lado lo inmediato y lo pendiente (ticks). Sigue: aviso de usos restantes.
+- Iteración 2: `avisoUsos` / `conAvisoUsos` / `sinUsosMatematico` (pocos, último, ninguno) en en/es. Goal del Matemático completo; loop detenido. 89 tests.
 
 ## Qué sigue (issue #41)
 - Usar `fuenteTerreno()` (#69, datos) en los consejos de aterrizaje cuando entre.

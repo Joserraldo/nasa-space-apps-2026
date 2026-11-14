@@ -112,5 +112,8 @@
   "agentes.accion.salida_exterior": "salir afuera",
   "agentes.accion.ajustar_orbita": "ajustar la órbita",
   "agentes.accion.colocar_modulo": "colocar un módulo",
-  "agentes.accion.enviar_telemetria": "enviar datos a la Tierra"
+  "agentes.accion.enviar_telemetria": "enviar datos a la Tierra",
+  "agentes.matematico.usos.pocos": "Ojo: solo me quedan {n} cálculos para esta misión.",
+  "agentes.matematico.usos.ultimo": "Ese fue mi último cálculo. Desde ahora, confía en los medidores y en la tripulación.",
+  "agentes.matematico.usos.ninguno": "Ya no me quedan cálculos en esta misión. Mira los medidores y pregúntale a la tripulación: ¡tú puedes!"
 }
