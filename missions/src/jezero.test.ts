@@ -69,3 +69,75 @@ describe("misión Jezero", () => {
       for (const k of claves) expect(TEXTOS_JEZERO[idioma][k], `${idioma}:${k}`).toBeTruthy();
   });
 });
+
+describe("misión 1: polvo y dilema del paso 6 (propuesta #88)", () => {
+  it("el polvo baja el rendimiento del panel, no sale en la semilla dorada y limpiarlo es una acción válida", async () => {
+    const { ActionSchema } = await import("@solar-shield/contracts");
+    const p = MISION_JEZERO.eventoPolvo;
+    expect(p.rendimientoPanel).toBeGreaterThan(0);
+    expect(p.rendimientoPanel).toBeLessThan(1);
+    expect(p.enSemillaDorada).toBe(false);
+    expect(ActionSchema.safeParse(p.limpiar).success).toBe(true);
+  });
+
+  it("el dilema tiene 3 salidas válidas, distintas y con al menos dos expertos que se contradicen", async () => {
+    const { ActionSchema } = await import("@solar-shield/contracts");
+    const ops = MISION_JEZERO.dilemaPaso6.opciones;
+    expect(ops).toHaveLength(3);
+    expect(new Set(ops.map((o) => o.id)).size).toBe(3);
+    for (const o of ops) expect(ActionSchema.safeParse(o.accion).success, o.id).toBe(true);
+    const defensores = ops.map((o) => o.defiende).filter((e) => e !== null);
+    expect(new Set(defensores).size).toBeGreaterThanOrEqual(2);
+  });
+
+  it("apagar el invernadero cuesta: el efecto extra solo resta", () => {
+    const refugio = MISION_JEZERO.dilemaPaso6.opciones.find((o) => o.id === "refugio_y_apagar_invernadero")!;
+    expect(refugio.extraSiTiene).toBe("invernadero");
+    const n = neto(refugio.extra!);
+    expect(Object.values(n).every((v) => v <= 0)).toBe(true);
+    expect(Object.values(n).some((v) => v < 0)).toBe(true);
+  });
+
+  it("cada texto del polvo y del dilema existe en inglés y en español", () => {
+    const claves = [
+      MISION_JEZERO.eventoPolvo.textoKey,
+      MISION_JEZERO.dilemaPaso6.preguntaKey,
+      ...MISION_JEZERO.dilemaPaso6.opciones.map((o) => o.textoKey),
+    ];
+    for (const k of claves) {
+      expect(TEXTOS_JEZERO.en[k], k).toBeTruthy();
+      expect(TEXTOS_JEZERO.es[k], k).toBeTruthy();
+    }
+  });
+});
+
+describe("misión 1: tarjetas de ciencia y pregunta final", () => {
+  const fuentesDatos = JSON.parse(
+    readFileSync(fileURLToPath(new URL("../../data/i18n/en.json", import.meta.url)), "utf-8"),
+  ) as Record<string, string>;
+
+  it("cada tarjeta y la pregunta tienen texto en inglés y en español", () => {
+    const p = MISION_JEZERO.preguntaFinal;
+    const claves = [
+      ...MISION_JEZERO.tarjetasCiencia.map((t) => t.textoKey),
+      p.preguntaKey,
+      ...p.opcionesKeys,
+      p.explicacionKey,
+    ];
+    for (const k of claves) {
+      expect(TEXTOS_JEZERO.en[k], k).toBeTruthy();
+      expect(TEXTOS_JEZERO.es[k], k).toBeTruthy();
+    }
+  });
+
+  it("una fuente citada existe de verdad en los textos de datos", () => {
+    for (const t of MISION_JEZERO.tarjetasCiencia) {
+      if (t.fuenteKey !== null) expect(fuentesDatos[t.fuenteKey], t.id).toBeTruthy();
+    }
+  });
+
+  it("cada módulo de la misión tiene su tarjeta de ciencia", () => {
+    const conTarjeta = new Set(MISION_JEZERO.tarjetasCiencia.map((t) => t.modulo).filter(Boolean));
+    for (const m of MISION_JEZERO.modulosDisponibles) expect(conTarjeta.has(m), m).toBe(true);
+  });
+});

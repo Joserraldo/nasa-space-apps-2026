@@ -1,4 +1,4 @@
-import type { Difficulty, Equipment, Expert, MissionGoal, Resource, Site } from "@solar-shield/contracts";
+import type { BaseAction, Difficulty, Equipment, Expert, MissionGoal, Resource, Site } from "@solar-shield/contracts";
 
 /**
  * Misión de la ruta dorada: cráter Jezero, Marte. Solo datos; la lógica vive en engine/.
@@ -54,6 +54,72 @@ export interface FinMision {
   tickLimite: number;
 }
 
+/**
+ * Evento de mala suerte del paso 4b (propuesta #88, viene de la tarea "limpiar paneles" de ARES):
+ * el polvo tapa los paneles y la energía que dan rinde menos hasta que alguien los limpia.
+ * No sale en la semilla dorada, para que el video sea estable.
+ */
+export interface EventoPolvo {
+  /** Clave de la causa que ya existe en el motor y en los textos de diseño. */
+  descripcionKey: "mala_suerte.tormenta_polvo";
+  equipo: Extract<Equipment, "panel_solar">;
+  /** Fracción de la energía del panel que llega mientras hay polvo (0,5 = la mitad, propuesta #88). Valor de juego. */
+  rendimientoPanel: number;
+  /** Cómo se quita: una salida al exterior sobre el panel (cuesta blindaje y soporte vital, ver COSTOS_ACCION). */
+  limpiar: BaseAction;
+  /** Si no se limpia, el polvo sigue hasta el final de la misión. */
+  duraHasta: "limpieza";
+  enSemillaDorada: false;
+  /** Experto que avisa y explica la decisión. */
+  experto: Expert;
+  textoKey: string;
+}
+
+/** Una salida del dilema: la acción que se ejecuta y, si hace falta, un efecto propio del dilema. */
+export interface OpcionDilema {
+  id: string;
+  accion: BaseAction;
+  /**
+   * Efecto extra que el contrato todavía no expresa. Plan B del #88 §5: "apagar el invernadero"
+   * no es una acción; se modela dentro de refugiarse como la comida que el invernadero deja de dar.
+   */
+  extra?: EfectoOpcion;
+  /** Solo aplica `extra` si el jugador construyó este módulo. */
+  extraSiTiene?: Equipment;
+  /** Experto que defiende esta opción (o null si nadie la recomienda). */
+  defiende: Expert | null;
+  textoKey: string;
+}
+
+/** Dilema del paso 6 (propuesta #88): dos expertos se contradicen con la tormenta encima. Ninguna opción es gratis. */
+export interface DilemaPaso6 {
+  paso: 6;
+  preguntaKey: string;
+  opciones: OpcionDilema[];
+}
+
+/**
+ * Tarjeta de ciencia (paso 8 y al colocar un módulo). Viene del "dato pegado a cada misión" de ARES (#88 §1).
+ * Cada afirmación necesita fuente: `fuenteKey` apunta a una fuente que ya existe en data/i18n;
+ * si es null, la tarjeta NO se muestra hasta que el rol datos la verifique (issue bloquea:datos).
+ */
+export interface TarjetaCiencia {
+  id: string;
+  /** Módulo al que acompaña, si aplica. */
+  modulo?: Equipment;
+  textoKey: string;
+  fuenteKey: string | null;
+}
+
+/** Pregunta del paso 8 (el quiz de ARES): 3 opciones, nunca bloquea y siempre explica. */
+export interface PreguntaFinal {
+  preguntaKey: string;
+  opcionesKeys: [string, string, string];
+  correcta: 0 | 1 | 2;
+  explicacionKey: string;
+  fuenteKey: string | null;
+}
+
 export interface Mision {
   id: string;
   nombreKey: string;
@@ -76,6 +142,10 @@ export interface Mision {
   sitiosCandidatos: SitioCandidato[];
   averiaIris: AveriaIris;
   fin: FinMision;
+  eventoPolvo: EventoPolvo;
+  dilemaPaso6: DilemaPaso6;
+  tarjetasCiencia: TarjetaCiencia[];
+  preguntaFinal: PreguntaFinal;
 }
 
 export const MISION_JEZERO: Mision = {
@@ -140,5 +210,61 @@ export const MISION_JEZERO: Mision = {
     exitoCuando: "telemetria_llega",
     falloCuando: "recurso_en_cero",
     tickLimite: 10,
+  },
+  eventoPolvo: {
+    descripcionKey: "mala_suerte.tormenta_polvo",
+    equipo: "panel_solar",
+    rendimientoPanel: 0.5,
+    limpiar: { tipo: "salida_exterior", objetivo: "panel_solar" },
+    duraHasta: "limpieza",
+    enSemillaDorada: false,
+    experto: "ingeniera",
+    textoKey: "mision.jezero.polvo",
+  },
+  dilemaPaso6: {
+    paso: 6,
+    preguntaKey: "mision.jezero.dilema.pregunta",
+    opciones: [
+      {
+        id: "refugio_y_apagar_invernadero",
+        accion: { tipo: "refugiarse" },
+        // Lo que se pierde es justo lo que el invernadero da al construirse (MODULOS.invernadero.soporte_vital = 10).
+        extra: { inmediato: {}, retrasado: { soporte_vital: -10 } },
+        extraSiTiene: "invernadero",
+        defiende: "doctora",
+        textoKey: "mision.jezero.dilema.refugio",
+      },
+      {
+        id: "subir_escudo",
+        accion: { tipo: "subir_escudo", nivel: 2 },
+        defiende: "ingeniera",
+        textoKey: "mision.jezero.dilema.escudo",
+      },
+      {
+        id: "aguantar",
+        accion: { tipo: "esperar" },
+        defiende: null,
+        textoKey: "mision.jezero.dilema.aguantar",
+      },
+    ],
+  },
+  tarjetasCiencia: [
+    // Con fuente: la tormenta de la demo la midió el instrumento RAD de Curiosity en Marte (data/curated/2024-05-20-marte.json).
+    { id: "tormenta_medida", textoKey: "mision.jezero.ciencia.tormenta", fuenteKey: "fuente.radlab" },
+    // Con fuente: terreno de Jezero (Mars Trek); la inclinación es derivada por el equipo (docs/science/terreno.md).
+    { id: "sitio_terreno", textoKey: "mision.jezero.ciencia.terreno", fuenteKey: "fuente.marsTrek" },
+    // Sin fuente en el repo todavía: las pide diseño a datos.
+    { id: "panel_polvo", modulo: "panel_solar", textoKey: "mision.jezero.ciencia.panel", fuenteKey: null },
+    { id: "agua_reciclada", modulo: "reciclador_agua", textoKey: "mision.jezero.ciencia.reciclador", fuenteKey: null },
+    { id: "plantas", modulo: "invernadero", textoKey: "mision.jezero.ciencia.invernadero", fuenteKey: null },
+    { id: "escudo_regolito", modulo: "escudo", textoKey: "mision.jezero.ciencia.escudo", fuenteKey: null },
+    { id: "mensajes_tardan", modulo: "antena", textoKey: "mision.jezero.ciencia.antena", fuenteKey: null },
+  ],
+  preguntaFinal: {
+    preguntaKey: "mision.jezero.pregunta",
+    opcionesKeys: ["mision.jezero.pregunta.a", "mision.jezero.pregunta.b", "mision.jezero.pregunta.c"],
+    correcta: 1,
+    explicacionKey: "mision.jezero.pregunta.explicacion",
+    fuenteKey: null,
   },
 };
