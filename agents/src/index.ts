@@ -12,3 +12,4 @@ export { dialogosDelPaso, encolar, vistaVisible, type Momento, type VistaComplet
 export { guiaIris, explicarSistema, areaUrgente } from "./iris-guia.js";
 export { escenaPolvo, type EscenaPolvo, type ContextoPolvo } from "./polvo.js";
 export { preguntaIris, responderPreguntaIris, type PreguntaIris, type TemaPregunta } from "./iris-pregunta.js";
+export { conversar, preguntaDelBoton, PREGUNTA_DEL_BOTON, type Entrada, type OpcionesConversar } from "./conversar.js";
