@@ -1,5 +1,5 @@
 # Rol 1: Diseño de juego y misiones
-**Humano responsable:** _por asignar_
+**Humano responsable:** Santiago (`kcitas`) y Camilo (`CamiloM21`)
 **Slug de ramas:** `diseno` → `feat/diseno-<tema>`
 **Etiqueta de issues:** `rol:diseño`
 **Posees:** `/design`, `/missions`
@@ -16,7 +16,7 @@
 
 ## Tareas de arranque (Fase 1, el día que empieza el hackathon)
 1. Tabla de recursos: valores iniciales, máximos y costo de cada acción (cada acción mueve ≥ 2 medidores).
-2. Misión de la rebanada vertical (Luna polo sur, 3 expertos) como datos en `/missions`.
+2. Misión de la rebanada vertical (Marte, cráter Jezero, 3 expertos) como datos en `/missions`.
 3. Mazo de eventos (decisión y mala suerte) con su retraso de consecuencias por dificultad.
 4. Tabla de dificultades (sección 2.6 del PLAN) como datos.
 5. Textos de la pantalla "cadena de causas" (es/en) en coordinación con rol 5.

@@ -6,7 +6,7 @@ Santiago decide qué modelo y herramienta usa cada persona; el orquestador prepa
 
 No se supone nada: cada fila la dicta la persona.
 
-Dicho por Santiago el 13 nov: **todos tienen OpenCode; Daniel tiene además Codex; la sesión principal de cada persona va con Opus**, y es Opus quien lanza los subagentes (ver [COMO-TRABAJAMOS.md](COMO-TRABAJAMOS.md) §4). Antes había dicho que los seis usan Claude y tres tienen además ChatGPT. Falta saber qué otros modelos tiene cada uno y cuánto límite le queda.
+Dicho por Santiago el 13 nov: **todos tienen OpenCode; Daniel tiene además Codex; la sesión principal de cada persona va con Opus**, y es Opus quien lanza los subagentes (ver [COMO-TRABAJAMOS.md](COMO-TRABAJAMOS.md) §3). Antes había dicho que los seis usan Claude y tres tienen además ChatGPT. Falta saber qué otros modelos tiene cada uno y cuánto límite le queda.
 
 | Persona | Rol | Herramienta | Modelo principal | Límite aproximado |
 |---|---|---|---|---|
