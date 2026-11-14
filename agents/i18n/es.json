@@ -130,5 +130,6 @@
   "agentes.iris.pregunta.tormenta.c": "El techo",
   "agentes.iris.pregunta.tormenta.porque": "El refugio tiene paredes gruesas que frenan más radiación. Pero nadie trabaja mientras nos escondemos.",
   "agentes.escena6.ingeniera.costoSinCifra": "Tenemos {energia} % de energía. Un escudo más fuerte se come una parte.",
-  "agentes.escena6.aguantar": "También puedes aguantar y esperar. Nadie lo recomienda, pero también es una opción."
+  "agentes.escena6.aguantar": "También puedes aguantar y esperar. Nadie lo recomienda, pero también es una opción.",
+  "agentes.polvo.meteorologa.viento": "El viento de Marte levanta un polvo finísimo que cae sobre todo, como harina en una cocina."
 }

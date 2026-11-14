@@ -36,6 +36,8 @@ export function escenaPolvo(v: VistaAgente, c: ContextoPolvo = {}): EscenaPolvo 
   const real: Dialogo | null = c.insight
     ? { experto: "ingeniera", prioridad: "charla", fuente: c.insight, lineas: [{ clave: "agentes.polvo.ingeniera.insight" }] }
     : null;
+  // La Meteoróloga explica de dónde sale el polvo: ciencia general, sin cifras (no necesita tarjeta).
+  const meteorologa: Dialogo = { experto: "meteorologa", prioridad: "charla", lineas: [{ clave: "agentes.polvo.meteorologa.viento" }] };
   const doctora: Dialogo = {
     experto: "doctora",
     prioridad: "consejo",
@@ -44,5 +46,5 @@ export function escenaPolvo(v: VistaAgente, c: ContextoPolvo = {}): EscenaPolvo 
   };
   const iris: Dialogo = { experto: "ia_base", prioridad: "charla", lineas: [{ clave: "agentes.polvo.elige" }] };
 
-  return { dialogos: [ingeniera, ...(real ? [real] : []), doctora, iris], opciones: [limpiar, aguantar] };
+  return { dialogos: [ingeniera, ...(real ? [real] : []), meteorologa, doctora, iris], opciones: [limpiar, aguantar] };
 }

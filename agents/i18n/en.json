@@ -130,5 +130,6 @@
   "agentes.iris.pregunta.tormenta.c": "On the roof",
   "agentes.iris.pregunta.tormenta.porque": "The shelter has thick walls that block more radiation. But nobody can work while we hide.",
   "agentes.escena6.ingeniera.costoSinCifra": "We have {energia}% energy. A stronger shield eats part of it.",
-  "agentes.escena6.aguantar": "You could also just hold on and wait. Nobody recommends it, but it is a choice too."
+  "agentes.escena6.aguantar": "You could also just hold on and wait. Nobody recommends it, but it is a choice too.",
+  "agentes.polvo.meteorologa.viento": "Mars wind lifts very fine dust and it settles on everything, like flour in a kitchen."
 }

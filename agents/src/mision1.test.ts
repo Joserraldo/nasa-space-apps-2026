@@ -23,7 +23,7 @@ describe("paso 4b: polvo en los paneles", () => {
     const e = escenaPolvo(vista)!;
     expect(e.opciones).toEqual([{ tipo: "salida_exterior", objetivo: "panel_solar" }, { tipo: "esperar" }]);
     expect(e.opciones.every((a) => ActionSchema.safeParse(a).success)).toBe(true);
-    expect(e.dialogos.map((d) => d.experto)).toEqual(["ingeniera", "doctora", "ia_base"]);
+    expect(e.dialogos.map((d) => d.experto)).toEqual(["ingeniera", "meteorologa", "doctora", "ia_base"]);
     expect(e.dialogos[0]?.lineas[0]?.vars).toEqual({ energia: 49 });
     clavesExisten(e.dialogos);
   });
