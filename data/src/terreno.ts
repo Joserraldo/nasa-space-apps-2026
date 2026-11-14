@@ -93,7 +93,7 @@ export const TerrenoLunaSchema = z.object({
     estadoDato: z.literal("curado"),
     derivadoKey: z.literal("datos.terreno.derivado"),
     /** Criterios sin fuente verificada: no se inventan valores. */
-    pendientes: z.array(z.enum(["luz", "blindaje"])),
+    pendientes: z.array(z.enum(["luz", "blindaje", "citaHielo"])),
   }),
 });
 export type TerrenoLuna = z.infer<typeof TerrenoLunaSchema>;
@@ -225,7 +225,7 @@ const CapaHieloSchema = z.object({
   origen: z.enum(["medido", "derivado"]),
 });
 export const HieloSombraSchema = z.object({
-  /** PSR_SP: puntos (centros) de regiones en sombra permanente dentro del recuadro; no son polígonos. */
+  /** PSR_SP (dato secundario): puntos (centros) de regiones en sombra permanente dentro del recuadro; no son polígonos. */
   sombraPermanente: CapaHieloSchema.extend({
     regionesEnRecuadro: z.number().int().min(0),
     ids: z.array(z.string()),
@@ -233,9 +233,21 @@ export const HieloSombraSchema = z.object({
     areaRegionesKm2: z.number().min(0),
     textoKey: z.string().nullable(),
   }),
+  /** LOLA (LRO): fracción del recuadro en sombra permanente (mapa binario 240 m, Mazarico et al. 2011). Es la base del texto de sombra. */
+  sombraPermanenteLola: CapaHieloSchema.extend({
+    /** Parte del recuadro (0..1) en sombra permanente, leída de teselas WMTS (~667 m/px): aproximada. */
+    fraccion: z.number().min(0).max(1),
+    /** ¿El centro del cráter está en sombra permanente? */
+    centro: z.boolean(),
+    cita: z.string(),
+    /** Resolución de lectura (m/px en latitud): la capa nativa es de 240 m. */
+    resolucionLecturaM: z.number(),
+  }).optional(),
   /** SP_IceLoc_280m: puntos con "señal de hielo" dentro del recuadro. La capa no documenta qué mide. */
   senalHielo: CapaHieloSchema.extend({
     puntosEnRecuadro: z.number().int().min(0),
+    /** false = la capa no tiene cita verificada: el texto de hielo NO se asigna hasta que la haya. */
+    citaVerificada: z.boolean().optional(),
     textoKey: z.string().nullable(),
   }),
   /** DIVINER máximo estacional < 110 K (verano e invierno del sur). */

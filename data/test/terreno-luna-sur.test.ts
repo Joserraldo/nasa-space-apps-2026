@@ -36,7 +36,7 @@ describe("terreno Luna polo sur", () => {
 
 
   it("luz y blindaje quedan pendientes (null), no inventados", () => {
-    expect(t.fuente.pendientes).toEqual(["luz", "blindaje"]);
+    expect(t.fuente.pendientes).toEqual(["luz", "blindaje", "citaHielo"]);
     for (const s of t.sitios) expect([s.puntajes.luz, s.puntajes.blindaje]).toEqual([null, null]);
   });
 
@@ -85,11 +85,34 @@ describe("hielo, sombra permanente y frío (Moon Trek)", () => {
     expect(por["malapert"]!.temperatura.fraccionBajo110KVerano).toBe(0);
     expect(por["faustini"]!.temperatura.fraccionBajo110KVerano).toBe(1);
   });
+  it("sombra permanente LOLA (Mazarico et al. 2011): fracción del recuadro, centro, capa, cita y fecha", () => {
+    const f = (id: string) => por[id]!.sombraPermanenteLola!;
+    for (const s of t.sitios) {
+      const l = f(s.id);
+      expect(l.capa).toBe("LRO_LOLA_Illumination_SPole65S_240m_EQ");
+      expect(l.instrumento).toBe("LOLA (LRO)");
+      expect(l.cita).toContain("Mazarico");
+      expect(l.cita).toContain("10.1016/j.icarus.2010.10.030");
+      expect(l.origen).toBe("derivado");
+      expect(l.consultadoEl).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+      expect(l.fraccion).toBeGreaterThanOrEqual(0);
+      expect(l.fraccion).toBeLessThanOrEqual(1);
+    }
+    expect(Object.fromEntries(t.sitios.map((s) => [s.id, [f(s.id).fraccion, f(s.id).centro]]))).toEqual({
+      shackleton: [0.886, true], haworth: [0.867, true], faustini: [1, true], malapert: [0.009, false], nobile: [0.203, false], "de-gerlache": [0.684, true],
+    });
+    // sentido físico: Shackleton y Faustini casi todo en sombra, Malapert casi nada
+    expect(f("shackleton").fraccion).toBeGreaterThan(0.5);
+    expect(f("faustini").fraccion).toBeGreaterThan(0.5);
+    expect(f("malapert").fraccion).toBeLessThan(0.05);
+  });
   it("cada texto solo aparece si el dato lo respalda, y existe en es/en", () => {
     for (const s of t.sitios) {
       const h = s.hieloSombra!;
-      expect(h.sombraPermanente.textoKey !== null, s.id + " sombra").toBe(h.sombraPermanente.regionesEnRecuadro > 0);
-      expect(h.senalHielo.textoKey !== null, s.id + " hielo").toBe(h.senalHielo.puntosEnRecuadro > 0);
+      expect(h.sombraPermanente.textoKey !== null, s.id + " sombra").toBe(h.sombraPermanenteLola!.fraccion > 0.01);
+      // SP_IceLoc_280m no tiene cita verificada: el texto de hielo no se asigna a ningún sitio
+      expect(h.senalHielo.citaVerificada, s.id).toBe(false);
+      expect(h.senalHielo.textoKey, s.id + " hielo").toBeNull();
       expect(h.temperatura.textoKey !== null, s.id + " frío").toBe(h.temperatura.fraccionBajo110KVerano >= 0.01);
       for (const k of [h.sombraPermanente.textoKey, h.senalHielo.textoKey, h.temperatura.textoKey].filter((x): x is string => !!x)) {
         expect(es[k], k).toBeTruthy();

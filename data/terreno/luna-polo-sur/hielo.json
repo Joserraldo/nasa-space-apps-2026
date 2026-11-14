@@ -217,6 +217,12 @@
           "minimoK": 53.5,
           "maximoK": 109.1
         }
+      },
+      "sombraPermanenteLola": {
+        "fraccion": 0.886,
+        "centro": true,
+        "pixeles": 14516,
+        "pixelesTotal": 16384
       }
     },
     {
@@ -345,6 +351,12 @@
           "minimoK": 36.4,
           "maximoK": 67.3
         }
+      },
+      "sombraPermanenteLola": {
+        "fraccion": 0.867,
+        "centro": true,
+        "pixeles": 14199,
+        "pixelesTotal": 16384
       }
     },
     {
@@ -428,6 +440,12 @@
           "minimoK": 43.5,
           "maximoK": 79.1
         }
+      },
+      "sombraPermanenteLola": {
+        "fraccion": 1,
+        "centro": true,
+        "pixeles": 16384,
+        "pixelesTotal": 16384
       }
     },
     {
@@ -455,6 +473,12 @@
           "minimoK": 89.5,
           "maximoK": 110
         }
+      },
+      "sombraPermanenteLola": {
+        "fraccion": 0.009,
+        "centro": false,
+        "pixeles": 148,
+        "pixelesTotal": 16384
       }
     },
     {
@@ -482,6 +506,12 @@
           "minimoK": 73.1,
           "maximoK": 109.9
         }
+      },
+      "sombraPermanenteLola": {
+        "fraccion": 0.203,
+        "centro": false,
+        "pixeles": 3319,
+        "pixelesTotal": 16384
       }
     },
     {
@@ -555,7 +585,19 @@
           "minimoK": 47.2,
           "maximoK": 107.2
         }
+      },
+      "sombraPermanenteLola": {
+        "fraccion": 0.684,
+        "centro": true,
+        "pixeles": 11210,
+        "pixelesTotal": 16384
       }
     }
-  ]
+  ],
+  "sombraPermanenteLola": {
+    "capa": "LRO_LOLA_Illumination_SPole65S_240m_EQ",
+    "url": "https://trek.nasa.gov/tiles/Moon/EQ/LRO_LOLA_Illumination_SPole65S_240m_EQ/1.0.0/WMTSCapabilities.xml",
+    "nivelWmts": 5,
+    "consultadoEl": "2026-11-14"
+  }
 }

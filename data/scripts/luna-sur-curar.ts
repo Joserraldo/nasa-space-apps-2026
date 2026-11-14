@@ -19,17 +19,28 @@ function curarHielo(h: any) {
   const v = h.diviner.verano, i = h.diviner.invierno;
   const fv = v.pixelesBajo110K / v.pixelesTotal, fi = i.pixelesBajo110K / i.pixelesTotal;
   const r3 = (x: number) => Math.round(x * 1000) / 1000;
+  const lola = h.sombraPermanenteLola as { fraccion: number; centro: boolean } | undefined;
+  if (!lola) throw new Error("falta sombraPermanenteLola en hielo.json (npm run luna-sur:psr)");
   return {
+    sombraPermanenteLola: {
+      capa: h.capaPsrLola.capa, instrumento: "LOLA (LRO)", consultadoEl: h.capaPsrLola.consultadoEl, url: h.capaPsrLola.url, origen: "derivado" as const,
+      fraccion: lola.fraccion, centro: lola.centro,
+      cita: "Mazarico et al. 2011, Icarus 211, 1066-1081 (doi:10.1016/j.icarus.2010.10.030)",
+      resolucionLecturaM: 667,
+    },
     sombraPermanente: {
       capa: "PSR_SP", instrumento: null, consultadoEl: el, url: `${ARCGIS}/PSR_SP/MapServer/0`, origen: "derivado" as const,
       regionesEnRecuadro: regiones.length, ids: regiones.map((r) => r.id),
       areaRegionesKm2: Math.round(regiones.reduce((a, r) => a + r.areaKm2, 0) * 10) / 10,
-      textoKey: regiones.length > 0 ? "datos.terreno.luna.sombra" : null,
+      // el texto depende de la fracción LOLA, no de los centros PSR_SP
+      textoKey: lola.fraccion > 0.01 ? "datos.terreno.luna.sombra" : null,
     },
     senalHielo: {
       capa: "SP_IceLoc_280m", instrumento: null, consultadoEl: el, url: `${ARCGIS}/SP_IceLoc_280m/MapServer/0`, origen: "derivado" as const,
       puntosEnRecuadro: h.hielo.puntos.length,
-      textoKey: h.hielo.puntos.length > 0 ? "datos.terreno.luna.hielo" : null,
+      // sin cita verificada de la capa: no se asigna el texto de hielo a ningún sitio (pendiente)
+      citaVerificada: false,
+      textoKey: null,
     },
     temperatura: {
       capa: "DIVINER_summer_Max_Temp_SP_below110K_240mp", instrumento: DIVINER, consultadoEl: el,
@@ -81,7 +92,7 @@ export function curarLunaSur(): TerrenoLunaPoloSur {
       elevacionM: at(c0, f0),
       pendienteGrados: r1(pendiente),
       relieveM: Math.max(...h) - Math.min(...h),
-      hieloSombra: curarHielo({ consultadoEl: hielo.consultadoEl, ...hielo.sitios.find((x: any) => x.id === s.id) }),
+      hieloSombra: curarHielo({ consultadoEl: hielo.consultadoEl, capaPsrLola: hielo.sombraPermanenteLola, ...hielo.sitios.find((x: any) => x.id === s.id) }),
       puntajes: { plano: r2(Math.min(1, Math.max(0, 1 - pendiente / REGLAS.pendienteMaxGrados))), luz: null, blindaje: null },
     };
   });
@@ -97,7 +108,7 @@ export function curarLunaSur(): TerrenoLunaPoloSur {
       consultadoEl: consulta.consultadoEl,
       estadoDato: "curado",
       derivadoKey: "datos.terreno.derivado",
-      pendientes: ["luz", "blindaje"],
+      pendientes: ["luz", "blindaje", "citaHielo"],
     },
   });
 }

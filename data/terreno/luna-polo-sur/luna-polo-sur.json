@@ -12,7 +12,8 @@
     "derivadoKey": "datos.terreno.derivado",
     "pendientes": [
       "luz",
-      "blindaje"
+      "blindaje",
+      "citaHielo"
     ]
   },
   "id": "luna-polo-sur",
@@ -59,6 +60,17 @@
           "areaRegionesKm2": 233.7,
           "textoKey": "datos.terreno.luna.sombra"
         },
+        "sombraPermanenteLola": {
+          "capa": "LRO_LOLA_Illumination_SPole65S_240m_EQ",
+          "instrumento": "LOLA (LRO)",
+          "consultadoEl": "2026-11-14",
+          "url": "https://trek.nasa.gov/tiles/Moon/EQ/LRO_LOLA_Illumination_SPole65S_240m_EQ/1.0.0/WMTSCapabilities.xml",
+          "origen": "derivado",
+          "fraccion": 0.886,
+          "centro": true,
+          "cita": "Mazarico et al. 2011, Icarus 211, 1066-1081 (doi:10.1016/j.icarus.2010.10.030)",
+          "resolucionLecturaM": 667
+        },
         "senalHielo": {
           "capa": "SP_IceLoc_280m",
           "instrumento": null,
@@ -66,7 +78,8 @@
           "url": "https://trek.nasa.gov/moon/trekarcgis/rest/services/SP_IceLoc_280m/MapServer/0",
           "origen": "derivado",
           "puntosEnRecuadro": 36,
-          "textoKey": "datos.terreno.luna.hielo"
+          "citaVerificada": false,
+          "textoKey": null
         },
         "temperatura": {
           "capa": "DIVINER_summer_Max_Temp_SP_below110K_240mp",
@@ -121,7 +134,18 @@
           "regionesEnRecuadro": 0,
           "ids": [],
           "areaRegionesKm2": 0,
-          "textoKey": null
+          "textoKey": "datos.terreno.luna.sombra"
+        },
+        "sombraPermanenteLola": {
+          "capa": "LRO_LOLA_Illumination_SPole65S_240m_EQ",
+          "instrumento": "LOLA (LRO)",
+          "consultadoEl": "2026-11-14",
+          "url": "https://trek.nasa.gov/tiles/Moon/EQ/LRO_LOLA_Illumination_SPole65S_240m_EQ/1.0.0/WMTSCapabilities.xml",
+          "origen": "derivado",
+          "fraccion": 0.867,
+          "centro": true,
+          "cita": "Mazarico et al. 2011, Icarus 211, 1066-1081 (doi:10.1016/j.icarus.2010.10.030)",
+          "resolucionLecturaM": 667
         },
         "senalHielo": {
           "capa": "SP_IceLoc_280m",
@@ -130,7 +154,8 @@
           "url": "https://trek.nasa.gov/moon/trekarcgis/rest/services/SP_IceLoc_280m/MapServer/0",
           "origen": "derivado",
           "puntosEnRecuadro": 20,
-          "textoKey": "datos.terreno.luna.hielo"
+          "citaVerificada": false,
+          "textoKey": null
         },
         "temperatura": {
           "capa": "DIVINER_summer_Max_Temp_SP_below110K_240mp",
@@ -189,6 +214,17 @@
           "areaRegionesKm2": 663.9,
           "textoKey": "datos.terreno.luna.sombra"
         },
+        "sombraPermanenteLola": {
+          "capa": "LRO_LOLA_Illumination_SPole65S_240m_EQ",
+          "instrumento": "LOLA (LRO)",
+          "consultadoEl": "2026-11-14",
+          "url": "https://trek.nasa.gov/tiles/Moon/EQ/LRO_LOLA_Illumination_SPole65S_240m_EQ/1.0.0/WMTSCapabilities.xml",
+          "origen": "derivado",
+          "fraccion": 1,
+          "centro": true,
+          "cita": "Mazarico et al. 2011, Icarus 211, 1066-1081 (doi:10.1016/j.icarus.2010.10.030)",
+          "resolucionLecturaM": 667
+        },
         "senalHielo": {
           "capa": "SP_IceLoc_280m",
           "instrumento": null,
@@ -196,7 +232,8 @@
           "url": "https://trek.nasa.gov/moon/trekarcgis/rest/services/SP_IceLoc_280m/MapServer/0",
           "origen": "derivado",
           "puntosEnRecuadro": 9,
-          "textoKey": "datos.terreno.luna.hielo"
+          "citaVerificada": false,
+          "textoKey": null
         },
         "temperatura": {
           "capa": "DIVINER_summer_Max_Temp_SP_below110K_240mp",
@@ -253,6 +290,17 @@
           "areaRegionesKm2": 0,
           "textoKey": null
         },
+        "sombraPermanenteLola": {
+          "capa": "LRO_LOLA_Illumination_SPole65S_240m_EQ",
+          "instrumento": "LOLA (LRO)",
+          "consultadoEl": "2026-11-14",
+          "url": "https://trek.nasa.gov/tiles/Moon/EQ/LRO_LOLA_Illumination_SPole65S_240m_EQ/1.0.0/WMTSCapabilities.xml",
+          "origen": "derivado",
+          "fraccion": 0.009,
+          "centro": false,
+          "cita": "Mazarico et al. 2011, Icarus 211, 1066-1081 (doi:10.1016/j.icarus.2010.10.030)",
+          "resolucionLecturaM": 667
+        },
         "senalHielo": {
           "capa": "SP_IceLoc_280m",
           "instrumento": null,
@@ -260,6 +308,7 @@
           "url": "https://trek.nasa.gov/moon/trekarcgis/rest/services/SP_IceLoc_280m/MapServer/0",
           "origen": "derivado",
           "puntosEnRecuadro": 0,
+          "citaVerificada": false,
           "textoKey": null
         },
         "temperatura": {
@@ -315,7 +364,18 @@
           "regionesEnRecuadro": 0,
           "ids": [],
           "areaRegionesKm2": 0,
-          "textoKey": null
+          "textoKey": "datos.terreno.luna.sombra"
+        },
+        "sombraPermanenteLola": {
+          "capa": "LRO_LOLA_Illumination_SPole65S_240m_EQ",
+          "instrumento": "LOLA (LRO)",
+          "consultadoEl": "2026-11-14",
+          "url": "https://trek.nasa.gov/tiles/Moon/EQ/LRO_LOLA_Illumination_SPole65S_240m_EQ/1.0.0/WMTSCapabilities.xml",
+          "origen": "derivado",
+          "fraccion": 0.203,
+          "centro": false,
+          "cita": "Mazarico et al. 2011, Icarus 211, 1066-1081 (doi:10.1016/j.icarus.2010.10.030)",
+          "resolucionLecturaM": 667
         },
         "senalHielo": {
           "capa": "SP_IceLoc_280m",
@@ -324,6 +384,7 @@
           "url": "https://trek.nasa.gov/moon/trekarcgis/rest/services/SP_IceLoc_280m/MapServer/0",
           "origen": "derivado",
           "puntosEnRecuadro": 0,
+          "citaVerificada": false,
           "textoKey": null
         },
         "temperatura": {
@@ -383,6 +444,17 @@
           "areaRegionesKm2": 243.3,
           "textoKey": "datos.terreno.luna.sombra"
         },
+        "sombraPermanenteLola": {
+          "capa": "LRO_LOLA_Illumination_SPole65S_240m_EQ",
+          "instrumento": "LOLA (LRO)",
+          "consultadoEl": "2026-11-14",
+          "url": "https://trek.nasa.gov/tiles/Moon/EQ/LRO_LOLA_Illumination_SPole65S_240m_EQ/1.0.0/WMTSCapabilities.xml",
+          "origen": "derivado",
+          "fraccion": 0.684,
+          "centro": true,
+          "cita": "Mazarico et al. 2011, Icarus 211, 1066-1081 (doi:10.1016/j.icarus.2010.10.030)",
+          "resolucionLecturaM": 667
+        },
         "senalHielo": {
           "capa": "SP_IceLoc_280m",
           "instrumento": null,
@@ -390,7 +462,8 @@
           "url": "https://trek.nasa.gov/moon/trekarcgis/rest/services/SP_IceLoc_280m/MapServer/0",
           "origen": "derivado",
           "puntosEnRecuadro": 7,
-          "textoKey": "datos.terreno.luna.hielo"
+          "citaVerificada": false,
+          "textoKey": null
         },
         "temperatura": {
           "capa": "DIVINER_summer_Max_Temp_SP_below110K_240mp",

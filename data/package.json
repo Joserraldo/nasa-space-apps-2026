@@ -18,6 +18,7 @@
     "luna-sur:descargar": "tsx scripts/luna-sur-descargar.ts",
     "luna-sur:curar": "tsx scripts/luna-sur-curar.ts",
     "luna-sur:hielo": "tsx scripts/luna-sur-hielo.ts",
+    "luna-sur:psr": "tsx scripts/luna-sur-psr.ts",
     "artemis": "tsx scripts/artemis.ts",
     "luna": "tsx scripts/luna.ts"
   },

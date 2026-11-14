@@ -79,12 +79,12 @@ Los relieves coinciden con los de la propuesta #100; las pendientes difieren de 
 
 | Sitio | Lat / Lon | Elevación | Pendiente | Relieve | Plano |
 |---|---|---|---|---|---|
-| Shackleton | −89,63° / 132,32° | −2635 m | 9,1° | 4173 m | 0,09 |
-| Haworth | −87,20° / −7,49° | −3147 m | 9,2° | 2992 m | 0,08 |
-| Faustini | −87,18° / 85,02° | −2713 m | 6,5° | 1095 m | 0,35 |
-| Malapert | −84,80° / 12,31° | −1670 m | 14,3° | 3153 m | 0 |
-| Nobile | −85,24° / 53,65° | 755 m | 9,0° | 1527 m | 0,10 |
-| de Gerlache | −88,45° / −90,45° | −1868 m | 19,0° | 2028 m | 0 |
+| Shackleton | 88,6 % / sí | −89,63° / 132,32° | −2635 m | 9,1° | 4173 m | 0,09 |
+| Haworth | 86,7 % / sí | −87,20° / −7,49° | −3147 m | 9,2° | 2992 m | 0,08 |
+| Faustini | 100 % / sí | −87,18° / 85,02° | −2713 m | 6,5° | 1095 m | 0,35 |
+| Malapert | 0,9 % / no | −84,80° / 12,31° | −1670 m | 14,3° | 3153 m | 0 |
+| Nobile | 20,3 % / no | −85,24° / 53,65° | 755 m | 9,0° | 1527 m | 0,10 |
+| de Gerlache | 68,4 % / sí | −88,45° / −90,45° | −1868 m | 19,0° | 2028 m | 0 |
 
 **Verificación independiente (`identify`, 2026-11-14):** polar vs JSON: −2639,5 / −3145,5 / −2711,5 / −1673 / 760 / −1878 m (diferencias ≤ 10 m); DEM global 128 ppd en la misma lat/lon: −2650 / −3106 / −2717 / −1683 / 756,5 / −1858,5 m (≤ 41 m).
 - Son el **centro del cráter según el nomenclátor**, no un punto de aterrizaje: no son los nombres "cresta soleada / macizo alto…" de la propuesta #98 (esos eran descriptivos, sin coordenadas). Asignarlos a los 4 sitios del juego lo decide diseño.
@@ -99,10 +99,14 @@ Los relieves coinciden con los de la propuesta #100; las pendientes difieren de 
 | `SP_IceLoc_280m/MapServer/0` | 1119 puntos (lon, lat) a 280 m con "IceLoc" en el nombre. | Qué mide, instrumento y artículo: no declarados. No sabemos si es detección, modelo o estabilidad térmica. NO VERIFICADO; solo se dice "podría haber hielo". |
 | `DIVINER_summer_/winter_Max_Temp_SP_below110K_240mp/ImageServer` | Ráster F32 (K) a 240 m: temperatura **máxima** de la estación, solo donde es < 110 K; el resto es "sin valor". El nombre indica el instrumento Diviner de LRO. | Cita (¿Paige et al. 2010, Science?) NO VERIFICADO; la capa no la da. "Máx. verano" = verano austral, no distingue "sin dato" de "no frío". |
 
-**Método (derivado por el equipo):** PSR = cuántos centros de región caen en el recuadro (id, área de la región entera, que puede salirse). Hielo = cuántos puntos caen en el recuadro. Frío = fracción de píxeles del ráster con valor (< 110 K) y valor mínimo (este último es medido). 110 K = −163 °C. No hay fracción "en sombra" porque PSR_SP son puntos, no polígonos.
+| `LRO_LOLA_Illumination_SPole65S_240m_EQ` (**solo WMTS**, no hay ArcGIS) | "LOLA Permanently Shadowed Regions Southpole 240m", instrumento LOLA, misión LRO: mapa binario (1 = sombra permanente), 240 m/px, calculado de LDEM_75S_240M. **[V]** Cita: Mazarico, E., et al. (2011), *Illumination conditions of the lunar polar regions using LOLA topography*, Icarus 211, 1066-1081, doi:10.1016/j.icarus.2010.10.030 (verificada en https://pgda.gsfc.nasa.gov/products/69). | Se lee de teselas PNG (gris+alfa), no de un ráster numérico: resolución de lectura ~667 m/px (EQ nivel 5; la polar `.../SP/LRO_LOLA_Illumination_SPole65S_240m` solo llega a ~1070 m/px). Los bordes están remuestreados (alfa < 255). |
 
-| Cráter | Centros PSR | Puntos de hielo | < 110 K verano / invierno | Mín. K verano / invierno |
-|---|---|---|---|---|
+**Método sombra permanente LOLA (derivado por el equipo, `npm run luna-sur:psr`):** cada píxel (centro) del recuadro de 128×128 → lat/lon (estereográfica polar sur, esfera 1737,4 km) → píxel de la tesela EQ más cercano; cuenta como sombra permanente si valor = 1 y alfa ≥ 128. Resultado = fracción del recuadro y si el centro del cráter está en sombra. Tesela: `https://trek.nasa.gov/tiles/Moon/EQ/LRO_LOLA_Illumination_SPole65S_240m_EQ/1.0.0/default/default028mm/5/{fila}/{col}.png`. El texto "sombra" depende de esta fracción (> 0,01).
+
+**Método (derivado por el equipo):** PSR_SP (dato secundario) = cuántos centros de región caen en el recuadro (id, área de la región entera, que puede salirse). Hielo = cuántos puntos caen en el recuadro. Frío = fracción de píxeles del ráster con valor (< 110 K) y valor mínimo (este último es medido). 110 K = −163 °C. La fracción "en sombra" sale de la capa LOLA de arriba (PSR_SP son puntos, no polígonos).
+
+| Cráter | Sombra perm. LOLA (fracción / centro) | Centros PSR_SP | Puntos de hielo | < 110 K verano / invierno | Mín. K verano / invierno |
+|---|---|---|---|---|---|
 | Shackleton | 1 (233,7 km²) | 36 | 81 % / 96 % | 81,3 / 53,5 |
 | Haworth | 0 | 20 | 98 % / 100 % | 59,7 / 36,4 |
 | Faustini | 1 (663,9 km²) | 9 | 100 % / 100 % | 56,7 / 43,5 |
@@ -110,6 +114,8 @@ Los relieves coinciden con los de la propuesta #100; las pendientes difieren de 
 | Nobile | 0 | 0 | 0,3 % / 2,5 % | 93,9 / 73,1 |
 | de Gerlache | 1 (243,3 km²) | 7 | 77 % / 100 % | 51,0 / 47,2 |
 
-**Textos para niños (en/es, claves `datos.terreno.luna.*`)**: "Parts of this crater never see the Sun" solo si hay ≥ 1 centro PSR (Shackleton, Faustini, de Gerlache); "may be ice… scientists still need to check" solo si hay puntos de hielo (todos menos Malapert y Nobile); "colder than −163 °C, even in summer" solo si ≥ 1 % del recuadro (todos menos Malapert y Nobile). Haworth no tiene centro PSR en el recuadro aunque sea muy frío: no se afirma sombra permanente. Nunca "hay agua para beber".
+**Textos para niños (en/es, claves `datos.terreno.luna.*`)**: "Parts of this crater never see the Sun" solo si la fracción LOLA en sombra permanente es > 1 % (todos menos Malapert, 0,9 %; Haworth y Nobile sí aparecen); "may be ice… scientists still need to check" (`datos.terreno.luna.hielo`) **NO se asigna a ningún sitio**: `SP_IceLoc_280m` no tiene cita verificada (`citaVerificada: false`, pendiente `citaHielo`; el dato crudo se conserva); "colder than −163 °C, even in summer" solo si ≥ 1 % del recuadro (todos menos Malapert y Nobile). Nunca "hay agua para beber".
+
+**Verificación independiente de la sombra LOLA (2026-11-14):** Shackleton 88,6 % (EQ) vs 88,6 % con la tesela polar nivel 3 (otra proyección, ~1070 m/px); Malapert 0,9 % vs 0,5 % (la fracción es diminuta y sensible a la resolución: está justo bajo el umbral del 1 %). Sentido físico OK (Shackleton y Faustini casi todo en sombra, Malapert casi nada). Límite: lectura de teselas ~667 m/px, no el ráster de 240 m.
 
 **Verificación independiente (`returnCountOnly` y `identify`):** hielo 36 / 0 / 7 y PSR 1 / 0 / 1 coinciden para Shackleton / Malapert / de Gerlache; `identify` en el centro de Shackleton = 94,45 K (dentro de 81,3–110); malla 3×3 en de Gerlache: 6 de 9 con valor (87,2 … 63,8 K, todos ≥ 51 K) frente a 77 % del ráster (malla gruesa).
