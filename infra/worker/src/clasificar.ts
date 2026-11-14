@@ -4,22 +4,24 @@ import { clasificarConAtajos, clasificarConModelo } from "@solar-shield/agents";
  * POST /api/clasificar  { "texto": "..." }  →  ClassifierOutput (JSON estricto, validado con Zod).
  * - La clave sale SOLO de `env.BAI_API_KEY` (secreto de Cloudflare). Nunca llega al navegador.
  * - Al modelo solo le llega la frase: ni IP, ni identificadores, ni estado del juego.
- * - Límite de uso por IP en KV con la IP en hash (no se guarda la IP en claro).
+ * - Límite de uso por IP con el limitador nativo de Cloudflare (binding LIMITADOR en wrangler.jsonc).
+ *   La llave es un hash de la IP: la IP en claro nunca sale del Worker.
  * - Primero regex sin costo; el modelo solo si los atajos no entienden. Sin clave → respaldo.
  */
-export interface KV {
-  get(clave: string): Promise<string | null>;
-  put(clave: string, valor: string, o?: { expirationTtl?: number }): Promise<void>;
+/** Binding "ratelimits" de Cloudflare: cuenta en el borde, sin escrituras a KV ni costo. */
+export interface Limitador {
+  limit(o: { key: string }): Promise<{ success: boolean }>;
 }
 
 export interface Env {
   BAI_API_KEY?: string;
   BAI_BASE_URL?: string;
   BAI_MODEL?: string;
-  LIMITE?: KV;
+  LIMITADOR?: Limitador;
 }
 
 export const MAX_CARACTERES = 200;
+/** Debe coincidir con ratelimits[].simple.limit (periodo 60 s) en wrangler.jsonc. */
 export const LIMITE_POR_MINUTO = 20;
 
 const json = (cuerpo: unknown, status = 200): Response =>
@@ -30,13 +32,9 @@ async function hashIp(ip: string): Promise<string> {
   return [...new Uint8Array(d)].slice(0, 12).map((b) => b.toString(16).padStart(2, "0")).join("");
 }
 
-async function dentroDelLimite(kv: KV | undefined, ip: string | null): Promise<boolean> {
-  if (!kv || !ip) return true;
-  const clave = `rl:${await hashIp(ip)}:${Math.floor(Date.now() / 60000)}`;
-  const n = Number((await kv.get(clave)) ?? "0");
-  if (n >= LIMITE_POR_MINUTO) return false;
-  await kv.put(clave, String(n + 1), { expirationTtl: 120 });
-  return true;
+async function dentroDelLimite(lim: Limitador | undefined, ip: string | null): Promise<boolean> {
+  if (!lim || !ip) return true;
+  return (await lim.limit({ key: `ip:${await hashIp(ip)}` })).success;
 }
 
 export async function manejar(req: Request, env: Env, f: typeof fetch = fetch): Promise<Response> {
@@ -52,7 +50,7 @@ export async function manejar(req: Request, env: Env, f: typeof fetch = fetch): 
   const atajo = clasificarConAtajos(texto);
   if (atajo) return json(atajo);
 
-  if (!(await dentroDelLimite(env.LIMITE, req.headers.get("cf-connecting-ip")))) return json({ error: "limite" }, 429);
+  if (!(await dentroDelLimite(env.LIMITADOR, req.headers.get("cf-connecting-ip")))) return json({ error: "limite" }, 429);
 
   if (!env.BAI_API_KEY) {
     return json({ version: "0", experto: "ia_base", accion: "fuera_de_tema", parametros: {}, confianza: 0, fuente: "regex" });
