@@ -1,5 +1,5 @@
 /** Tormenta (registro de datos) → SpaceWeatherEvent (contrato). Función pura. */
-import { SpaceWeatherEventSchema, type SpaceWeatherEvent } from "./contrato-espejo";
+import { SpaceWeatherEventSchema, type SpaceWeatherEvent } from "./contrato";
 import { intensidadFase, redondear } from "./intensidad";
 import type { Fase, Tormenta } from "./tormenta";
 
@@ -19,12 +19,12 @@ export function magnitud(f: Fase): string | undefined {
 function fasePrincipal(t: Tormenta): Fase {
   const cme = t.fases.find((f) => f.tipo === "CME");
   if (cme) return cme;
-  return [...t.fases].sort((a, b) => (intensidadFase(b) ?? -1) - (intensidadFase(a) ?? -1))[0];
+  return [...t.fases].sort((a, b) => (intensidadFase(b) ?? -1) - (intensidadFase(a) ?? -1))[0]!;
 }
 
 export function aConvenio(t: Tormenta): SpaceWeatherEvent {
-  const inicio = t.fases[0].hora;
-  const fin = [t.fases[t.fases.length - 1].hora, t.llegadaMarte?.hora ?? ""].sort().pop()!;
+  const inicio = t.fases[0]!.hora;
+  const fin = [t.fases[t.fases.length - 1]!.hora, t.llegadaMarte?.hora ?? ""].sort().pop()!;
   const principal = fasePrincipal(t);
   const valores = t.fases.map(intensidadFase).filter((x): x is number => x !== null);
   const ev: SpaceWeatherEvent = {

@@ -1,18 +1,17 @@
 # Estado — rol 2 (Motor y simulación)
-**Actualizado:** 2026-11-13 14:50 · **Rama:** feat/motor-adaptativo · **PR:** adaptativo → develop (#21, #29, #30 ya en develop)
+**Actualizado:** 2026-11-13 16:40 · **Rama:** feat/motor-novedades · **PR:** novedades → develop (#53 ya en develop)
 
 ## Hecho (últimas iteraciones)
-- P1: contratos v0.2.0 (#29) con lo pedido por datos y agentes en #17. En develop.
-- P2: escenario por semilla, aplicarAccion con cola de efectos y causas (#21); órbita por tick, daño en Marte por medición RAD y puntaje de sitio 3 criterios (#30). En develop.
-- P3: IA de la base adaptativa por reglas del estado (racha, errores, quietud, radiación con umbral por dificultad); `reparar ia_base`; reto del día por fecha (`reto-AAAA-MM-DD`, siempre Jezero); región por semilla. 48 tests en verde.
-- Nuevo campo `GameState.rendimiento` (racha, errores, ticks quieto), anotado en #17.
+- P1-P3 completos y en develop: contratos v0.2.0, escenario, cola de efectos, órbita, puntaje de sitio, IA adaptativa, reto del día, resumen final.
+- Ruta dorada (#41, tareas de motor): `SEMILLA_DORADA` congelada por snapshot (Jezero + tormenta 2024-05-20 medida por RAD + Iris dañada); `partidaDorada()` y `paso()` como API única para ui con ejemplo en `engine/README.md`; telemetría con retraso de comunicaciones por sitio (`enviar_telemetria`, `telemetriaPendiente`); misión de Jezero como datos en `missions/` (nuevo workspace) con test de que ningún módulo es gratis.
+- `novedades(antes, despues)` y `conPausaAutomatica` para que ui pause en tormenta, avería, mala suerte, cambio de IA y fin; `retoDelDia` usa `eventosCurados` de data/ por defecto (#57 completo). 187 tests en verde.
 
 ## Qué sigue
-- Conectar `eventosCurados` de @solar-shield/data en el reto del día (#23 ya está en develop).
-- Resumen de fin de partida para la pantalla "cadena de causas" (decisión vs mala suerte) e insignias.
-- Revisar números de design/ con diseño; congelar antes de dom 13:00.
+- Explicarle el motor a Camilo (pendiente humano); Camilo arranca por `design/` y `missions/`.
+- Acompañar a ui cuando conecte el HUD: ajustar la API si falta algo. Revisar con diseño (Santiago/Camilo) los números de design/ y la misión en missions/.
+- Congelar números de design/ antes de dom 13:00.
 
 ## Bloqueos
-- OK de agentes en #17 para cerrar contratos. Sin bloqueos de código.
+- ninguno
 
 Tokens: 🟢

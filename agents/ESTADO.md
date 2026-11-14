@@ -1,17 +1,16 @@
 # Estado — rol 3 (Agentes expertos)
-**Actualizado:** 13 nov 2026 · **Rama:** feat/agentes-atajos · **PR:** abriendo
+**Actualizado:** 13 nov 2026 · **Rama:** feat/agentes-conversar · **PR:** #72 (issue #59)
 
 ## Hecho (últimas iteraciones)
-- Paquete `@solar-shield/agents` (workspace, typecheck y vitest en CI).
-- Capa 1 sin modelo: `clasificarConAtajos` (regex en/es) y `aAccion` (intención → Action del motor). 30/30 frases de eval pasan.
-- `ClassifierOutput` ya está en contracts v0.2.0. D4 con IDs de b.ai (#33). Secreto `BAI_API_KEY` en el repo.
+- Fusionados: #43 regex en/es · #44 3 expertos en/es con fuente · #47 escena 6 · #49 avería de Iris · #50 README · #46 data/ en CI.
+- Evals reales en b.ai (#51): qwen3.8-flash 80 % accion pero p95 15 s; deepseek 23 % (razonamiento sin tokens). D4: sin clasificador; reabrir tras P2.
+- Fase satélite (#52) y aterrizaje: cada voz defiende su criterio (luz, blindaje, plano).
 
-## Qué sigue (issue #41, ruta dorada)
-- 3 expertos como código con plantillas `en` + `es` y la fuente del dato en cada respuesta.
-- Escena del paso 6: dos expertos que se contradicen ante 2024-05-20-marte.
-- Avería de Iris (número que no coincide): espera el OK de José para el guion.
+## Qué sigue (issue #41)
+- #67 fusionado: aterrizaje + director + cola. Revisé el borrador de ui (#68, Jaime) y le dejé sugerencias.
+- Matemático "¿Y si…?" con el simulador del motor; acortar frases > 25 palabras.
 
 ## Bloqueos
-- `ENERGIA_POR_CANTIDAD` (10/25/45) es provisional: debe vivir en design/ (motor).
+- `ENERGIA_POR_CANTIDAD` provisional (debe vivir en design/). ui/ aún vacío.
 
-Evals con modelo: sin correr (falta OK de gasto) · Tokens: 🟢
+Evals: corridas (13 nov) · Tokens: 🟢

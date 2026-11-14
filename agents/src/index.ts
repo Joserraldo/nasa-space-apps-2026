@@ -1,3 +1,13 @@
 export { normalizar, esUrgente } from "./normalizar.js";
 export { clasificarConAtajos, EXPERTO_DE, CONFIANZA_REGEX } from "./atajos.js";
 export { aAccion, ENERGIA_POR_CANTIDAD } from "./a-accion.js";
+export { responder, type VistaAgente, type Contexto } from "./expertos.js";
+export type { Dialogo, Linea, ReferenciaDosis } from "./dialogo.js";
+export { escenaTormenta, type EscenaTormenta } from "./escenas.js";
+export { irisDanada, verificarIris, formaFalla, numeroFalso, type FormaFalla, type Falla, type DialogoIris } from "./iris.js";
+export { clasificarConModelo, type OpcionesClasificador, type ResultadoClasificador } from "./clasificador.js";
+export { consejosSatelite } from "./fases.js";
+export { consejosAterrizaje, type SitioCandidato, type Criterio } from "./aterrizaje.js";
+export { dialogosDelPaso, encolar, vistaVisible, type Momento, type VistaCompleta } from "./director.js";
+export { guiaIris, explicarSistema, areaUrgente } from "./iris-guia.js";
+export { conversar, preguntaDelBoton, PREGUNTA_DEL_BOTON, type Entrada, type OpcionesConversar } from "./conversar.js";

@@ -44,3 +44,18 @@ describe("ciencia", () => {
     expect(desc("OSD-546")).toContain("approx. 2 weeks");
   });
 });
+
+describe("referenciaDosis (para agentes)", () => {
+  it("devuelve mSv/día con una SourceCard válida del contrato real", async () => {
+    const { referenciaDosis } = await import("../src");
+    const { SourceCardSchema } = await import("../src/contrato");
+    const m = referenciaDosis("marte-superficie");
+    expect(m.valor).toBe(0.64);
+    expect(m.unidad).toBe("mSv/día");
+    expect(SourceCardSchema.safeParse(m.fuente).success).toBe(true);
+    expect(es[m.fuente.nombreKey]).toBeTruthy();
+    expect(en[m.fuente.nombreKey]).toBeTruthy();
+    expect(referenciaDosis("luna-superficie").fuente.dueno).toContain("CNSA");
+    expect(() => referenciaDosis("venus")).toThrow();
+  });
+});

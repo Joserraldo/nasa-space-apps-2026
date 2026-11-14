@@ -99,5 +99,13 @@
   "datos.usados.trek": "The Jezero map comes from NASA Mars Trek: the ground height is real, and we used it to work out how flat, sunny and protected each place is.",
   "datos.usados.osdr": "The science cards tell about real experiments stored in NASA OSDR.",
   "datos.usados.dosis": "Radiation doses come from scientific papers: Mars from the Curiosity rover (NASA); the Moon and the Space Station from a study of China's Chang’e-4 mission.",
-  "datos.usados.noEnVivo": "All this data is saved in the game: it is real, but not live."
+  "datos.usados.noEnVivo": "All this data is saved in the game: it is real, but not live.",
+  "datos.region.marte_polo_norte.nombre": "North pole of Mars",
+  "datos.region.marte_polo_norte.descripcion": "Near the north pole of Mars the Sun never climbs high: in midsummer it reaches about 33 degrees above the horizon at most, and in winter there are days when it doesn't rise at all. That's why getting solar energy is harder.",
+  "datos.region.derivado": "The team calculated the Sun's height from the tilt of Mars's axis (25.19°, NASA). We don't have a terrain map for this region.",
+  "fuente.nssdc": "NASA NSSDC (Mars fact sheet)",
+  "datos.artemis.titulo": "Radiation on the Artemis I trip",
+  "datos.artemis.texto": "In 2022 the Orion spacecraft of the Artemis I mission traveled around the Moon with no crew and radiation detectors inside. For most of the trip the radiation was about the same day after day, but shortly after launch it was about 480 times stronger for a while.",
+  "fuente.dosis.marte": "RAD on the Curiosity rover (NASA), from Reitz et al. 2016",
+  "fuente.dosis.lunaIss": "Zhang et al. 2020, China's Chang’e-4 mission (CNSA), not NASA"
 }

@@ -9,10 +9,12 @@
 /docs/ia-uso.md            @kcitas
 /docs/reglas.md            @kcitas
 
-# Diseño de juego y misiones + Motor y simulación — Santiago y Camilo
-/design/          @kcitas @CamiloM21
-/missions/        @kcitas @CamiloM21
-/engine/          @kcitas @CamiloM21
+# Diseño de juego y misiones — Camilo (Santiago supervisa)
+/design/          @CamiloM21 @kcitas
+/missions/        @CamiloM21 @kcitas
+
+# Motor y simulación — Jaime
+/engine/          @JaimeMrF
 
 # Frontend, voz, arte y accesibilidad — María Paula
 /ui/              @Paulasaah
@@ -27,9 +29,9 @@
 /pitch/           @Joserraldo
 /.github/         @Joserraldo
 
-# Datos NASA y ciencia — Daniel y Jaime
-/data/            @Daniverd15 @JaimeMrF
-/docs/science/    @Daniverd15 @JaimeMrF
+# Datos NASA y ciencia — Daniel
+/data/            @Daniverd15
+/docs/science/    @Daniverd15
 
 # Contratos compartidos: motor, agentes y datos
-/contracts/       @kcitas @CamiloM21 @Joserraldo @Daniverd15 @JaimeMrF
+/contracts/       @JaimeMrF @CamiloM21 @Joserraldo @Daniverd15
