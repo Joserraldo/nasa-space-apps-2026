@@ -40,3 +40,18 @@ const final = resumenPartida(s);                              // paso 8: cadena 
 | `dorada.ts` | Semilla dorada congelada y API mínima para ui |
 
 Los números viven en `design/` y la misión en `missions/`; aquí solo hay reglas.
+
+## Reglas que ui no debe repetir (#113, #134)
+
+```ts
+import { aterrizar, puedeAplicar, aplicarAccion, elegirDilema, modulosColocados, puedeColocar } from "@solar-shield/engine";
+
+s = aterrizar(s, sitioId);                 // paso 3: cobra el costo del sitio una sola vez
+const p = puedeAplicar(s, accion);         // { ok: true } | { ok: false, motivo, recurso? }
+if (p.ok) s = aplicarAccion(s, accion);    // rechazada → devuelve el MISMO objeto (s === antes)
+s = elegirDilema(s, opcion.id);            // paso 6 (llega con #140): acción + extra del invernadero
+```
+
+- `motivo`: `"partida_terminada" | "sin_simulaciones" | "modulo_no_permitido" | "recursos_insuficientes"` (con `recurso` = el medidor que falta).
+- El fin llega solo en `s.resultado` (`"exito"` cuando llega la telemetría con todo > 0; `"fallo"` si algo llega a 0).
+- La tormenta solo hace daño en los ticks 3, 4 y 5 (`tormentaEnCurso(s)`).

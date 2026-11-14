@@ -1,41 +1,48 @@
-# Especificación de pruebas integradas — issue #114
+# Pruebas integradas de la ruta dorada — issue #114
 
-Pendientes de la corrección de Jaime en #113. Este documento no es una prueba ejecutada ni demuestra que el motor vigente pueda ganarse.
+Las pruebas ya existen en [`engine/src/ganable.test.ts`](../engine/src/ganable.test.ts), incorporadas por [#134](https://github.com/Joserraldo/nasa-space-apps-2026/pull/134). Este documento referencia esa implementación; no crea otra suite en `missions/test/`.
 
-Santiago aprobó `DURACION_TORMENTA_TICKS = 3`: [aprobación](https://github.com/Joserraldo/nasa-space-apps-2026/issues/114#issuecomment-6884368837). La ventana de daño es 3, 4 y 5; desde 6 no hay daño. Se conserva `MISION_JEZERO.fin.tickLimite = 10`.
+Santiago [aprobó](https://github.com/Joserraldo/nasa-space-apps-2026/issues/114#issuecomment-6884368837) tres ticks. La declaración única de `DURACION_TORMENTA_TICKS = 3` se conserva al final de `design/src/recursos.ts`, tal como entró con #134. El motor usa la ventana 3–5, sin daño antes ni desde 6.
 
-## Preparación común
+## Preparación y API reales
 
-- Usar `partidaDorada` y `paso` de `@solar-shield/engine`, semilla `jezero-2024-05-20`, dificultad media y sitio `llanura-central`.
-- Aplicar el aterrizaje mediante la API real que confirme Jaime: cuesta 3 de energía y 8 de blindaje, una sola vez. No alterar recursos a mano en la prueba.
-- En tick 0 colocar panel solar y después escudo, sin ticks entre colocaciones. Para varias acciones de una misma pausa existe `aplicarAccion`; `paso(estado, accion?)` admite una acción y avanza un tick.
-- Referencia hipotética tras preparar: energía 55, soporte vital 74 y blindaje 52.
+La suite usa `partidaDorada`, `aterrizar`, `aplicarAccion` y `avanzarTick`, sin editar recursos a mano ni forzar resultados:
 
-## Prueba ganadora propuesta
+1. Crear la semilla dorada `jezero-2024-05-20` y aterrizar en `llanura-central`.
+2. Colocar panel solar y después escudo en tick 0, sin ticks intermedios.
+3. Comprobar el estado de preparación: energía 55, soporte vital 74 y blindaje 52.
+4. Avanzar hasta tick 3, reparar Iris y aplicar la decisión del jugador.
 
-1. Avanzar con `paso` hasta tick 3.
-2. En tick 3, reparar `ia_base` y refugiarse. Avanzar a 4.
-3. Enviar telemetría en tick 4; comprobar llegada prevista en 6 y dos ticks de retraso.
-4. Avanzar a 5 y 6. El motor debe devolver `exito` en 6, con los tres recursos positivos.
+`aterrizar(estado, sitioId)` ya cobra el aterrizaje una sola vez. Los intentos de colocar módulos ajenos a la misión, repetidos o un tercero devuelven el mismo estado sin cobrar.
 
-Referencia diagnóstica de energía/soporte vital/blindaje: `3:52/68/53 → 4:31/56/50 → 5:18/53/51 → 6:15/51/56`.
+## Casos implementados
 
-## Prueba perdedora propuesta
+| Caso | Decisión en tick 3 | Envío | Resultado |
+|---|---|---|---|
+| Victoria | Reparar Iris y refugiarse | Tick 4 | Éxito en tick 6, con los tres recursos positivos |
+| Derrota explicable | Reparar Iris y subir escudo a nivel 2 | Tick 5 | Fallo por energía en cero al llegar la telemetría |
 
-1. Repetir la preparación y avanzar hasta tick 3.
-2. En tick 3, reparar `ia_base` y ejecutar `subir_escudo` con nivel 2.
-3. Avanzar hasta 5 y enviar telemetría: llegada prevista en 7.
-4. Avanzar a 6 y 7. La energía llega a cero; debe prevalecer `fallo` aunque llegue la telemetría.
+La suite también verifica daño solo durante tres ticks desde `tickTormenta`, retraso de comunicaciones, igualdad del estado completo con la misma semilla y acciones, aterrizaje único y límites de módulos. #139 añadió la comprobación del rechazo limpio mediante `puedeAplicar`.
 
-Referencia diagnóstica: `3:52/68/53 → 4:18/62/50 → 5:10/60/59 → 6:2/57/58 → 7:0/55/63`. La causa es el gasto del escudo y el envío tardío; enviando en 4, la simulación terminaba con energía 2.
+Estas pruebas comprueban el motor integrado. No son una prueba E2E del navegador. Su eventual traslado o copia a `missions/test/` es opcional: debe coordinarse con Santiago y Jaime para evitar duplicarlas.
 
-## Aserciones y dependencias
+## Compatibilidad con las tarjetas de ciencia
 
-- Comprobar los tres recursos, daño solo en ticks 3–5, retraso de telemetría y condiciones reales de éxito/fallo.
-- Verificar máximo dos módulos distintos y permitidos; acordar con Jaime si los intentos inválidos se rechazan con excepción o sin efecto.
-- Repetir semilla y acciones y comparar el estado completo. No usar monkeypatches, stubs ni resultados forzados.
-- Acordar el cierre sin telemetría en tick 10 y el orden de evaluación si la llegada coincide con el límite. No asumir victoria automática ni cambiar ese límite.
-- Alinear misión, interfaz y agentes: el dilema canónico usa escudo nivel 2 (16 de energía), frente al fallback de redistribuir 45 (49 en total). El refugio pierde 10 de soporte vital con retraso solo si se construyó invernadero.
-- Las cifras son referencias de [simulaciones hipotéticas sobre `932f51e`](https://github.com/Joserraldo/nasa-space-apps-2026/issues/114#issuecomment-6883910090), no snapshots aprobados del motor integrado. Si difieren tras #113, investigar con Jaime antes de congelarlas.
+[#138](https://github.com/Joserraldo/nasa-space-apps-2026/pull/138) ya está en `develop`: incorpora fuentes y textos revisados de las tarjetas de Jezero y comprueba que no queden tarjetas ni pregunta final sin fuente. Este PR conserva esos tres archivos de `missions/` intactos respecto de `origin/develop`.
 
-Implementar en `missions/test/` después de #113, con la API confirmada y CI verde. Validar con `npm.cmd run typecheck`, `npm.cmd test` y `npx.cmd vitest run engine/src/dorada missions`.
+## Pendientes reales, fuera de esta conciliación
+
+- `MISION_JEZERO.fin.tickLimite` sigue en 10, pero el motor actual no evalúa ese límite; conserva la condición de días como respaldo. Diseño debe acordar el cierre por tiempo y su prioridad frente a la llegada de telemetría. No se cambia ningún número aquí.
+- #139 implementa `puedeAplicar`: rechaza un costo inmediato que dejaría un recurso en cero. La confirmación de ese umbral por Diseño sigue abierta.
+- Hay una discrepancia entre [el cierre de #140](https://github.com/Joserraldo/nasa-space-apps-2026/pull/140#issuecomment-6885603361) y lo fusionado en #139: su descripción dice expresamente que retiró el dilema para dejarlo en #140. En `develop` no existen `engine/src/dilema.ts` ni la exportación `elegirDilema`, y `aplicarAccion` no consume el efecto extra del invernadero de la misión. El README del motor sí menciona esa API como pendiente de #140. Requiere coordinación con motor; no se corrige `engine/` en este PR.
+
+## Validación
+
+Desde la raíz del repositorio:
+
+- `npm.cmd run typecheck`
+- `npm.cmd test` (incluye `engine/src/ganable.test.ts`)
+- `npx.cmd vitest run engine/src/dorada missions`
+- `git diff --check`
+
+El CI remoto y E2E se revisan por separado. Quitar la declaración duplicada solo elimina ese error de tipos; no demuestra por sí mismo que E2E pase.

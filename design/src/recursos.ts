@@ -8,13 +8,6 @@ import type { Difficulty, Equipment, QuantityWord, Resource, Resources, Site } f
 
 export const RECURSO_MAX = 100;
 
-/**
- * Duración de la tormenta de Jezero en ticks de juego, aprobada por Santiago en #114.
- * El motor debe aplicar [tickTormenta, tickTormenta + duración): daño en 3, 4 y 5; desde 6, no.
- * Aprobación: https://github.com/Joserraldo/nasa-space-apps-2026/issues/114#issuecomment-6884368837
- */
-export const DURACION_TORMENTA_TICKS = 3;
-
 /** Valores iniciales por sitio. Jezero es la ruta dorada. */
 export const RECURSOS_INICIALES: Record<Site, Resources> = {
   marte_jezero: { energia: 70, soporte_vital: 80, blindaje: 60 },
@@ -32,6 +25,15 @@ export const CONSUMO_POR_TICK: Record<Site, Resources> = {
   luna_lado_visible: { energia: -2, soporte_vital: -2, blindaje: -2 },
   outpost_sorpresa: { energia: -3, soporte_vital: -3, blindaje: -2 },
 };
+
+/**
+ * Consumo continuo de cada módulo construido y en buen estado, por tick (#90, pedido en #88 §3).
+ * El motor lo suma al consumo pasivo. Hoy está VACÍA a propósito: el consumo sigue como costo único
+ * dentro de MODULOS (plan B) y la ruta dorada no cambia. Para pasar un módulo a consumo por tick:
+ * poner aquí su número negativo y quitar el mismo concepto de MODULOS (y revisar ganable.test.ts).
+ * Valores de juego, no de NASA.
+ */
+export const CONSUMO_MODULO_POR_TICK: Partial<Record<Equipment, Partial<Record<Resource, number>>>> = {};
 
 export type TipoAccionConCosto =
   | "esperar"
@@ -179,3 +181,10 @@ export const ENERGIA_POR_CANTIDAD: Record<QuantityWord, number> = {
   medio: 25,
   mucho: 45,
 };
+
+/**
+ * Cuántos ticks hace daño una tormenta desde que se revela (tick 3 en Jezero): ticks 3, 4 y 5.
+ * Propuesta de Camilo con 720 simulaciones (#114), aprobada por Santiago el 14 nov.
+ * 3 es la mayor duración que deja ganar con las dos salidas del dilema del paso 6.
+ */
+export const DURACION_TORMENTA_TICKS = 3;
