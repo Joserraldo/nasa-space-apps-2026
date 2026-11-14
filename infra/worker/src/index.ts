@@ -1,4 +1,5 @@
 import { manejar as clasificar, type Env as EnvClasificar } from "./clasificar.js";
+import { cuentas, type EnvCuentas } from "./cuentas.js";
 
 /**
  * Punto de entrada del Worker: /api/* lo resuelve el código; todo lo demás es la pantalla (ui/dist).
@@ -8,7 +9,7 @@ export interface Fetcher {
   fetch(req: Request): Promise<Response>;
 }
 
-export interface Env extends EnvClasificar {
+export interface Env extends EnvClasificar, EnvCuentas {
   ASSETS: Fetcher;
   ENTORNO?: string;
 }
@@ -25,9 +26,11 @@ export async function enrutar(req: Request, env: Env, f: typeof fetch = fetch): 
 
   if (pathname === "/api/health") {
     // Solo dice QUÉ está configurado, nunca el valor de una clave.
-    return json({ ok: true, entorno: env.ENTORNO ?? "local", modelo: Boolean(env.BAI_API_KEY) });
+    return json({ ok: true, entorno: env.ENTORNO ?? "local", modelo: Boolean(env.BAI_API_KEY), baseDeDatos: Boolean(env.DB) });
   }
   if (pathname === "/api/clasificar") return clasificar(req, env, f);
+  const cuenta = await cuentas(req, env, pathname);
+  if (cuenta) return cuenta;
   return json({ error: "no_encontrado" }, 404);
 }
 
