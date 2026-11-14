@@ -23,3 +23,12 @@
 - Marco de la tormenta: `datos.marco.observado | modelado | escenario | rozando`.
 - Medición en Marte: `datos.medicion.rad`, `datos.medicion.sinAumento`.
 - Dosis comparadas: `datos.radiacion.comparacion`. Polo norte: `datos.region.marte_polo_norte.descripcion`. Artemis I: `datos.artemis.texto`.
+
+## Cifras que dicen los expertos (ruta dorada, #41) — revisado el 2026-11-13 sobre #44, #47 y #49
+| Texto | Cifra | Origen | Estado |
+|---|---|---|---|
+| `agentes.escena6.doctora.medida`, `agentes.meteorologa.pronostico.medida` | factor ×19 (redondeo de 19,4) | `medicionMarte` de `2024-05-20-marte` (RAD vía RadLab) | **[V]** |
+| `agentes.escena6.meteorologa.llega`, `agentes.meteorologa.pronostico.real` | fecha 2024-05-20 | `inicio` del evento (DONKI `2024-05-20T05:36:00-CME-001`) | **[V]** |
+| `agentes.doctora.dosis.marte` | 0,64 mSv/día | `referenciaDosis("marte-superficie")` (Reitz et al. 2016) | **[V]**; usar la función del #45 para la tarjeta |
+| `agentes.escena6.ingeniera.costo`, `agentes.iris.*`, `agentes.ingeniera.energia.*` | % de energía y escudo, gasto | estado del juego (motor/design) | No es dato de NASA: no lleva tarjeta de fuente (correcto) |
+| `agentes.doctora.salud.estado` | mSv acumulados del tripulante | estado del juego | Es simulación: no presentarlo como medición |
