@@ -172,3 +172,10 @@ export const ENERGIA_POR_CANTIDAD: Record<QuantityWord, number> = {
   medio: 25,
   mucho: 45,
 };
+
+/**
+ * Cuántos ticks hace daño una tormenta desde que se revela (tick 3 en Jezero): ticks 3, 4 y 5.
+ * Propuesta de Camilo con 720 simulaciones (#114), aprobada por Santiago el 14 nov.
+ * 3 es la mayor duración que deja ganar con las dos salidas del dilema del paso 6.
+ */
+export const DURACION_TORMENTA_TICKS = 3;

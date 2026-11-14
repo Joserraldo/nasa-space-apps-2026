@@ -32,8 +32,10 @@ export function novedades(antes: GameState, despues: GameState): Novedades {
   const malaSuerte = causasNuevas.filter((c) => c.origen === "mala_suerte");
   const iaCambio = antes.iaBase === despues.iaBase ? null : { de: antes.iaBase, a: despues.iaBase };
   const termino = antes.resultado === "en_curso" && despues.resultado !== "en_curso" ? despues.resultado : null;
+  // #83: el daño continuo de la tormenta ya anunciada no pausa en cada tick; la pausa es al revelarse.
+  const malaSuerteNueva = malaSuerte.filter((c) => c.descripcionKey !== "causa.tormenta");
   const pausar =
-    tormentaLlego || averiasNuevas.length > 0 || malaSuerte.length > 0 || iaCambio !== null || termino !== null;
+    tormentaLlego || averiasNuevas.length > 0 || malaSuerteNueva.length > 0 || iaCambio !== null || termino !== null;
   return { tormentaLlego, averiasNuevas, causasNuevas, efectosLlegaron, malaSuerte, iaCambio, termino, pausar };
 }
 

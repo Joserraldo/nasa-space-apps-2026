@@ -61,11 +61,18 @@ describe("señal de daño en Marte", () => {
     const base = crearPartida("luna", { sitio: "luna_polo_sur" });
     expect(senalDeDano({ ...base, tormenta: tormentaMedida })).toBeCloseTo(0.3);
   });
-  it("la tormenta medida golpea el blindaje al avanzar el tick", () => {
-    const s0 = { ...crearPartida("golpe", { sitio: "marte_jezero", dificultad: "facil" }), tormenta: tormentaMedida };
+  it("la tormenta medida golpea el blindaje al avanzar el tick, dentro de su ventana (#113)", () => {
+    // La ventana empieza en el tick 3 (MISION_JEZERO.tickTormenta): se parte del tick 2 para entrar en ella.
+    const s0 = { ...crearPartida("golpe", { sitio: "marte_jezero", dificultad: "facil" }), tormenta: tormentaMedida, tick: 2 };
     const s1 = avanzarTick(s0);
     expect(s1.causas.some((c) => c.descripcionKey === "causa.tormenta" && c.origen === "mala_suerte")).toBe(true);
     expect(s1.recursos.blindaje).toBeLessThan(s0.recursos.blindaje - 5);
+  });
+
+  it("antes de revelarse, la tormenta no cobra nada (#83)", () => {
+    const s0 = { ...crearPartida("golpe", { sitio: "marte_jezero", dificultad: "facil" }), tormenta: tormentaMedida };
+    const s1 = avanzarTick(s0);
+    expect(s1.causas.some((c) => c.descripcionKey === "causa.tormenta")).toBe(false);
   });
 });
 

@@ -18,7 +18,9 @@ import {
   RETRASO_POR_DIFICULTAD,
   TICKS_POR_DIA,
 } from "@solar-shield/design";
+import { MISION_JEZERO } from "@solar-shield/missions";
 import { actualizarIa, repararIa } from "./ia.js";
+import { tormentaEnCurso } from "./tormenta.js";
 import { ajustarAltura, avanzarOrbita, senalDeDano } from "./orbita.js";
 import { elegir, enteroEntre, siguiente } from "./rng.js";
 
@@ -88,6 +90,8 @@ export function aplicarAccion(estado: GameState, accionCruda: unknown): GameStat
     };
   }
 
+  if (accion.tipo === "colocar_modulo" && !puedeColocar(estado, accion.modulo)) return estado;
+
   const { inmediato, retrasado, causaKey } = costoDe(accion);
   let s = aplicarDeltas(estado, inmediato, "decision", causaKey, accion);
 
@@ -124,6 +128,57 @@ export function aplicarAccion(estado: GameState, accionCruda: unknown): GameStat
   return s;
 }
 
+/** Módulos que el jugador ya construyó en esta partida (según la cadena de causas). */
+export function modulosColocados(estado: GameState): string[] {
+  const m = new Set<string>();
+  for (const c of estado.causas) {
+    if (c.origen === "decision" && c.accion?.tipo === "colocar_modulo") m.add(c.accion.modulo);
+  }
+  return [...m];
+}
+
+/**
+ * Regla del motor, no solo de la pantalla (#113): solo módulos de la misión, sin repetir,
+ * y como máximo MISION_JEZERO.modulosAColocar. Si no se puede, la acción no hace nada.
+ */
+export function puedeColocar(estado: GameState, modulo: string): boolean {
+  const ya = modulosColocados(estado);
+  return (
+    (MISION_JEZERO.modulosDisponibles as readonly string[]).includes(modulo) &&
+    !ya.includes(modulo) &&
+    ya.length < MISION_JEZERO.modulosAColocar
+  );
+}
+
+/**
+ * Aterrizar en uno de los sitios candidatos de la misión (paso 3). Cobra su costo una sola vez:
+ * el inmediato ahora y el retrasado con el retraso de la dificultad. No es una Action del contrato
+ * (no cambia contracts/): la pantalla la llama al confirmar el sitio. Sitio desconocido o ya
+ * aterrizado → no hace nada.
+ */
+export function aterrizar(estado: GameState, sitioId: string): GameState {
+  if (estado.resultado !== "en_curso") return estado;
+  if (estado.causas.some((c) => c.descripcionKey === "causa.aterrizaje")) return estado;
+  const sitio = MISION_JEZERO.sitiosCandidatos.find((c) => c.id === sitioId);
+  if (!sitio) return estado;
+  let s = aplicarDeltas(estado, sitio.aterrizaje.inmediato, "decision", "causa.aterrizaje");
+  // Marca el aterrizaje aunque el costo inmediato fuera cero, para no cobrarlo dos veces.
+  if (!s.causas.some((c) => c.descripcionKey === "causa.aterrizaje")) {
+    s = { ...s, causas: [...s.causas, { tick: s.tick, origen: "decision", descripcionKey: "causa.aterrizaje" }] };
+  }
+  const retraso = RETRASO_POR_DIFICULTAD[s.dificultad];
+  let rng = s.rngEstado;
+  const nuevos: PendingEffect[] = [];
+  for (const r of RECURSOS) {
+    const d = sitio.aterrizaje.retrasado[r];
+    if (!d) continue;
+    const p = enteroEntre(rng, retraso.min, retraso.max);
+    rng = p.estado;
+    nuevos.push({ id: `${s.tick}-aterrizaje-${r}`, aplicaEnTick: s.tick + p.entero, recurso: r, delta: d, origen: "decision", descripcionKey: "causa.aterrizaje", oculto: retraso.ocultos });
+  }
+  return { ...s, rngEstado: rng, efectosPendientes: [...s.efectosPendientes, ...nuevos] };
+}
+
 /** Simula una acción sin tocar el estado real: devuelve el estado hipotético tras avanzar hasta que sus efectos entren. */
 export function queEsSi(estado: GameState, accion: BaseAction): GameState {
   let s = aplicarAccion(estado, accion);
@@ -155,8 +210,10 @@ export function avanzarTick(estado: GameState): GameState {
   const futuros = s.efectosPendientes.filter((e) => e.aplicaEnTick > s.tick);
   for (const e of listos) s = aplicarDeltas(s, { [e.recurso]: e.delta }, e.origen, e.descripcionKey);
   s = { ...s, efectosPendientes: futuros };
+  const llegoTelemetria = listos.some((e) => e.descripcionKey === "causa.enviar_telemetria");
 
-  const senal = senalDeDano(s);
+  // #113: la tormenta solo hace daño dentro de su ventana (desde que se revela, DURACION_TORMENTA_TICKS).
+  const senal = tormentaEnCurso(s) ? senalDeDano(s) : 0;
   if (senal > 0) {
     const dano = -Math.round(senal * 10);
     if (dano !== 0) s = aplicarDeltas(s, { blindaje: dano, energia: Math.ceil(dano / 2) }, "mala_suerte", "causa.tormenta");
@@ -179,7 +236,10 @@ export function avanzarTick(estado: GameState): GameState {
   const huboDecision = estado.causas.some((c) => c.tick === estado.tick && c.origen === "decision");
   s = actualizarIa(s, huboDecision, senal);
 
+  // Fin de la misión (MISION_JEZERO.fin): pierde si algo llega a 0, aunque la telemetría llegue
+  // en ese mismo tick; gana cuando la telemetría llega a la Tierra con todo por encima de 0.
   if (RECURSOS.some((r) => s.recursos[r] <= 0)) s = { ...s, resultado: "fallo" };
+  else if (llegoTelemetria) s = { ...s, resultado: "exito" };
   else if (s.dia > DIAS_PARA_GANAR) s = { ...s, resultado: "exito" };
   return s;
 }
