@@ -1,0 +1,23 @@
+{
+  "version": "0.1.0",
+  "consultadoEl": "2026-11-14",
+  "dueno": "Agencia Espacial Canadiense (CSA), socia del reto, no NASA",
+  "credito": "© Canadian Space Agency",
+  "condiciones": "https://www.asc-csa.gc.ca/eng/terms.asp#copyright",
+  "tarjetas": [
+    {
+      "id": "csa-comer-en-la-estacion",
+      "tema": "comida",
+      "url": "https://www.asc-csa.gc.ca/eng/astronauts/living-in-space/eating-in-space.asp",
+      "tituloKey": "datos.ciencia.csa-comer-en-la-estacion.titulo",
+      "textoKey": "datos.ciencia.csa-comer-en-la-estacion.texto"
+    },
+    {
+      "id": "csa-granja-espacial",
+      "tema": "comida",
+      "url": "https://www.asc-csa.gc.ca/eng/sciences/food-production/deep-space-food-challenge.asp",
+      "tituloKey": "datos.ciencia.csa-granja-espacial.titulo",
+      "textoKey": "datos.ciencia.csa-granja-espacial.texto"
+    }
+  ]
+}

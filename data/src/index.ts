@@ -19,7 +19,8 @@ import jezeroJson from "../terreno/jezero/jezero.json";
 import radiacionJson from "../ciencia/radiacion.json";
 import osdrJson from "../ciencia/osdr.json";
 import artemisJson from "../ciencia/artemis.json";
-import { ArtemisSchema, FUENTE_DOSIS, OsdrSchema, RadiacionSchema, type Artemis, type Osdr, type Radiacion } from "./ciencia";
+import csaJson from "../ciencia/csa.json";
+import { ArtemisSchema, CsaSchema, FUENTE_DOSIS, OsdrSchema, RadiacionSchema, type Artemis, type Csa, type Osdr, type Radiacion } from "./ciencia";
 import type { SourceCard } from "./contrato";
 import { TerrenoSchema, type Terreno } from "./terreno";
 import { aConvenio } from "./convenio";
@@ -57,6 +58,8 @@ export const terrenoJezero: Terreno = TerrenoSchema.parse(jezeroJson);
 export const radiacion: Radiacion = RadiacionSchema.parse(radiacionJson);
 /** Tarjetas de ciencia con ID real de estudio de OSDR. */
 export const tarjetasOsdr: Osdr = OsdrSchema.parse(osdrJson);
+/** Tarjetas de comida de la CSA (socia, no NASA). La fuente se muestra con `fuente.csa` y el crédito "© Canadian Space Agency". */
+export const tarjetasCsa: Csa = CsaSchema.parse(csaJson);
 
 /** Artemis I: dosis absorbida dentro de Orion (HERA, vía RadLab). µGy/h, nunca mSv. */
 export const artemis: Artemis = ArtemisSchema.parse(artemisJson);

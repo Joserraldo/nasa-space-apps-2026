@@ -123,5 +123,18 @@
   "datos.tarjeta.modelo": "El modelo de la NASA calculó que llegaría a Marte el {fecha}.",
   "datos.tarjeta.fuente": "Fuente: {duenoKey} · consultado el {consultado}",
   "datos.comunicaciones.retraso": "Un mensaje entre Marte y la Tierra viaja a la velocidad de la luz, y aun así tarda de unos 3 a unos 22 minutos, según dónde estén los dos planetas. ¡Nada puede ir más rápido!",
-  "datos.comunicaciones.derivado": "El equipo calculó estos tiempos con la distancia mínima y máxima entre Marte y la Tierra (NASA) y la velocidad de la luz."
+  "datos.comunicaciones.derivado": "El equipo calculó estos tiempos con la distancia mínima y máxima entre Marte y la Tierra (NASA) y la velocidad de la luz.",
+  "fuente.csa": "Agencia Espacial Canadiense (CSA), socia del reto, no NASA · © Canadian Space Agency",
+  "datos.ciencia.OSD-269.titulo": "Lechuga del espacio",
+  "datos.ciencia.OSD-269.texto": "En la Estación Espacial creció lechuga romana roja en un pequeño huerto llamado Veggie, y los científicos le buscaron gérmenes y nutrientes. Se podía comer sin peligro: las verduras de hoja pueden dar comida fresca a los astronautas.",
+  "datos.ciencia.OSD-314.titulo": "Plantas con la gravedad de Marte",
+  "datos.ciencia.OSD-314.texto": "Durante un vuelo espacial, se probaron plantitas con la gravedad baja de Marte. Con la gravedad de Marte solo volvieron a crecer bien cuando recibieron luz roja. Esto puede ayudar a diseñar granjas en el espacio.",
+  "datos.ciencia.OSD-326.titulo": "Músculos en el espacio",
+  "datos.ciencia.OSD-326.texto": "Los ratones que pasaron unas cuatro semanas en el espacio tenían los músculos de las patas más livianos que los que se quedaron en la Tierra. Los científicos lo estudian para ayudar a mantener sanos los músculos y los huesos.",
+  "datos.ciencia.OSD-289.titulo": "Un defensor que se encoge",
+  "datos.ciencia.OSD-289.texto": "El timo es un órgano pequeño que ayuda al cuerpo a combatir gérmenes. En el espacio se encoge, así que los científicos estudiaron ratones en la Estación Espacial para saber por qué.",
+  "datos.ciencia.csa-comer-en-la-estacion.titulo": "Comer en la Estación Espacial",
+  "datos.ciencia.csa-comer-en-la-estacion.texto": "En la Estación Espacial, cada astronauta come 3 comidas y 1 merienda al día. En viajes más largos a la Luna no podrán llevar toda su comida: tendrán que cultivarla.",
+  "datos.ciencia.csa-granja-espacial.titulo": "Una granja espacial de Canadá",
+  "datos.ciencia.csa-granja-espacial.texto": "Un concurso de Canadá buscó formas de cultivar comida gastando muy poca energía, agua y materiales. El ganador, CANGrow, cultiva fresas y tomates cherry y podría producir más de 700 kg de comida al año."
 }

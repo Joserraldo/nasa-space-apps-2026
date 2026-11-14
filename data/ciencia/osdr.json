@@ -29,6 +29,46 @@
       "dueno": "Estudio en tierra financiado en parte por NASA (beca NNX15AD65G); datos en NASA OSDR",
       "tituloKey": "datos.ciencia.OSD-360.titulo",
       "textoKey": "datos.ciencia.OSD-360.texto"
+    },
+    {
+      "id": "OSD-269",
+      "tema": "comida",
+      "tituloOriginal": "Microbiological and nutritional analysis of lettuce crops grown on the International Space Station-VEG03A",
+      "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-269",
+      "dueno": "NASA (Kennedy Space Center), datos en NASA OSDR",
+      "tituloKey": "datos.ciencia.OSD-269.titulo",
+      "textoKey": "datos.ciencia.OSD-269.texto",
+      "consultadoEl": "2026-11-14"
+    },
+    {
+      "id": "OSD-314",
+      "tema": "comida",
+      "tituloOriginal": "Adaptive response of Arabidopsis seedlings in microgravity and Mars reduced gravity environment is enhanced by red light photostimulation",
+      "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-314",
+      "dueno": "Experimento en el EMCS (ESA), financiado por la Agencia Estatal de Investigación de España; datos en NASA OSDR",
+      "tituloKey": "datos.ciencia.OSD-314.titulo",
+      "textoKey": "datos.ciencia.OSD-314.texto",
+      "consultadoEl": "2026-11-14"
+    },
+    {
+      "id": "OSD-326",
+      "tema": "musculo",
+      "tituloOriginal": "Gene-metabolite network linked to inhibited bioenergetics in association with spaceflight induced loss of quadriceps muscle",
+      "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-326",
+      "dueno": "Ratones en vuelo (Rodent Habitat, misión SpaceX-10), financiado por NIH y el Departamento de Defensa de EE. UU.; datos en NASA OSDR",
+      "tituloKey": "datos.ciencia.OSD-326.titulo",
+      "textoKey": "datos.ciencia.OSD-326.texto",
+      "consultadoEl": "2026-11-14"
+    },
+    {
+      "id": "OSD-289",
+      "tema": "inmune",
+      "tituloOriginal": "Impact of spaceflight on gene expression in the thymus",
+      "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-289",
+      "dueno": "Experimento de JAXA (Japón) con ratones en la ISS; datos en NASA OSDR",
+      "tituloKey": "datos.ciencia.OSD-289.titulo",
+      "textoKey": "datos.ciencia.OSD-289.texto",
+      "consultadoEl": "2026-11-14"
     }
   ]
 }
