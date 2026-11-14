@@ -1,4 +1,4 @@
-import type { Difficulty, Equipment, Resource, Resources, Site } from "@solar-shield/contracts";
+import type { Difficulty, Equipment, QuantityWord, Resource, Resources, Site } from "@solar-shield/contracts";
 
 /**
  * Tablas de balance. Solo datos, nada de lógica (design/CLAUDE.md).
@@ -161,3 +161,14 @@ export const MALA_SUERTE_POR_DIFICULTAD: Record<Difficulty, number> = {
 /** Ticks por día de misión y días para ganar (D9 pendiente; borrador). */
 export const TICKS_POR_DIA = 6;
 export const DIAS_PARA_GANAR = 5;
+
+/**
+ * Cuánta energía mueve la acción `redistribuir_energia` cuando el niño dice
+ * "poco", "medio" o "mucho" (issue #77). El contrato acepta de 5 a 50.
+ * Decidido por diseño (Santiago) el 13 nov: se mantienen los valores de agentes.
+ */
+export const ENERGIA_POR_CANTIDAD: Record<QuantityWord, number> = {
+  poco: 10,
+  medio: 25,
+  mucho: 45,
+};
