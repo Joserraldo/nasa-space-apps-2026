@@ -1,0 +1,32 @@
+// Un solo Worker sirve la pantalla (ui/dist) y la API (/api/*).
+// Producción: Worker "nasa-space-apps-2026" (rama main). Preview: "nasa-space-apps-2026-preview" (rama develop).
+// Las claves NUNCA van aquí: se suben con `npx wrangler secret put <NOMBRE>` (ver infra/worker/README.md).
+{
+  "name": "nasa-space-apps-2026",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-11-01",
+  "assets": {
+    // Salida real de `npm run build -w ui` (vite.config.ts: outDir "dist").
+    "directory": "../../ui/dist",
+    "binding": "ASSETS",
+    "not_found_handling": "single-page-application",
+    // El Worker corre primero: /api/* lo resuelve él y el resto se lo pasa a ASSETS.
+    "run_worker_first": true
+  },
+  "vars": {
+    "ENTORNO": "produccion",
+    "BAI_BASE_URL": "https://api.b.ai/v1",
+    "BAI_MODEL": "qwen3.8-flash"
+  },
+  "observability": { "enabled": true },
+  "env": {
+    "preview": {
+      "name": "nasa-space-apps-2026-preview",
+      "vars": {
+        "ENTORNO": "preview",
+        "BAI_BASE_URL": "https://api.b.ai/v1",
+        "BAI_MODEL": "qwen3.8-flash"
+      }
+    }
+  }
+}
