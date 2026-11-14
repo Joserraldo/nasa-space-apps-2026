@@ -36,8 +36,10 @@ export const TEXTOS_JEZERO: Record<Idioma, Record<string, string>> = {
       "The height of the ground comes from real maps of Mars. How steep each place is was calculated by our team from those heights.",
     "mision.jezero.ciencia.panel": "Dust on solar panels blocks sunlight, so they make less electricity until someone cleans them.",
     "mision.jezero.ciencia.reciclador": "Astronauts recycle water again and again. Water doesn't appear out of nowhere.",
-    "mision.jezero.ciencia.invernadero": "Plants need light, water and warmth. Growing food in space costs energy.",
-    "mision.jezero.ciencia.escudo": "Thick material between you and space blocks part of the radiation. Martian soil can do that job.",
+    "mision.jezero.ciencia.invernadero":
+      "Plants can grow in space, but it is hard: they need a special closed chamber. On the Space Station, chile peppers grew for 137 days and gave 26 peppers.",
+    "mision.jezero.ciencia.escudo":
+      "On the way to Mars, the RAD instrument on the Curiosity rover measured almost 3 times more radiation than later on the surface of Mars.",
     "mision.jezero.ciencia.antena": "Radio messages travel at the speed of light, but Mars is so far away that they take minutes to reach Earth.",
     "mision.jezero.pregunta": "Why could the solar storm make Iris give wrong numbers?",
     "mision.jezero.pregunta.a": "Because it got very cold",
@@ -77,8 +79,10 @@ export const TEXTOS_JEZERO: Record<Idioma, Record<string, string>> = {
       "La altura del suelo sale de mapas reales de Marte. Qué tan inclinado es cada lugar lo calculó nuestro equipo a partir de esas alturas.",
     "mision.jezero.ciencia.panel": "El polvo sobre los paneles solares tapa la luz, así que dan menos electricidad hasta que alguien los limpia.",
     "mision.jezero.ciencia.reciclador": "Los astronautas reciclan el agua una y otra vez. El agua no aparece de la nada.",
-    "mision.jezero.ciencia.invernadero": "Las plantas necesitan luz, agua y calor. Cultivar comida en el espacio cuesta energía.",
-    "mision.jezero.ciencia.escudo": "Un material grueso entre tú y el espacio bloquea parte de la radiación. El suelo de Marte puede hacer ese trabajo.",
+    "mision.jezero.ciencia.invernadero":
+      "Las plantas pueden crecer en el espacio, pero es difícil: necesitan una cámara cerrada especial. En la Estación Espacial crecieron chiles durante 137 días y dieron 26.",
+    "mision.jezero.ciencia.escudo":
+      "En el viaje a Marte, el instrumento RAD del rover Curiosity midió casi 3 veces más radiación que después en la superficie de Marte.",
     "mision.jezero.ciencia.antena": "Los mensajes de radio viajan a la velocidad de la luz, pero Marte está tan lejos que tardan minutos en llegar a la Tierra.",
     "mision.jezero.pregunta": "¿Por qué la tormenta solar pudo hacer que Iris diera números equivocados?",
     "mision.jezero.pregunta.a": "Porque hizo mucho frío",
