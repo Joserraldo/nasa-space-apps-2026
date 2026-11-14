@@ -10,3 +10,4 @@ export { consejosSatelite } from "./fases.js";
 export { consejosAterrizaje, type SitioCandidato, type Criterio } from "./aterrizaje.js";
 export { dialogosDelPaso, encolar, vistaVisible, type Momento, type VistaCompleta } from "./director.js";
 export { guiaIris, explicarSistema, areaUrgente } from "./iris-guia.js";
+export { conversar, preguntaDelBoton, PREGUNTA_DEL_BOTON, type Entrada, type OpcionesConversar } from "./conversar.js";
