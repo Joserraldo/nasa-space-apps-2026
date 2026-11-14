@@ -53,6 +53,17 @@ Lista oficial (pestaña Resources del reto, copiada en ORQUESTACION): NASA Open 
 - Luna, superficie: **1369 µSv/día**, medido por LND en Chang’e-4 (**CNSA**). En el mismo periodo, la ISS (DOSIS 3D DOSTEL) dio **731 µSv/día**. Zhang et al. 2020, *Sci. Adv.* 6(39) eaaz1334, texto completo en PMC7518862. El resumen da la dosis absorbida: 13,2 ± 1 µGy/h en silicio.
 - Las comparaciones Marte/ISS son aproximadas porque se midieron en años distintos (ciclo solar distinto).
 
+## 0c. Fuentes de NASA fuera de la lista oficial, aprobadas (2026-11-14)
+
+Daniel (rol datos) las aprobó el 2026-11-14. Cada una respalda solo la afirmación que se indica; el código las expone con `fuenteAprobada()` (`data/src/fuentes.ts`).
+
+| Fuente | Afirmación que respalda [V] | Clave |
+|---|---|---|
+| NASA JPL, 21 dic 2022 (retiro de InSight) | InSight se quedó sin energía porque el polvo se acumuló en sus paneles. Revisada el 14 nov; hoy jpl.nasa.gov responde 403 a `curl` (bloqueo a bots), en el navegador carga | `fuente.jpl.insight` |
+| NASA, 20 jun 2023 (ECLSS de la Estación) | El sistema alcanzó la meta de recuperar el 98 % del agua | `fuente.nasa.agua` |
+| NASA Earthdata, 2 jul 2024 | Las partículas de alta energía de una tormenta de radiación solar pueden cambiar un bit (de 0 a 1 o de 1 a 0) en el chip de una nave | `fuente.nasa.bitflip` |
+| Moon Trek (`trek.nasa.gov/moon`, JPL), NASA SVS 5187, nomenclátor de USGS y science.nasa.gov | Aprobadas para las misiones lunares y de Marte propuestas (#97–#100). Sus `fuente.*` se crean cuando diseño apruebe esas misiones; cada cifra se sigue verificando antes de usarla | (por crear) |
+
 ## 1. DONKI (Database Of Notifications, Knowledge, Information)
 
 ### Acceso y URLs
