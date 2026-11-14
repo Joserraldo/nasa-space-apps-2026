@@ -1,12 +1,12 @@
 # Estado — datos
-**Actualizado:** 2026-11-13 · **Rama:** feat/datos-tarjeta-fuente · **PR:** #55 tarjeta (#41 ruta dorada) · #45 fusionado
+**Actualizado:** 2026-11-14 · **Rama:** feat/datos-luna-crater · **PR:** #95 (Luna/CRaTER) · abiertos #55 → #65 → #69
 ## Hecho
-- 8 tormentas DONKI + RAD. Ruta dorada 2024-05-20, medida en Marte (×19,4). Jezero (Trek), dosis [V], 3 tarjetas OSDR, glosario, auditoría.
-- Artemis I (HERA, RadLab): resumen y tarjeta es/en (el enunciado oficial pide datos de Artemis).
-- Contrato v0.2.0 (#29) con los opcionales de datos: espejo eliminado, data/ reexporta /contracts.
+- Tareas 1–3 (tarjeta de fuente 2024-05-20, "qué datos usamos", revisión de cifras) en #55; retraso 3–22 min en #65; fuenteTerreno() en #69.
+- #95: regla de medición compartida (reproduce ×19,4 de RAD); tormentas medidas en órbita lunar por CRaTER (Gannon ×206,3, fondo limpio); constantes de ARES verificadas en NSSDC (#88).
+- Propuestas de misión que nadie había empezado (a pedido de Daniel): Luna polo sur, Luna lado visible, Marte polo norte, outpost sorpresa → PRs borrador en docs/ideas/.
 ## Qué sigue
-- #41 ruta dorada: tarjeta de fuente del 20 may y "datos usados" en en/es (PR nuevo). Regiones nuevas en pausa por el #41.
-- Cifras de los expertos (#44, #47, #49) revisadas: las de NASA están [V]. Falta que agentes use referenciaDosis() (#45).
+- Revisar esas 4 propuestas (cifras [V]) y pasarlas a diseño. #91 (InSight): fuente JPL fuera de la lista, pendiente de que Daniel decida.
+- Cuando se fusione #55: actualizar #65 y #69 con develop.
 ## Bloqueos / no verificado
-- Ninguno. data está en CI desde #46. Mars Rover Photos caído. RAD sin datos en oct 2024.
+- Ninguno de código. Inclinación del eje lunar: NO VERIFICADO. CRaTER sin datos en oct 2024.
 Tokens: 🟡

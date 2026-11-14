@@ -19,8 +19,10 @@ import jezeroJson from "../terreno/jezero/jezero.json";
 import radiacionJson from "../ciencia/radiacion.json";
 import osdrJson from "../ciencia/osdr.json";
 import artemisJson from "../ciencia/artemis.json";
+import lunaJson from "../ciencia/luna.json";
 import { ArtemisSchema, FUENTE_DOSIS, OsdrSchema, RadiacionSchema, type Artemis, type Osdr, type Radiacion } from "./ciencia";
 import type { SourceCard } from "./contrato";
+import { LunaSchema, type Luna, type MedicionLuna } from "./luna";
 import { TerrenoSchema, type Terreno } from "./terreno";
 import { aConvenio } from "./convenio";
 import { TormentaSchema, type Tormenta } from "./tormenta";
@@ -32,6 +34,8 @@ export * from "./terreno";
 export * from "./radlab";
 export * from "./ciencia";
 export * from "./region";
+export * from "./luna";
+export * from "./medicion";
 export * from "./tarjeta";
 export { aConvenio, magnitud } from "./convenio";
 
@@ -75,3 +79,11 @@ export function referenciaDosis(id: string): { valor: number; unidad: "mSv/día"
     fuente: { nombreKey, url: r.url, idFuente: r.id, consultadoEl: radiacion.consultadoEl, dueno: r.dueno, estadoDato: "curado" },
   };
 }
+
+/** Tormentas curadas medidas cerca de la Luna (CRaTER, LRO, en órbita). µGy/h, dosis absorbida. */
+export const luna: Luna = LunaSchema.parse(lunaJson);
+/**
+ * Medición lunar de una tormenta curada, o undefined si CRaTER no tiene datos (no se inventa).
+ * Usa el texto `datos.luna.medicion` solo si `fondoTranquilo` es true; si no, el factor sale engañoso.
+ */
+export const medicionLuna = (id: string): MedicionLuna | undefined => luna.mediciones.find((m) => m.id === id);

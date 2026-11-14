@@ -67,6 +67,7 @@ export type Artemis = z.infer<typeof ArtemisSchema>;
 /** Clave i18n de la fuente de cada referencia de dosis (la tarjeta la muestra ui). */
 export const FUENTE_DOSIS: Record<string, string> = {
   "marte-superficie": "fuente.dosis.marte",
+  "marte-crucero": "fuente.dosis.marte",
   "luna-superficie": "fuente.dosis.lunaIss",
   iss: "fuente.dosis.lunaIss",
 };

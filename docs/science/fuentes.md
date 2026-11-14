@@ -18,7 +18,7 @@ Consultas hechas con la clave del equipo desde un script. Las muestras están en
 - **Numeración de regiones [V]:** DONKI usa 5 cifras (`13664`) y NOAA usa "AR 3664". Es la misma región.
 - **Marte en DONKI [V]:** las simulaciones `WSAEnlilSimulations` traen `impactList` con `location: "Mars"`, `arrivalTime` e `isGlancingBlow`. Es un **modelo** (predicción), no una medición en Marte. **Corrección:** antes escribí "mayo de 2024 no tiene impacto en Marte", pero la consulta del 8–10 de mayo era demasiado corta. Con ventanas más amplias sí hay corridas con Marte (ej. `WSA-ENLIL/30869/1` para la CME del X8.7).
 - **Catálogo curado [V]** (7 tormentas, `data/curated/`): todo sale de `data/raw` por código (`npm run curar`), y una prueba lo regenera para comprobarlo. Las reglas están en `docs/science/pipeline.md`.
-  - X8.7 del 14 may 2024 (ruta dorada): FLR `2024-05-14T16:46:00-FLR-001` → CME `2024-05-14T17:00:00-CME-001` (2119 km/s). Llegada a Marte según `WSA-ENLIL/30869/1`: 2024-05-16T20:47Z, directa. Ninguna corrida la manda a la Tierra.
+  - X8.7 del 14 may 2024 (candidata inicial a ruta dorada; la ruta dorada final es `2024-05-20-marte`, ver D8): FLR `2024-05-14T16:46:00-FLR-001` → CME `2024-05-14T17:00:00-CME-001` (2119 km/s). Llegada a Marte según `WSA-ENLIL/30869/1`: 2024-05-16T20:47Z, directa. Ninguna corrida la manda a la Tierra.
   - X5.8 del 11 may 2024: hacia Marte según ENLIL `30801`. Gran tormenta de mayo 2024: Kp 9 en la Tierra. X9.0 del 3 oct 2024: Kp 7.33 (Tierra) y Marte según ENLIL.
   - 10 oct 2024: GST `2024-10-10T15:00:00-GST-001`, **Kp 8.67** (antes estaba NO VERIFICADO en §4 #7).
   - **Sep 2017 [V]:** X9.3 `2017-09-06T11:53:00-FLR-001` (pico 12:02Z; corrige el "NO VERIFICADO" de §4 #3) y X8.2 `2017-09-10T15:35:00-FLR-001` con una CME a 2650 km/s. La corrida ENLIL más reciente (`13117`) ya no incluye a Marte, aunque una anterior (`13114`) sí la incluía. Que RAD o MAVEN midieran algo en Marte sigue **NO VERIFICADO** (no viene de DONKI).
@@ -44,7 +44,12 @@ Lista oficial (pestaña Resources del reto, copiada en ORQUESTACION): NASA Open 
 
 **Marte, ficha NASA NSSDC [V, 2026-11-13]** (https://nssdc.gsfc.nasa.gov/planetary/factsheet/marsfact.html, actualizada el 19 may 2025): inclinación del eje 25,19°; gravedad superficial 3,73 m/s², que es **0,380** veces la de la Tierra; día de 24,6597 h; semieje mayor 227,956 millones de km (1,524 veces el de la Tierra).
 
+**Tormentas vistas desde la Luna [V, 2026-11-13]:** OSDR RadLab `CRaTER-D1D2` (LRO, NASA; **en órbita lunar, no en la superficie**), dosis absorbida en µGy/h. Misma regla que RAD (`data/src/medicion.ts`). **Gannon, 10 may 2024:** fondo 5,2 → media diaria 1082,5 µGy/h el 11 may (×206,3), fondo limpio. 17 sep 2017 (X8.2): pico 19 481,6 el 11 sep, pero el fondo ya traía la tormenta del 6 sep (`fondoTranquilo: false`, el factor ×27 sale bajo). Sin datos de CRaTER en octubre de 2024. Script `data/scripts/luna.ts`, resultado `data/ciencia/luna.json`.
+
+**Constantes de ARES verificadas [V, NASA NSSDC, 2026-11-13]:** gravedad Marte 3,73 m/s² y Luna 1,62 m/s²; irradiancia solar Marte 586,2 W/m², Luna 1361,0 W/m² (igual que la Tierra). Luna: periodo sinódico 29,53 días; rango de temperatura en el ecuador 95–390 K; distancia media 384 400 km (retraso de luz ≈ 1,3 s, cálculo). Fichas: https://nssdc.gsfc.nasa.gov/planetary/factsheet/moonfact.html (11 ene 2024) y marsfact.html (19 may 2025). Inclinación del eje lunar respecto a la eclíptica: NO VERIFICADO (la ficha no la da).
+
 **Dosis de referencia [V en fuente primaria]** (`data/ciencia/radiacion.json`):
+- Marte, **viaje (crucero)**: **1,84 ± 0,3 mSv/día** durante los 253 días de viaje [V, mismo resumen, 2026-11-14]. Unas 2,9 veces la de la superficie (cálculo).
 - Marte, superficie: **0,64 ± 0,12 mSv/día** (7 ago 2012 – 1 jun 2013). Cita: Reitz, Matthiä, Hassler et al. 2016, ICES2016 (https://elib.dlr.de/106090/). La página da esta cita, no el artículo de *Science* de 2014.
 - Luna, superficie: **1369 µSv/día**, medido por LND en Chang’e-4 (**CNSA**). En el mismo periodo, la ISS (DOSIS 3D DOSTEL) dio **731 µSv/día**. Zhang et al. 2020, *Sci. Adv.* 6(39) eaaz1334, texto completo en PMC7518862. El resumen da la dosis absorbida: 13,2 ± 1 µGy/h en silicio.
 - Las comparaciones Marte/ISS son aproximadas porque se midieron en años distintos (ciclo solar distinto).
