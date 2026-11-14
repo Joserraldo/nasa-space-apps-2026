@@ -92,7 +92,7 @@ export function curarLunaSur(): TerrenoLunaPoloSur {
     sitios,
     fuente: {
       nombreKey: "fuente.moonTrek",
-      dueno: "NASA Moon Trek (JPL); DEM LRO LOLA polar 30 m (LRO_LOLA_DEM_SPole75_30mp_v04); posiciones: capa CombinedNomenclature de Moon Trek (nomenclátor IAU)",
+      dueno: "NASA Moon Trek (JPL); DEM LRO LOLA polar 30 m (LRO_LOLA_DEM_SPole75_30mp_v04); positions: Moon Trek CombinedNomenclature layer (IAU gazetteer)",
       urls: ["https://trek.nasa.gov/moon/"],
       consultadoEl: consulta.consultadoEl,
       estadoDato: "curado",
