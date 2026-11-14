@@ -49,7 +49,7 @@ import { aterrizar, puedeAplicar, aplicarAccion, elegirDilema, modulosColocados,
 s = aterrizar(s, sitioId);                 // paso 3: cobra el costo del sitio una sola vez
 const p = puedeAplicar(s, accion);         // { ok: true } | { ok: false, motivo, recurso? }
 if (p.ok) s = aplicarAccion(s, accion);    // rechazada → devuelve el MISMO objeto (s === antes)
-s = elegirDilema(s, opcion.id);            // paso 6 (llega con #140): acción + extra del invernadero
+s = elegirDilema(s, opcion.id);            // paso 6: acción + extra del invernadero si se construyó
 ```
 
 - `motivo`: `"partida_terminada" | "sin_simulaciones" | "modulo_no_permitido" | "recursos_insuficientes"` (con `recurso` = el medidor que falta).
