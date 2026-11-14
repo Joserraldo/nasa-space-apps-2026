@@ -200,3 +200,32 @@ export const TerrenoMarteNorteSchema = z.object({
   }),
 });
 export type TerrenoMarteNorte = z.infer<typeof TerrenoMarteNorteSchema>;
+
+/** Estereográfica polar sur de Moon Trek (esfera IAU, escala 1 en el polo): misma que LRO_LOLA_DEM_SPole75_30mp_v04. */
+export const WKT_POLAR_SUR =
+  'PROJCS["Moon2000_spole",GEOGCS["GCS_Moon",DATUM["D_Moon_2000",SPHEROID["Moon_2000_IAU_IAG",1737400.0,0.0]],PRIMEM["Reference_Meridian",0.0],UNIT["Degree",0.0174532925199433]],PROJECTION["Stereographic_South_Pole"],PARAMETER["false_easting",0.0],PARAMETER["false_northing",0.0],PARAMETER["central_meridian",0.0],PARAMETER["standard_parallel_1",-90.0],UNIT["Meter",1.0]]';
+/** Cuadro de 15,36 km alrededor de cada sitio del polo sur: 128 × 128 px de 120 m. */
+export const LUNA_SUR_CUADRO = { ladoM: 15_360, px: 128 } as const;
+
+/** (lat, lon) en grados → metros en la proyección polar sur: ρ = 2R·tan((90+lat)/2), x = ρ·sin(lon), y = ρ·cos(lon). */
+export function aPolarSur(lat: number, lon: number): { x: number; y: number } {
+  const rad = Math.PI / 180;
+  const rho = 2 * RADIO_LUNA_M * Math.tan(((90 + lat) * rad) / 2);
+  return { x: rho * Math.sin(lon * rad), y: rho * Math.cos(lon * rad) };
+}
+
+export const SitioLunaSurSchema = SitioLunaSchema.omit({ mision: true, bbox: true, sombreado: true }).extend({
+  /** Nombre del accidente en el nomenclátor IAU (capa CombinedNomenclature de Moon Trek). */
+  nombreIau: z.string(),
+  /** Diámetro del accidente (km), del nomenclátor. */
+  diametroKm: z.number(),
+  /** Recuadro en metros de la proyección polar sur (ver WKT_POLAR_SUR). */
+  bboxM: z.object({ xmin: z.number(), ymin: z.number(), xmax: z.number(), ymax: z.number() }),
+});
+export type SitioLunaSur = z.infer<typeof SitioLunaSurSchema>;
+
+export const TerrenoLunaPoloSurSchema = TerrenoLunaSchema.omit({ id: true, sitios: true }).extend({
+  id: z.literal("luna-polo-sur"),
+  sitios: z.array(SitioLunaSurSchema).min(4).max(6),
+});
+export type TerrenoLunaPoloSur = z.infer<typeof TerrenoLunaPoloSurSchema>;

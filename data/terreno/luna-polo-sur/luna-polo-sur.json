@@ -1,0 +1,195 @@
+{
+  "version": "0.1.0",
+  "nombreKey": "datos.terreno.lunaPoloSur.nombre",
+  "fuente": {
+    "nombreKey": "fuente.moonTrek",
+    "dueno": "NASA Moon Trek (JPL); DEM LRO LOLA polar 30 m (LRO_LOLA_DEM_SPole75_30mp_v04); posiciones: capa CombinedNomenclature de Moon Trek (nomenclátor IAU)",
+    "urls": [
+      "https://trek.nasa.gov/moon/"
+    ],
+    "consultadoEl": "2026-11-14",
+    "estadoDato": "curado",
+    "derivadoKey": "datos.terreno.derivado",
+    "pendientes": [
+      "luz",
+      "blindaje"
+    ]
+  },
+  "id": "luna-polo-sur",
+  "sitios": [
+    {
+      "id": "shackleton",
+      "nombreKey": "datos.terreno.sitio.shackleton.nombre",
+      "descripcionKey": "datos.terreno.sitio.shackleton.descripcion",
+      "lon": 132.321845,
+      "lat": -89.625776,
+      "dem": {
+        "archivo": "shackleton/elevacion.bin",
+        "ancho": 128,
+        "alto": 128,
+        "metrosPorPixel": 120
+      },
+      "elevacionM": -2635,
+      "pendienteGrados": 9.1,
+      "relieveM": 4173,
+      "puntajes": {
+        "plano": 0.09,
+        "luz": null,
+        "blindaje": null
+      },
+      "nombreIau": "Shackleton",
+      "diametroKm": 21,
+      "bboxM": {
+        "xmin": 710,
+        "ymin": -15320,
+        "xmax": 16070,
+        "ymax": 40
+      }
+    },
+    {
+      "id": "haworth",
+      "nombreKey": "datos.terreno.sitio.haworth.nombre",
+      "descripcionKey": "datos.terreno.sitio.haworth.descripcion",
+      "lon": -7.493656,
+      "lat": -87.202858,
+      "dem": {
+        "archivo": "haworth/elevacion.bin",
+        "ancho": 128,
+        "alto": 128,
+        "metrosPorPixel": 120
+      },
+      "elevacionM": -3147,
+      "pendienteGrados": 9.2,
+      "relieveM": 2992,
+      "puntajes": {
+        "plano": 0.08,
+        "luz": null,
+        "blindaje": null
+      },
+      "nombreIau": "Haworth",
+      "diametroKm": 51.4231,
+      "bboxM": {
+        "xmin": -18744,
+        "ymin": 76431,
+        "xmax": -3384,
+        "ymax": 91791
+      }
+    },
+    {
+      "id": "faustini",
+      "nombreKey": "datos.terreno.sitio.faustini.nombre",
+      "descripcionKey": "datos.terreno.sitio.faustini.descripcion",
+      "lon": 85.0241,
+      "lat": -87.177099,
+      "dem": {
+        "archivo": "faustini/elevacion.bin",
+        "ancho": 128,
+        "alto": 128,
+        "metrosPorPixel": 120
+      },
+      "elevacionM": -2713,
+      "pendienteGrados": 6.5,
+      "relieveM": 1095,
+      "puntajes": {
+        "plano": 0.35,
+        "luz": null,
+        "blindaje": null
+      },
+      "nombreIau": "Faustini",
+      "diametroKm": 42.4846,
+      "bboxM": {
+        "xmin": 77614,
+        "ymin": -254,
+        "xmax": 92974,
+        "ymax": 15106
+      }
+    },
+    {
+      "id": "malapert",
+      "nombreKey": "datos.terreno.sitio.malapert.nombre",
+      "descripcionKey": "datos.terreno.sitio.malapert.descripcion",
+      "lon": 12.305737,
+      "lat": -84.798043,
+      "dem": {
+        "archivo": "malapert/elevacion.bin",
+        "ancho": 128,
+        "alto": 128,
+        "metrosPorPixel": 120
+      },
+      "elevacionM": -1670,
+      "pendienteGrados": 14.3,
+      "relieveM": 3153,
+      "puntajes": {
+        "plano": 0,
+        "luz": null,
+        "blindaje": null
+      },
+      "nombreIau": "Malapert",
+      "diametroKm": 70.4424,
+      "bboxM": {
+        "xmin": 25962,
+        "ymin": 146543,
+        "xmax": 41322,
+        "ymax": 161903
+      }
+    },
+    {
+      "id": "nobile",
+      "nombreKey": "datos.terreno.sitio.nobile.nombre",
+      "descripcionKey": "datos.terreno.sitio.nobile.descripcion",
+      "lon": 53.647625,
+      "lat": -85.239498,
+      "dem": {
+        "archivo": "nobile/elevacion.bin",
+        "ancho": 128,
+        "alto": 128,
+        "metrosPorPixel": 120
+      },
+      "elevacionM": 755,
+      "pendienteGrados": 9,
+      "relieveM": 1527,
+      "puntajes": {
+        "plano": 0.1,
+        "luz": null,
+        "blindaje": null
+      },
+      "nombreIau": "Nobile",
+      "diametroKm": 73.5361,
+      "bboxM": {
+        "xmin": 108648,
+        "ymin": 77935,
+        "xmax": 124008,
+        "ymax": 93295
+      }
+    },
+    {
+      "id": "de-gerlache",
+      "nombreKey": "datos.terreno.sitio.de-gerlache.nombre",
+      "descripcionKey": "datos.terreno.sitio.de-gerlache.descripcion",
+      "lon": -90.447515,
+      "lat": -88.448714,
+      "dem": {
+        "archivo": "de-gerlache/elevacion.bin",
+        "ancho": 128,
+        "alto": 128,
+        "metrosPorPixel": 120
+      },
+      "elevacionM": -1868,
+      "pendienteGrados": 19,
+      "relieveM": 2028,
+      "puntajes": {
+        "plano": 0,
+        "luz": null,
+        "blindaje": null
+      },
+      "nombreIau": "de Gerlache",
+      "diametroKm": 31.4131,
+      "bboxM": {
+        "xmin": -54722,
+        "ymin": -8047,
+        "xmax": -39362,
+        "ymax": 7313
+      }
+    }
+  ]
+}

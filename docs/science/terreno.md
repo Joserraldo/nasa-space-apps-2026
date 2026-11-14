@@ -70,3 +70,22 @@ Los relieves coinciden con los de la propuesta #100; las pendientes difieren de 
 (En las filas de día el "próximo amanecer" del JSON es el de después del siguiente atardecer, ~29 días más tarde.) Esto coincide con la propuesta (Tranquilidad amanece primero el 13 may ~21:00; Hadley el 15 may ~11:00), pero la tormenta de la ruta dorada (20 may, CME) llegó con el Sol alto en los 3 sitios; la afirmación "llegó de noche" de la propuesta NO coincide con esta tabla para el lado visible: el 11 may sí era de noche, el 20 may no.
 **Verificación [V]:** Apolo 11, 2024-05-10 15:00 UT, fila cruda `Slon 153,133`, `Slat 0,927` → e = −39,64° calculado aparte en Python y en el código; los 12 amaneceres de 2024 de cada sitio están separados 29,2–29,9 días (mes sinódico 29,53); la elevación cambia ≤ 0,62°/hora.
 **Por qué `luz` sigue `null`:** la fracción de horas con Sol en 2024 sale ≈ 0,49 en los 3 sitios (0,487 / 0,489 / 0,492): no distingue sitios, y el horizonte real (montañas de Hadley) no se calculó. Un puntaje con esos números sería inventado. **NO VERIFICADO:** efecto de montañas y de la libración del horizonte; el disco solar (0,25°) y la refracción nula en la Luna no se modelaron.
+
+## Luna polo sur (Moon Trek): 6 cráteres
+**Fuente:** NASA Moon Trek (aprobada por Daniel), consultado el 2026-11-14. `npm run luna-sur:descargar` (sin clave, 1 petición cada 2 s) y `npm run luna-sur:curar`. Salida: `data/terreno/luna-polo-sur/` (~200 KB, solo DEM; sin sombreado).
+- **Elevación [V]:** `.../services/LRO_LOLA_DEM_SPole75_30mp_v04/ImageServer/exportImage` (30 m/px, proyección estereográfica polar sur `Moon2000_spole`, escala 1 en el polo, rango −7762 a 7027 m). Cuadro de 15,36 km (128×128 px de 120 m), recuadro en metros: `x = ρ·sin(lon)`, `y = ρ·cos(lon)`, `ρ = 2R·tan((90+lat)/2)`, R = 1 737 400 m (comprobado contra `identify` del servicio). Guardado como Int16 LE. Ojo: con `bboxSR`/`imageSR` explícitos el servicio devolvió HTTP 500; sin ellos (SR nativo) funciona.
+- **Posición [V]:** capa `CombinedNomenclature/MapServer/0` (`LABEL`, `type='Crater, craters'`, campos `center_lat`, `center_lon`, `diameter`; nomenclátor IAU). No se cruzó con USGS.
+- **Derivado por el equipo:** igual que luna-visible (pendiente media por diferencias centrales en radio de 1,5 km; relieve = máx − mín del cuadro; plano = 1 − pendiente / 10°).
+
+| Sitio | Lat / Lon | Elevación | Pendiente | Relieve | Plano |
+|---|---|---|---|---|---|
+| Shackleton | −89,63° / 132,32° | −2635 m | 9,1° | 4173 m | 0,09 |
+| Haworth | −87,20° / −7,49° | −3147 m | 9,2° | 2992 m | 0,08 |
+| Faustini | −87,18° / 85,02° | −2713 m | 6,5° | 1095 m | 0,35 |
+| Malapert | −84,80° / 12,31° | −1670 m | 14,3° | 3153 m | 0 |
+| Nobile | −85,24° / 53,65° | 755 m | 9,0° | 1527 m | 0,10 |
+| de Gerlache | −88,45° / −90,45° | −1868 m | 19,0° | 2028 m | 0 |
+
+**Verificación independiente (`identify`, 2026-11-14):** polar vs JSON: −2639,5 / −3145,5 / −2711,5 / −1673 / 760 / −1878 m (diferencias ≤ 10 m); DEM global 128 ppd en la misma lat/lon: −2650 / −3106 / −2717 / −1683 / 756,5 / −1858,5 m (≤ 41 m).
+- Son el **centro del cráter según el nomenclátor**, no un punto de aterrizaje: no son los nombres "cresta soleada / macizo alto…" de la propuesta #98 (esos eran descriptivos, sin coordenadas). Asignarlos a los 4 sitios del juego lo decide diseño.
+- **NO VERIFICADO:** luz (Moon Trek no ofrece capa de iluminación media: se buscaron en los 279 servicios nombres con "illum/sun/light/avg/flux" sin resultado; solo hay temperatura DIVINER), hielo cerca (existen `SP_IceLoc_280m`, `PSR_SP` y DIVINER < 110 K, no usados todavía) y blindaje. Quedan `null` y en `fuente.pendientes`. El ClrShade global reproyectado al polo salió negro, por eso no hay sombreado.
