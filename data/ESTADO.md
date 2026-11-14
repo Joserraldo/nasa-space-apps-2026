@@ -1,7 +1,7 @@
 # Estado — datos
-**Actualizado:** 2026-11-14 · **Rama:** feat/datos-luna-crater · **Orden de merge:** #95 → #116 → #133 → #122 → #123 → #125 → #126 · #55, #104, #65 y #69 fusionados · abiertos #97–#100, #116, #122, #123, #125 y #126 (apilado sobre #125)
+**Actualizado:** 2026-11-14 · **Rama:** feat/datos-luna-crater · **Abiertos:** #95 y #126 (ambos sobre develop) · Fusionados: #55, #65, #69, #104, #116, #122, #123, #125, #133
 ## Hecho
-- #65 y #69 fusionados; #95 y #116 rebasados sobre develop (69 y 66 ✓).
+- #116, #122, #123, #125 y #133 fusionados; #95 y #126 rebasados sobre develop (80 y 84 ✓, repo 300 ✓).
 - #95: Luna con CRaTER (Gannon ×206,3, en órbita), constantes de ARES [V], dosis del viaje a Marte 1,84 mSv/día. Revisado por Codex.
 - #116 (sobre develop): fuentes InSight, agua ISS y bit flips con `fuenteAprobada()`; cierra #91 y #93. De #104 quedan 2 textos por cambiar (plantas → OSD-772, escudo → RAD).
 - #122 raspado completo y auditado (Sonnet + API en vivo; correos personales ocultos). #123: 6 tarjetas (OSDR y CSA).
