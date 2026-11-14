@@ -38,3 +38,15 @@ describe("terreno de Jezero", () => {
     }
   });
 });
+
+describe("fuenteTerreno (para los consejos de aterrizaje)", () => {
+  it("es una SourceCard válida del contrato, con dueño y nota de valores derivados", async () => {
+    const { fuenteTerreno } = await import("../src");
+    const { SourceCardSchema } = await import("../src/contrato");
+    const f = fuenteTerreno();
+    expect(SourceCardSchema.safeParse(f).success).toBe(true);
+    expect(f.dueno).toContain("Mars Trek");
+    expect(es[f.nombreKey]).toBeTruthy();
+    expect(en[terrenoJezero.fuente.derivadoKey]).toBeTruthy();
+  });
+});

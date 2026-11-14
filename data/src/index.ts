@@ -76,3 +76,13 @@ export function referenciaDosis(id: string): { valor: number; unidad: "mSv/día"
     fuente: { nombreKey, url: r.url, idFuente: r.id, consultadoEl: radiacion.consultadoEl, dueno: r.dueno, estadoDato: "curado" },
   };
 }
+
+/**
+ * Tarjeta de fuente del terreno de Jezero (SourceCard del contrato), para los consejos de aterrizaje.
+ * Los puntajes plano/luz/blindaje son DERIVADOS por el equipo: ui debe mostrar también
+ * la nota `terrenoJezero.fuente.derivadoKey` ("valores del juego calculados a partir de la altura real").
+ */
+export function fuenteTerreno(): SourceCard {
+  const f = terrenoJezero.fuente;
+  return { nombreKey: f.nombreKey, url: f.urls[0]!, idFuente: "jezero", consultadoEl: f.consultadoEl, dueno: f.dueno, estadoDato: "curado" };
+}

@@ -1,6 +1,6 @@
 # Pipeline DONKI → `data/curated` (respaldo offline, no en vivo)
 
-1. `cd data && npm run descargar`: baja de DONKI y de RadLab (RAD, sin clave) las ventanas de `curated/config.json` (máx. 30 días) a `data/raw/<grupo>/`. FLR sale de `ccmc.gsfc.nasa.gov/DONKI-API` y lo demás de `api.nasa.gov/DONKI` con `NASA_API_KEY` del entorno o del `.env`. La clave no se imprime ni se guarda (`consulta.json` guarda la URL sin clave).
+1. `cd data && npm run descargar`: baja de DONKI y de RadLab (RAD, sin clave) las ventanas de `curated/config.json` (máx. 30 días) a `data/raw/<grupo>/`. FLR sale de `ccmc.gsfc.nasa.gov/DONKI-API` y lo demás de `api.nasa.gov/DONKI` con `NASA_API_KEY` del entorno, de `.env.local` (convención del equipo) o de `.env`. La clave no se imprime ni se guarda (`consulta.json` guarda la URL sin clave).
 2. `npm run curar`: no usa la red. Convierte los IDs elegidos en `config.json` en `data/curated/<id>.json` y `index.json`.
 3. `npm test`: regenera lo curado desde raw y lo compara con los archivos.
 
