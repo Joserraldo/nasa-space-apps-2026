@@ -1,0 +1,1428 @@
+[
+ {
+  "Accession": "OSD-225",
+  "Study Title": "Expression profiling of soleus muscle under the effect of simulated spaceflight",
+  "organism": "Rattus norvegicus",
+  "Project Type": "Ground Study",
+  "Study Factor Name": "Hindlimb Unloading     Treatment",
+  "Study Assay Measurement Type": "transcription profiling",
+  "Study Publication Title": "Mimic microgravity effect on muscle transcriptome under ionizing radiation.",
+  "Study Description": "Spaceflight imposes the risk of skeletal muscle atrophy for astronauts. The understanding of muscle atrophy because of spaceflight is limited, but continued efforts are essential for developing countermeasures of this effect. A distinct difference between spaceflight-induced muscle atrophy and other forms of atrophy is the additional effect of cosmic rays in outer space. To study spaceflight-induced muscle atrophy, we performed two ground-based models of microgravity in a low dose radiation environment and studied transcriptional changes in rat soleus muscle using microarray technology.",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-225"
+ },
+ {
+  "Accession": "OSD-195",
+  "Study Title": "Effects of 21 days of bedrest on human skeletal muscle gene expression",
+  "organism": "Homo sapiens",
+  "Project Type": "Ground Study",
+  "Study Factor Name": "Bed Rest     Time",
+  "Study Assay Measurement Type": "transcription profiling",
+  "Study Publication Title": "PlanHab (Planetary Habitat Simulation): the combined and separate effects of 21 days bed rest and hypoxic confinement on human skeletal muscle miRNA expression",
+  "Study Description": "The present study concerns the effects of 21 days of sustained recumbence (bedrest) on skeletal muscle gene expression. 14 male subjects participated in normoxic bedrest (NBR) with muscle unloading, for 21 days, this is a substudy of tha PlanHab-study which apart from normoxic bedrest also involved hypoxic bedrest and hypoxic ambulation. Throughout both bedrest interventions, each subject remained in a horizontal position at all times. He was allowed one pillow for the head and to occasionally lean on an elbow while eating or being transferred to a gurney. Muscular exercise was prohibited. Dur…",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-195"
+ },
+ {
+  "Accession": "OSD-342",
+  "Study Title": "Targeting myostatin/activin A protects against skeletal muscle and bone loss during spaceflight [plasma proteomics]",
+  "organism": "Mus musculus",
+  "Project Type": "Spaceflight Study",
+  "Flight Program": "International Space Station (ISS)",
+  "Mission": {
+   "Start Date": "15-Dec-2019",
+   "End Date": "07-Jan-2020",
+   "Name": "SpaceX-19"
+  },
+  "Study Factor Name": "Spaceflight     Treatment     Dissection Timeline",
+  "Study Assay Measurement Type": "protein expression profiling",
+  "Study Publication Title": "Targeting myostatin/activin A protects against skeletal muscle and bone loss during spaceflight",
+  "Study Description": "Among the physiological consequences of extended spaceflight are loss of skeletal muscle and bone mass. One signaling pathway that plays an important role in maintaining muscle and bone homeostasis is that regulated by the secreted signaling proteins, myostatin (MSTN) and activin A. Here, we used both genetic and pharmacological approaches to investigate the effect of targeting MSTN/activin A signaling in mice that were sent to the International Space Station. Wild type mice lost significant muscle and bone mass during the 33 d spent in microgravity. Muscle weights of Mstn -/- mice, which are …",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-342"
+ },
+ {
+  "Accession": "OSD-354",
+  "Study Title": "Molecular Transducers of Human Skeletal Muscle Remodeling under Different Loading States",
+  "organism": "Homo sapiens",
+  "Project Type": "Ground study",
+  "Study Factor Name": "Hindlimb Unloading     Age",
+  "Study Assay Measurement Type": "transcription profiling",
+  "Study Publication Title": "Molecular Transducers of Human Skeletal Muscle Remodeling under Different Loading States.     A coding and non-coding transcriptomic perspective on the genomics of human metabolic disease     Longevity‐related molecular pathways are subject to midlife “switch” in humans",
+  "Study Description": "The annotation of the Affymetrix HTA 2.0 array was updated to optimise the detection of RNA in human skeletal muscle biopsy samples by removing invalid and low signal-high-variance probes (as for CDF GPL24047). The probes were then summarized into groups (probe-sets) reflecting either an ensembl full transcript identifier (FL-ENST, GPL24047) or just the probes targeting the 3' UTR or the 5' UTR of that particular ENST. Therefore, 3 different CDF were used to process the HTA 2.0 arrays in this study. Note that each CEL file was GC adjusted using APT while our custom CDF pipeline removes any pro…",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-354"
+ },
+ {
+  "Accession": "OSD-319",
+  "Study Title": "Muscle atrophy, osteoporosis prevention in hibernating mammals",
+  "organism": "Urocitellus parryii",
+  "Project Type": "Ground Study",
+  "Study Factor Name": "Time",
+  "Study Assay Measurement Type": "transcription profiling",
+  "Study Publication Title": "Transcriptional changes in muscle of hibernating arctic ground squirrels (Urocitellus parryii): implications for attenuation of disuse muscle atrophy     Comparative functional genomics of adaptation to muscular disuse in hibernating mammals",
+  "Study Description": "Physical inactivity decreases the mechanical load on the skeleton, which when prolonged leads to losses of muscle strength and bone mass in humans and most mammalian species. Hibernating mammals show no loss in bone mass and less muscle atrophy than would be anticipated over such a prolonged period of physical inactivity. This suggests that diverse hibernating mammals have evolved natural mechanisms that reduce muscle atrophy and conserve bone mass.",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-319"
+ },
+ {
+  "Accession": "OSD-949",
+  "Study Title": "Skeletal muscle-specific inducible AMPKa1/a2 knockout mice develop muscle weakness, glycogen depletion, and fibrosis that persists during disuse atrophy.",
+  "organism": "Mus musculus",
+  "Project Type": "Ground Study",
+  "Study Factor Name": "Genotype     Hindlimb Unloading     Sex",
+  "Study Assay Measurement Type": "transcription profiling",
+  "Study Publication Title": "Skeletal muscle-specific inducible AMPKα1/α2 knockout mice develop muscle weakness, glycogen depletion, and fibrosis that persists during disuse atrophy.",
+  "Study Description": "The 5' adenosine monophosphate-activated protein kinase (AMPK) is an important skeletal muscle regulator implicated as a possible therapeutic target to ameliorate the local undesired deconditioning of disuse atrophy. However, the muscle-specific role of AMPK in regulating muscle function, fibrosis, and transcriptional reprogramming during physical disuse is unknown. The purpose of this study was to determine how the absence of both catalytic subunits of AMPK in skeletal muscle influences muscle force production, collagen deposition, and the transcriptional landscape. We generated skeletal musc…",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-949"
+ },
+ {
+  "Accession": "OSD-787",
+  "Study Title": "Skeletal muscle-on-a-chip in microgravity as a platform for regeneration modeling and drug screening - vastus lateralis data",
+  "organism": "Homo sapiens",
+  "Project Type": "Ground Study",
+  "Study Factor Name": "Sex     Disease State",
+  "Study Assay Measurement Type": "transcription profiling",
+  "Study Publication Title": "Skeletal muscle-on-a-chip in microgravity as a platform for regeneration modeling and drug screening",
+  "Study Description": "Microgravity has been shown to lead to both muscle atrophy and impaired muscle regeneration. The purpose was to study the efficacy of microgravity to model impaired muscle regeneration in an engineered muscle platform and then to demonstrate the feasibility of performing drug screening in this model. Engineered human muscle was launched to the International Space Station National Laboratory, where the effect of microgravity exposure for 7 days was examined by transcriptomics and proteomics approaches. Gene set enrichment analysis of engineered muscle cultured in microgravity, compared to norma…",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-787"
+ },
+ {
+  "Accession": "OSD-984",
+  "Study Title": "Low-dose Simulated Galactic Cosmic Radiation Exposure After Hindlimb Unloading Has Long-term Impact on Skeletal Muscle Metabolic Proteins",
+  "organism": "Mus musculus",
+  "Project Type": "Ground Study",
+  "Study Factor Name": "Ionizing Radiation     Hindlimb Unloading     Absorbed Radiation Dose",
+  "Study Assay Measurement Type": "protein expression profiling",
+  "Study Publication Title": "Low-dose simulated galactic cosmic radiation exposure after hindlimb unloading has long-term impact on skeletal muscle metabolic proteins in female mice",
+  "Study Description": "Spaceflight stressors, including microgravity-induced unloading and galactic cosmic radiation (GCR), acutely disrupt mitochondrial function and contribute to skeletal muscle atrophy. The long-term recovery of muscle mitochondria following combined unloading and radiation exposure remains poorly understood. We investigated protein abundance changes 9-months after recovery from combined unloading and radiation exposure.",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-984"
+ },
+ {
+  "Accession": "OSD-227",
+  "Study Title": "Effect of acute muscle unloading on soleus and gastrocnemius muscle gene expression",
+  "organism": "Mus musculus",
+  "Project Type": "Ground Study",
+  "Study Factor Name": "Hindlimb Unloading     Tissue",
+  "Study Assay Measurement Type": "transcription profiling",
+  "Study Publication Title": "Muscle unloading-induced metabolic remodeling is associated with acute alterations in PPARdelta and UCP-3 expression",
+  "Study Description": "Gene expression changes induced by acute skeletal muscle unloading, which leads to physiological changes including muscle atrophy, fibre-type switching, and loss of ability to transition between lipid and glucose as energy source (metabolic inflexibility), was investigated by hind-limb suspension (HLS) treatment of Male ICR mice (28-32 g body wt; Harlan, Indianapolis, IN). Agilent Whole Mouse Genome Oligo Microarrays were utilised to examine the effects of HLS on mRNA expression profiles of the soleus muscle and the gastrocnemius muscle in the hindlimbs of freely ambulating control and 24h HLS…",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-227"
+ },
+ {
+  "Accession": "OSD-880",
+  "Study Title": "Zfp697 is an RNA-binding protein that regulates skeletal muscle inflammation and remodeling - Zfp697 skeletal muscle knockout RNA-Seq of unloading-reloading protocol",
+  "organism": "Mus musculus",
+  "Project Type": "Ground Study",
+  "Study Factor Name": "Hindlimb Unloading     Genotype",
+  "Study Assay Measurement Type": "transcription profiling",
+  "Study Publication Title": "Zfp697 is an RNA-binding protein that regulates skeletal muscle inflammation and remodeling (Zfp697 skeletal muscle knockout RNA-Seq of unloading-reloading protocol)",
+  "Study Description": "Muscle atrophy is a morbidity and mortality risk factor that happens with disuse, chronic disease, and ageing. Recovery from atrophy involves changes in protein synthesis and different cell types such as muscle fibers, and satellite and immune cells. Here we show that the previously uncharacterized gene and protein Zfp697 is a damage-induced regulator of muscle regeneration. Zfp697/ZNF697 expression is transiently elevated during recovery from muscle atrophy or injury in mice and humans. Sustained Zfp697 expression in mouse muscle leads to a gene expression signature of chemokine secretion, im…",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-880"
+ },
+ {
+  "Accession": "OSD-781",
+  "Study Title": "Skeletal muscle-on-a-chip in microgravity as a platform for regeneration modeling and drug screening - myoblast data",
+  "organism": "Homo sapiens",
+  "Project Type": "Spaceflight Study",
+  "Flight Program": "International Space Station (ISS)",
+  "Mission": {
+   "End Date": "12/15/2021",
+   "Start Date": "08/10/2021",
+   "Name": "NG-16"
+  },
+  "Study Factor Name": "Spaceflight     Treatment",
+  "Study Assay Measurement Type": "transcription profiling",
+  "Study Publication Title": "Skeletal muscle-on-a-chip in microgravity as a platform for regeneration modeling and drug screening",
+  "Study Description": "Microgravity has been shown to lead to both muscle atrophy and impaired muscle regeneration. The purpose was to study the efficacy of microgravity to model impaired muscle regeneration in an engineered muscle platform and then to demonstrate the feasibility of performing drug screening in this model. Engineered human muscle was launched to the International Space Station National Laboratory, where the effect of microgravity exposure for 7 days was examined by transcriptomics and proteomics approaches. Gene set enrichment analysis of engineered muscle cultured in microgravity, compared to norma…",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-781"
+ },
+ {
+  "Accession": "OSD-937",
+  "Study Title": "Microgravity accelerates skeletal muscle degeneration: Functional and transcriptomic insights from an ISS muscle lab-on-chip model",
+  "organism": "Homo sapiens",
+  "Project Type": "Spaceflight Study",
+  "Flight Program": "International Space Station (ISS)",
+  "Mission": {
+   "End Date": "08/20/2022",
+   "Start Date": "04/18/2022",
+   "Name": "SpaceX-25"
+  },
+  "Study Factor Name": "Spaceflight     Donor Age     Treatment     Time",
+  "Study Assay Measurement Type": "transcription profiling",
+  "Study Publication Title": "Microgravity accelerates skeletal muscle degeneration: Functional and transcriptomic insights from an ISS muscle lab-on-chip model.",
+  "Study Description": "Microgravity accelerates skeletal muscle degeneration, mimicking aspects of aging, yet its effects on muscle cell function remain underexplored. Using a muscle lab-on-chip model onboard the International Space Station (ISS), we examined 3D-bioengineered myobundles derived from young and older adult donors under microgravity. Electrical stimulation applied intermittently to the myobundles revealed reduced contraction magnitude in microgravity and decreased protein levels of myosin heavy chain 7, a main isoform in slow-twitch muscle fibers. Transcriptomic profiling revealed active myogenesis acr…",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-937"
+ },
+ {
+  "Accession": "OSD-51",
+  "Study Title": "Woman skeletal muscle transcriptome with bed rest and countermeasures.",
+  "organism": "Homo sapiens",
+  "Project Type": "Ground Study",
+  "Study Factor Name": "Tissue     Bed Rest     Treatment",
+  "Study Publication Title": "Large-scale mRNA analysis of female skeletal muscles during 60 days of bed rest with and without exercise or dietary protein supplementation as countermeasures.",
+  "Study Description": "Microgravity has a dramatic impact on human physiology, illustrated in particular with skeletal muscle impairment. A thorough understanding of the mechanisms leading to loss of muscle mass and structural disorders is necessary for the definition of efficient clinical and spaceflight countermeasures. We investigated the effects of long-term bed rest on transcriptome of soleus (SOL) and vastus lateralis (VL) muscles in healthy women (BRC group, n equals 8), and the potential beneficial impact of protein supplementation (BRN group, n equals 8) and of a combined resistance and aerobic training (BR…",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-51"
+ },
+ {
+  "Accession": "OSD-198",
+  "Study Title": "Effects of bedrest and hypoxia on human skeletal muscle miRNA expression",
+  "organism": "Homo sapiens",
+  "Project Type": "Ground Study",
+  "Study Factor Name": "Experimental Campaign     Bed Rest     Time",
+  "Study Assay Measurement Type": "transcription profiling",
+  "Study Publication Title": "PlanHab (Planetary Habitat Simulation): the combined and separate effects of 21 days bed rest and hypoxic confinement on human skeletal muscle miRNA expression",
+  "Study Description": "The present study concerns the effects of 21 days of sustained recumbence (bedrest) and hypoxia, alone and in combination, on skeletal muscle microRNA expression. 14 male subjects participated in 3 experimental campaigns in a counterbalanced fashion: normoxic bedrest (NBR), hypoxic bedrest (HBR) and hypoxic ambulatory confinement (HAMB), both hypoxic conditions with FO2 equals 0.141 and PIO2 equals 90 ± 0.4 mmHg, equivalent to an altitude of ≈ 4000 m). Each intervention (bedrest or ambulatory confinement) lasted 21 days, and the interventions were separated by a 4-month wash-out/recovery perio…",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-198"
+ },
+ {
+  "Accession": "OSD-946",
+  "Study Title": "Exercise Training Attenuates the Muscle Mitochondria Genomic Response to Bed Rest (miRNA microarray data)",
+  "organism": "Homo sapiens",
+  "Project Type": "Ground Study",
+  "Study Factor Name": "Bed Rest     Time     Treatment",
+  "Study Assay Measurement Type": "transcription profiling",
+  "Study Publication Title": "Exercise Training Attenuates the Muscle Mitochondria Genomic Response to Bed Rest",
+  "Study Description": "Exercise training during the National Aeronautics and Space Administration 70-d bed rest study effectively counteracted the decline in aerobic capacity, muscle mass, strength, and endurance. We aimed to characterize the genomic response of the participants' vastus lateralis on day 64 of bed rest with and without exercise countermeasures. Twenty-two healthy young males were randomized into three groups: 1) bed rest only (n equals 7), 2) bed rest + aerobic (6 d/wk) and resistance training (3 d/wk) on standard equipment (n equals 7), and 3) bed rest + aerobic and resistance training using a flywh…",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-946"
+ },
+ {
+  "Accession": "OSD-21",
+  "Study Title": "Effects of spaceflight on murine skeletal muscle gene expression",
+  "organism": "Mus musculus",
+  "Project Type": "Spaceflight",
+  "Flight Program": "Space Transporation System (STS)",
+  "Mission": {
+   "Start Date": "12/05/2001",
+   "End Date": "12/17/2001",
+   "Name": "STS-108"
+  },
+  "Study Factor Name": "Spaceflight     Hindlimb Unloading     Time     Tissue",
+  "Study Assay Measurement Type": "transcription profiling",
+  "Study Publication Title": "Effects of spaceflight on murine skeletal muscle gene expression.     A microRNA signature and TGF-β1 response were identified as the key master regulators for spaceflight response     Global transcriptomic analysis suggests carbon dioxide as an environmental stressor in spaceflight: A systems biology GeneLab case study",
+  "Study Description": "Spaceflight results in a number of adaptations to skeletal muscle, including atrophy and shifts towards faster muscle fiber types. To identify changes in gene expression that may underlie these adaptations, microarray expression analysis was performed on gastrocnemius from mice flown on the STS-108 shuttle flight (11 days, 19 hours) versus mice maintained on earth for the same period. Additionally, to identify changes that were due to unloading and reloading, microarray analyses were conducted on calf muscle from ground-based mice subjected to hindlimb suspension (12 days) and mice subjected t…",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-21"
+ },
+ {
+  "Accession": "OSD-295",
+  "Study Title": "RNA-Seq transcriptome profiling of soleus from adult and aged mice following disuse muscle atrophy and recovery",
+  "organism": "Mus musculus",
+  "Project Type": "Ground Study",
+  "Study Factor Name": "Hindlimb Unloading     Age     Hindlimb Reloading Duration",
+  "Study Assay Measurement Type": "transcription profiling",
+  "Study Publication Title": "Impaired Mitochondrial Energetics Characterize Poor Early Recovery of Muscle Mass Following Hind Limb Unloading in Old Mice.",
+  "Study Description": "Rodent hind limb unloading was used as a model for reduced muscle activity and eventual atrophy. After a 10 day period of unloading, mice in this study were “reloaded” for 3 days and regained use of their hind limbs. We report the application of Next-generation sequencing (NGS) technology for high-throughput profiling of mRNA in soleus muscle of adult (6 mo) and aged (22-24 mo) mice. Our goal was to determine the effects of hind limb unloading and reloading on mRNA profiles in soleus muscle and compare between adult and aged mice. We find that there are distinct response in the profile of fatt…",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-295"
+ },
+ {
+  "Accession": "OSD-783",
+  "Study Title": "Multidirectional effect of low-intensity electrical myostimulation on gene expression and phenotype in thigh and calf muscles after one week of disuse - soleus data",
+  "organism": "Homo sapiens",
+  "Project Type": "Ground Study",
+  "Study Factor Name": "Treatment",
+  "Study Assay Measurement Type": "transcription profiling",
+  "Study Publication Title": "Multidirectional effect of low-intensity electrical myostimulation on gene expression and phenotype in thigh and calf muscles after one week of disuse",
+  "Study Description": "Low-intensity neuromuscular electrical stimulation (NMES) is often used as an alternative to exercise and high-intensity electrical stimulation to prevent the loss of muscle mass, strength, and endurance in spaceflight and in patients with severe chronic diseases. This study assessed the efficiency of low-intensity (~10% of maximal voluntary contraction) combined (low- and high-frequency) electrical stimulation in preventing the negative effects of weekly disuse (dry immersion without [DI, see a related dataset GSE271607] and with [DI+NMES] daily stimulation; 10 males in each group) on the str…",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-783"
+ },
+ {
+  "Accession": "OSD-784",
+  "Study Title": "Multidirectional effect of low-intensity electrical myostimulation on gene expression and phenotype in thigh and calf muscles after one week of disuse - vastus lateralis data",
+  "organism": "Homo sapiens",
+  "Project Type": "Ground Study",
+  "Study Factor Name": "Treatment",
+  "Study Assay Measurement Type": "transcription profiling",
+  "Study Publication Title": "Multidirectional effect of low-intensity electrical myostimulation on gene expression and phenotype in thigh and calf muscles after one week of disuse",
+  "Study Description": "Low-intensity neuromuscular electrical stimulation (NMES) is often used as an alternative to exercise and high-intensity electrical stimulation to prevent the loss of muscle mass, strength, and endurance in spaceflight and in patients with severe chronic diseases. This study assessed the efficiency of low-intensity (~10% of maximal voluntary contraction) combined (low- and high-frequency) electrical stimulation in preventing the negative effects of weekly disuse (dry immersion without [DI, see a related dataset GSE271607] and with [DI+NMES] daily stimulation; 10 males in each group) on the str…",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-784"
+ },
+ {
+  "Accession": "OSD-139",
+  "Study Title": "Mouse muscle LC-MSMS upon weightlessness",
+  "organism": "Mus musculus",
+  "Project Type": "Spaceflight Study",
+  "Flight Program": "BION-M1 biosatellite",
+  "Study Factor Name": "Spaceflight     Tissue",
+  "Study Assay Measurement Type": "protein expression profiling",
+  "Study Publication Title": "Proteome-wide Adaptations of Mouse Skeletal Muscles during a Full Month in Space.",
+  "Study Description": "Upon weightlessness and microgravity, deleterious effects on the neurosensory and neurovestibular systems, haematological changes, and deconditioning of musculoskeletal, cardiovascular and cardiopulmonary functions have been reported. In particular, loss of muscle mass and strength are triggered by weightlessness in humans during space flights, that is similarly observed as a result of physical inactivity conditions and aging on Earth. However, skeletal muscle tissue is of paramount importance for health maintenance (e.g. being essential to locomotion, heat production, and metabolism). To bett…",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-139"
+ },
+ {
+  "Accession": "OSD-401",
+  "Study Title": "Alternative splicing regulates the physiological adaptation of the mouse hind limb postural and phasic muscles to microgravity",
+  "organism": "Mus musculus",
+  "Project Type": "Spaceflight Study",
+  "Flight Program": "International Space Station (ISS)",
+  "Mission": {
+   "End Date": "07/03/2017",
+   "Start Date": "06/03/2017",
+   "Name": "SpaceX-11"
+  },
+  "Study Factor Name": "Spaceflight     Tissue",
+  "Study Assay Measurement Type": "transcription profiling",
+  "Study Publication Title": "Alternative splicing diversifies the skeletal muscle transcriptome during prolonged spaceflight",
+  "Study Description": "We sought to comprehensively elucidate the transcriptomic underpinnings of microgravity-induced muscle phenotypes in mice by evaluating both differential gene expression (DGE) and changes in alternative splicing (AS) due to extended spaceflight. Total RNA was isolated from the gastrocnemius and quadriceps, postural and phasic muscles of the hind limb, respectively, of 32-week-old female BALB/c mice exposed to microgravity or ground control conditions for nine weeks. RNA sequencing revealed that DGE and AS varied across postural and phasic muscle types with preferential employment of DGE in the…",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-401"
+ },
+ {
+  "Accession": "OSD-876",
+  "Study Title": "Zfp697 is an RNA-binding protein that regulates skeletal muscle inflammation and remodeling",
+  "organism": "Mus musculus",
+  "Project Type": "Ground Study",
+  "Study Factor Name": "Hindlimb Unloading",
+  "Study Assay Measurement Type": "transcription profiling",
+  "Study Publication Title": "Zfp697 is an RNA-binding protein that regulates skeletal muscle inflammation and remodeling",
+  "Study Description": "To investigate the molecular mechanisms governing the transition of skeletal muscle from atrophy to compensatory regeneration and hypertrophy, we employed a mouse model involving hindlimb unloading and subsequent reloading, conducting a comprehensive analysis of global gene expression using RNA-sequencing (RNA-seq). Gastrocnemius muscle samples were obtained from three groups: control mice, mice subjected to 10 days of hindlimb unloading-induced muscle atrophy, and mice reintroduced to normal cage activity for 1 day following the unloading period (reloading). Comparative gene expression profil…",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-876"
+ },
+ {
+  "Accession": "OSD-942",
+  "Study Title": "Exercise Training Attenuates the Muscle Mitochondria Genomic Response to Bed Rest (microarray data)",
+  "organism": "Homo sapiens",
+  "Project Type": "Ground Study",
+  "Study Factor Name": "Bed Rest     Time     Treatment",
+  "Study Assay Measurement Type": "transcription profiling",
+  "Study Publication Title": "Exercise Training Attenuates the Muscle Mitochondria Genomic Response to Bed Rest.",
+  "Study Description": "Exercise training during the National Aeronautics and Space Administration 70-d bed rest study effectively counteracted the decline in aerobic capacity, muscle mass, strength, and endurance. We aimed to characterize the genomic response of the participants' vastus lateralis on day 64 of bed rest with and without exercise countermeasures. Twenty-two healthy young males were randomized into three groups: 1) bed rest only (n equals 7), 2) bed rest + aerobic (6 d/wk) and resistance training (3 d/wk) on standard equipment (n equals 7), and 3) bed rest + aerobic and resistance training using a flywh…",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-942"
+ },
+ {
+  "Accession": "OSD-935",
+  "Study Title": "Long non‐coding RNAs Kcnq1ot1 and Lncpint are involved in skeletal muscle atrophy induced by the space exposome",
+  "organism": "Mus musculus",
+  "Project Type": "Ground Study",
+  "Study Factor Name": "Hindlimb Unloading     Ionizing Radiation     Treatment",
+  "Study Assay Measurement Type": "transcription profiling",
+  "Study Publication Title": "Long non‐coding RNAs Kcnq1ot1 and Lncpint are involved in skeletal muscle atrophy induced by the space exposome",
+  "Study Description": "Long non-coding RNAs (lncRNAs) play an important role in the regulation of skeletal muscle transcriptional processes, but their involvement in spaceflight- or inactivity-induced muscle atrophy remains poorly understood. To address this gap, we simulated the space environment by combining microgravity, irradiation and stress in a mouse model. Our results provide novel insights into the contribution of lncRNAs to muscle atrophy caused by the space exposome and has broader implications for understanding and combating muscle atrophy in clinical scenarios of prolonged inactivity.",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-935"
+ },
+ {
+  "Accession": "OSD-370",
+  "Study Title": "Insulin resistance induced by physical inactivity is associated with multiple transcriptional changes in skeletal muscle in young men",
+  "organism": "Homo sapiens",
+  "Project Type": "Ground Study",
+  "Study Factor Name": "Bed Rest     Time     Treatment",
+  "Study Assay Measurement Type": "transcription profiling",
+  "Study Description": "Physical inactivity is a risk factor for insulin resistance. We examined the effect of nine days of bed rest on basal and insulin stimulated expression of genes potentially involved in insulin action by applying hypothesis-generating microarray in parallel with candidate gene real-time PCR approaches in 20 healthy, young men. Furthermore, we investigated whether bed rest affected DNA methylation in the promoter region of the peroxisome proliferator-activated receptor gamma coactivator 1 alpha (PPARGC1A) gene. Subjects were re-examined after four weeks of retraining. Findings: Bed rest induced …",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-370"
+ },
+ {
+  "Accession": "OSD-228",
+  "Study Title": "Hindlimb suspension and reloading study",
+  "organism": "Mus musculus",
+  "Project Type": "Ground Study",
+  "Study Factor Name": "Hindlimb Unloading     Hindlimb Reloading Duration",
+  "Study Assay Measurement Type": "transcription profiling",
+  "Study Publication Title": "Transcriptional reprogramming and ultrastructure during atrophy and recovery of mouse soleus muscle     Transcriptional profiling of tissue plasticity: role of shifts in gene expression and technical limitations",
+  "Study Description": "Analysis of effect of hindlimb suspension and reloading on C57Bl/6 mouse soleus muscle. Experimental groups examined: -Control mice, 14 days -Hindlimb suspension for 7 days -Hindlimb suspension for 7 days, and subsequent reloading for 1 day -Hindlimb suspension for 7 days, and subsequent reloading for 7 days",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-228"
+ },
+ {
+  "Accession": "OSD-135",
+  "Study Title": "Global gene expression analysis highlights microgravity sensitive key genes in longissimus dorsi and tongue of 30 days space-flown mice",
+  "organism": "Mus musculus",
+  "Project Type": "Spaceflight Study",
+  "Flight Program": "BION-M1 biosatellite",
+  "Mission": {
+   "Start Date": "04/19/2013",
+   "End Date": "05/19/2013",
+   "Name": "Bion_M1"
+  },
+  "Study Factor Name": "Spaceflight     Tissue",
+  "Study Assay Measurement Type": "transcription profiling",
+  "Study Publication Title": "Microgravity-Induced Transcriptome Adaptation in Mouse Paraspinal longissimus dorsi Muscle Highlights Insulin Resistance-Linked Genes.",
+  "Study Description": "Microgravity as well as chronic muscle disuse are two causes of low back pain originated at least in part from paraspinal muscle deconditioning. At present no study investigated the complexity of the molecular changes in human or mouse paraspinal muscles exposed to microgravity. The aim of this study was to evaluate longissimus dorsi and tongue (as a new potential in-flight negative control) adaptation to microgravity at global gene expression level. C57BL/N6 male mice were flown aboard the BION-M1 biosatellite for 30 days (BF) or housed in a replicate flight habitat on ground (BG). Global gen…",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-135"
+ },
+ {
+  "Accession": "OSD-714",
+  "Study Title": "Lunar gravity prevents skeletal muscle atrophy but not myofiber type shift in mice",
+  "organism": "Mus musculus",
+  "Project Type": "Spaceflight Study",
+  "Flight Program": "International Space Station (ISS)",
+  "Mission": {
+   "End Date": "09/26/2016  06/03/2019  04/07/2020",
+   "Start Date": "07/18/2016  05/04/2019  03/07/2020",
+   "Name": "SpaceX-9  SpaceX-17  SpaceX-20"
+  },
+  "Study Factor Name": "Spaceflight     Altered Gravity     Space Mission",
+  "Study Assay Measurement Type": "transcription profiling",
+  "Study Publication Title": "Lunar gravity prevents skeletal muscle atrophy but not myofiber type shift in mice.",
+  "Study Description": "Skeletal muscle is sensitive to gravitational alterations. We recently developed a multiple artificial-gravity research system (MARS), which can generate gravity ranging from microgravity to Earth gravity (1 g) in space. Using the MARS, we studied the effects of three different gravitational levels (microgravity, lunar gravity [1/6 g], and 1 g) on the skeletal muscle mass and myofiber constitution in mice. All mice survived and returned to Earth, and skeletal muscle was collected two days after landing. We observed that microgravity-induced soleus muscle atrophy was prevented by lunar gravity.…",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-714"
+ },
+ {
+  "Accession": "OSD-635",
+  "Study Title": "Spaceflight effects on human vascular smooth muscle cell phenotype and function",
+  "organism": "Homo sapiens",
+  "Project Type": "Spaceflight Study",
+  "Flight Program": "International Space Station (ISS)",
+  "Mission": {
+   "End Date": "06/03/2019",
+   "Start Date": "05/04/2019",
+   "Name": "SpaceX-17"
+  },
+  "Study Factor Name": "Spaceflight",
+  "Study Assay Measurement Type": "transcription profiling",
+  "Study Publication Title": "Spaceflight effects on human vascular smooth muscle cell phenotype and function.",
+  "Study Description": "The cardiovascular system is strongly impacted by the hazards of spaceflight. Astronauts spending steadily increasing lengths of time in microgravity are subject to cardiovascular deconditioning resulting in loss of vascular tone, reduced total blood volume, and diminished cardiac output. Appreciating the mechanisms by which the cells of the vasculature are altered during spaceflight will be integral to understanding and combating these deleterious effects as the human presence in space advances. In this study, we performed RNA-Seq analysis coupled with review by QIAGEN Ingenuity Pathway Analy…",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-635"
+ },
+ {
+  "Accession": "OSD-540",
+  "Study Title": "Ten-day human unilateral lower limb suspension and active recovery in young healthy men",
+  "organism": "Homo sapiens",
+  "Project Type": "Ground Study",
+  "Study Factor Name": "Hindlimb Unloading",
+  "Study Assay Measurement Type": "transcription profiling",
+  "Study Publication Title": "Effects of short‐term unloading and active recovery on human motor unit properties, neuromuscular junction transmission and transcriptomic profile",
+  "Study Description": "Electrophysiological alterations of the neuromuscular junction (NMJ) and motor unit potential (MUP) with unloading are poorly studied. We aimed to investigate these aspects and the underlying molecular mechanisms with short-term unloading and active recovery (AR). Eleven healthy males underwent a 10-day unilateral lower limb suspension (ULLS) period, followed by 21-day AR based on resistance exercise. Quadriceps femoris (QF) cross-sectional area (CSA) and isometric maximum voluntary contraction (MVC) were evaluated. Intramuscular electromyographic recordings were obtained during 10% and 25% MV…",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-540"
+ },
+ {
+  "Accession": "OSD-430",
+  "Study Title": "Modulation of gene expression in rat muscle cells following treatment with nanoceria in different gravity regimes",
+  "organism": "Rattus norvegicus",
+  "Project Type": "Spaceflight Study",
+  "Flight Program": "International Space Station (ISS)",
+  "Mission": {
+   "Start Date": "14-Aug-2017",
+   "End Date": "16-Sep-2017",
+   "Name": "SpaceX-12"
+  },
+  "Study Factor Name": "Spaceflight     Treatment",
+  "Study Assay Measurement Type": "transcription profiling",
+  "Study Publication Title": "Modulation of gene expression in rat muscle cells following treatment with nanoceria in different gravity regimes.",
+  "Study Description": "Oxidative stress (OS) is strictly associated with senescence/pathogenesis of biological systems. As putative countermeasure to environmental OS, cerium oxide nanoparticles (nanoceria [NC]) were administered to muscle cells on ground and aboard the International Space Station.",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-430"
+ },
+ {
+  "Accession": "OSD-111",
+  "Study Title": "Global gene expression analysis highlights microgravity sensitive key genes in soleus and EDL of 30 days space flown mice",
+  "organism": "Mus musculus",
+  "Project Type": "Spaceflight Study",
+  "Flight Program": "BION-M1 biosatellite",
+  "Mission": {
+   "Start Date": "04/19/2013",
+   "End Date": "05/19/2013",
+   "Name": "Bion_M1"
+  },
+  "Study Factor Name": "Spaceflight     Tissue",
+  "Study Assay Measurement Type": "transcription profiling",
+  "Study Publication Title": "Gene Expression Profiling in Slow-Type Calf Soleus Muscle of 30 Days Space-Flown Mice.     A microRNA signature and TGF-Beta1 response were identified as the key master regulators for spaceflight response     Global transcriptomic analysis suggests carbon dioxide as an environmental stressor in spaceflight: A systems biology GeneLab case study",
+  "Study Description": "Microgravity exposure as well as chronic muscle disuse are two of the main causes of physiological adaptive skeletal muscle atrophy in humans and murine animals in physiological condition. The aim of this study was to investigate, at both morphological and global gene expression level, skeletal muscle adaptation to microgravity in mouse soleus and extensor digitorum longus (EDL). Adult male mice C57BL/N6 were flown aboard the BION-M1 biosatellite for 30 days on orbit (BF) or housed in a replicate flight habitat on Earth (BG) as reference flight control. In this study, we investigated for the f…",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-111"
+ },
+ {
+  "Accession": "OSD-337",
+  "Study Title": "miRNA signature detection and countermeasures against HZE radiation exposure for tissue degeneration-Soleus muscle",
+  "organism": "Mus musculus",
+  "Project Type": "Ground Study",
+  "Study Factor Name": "Hindlimb Unloading     Ionizing Radiation     Particle Charge",
+  "Study Assay Measurement Type": "transcription profiling",
+  "Study Publication Title": "Circulating miRNA Spaceflight Signature Reveals Targets for Countermeasure Development",
+  "Study Description": "Biological risks associated with space radiation and microgravity are major concerns for long-term space travel. Through a Systems Biology approach, our previous NASA work has shown both TGFβ signaling pathways and miRNAs have a critical impact on defining health risks with and without space irradiation. We hypothesize that circulating microRNA (miRNA) signatures are driving microvascular disease and muscle degeneration associated with accelerating aging and will be enhanced by exposure to the space environment (radiation and microgravity). We investigated this hypothesis both in vivo and in v…",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-337"
+ },
+ {
+  "Accession": "OSD-548",
+  "Study Title": "Balancing apelin and angiotensin-II signaling to reduce heart injury during weightlessness",
+  "organism": "Mus musculus",
+  "Project Type": "Ground Study",
+  "Study Factor Name": "Hindlimb Unloading",
+  "Study Assay Measurement Type": "transcription profiling",
+  "Study Description": "In order to further develop gene expression methods for simulated weightlessness, genome-wide microarray expression profiles were used as a discovery platform to identify genes differentially expressed in mice after simulated weightlessness. After 28 days of tail suspension simulated weightlessness in 10-week-old male C57BL/6 mice, 706 genes were identified to distinguish tail suspension from control samples.",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-548"
+ },
+ {
+  "Accession": "OSD-924",
+  "Study Title": "Spaceflight induces systemic effects on extracellular matrix and immune system in different age-stages - limb muscle data",
+  "organism": "Mus musculus",
+  "Project Type": "Spaceflight Study",
+  "Flight Program": "International Space Station (ISS)",
+  "Mission": {
+   "End Date": "01/14/2019",
+   "Start Date": "12/05/2018",
+   "Name": "SpaceX-16"
+  },
+  "Study Factor Name": "Spaceflight     Age",
+  "Study Assay Measurement Type": "transcription profiling",
+  "Study Description": "Spaceflights significantly impacts astronaut health, causing muscle atrophy, bone loss, cardiovascular deconditioning and immune system dysregulation, especially during long missions. To explore molecular changes, we generated a single-cell RNA sequencing dataset, of 216 samples from 28 mouse organs and tissues under spaceflight and control conditions. Since spaceflight effects closely resemble aspects of aging, we included two age groups (3 and 8 months) to assess age-related influences. Our data revealed that spaceflight drives age-independent systemic changes, primarily affecting tissue rem…",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-924"
+ },
+ {
+  "Accession": "OSD-326",
+  "Study Title": "Gene-metabolite network linked to inhibited bioenergetics in association with spaceflight induced loss of quadriceps muscle",
+  "organism": "Mus musculus",
+  "Project Type": "Spaceflight Study",
+  "Flight Program": "International Space Station (ISS)",
+  "Mission": {
+   "End Date": "03/19/2017",
+   "Start Date": "02/19/2017",
+   "Name": "SpaceX-10"
+  },
+  "Study Factor Name": "Spaceflight",
+  "Study Assay Measurement Type": "transcription profiling",
+  "Study Publication Title": "Gene-Metabolite Network Linked to Inhibited Bioenergetics in Association With Spaceflight-Induced Loss of Male Mouse Quadriceps Muscle",
+  "Study Description": "Prolonged residence of mice in spaceflight is a scientifically robust and ethically ratified model of muscle atrophy caused by continued unloading. Under the Rodent Research Program of NASA, we assayed the genomic and metabolomics perturbations in the quadriceps of C57BL/6J male mice that lived on the spaceflight (FLT) or at Ground Control (CTR) for approximately four weeks. Wet weight of quadriceps were significantly reduced in FLT mice. Deep next generation sequencing and untargeted mass spectroscopic assay interrogated the gene-metabolite landscape of same tissues. A majority of top ranked …",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-326"
+ },
+ {
+  "Accession": "OSD-684",
+  "Study Title": "Human skeletal muscle tissue chip autonomous payload reveals changes in fiber type and metabolic gene expression due to spaceflight",
+  "organism": "Homo sapiens",
+  "Project Type": "Ground Study",
+  "Flight Program": "International Space Station (ISS)",
+  "Mission": {
+   "End Date": "01/13/2021",
+   "Start Date": "12/05/2020",
+   "Name": "SpaceX-21"
+  },
+  "Study Factor Name": "Spaceflight     Donor Age",
+  "Study Assay Measurement Type": "transcription profiling",
+  "Study Publication Title": "Human skeletal muscle tissue chip autonomous payload reveals changes in fiber type and metabolic gene expression due to spaceflight.",
+  "Study Description": "Microphysiological systems provide the opportunity to model accelerated changes at the human tissue level in the extreme space environment. Spaceflight-induced muscle atrophy experienced by astronauts shares similar physiological changes to muscle wasting in older adults, known as sarcopenia. These shared attributes provide a rationale for investigating molecular changes in muscle cells exposed to spaceflight that may mimic the underlying pathophysiology of sarcopenia. We report the results from three-dimensional myobundles derived from muscle biopsies from young and older adults, integrated i…",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-684"
+ },
+ {
+  "Accession": "OSD-334",
+  "Study Title": "miRNA signature detection and countermeasures against HZE radiation exposure for tissue degeneration-Heart tissue",
+  "organism": "Mus musculus",
+  "Project Type": "Ground Study",
+  "Study Factor Name": "Hindlimb Unloading     Ionizing Radiation     Particle Charge",
+  "Study Assay Measurement Type": "transcription profiling",
+  "Study Publication Title": "LET-Dependent Low Dose and Synergistic Inhibition of Human Angiogenesis by Charged Particles: Validation of miRNAs that Drive Inhibition     Circulating miRNA Spaceflight Signature Reveals Targets for Countermeasure Development",
+  "Study Description": "Biological risks associated with space radiation and microgravity are major concerns for long-term space travel. Through a Systems Biology approach, our previous NASA work has shown both TGFÎ² signaling pathways and miRNAs have a critical impact on defining health risks with and without space irradiation. We hypothesize that circulating microRNA (miRNA) signatures are driving microvascular disease and muscle degeneration associated with accelerating aging and will be enhanced by exposure to the space environment (radiation and microgravity). We investigated this hypothesis both in vivo and in …",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-334"
+ },
+ {
+  "Accession": "OSD-335",
+  "Study Title": "miRNA signature detection and countermeasures against HZE radiation exposure for tissue degeneration-Liver tissue",
+  "organism": "Mus musculus",
+  "Project Type": "Ground Study",
+  "Study Factor Name": "Hindlimb Unloading     Ionizing Radiation     Particle Charge",
+  "Study Assay Measurement Type": "transcription profiling",
+  "Study Publication Title": "LET-Dependent Low Dose and Synergistic Inhibition of Human Angiogenesis by Charged Particles: Validation of miRNAs that Drive Inhibition     Circulating miRNA Spaceflight Signature Reveals Targets for Countermeasure Development",
+  "Study Description": "Biological risks associated with space radiation and microgravity are major concerns for long-term space travel. Through a Systems Biology approach, our previous NASA work has shown both TGFβ signaling pathways and miRNAs have a critical impact on defining health risks with and without space irradiation. We hypothesize that circulating microRNA (miRNA) signatures are driving microvascular disease and muscle degeneration associated with accelerating aging and will be enhanced by exposure to the space environment (radiation and microgravity). We investigated this hypothesis both in vivo and in v…",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-335"
+ },
+ {
+  "Accession": "OSD-343",
+  "Study Title": "Comprehensive multi-omics analysis reveals mitochondrial stress as a central biological hub for spaceflight impact",
+  "organism": "Mus musculus",
+  "Project Type": "Spaceflight Study",
+  "Flight Program": "International Space Station (ISS)",
+  "Mission": {
+   "Start Date": "14-Aug-2017",
+   "End Date": "16-Sep-2017",
+   "Name": "SpaceX-12"
+  },
+  "Study Factor Name": "Spaceflight     Tissue",
+  "Study Assay Measurement Type": "metabolite profiling",
+  "Study Publication Title": "Comprehensive Multi-omics Analysis Reveals Mitochondrial Stress as a Central Biological Hub for Spaceflight Impact",
+  "Study Description": "Given the limited knowledge of the biological impact of spaceflight, a multi-omics, systems biology approach was used to investigate NASA’s GeneLab data and astronaut biomedical profiles. These data consist of hundreds of samples flown in space, human metrics from 59 astronauts, and confirmatory data from NASA’s Twin Study, analyzed together for consistent transcriptomic, proteomic, metabolomic, and epigenetic response to spaceflight. Pathway analysis showed significant enrichment of mitochondrial activity and innate immunity. Muscle and liver tissues showed that chronic inflammation, may be a…",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-343"
+ },
+ {
+  "Accession": "OSD-52",
+  "Study Title": "Expression data from SPHINX (SPaceflight of Huvec: an INtegrated eXperiment)",
+  "organism": "Homo sapiens",
+  "Project Type": "Spaceflight Study",
+  "Flight Program": "International Space Station (ISS)",
+  "Mission": {
+   "Start Date": "10/08/2010",
+   "End Date": "11/25/2010",
+   "Name": "Expedition 25"
+  },
+  "Study Factor Name": "Spaceflight",
+  "Study Assay Measurement Type": "transcription profiling",
+  "Study Publication Title": "The challenging\nenvironment on board the International Space Station affects endothelial cell\nfunction by triggering oxidative stress through thioredoxin interacting protein\noverexpression: the ESA-SPHINX experiment.     GeneLab Database Analyses Suggest Long-Term Impact of Space Radiation on the Cardiovascular System by the Activation of FYN Through Reactive Oxygen Species",
+  "Study Description": "Changes in the physical environment modulate cell responses and may lead to the impairment or even failure of tissue function as a result of mechanotransduction processes. It has been suggested that this situation occurs in some age-related diseases and some pathological conditions observed in space, such as cardiovascular deconditioning, bone loss, muscle atrophy, and impaired immune responses. All of these are associated with endothelial dysfunction but the precise mechanism is still unclear. We used the microarray approach to obtain insights into the mechanism responsible for endothelial dy…",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-52"
+ },
+ {
+  "Accession": "OSD-336",
+  "Study Title": "miRNA signature detection and countermeasures against HZE radiation exposure for tissue degeneration-Plasma",
+  "organism": "Mus musculus",
+  "Project Type": "Ground Study",
+  "Study Factor Name": "Hindlimb Unloading     Ionizing Radiation     Particle Charge",
+  "Study Assay Measurement Type": "transcription profiling",
+  "Study Publication Title": "LET-Dependent Low Dose and Synergistic Inhibition of Human Angiogenesis by Charged Particles: Validation of miRNAs that Drive Inhibition     Circulating miRNA Spaceflight Signature Reveals Targets for Countermeasure Development     Beyond Low-Earth Orbit: Characterizing Immune and microRNA Differentials following Simulated Deep Spaceflight Conditions in Mice",
+  "Study Description": "Biological risks associated with space radiation and microgravity are major concerns for long-term space travel. Through a Systems Biology approach, our previous NASA work has shown both TGFβ signaling pathways and miRNAs have a critical impact on defining health risks with and without space irradiation. We hypothesize that circulating microRNA (miRNA) signatures are driving microvascular disease and muscle degeneration associated with accelerating aging and will be enhanced by exposure to the space environment (radiation and microgravity). We investigated this hypothesis both in vivo and in v…",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-336"
+ },
+ {
+  "Accession": "OSD-702",
+  "Study Title": "Effects of 32 Days Aboard the ISS on Quadricep Tendon Nanomechanics (Quadricep femoris tendon, RR-1 and Atomic Force Microscopy)",
+  "organism": "Mus musculus",
+  "Project Type": "Spaceflight Study",
+  "Flight Program": "International Space Station (ISS)",
+  "Mission": {
+   "End Date": "10/25/2014",
+   "Start Date": "09/21/2014",
+   "Name": "SpaceX-4"
+  },
+  "Study Factor Name": "Spaceflight",
+  "Study Assay Measurement Type": "Mechanical Tests",
+  "Study Description": "Collagen is an essential component of connective tissue and plays a crucial role in elasticity, stability, and force distribution. While the adaptations of tendon to internal stimuli have been extensively researched, the impact of environmental factors (such as microgravity) on its structure and function at the nanoscopic scale (i.e., fibril level) remains largely unexplored. The purpose of this study was to determine the effects of 32 days (d) aboard the International Space Station (ISS) on murine tendon collagen fibril morphology and nanomechanics (Young’s Modulus, YM). Quadriceps tendon sam…",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-702"
+ },
+ {
+  "Accession": "OSD-426",
+  "Study Title": "Cerium oxide nanoparticle administration to skeletal muscle cells under different gravity and radiation conditions",
+  "organism": "Mus musculus",
+  "Project Type": "Spaceflight Study",
+  "Flight Program": "International Space Station (ISS)",
+  "Mission": {
+   "End Date": "06/03/2019",
+   "Start Date": "05/04/2019",
+   "Name": "SpaceX-17"
+  },
+  "Study Factor Name": "Spaceflight     Altered Gravity     Treatment",
+  "Study Assay Measurement Type": "transcription profiling     transcription profiling",
+  "Study Publication Title": "Cerium Oxide Nanoparticle Administration to Skeletal Muscle Cells under Different Gravity and Radiation Conditions",
+  "Study Description": "For their remarkable biomimetic properties implying strong modulation of the intracellular and extracellular redox state, cerium oxide nanoparticles (also termed 'nanoceria') were hypothesized to exert a protective role against oxidative stress associated to the harsh environmental conditions of spaceflight, characterized by microgravity and highly energetic radiations. Nanoparticles were supplied to proliferating C2C12 mouse skeletal muscle cells under different gravity and radiation levels (microgravity+cosmic radiations or Earth gravity+cosmic radiations on board the International Space Sta…",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-426"
+ },
+ {
+  "Accession": "OSD-244",
+  "Study Title": "Transcriptional analysis of thymus from mice flown on the RR-6 Mission",
+  "organism": "Mus musculus",
+  "Project Type": "Spaceflight Study",
+  "Flight Program": "International Space Station (ISS)",
+  "Mission": {
+   "End Date": "1/13/18",
+   "Start Date": "12/15/17",
+   "Name": "SpaceX-13"
+  },
+  "Study Factor Name": "Spaceflight     Duration     Dissection Condition     Euthanasia Location",
+  "Study Assay Measurement Type": "transcription profiling",
+  "Study Publication Title": "Counteracting Muscle Atrophy on Earth and in Space via Nanofluidics Delivery of Formoterol",
+  "Study Description": "The objective of the Rodent Research-6 (RR-6) study was to evaluate muscle atrophy in mice during spaceflight and to test the efficacy of a novel therapeutic to mitigate muscle wasting. The experiment involved an implantable subcutaneous nanochannel delivery system (nDS; between scapula), which delivered the drug formoterol (FMT; a selective Beta-2 adrenoceptor agonist), over the course of time. To this end, a cohort of forty 32-weeks-old female C57BL/6NTac mice were either sham operated or implanted with vehicle or treatment-filled nDS, and launched in two Transporters (20 mice per Transporte…",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-244"
+ },
+ {
+  "Accession": "OSD-243",
+  "Study Title": "Transcriptional analysis of dorsal skin from mice flown on the RR-6 mission",
+  "organism": "Mus musculus",
+  "Project Type": "Spaceflight Study",
+  "Flight Program": "International Space Station (ISS)",
+  "Mission": {
+   "End Date": "1/13/18",
+   "Start Date": "12/15/17",
+   "Name": "SpaceX-13"
+  },
+  "Study Factor Name": "Spaceflight     Duration     Dissection Condition     Euthanasia Location",
+  "Study Assay Measurement Type": "transcription profiling",
+  "Study Publication Title": "Counteracting Muscle Atrophy on Earth and in Space via Nanofluidics Delivery of Formoterol",
+  "Study Description": "The objective of the Rodent Research-6 (RR-6) study was to evaluate muscle atrophy in mice during spaceflight and to test the efficacy of a novel therapeutic to mitigate muscle wasting. The experiment involved an implantable subcutaneous nanochannel delivery system (nDS; between scapula), which delivered the drug formoterol (FMT; a selective Beta-2 adrenoceptor agonist), over the course of time. To this end, a cohort of forty 32-weeks-old female C57BL/6NTac mice were either sham operated. or implanted with vehicle or treatment-filled nDS, and launched in two Transporters (20 mice per Transport…",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-243"
+ },
+ {
+  "Accession": "OSD-248",
+  "Study Title": "Transcriptional analysis of lung from mice flown on the RR-6 mission",
+  "organism": "Mus musculus",
+  "Project Type": "Spaceflight Study",
+  "Flight Program": "International Space Station (ISS)",
+  "Mission": {
+   "End Date": "1/13/18",
+   "Start Date": "12/15/17",
+   "Name": "SpaceX-13"
+  },
+  "Study Factor Name": "Spaceflight     Duration     Dissection Condition     Euthanasia Location",
+  "Study Assay Measurement Type": "transcription profiling",
+  "Study Publication Title": "Counteracting Muscle Atrophy on Earth and in Space via Nanofluidics Delivery of Formoterol",
+  "Study Description": "The objective of the Rodent Research-6 (RR-6) study was to evaluate muscle atrophy in mice during spaceflight and to test the efficacy of a novel therapeutic to mitigate muscle wasting. The experiment involved an implantable subcutaneous nanochannel delivery system (nDS; between scapula), which delivered the drug formoterol (FMT; a selective Beta-2 adrenoceptor agonist), over the course of time. To this end, a cohort of forty 32-weeks-old female C57BL/6NTac mice were either sham operated or implanted with vehicle or treatment-filled nDS, launched in two Transporters (20 mice per Transporter) o…",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-248"
+ },
+ {
+  "Accession": "OSD-245",
+  "Study Title": "Transcriptional analysis of liver from mice flown on the RR-6 mission",
+  "organism": "Mus musculus",
+  "Project Type": "Spaceflight Study",
+  "Flight Program": "International Space Station (ISS)",
+  "Mission": {
+   "End Date": "1/13/18",
+   "Start Date": "12/15/17",
+   "Name": "SpaceX-13"
+  },
+  "Study Factor Name": "Spaceflight     Duration     Dissection Condition     Euthanasia Location",
+  "Study Assay Measurement Type": "transcription profiling",
+  "Study Publication Title": "Counteracting Muscle Atrophy on Earth and in Space via Nanofluidics Delivery of Formoterol",
+  "Study Description": "The objective of the Rodent Research-6 (RR-6) study was to evaluate muscle atrophy in mice during spaceflight and to test the efficacy of a novel therapeutic to mitigate muscle wasting. The experiment involved an implantable subcutaneous nanochannel delivery system (nDS; between scapula), which delivered the drug formoterol (FMT; a selective Beta-2 adrenoceptor agonist), over the course of time. To this end, a cohort of forty 32-weeks-old female C57BL/6NTac mice were either sham operated or implanted with vehicle or treatment-filled nDS, launched in two Transporters (20 mice per Transporter) o…",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-245"
+ },
+ {
+  "Accession": "OSD-247",
+  "Study Title": "Transcriptional analysis of colon from mice flown on the RR-6 mission",
+  "organism": "Mus musculus",
+  "Project Type": "Spaceflight Study",
+  "Flight Program": "International Space Station (ISS)",
+  "Mission": {
+   "End Date": "1/13/18",
+   "Start Date": "12/15/17",
+   "Name": "SpaceX-13"
+  },
+  "Study Factor Name": "Spaceflight     Duration     Dissection Condition     Euthanasia Location",
+  "Study Assay Measurement Type": "transcription profiling",
+  "Study Publication Title": "Counteracting Muscle Atrophy on Earth and in Space via Nanofluidics Delivery of Formoterol",
+  "Study Description": "The objective of the Rodent Research-6 (RR-6) study was to evaluate muscle atrophy in mice during spaceflight and to test the efficacy of a novel therapeutic to mitigate muscle wasting. The experiment involved an implantable subcutaneous nanochannel delivery system (nDS; between scapula), which delivered the drug formoterol (FMT; a selective Beta-2 adrenoceptor agonist), over the course of time. To this end, a cohort of forty 32-weeks-old female C57BL/6NTac mice were either sham operated or implanted with vehicle or treatment-filled nDS, launched in two Transporters (20 mice per Transporter) o…",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-247"
+ },
+ {
+  "Accession": "OSD-153",
+  "Study Title": "Non-targeted effects of low dose ionizing radiation act via TGF-beta to promote mammary carcinogenesis",
+  "organism": "Mus musculus",
+  "Project Type": "Ground Study",
+  "Study Factor Name": "Genotype     Ionizing Radiation     Time of Sample Collection After Treatment",
+  "Study Assay Measurement Type": "transcription profiling",
+  "Study Publication Title": "Radiation acts on the microenvironment to affect breast carcinogenesis by distinct mechanisms that decrease cancer latency and affect tumor type",
+  "Study Description": "This is a genome-wide approach to identifying genes persistently induced in the mouse mammary gland by acute whole body low dose ionizing radiation (10cGy), 1 and 4 weeks after exposure. Gene expression that is modified under these parameters were compared between Tgfb1 wild type and heterozygote littermates in order to determine which genes induced or repressed by radiation were mediated via Tgfb1 status. Differential gene expression was analyzed in Tgfb1 heterozygote and wild type littermate 4th mammary glands, after whole body exposure to an acute dose of 10cGy ionizing radiation. Estrus cy…",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-153"
+ },
+ {
+  "Accession": "OSD-419",
+  "Study Title": "Transcriptional profiling of the right gastrocnemius muscle from mice flown on the RR-1 mission",
+  "organism": "Mus musculus",
+  "Project Type": "Spaceflight Study",
+  "Flight Program": "International Space Station (ISS)",
+  "Mission": {
+   "End Date": "10/25/2014",
+   "Start Date": "09/21/2014",
+   "Name": "SpaceX-4"
+  },
+  "Study Factor Name": "Spaceflight",
+  "Study Assay Measurement Type": "transcription profiling",
+  "Study Description": "In the NASA Rodent Research-1 (RR-1) validation study, ten 16-week-old female C57BL/6J mice were flown to the ISS for 37 days before euthanasia and subsequent dissection (Flight group). Due to crew time constraint, only two (out of ten) mice were dissected immediately after euthanasia to recover spleen and liver tissues on the ISS. The remaining eight animals were euthanized, then intact carcasses were placed in a pre-chilled cold stowage container and stored in the MELFI. There were respective cohorts of age-matched basal animals which were euthanized one day after launch as a baseline contro…",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-419"
+ },
+ {
+  "Accession": "OSD-666",
+  "Study Title": "Transcriptional profiling of right quadriceps femoris muscle from mice flown on the RR-23 mission",
+  "organism": "Mus musculus",
+  "Project Type": "Spaceflight Study",
+  "Flight Program": "International Space Station (ISS)",
+  "Mission": {
+   "End Date": "01/13/2021",
+   "Start Date": "12/05/2020",
+   "Name": "SpaceX-21"
+  },
+  "Study Factor Name": "Spaceflight",
+  "Study Assay Measurement Type": "transcription profiling",
+  "Study Description": "The objective of the Rodent Research-23 mission (RR-23) was to better understand the effects of spaceflight on the eyes, specifically on the structure and function of the arteries, veins, and lymphatic vessels that are needed to maintain vision. To this end, twenty male, C57BL/6J, 16-17 weeks-old mice were delivered to the International Space Station (ISS) on SpaceX-21 in a single transporter, transferred to two rodent habitats, and maintained in microgravity for 38 days. Flight mice were then returned to Earth alive (January 13th, 2021). After splashdown in the Atlantic Ocean, mice were trans…",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-666"
+ },
+ {
+  "Accession": "OSD-665",
+  "Study Title": "Transcriptional profiling of right extensor digitorum longus muscle from mice flown on the RR-23 mission",
+  "organism": "Mus musculus",
+  "Project Type": "Spaceflight Study",
+  "Flight Program": "International Space Station (ISS)",
+  "Mission": {
+   "End Date": "1/13/21",
+   "Start Date": "12/5/20",
+   "Name": "SpaceX-21"
+  },
+  "Study Factor Name": "Spaceflight",
+  "Study Assay Measurement Type": "transcription profiling",
+  "Study Description": "The objective of the Rodent Research-23 mission (RR-23) was to better understand the effects of spaceflight on the eyes, specifically on the structure and function of the arteries, veins, and lymphatic vessels that are needed to maintain vision. To this end, twenty male, C57BL/6J, 16-17 weeks-old mice were delivered to the International Space Station (ISS) on SpaceX-21 in a single transporter, transferred to two rodent habitats, and maintained in microgravity for 38 days. Flight mice were then returned to Earth alive (January 13th, 2021). After splashdown in the Atlantic Ocean, mice were trans…",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-665"
+ },
+ {
+  "Accession": "OSD-246",
+  "Study Title": "Transcriptional analysis of spleen from mice flown on the RR-6 mission",
+  "organism": "Mus musculus",
+  "Project Type": "Spaceflight Study",
+  "Flight Program": "International Space Station (ISS)",
+  "Mission": {
+   "End Date": "1/13/18",
+   "Start Date": "12/15/17",
+   "Name": "SpaceX-13"
+  },
+  "Study Factor Name": "Spaceflight     Duration     Dissection Condition     Euthanasia Location",
+  "Study Assay Measurement Type": "transcription profiling",
+  "Study Publication Title": "Counteracting Muscle Atrophy on Earth and in Space via Nanofluidics Delivery of Formoterol",
+  "Study Description": "The objective of the Rodent Research-6 (RR-6) study was to evaluate muscle atrophy in mice during spaceflight and to test the efficacy of a novel therapeutic to mitigate muscle wasting. The experiment involved an implantable subcutaneous nanochannel delivery system (nDS; between scapula), which delivered the drug formoterol (FMT; a selective Beta-2 adrenoceptor agonist), over the course of time. To this end, a cohort of forty 32-weeks-old female C57BL/6NTac mice were either sham operated or implanted with vehicle or treatment-filled nDS, launched in two Transporters (20 mice per Transporter) o…",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-246"
+ },
+ {
+  "Accession": "OSD-918",
+  "Study Title": "Spaceflight induces systemic effects on extracellular matrix and immune system in different age-stages - Blood data",
+  "organism": "Mus musculus",
+  "Project Type": "Spaceflight Study",
+  "Flight Program": "International Space Station (ISS)",
+  "Mission": {
+   "End Date": "01/14/2019",
+   "Start Date": "12/05/2018",
+   "Name": "SpaceX-16"
+  },
+  "Study Factor Name": "Spaceflight     Age",
+  "Study Assay Measurement Type": "transcription profiling",
+  "Study Description": "Spaceflights significantly impacts astronaut health, causing muscle atrophy, bone loss, cardiovascular deconditioning and immune system dysregulation, especially during long missions. To explore molecular changes, we generated a single-cell RNA sequencing dataset, of 216 samples from 28 mouse organs and tissues under spaceflight and control conditions. Since spaceflight effects closely resemble aspects of aging, we included two age groups (3 and 8 months) to assess age-related influences. Our data revealed that spaceflight drives age-independent systemic changes, primarily affecting tissue rem…",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-918"
+ },
+ {
+  "Accession": "OSD-770",
+  "Study Title": "Transcriptional profiling of soleus muscle from mice flown on the RR-23 mission",
+  "organism": "Mus musculus",
+  "Project Type": "Spaceflight Study",
+  "Flight Program": "Rodent Research (RR)",
+  "Mission": {
+   "End Date": "01/13/2021",
+   "Start Date": "12/05/2020",
+   "Name": "SpaceX-21"
+  },
+  "Study Factor Name": "Spaceflight",
+  "Study Assay Measurement Type": "transcription profiling",
+  "Study Description": "The objective of the Rodent Research-23 mission (RR-23) was to better understand the effects of spaceflight on the eyes, specifically on the structure and function of the arteries, veins, and lymphatic vessels that are needed to maintain vision. To this end, twenty male, C57BL/6J, 16-17 weeks-old mice were delivered to the International Space Station (ISS) on SpaceX-21 in a single transporter, transferred to two rodent habitats, and maintained in microgravity for 38 days. Flight mice were then returned to Earth alive (January 13th, 2021). After splashdown in the Atlantic Ocean, mice were trans…",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-770"
+ },
+ {
+  "Accession": "OSD-867",
+  "Study Title": "Impact of spaceflight on gene expression in cultured human mesenchymal stem/stromal cell",
+  "organism": "Homo sapiens",
+  "Project Type": "Spaceflight Study",
+  "Mission": {
+   "End Date": "03/19/2017",
+   "Start Date": "02/19/2017",
+   "Name": "SpaceX-10"
+  },
+  "Study Factor Name": "Spaceflight     Time",
+  "Study Assay Measurement Type": "transcription profiling",
+  "Study Publication Title": "Impact of spaceflight on gene expression in cultured human mesenchymal stem/stromal cells.",
+  "Study Description": "With technological advancements, human's desire to explore space is growing and more people are staying longer at the international space station (ISS). The impact of microgravity on stem cells (SC) is not fully understood. We explored the impact of microgravity on gene expression profile of cultured mesenchymal stem/stromal cells (MSCs) at the ISS. We also evaluated how the new knowledge gained sheds light on our understanding of human physiology on Earth. Primary cultures of MSCs were expanded at the ISS for 1 or 2 weeks and mRNA was isolated from samples of the cultured cells. Gene expressi…",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-867"
+ },
+ {
+  "Accession": "OSD-61",
+  "Study Title": "Effect of a 91 day long stay in weightlessness on the International Space Station on mouse skin physiology",
+  "organism": "Mus musculus",
+  "Project Type": "Spaceflight Study",
+  "Flight Program": "International Space Station (ISS)",
+  "Mission": {
+   "Start Date": "08/28/2009",
+   "End Date": "09/11/2009",
+   "Name": "STS-128"
+  },
+  "Study Factor Name": "Spaceflight     Genotype",
+  "Study Assay Measurement Type": "transcription profiling",
+  "Study Publication Title": "Skin physiology in microgravity: a 3-month stay aboard ISS induces dermal atrophy and affects cutaneous muscle and hair follicles cycling in mice     A microRNA signature and TGF-beta1 response were identified as the key master regulators for spaceflight response",
+  "Study Description": "Comparative gene expression in skin between mice maintained in microgravity (0g) and normogravity (1g) environment. Six male C57Bl/J10 mice were housed for 91 days in the specially designed Mouse Drawer System in weightlessness aboard the International Space Station. Three wild-type mice (WT) and three transgenic mice overexpressing the osteogneic factor PTN/OSF1 under the control of the human bone specific ostecalcin promoter (Tg) were used in the experiment. During the 3-month stay on the ISS, 3 mice unfortunately died leaving 2 Tg and 1 WT. MDS tissue sharing program allowed several teams t…",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-61"
+ },
+ {
+  "Accession": "OSD-576",
+  "Study Title": "Transcriptional profiling of tibialis anterior muscle from mice flown on the RR-23 mission",
+  "organism": "Mus musculus",
+  "Project Type": "Spaceflight Study",
+  "Flight Program": "International Space Station (ISS)",
+  "Mission": {
+   "End Date": "01/13/2021",
+   "Start Date": "12/05/2020",
+   "Name": "SpaceX-21"
+  },
+  "Study Factor Name": "Spaceflight",
+  "Study Assay Measurement Type": "transcription profiling",
+  "Study Description": "The objective of the Rodent Research-23 mission (RR-23) was to better understand the effects of spaceflight on the eyes, specifically on the structure and function of the arteries, veins, and lymphatic vessels that are needed to maintain vision. To this end, twenty male, C57BL/6J, 16-17 weeks-old mice were delivered to the International Space Station (ISS) on SpaceX-21 in a single transporter, transferred to two rodent habitats, and maintained in microgravity for 38 days. Flight mice were then returned to Earth alive (January 13th, 2021). After splashdown in the Atlantic Ocean, mice were trans…",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-576"
+ },
+ {
+  "Accession": "OSD-920",
+  "Study Title": "Spaceflight induces systemic effects on extracellular matrix and immune system in different age-stages - Eye data",
+  "organism": "Mus musculus",
+  "Project Type": "Spaceflight Study",
+  "Flight Program": "International Space Station (ISS)",
+  "Mission": {
+   "End Date": "01/14/2019",
+   "Start Date": "12/05/2018",
+   "Name": "SpaceX-16"
+  },
+  "Study Factor Name": "Spaceflight     Age",
+  "Study Assay Measurement Type": "transcription profiling",
+  "Study Description": "Spaceflights significantly impacts astronaut health, causing muscle atrophy, bone loss, cardiovascular deconditioning and immune system dysregulation, especially during long missions. To explore molecular changes, we generated a single-cell RNA sequencing dataset, of 216 samples from 28 mouse organs and tissues under spaceflight and control conditions. Since spaceflight effects closely resemble aspects of aging, we included two age groups (3 and 8 months) to assess age-related influences. Our data revealed that spaceflight drives age-independent systemic changes, primarily affecting tissue rem…",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-920"
+ },
+ {
+  "Accession": "OSD-921",
+  "Study Title": "Spaceflight induces systemic effects on extracellular matrix and immune system in different age-stages - Heart atria data",
+  "organism": "Mus musculus",
+  "Project Type": "Spaceflight Study",
+  "Flight Program": "International Space Station (ISS)",
+  "Mission": {
+   "End Date": "01/14/2019",
+   "Start Date": "12/05/2018",
+   "Name": "SpaceX-16"
+  },
+  "Study Factor Name": "Spaceflight     Age",
+  "Study Assay Measurement Type": "transcription profiling",
+  "Study Description": "Spaceflights significantly impacts astronaut health, causing muscle atrophy, bone loss, cardiovascular deconditioning and immune system dysregulation, especially during long missions. To explore molecular changes, we generated a single-cell RNA sequencing dataset, of 216 samples from 28 mouse organs and tissues under spaceflight and control conditions. Since spaceflight effects closely resemble aspects of aging, we included two age groups (3 and 8 months) to assess age-related influences. Our data revealed that spaceflight drives age-independent systemic changes, primarily affecting tissue rem…",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-921"
+ },
+ {
+  "Accession": "OSD-104",
+  "Study Title": "Rodent Research-1 (RR1) NASA Validation Flight: Mouse soleus muscle transcriptomic and epigenomic data",
+  "organism": "Mus musculus",
+  "Project Type": "Spaceflight Study",
+  "Flight Program": "International Space Station (ISS)",
+  "Mission": {
+   "End Date": "10/25/14",
+   "Start Date": "9/21/14",
+   "Name": "SpaceX-4"
+  },
+  "Study Factor Name": "Spaceflight",
+  "Study Assay Measurement Type": "transcription profiling     DNA methylation profiling",
+  "Study Publication Title": "A microRNA signature and TGF-β1 response were identified as the key master regulators for spaceflight response     NASA GeneLab Platform Utilized for Biological Response to Space Radiation in Animal Models",
+  "Study Description": "NASA's Rodent Research (RR) project is playing a critical role in advancing biomedical research on the physiological effects of space environments. Due to the limited resources for conducting biological experiments aboard the International Space Station (ISS), it is imperative to use crew time efficiently while maximizing high-quality science return. NASA's GeneLab project has as its primary objectives to 1) further increase the value of these experiments using a multi-omics, systems biology-based approach, and 2) disseminate these data without restrictions to the scientific community. The cur…",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-104"
+ },
+ {
+  "Accession": "OSD-922",
+  "Study Title": "Spaceflight induces systemic effects on extracellular matrix and immune system in different age-stages - Heart ventricles data",
+  "organism": "Mus musculus",
+  "Project Type": "Spaceflight Study",
+  "Flight Program": "International Space Station (ISS)",
+  "Mission": {
+   "End Date": "01/14/2019",
+   "Start Date": "12/05/2018",
+   "Name": "SpaceX-16"
+  },
+  "Study Factor Name": "Spaceflight     Age",
+  "Study Assay Measurement Type": "transcription profiling",
+  "Study Description": "Spaceflights significantly impacts astronaut health, causing muscle atrophy, bone loss, cardiovascular deconditioning and immune system dysregulation, especially during long missions. To explore molecular changes, we generated a single-cell RNA sequencing dataset, of 216 samples from 28 mouse organs and tissues under spaceflight and control conditions. Since spaceflight effects closely resemble aspects of aging, we included two age groups (3 and 8 months) to assess age-related influences. Our data revealed that spaceflight drives age-independent systemic changes, primarily affecting tissue rem…",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-922"
+ },
+ {
+  "Accession": "OSD-928",
+  "Study Title": "Spaceflight induces systemic effects on extracellular matrix and immune system in different age-stages - Myeloid forebrain data",
+  "organism": "Mus musculus",
+  "Project Type": "Spaceflight Study",
+  "Flight Program": "International Space Station (ISS)",
+  "Mission": {
+   "End Date": "01/14/2019",
+   "Start Date": "12/05/2018",
+   "Name": "SpaceX-16"
+  },
+  "Study Factor Name": "Spaceflight     Age",
+  "Study Assay Measurement Type": "transcription profiling",
+  "Study Description": "Spaceflights significantly impacts astronaut health, causing muscle atrophy, bone loss, cardiovascular deconditioning and immune system dysregulation, especially during long missions. To explore molecular changes, we generated a single-cell RNA sequencing dataset, of 216 samples from 28 mouse organs and tissues under spaceflight and control conditions. Since spaceflight effects closely resemble aspects of aging, we included two age groups (3 and 8 months) to assess age-related influences. Our data revealed that spaceflight drives age-independent systemic changes, primarily affecting tissue rem…",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-928"
+ },
+ {
+  "Accession": "OSD-927",
+  "Study Title": "Spaceflight induces systemic effects on extracellular matrix and immune system in different age-stages - Myeloid cerebellum data",
+  "organism": "Mus musculus",
+  "Project Type": "Spaceflight Study",
+  "Flight Program": "International Space Station (ISS)",
+  "Mission": {
+   "End Date": "01/14/2019",
+   "Start Date": "12/05/2018",
+   "Name": "SpaceX-16"
+  },
+  "Study Factor Name": "Spaceflight     Age",
+  "Study Assay Measurement Type": "transcription profiling",
+  "Study Description": "Spaceflights significantly impacts astronaut health, causing muscle atrophy, bone loss, cardiovascular deconditioning and immune system dysregulation, especially during long missions. To explore molecular changes, we generated a single-cell RNA sequencing dataset, of 216 samples from 28 mouse organs and tissues under spaceflight and control conditions. Since spaceflight effects closely resemble aspects of aging, we included two age groups (3 and 8 months) to assess age-related influences. Our data revealed that spaceflight drives age-independent systemic changes, primarily affecting tissue rem…",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-927"
+ },
+ {
+  "Accession": "OSD-956",
+  "Study Title": "Gravitational and mechanical forces drive mitochondrial translation - C. elegans datasets",
+  "organism": "Caenorhabditis elegans",
+  "Project Type": "Spaceflight Study",
+  "Flight Program": "International Space Station (ISS)",
+  "Mission": {
+   "End Date": "02/11/2015",
+   "Start Date": "01/10/2015",
+   "Name": "SpaceX-5"
+  },
+  "Study Factor Name": "Spaceflight     Altered Gravity",
+  "Study Assay Measurement Type": "transcription profiling     translation profiling",
+  "Study Publication Title": "Gravitational and mechanical forces drive mitochondrial translation",
+  "Study Description": "Life on Earth has evolved in a form suitable for the gravitational force of 1 x g. Although the pivotal role of gravity in gene expression has been revealed by multi-omics approaches in space-flown samples and astronauts, the molecular details of how mammalian cells harness gravity have remained unclear. Here, we showed that mitochondria utilize gravity to activate protein synthesis within the organelle. Genome-wide ribosome profiling revealed reduced mitochondrial translation in mammalian cells and Caenorhabditis elegans under both microgravity at the International Space Station and simulated…",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-956"
+ },
+ {
+  "Accession": "OSD-929",
+  "Study Title": "Spaceflight induces systemic effects on extracellular matrix and immune system in different age-stages - Myeloid hippocampus data",
+  "organism": "Mus musculus",
+  "Project Type": "Spaceflight Study",
+  "Flight Program": "International Space Station (ISS)",
+  "Mission": {
+   "End Date": "01/14/2019",
+   "Start Date": "12/05/2018",
+   "Name": "SpaceX-16"
+  },
+  "Study Factor Name": "Spaceflight     Age",
+  "Study Assay Measurement Type": "transcription profiling",
+  "Study Description": "Spaceflights significantly impacts astronaut health, causing muscle atrophy, bone loss, cardiovascular deconditioning and immune system dysregulation, especially during long missions. To explore molecular changes, we generated a single-cell RNA sequencing dataset, of 216 samples from 28 mouse organs and tissues under spaceflight and control conditions. Since spaceflight effects closely resemble aspects of aging, we included two age groups (3 and 8 months) to assess age-related influences. Our data revealed that spaceflight drives age-independent systemic changes, primarily affecting tissue rem…",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-929"
+ },
+ {
+  "Accession": "OSD-919",
+  "Study Title": "Spaceflight induces systemic effects on extracellular matrix and immune system in different age-stages - Bone data",
+  "organism": "Mus musculus",
+  "Project Type": "Spaceflight Study",
+  "Flight Program": "International Space Station (ISS)",
+  "Mission": {
+   "End Date": "01/14/2019",
+   "Start Date": "12/05/2018",
+   "Name": "SpaceX-16"
+  },
+  "Study Factor Name": "Spaceflight     Age",
+  "Study Assay Measurement Type": "transcription profiling",
+  "Study Description": "Spaceflights significantly impacts astronaut health, causing muscle atrophy, bone loss, cardiovascular deconditioning and immune system dysregulation, especially during long missions. To explore molecular changes, we generated a single-cell RNA sequencing dataset, of 216 samples from 28 mouse organs and tissues under spaceflight and control conditions. Since spaceflight effects closely resemble aspects of aging, we included two age groups (3 and 8 months) to assess age-related influences. Our data revealed that spaceflight drives age-independent systemic changes, primarily affecting tissue rem…",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-919"
+ },
+ {
+  "Accession": "OSD-103",
+  "Study Title": "Rodent Research-1 (RR1) NASA Validation Flight: Mouse quadriceps muscle transcriptomic, proteomic, and epigenomic data",
+  "organism": "Not Applicable     Mus musculus",
+  "Project Type": "Spaceflight Study",
+  "Flight Program": "International Space Station (ISS)",
+  "Mission": {
+   "End Date": "10/25/2014",
+   "Start Date": "09/21/2014",
+   "Name": "SpaceX-4"
+  },
+  "Study Factor Name": "Spaceflight",
+  "Study Assay Measurement Type": "protein expression profiling     RNA methylation profiling     DNA methylation profiling     transcription profiling",
+  "Study Publication Title": "A microRNA signature and TGF-beta1 response were identified as the key master regulators for spaceflight response     NASA GeneLab Platform Utilized for Biological Response to Space Radiation in Animal Models",
+  "Study Description": "NASA's Rodent Research (RR) project is playing a critical role in advancing biomedical research on the physiological effects of space environments. Due to the limited resources for conducting biological experiments aboard the International Space Station (ISS), it is imperative to use crew time efficiently while maximizing high-quality science return. NASA's GeneLab project has as its primary objectives to 1) further increase the value of these experiments using a multi-omics, systems biology-based approach, and 2) disseminate these data without restrictions to the scientific community. The cur…",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-103"
+ },
+ {
+  "Accession": "OSD-933",
+  "Study Title": "Spaceflight induces systemic effects on extracellular matrix and immune system in different age-stages - Skeletal stem cells data",
+  "organism": "Mus musculus",
+  "Project Type": "Spaceflight Study",
+  "Flight Program": "International Space Station (ISS)",
+  "Mission": {
+   "End Date": "01/14/2019",
+   "Start Date": "12/05/2018",
+   "Name": "SpaceX-16"
+  },
+  "Study Factor Name": "Spaceflight     Age",
+  "Study Assay Measurement Type": "transcription profiling",
+  "Study Description": "Spaceflights significantly impacts astronaut health, causing muscle atrophy, bone loss, cardiovascular deconditioning and immune system dysregulation, especially during long missions. To explore molecular changes, we generated a single-cell RNA sequencing dataset, of 216 samples from 28 mouse organs and tissues under spaceflight and control conditions. Since spaceflight effects closely resemble aspects of aging, we included two age groups (3 and 8 months) to assess age-related influences. Our data revealed that spaceflight drives age-independent systemic changes, primarily affecting tissue rem…",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-933"
+ },
+ {
+  "Accession": "OSD-923",
+  "Study Title": "Spaceflight induces systemic effects on extracellular matrix and immune system in different age-stages - Large intestine data",
+  "organism": "Mus musculus",
+  "Project Type": "Spaceflight Study",
+  "Flight Program": "International Space Station (ISS)",
+  "Mission": {
+   "End Date": "01/14/2019",
+   "Start Date": "12/05/2018",
+   "Name": "SpaceX-16"
+  },
+  "Study Factor Name": "Spaceflight     Age",
+  "Study Assay Measurement Type": "transcription profiling",
+  "Study Description": "Spaceflights significantly impacts astronaut health, causing muscle atrophy, bone loss, cardiovascular deconditioning and immune system dysregulation, especially during long missions. To explore molecular changes, we generated a single-cell RNA sequencing dataset, of 216 samples from 28 mouse organs and tissues under spaceflight and control conditions. Since spaceflight effects closely resemble aspects of aging, we included two age groups (3 and 8 months) to assess age-related influences. Our data revealed that spaceflight drives age-independent systemic changes, primarily affecting tissue rem…",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-923"
+ },
+ {
+  "Accession": "OSD-926",
+  "Study Title": "Spaceflight induces systemic effects on extracellular matrix and immune system in different age-stages - Bone marrow data",
+  "organism": "Mus musculus",
+  "Project Type": "Spaceflight Study",
+  "Flight Program": "International Space Station (ISS)",
+  "Mission": {
+   "End Date": "01/14/2019",
+   "Start Date": "12/05/2018",
+   "Name": "SpaceX-16"
+  },
+  "Study Factor Name": "Spaceflight     Age",
+  "Study Assay Measurement Type": "transcription profiling",
+  "Study Description": "Spaceflights significantly impacts astronaut health, causing muscle atrophy, bone loss, cardiovascular deconditioning and immune system dysregulation, especially during long missions. To explore molecular changes, we generated a single-cell RNA sequencing dataset, of 216 samples from 28 mouse organs and tissues under spaceflight and control conditions. Since spaceflight effects closely resemble aspects of aging, we included two age groups (3 and 8 months) to assess age-related influences. Our data revealed that spaceflight drives age-independent systemic changes, primarily affecting tissue rem…",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-926"
+ },
+ {
+  "Accession": "OSD-932",
+  "Study Title": "Spaceflight induces systemic effects on extracellular matrix and immune system in different age-stages - Non-myeloid hippocampus data",
+  "organism": "Mus musculus",
+  "Project Type": "Spaceflight Study",
+  "Flight Program": "International Space Station (ISS)",
+  "Mission": {
+   "End Date": "01/14/2019",
+   "Start Date": "12/05/2018",
+   "Name": "SpaceX-16"
+  },
+  "Study Factor Name": "Spaceflight     Age",
+  "Study Assay Measurement Type": "transcription profiling",
+  "Study Description": "Spaceflights significantly impacts astronaut health, causing muscle atrophy, bone loss, cardiovascular deconditioning and immune system dysregulation, especially during long missions. To explore molecular changes, we generated a single-cell RNA sequencing dataset, of 216 samples from 28 mouse organs and tissues under spaceflight and control conditions. Since spaceflight effects closely resemble aspects of aging, we included two age groups (3 and 8 months) to assess age-related influences. Our data revealed that spaceflight drives age-independent systemic changes, primarily affecting tissue rem…",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-932"
+ },
+ {
+  "Accession": "OSD-930",
+  "Study Title": "Spaceflight induces systemic effects on extracellular matrix and immune system in different age-stages - Non-myeloid cerebellum data",
+  "organism": "Mus musculus",
+  "Project Type": "Spaceflight Study",
+  "Flight Program": "International Space Station (ISS)",
+  "Mission": {
+   "End Date": "01/14/2019",
+   "Start Date": "12/05/2018",
+   "Name": "SpaceX-16"
+  },
+  "Study Factor Name": "Spaceflight     Age",
+  "Study Assay Measurement Type": "transcription profiling",
+  "Study Description": "Spaceflights significantly impacts astronaut health, causing muscle atrophy, bone loss, cardiovascular deconditioning and immune system dysregulation, especially during long missions. To explore molecular changes, we generated a single-cell RNA sequencing dataset, of 216 samples from 28 mouse organs and tissues under spaceflight and control conditions. Since spaceflight effects closely resemble aspects of aging, we included two age groups (3 and 8 months) to assess age-related influences. Our data revealed that spaceflight drives age-independent systemic changes, primarily affecting tissue rem…",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-930"
+ },
+ {
+  "Accession": "OSD-101",
+  "Study Title": "Rodent Research-1 (RR1) NASA Validation Flight: Mouse left gastrocnemius muscle transcriptomic, proteomic, and epigenomic data",
+  "organism": "Mus musculus",
+  "Project Type": "Spaceflight Study",
+  "Flight Program": "International Space Station (ISS)",
+  "Mission": {
+   "End Date": "10/25/14",
+   "Start Date": "9/21/14",
+   "Name": "SpaceX-4"
+  },
+  "Study Factor Name": "Spaceflight",
+  "Study Assay Measurement Type": "RNA methylation profiling     protein expression profiling     transcription profiling     DNA methylation profiling",
+  "Study Publication Title": "A microRNA signature and TGF-β1 response were identified as the key master regulators for spaceflight response     NASA GeneLab Platform Utilized for Biological Response to Space Radiation in Animal Models",
+  "Study Description": "NASA's Rodent Research (RR) project is playing a critical role in advancing biomedical research on the physiological effects of space environments. Due to the limited resources for conducting biological experiments aboard the International Space Station (ISS), it is imperative to use crew time efficiently while maximizing high-quality science return. NASA's GeneLab project has as its primary objectives to 1) further increase the value of these experiments using a multi-omics, systems biology-based approach, and 2) disseminate these data without restrictions to the scientific community. The cur…",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-101"
+ },
+ {
+  "Accession": "OSD-47",
+  "Study Title": "Rodent Research-1 (RR1) National Lab Validation Flight: Mouse liver transcriptomic, proteomic, epigenomic and histology data",
+  "organism": "Mus musculus",
+  "Project Type": "Spaceflight Study",
+  "Flight Program": "International Space Station (ISS)",
+  "Mission": {
+   "End Date": "10/25/2014",
+   "Start Date": "09/21/2014",
+   "Name": "SpaceX-4"
+  },
+  "Study Factor Name": "Spaceflight",
+  "Study Assay Measurement Type": "transcription profiling     protein expression profiling     DNA methylation profiling     Molecular Cellular Imaging",
+  "Study Publication Title": "NASA GeneLab Platform Utilized for Biological Response to Space Radiation in Animal Models     Validation of Methods to Assess the Immunoglobulin Gene Repertoire in Tissues Obtained from Mice on the International Space Station.",
+  "Study Description": "The Rodent Reasearch-1 National Lab (RR-1 CASIS) experiment was performed to study the effect of microgravity on muscle wasting. RNA, DNA, and protein were purified from RR-1 CASIS (the Center for the Advancement of Science in Space) liver samples. Groups included: Flight (FLT) dissected on-orbit (21 or 22 days after launch); age-matched Ground Controls (GC); and Basal Controls (BC, euthanized at time of launch). RNA-Seq, whole genome BS-Seq (bisulfite sequencing) and proteomic expression profiling were performed.",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-47"
+ },
+ {
+  "Accession": "OSD-931",
+  "Study Title": "Spaceflight induces systemic effects on extracellular matrix and immune system in different age-stages - Non-myeloid forebrain data",
+  "organism": "Mus musculus",
+  "Project Type": "Spaceflight Study",
+  "Flight Program": "International Space Station (ISS)",
+  "Mission": {
+   "End Date": "01/14/2019",
+   "Start Date": "12/05/2018",
+   "Name": "SpaceX-16"
+  },
+  "Study Factor Name": "Spaceflight     Age",
+  "Study Assay Measurement Type": "transcription profiling",
+  "Study Description": "Spaceflights significantly impacts astronaut health, causing muscle atrophy, bone loss, cardiovascular deconditioning and immune system dysregulation, especially during long missions. To explore molecular changes, we generated a single-cell RNA sequencing dataset, of 216 samples from 28 mouse organs and tissues under spaceflight and control conditions. Since spaceflight effects closely resemble aspects of aging, we included two age groups (3 and 8 months) to assess age-related influences. Our data revealed that spaceflight drives age-independent systemic changes, primarily affecting tissue rem…",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-931"
+ },
+ {
+  "Accession": "OSD-422",
+  "Study Title": "Transcriptional profiling of gastrocnemius muscle from rats flown on the SLS-1 mission",
+  "organism": "Rattus norvegicus",
+  "Project Type": "Spaceflight Study",
+  "Flight Program": "Space Transportation System (Shuttle)",
+  "Mission": {
+   "End Date": "06/14/1991",
+   "Start Date": "06/05/1991",
+   "Name": "STS-40"
+  },
+  "Study Factor Name": "Spaceflight",
+  "Study Assay Measurement Type": "transcription profiling",
+  "Study Description": "The Spacelab Life Sciences (SLS) program was a series of payloads that used the facilities of an entire Spacelab module to conduct a variety of life science investigations. The general objective of the research in the SLS programs was to study the acute and chronic changes that living systems undergo during exposure to the space environment. The specific objective of the Spacelab Life Sciences-1 (SLS-1) mission was to study the responses of rats to spaceflight and a period of re-exposure to Earth’s gravity.  In addition, this mission allowed for the detailed studies on rodents flown in two dif…",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-422"
+ },
+ {
+  "Accession": "OSD-423",
+  "Study Title": "Transcriptional profiling of thymus tissue from rats flown on the SLS-2 mission",
+  "organism": "Rattus norvegicus",
+  "Project Type": "Spaceflight Study",
+  "Flight Program": "Space Transportation System (Shuttle)",
+  "Mission": {
+   "Start Date": "10/18/1993",
+   "End Date": "11/01/1993",
+   "Name": "STS-58"
+  },
+  "Study Factor Name": "Spaceflight",
+  "Study Assay Measurement Type": "transcription profiling",
+  "Study Description": "The Spacelab Life Sciences (SLS) program was a series of payloads that used the facilities of an entire Spacelab module to conduct a variety of life science investigations.  The general objective of the research in the SLS programs was to study the acute and chronic changes that living systems undergo during exposure to the space environment.  The specific objective of the Spacelab Life Sciences-2 (SLS-2) mission was to study the structural and functional changes occurring in the bone, muscle, blood, and balance systems of rats in response to space flight.  Rats were housed in individual cages…",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-423"
+ },
+ {
+  "Accession": "OSD-955",
+  "Study Title": "Gravitational and mechanical forces drive mitochondrial translation - mouse datasets",
+  "organism": "Mus musculus",
+  "Project Type": "Ground Study",
+  "Study Factor Name": "Minimized Mechanical Stress     Duration",
+  "Study Assay Measurement Type": "transcription profiling     translation profiling",
+  "Study Publication Title": "Gravitational and mechanical forces drive mitochondrial translation",
+  "Study Description": "Life on Earth has evolved in a form suitable for the gravitational force of 1 x g. Although the pivotal role of gravity in gene expression has been revealed by multi-omics approaches in space-flown samples and astronauts, the molecular details of how mammalian cells harness gravity have remained unclear. Here, we showed that mitochondria utilize gravity to activate protein synthesis within the organelle. Genome-wide ribosome profiling revealed reduced mitochondrial translation in mammalian cells and Caenorhabditis elegans under both microgravity at the International Space Station and simulated…",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-955"
+ },
+ {
+  "Accession": "OSD-99",
+  "Study Title": "Rodent Research-1 (RR1) NASA Validation Flight: Mouse extensor digitorum longus muscle transcriptomic and epigenomic data",
+  "organism": "Mus musculus",
+  "Project Type": "Spaceflight Study",
+  "Flight Program": "International Space Station (ISS)",
+  "Mission": {
+   "End Date": "10/25/2014",
+   "Start Date": "09/21/2014",
+   "Name": "SpaceX-4"
+  },
+  "Study Factor Name": "Spaceflight",
+  "Study Assay Measurement Type": "DNA methylation profiling     transcription profiling",
+  "Study Publication Title": "NASA GeneLab Platform Utilized for Biological Response to Space Radiation in Animal Models",
+  "Study Description": "NASA's Rodent Research (RR) project is playing a critical role in advancing biomedical research on the physiological effects of space environments. Due to the limited resources for conducting biological experiments aboard the International Space Station (ISS), it is imperative to use crew time efficiently while maximizing high-quality science return. NASA's GeneLab project has as its primary objectives to 1) further increase the value of these experiments using a multi-omics, systems biology-based approach, and 2) disseminate these data without restrictions to the scientific community. The cur…",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-99"
+ },
+ {
+  "Accession": "OSD-574",
+  "Study Title": "SpaceX Inspiration4 Deltoid Skin and Microbiome Data: Spatial Transcriptomics (NanoString GeoMx), Metageomics, and Metatranscriptomics",
+  "organism": "Microbiota     Homo sapiens     Not Applicable",
+  "Project Type": "Spaceflight Study",
+  "Mission": {
+   "End Date": "09/18/2021",
+   "Start Date": "09/16/2021",
+   "Name": "SpaceX Inspiration4"
+  },
+  "Study Factor Name": "Spaceflight     Time",
+  "Study Assay Measurement Type": "Metagenomic sequencing     transcription profiling     metatranscriptome sequencing assay",
+  "Study Publication Title": "The Space Omics and Medical Atlas (SOMA) and international astronaut biobank     Collection of biospecimens from the inspiration4 mission establishes the standards for the space omics and medical atlas (SOMA)     Spatial multi-omics of human skin reveals KRAS and inflammatory responses to spaceflight",
+  "Study Description": "The SpaceX Inspiration4 mission was a 3-day mission with four private astronauts to low Earth orbit that occurred in September 2021. The crew collected biospecimen samples before, during, and after flight. One of these biospecimen collections included deltoid skin biopsies, collected once pre-flight (L-44) and within 1 day postflight (R+1). Biopsies were 3mm - 4mm in diameter and were frozen at -80C at the time of collection. Samples were then embedded in OCT and prepared for spatially resolved transcriptomics using the NanoString GeoMx Whole Transcriptome Atlas Panel. Skin was profiled in fou…",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-574"
+ },
+ {
+  "Accession": "OSD-396",
+  "Study Title": "Gene-metabolite networks associated with impediment of bone fracture repair in spaceflight",
+  "organism": "Mus musculus",
+  "Project Type": "Spaceflight Study",
+  "Flight Program": "International Space Station (ISS)",
+  "Mission": {
+   "Start Date": "02/19/2017",
+   "End Date": "03/19/2017",
+   "Name": "SpaceX-10"
+  },
+  "Study Factor Name": "Spaceflight     Treatment",
+  "Study Assay Measurement Type": "transcription profiling",
+  "Study Publication Title": "Gene-metabolite networks associated with impediment of bone fracture repair in spaceflight.",
+  "Study Description": "Adverse effects of spaceflight on musculoskeletal health increase the risk of bone injury and impairment of fracture healing. Its yet elusive molecular comprehension warrants immediate attention, since space travel is becoming more frequent. Here we examined the effects of spaceflight on bone fracture healing using a 2 mm femoral segmental bone defect (SBD) model. Forty, 9-week-old, male C57BL/6J mice were randomized into 4 groups: 1) Sham surgery on Ground (G-Sham); 2) Sham surgery housed in Spaceflight (FLT-Sham); 3) SBD surgery on Ground (G-Surgery); and 4) SBD surgery housed in Spaceflight…",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-396"
+ },
+ {
+  "Accession": "OSD-402",
+  "Study Title": "Single cell transcriptional profiling of femur bone marrow from mice flown on Rodent Research Reference Mission-2 (RRRM-2)",
+  "organism": "Mus musculus",
+  "Project Type": "Spaceflight Study",
+  "Flight Program": "International Space Station (ISS)",
+  "Mission": {
+   "Start Date": "07/25/2019",
+   "End Date": "08/27/2019",
+   "Name": "SpaceX-18"
+  },
+  "Study Factor Name": "Spaceflight     Age",
+  "Study Assay Measurement Type": "transcription profiling",
+  "Study Description": "In the Rodent Research Reference Mission (RRRM-2), forty female C57BL/6NTac mice were flown on the International Space Station. To assess differences in outcomes due to age, twenty 12 week-old and twenty 29 week-old mice were flown, respectively. To directly assess spaceflight effects, half of the young and old mice (10 old, 10 young) were sacrificed on-orbit after 55-58 days (ISS Terminal, ISS-T), while the other half (10 old, 10 young) were returned live to Earth after 32 days and allowed to recover for 24 days (Live Animal Return, LAR) before sacrifice. ISS-T and LAR mice were the same age …",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-402"
+ },
+ {
+  "Accession": "OSD-403",
+  "Study Title": "Single cell transcriptional profiling of humerus bone marrow from mice flown on Rodent Research Reference Mission-2 (RRRM-2)",
+  "organism": "Mus musculus",
+  "Project Type": "Spaceflight Study",
+  "Flight Program": "International Space Station (ISS)",
+  "Mission": {
+   "Start Date": "07/25/2019",
+   "End Date": "08/27/2019",
+   "Name": "SpaceX-18"
+  },
+  "Study Factor Name": "Spaceflight     Age",
+  "Study Assay Measurement Type": "transcription profiling",
+  "Study Description": "In the Rodent Research Reference Mission (RRRM-2), forty female C57BL/6NTac mice were flown on the International Space Station. To assess differences in outcomes due to age, twenty 12 week-old and twenty 29 week-old mice were flown, respectively. To directly assess spaceflight effects, half of the young and old mice (10 old, 10 young) were sacrificed on-orbit after 55-58 days (ISS Terminal, ISS-T), while the other half (10 old, 10 young) were returned live to Earth after 32 days and allowed to recover for 24 days (Live Animal Return, LAR) before sacrifice. ISS-T and LAR mice were the same age …",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-403"
+ },
+ {
+  "Accession": "OSD-194",
+  "Study Title": "Rodent Research-3-CASIS: Mouse retina transcriptomic data",
+  "organism": "Mus musculus",
+  "Project Type": "Spaceflight Study",
+  "Flight Program": "International Space Station (ISS)",
+  "Mission": {
+   "End Date": "05/11/2016",
+   "Start Date": "04/08/2016",
+   "Name": "SpaceX-8"
+  },
+  "Study Factor Name": "Spaceflight",
+  "Study Assay Measurement Type": "transcription profiling",
+  "Study Description": "The Rodent Research-3 (RR-3) mission was sponsored by the pharmaceutical company Eli Lilly and Co. and the Center for the Advancement of Science in Space to study the effectiveness of a potential countermeasure for the loss of muscle and bone mass that occurs during spaceflight. Twenty BALB/c, 12-weeks old female mice (ten controls and ten treated) were flown to the ISS and housed in the Rodent Habitat for 39-42 days. Twenty mice of similar age, sex and strain were used for ground controls housed in identical hardware and matching ISS environmental conditions. Basal controls were housed in sta…",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-194"
+ },
+ {
+  "Accession": "OSD-249",
+  "Study Title": "Metagenomic analysis of feces from mice flown on the RR-6 mission",
+  "organism": "Microbiota",
+  "Project Type": "Spaceflight Study",
+  "Flight Program": "International Space Station (ISS)",
+  "Mission": {
+   "Start Date": "12-Dec-17",
+   "End Date": "13-Jan-18",
+   "Name": "SpaceX-13"
+  },
+  "Study Factor Name": "Spaceflight     Duration     Dissection Condition     Euthanasia Location     Ionizing Radiation",
+  "Study Assay Measurement Type": "Metagenomic sequencing     Metagenomic sequencing     Metagenomic sequencing     Amplicon Sequencing     Amplicon Sequencing",
+  "Study Description": "The objective of the Rodent Research-6 (RR-6) study was to evaluate muscle atrophy in mice during spaceflight and to test the efficacy of a novel therapeutic to mitigate muscle wasting. The experiment involved an implantable subcutaneous nanochannel delivery system (nDS; between scapula), which delivered the drug formoterol (FMT; a selective β2 adrenoceptor agonist), over the course of time. To this end, a cohort of forty 32-weeks-old female C57BL/6NTac mice were either sham operated or implanted with vehicle or treatment-filled nDS, launched in two Transporters (20 mice per Transporter) on Sp…",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-249"
+ },
+ {
+  "Accession": "OSD-270",
+  "Study Title": "Bulk and spatially resolved transcriptional analysis of hearts from mice flown on the RR-3",
+  "organism": "Mus musculus",
+  "Project Type": "Spaceflight Study",
+  "Flight Program": "International Space Station (ISS)",
+  "Mission": {
+   "End Date": "05/11/2016",
+   "Start Date": "04/08/2016",
+   "Name": "SpaceX-8"
+  },
+  "Study Factor Name": "Spaceflight",
+  "Study Assay Measurement Type": "transcription profiling     transcription profiling",
+  "Study Description": "The Rodent Research-3 (RR-3) mission was sponsored by the pharmaceutical company Eli Lilly and Co. and the Center for the Advancement of Science in Space to study the effectiveness of a potential countermeasure for the loss of muscle and bone mass that occurs during spaceflight. Twenty BALB/c, 12-weeks old female mice (ten controls and ten treated) were flown to the ISS and housed in the Rodent Habitat for 39-42 days. Twenty mice of similar age, sex and strain were used for ground controls housed in identical hardware and matching ISS environmental conditions. Basal controls were housed in sta…",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-270"
+ },
+ {
+  "Accession": "OSD-914",
+  "Study Title": "MicroRNAs shape mouse age-independent tissue adaptation to spaceflight via ECM and developmental pathways - Diaphragm data",
+  "organism": "Mus musculus",
+  "Project Type": "Spaceflight Study",
+  "Flight Program": "International Space Station (ISS)",
+  "Mission": {
+   "End Date": "1/14/19",
+   "Start Date": "12/5/18",
+   "Name": "SpaceX-16"
+  },
+  "Study Factor Name": "Spaceflight     Age     Euthanasia Location     Dissection Condition",
+  "Study Assay Measurement Type": "transcription profiling     transcription profiling",
+  "Study Publication Title": "MiRNAs shape mouse age-independent tissue adaptation to spaceflight via ECM and developmental pathways.",
+  "Study Description": "As human space exploration accelerates, understanding the organism-wide molecular effects of longer spaceflight in mammals becomes increasingly critical. Non-coding RNAs like miRNAs are key to regulating this landscape. We thus analyzed 686 small RNA samples of mice from 13 solid organs at 3 and 8 months of age, after at least 3 weeks on the ISS and compared them to earth-bound controls. We observed significant spaceflight effects in systemic tissue remodeling pathways along the Fat-Liver-Pancreas axis and in heart, brain, spleen and thymus. The MIR-17/92 and MIR-1/133 families drive distinct …",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-914"
+ },
+ {
+  "Accession": "OSD-161",
+  "Study Title": "Rodent Research-3-CASIS: Mouse adrenal gland transcriptomic, proteomic, and epigenomic data",
+  "organism": "Mus musculus",
+  "Project Type": "Spaceflight Study",
+  "Flight Program": "International Space Station (ISS)",
+  "Mission": {
+   "End Date": "05/11/2016",
+   "Start Date": "04/08/2016",
+   "Name": "SpaceX-8"
+  },
+  "Study Factor Name": "Spaceflight",
+  "Study Assay Measurement Type": "protein expression profiling     DNA methylation profiling     transcription profiling",
+  "Study Publication Title": "NASA GeneLab Platform Utilized for Biological Response to Space Radiation in Animal Models",
+  "Study Description": "The Rodent Research-3 (RR-3) mission was sponsored by the pharmaceutical company Eli Lilly and Co. and the Center for the Advancement of Science in Space to study the effectiveness of a potential countermeasure for the loss of muscle and bone mass that occurs during spaceflight. Twenty BALB/c, 12-weeks old female mice (ten controls and ten treated) were flown to the ISS and housed in the Rodent Habitat for 39-42 days. Twenty mice of similar age, sex and strain were used for ground controls housed in identical hardware and matching ISS environmental conditions. Basal controls were housed in sta…",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-161"
+ },
+ {
+  "Accession": "OSD-162",
+  "Study Title": "Rodent Research-3-CASIS: Mouse eye transcriptomic and proteomic data",
+  "organism": "Mus musculus",
+  "Project Type": "Spaceflight Study",
+  "Flight Program": "International Space Station (ISS)",
+  "Mission": {
+   "End Date": "05/11/2016",
+   "Start Date": "04/08/2016",
+   "Name": "SpaceX-8"
+  },
+  "Study Factor Name": "Spaceflight",
+  "Study Assay Measurement Type": "protein expression profiling     transcription profiling",
+  "Study Publication Title": "NASA GeneLab Platform Utilized for Biological Response to Space Radiation in Animal Models",
+  "Study Description": "The Rodent Research-3 (RR-3) mission was sponsored by the pharmaceutical company Eli Lilly and Co. and the Center for the Advancement of Science in Space to study the effectiveness of a potential countermeasure for the loss of muscle and bone mass that occurs during spaceflight. Twenty BALB/c, 12-weeks old female mice (ten controls and ten treated) were flown to the ISS and housed in the Rodent Habitat for 39-42 days. Twenty mice of similar age, sex and strain were used for ground controls housed in identical hardware and matching ISS environmental conditions. Basal controls were housed in sta…",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-162"
+ },
+ {
+  "Accession": "OSD-352",
+  "Study Title": "Multi-modal transcriptional and chromatin accessibility analysis of brains from mice flown on the RR-3 mission",
+  "organism": "Mus musculus",
+  "Project Type": "Spaceflight Study",
+  "Flight Program": "International Space Station (ISS)",
+  "Mission": {
+   "End Date": "5/11/16",
+   "Start Date": "4/8/16",
+   "Name": "SpaceX-8"
+  },
+  "Study Factor Name": "Spaceflight",
+  "Study Assay Measurement Type": "transcription profiling     transcription profiling     transcription profiling     Chromatin Accessibility",
+  "Study Publication Title": "Spatially resolved multiomics on the neuronal effects induced by spaceflight in mice.",
+  "Study Description": "The Rodent Research-3 (RR-3) mission was sponsored by the pharmaceutical company Eli Lilly and Co. and the Center for the Advancement of Science in Space to study the effectiveness of a potential countermeasure for the loss of muscle and bone mass that occurs during spaceflight. Twenty BALB/c, 12-weeks old female mice (ten controls and ten treated) were flown to the ISS and housed in the Rodent Habitat for 39-42 days. Twenty mice of similar age, and matching sex and strain were used for ground controls housed in identical hardware and matching ISS environmental conditions. Basal controls were …",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-352"
+ },
+ {
+  "Accession": "OSD-163",
+  "Study Title": "Rodent Research-3-CASIS: Mouse kidney transcriptomic, proteomic, and epigenomic data",
+  "organism": "Mus musculus",
+  "Project Type": "Spaceflight Study",
+  "Flight Program": "International Space Station (ISS)",
+  "Mission": {
+   "End Date": "05/11/2016",
+   "Start Date": "04/08/2016",
+   "Name": "SpaceX-8"
+  },
+  "Study Factor Name": "Spaceflight",
+  "Study Assay Measurement Type": "protein expression profiling     DNA methylation profiling     transcription profiling",
+  "Study Publication Title": "NASA GeneLab Platform Utilized for Biological Response to Space Radiation in Animal Models",
+  "Study Description": "The Rodent Research-3 (RR-3) mission was sponsored by the pharmaceutical company Eli Lilly and Co. and the Center for the Advancement of Science in Space to study the effectiveness of a potential countermeasure for the loss of muscle and bone mass that occurs during spaceflight. Twenty BALB/c, 12-weeks old female mice (ten controls and ten treated) were flown to the ISS and housed in the Rodent Habitat for 39-42 days. Twenty mice of similar age, sex and strain were used for ground controls housed in identical hardware and matching ISS environmental conditions. Basal controls were housed in sta…",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-163"
+ },
+ {
+  "Accession": "OSD-936",
+  "Study Title": "Gravitational and mechanical forces drive mitochondrial translation- human HEK293 cell datasets",
+  "organism": "Homo sapiens",
+  "Project Type": "Spaceflight Study",
+  "Flight Program": "International Space Station (ISS)",
+  "Mission": {
+   "End Date": "1/26/21",
+   "Start Date": "10/2/20",
+   "Name": "NG-14"
+  },
+  "Study Factor Name": "Altered Gravity     Coating     Spaceflight     Altered Gravity Duration",
+  "Study Assay Measurement Type": "transcription profiling     transcription profiling     translation profiling     translation profiling",
+  "Study Publication Title": "Gravitational and mechanical forces drive mitochondrial translation",
+  "Study Description": "Life on Earth has evolved in a form suitable for the gravitational force of 1 x g. Although the pivotal role of gravity in gene expression has been revealed by multi-omics approaches in space-flown samples and astronauts, the molecular details of how mammalian cells harness gravity have remained unclear. Here, we showed that mitochondria utilize gravity to activate protein synthesis within the organelle. Genome-wide ribosome profiling revealed reduced mitochondrial translation in mammalian cells and Caenorhabditis elegans under both microgravity at the International Space Station and simulated…",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-936"
+ },
+ {
+  "Accession": "OSD-137",
+  "Study Title": "Rodent Research-3-CASIS: Mouse liver transcriptomic, proteomic, epigenomic and histology data",
+  "organism": "Mus musculus",
+  "Project Type": "Spaceflight Study",
+  "Flight Program": "International Space Station (ISS)",
+  "Mission": {
+   "End Date": "5/11/2016",
+   "Start Date": "4/8/2016",
+   "Name": "SpaceX-8"
+  },
+  "Study Factor Name": "Spaceflight",
+  "Study Assay Measurement Type": "protein expression profiling     DNA methylation profiling     transcription profiling     Molecular Cellular Imaging",
+  "Study Publication Title": "Multi-omics analysis of multiple missions to space reveal a theme of lipid dysregulation in mouse liver",
+  "Study Description": "The Rodent Research-3 (RR-3) mission was sponsored by the pharmaceutical company Eli Lilly and Co. and the Center for the Advancement of Science in Space to study the effectiveness of a potential countermeasure for the loss of muscle and bone mass that occurs during spaceflight. Twenty BALB/c, 12-weeks old female mice (ten controls and ten treated) were flown to the ISS and housed in the Rodent Habitat for 39-42 days. Twenty mice of similar age, sex and strain were used for ground controls housed in identical hardware and matching ISS environmental conditions. Basal controls were housed in sta…",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-137"
+ },
+ {
+  "Accession": "OSD-105",
+  "Study Title": "Rodent Research-1 (RR1) NASA Validation Flight: Mouse tibialis anterior muscle transcriptomic, proteomic, and epigenomic data",
+  "organism": "Not Applicable     Mus musculus",
+  "Project Type": "Spaceflight Study",
+  "Flight Program": "International Space Station",
+  "Mission": {
+   "End Date": "10/25/14",
+   "Start Date": "9/21/14",
+   "Name": "SpaceX-4"
+  },
+  "Study Factor Name": "Spaceflight",
+  "Study Assay Measurement Type": "transcription profiling     protein expression profiling     DNA methylation profiling     RNA methylation profiling",
+  "Study Publication Title": "A microRNA signature and TGF-β1 response were identified as the key master regulators for spaceflight response.     NASA GeneLab Platform Utilized for Biological Response to Space Radiation in Animal Models.",
+  "Study Description": "NASA's Rodent Research (RR) project is playing a critical role in advancing biomedical research on the physiological effects of space environments. Due to the limited resources for conducting biological experiments aboard the International Space Station (ISS), it is imperative to use crew time efficiently while maximizing high-quality science return. NASA's GeneLab project has as its primary objectives to 1) further increase the value of these experiments using a multi-omics, systems biology-based approach, and 2) disseminate these data without restrictions to the scientific community. The cur…",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-105"
+ }
+]

@@ -65,8 +65,9 @@ describe("tormentas curadas", () => {
   });
 
   it("raw no contiene la clave de la API", () => {
-    for (const g of readdirSync(join(root, "raw")))
-      for (const f of readdirSync(join(root, "raw", g)))
-        expect(readFileSync(join(root, "raw", g, f), "utf-8")).not.toMatch(/api_key=(?!\*)/i);
+    // Recursivo: data/raw/recursos/ tiene una carpeta por fuente (con la documentación de api.nasa.gov).
+    const archivos = readdirSync(join(root, "raw"), { recursive: true, withFileTypes: true }).filter((d) => d.isFile());
+    expect(archivos.length).toBeGreaterThan(0);
+    for (const d of archivos) expect(readFileSync(join(d.parentPath, d.name), "utf-8")).not.toMatch(/api_key=(?!\*|DEMO_KEY\b|API_KEY\b)/i); // DEMO_KEY y API_KEY: ejemplos públicos de la documentación de NASA
   });
 });

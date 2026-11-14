@@ -1,0 +1,13 @@
+{
+  "id": "donki",
+  "dueno": "NASA CCMC",
+  "consultadoEl": "2026-11-14",
+  "paginas": [
+    {
+      "url": "https://ccmc.gsfc.nasa.gov/tools/DONKI/",
+      "archivo": "index.md",
+      "estado": 200,
+      "caracteres": 20273
+    }
+  ]
+}
