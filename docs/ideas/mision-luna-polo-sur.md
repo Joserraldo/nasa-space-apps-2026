@@ -11,7 +11,7 @@
 
 | Tema | Jezero (Marte) | Luna polo sur | Lección nueva |
 |---|---|---|---|
-| La misma tormenta (mayo 2024, "Gannon") | RAD en la superficie de Marte: fondo 4,8 → 4,9 µGy/h, factor **1,0** [V] | CRaTER en **órbita lunar**: fondo 5,2 → 1082,5 µGy/h, factor **206,3** [V] | Una tormenta no golpea igual en todas partes: depende de hacia dónde viaja la nube del Sol. *No* se explica por la atmósfera de Marte (ver §10) |
+| La misma tormenta (10 sep 2017, X8.2) | RAD en la superficie de Marte (rover Curiosity): 7,9 → 17,9 µGy/h de media diaria, factor **×2,3** [V] | CRaTER **en órbita alrededor de la Luna, no en el suelo**: 19 481,6 µGy/h de media diaria el 11 sep 2017, **uno de los valores más altos de nuestros datos** [V]. Sin factor: el fondo no era tranquilo | Una misma tormenta no se mide igual en todos los lugares. *No* afirmamos la causa; como mucho, "una explicación posible es…" (NO VERIFICADO, §10) |
 | Aire | Atmósfera delgada | Casi nada: presión de noche 3 × 10⁻¹⁵ bar [V] | En la Luna no hay "cobija de aire" alrededor de la base |
 | Mensajes a la Tierra | 3–22 min (PR #65) | ≈ 1,3 s (cálculo con 384 400 km [V]) | Control de Misión responde casi al instante: verificar es barato, **y aun así cuesta energía** |
 | Recurso clave | Luz y polvo | **Hielo en sombras que nunca reciben sol** vs. **luz en las crestas** (fuera de lista) | Lo que necesitas (agua) está justo donde no hay lo otro que necesitas (luz) |
@@ -22,7 +22,7 @@
 
 ## 2. La misión, paso a paso (8 pasos, ~2-3 min)
 
-Recursos 0-100 (`design/src/recursos.ts`). Arranca con ⚡65 🫁75 🛡️55 (valores de juego que ya están en develop). Objetivo sugerido (`MissionGoal`): `explorar`. Dificultad de la demo: `media`. Tormenta: `2024-05-10-gannon`.
+Recursos 0-100 (`design/src/recursos.ts`). Arranca con ⚡65 🫁75 🛡️55 (valores de juego que ya están en develop). Objetivo sugerido (`MissionGoal`): `explorar`. Dificultad de la demo: `media`. Tormenta: `2017-09-10-x82` (Gannon se queda para las propuestas del lado visible y del outpost, para no repetir).
 
 | Paso | Qué pasa | Decisión del niño (con costo) | Quién habla | Dato científico (fuente) |
 |---|---|---|---|---|
@@ -31,8 +31,8 @@ Recursos 0-100 (`design/src/recursos.ts`). Arranca con ⚡65 🫁75 🛡️55 (v
 | 3 | 4 sitios candidatos con 3 criterios: ☀️ **luz**, 🧊 **hielo cerca**, 🏔️ **terreno plano** | Ninguno gana en los tres (tabla §3) | Ingeniera (luz), Doctora (refugio, pendiente), Meteoróloga (sombras) | Las 13 regiones de Artemis III tienen sitios con sol continuo durante 6,5 días [fuera de lista, nasa.gov] |
 | 4 | Aterriza y elige **2 de 5 módulos** | Ver §4; cada uno mueve 2 medidores | Ingeniera recomienda batería; Doctora, escudo | Un ciclo de día y noche dura 29,53 días terrestres [V NSSDC] |
 | 4b | *Mala suerte (30 %):* ver §6 | Reparar o aguantar | Ingeniera | — |
-| 5 | Llega la tormenta real de mayo 2024 → pausa + **dos** tarjetas de fuente (DONKI y CRaTER) | — | Meteoróloga lee el evento de DONKI; Doctora lee la cifra de CRaTER | Cadena DONKI: FLR X2.2 → CME 1330 km/s → SEP → GST Kp 9 [V]. CRaTER ×206,3 **en órbita** [V] |
-| 6 | **Dilema del hielo** (§5): la expedición al cráter está a medio camino | Volver al refugio / terminar la expedición / subir escudo | Doctora vs Ingeniera; Iris dañada lee mal el medidor | Sin aire que frene: presión 3 × 10⁻¹⁵ bar [V NSSDC] (la relación aire→radiación es explicación, no cifra) |
+| 5 | Llega la tormenta real del 10 sep 2017 → pausa + **dos** tarjetas de fuente (DONKI y CRaTER) | — | Meteoróloga lee el evento de DONKI; Doctora lee la cifra de CRaTER | Cadena DONKI: FLR X8.2 → CME 2650 km/s → SEP [V] (sin GST en nuestros datos de este evento). CRaTER 19 481,6 µGy/h **en órbita alrededor de la Luna, no en el suelo** [V] |
+| 6 | **Dilema del hielo** (§5): la expedición al cráter está a medio camino | Volver al refugio / terminar la expedición / subir escudo | Doctora vs Ingeniera; Iris dañada lee mal el medidor | Casi sin aire: presión 3 × 10⁻¹⁵ bar [V NSSDC] (la relación aire→radiación es explicación, no cifra) |
 | 7 | Envía telemetría a la Tierra; Control de Misión responde **en 1 tick** (en Marte eran 2) | Preguntar a Control ahora (cuesta ⚡) o decidir solo | Control de Misión (casi sin retraso) | Luz tarda ≈ 1,3 s Luna–Tierra (cálculo: 384 400 km ÷ velocidad de la luz) |
 | 8 | Cadena de causas (decisión vs. mala suerte) + tarjeta de ciencia con 3 opciones, nunca bloquea | — | Iris resume | Ver §7 |
 
@@ -89,7 +89,7 @@ Montar cualquiera cuesta lo de `COSTOS_ACCION.colocar_modulo` (⚡-6 🫁-3). El
 | Módulo (`Equipment`) | Beneficio | Costo extra | Qué significa en la Luna | Lección (con fuente) |
 |---|---|---|---|---|
 | `panel_solar` | ⚡ +14 | rinde la mitad en `llanura-entre-crateres` (sombra) | Paneles de lado, porque el Sol está bajo en el polo (explicación; detalle NO VERIFICADO) | Llega la misma luz del Sol que a la Tierra: 1361,0 W/m² [V NSSDC] |
-| `bateria` | ⚡ +8 🛡️ +2 | sin costo por tick (ya en `MODULOS`) | Guarda energía para cuando el sitio queda en sombra | Un ciclo día-noche dura 29,53 días [V NSSDC] |
+| `bateria` | ⚡ +8 (**sin** el 🛡️ +2: criterio de DD-07, igual que las demás propuestas) | sin costo por tick | Guarda energía para cuando el sitio queda en sombra | Un ciclo día-noche dura 29,53 días [V NSSDC] |
 | `reciclador_agua` | 🫁 +12 | ⚡ -2 por tick; +4 🫁 extra si el sitio tiene 🧊 alto | Derrite y limpia hielo del cráter, y recicla el agua | Hay hielo de agua en cráteres oscuros de los polos [fuera de lista] |
 | `escudo` | 🛡️ +14 | ⚡ -3 por tick | Paredes cubiertas con tierra lunar | La superficie lunar recibe 1369 µSv/día de fondo (Chang'e-4, **CNSA**) [V] |
 | `invernadero` | 🫁 +10 | ⚡ -2 por tick | Plantas con luz artificial | Material de producción de alimentos de la **CSA** (socio, no NASA): **NO VERIFICADO**, pendiente de leer |
@@ -108,26 +108,27 @@ Montar cualquiera cuesta lo de `COSTOS_ACCION.colocar_modulo` (⚡-6 🫁-3). El
 
 > "El Sol se queda bajito en el cielo" del polo es una explicación geométrica (NO VERIFICADO con una fuente). Si Daniel no la aprueba, se usa la versión corta: "but here hills can hide the Sun" / "pero aquí las colinas pueden tapar el Sol".
 
-## 5. La tormenta real elegida: `2024-05-10-gannon`
+## 5. La tormenta real elegida: `2017-09-10-x82`
 
 **Por qué esta y no otra:**
-1. Es la única tormenta del catálogo con **fondo tranquilo** en CRaTER (`fondoTranquilo: true`): 5,2 → 1082,5 µGy/h de media diaria el 11 may 2024, factor **206,3** [V]. Las demás tienen el fondo contaminado (2017-09-10: ×27 con fondo inflado) o sin datos (octubre de 2024).
-2. En Marte, RAD **no vio nada** (factor 1,0) [V]. Comparar las dos misiones enseña que el lugar importa.
-3. Su cadena en DONKI está completa: FLR X2.2 (`2024-05-09T08:45:00-FLR-001`) → CME 1330 km/s (`2024-05-09T09:24:00-CME-001`) → SEP (`2024-05-10T13:35:00-SEP-001`) → GST Kp 9 (`2024-05-10T15:00:00-GST-001`, Kp de NOAA) [V].
+1. **No repetir:** Gannon (mayo 2024) ya la usan las propuestas del lado visible y del outpost. Esta misión usa otra tormenta real.
+2. CRaTER (en órbita alrededor de la Luna, no en el suelo) dio para ella un `pico` de **19 481,6 µGy/h** (la mayor media diaria, el 11 sep 2017) [V, `data/ciencia/luna.json`]. Como `fondoTranquilo: false` (fondo 722,2 µGy/h), **no se muestra el factor ×27**: se dice "uno de los valores más altos de nuestros datos".
+3. En Marte, RAD (rover Curiosity) **también la midió**: 7,9 → 17,9 µGy/h de media diaria, factor **×2,3** [V, `marcoMarte: "observado"`]. Misma tormenta, lugares distintos.
+4. Su cadena en DONKI: FLR X8.2 (`2017-09-10T15:35:00-FLR-001`) → CME 2650 km/s (`2017-09-10T16:09:00-CME-001`) → SEP (`2017-09-10T16:25:00-SEP-001`) [V, `data/curated/2017-09-10-x82.json`]. El archivo curado **no** tiene GST para este evento, así que no se da Kp. Si algún día se añade, se dice siempre "Kp en la Tierra" (es un índice terrestre, no una medida en la Luna).
 
 **Cómo se dice bien (obligatorio):**
 - CRaTER va en el **Lunar Reconnaissance Orbiter, en órbita alrededor de la Luna, no en la superficie**. La base del juego está en la superficie: la tarjeta dice "near the Moon / cerca de la Luna", nunca "en tu base".
-- 1082,5 µGy/h es **dosis absorbida** (µGy). No se convierte a mSv ni se suma a `dosisMSv` del tripulante. La dosis de fondo en mSv/día de la superficie (1,369) es de **Chang'e-4 / LND, CNSA**, y se atribuye así.
-- El pico de muestra (1928,6 µGy/h) existe en `luna.json`, pero para niños se usa la media diaria y el factor "unas 200 veces".
+- 19 481,6 µGy/h es **dosis absorbida** (µGy). No se convierte a mSv ni se suma a `dosisMSv` del tripulante. La dosis de fondo en mSv/día de la superficie (1,369) es de **Chang'e-4 / LND, CNSA**, y se atribuye así.
+- La muestra máxima (`picoMuestra` 22 968,8 µGy/h) existe en `luna.json`, pero para niños se usa la media diaria (`pico`) y nunca un factor (el ×27 no vale: fondo no tranquilo).
 - Estado: "datos reales curados, no en vivo".
 
 | Clave | en | es |
 |---|---|---|
-| `mision.luna.tormenta.aviso` | This storm really happened in May 2024. Near the Moon, radiation went up about 200 times! | Esta tormenta pasó de verdad en mayo de 2024. ¡Cerca de la Luna, la radiación subió unas 200 veces! |
+| `mision.luna.tormenta.aviso` | This storm really happened in September 2017. Near the Moon, radiation reached one of the highest values in our data! | Esta tormenta pasó de verdad en septiembre de 2017. ¡Cerca de la Luna, la radiación llegó a uno de los valores más altos de nuestros datos! |
 | `mision.luna.tormenta.orbita` | A NASA spacecraft measured it while flying around the Moon, not on the ground. | Una nave de NASA la midió mientras volaba alrededor de la Luna, no en el suelo. |
-| `mision.luna.tormenta.marte` | The same storm hardly changed anything on Mars. It was not heading that way. | La misma tormenta casi no cambió nada en Marte. No iba para allá. |
+| `mision.luna.tormenta.marte` | The same storm was also measured on Mars. There, radiation went up about 2 times. | La misma tormenta también se midió en Marte. Allá la radiación subió unas 2 veces. |
 
-> `mision.luna.tormenta.marte`: "no iba para allá" es una **interpretación**, no una medición. Lo medido es el factor 1,0 de RAD. Si Daniel no la aprueba, se queda solo "hardly changed anything on Mars / casi no cambió nada en Marte".
+> `mision.luna.tormenta.marte`: lo medido es el ×2,3 de RAD. No se afirma por qué un lugar la vio más que otro; si hace falta, solo como "una explicación posible es…" (NO VERIFICADO), nunca como hecho.
 
 ## 6. Dilema central (paso 6), sin receta
 
@@ -140,9 +141,9 @@ Antes de la tormenta, el niño mandó a dos tripulantes al cráter oscuro a trae
 | **Subir el escudo y esperar** | `subir_escudo` nivel 2 | ⚡-16 ya, 🛡️+10 después (+20 si motor también multiplica el beneficio por el nivel) | Casi sin energía para la noche que viene |
 
 Lo que dice cada uno (para agentes; José escribe la versión final):
-- **Doctora:** "Back inside, now! The Moon has almost no air to slow radiation down." / "¡Adentro, ya! La Luna casi no tiene aire que frene la radiación."
+- **Doctora:** "Back inside, now! The Moon has no air to cover us, so radiation arrives almost all the way. The shelter protects us." / "¡Adentro, ya! La Luna no tiene aire que nos cubra, por eso la radiación llega casi entera. El refugio nos protege."
 - **Ingeniera:** "If they come back empty, we run out of water tomorrow." / "Si vuelven con las manos vacías, mañana nos quedamos sin agua."
-- **Meteoróloga (dramática):** "This is one of the biggest storms in years!" / "¡Es de las tormentas más grandes en años!" (Kp 9 [V]; "más grande en años": NO VERIFICADO, que lo diga solo si datos lo confirma)
+- **Meteoróloga (dramática):** "The Sun just threw out a very fast cloud!" / "¡El Sol acaba de lanzar una nube rapidísima!" (CME a 2650 km/s [V DONKI])
 - **Iris (dañada, nivel 3):** lee 🛡️ con 20 puntos de error (`averiaIris.errorLectura: 20`, igual que Jezero): "Shield is fine, keep going!" / "¡El blindaje está bien, sigan!" mientras el medidor dice otra cosa.
 - **Control de Misión:** contesta en **1 tick**. Es la gran diferencia con Marte: verificar es rápido, pero cuesta `enviar_telemetria` (⚡-5 🫁-1).
 
@@ -165,17 +166,17 @@ Texto: `mision.luna.malasuerte.micrometeorito` — en: "A tiny space rock hit a 
 
 | Clave | en | es |
 |---|---|---|
-| `mision.luna.ciencia.pregunta` | In May 2024, how much did radiation go up near the Moon? | En mayo de 2024, ¿cuánto subió la radiación cerca de la Luna? |
-| `mision.luna.ciencia.op1` | About 2 times | Unas 2 veces |
+| `mision.luna.ciencia.pregunta` | In September 2017, how much did radiation go up on Mars? | En septiembre de 2017, ¿cuánto subió la radiación en Marte? |
+| `mision.luna.ciencia.op1` | About 2 times (correct) | Unas 2 veces (correcta) |
 | `mision.luna.ciencia.op2` | About 20 times | Unas 20 veces |
-| `mision.luna.ciencia.op3` | About 200 times (correct) | Unas 200 veces (correcta) |
-| `mision.luna.ciencia.explica` | The CRaTER instrument, on a NASA spacecraft flying around the Moon, measured about 200 times more than on a calm day. On Mars, the same storm hardly changed anything. Real curated data, not live. | El instrumento CRaTER, en una nave de NASA que vuela alrededor de la Luna, midió unas 200 veces más que en un día tranquilo. En Marte, la misma tormenta casi no cambió nada. Datos reales curados, no en vivo. |
+| `mision.luna.ciencia.op3` | About 200 times | Unas 200 veces |
+| `mision.luna.ciencia.explica` | On Mars, an instrument called RAD, on the Curiosity rover, measured about 2 times more than on a calm day. Near the Moon, the CRaTER instrument, on a NASA spacecraft flying around the Moon (not on the ground), measured one of the highest values in our data. Same storm, different places. Real curated data, not live. | En Marte, un instrumento llamado RAD, en el rover Curiosity, midió unas 2 veces más que en un día tranquilo. Cerca de la Luna, el instrumento CRaTER, en una nave de NASA que vuela alrededor de la Luna (no en el suelo), midió uno de los valores más altos de nuestros datos. Misma tormenta, lugares distintos. Datos reales curados, no en vivo. |
 
 Pregunta alternativa (nivel 2 de Iris): "How long does a message take from the Moon to Earth? About 1 second / About 1 hour / About 1 day" — "¿Cuánto tarda un mensaje de la Luna a la Tierra? Más o menos 1 segundo / 1 hora / 1 día" (cálculo con 384 400 km [V]).
 
 ## 9. Qué le toca a cada rol
 
-- **diseño (Santiago, Camilo):** pasar §2–§7 a `missions/src/luna-polo-sur.ts` (4 sitios, 5 módulos sin `antena`, `tormentaId: "2024-05-10-gannon"`, dilema del paso 6) y ajustar números de `design/src/recursos.ts`; textos `en`/`es` de §2–§8 en el i18n de misiones; correr la prueba de las 10 parejas y de "ningún sitio domina".
+- **diseño (Santiago, Camilo):** pasar §2–§7 a `missions/src/luna-polo-sur.ts` (4 sitios, 5 módulos sin `antena`, `tormentaId: "2017-09-10-x82"`, dilema del paso 6) y ajustar números de `design/src/recursos.ts`; textos `en`/`es` de §2–§8 en el i18n de misiones; correr la prueba de las 10 parejas y de "ningún sitio domina".
 - **motor (Jaime):** criterio 🧊 del sitio que modifica `reciclador_agua`; `panel_solar` a la mitad en sitios de luz baja; retraso de 1 tick para la Luna (ya en `RETRASO_COMUNICACIONES`).
 - **agentes (José):** líneas de Doctora, Ingeniera, Meteoróloga, Iris y Control para los pasos 3, 5 y 6; la Doctora debe decir "cerca de la Luna, en órbita" al citar CRaTER y atribuir Chang'e-4 a CNSA.
 - **datos (Daniel):** ver §11.
@@ -189,14 +190,14 @@ Pregunta alternativa (nivel 2 de Iris): "How long does a message take from the M
   - `salida_exterior` da ⚡+15 retrasado; la expedición al hielo debería dar 🫁. Opción sin contrato: diseño define el efecto por objetivo en su tabla (`objetivo: reciclador_agua` → 🫁).
 - **Moon Trek no está confirmado como recurso oficial** (`docs/ORQUESTACION.md`). `trek.nasa.gov/moon/` carga, pero no se probó ningún servicio ni se descargó elevación del polo sur. Sin eso, el paso 2 no usa mapa real y los sitios del paso 3 no tienen coordenadas ni pendientes medidas (todo es valor de juego).
 - **Fuentes fuera de lista:** el hielo en sombras permanentes, LCROSS y "sol continuo 6,5 días en las 13 regiones" vienen de science.nasa.gov y nasa.gov. Hasta que Daniel las apruebe, la UI solo puede decir los textos sin cifra y sin "according to NASA".
-- **No comparar instrumentos distintos:** el fondo de CRaTER (5,2 µGy/h, órbita) y el de LND (13,2 µGy/h en silicio, superficie, CNSA) no se ponen lado a lado. Tampoco se dice que Marte "se salvó por su atmósfera": RAD no vio aumento, y la causa no está verificada.
+- **No comparar instrumentos distintos:** el fondo de CRaTER (5,2 µGy/h, órbita) y el de LND (13,2 µGy/h en silicio, superficie, CNSA) no se ponen lado a lado. Tampoco se afirma por qué Marte la vio menos (RAD midió ×2,3): la causa no está verificada; como mucho "una explicación posible es…".
 - **Demo:** el paso 4b solo sale en semillas no doradas. La misión 1 sigue siendo la del video; esta entra por semilla.
 
 ## 11. Qué necesita datos (código) para implementarlo
 
 1. Mergear PR #95 (`data/ciencia/luna.json`, `fuenteCrater()`, clave `fuente.crater`).
 2. `retrasoLunaTierra()` junto al de Marte (PR #65): 384 400 km ÷ c ≈ 1,28 s, con la ficha NSSDC como fuente.
-3. Tarjeta de fuente de la Luna en `en`/`es`: DONKI (`2024-05-10-gannon`) + CRaTER + "no en vivo"; `referenciaDosis("luna-superficie")` ya atribuye a CNSA.
+3. Tarjeta de fuente de la Luna en `en`/`es`: DONKI (`2017-09-10-x82`) + CRaTER + "no en vivo"; `referenciaDosis("luna-superficie")` ya atribuye a CNSA.
 4. Glosario nuevo (`datos.glosario.*`): *sombra permanente / permanent shadow*, *órbita / orbit*, *hielo de agua / water ice*, *dosis / dose*.
 5. Si se aprueba Moon Trek: `data/terreno/luna-polo-sur/` con DEM y sombreado del polo y los 4 sitios con criterios calculados (como `jezero.json`).
 6. Si se aprueban las fuentes de fuera de lista: añadirlas a `docs/science/fuentes.md` con [V] y fecha.
@@ -213,14 +214,13 @@ Pregunta alternativa (nivel 2 de Iris): "How long does a message take from the M
 | Presión superficial de noche 3 × 10⁻¹⁵ bar | [V] (consultado 2026-11-14) | misma ficha NSSDC |
 | Retraso de luz Luna–Tierra ≈ 1,3 s | Cálculo con cifra [V] | 384 400 km ÷ 299 792 km/s |
 | Gravedad Marte 3,73 m/s²; día 24,6597 h | [V] | https://nssdc.gsfc.nasa.gov/planetary/factsheet/marsfact.html |
-| CRaTER, Gannon: fondo 5,2 → 1082,5 µGy/h (11 may 2024), ×206,3, fondo tranquilo | [V] (órbita lunar, dosis absorbida) | https://visualization.osdr.nasa.gov/radlab/api/?instrument_id=CRaTER-D1D2&timestamp>=2024-05-04T09:13&timestamp<2024-05-12T09:13&absorbed_dose_rate>0&format=json (`data/ciencia/luna.json`, PR #95) |
-| CRaTER, pico de muestra 1928,6 µGy/h | [V] (no se muestra a niños) | misma consulta |
-| CRaTER, 2017-09-10: ×27 con fondo no tranquilo; octubre 2024 sin datos | [V] | `data/ciencia/luna.json` |
-| RAD en Marte, Gannon: fondo 4,8 → 4,9 µGy/h, factor 1,0 | [V] | https://visualization.osdr.nasa.gov/radlab/api/?instrument_id=MSL-RAD-Surface&timestamp>=2024-05-03&timestamp<2024-05-26&absorbed_dose_rate>0&format=json (`data/curated/2024-05-10-gannon.json`) |
-| FLR X2.2 `2024-05-09T08:45:00-FLR-001` | [V] | https://ccmc.gsfc.nasa.gov/DONKI/view/FLR/30605/-1 |
-| CME 1330 km/s `2024-05-09T09:24:00-CME-001` | [V] | https://ccmc.gsfc.nasa.gov/DONKI/view/CME/30619/-1 |
-| SEP `2024-05-10T13:35:00-SEP-001` | [V] | https://ccmc.gsfc.nasa.gov/DONKI/view/SEP/30677/-1 |
-| GST Kp 9 `2024-05-10T15:00:00-GST-001` (Kp: NOAA) | [V] | https://ccmc.gsfc.nasa.gov/DONKI/view/GST/30693/-1 |
+| CRaTER, 2017-09-10: `pico` 19 481,6 µGy/h (la mayor media diaria, 11 sep 2017), fondo 722,2, `fondoTranquilo: false` → el ×27 **no se muestra** | [V] (en órbita alrededor de la Luna, no en el suelo; dosis absorbida) | https://visualization.osdr.nasa.gov/radlab/api/?instrument_id=CRaTER-D1D2&timestamp>=2017-09-05T16:06&timestamp<2017-09-13T16:06&absorbed_dose_rate>0&format=json (`data/ciencia/luna.json`, PR #95) |
+| CRaTER, 2017-09-10: `picoMuestra` 22 968,8 µGy/h | [V] (no se muestra a niños) | misma consulta |
+| RAD en Marte, 2017-09-10: 7,9 → 17,9 µGy/h de media diaria (11 sep 2017), ×2,3 | [V] | https://visualization.osdr.nasa.gov/radlab/api/?instrument_id=MSL-RAD-Surface&timestamp>=2017-09-01&timestamp<2017-09-20&absorbed_dose_rate>0&format=json (`data/curated/2017-09-10-x82.json`) |
+| FLR X8.2 `2017-09-10T15:35:00-FLR-001` (pico 16:06Z) | [V] | https://ccmc.gsfc.nasa.gov/DONKI/view/FLR/13098/-1 |
+| CME 2650 km/s `2017-09-10T16:09:00-CME-001` | [V] | https://ccmc.gsfc.nasa.gov/DONKI/view/CME/13107/-1 |
+| SEP `2017-09-10T16:25:00-SEP-001` | [V] | https://ccmc.gsfc.nasa.gov/DONKI/view/SEP/13101/-1 |
+| Kp de este evento | No hay GST en `data/curated/2017-09-10-x82.json`: no se usa. Si se añade, siempre "Kp en la Tierra" | — |
 | Dosis de fondo en la superficie lunar 1369 µSv/día (1,369 mSv/día) | [V] — **CNSA** (Chang'e-4/LND), no NASA | Zhang et al. 2020, *Sci. Adv.* 6(39) eaaz1334, https://europepmc.org/article/PMC/PMC7518862 |
 | LND 13,2 ± 1 µGy/h en silicio | [V] — CNSA (no se compara con CRaTER) | misma cita |
 | Hielo de agua en regiones en sombra permanente de los polos | Fuera de lista — **requiere aprobación de Daniel** | https://science.nasa.gov/moon/moon-water-and-ices/ (consultado 2026-11-14) |
@@ -229,8 +229,7 @@ Pregunta alternativa (nivel 2 de Iris): "How long does a message take from the M
 | Unos −173 °C en la oscuridad | Fuera de lista — requiere aprobación; no es específico de las sombras del polo | https://science.nasa.gov/moon/facts/ |
 | Temperatura dentro de los cráteres en sombra del polo | **NO VERIFICADO** | — |
 | El Sol se ve bajo en el horizonte del polo | **NO VERIFICADO** (explicación geométrica, sin fuente) | — |
-| "Gannon, de las tormentas más grandes en años" | **NO VERIFICADO** (Kp 9 sí es [V]) | — |
-| Por qué Marte no vio la tormenta de mayo 2024 | **NO VERIFICADO** (solo el factor 1,0 es [V]) | — |
+| Por qué la Luna y Marte midieron tan distinto la tormenta del 10 sep 2017 | **NO VERIFICADO** (solo las cifras son [V]); como mucho "una explicación posible es…" | — |
 | Frecuencia de micrometeoritos | **NO VERIFICADO** (no se muestra) | — |
 | Material de producción de alimentos de la CSA | **NO VERIFICADO** (no leído) | CSA, socio del reto |
 | Elevación y pendientes del polo sur (Moon Trek) | **NO VERIFICADO** (el portal carga; no se probó ningún servicio) | https://trek.nasa.gov/moon/ |
