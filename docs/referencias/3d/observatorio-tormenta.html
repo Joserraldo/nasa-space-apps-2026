@@ -1,0 +1,362 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Solar Shield 3D Spike</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;700&family=IBM+Plex+Sans:wght@400;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: escenario 3D a todo lo ancho con HUD de consola de misión encima; debajo, la nota técnica para el equipo. Un solo look oscuro a propósito. */
+:root{
+  --void:#07080d;        /* fondo del espacio */
+  --panel:#11131c;       /* paneles del HUD */
+  --line:#2a2e3d;        /* bordes */
+  --ink:#e8e6df;         /* texto */
+  --dim:#9095a6;         /* texto secundario */
+  --foil:#e0a93b;        /* dorado de manta térmica: acento */
+  --shield:#5fd4e8;      /* escudo */
+  --warn:#ff6a4d;        /* impacto */
+  --f-display:"Chakra Petch",system-ui,sans-serif;
+  --f-body:"IBM Plex Sans",system-ui,sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,Consolas,monospace;
+  color-scheme:dark;
+}
+html,body{background:var(--void);color:var(--ink)}
+body{margin:0;font-family:var(--f-body);font-size:15px;line-height:1.55}
+.stage{position:relative;height:72vh;min-height:440px;max-height:820px;overflow:hidden;border-bottom:1px solid var(--line)}
+.stage canvas{display:block;width:100%;height:100%;touch-action:none}
+.hud{position:absolute;inset:0;pointer-events:none;display:flex;flex-direction:column;justify-content:space-between;
+  padding-block:14px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:flex-start;justify-content:space-between}
+.brand{font-family:var(--f-display);font-weight:700;letter-spacing:.06em;text-transform:uppercase;font-size:15px}
+.brand small{display:block;font-family:var(--f-mono);font-weight:400;font-size:11px;letter-spacing:.04em;color:var(--dim);text-transform:none}
+.controls{display:flex;flex-wrap:wrap;gap:6px;pointer-events:auto}
+button{font-family:var(--f-display);font-weight:500;font-size:13px;letter-spacing:.05em;text-transform:uppercase;
+  background:var(--panel);color:var(--ink);border:1px solid var(--line);border-radius:3px;padding:7px 11px;cursor:pointer}
+button:hover{border-color:var(--dim)}
+button:focus-visible{outline:2px solid var(--foil);outline-offset:2px}
+button[aria-pressed="true"]{border-color:var(--foil);color:var(--foil)}
+button.storm{border-color:var(--warn);color:var(--warn)}
+button.shield[aria-pressed="true"]{border-color:var(--shield);color:var(--shield)}
+.readouts{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:6px;max-width:640px;pointer-events:auto}
+.ro{background:color-mix(in srgb,var(--panel) 88%,transparent);border:1px solid var(--line);border-radius:3px;padding:6px 9px}
+.ro b{display:block;font-family:var(--f-mono);font-weight:500;font-size:17px;font-variant-numeric:tabular-nums}
+.ro span{font-family:var(--f-mono);font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--dim)}
+.bar{height:4px;background:var(--line);margin-top:4px;border-radius:2px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--shield);width:100%}
+.credit{font-family:var(--f-mono);font-size:10.5px;color:var(--dim);max-width:420px;text-align:right;pointer-events:auto}
+.flash{position:absolute;inset:0;pointer-events:none;box-shadow:inset 0 0 120px var(--warn);opacity:0;transition:opacity .25s}
+
+main{max-width:980px;margin:0 auto;padding-block:34px 60px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:grid;gap:26px}
+h1,h2{font-family:var(--f-display);font-weight:700;line-height:1.2;text-wrap:balance;margin:0}
+h1{font-size:clamp(22px,3.4vw,30px)}
+h2{font-size:18px;letter-spacing:.03em;color:var(--foil)}
+p{margin:0;max-width:68ch}
+.lede{color:var(--dim)}
+.tbl{overflow-x:auto;border:1px solid var(--line);border-radius:4px}
+table{border-collapse:collapse;width:100%;min-width:620px;font-size:14px}
+th,td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-family:var(--f-mono);font-weight:500;font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--dim)}
+tr:last-child td{border-bottom:0}
+td:first-child{color:var(--dim);font-family:var(--f-mono);font-size:12.5px;white-space:nowrap}
+.good{color:var(--shield)} .bad{color:var(--warn)}
+.cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px}
+.cols > div{min-width:0;display:grid;gap:8px;align-content:start}
+ul{margin:0;padding-left:18px;display:grid;gap:4px}
+code{font-family:var(--f-mono);font-size:.9em;color:var(--foil)}
+.note{border-left:2px solid var(--foil);padding-left:12px;color:var(--dim)}
+@media (prefers-reduced-motion:reduce){.flash{transition:none}}
+</style>
+
+<div class="stage" id="stage">
+  <div class="flash" id="flash"></div>
+  <div class="hud">
+    <div class="row">
+      <div class="brand"><span data-i18n="title">Solar Shield · 3D spike</span><small data-i18n="sub">Every model here is built from code. 0 KB of 3D files.</small></div>
+      <div class="controls">
+        <button id="bOrbit" aria-pressed="true" data-i18n="orbit">Orbit</button>
+        <button id="bSurface" aria-pressed="false" data-i18n="surface">Mars base</button>
+        <button id="bShield" class="shield" aria-pressed="true" data-i18n="shield">Shield</button>
+        <button id="bStorm" class="storm" data-i18n="storm">Solar storm</button>
+        <button id="bLang" aria-label="Language">ES</button>
+      </div>
+    </div>
+    <div class="row" style="align-items:flex-end">
+      <div class="readouts">
+        <div class="ro"><span data-i18n="energy">Energy</span><b id="rEnergy">100%</b><div class="bar"><i id="eBar"></i></div></div>
+        <div class="ro"><span data-i18n="hits">Hits taken</span><b id="rHits">0</b></div>
+        <div class="ro"><span data-i18n="blocked">Deflected</span><b id="rBlocked">0</b></div>
+        <div class="ro"><span data-i18n="tris">Triangles</span><b id="rTris">0</b></div>
+        <div class="ro"><span>FPS</span><b id="rFps">0</b></div>
+      </div>
+      <div class="credit" data-i18n="credit">Observatory inspired by NASA's Chandra X-ray Observatory. Hand-made stylized model, not the official NASA model. Storm particles are simulated.</div>
+    </div>
+  </div>
+</div>
+
+<main>
+  <div style="display:grid;gap:10px">
+    <h1>¿Modelos 3D con código o archivos GLB?</h1>
+    <p class="lede">Arriba todo está hecho con Three.js y geometría primitiva: el observatorio (cuerpo octagonal con manta dorada, puerta del parasol, paneles solares, antena), Marte y el Sol con shaders de ruido, el hábitat y el terreno. No se descarga ningún modelo; las texturas de foil y celdas solares se dibujan en un canvas al cargar. Arrastra para girar, rueda para acercar.</p>
+  </div>
+
+  <div class="tbl">
+    <table>
+      <thead><tr><th></th><th>Código procedural (este demo)</th><th>GLB oficial de NASA</th><th>GLB propio (Blender)</th></tr></thead>
+      <tbody>
+        <tr><td>Peso</td><td class="good">0 KB de modelo; solo el JS de la escena</td><td class="bad">Varios MB por modelo en muchos casos; hay que comprimir</td><td>El que tú decidas; con Draco/meshopt queda pequeño</td></tr>
+        <tr><td>Fidelidad</td><td>Estilizada, tipo juguete</td><td class="good">Real, de ingeniería</td><td>La que el artista logre</td></tr>
+        <tr><td>Estilo uniforme</td><td class="good">Total: misma paleta y luz en todo</td><td class="bad">Cada modelo trae su estilo y escala</td><td class="good">Sí, si lo hace una sola persona</td></tr>
+        <tr><td>Reacciona al juego</td><td class="good">Fácil: el escudo brilla, la puerta se cierra, el daño cambia colores</td><td>Posible, pero hay que buscar nodos dentro del archivo</td><td>Posible, si se nombran las piezas</td></tr>
+        <tr><td>Tiempo de hacerlo</td><td>30–90 min por objeto simple</td><td class="good">Minutos: descargar y cargar</td><td class="bad">Horas por modelo</td></tr>
+        <tr><td>Bueno para</td><td>Satélites, módulos, cúpulas, planetas, partículas, escudos</td><td>Una pantalla tipo "museo" o tarjeta de fuente</td><td>Personajes de la tripulación</td></tr>
+        <tr><td>Malo para</td><td>Personajes orgánicos, piezas muy detalladas</td><td>Jugar en celulares de gama baja sin optimizar</td><td>Un hackathon de 2 días</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="cols">
+    <div>
+      <h2>Recomendación para Solar Shield</h2>
+      <ul>
+        <li><b>Base del juego en código.</b> Hábitat, escudo, paneles, planeta, Sol y tormenta: son formas simples y tienen que cambiar con los medidores.</li>
+        <li><b>Un GLB de NASA como "pieza de museo", opcional.</b> Solo en la tarjeta de fuente, cargado al abrirla, comprimido con <code>gltf-transform optimize</code>, con crédito a NASA.</li>
+        <li><b>Personajes en 2D.</b> La tripulación sale más barata y expresiva en ilustración plana que en 3D.</li>
+      </ul>
+    </div>
+    <div>
+      <h2>Cuidado con</h2>
+      <ul>
+        <li>Los modelos de NASA en general son de uso libre, pero las guías de medios de NASA piden citar y no sugerir que NASA respalda el juego. Nada de logos de NASA como marca propia.</li>
+        <li>Three.js suma unos 150 KB comprimido. Si el juego solo muestra el 3D en una escena, cárgalo bajo demanda.</li>
+        <li>Medir en un celular: este demo ronda pocos miles de triángulos, muy por debajo de lo que aguanta un teléfono.</li>
+      </ul>
+    </div>
+  </div>
+
+  <p class="note">Esto es un spike fuera del repo: el proyecto sigue en FASE 0 y no se puede meter código del juego todavía. Si el equipo lo aprueba, la decisión va a <code>docs/decisiones/</code> y el código a <code>ui/</code> cuando arranque la FASE 1.</p>
+</main>
+
+<script type="importmap">
+{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}
+</script>
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+/* ---------- i18n (inglés base, español segundo) ---------- */
+const T = {
+  en:{title:'Solar Shield · 3D spike',sub:'Every model here is built from code. 0 KB of 3D files.',orbit:'Orbit',surface:'Mars base',shield:'Shield',storm:'Solar storm',energy:'Energy',hits:'Hits taken',blocked:'Deflected',tris:'Triangles',credit:"Observatory inspired by NASA's Chandra X-ray Observatory. Hand-made stylized model, not the official NASA model. Storm particles are simulated."},
+  es:{title:'Solar Shield · prueba 3D',sub:'Todos los modelos están hechos con código. 0 KB de archivos 3D.',orbit:'Órbita',surface:'Base en Marte',shield:'Escudo',storm:'Tormenta solar',energy:'Energía',hits:'Impactos',blocked:'Desviadas',tris:'Triángulos',credit:'Observatorio inspirado en el Observatorio de Rayos X Chandra de NASA. Modelo estilizado hecho a mano, no es el modelo oficial de NASA. Las partículas de la tormenta son simuladas.'}
+};
+let lang='en';
+const bLang=document.getElementById('bLang');
+function applyLang(){document.querySelectorAll('[data-i18n]').forEach(el=>{el.textContent=T[lang][el.dataset.i18n]});bLang.textContent=lang==='en'?'ES':'EN';document.documentElement.lang=lang}
+bLang.onclick=()=>{lang=lang==='en'?'es':'en';applyLang()};
+
+/* ---------- renderer ---------- */
+const stage=document.getElementById('stage');
+const renderer=new THREE.WebGLRenderer({antialias:true});
+renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+renderer.toneMapping=THREE.ACESFilmicToneMapping;
+stage.prepend(renderer.domElement);
+const scene=new THREE.Scene();
+const camera=new THREE.PerspectiveCamera(45,1,0.1,600);
+camera.position.set(9,4,11);
+const controls=new OrbitControls(camera,renderer.domElement);
+controls.enableDamping=true;controls.minDistance=5;controls.maxDistance=45;
+function resize(){const w=stage.clientWidth,h=stage.clientHeight;renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix()}
+new ResizeObserver(resize).observe(stage);resize();
+
+const SUN=new THREE.Vector3(-70,25,-40);
+scene.add(new THREE.AmbientLight(0x8890b0,0.25));
+const sunLight=new THREE.DirectionalLight(0xfff1d6,3.2);sunLight.position.copy(SUN);scene.add(sunLight);
+
+/* ---------- texturas dibujadas en canvas (nada se descarga) ---------- */
+function canvasTex(size,draw,repeat=[1,1]){
+  const c=document.createElement('canvas');c.width=c.height=size;draw(c.getContext('2d'),size);
+  const t=new THREE.CanvasTexture(c);t.colorSpace=THREE.SRGBColorSpace;t.wrapS=t.wrapT=THREE.RepeatWrapping;t.repeat.set(...repeat);t.anisotropy=4;return t;
+}
+let seed=7;const rnd=()=>(seed=(seed*16807)%2147483647)/2147483647; // semilla fija: mismo look siempre
+const foilTex=canvasTex(256,(g,s)=>{ // manta térmica arrugada
+  g.fillStyle='#c98a22';g.fillRect(0,0,s,s);
+  for(let i=0;i<420;i++){const x=rnd()*s,y=rnd()*s,r=6+rnd()*26,l=rnd();
+    g.fillStyle=l>.5?`rgba(255,226,140,${.08+rnd()*.25})`:`rgba(90,50,5,${.08+rnd()*.25})`;
+    g.beginPath();g.moveTo(x,y);for(let k=0;k<5;k++)g.lineTo(x+(rnd()-.5)*r*2,y+(rnd()-.5)*r*2);g.fill();}
+},[3,1]);
+const cellTex=canvasTex(256,(g,s)=>{ // celdas solares
+  g.fillStyle='#0d1a3d';g.fillRect(0,0,s,s);const n=8,c=s/n;
+  for(let i=0;i<n;i++)for(let j=0;j<n;j++){g.fillStyle=`hsl(${222+rnd()*8},60%,${18+rnd()*8}%)`;g.fillRect(i*c+2,j*c+2,c-4,c-4)}
+  g.strokeStyle='#8aa0c8';g.lineWidth=1;for(let i=0;i<=n;i++){g.beginPath();g.moveTo(i*c,0);g.lineTo(i*c,s);g.stroke();g.beginPath();g.moveTo(0,i*c);g.lineTo(s,i*c);g.stroke()}
+},[1,2]);
+const dotTex=canvasTex(64,(g,s)=>{const r=g.createRadialGradient(s/2,s/2,0,s/2,s/2,s/2);r.addColorStop(0,'rgba(255,255,255,1)');r.addColorStop(.4,'rgba(255,255,255,.5)');r.addColorStop(1,'rgba(255,255,255,0)');g.fillStyle=r;g.fillRect(0,0,s,s)});
+const glowTex=canvasTex(256,(g,s)=>{const r=g.createRadialGradient(s/2,s/2,0,s/2,s/2,s/2);r.addColorStop(0,'rgba(255,200,90,1)');r.addColorStop(.2,'rgba(255,140,40,.55)');r.addColorStop(1,'rgba(255,80,0,0)');g.fillStyle=r;g.fillRect(0,0,s,s)});
+
+/* ---------- ruido GLSL compartido ---------- */
+const NOISE=`
+float hash(vec3 p){p=fract(p*.3183099+.1);p*=17.;return fract(p.x*p.y*p.z*(p.x+p.y+p.z));}
+float noise(vec3 x){vec3 i=floor(x),f=fract(x);f=f*f*(3.-2.*f);
+ return mix(mix(mix(hash(i),hash(i+vec3(1,0,0)),f.x),mix(hash(i+vec3(0,1,0)),hash(i+vec3(1,1,0)),f.x),f.y),
+            mix(mix(hash(i+vec3(0,0,1)),hash(i+vec3(1,0,1)),f.x),mix(hash(i+vec3(0,1,1)),hash(i+vec3(1,1,1)),f.x),f.y),f.z);}
+float fbm(vec3 p){float v=0.,a=.5;for(int i=0;i<5;i++){v+=a*noise(p);p*=2.03;a*=.5;}return v;}`;
+const VERT=`varying vec3 vP;varying vec3 vN;varying vec3 vW;
+void main(){vP=position;vN=normalize(mat3(modelMatrix)*normal);vec4 w=modelMatrix*vec4(position,1.);vW=w.xyz;gl_Position=projectionMatrix*viewMatrix*w;}`;
+
+/* ---------- Sol ---------- */
+const sunMat=new THREE.ShaderMaterial({uniforms:{uT:{value:0}},vertexShader:VERT,fragmentShader:NOISE+`
+uniform float uT;varying vec3 vP;varying vec3 vN;varying vec3 vW;
+void main(){vec3 p=normalize(vP);float n=fbm(p*4.+vec3(uT*.12,uT*.07,0.));float m=fbm(p*12.-uT*.2);
+ vec3 c=mix(vec3(1.,.38,.04),vec3(1.,.86,.45),n*.9+m*.3);
+ float rim=dot(normalize(cameraPosition-vW),vN);c*=.55+.6*rim;gl_FragColor=vec4(c*1.6,1.);}`});
+const sun=new THREE.Mesh(new THREE.SphereGeometry(6,48,32),sunMat);sun.position.copy(SUN);scene.add(sun);
+const glow=new THREE.Sprite(new THREE.SpriteMaterial({map:glowTex,blending:THREE.AdditiveBlending,depthWrite:false,transparent:true}));
+glow.scale.set(46,46,1);glow.position.copy(SUN);scene.add(glow);
+
+/* ---------- estrellas ---------- */
+const starG=new THREE.BufferGeometry();const sp=[];
+for(let i=0;i<1800;i++){const v=new THREE.Vector3(rnd()-.5,rnd()-.5,rnd()-.5).normalize().multiplyScalar(250+rnd()*60);sp.push(v.x,v.y,v.z)}
+starG.setAttribute('position',new THREE.Float32BufferAttribute(sp,3));
+const stars=new THREE.Points(starG,new THREE.PointsMaterial({size:1.1,map:dotTex,transparent:true,depthWrite:false,color:0xcfd6ff,fog:false}));
+scene.add(stars);
+
+/* ---------- Marte (shader procedural) ---------- */
+const marsMat=new THREE.ShaderMaterial({uniforms:{uSun:{value:SUN.clone().normalize()}},vertexShader:VERT,fragmentShader:NOISE+`
+uniform vec3 uSun;varying vec3 vP;varying vec3 vN;varying vec3 vW;
+void main(){vec3 p=normalize(vP);float n=fbm(p*2.2);float d=fbm(p*7.+3.);
+ vec3 c=mix(vec3(.36,.13,.06),vec3(.86,.44,.22),smoothstep(.3,.75,n));c=mix(c,c*.6,smoothstep(.55,.7,d));
+ c=mix(c,vec3(.95,.93,.9),smoothstep(.86,.92,abs(p.y)+n*.05));
+ float l=max(dot(normalize(vN),normalize(uSun-vW*0.)),0.);
+ float rim=pow(1.-max(dot(normalize(cameraPosition-vW),vN),0.),3.);
+ gl_FragColor=vec4(c*(.04+1.15*l)+vec3(1.,.55,.3)*rim*l*.6,1.);}`});
+const mars=new THREE.Mesh(new THREE.SphereGeometry(16,64,48),marsMat);mars.position.set(14,-19,-36);scene.add(mars);
+
+/* ---------- Observatorio inspirado en Chandra ---------- */
+const foil=new THREE.MeshStandardMaterial({map:foilTex,bumpMap:foilTex,bumpScale:.6,metalness:.85,roughness:.32,color:0xffffff});
+const foilDark=new THREE.MeshStandardMaterial({color:0x8a5a14,metalness:.8,roughness:.45});
+const silver=new THREE.MeshStandardMaterial({color:0xb9bec8,metalness:.8,roughness:.35});
+const darkMetal=new THREE.MeshStandardMaterial({color:0x3a3d46,metalness:.6,roughness:.55});
+const cells=new THREE.MeshStandardMaterial({map:cellTex,metalness:.4,roughness:.3});
+const white=new THREE.MeshStandardMaterial({color:0xf2f0ea,roughness:.6});
+const alongX=(m)=>{m.rotation.z=Math.PI/2;return m};
+
+const obs=new THREE.Group();
+const body=alongX(new THREE.Mesh(new THREE.CylinderGeometry(.9,.9,6,8),foil));obs.add(body);
+for(const x of [-2.9,-1.6,-.2,1.2,2.6]){const b=alongX(new THREE.Mesh(new THREE.CylinderGeometry(.94,.94,.08,8),foilDark));b.position.x=x;obs.add(b)}
+// puerta del parasol, abierta (gira desde la bisagra superior)
+const hinge=new THREE.Group();hinge.position.set(3,.9,0);obs.add(hinge);
+const door=alongX(new THREE.Mesh(new THREE.CylinderGeometry(.92,.92,.05,8),foil));door.position.set(0,-.9,0);hinge.add(door);
+hinge.rotation.z=1.85;
+// módulo de servicio (bus) y módulo de instrumentos
+const bus=alongX(new THREE.Mesh(new THREE.CylinderGeometry(1.15,1.15,1.2,8),silver));bus.position.x=-3.6;obs.add(bus);
+const isim=new THREE.Mesh(new THREE.BoxGeometry(1,1.1,1.1),darkMetal);isim.position.x=-4.7;obs.add(isim);
+const radiator=new THREE.Mesh(new THREE.BoxGeometry(.9,.04,1.6),white);radiator.position.set(-4.7,.6,0);obs.add(radiator);
+// paneles solares
+for(const s of [-1,1]){
+  const arm=new THREE.Mesh(new THREE.CylinderGeometry(.05,.05,1.3,8),silver);arm.rotation.x=Math.PI/2;arm.position.set(-3.6,0,s*1.75);obs.add(arm);
+  const wing=new THREE.Group();wing.position.set(-3.6,0,s*3.9);
+  const panel=new THREE.Mesh(new THREE.BoxGeometry(1.7,.05,3.4),cells);wing.add(panel);
+  const frame=new THREE.Mesh(new THREE.BoxGeometry(1.78,.03,3.48),silver);frame.position.y=-.03;wing.add(frame);
+  wing.rotation.x=s*.25;obs.add(wing);
+}
+// antena de alta ganancia
+const mast=new THREE.Mesh(new THREE.CylinderGeometry(.03,.03,.7,6),silver);mast.position.set(-4.9,-.9,0);obs.add(mast);
+const dish=new THREE.Mesh(new THREE.SphereGeometry(.42,20,8,0,Math.PI*2,0,Math.PI/3.2),new THREE.MeshStandardMaterial({color:0xf5f3ee,roughness:.5,side:THREE.DoubleSide}));
+dish.rotation.z=Math.PI;dish.position.set(-4.9,-1.05,0);obs.add(dish);
+// propulsores
+for(const [y,z] of [[.45,.45],[-.45,.45],[.45,-.45],[-.45,-.45]]){const c=new THREE.Mesh(new THREE.ConeGeometry(.1,.25,10,1,true),darkMetal);c.rotation.z=-Math.PI/2;c.position.set(-5.3,y,z);obs.add(c)}
+scene.add(obs);
+
+/* ---------- Superficie de Marte + hábitat ---------- */
+const surface=new THREE.Group();scene.add(surface);
+const tg=new THREE.PlaneGeometry(90,90,140,140);tg.rotateX(-Math.PI/2);
+const tp=tg.attributes.position,col=[];const cA=new THREE.Color(0x5a2410),cB=new THREE.Color(0xc4683a),tmp=new THREE.Color();
+const craters=[...Array(18)].map(()=>[(rnd()-.5)*80,(rnd()-.5)*80,2+rnd()*5]);
+for(let i=0;i<tp.count;i++){const x=tp.getX(i),z=tp.getZ(i);
+  let h=Math.sin(x*.18)*Math.cos(z*.15)*1.2+Math.sin(x*.55+z*.4)*.35+Math.sin(x*1.7-z*1.3)*.08;
+  for(const [cx,cz,r] of craters){const d=Math.hypot(x-cx,z-cz)/r;if(d<1.3)h+=d<1?(d*d-1)*1.1:(1.3-d)*1.6}
+  h*=THREE.MathUtils.smoothstep(Math.hypot(x,z),5,14);tp.setY(i,h);
+  tmp.copy(cA).lerp(cB,THREE.MathUtils.clamp(.55+h*.25+(rnd()-.5)*.12,0,1));col.push(tmp.r,tmp.g,tmp.b)}
+tg.setAttribute('color',new THREE.Float32BufferAttribute(col,3));tg.computeVertexNormals();
+surface.add(new THREE.Mesh(tg,new THREE.MeshStandardMaterial({vertexColors:true,roughness:.95,flatShading:true})));
+const dome=new THREE.Mesh(new THREE.SphereGeometry(1.7,32,12,0,Math.PI*2,0,Math.PI/2),white);surface.add(dome);
+const ring=new THREE.Mesh(new THREE.TorusGeometry(1.72,.08,8,48),darkMetal);ring.rotation.x=Math.PI/2;ring.position.y=.05;surface.add(ring);
+const win=new THREE.Mesh(new THREE.TorusGeometry(.35,.06,8,24),darkMetal);win.position.set(0,1.1,1.25);win.rotation.x=-.6;surface.add(win);
+for(const s of [-1,1]){
+  const mod=alongX(new THREE.Mesh(new THREE.CylinderGeometry(.6,.6,1.8,20),white));mod.position.set(s*3,.6,0);surface.add(mod);
+  const cap=new THREE.Mesh(new THREE.SphereGeometry(.6,20,10),white);cap.position.set(s*3.9,.6,0);surface.add(cap);
+  const tun=alongX(new THREE.Mesh(new THREE.CylinderGeometry(.3,.3,.9,12),silver));tun.position.set(s*1.85,.45,0);surface.add(tun);
+}
+for(let i=0;i<4;i++){const g=new THREE.Group();g.position.set(-3+i*2,0,-4);
+  const post=new THREE.Mesh(new THREE.CylinderGeometry(.05,.05,1,6),silver);post.position.y=.5;g.add(post);
+  const p=new THREE.Mesh(new THREE.BoxGeometry(1.6,.04,1),cells);p.position.y=1.05;p.rotation.x=-.5;g.add(p);surface.add(g)}
+const ant=new THREE.Mesh(new THREE.CylinderGeometry(.04,.04,2.6,6),silver);ant.position.set(2.4,1.3,2.2);surface.add(ant);
+const adish=dish.clone();adish.rotation.set(-.8,0,.4);adish.position.set(2.4,2.6,2.2);surface.add(adish);
+
+/* ---------- Escudo (shader Fresnel) ---------- */
+const shieldMat=new THREE.ShaderMaterial({transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,side:THREE.DoubleSide,
+  uniforms:{uOn:{value:1},uHit:{value:0},uT:{value:0}},vertexShader:VERT,fragmentShader:`
+uniform float uOn,uHit,uT;varying vec3 vP;varying vec3 vN;varying vec3 vW;
+void main(){float f=pow(1.-abs(dot(normalize(cameraPosition-vW),normalize(vN))),2.4);
+ vec3 p=normalize(vP);float hex=step(.92,fract(p.x*9.+uT*.1))+step(.92,fract(p.y*9.))+step(.92,fract(p.z*9.));
+ float a=(f*.75+hex*.05+uHit*.35*f)*uOn;gl_FragColor=vec4(vec3(.37,.83,.91)*(1.+uHit),a);}`});
+const shield=new THREE.Mesh(new THREE.IcosahedronGeometry(1,5),shieldMat);scene.add(shield);
+
+/* ---------- Tormenta solar (partículas) ---------- */
+const N=2200,pos=new Float32Array(N*3).fill(1e5),pcol=new Float32Array(N*3),vel=new Float32Array(N*3),life=new Float32Array(N),state=new Uint8Array(N);
+const pg=new THREE.BufferGeometry();pg.setAttribute('position',new THREE.BufferAttribute(pos,3));pg.setAttribute('color',new THREE.BufferAttribute(pcol,3));
+const parts=new THREE.Points(pg,new THREE.PointsMaterial({size:.45,map:dotTex,vertexColors:true,transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,fog:false}));
+parts.frustumCulled=false;scene.add(parts);
+let next=0;const target=new THREE.Vector3();let R=6.5,core=3;
+function spawn(){const i=next;next=(next+1)%N;
+  const s=new THREE.Vector3(rnd()-.5,rnd()-.5,rnd()-.5).multiplyScalar(8).add(SUN);
+  const d=target.clone().sub(s).normalize();d.x+=(rnd()-.5)*.09;d.y+=(rnd()-.5)*.09;d.z+=(rnd()-.5)*.09;d.normalize().multiplyScalar(28+rnd()*18);
+  pos.set([s.x,s.y,s.z],i*3);vel.set([d.x,d.y,d.z],i*3);pcol.set([1,.62+rnd()*.25,.25],i*3);life[i]=0;state[i]=1}
+
+/* ---------- estado del juego (mini) ---------- */
+let mode='orbit',shieldOn=true,energy=100,hits=0,blocked=0,storm=0,hitFlash=0;
+const $=id=>document.getElementById(id);const flash=$('flash');
+function setMode(m){mode=m;const orbit=m==='orbit';
+  obs.visible=mars.visible=stars.visible=orbit;surface.visible=!orbit;
+  scene.background=new THREE.Color(orbit?0x05060a:0x2b1710);scene.fog=orbit?null:new THREE.Fog(0x2b1710,25,80);
+  if(orbit){target.set(0,0,0);R=6.6;core=3.2;camera.position.set(9,4,11);controls.target.set(0,0,0)}
+  else{target.set(0,.8,0);R=6.5;core=2.6;camera.position.set(10,5,12);controls.target.set(0,1,0)}
+  shield.position.copy(target);shield.scale.setScalar(R);
+  $('bOrbit').setAttribute('aria-pressed',orbit);$('bSurface').setAttribute('aria-pressed',!orbit);
+  pos.fill(1e5);state.fill(0)}
+$('bOrbit').onclick=()=>setMode('orbit');$('bSurface').onclick=()=>setMode('surface');
+$('bShield').onclick=()=>{shieldOn=!shieldOn&&energy>2;$('bShield').setAttribute('aria-pressed',shieldOn)};
+$('bStorm').onclick=()=>{storm=4};
+setMode('orbit');applyLang();
+
+/* ---------- loop ---------- */
+const clock=new THREE.Clock();let acc=0,frames=0,fpsT=0;const v=new THREE.Vector3(),n=new THREE.Vector3();
+function tick(){
+  const dt=Math.min(clock.getDelta(),.05),t=clock.elapsedTime;
+  sunMat.uniforms.uT.value=t;shieldMat.uniforms.uT.value=t;
+  obs.rotation.y=Math.sin(t*.15)*.25;obs.position.y=Math.sin(t*.6)*.12;
+  hinge.rotation.z=THREE.MathUtils.lerp(hinge.rotation.z,storm>0?0.02:1.85,dt*2); // la puerta se cierra en la tormenta
+  // energía: el escudo cuesta, el sol recarga
+  energy=THREE.MathUtils.clamp(energy+(shieldOn?-4.5:2.5)*dt,0,100);
+  if(energy<=0&&shieldOn){shieldOn=false;$('bShield').setAttribute('aria-pressed',false)}
+  shieldMat.uniforms.uOn.value=THREE.MathUtils.lerp(shieldMat.uniforms.uOn.value,shieldOn?1:0,dt*6);
+  // partículas
+  acc+=dt*(storm>0?520:22);storm=Math.max(0,storm-dt);while(acc>1){spawn();acc--}
+  for(let i=0;i<N;i++){if(!state[i])continue;const k=i*3;
+    pos[k]+=vel[k]*dt;pos[k+1]+=vel[k+1]*dt;pos[k+2]+=vel[k+2]*dt;life[i]+=dt;
+    v.set(pos[k]-target.x,pos[k+1]-target.y,pos[k+2]-target.z);const d=v.length();
+    if(state[i]===1&&shieldOn&&d<R){n.copy(v).divideScalar(d);const vv=new THREE.Vector3(vel[k],vel[k+1],vel[k+2]);
+      vv.addScaledVector(n,-2*vv.dot(n)).multiplyScalar(.7);vel[k]=vv.x;vel[k+1]=vv.y;vel[k+2]=vv.z;
+      pcol[k]=.4;pcol[k+1]=.9;pcol[k+2]=1;state[i]=2;blocked++;hitFlash=Math.min(1,hitFlash+.04)}
+    else if(state[i]===1&&d<core){hits++;state[i]=0;pos[k]=1e5;flash.style.opacity=.55}
+    if(life[i]>7||(mode==='surface'&&pos[k+1]<-.5)){state[i]=0;pos[k]=1e5}}
+  pg.attributes.position.needsUpdate=pg.attributes.color.needsUpdate=true;
+  hitFlash*=.92;shieldMat.uniforms.uHit.value=hitFlash;flash.style.opacity=Math.max(0,parseFloat(flash.style.opacity||0)-dt*1.5);
+  controls.update();renderer.render(scene,camera);
+  frames++;fpsT+=dt;if(fpsT>.5){$('rFps').textContent=Math.round(frames/fpsT);frames=0;fpsT=0;
+    $('rTris').textContent=renderer.info.render.triangles.toLocaleString();
+    $('rEnergy').textContent=Math.round(energy)+'%';$('eBar').style.width=energy+'%';
+    $('rHits').textContent=hits;$('rBlocked').textContent=blocked}
+  requestAnimationFrame(tick)}
+tick();
+</script>

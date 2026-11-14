@@ -107,7 +107,9 @@ Los loops siguen corriendo mientras el humano duerme solo si alguien revisa los 
 
 ## E. Permisos y seguridad
 
-- El repo trae una plantilla de permisos compartidos en `infra/claude-settings.plantilla.json`. El coordinador la copia una vez a `.claude/settings.json` (`mkdir -p .claude && cp infra/claude-settings.plantilla.json .claude/settings.json`), revisa y sube. Deja correr `git`, `gh issue`, `gh pr create/view/list` y `npm` sin preguntar, y **bloquea** `gh pr merge`, `git push` a `main`/`develop` y `git push --force`.
+- El repo trae una plantilla de permisos compartidos en `infra/claude-settings.plantilla.json`. Deja correr `git`, `gh issue`, `gh pr create/view/list` y `npm` sin preguntar, y **bloquea** `gh pr merge`, `git push` a `main`/`develop` y `git push --force`.
+- **Fusionar PRs solo lo hace Santiago** (él o su agente, cuando él lo ordena). Cada una de las otras personas copia la plantilla a su archivo personal una sola vez: `cp infra/claude-settings.plantilla.json .claude/settings.local.json`. Ese archivo no se sube a git y bloquea `gh pr merge` en su sesión.
+- El repo solo permite fusionar con **squash**. Un PR en borrador no se fusiona hasta marcarlo listo (`gh pr ready <n>`).
 - Cada quien puede añadir lo suyo en `.claude/settings.local.json` (no se sube a git).
 - Claves (NASA API key, modelo): solo en `.env.local`, que está en `.gitignore`. Nunca en el chat del equipo ni en commits.
 

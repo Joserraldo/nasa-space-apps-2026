@@ -46,7 +46,7 @@ Personajes **originales**. El tono puede ser de ciencia loca, absurda y sarcást
 | Doctora de radiación | Dosis acumulada, salud (OSDR) | Sobreprotectora |
 | Meteoróloga solar | Lee eventos reales de DONKI, avisa tormentas | Dramática, a veces exagera |
 | Matemático | **"¿Y si...?"**: simula la decisión y muestra el costo antes de hacerla | Literal, solo da números |
-| Control de Misión | Responde **con retraso** (en Marte, de 4 a 24 min reales, comprimidos al ritmo del juego) | Lento pero sabio |
+| Control de Misión | Responde **con retraso** (en Marte, de 3 a 22 min reales (NASA NSSDC), comprimidos al ritmo del juego) | Lento pero sabio |
 
 - **Rebanada vertical:** Ingeniera, Doctora y Meteoróloga. Matemático y Control después.
 - **Los expertos pueden contradecirse.** Ese conflicto es el trade-off. Seguir un consejo cuesta y no seguirlo también.
