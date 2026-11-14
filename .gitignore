@@ -19,3 +19,4 @@ Thumbs.db
 # Vite
 ui/dist/
 ui/dist-types/
+.dev.vars
