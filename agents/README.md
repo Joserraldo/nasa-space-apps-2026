@@ -97,3 +97,12 @@ import { luna, medicionLuna, fuenteCrater } from "@solar-shield/data";
 const m = medicionLuna("<id de la tormenta>");
 escenaTormenta(estado, dilema, m ? { factor: m.factor, lugar: "orbita_luna", fuente: fuenteCrater(m, luna.consultadoEl) } : undefined);
 ```
+
+## Misión Marte polo norte (#97, depende de que diseño la apruebe)
+| Paso | Llamada |
+|---|---|
+| 3 (zonas, sin mapa) | `consejosZonasPoloNorte({ solMaxGrados, fuente })` con `solMaxGrados[z] = solMaxVerano(LATITUD_ZONA_POLO_NORTE[z])` y la fuente de `regionPoloNorte()` (data). Sin contexto, sin grados. |
+| 4b (escarcha) | `escenaEscarcha(estado)`: igual que `escenaPolvo` (mismas `opciones`). |
+| 6 (dilema de la batería) | `escenaTormentaPoloNorte(estado, dilema)`: la Doctora dice "medido lejos, en el cráter Gale"; la Ingeniera defiende la batería. Matemático: `compararOpciones` sin cambios. |
+| 7 (noche polar) | `avisoNochePolar(estado)`: Ingeniera con la energía del estado e Iris con "el tiempo va rápido" (fuente NSSDC). |
+| 8 (pregunta) | `preguntaIris("noche_polar", estado.iaBase)`. |
