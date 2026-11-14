@@ -1,0 +1,226 @@
+{
+  "version": 2,
+  "status": "pending_human_approval",
+  "primary_approach": "procedural_threejs_webgl",
+  "world": "open_free_exploration",
+  "runtime": "Three.js 0.160.0; isolated reference; not production game",
+  "sources": {
+    "factories": "piezas-procedurales.js",
+    "lab": "laboratorio.js",
+    "guide": "APLICACION.md"
+  },
+  "individuals": [
+    {
+      "id": "door",
+      "png": "individuales/puerta-marco.png",
+      "factory": "door",
+      "reuse": [
+        "airlock",
+        "control",
+        "greenhouse",
+        "laboratory",
+        "engineering",
+        "medical",
+        "quarters",
+        "shelter"
+      ],
+      "pivot": "base_center"
+    },
+    {
+      "id": "console",
+      "png": "individuales/consola.png",
+      "factory": "consoleUnit",
+      "reuse": [
+        "control",
+        "greenhouse",
+        "laboratory",
+        "engineering",
+        "medical",
+        "shelter"
+      ],
+      "pivot": "floor_center"
+    },
+    {
+      "id": "crate",
+      "png": "individuales/caja.png",
+      "factory": "crate",
+      "reuse": [
+        "airlock",
+        "control",
+        "laboratory",
+        "engineering",
+        "quarters",
+        "shelter"
+      ],
+      "pivot": "floor_center"
+    },
+    {
+      "id": "panel",
+      "png": "individuales/panel-solar.png",
+      "factory": "solarPanel",
+      "reuse": [
+        "engineering",
+        "exterior"
+      ],
+      "pivot": "base_center; head_axis_separate"
+    },
+    {
+      "id": "planter",
+      "png": "individuales/jardinera.png",
+      "factory": "planter",
+      "reuse": [
+        "greenhouse"
+      ],
+      "children": [
+        "plant",
+        "leaf"
+      ],
+      "pivot": "base_center"
+    },
+    {
+      "id": "tank",
+      "png": "individuales/deposito.png",
+      "factory": "tank",
+      "reuse": [
+        "greenhouse",
+        "medical",
+        "shelter",
+        "exterior"
+      ],
+      "pivot": "base_center"
+    },
+    {
+      "id": "bench",
+      "png": "individuales/banco.png",
+      "factory": "bench",
+      "reuse": [
+        "control",
+        "medical",
+        "quarters",
+        "shelter"
+      ],
+      "pivot": "floor_center"
+    },
+    {
+      "id": "antenna",
+      "png": "individuales/antena.png",
+      "factory": "antenna",
+      "reuse": [
+        "control",
+        "shelter",
+        "exterior"
+      ],
+      "pivot": "base_center"
+    }
+  ],
+  "procedural_only": [
+    {
+      "id": "rock",
+      "factory": "rock",
+      "variance": "seed, scale, rotation, palette"
+    },
+    {
+      "id": "plant",
+      "factory": "plant",
+      "children": [
+        "leaf"
+      ],
+      "variance": "seed, leaf placement"
+    },
+    {
+      "id": "station",
+      "factory": "station",
+      "children": "shared wall/floor/door and station props"
+    },
+    {
+      "id": "character",
+      "factory": "astronaut",
+      "variants": [
+        "child",
+        "engineer",
+        "doctor",
+        "meteorologist"
+      ],
+      "rig": "articulated Groups, not skinned GLB"
+    }
+  ],
+  "start_layers": [
+    {
+      "id": "astronauta",
+      "file": "inicio/individuales/astronauta.png",
+      "kind": "alpha_concept_reference_not_loaded_by_procedural_scene"
+    },
+    {
+      "id": "nave",
+      "file": "inicio/individuales/nave.png",
+      "kind": "alpha_concept_reference_not_loaded_by_procedural_scene"
+    },
+    {
+      "id": "planeta",
+      "file": "inicio/individuales/planeta.png",
+      "kind": "alpha_concept_reference_not_loaded_by_procedural_scene"
+    },
+    {
+      "id": "asteroide",
+      "file": "inicio/individuales/asteroide.png",
+      "kind": "alpha_concept_reference_not_loaded_by_procedural_scene"
+    }
+  ],
+  "stations": [
+    {
+      "id": "airlock",
+      "reference": "estaciones/10-esclusa.png",
+      "layout": "stations configuration in piezas-procedurales.js",
+      "progression_gate": false
+    },
+    {
+      "id": "control",
+      "reference": "estaciones/11-control-mision.png",
+      "layout": "stations configuration in piezas-procedurales.js",
+      "progression_gate": false
+    },
+    {
+      "id": "greenhouse",
+      "reference": "estaciones/12-invernadero.png",
+      "layout": "stations configuration in piezas-procedurales.js",
+      "progression_gate": false
+    },
+    {
+      "id": "laboratory",
+      "reference": "estaciones/13-laboratorio.png",
+      "layout": "stations configuration in piezas-procedurales.js",
+      "progression_gate": false
+    },
+    {
+      "id": "engineering",
+      "reference": "estaciones/14-ingenieria.png",
+      "layout": "stations configuration in piezas-procedurales.js",
+      "progression_gate": false
+    },
+    {
+      "id": "medical",
+      "reference": "estaciones/15-enfermeria.png",
+      "layout": "stations configuration in piezas-procedurales.js",
+      "progression_gate": false
+    },
+    {
+      "id": "quarters",
+      "reference": "estaciones/16-descanso-comedor.png",
+      "layout": "stations configuration in piezas-procedurales.js",
+      "progression_gate": false
+    },
+    {
+      "id": "shelter",
+      "reference": "estaciones/17-refugio.png",
+      "layout": "stations configuration in piezas-procedurales.js",
+      "progression_gate": false
+    }
+  ],
+  "limits": [
+    "Generated PNGs are not pixel-identical extractions and may have alpha halos.",
+    "Procedural demo demonstrates reuse; final geometry/material/camera fidelity remains unverified.",
+    "Only eight station-related individual PNG atoms were generated; all other pictured props need procedural authoring.",
+    "Existing game engine and local application work are not changed.",
+    "Three vendor source is copied unmodified with MIT license."
+  ]
+}

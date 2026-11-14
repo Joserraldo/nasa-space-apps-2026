@@ -1,0 +1,30 @@
+# Renders de revisión, cachés Python y material auxiliar pesado (toda la referencia visual vive en Solar-Shield-Atlas-integral-v8.pdf).
+revision-pdf-v7/
+revision-pdf-v8/
+revision-pdf-plan-jezero/
+__pycache__/
+
+# Láminas PNG sueltas (se mantienen locales; en Git se publica la referencia principal PDF + guías).
+ampliacion-v8/laminas/
+ampliacion-v8/*.json
+estaciones/
+individuales/
+inicio/
+laminas/
+seleccion/
+
+# Laboratorio HTML aislado, copia local de Three.js y scripts/manifiestos de generación.
+vendor/
+index.html
+laboratorio.css
+laboratorio.js
+package.json
+crear_atlas_v7.py
+crear_atlas_v8.py
+crear_plan_jezero.py
+manifest.json
+prompt-variantes.json
+prompts-produccion.json
+revision.json
+revision-pdf-v8.json
+revision-plan-jezero.json
