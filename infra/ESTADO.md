@@ -1,16 +1,14 @@
-# Estado — infra (integración, QA, despliegue y pitch)
-**Actualizado:** 13 nov 2026, tarde · **Responsable:** José (desde el 13 nov; antes Santiago)
-**Tokens:** por reportar
+# Estado — infra
+**Actualizado:** 14 nov 2026, 00:45 · **Rama:** feat/infra-worker-app · **Responsable:** José (este paso lo hizo Santiago sobre #76 y #78, por decisión suya)
+**Tokens:** 🟢
 
-## Hecho (últimas iteraciones)
-- CI de tipos y tests en cada PR (#22).
-- Secreto `BAI_API_KEY` guardado en el repo (clave del clasificador); ningún flujo lo usa todavía.
-- Borrador de `pitch/criterios.md`.
+## Hecho
+- Un solo Worker para pantalla y API (`infra/worker/`), producción y preview, con `/api/health` y `/api/clasificar` (#76).
+- Despliegue automático por GitHub Actions a Workers (develop → preview, main → producción), solo si pasan tipos y pruebas (#78).
+- Validado con `wrangler deploy --dry-run` en ambos entornos.
 
 ## Qué sigue
-- Flujo de despliegue a Cloudflare desde GitHub Actions (cuando Santiago tenga la cuenta: token e ID como secretos del repo).
-- Incluir `data/` en el CI (#28; el PR #39 de datos prepara su parte).
-- Prueba e2e de la ruta dorada cuando exista la pantalla.
+- Login + invitado con progreso en D1.
 
 ## Bloqueos
-- Cuenta de Cloudflare (Santiago). Guía de Entrega y criterios de juicio sin confirmar.
+- Secretos de Cloudflare en el repo (José) y desconectar el Worker de la copia kcitas (Santiago).
