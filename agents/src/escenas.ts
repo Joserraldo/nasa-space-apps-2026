@@ -28,12 +28,14 @@ export interface OpcionDilemaVista {
 export interface MedicionCitada {
   /** pico / fondo, tal como lo da datos. */
   factor: number;
-  lugar: "superficie_marte" | "orbita_luna";
+  /** `gale_lejos`: RAD (Curiosity) midió en el cráter Gale, lejos de la base (misión del polo norte). */
+  lugar: "superficie_marte" | "gale_lejos" | "orbita_luna";
   fuente: SourceCard;
 }
 
 const CLAVE_MEDIDA: Record<MedicionCitada["lugar"], string> = {
   superficie_marte: "agentes.escena6.doctora.medida",
+  gale_lejos: "agentes.escena6.doctora.medidaGale",
   orbita_luna: "agentes.escena6.doctora.medidaOrbitaLuna",
 };
 

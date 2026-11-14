@@ -14,3 +14,4 @@ export { queSiMatematico, compararOpciones, avisoUsos, conAvisoUsos, sinUsosMate
 export { escenaPolvo, type EscenaPolvo, type ContextoPolvo } from "./polvo.js";
 export { preguntaIris, responderPreguntaIris, type PreguntaIris, type TemaPregunta } from "./iris-pregunta.js";
 export { conversar, preguntaDelBoton, PREGUNTA_DEL_BOTON, type Entrada, type OpcionesConversar } from "./conversar.js";
+export { consejosZonasPoloNorte, escenaEscarcha, escenaTormentaPoloNorte, avisoNochePolar, LATITUD_ZONA_POLO_NORTE, type ZonaPoloNorte, type ContextoZonasPoloNorte } from "./voces-polo-norte.js";

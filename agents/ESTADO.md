@@ -1,14 +1,13 @@
 # Estado — rol 3 (Agentes expertos)
-**Actualizado:** 14 nov 2026, 13:15 · **Rama:** feat/agentes-medicion-citada · **PR:** #120
+**Actualizado:** 14 nov 2026, 14:45 · **Rama:** feat/agentes-voces-marte-polo-norte · **PR:** ver abajo
 
 ## Hecho (últimas iteraciones)
-- En develop: regex en/es, expertos con fuente, escenas 4b/6, Iris 1-3, satélite, aterrizaje, director, `conversar()`, voces misión 1, Matemático `compararOpciones` (#74), README por pantalla (#119).
-- #120: `MedicionCitada` (Doctora dice "en órbita" con CRaTER y su fuente) y Meteoróloga con Kp "en la Tierra"; al día con develop; revisado por datos (Daniel), Kp con su escala (máx. 9) y uso de CRaTER en README.
-- Tareas de ui en #118 (`bloquea:ui`).
+- En develop: expertos con fuente, escenas 4b/6, Iris 1-3, `conversar()`, Matemático (#74), README por pantalla (#119), `MedicionCitada` y Kp en la Tierra (#120).
+- Voces de misiones de datos (pedido de José, sin esperar merges): Marte polo norte (#97) en esta rama — zonas por latitud, escarcha, dilema de la batería con "medido en Gale", noche polar, pregunta de Iris.
 
 ## Qué sigue
-- Paso 2 del plan de voces: `escenaPanelTapado(causa)` y `escenaAveria(equipo)` (micrometeorito, antena).
-- Líneas por misión cuando #97-#100 y #95 entren en develop.
+- Voces Luna polo sur (#98, datos de #95 CRaTER y #126 terreno), luego outpost (#99) y Luna lado visible (#100, #125).
+- Loop se detiene cuando los 4 PRs de voces estén abiertos y en verde.
 
 ## Bloqueos
-- #95 (CRaTER) sin fusionar: ui no puede armar `MedicionCitada` real aún. SourceCard de InSight (#91). Pantallas de ui (#118).
+- Las 4 misiones dependen de que Camilo las apruebe. Fuente F1 (hielo de agua) de #97 sin aprobar por Daniel.
