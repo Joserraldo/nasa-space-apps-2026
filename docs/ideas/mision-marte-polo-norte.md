@@ -20,7 +20,8 @@ La lección que se lleva el niño: **la energía del Sol hay que guardarla cuand
 
 ## 2. Lo que sabemos, lo que calculamos y lo que no afirmamos
 
-- **Medido o publicado [V]:** inclinación del eje 25,19°; irradiancia solar en Marte 586,2 W/m² frente a 1361,0 en la Tierra (0,431 veces); gravedad 3,73 m/s²; día de 24,6597 h; año de 686,980 días terrestres (NSSDC). La tormenta del 20 may 2024 medida por RAD (×19,4, dosis **absorbida** en µGy/h, OSDR RadLab). Dosis de fondo en la superficie 0,64 ± 0,12 mSv/día (RAD).
+- **Medido o publicado [V]:** inclinación del eje 25,19°; irradiancia solar en Marte 586,2 W/m² frente a 1361,0 en la Tierra (0,431 veces); gravedad 3,73 m/s²; día de 24,6597 h; año de 686,980 días terrestres (NSSDC). La tormenta del 20 may 2024 medida por RAD: 4,1 → 79,7 µGy/h de media diaria (×19,4, dosis **absorbida**, OSDR RadLab).
+- **Aparte, no es la tormenta [V]:** dosis de fondo en la superficie 0,64 ± 0,12 mSv/día (RAD, dosis equivalente): es el **fondo de un día tranquilo, no la tormenta**. No se pone junto a las cifras en µGy/h.
 - **Calculado por código [derivado del equipo]:** altura máxima del Sol en pleno verano = 90° − latitud + 25,19°; hay noche polar (y día sin noche en verano) a partir de 90° − 25,19° = **64,81° N**. Ya está en `regionPoloNorte()` para 82° N (Sol máximo ≈ 33,2°).
 - **Fuera de la lista oficial del reto, requiere aprobación de Daniel:** la capa polar norte permanente es sobre todo **hielo de agua**; en otoño e invierno parte del dióxido de carbono del aire se congela sobre el suelo ("hielo seco") (§12, filas F1–F3).
 - **NO afirmamos:** cuánto dura la noche polar en días (falta calcularlo por código, §10), temperaturas del polo, dosis en el polo, dónde termina la capa de hielo, ni nada del terreno (no hay DEM polar usable).
@@ -73,7 +74,7 @@ Arranque (ya en `design/src/recursos.ts`): ⚡55 🫁80 🛡️65, consumo ⚡ -
 | 4 | Aterriza y elige **2 de 5 módulos** (§4) | Cada módulo mueve 2 medidores | Ingeniera recomienda `bateria`; Doctora, `escudo` | — (valores de juego) |
 | 4b | *Mala suerte (no en la semilla dorada):* escarcha sobre los paneles: el panel rinde la mitad | **Quitarla** (`salida_exterior` sobre `panel_solar`: 🛡️ -12 🫁 -5) o aguantar | Ingeniera | Tarjeta: "en otoño e invierno parte del aire de Marte se congela sobre el suelo" (fuente F2, **fuera de la lista, requiere aprobación de Daniel**). Que la escarcha tape paneles es escenario de juego |
 | 5 | Llega la tormenta real del 20 may 2024 → pausa + tarjeta de fuente | — | Meteoróloga lee el evento | CME `2024-05-20T05:36:00-CME-001` [V DONKI]; RAD midió ×19,4 **en el cráter Gale, no en el polo** [V RadLab] |
-| 6 | **Dilema de la batería** (§7). Iris (dañada) dice que la batería está llena; el medidor ⚡ dice otra cosa | Refugiarse / subir escudo con la batería / aguantar | Doctora vs Ingeniera; Iris equivocada | Dosis de fondo 0,64 mSv/día en la superficie (RAD, Gale) [V] |
+| 6 | **Dilema de la batería** (§7). Iris (dañada) dice que la batería está llena; el medidor ⚡ dice otra cosa | Refugiarse / subir escudo con la batería / aguantar | Doctora vs Ingeniera; Iris equivocada | Solo la tormenta en µGy/h: RAD midió 4,1 → 79,7 µGy/h de media diaria (dosis absorbida, en Gale) [V RadLab]. Sin el 0,64 mSv/día aquí |
 | 7 | **Empieza la noche polar:** el Sol deja de salir y `panel_solar` da 0. Envía telemetría a la Tierra; la respuesta tarda 2 ticks | Enviar ahora (⚡ -5 🫁 -1, gasta batería) o esperar | Control de Misión (con retraso) | Noche polar a partir de 64,81° N (derivado); retraso Marte–Tierra 3–22,3 min en un sentido (calculado de las distancias NSSDC [V], `feat/datos-comunicaciones`) |
 | 8 | Cadena de causas + tarjeta de ciencia + pregunta de 3 opciones que nunca bloquea | — | Iris resume | §9 |
 
@@ -82,11 +83,11 @@ Arranque (ya en `design/src/recursos.ts`): ⚡55 🫁80 🛡️65, consumo ⚡ -
 ## 6. La tormenta elegida y por qué
 
 **`2024-05-20-marte`** (ya en `data/curated`, es la ruta dorada).
-- Es la **única** del catálogo que se midió de verdad en Marte: RAD (Curiosity) vio la dosis absorbida subir de 4,1 a 79,7 µGy/h de media diaria, factor 19,4 [V, OSDR RadLab]. `marcoMarte: "observado"`.
+- Es **la que más subió en Marte** de nuestro catálogo (×19,4): RAD (Curiosity) vio la dosis absorbida subir de 4,1 a 79,7 µGy/h de media diaria [V, OSDR RadLab]. `marcoMarte: "observado"`. **También se midió la del 10 sep 2017** (`2017-09-10-x82`, ×2,3, también `observado`).
 - Reusar la misma tormenta que Jezero tiene una ventaja didáctica: el niño ve **el mismo evento** desde otro lugar y entiende que lo que cambia es la base, no el Sol.
 - **Lo que hay que decir siempre:** se midió en el cráter Gale, donde está Curiosity, no en el polo. Clave sugerida `mision.polo_norte.tormenta.donde` (§8).
 - **Corrección al encargo:** el encargo decía que la simulación ENLIL la modela llegando a Marte. En nuestros datos crudos (`data/raw/2024-05/WSAEnlilSimulations.json`, consulta hasta el 2024-05-21) las corridas con esa CME (`WSA-ENLIL/31037/1` y `31038/1`) **no** incluyen a Marte en `impactList`: solo Solar Orbiter y Juno. Por eso el archivo curado no tiene `llegadaMarte`. Que una corrida posterior la mande a Marte: **NO VERIFICADO**.
-- Unidades: RAD en RadLab da dosis **absorbida** (µGy/h); la Doctora habla en dosis equivalente (mSv/día). No se convierten una en otra.
+- Unidades: RAD en RadLab da dosis **absorbida** (µGy/h). En la tarjeta de la tormenta y en el dilema van **solo µGy/h**. El 0,64 mSv/día (dosis equivalente) es otra magnitud: si aparece, va aparte y con la etiqueta "fondo de un día tranquilo, no la tormenta". No se convierten una en otra.
 
 ## 7. Dilema central (paso 6), sin receta
 
@@ -177,7 +178,7 @@ Tarjeta de ciencia del paso 8: `mision.polo_norte.ciencia.eje` con fuente NSSDC 
 | Tormenta: CME `2024-05-20T05:36:00-CME-001`, 1927 km/s | [V] | DONKI https://ccmc.gsfc.nasa.gov/DONKI/view/CME/31034/-1 (`data/curated/2024-05-20-marte.json`) |
 | RAD: 4,1 → 79,7 µGy/h (×19,4; pico de muestra 304), dosis absorbida | [V] | OSDR RadLab `MSL-RAD-Surface` (URL en `data/curated/2024-05-20-marte.json`) |
 | ENLIL manda la CME del 20 may 2024 a Marte | **NO VERIFICADO** (nuestros datos dicen que no) | `WSA-ENLIL/31037/1`, `31038/1` en `data/raw/2024-05` |
-| Dosis de fondo 0,64 ± 0,12 mSv/día (2012-2013) | [V] | Reitz et al. 2016, ICES2016 https://elib.dlr.de/106090/ (`data/ciencia/radiacion.json`) |
+| Dosis de fondo 0,64 ± 0,12 mSv/día (2012-2013): **fondo de un día tranquilo, no la tormenta**; no va en la tarjeta de la tormenta ni en el dilema | [V] | Reitz et al. 2016, ICES2016 https://elib.dlr.de/106090/ (`data/ciencia/radiacion.json`) |
 | Curiosity/RAD está en el cráter Gale | [V] para Gale (`docs/science/terreno.md`, `data/src/tormenta.ts`); "cerca del ecuador": **NO VERIFICADO** con URL | — |
 | Retraso Marte–Tierra 3–22,3 min (un sentido) | [V] distancias, derivado el retraso | NSSDC, misma URL; `data/src/comunicaciones.ts` (rama `feat/datos-comunicaciones`) |
 | F1: el casquete norte residual es sobre todo hielo de agua (el sur, sobre todo CO₂) | [V] **fuente fuera de la lista oficial — requiere aprobación de Daniel** | NASA Photojournal PIA06858 (2004) https://science.nasa.gov/photojournal/north-polar-cap/ |
