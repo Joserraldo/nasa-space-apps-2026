@@ -1,16 +1,14 @@
 # Estado — rol 3 (Agentes expertos)
-**Actualizado:** 13 nov 2026 · **Rama:** feat/agentes-conversar · **PR:** #72 (issue #59)
+**Actualizado:** 14 nov 2026, 00:00 · **Rama:** feat/agentes-mision1-voces · **PR:** #92 (abiertos: #74, #75)
 
 ## Hecho (últimas iteraciones)
-- Fusionados: #43 regex en/es · #44 3 expertos en/es con fuente · #47 escena 6 · #49 avería de Iris · #50 README · #46 data/ en CI.
-- Evals reales en b.ai (#51): qwen3.8-flash 80 % accion pero p95 15 s; deepseek 23 % (razonamiento sin tokens). D4: sin clasificador; reabrir tras P2.
-- Fase satélite (#52) y aterrizaje: cada voz defiende su criterio (luz, blindaje, plano).
+- En develop: regex en/es, 3 expertos con fuente, escena 6, avería de Iris, satélite, aterrizaje, director, títulos, Iris 1-2, `conversar()` (#72).
+- #92 misión 1 (ARES): `escenaPolvo` (4b, con Meteoróloga), dilema del refugio con invernadero, `escenaTormenta(vista, dilema)` con las opciones de #89, `preguntaIris` nivel 2.
+- #74 Matemático: `queSiMatematico`, `compararOpciones` (ya y después), aviso de usos. #75 frases cortas.
 
-## Qué sigue (issue #41)
-- #67 fusionado: aterrizaje + director + cola. Revisé el borrador de ui (#68, Jaime) y le dejé sugerencias.
-- Matemático "¿Y si…?" con el simulador del motor; acortar frases > 25 palabras.
+## Qué sigue
+- Voces de las 4 misiones de datos (#97-#100): Doctora con CRaTER "en órbita" (#95), Meteoróloga con Kp "en la Tierra".
+- Matemático y voces conectados en las pantallas de ui.
 
 ## Bloqueos
-- `ENERGIA_POR_CANTIDAD` provisional (debe vivir en design/). ui/ aún vacío.
-
-Evals: corridas (13 nov) · Tokens: 🟢
+- SourceCard de InSight (#91). Dato de hielo en Jezero (Santiago).
