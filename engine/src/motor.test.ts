@@ -42,8 +42,8 @@ describe("regla de oro: ninguna acción es gratis", () => {
     it(`${tipo} mueve al menos dos medidores, uno sube y otro baja`, () => {
       const bajan = Object.values(costo.inmediato).filter((d) => d < 0).length;
       const suben = Object.values(costo.retrasado).filter((d) => d > 0).length;
-      // redistribuir_energia sube por parámetro; se cubre en el test de abajo.
-      if (tipo !== "redistribuir_energia") expect(suben).toBeGreaterThanOrEqual(1);
+      // redistribuir_energia y colocar_modulo suben por parámetro; se cubren en el test de abajo y en dorada.test.ts.
+      if (tipo !== "redistribuir_energia" && tipo !== "colocar_modulo") expect(suben).toBeGreaterThanOrEqual(1);
       expect(bajan).toBeGreaterThanOrEqual(1);
     });
   }

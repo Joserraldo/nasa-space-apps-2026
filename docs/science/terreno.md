@@ -20,3 +20,15 @@ La tarjeta debe decir (clave `datos.terreno.derivado`): la altura es una medida 
 ## Qué NO se afirma
 - No se dan dosis de radiación por sitio. La dosis de referencia de Marte (RAD/Curiosity, en el cráter Gale) va aparte y con su cita.
 - Las coordenadas exactas de aterrizaje de Perseverance no se citan: solo el marcador de Trek.
+
+## Próxima región: polo norte de Marte (`marte_polo_norte` del contrato) — plan, aún sin datos
+- [V 2026-11-13] Mars Trek publica el DEM MOLA en estereográfica polar norte: `trekarcgis/rest/services/mola128_mola64_merge_90Nto90S_SimpleC_clon0_NP/ImageServer` (S16, metros, SR "Mars_Npolar_Sphere_Polar", radio 3 396 190 m). Como la rejilla está en metros, la pendiente se calcula sin corregir la longitud.
+- Recuadro: unos 250 km en el borde del casquete de hielo. Las coordenadas se fijan con el DEM.
+- La regla de luz de Jezero solo mira el horizonte; en el polo hay que añadir la latitud. **Inclinación del eje de Marte: 25,19° [V]** (NASA NSSDC, ficha de Marte, actualizada el 19 may 2025, https://nssdc.gsfc.nasa.gov/planetary/factsheet/marsfact.html). Altura máxima del Sol en pleno verano ≈ 90° − latitud + 25,19°.
+- **Probado el 13 nov, sin éxito:**
+  - El `exportImage` del servicio polar `_NP` devuelve error 400 con todos los formatos (bsq, tiff, png).
+  - El DEM MOLA equirectangular (`mola128_mola64_merge...`) no tiene datos por encima de ~83,5° N (devuelve −32768), y entre 76 y 79° N, cerca de 120° O, da valores raros que no se usan.
+  - El DEM mezclado MOLA+HRSC también da error para la franja 76–90° N.
+- Segundo intento, también fallido: el DEM MOLA equirectangular no tiene datos por encima de ~82,5° N, y la fila de 82,4° N sale casi constante (≈ −2000 m), lo que parece un artefacto del borde. El DEM mezclado da error 400 en 80–83,4° N.
+- **Plan B (implementado, `data/src/region.ts`):** polo norte **sin mapa ni sitios**. Solo una tarjeta con la luz por latitud (82° N de referencia): Sol máximo en verano ≈ 33,2°, y noche polar porque 82° > 64,81° (90 − 25,19). Son cálculos del equipo a partir de la inclinación [V]. **No se afirma nada del hielo** (sin fuente verificada).
+- El hielo no se ve en el DEM. Si se nombra, irá con su fuente (por verificar); si no, no se afirma.

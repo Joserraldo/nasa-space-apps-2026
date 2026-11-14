@@ -1,0 +1,154 @@
+{
+  "version": "0.1.0",
+  "mision": "Artemis I",
+  "instrumento": "Artemis-I-HERA-HSU1",
+  "unidad": "µGy/h",
+  "magnitud": "dosis absorbida",
+  "desde": "2022-11-16T06:51:00",
+  "hasta": "2022-12-11T16:58:00",
+  "muestras": 36583,
+  "medianaCrucero": 16.68,
+  "pico": {
+    "valor": 8012.58,
+    "hora": "2022-11-16T07:27:00"
+  },
+  "vecesPicoSobreCrucero": 480,
+  "diario": [
+    {
+      "dia": "2022-11-16",
+      "mediana": 17.37,
+      "maximo": 8012.58
+    },
+    {
+      "dia": "2022-11-17",
+      "mediana": 17.3,
+      "maximo": 36.96
+    },
+    {
+      "dia": "2022-11-18",
+      "mediana": 17.15,
+      "maximo": 31.87
+    },
+    {
+      "dia": "2022-11-19",
+      "mediana": 17.14,
+      "maximo": 37.85
+    },
+    {
+      "dia": "2022-11-20",
+      "mediana": 17.02,
+      "maximo": 32.88
+    },
+    {
+      "dia": "2022-11-21",
+      "mediana": 16.46,
+      "maximo": 43.05
+    },
+    {
+      "dia": "2022-11-22",
+      "mediana": 16.58,
+      "maximo": 40.11
+    },
+    {
+      "dia": "2022-11-23",
+      "mediana": 16.61,
+      "maximo": 34.05
+    },
+    {
+      "dia": "2022-11-24",
+      "mediana": 16.66,
+      "maximo": 55.75
+    },
+    {
+      "dia": "2022-11-25",
+      "mediana": 16.95,
+      "maximo": 73.64
+    },
+    {
+      "dia": "2022-11-26",
+      "mediana": 16.82,
+      "maximo": 33.38
+    },
+    {
+      "dia": "2022-11-27",
+      "mediana": 16.77,
+      "maximo": 54.86
+    },
+    {
+      "dia": "2022-11-28",
+      "mediana": 16.65,
+      "maximo": 124.09
+    },
+    {
+      "dia": "2022-11-29",
+      "mediana": 16.63,
+      "maximo": 35.23
+    },
+    {
+      "dia": "2022-11-30",
+      "mediana": 16.75,
+      "maximo": 59.83
+    },
+    {
+      "dia": "2022-12-01",
+      "mediana": 16.61,
+      "maximo": 40.35
+    },
+    {
+      "dia": "2022-12-02",
+      "mediana": 16.51,
+      "maximo": 35.31
+    },
+    {
+      "dia": "2022-12-03",
+      "mediana": 16.53,
+      "maximo": 32.13
+    },
+    {
+      "dia": "2022-12-04",
+      "mediana": 16.39,
+      "maximo": 101.67
+    },
+    {
+      "dia": "2022-12-05",
+      "mediana": 16.39,
+      "maximo": 40.71
+    },
+    {
+      "dia": "2022-12-06",
+      "mediana": 16.41,
+      "maximo": 49.37
+    },
+    {
+      "dia": "2022-12-07",
+      "mediana": 16.42,
+      "maximo": 31.47
+    },
+    {
+      "dia": "2022-12-08",
+      "mediana": 16.38,
+      "maximo": 35.99
+    },
+    {
+      "dia": "2022-12-09",
+      "mediana": 16.43,
+      "maximo": 29.66
+    },
+    {
+      "dia": "2022-12-10",
+      "mediana": 16.41,
+      "maximo": 67.26
+    },
+    {
+      "dia": "2022-12-11",
+      "mediana": 16.52,
+      "maximo": 42.47
+    }
+  ],
+  "fuente": {
+    "nombreKey": "fuente.radlab",
+    "dueno": "Misión Artemis I (NASA); datos vía NASA OSDR RadLab",
+    "url": "https://visualization.osdr.nasa.gov/radlab/api/?instrument_id=Artemis-I-HERA-HSU1&absorbed_dose_rate>0&format=json",
+    "consultadoEl": "2026-11-13"
+  }
+}

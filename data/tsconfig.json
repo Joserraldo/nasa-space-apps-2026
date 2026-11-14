@@ -10,7 +10,10 @@
     "noEmit": true,
     "types": [
       "node"
-    ]
+    ],
+    "noUncheckedIndexedAccess": true,
+    "exactOptionalPropertyTypes": true,
+    "isolatedModules": true
   },
   "include": [
     "src",

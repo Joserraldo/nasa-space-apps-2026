@@ -1,5 +1,5 @@
-# Estado — rol 5 (Frontend, voz, arte y accesibilidad)
-**Actualizado:** — · **Rama:** — · **PR:** ninguno
+# Estado — ui (frontend, voz, arte y accesibilidad)
+**Actualizado:** 13 nov 2026 · **Rama:** — · **PR:** ninguno · **Responsable:** María Paula
 
 ## Hecho (últimas iteraciones)
 - Carpeta creada (foundation).

@@ -6,6 +6,7 @@ import {
   MissionGoalSchema,
   SiteSchema,
   type Difficulty,
+  type Equipment,
   type GameState,
   type Seed,
   type SpaceWeatherEvent,
@@ -19,6 +20,10 @@ export interface OpcionesPartida {
   tormentas?: readonly SpaceWeatherEvent[];
   /** Fuerza el sitio (ruta dorada = marte_jezero). Si falta, lo sortea la semilla. */
   sitio?: GameState["sitio"];
+  /** Fuerza qué equipo arranca averiado (ruta dorada: ia_base). Si falta, lo sortea la semilla. */
+  averiaInicial?: Equipment;
+  /** Fuerza el nivel inicial de la IA de la base. Si falta: tutorial, o danada en hardcore. */
+  iaInicial?: GameState["iaBase"];
 }
 
 /**
@@ -49,8 +54,9 @@ export function crearPartida(seed: Seed, opciones: OpcionesPartida = {}): GameSt
   const equiposAveriables = EquipmentSchema.options.filter((e) => e !== "ia_base");
   const averia = elegir(rng, equiposAveriables);
   rng = averia.estado;
+  const averiado = opciones.averiaInicial ?? averia.elegido;
   const equipos = Object.fromEntries(
-    EquipmentSchema.options.map((e) => [e, e === averia.elegido ? "averiado" : "ok"]),
+    EquipmentSchema.options.map((e) => [e, e === averiado ? "averiado" : "ok"]),
   ) as GameState["equipos"];
 
   const tripulacion: GameState["tripulacion"] = ExpertSchema.options.map((id) => {
@@ -80,7 +86,7 @@ export function crearPartida(seed: Seed, opciones: OpcionesPartida = {}): GameSt
     recursos: { ...RECURSOS_INICIALES[sitio] },
     equipos,
     tripulacion,
-    iaBase: dificultad === "hardcore" ? "danada" : "tutorial",
+    iaBase: opciones.iaInicial ?? (dificultad === "hardcore" ? "danada" : "tutorial"),
     rendimiento: { rachaAciertos: 0, erroresRecientes: 0, ticksSinAccion: 0 },
     tormenta,
     orbita: {

@@ -1,0 +1,237 @@
+[
+ {
+  "n": 1,
+  "frase": "sube el escudo ya!!!",
+  "experto": "ingeniera",
+  "accion": "repartir_energia",
+  "parametros": {
+   "destino": "blindaje",
+   "cantidad": "mucho"
+  }
+ },
+ {
+  "n": 2,
+  "frase": "ponle un poquito mas de energia al aire",
+  "experto": "ingeniera",
+  "accion": "repartir_energia",
+  "parametros": {
+   "destino": "soporte_vital",
+   "cantidad": "poco"
+  }
+ },
+ {
+  "n": 3,
+  "frase": "se daño el panel arreglalo",
+  "experto": "ingeniera",
+  "accion": "reparar",
+  "parametros": {
+   "equipo": "panel_solar"
+  }
+ },
+ {
+  "n": 4,
+  "frase": "cuanta bateria queda",
+  "experto": "ingeniera",
+  "accion": "estado_energia",
+  "parametros": {}
+ },
+ {
+  "n": 5,
+  "frase": "la compu de la base esta rara, la puedes componer?",
+  "experto": "ingeniera",
+  "accion": "reparar",
+  "parametros": {
+   "equipo": "ia_base"
+  }
+ },
+ {
+  "n": 6,
+  "frase": "doctora estamos bien?",
+  "experto": "doctora",
+  "accion": "estado_salud",
+  "parametros": {}
+ },
+ {
+  "n": 7,
+  "frase": "todos al refugio rapido",
+  "experto": "doctora",
+  "accion": "ir_al_refugio",
+  "parametros": {}
+ },
+ {
+  "n": 8,
+  "frase": "que es eso de la dosis",
+  "experto": "doctora",
+  "accion": "explicar_dosis",
+  "parametros": {}
+ },
+ {
+  "n": 9,
+  "frase": "me duele la cabeza al astronauta",
+  "experto": "doctora",
+  "accion": "estado_salud",
+  "parametros": {}
+ },
+ {
+  "n": 10,
+  "frase": "viene una tormenta?",
+  "experto": "meteorologa",
+  "accion": "pronostico",
+  "parametros": {}
+ },
+ {
+  "n": 11,
+  "frase": "q fue esa luz del sol",
+  "experto": "meteorologa",
+  "accion": "explicar_evento",
+  "parametros": {}
+ },
+ {
+  "n": 12,
+  "frase": "cuando llega la llamarada",
+  "experto": "meteorologa",
+  "accion": "pronostico",
+  "parametros": {}
+ },
+ {
+  "n": 13,
+  "frase": "que pasa si apago el laboratorio",
+  "experto": "matematico",
+  "accion": "que_pasa_si",
+  "parametros": {}
+ },
+ {
+  "n": 14,
+  "frase": "y si nos escondemos todos",
+  "experto": "matematico",
+  "accion": "que_pasa_si",
+  "parametros": {
+   "accion": "ir_al_refugio"
+  }
+ },
+ {
+  "n": 15,
+  "frase": "ayudaaa no se que hacer",
+  "experto": "ia_base",
+  "accion": "ayuda",
+  "parametros": {}
+ },
+ {
+  "n": 16,
+  "frase": "hola",
+  "experto": "ia_base",
+  "accion": "saludo",
+  "parametros": {}
+ },
+ {
+  "n": 17,
+  "frase": "otra vez porfa",
+  "experto": "ia_base",
+  "accion": "repetir",
+  "parametros": {}
+ },
+ {
+  "n": 18,
+  "frase": "cuentame un chiste de popo",
+  "experto": "ia_base",
+  "accion": "fuera_de_tema",
+  "parametros": {}
+ },
+ {
+  "n": 19,
+  "frase": "quien gano el partido",
+  "experto": "ia_base",
+  "accion": "fuera_de_tema",
+  "parametros": {}
+ },
+ {
+  "n": 20,
+  "frase": "raise the shield",
+  "experto": "ingeniera",
+  "accion": "repartir_energia",
+  "parametros": {
+   "destino": "blindaje",
+   "cantidad": "medio"
+  }
+ },
+ {
+  "n": 21,
+  "frase": "is a storm coming",
+  "experto": "meteorologa",
+  "accion": "pronostico",
+  "parametros": {}
+ },
+ {
+  "n": 22,
+  "frase": "everyone hide now",
+  "experto": "doctora",
+  "accion": "ir_al_refugio",
+  "parametros": {}
+ },
+ {
+  "n": 23,
+  "frase": "fix the antenna please",
+  "experto": "ingeniera",
+  "accion": "reparar",
+  "parametros": {
+   "equipo": "antena"
+  }
+ },
+ {
+  "n": 24,
+  "frase": "what if we turn off the lab",
+  "experto": "matematico",
+  "accion": "que_pasa_si",
+  "parametros": {}
+ },
+ {
+  "n": 25,
+  "frase": "mas oxigeno pero no tanto",
+  "experto": "ingeniera",
+  "accion": "repartir_energia",
+  "parametros": {
+   "destino": "soporte_vital",
+   "cantidad": "poco"
+  }
+ },
+ {
+  "n": 26,
+  "frase": "la doctora dice que nos escondamos, hazlo",
+  "experto": "doctora",
+  "accion": "ir_al_refugio",
+  "parametros": {}
+ },
+ {
+  "n": 27,
+  "frase": "pon todo en el escudo y nada en el lab",
+  "experto": "ingeniera",
+  "accion": "repartir_energia",
+  "parametros": {
+   "destino": "blindaje",
+   "cantidad": "mucho"
+  }
+ },
+ {
+  "n": 28,
+  "frase": "el sol esta enojado?",
+  "experto": "meteorologa",
+  "accion": "pronostico",
+  "parametros": {}
+ },
+ {
+  "n": 29,
+  "frase": "hay radiacion mala aqui?",
+  "experto": "doctora",
+  "accion": "explicar_dosis",
+  "parametros": {}
+ },
+ {
+  "n": 30,
+  "frase": "arregla a la ia que esta loca",
+  "experto": "ingeniera",
+  "accion": "reparar",
+  "parametros": {
+   "equipo": "ia_base"
+  }
+ }
+]

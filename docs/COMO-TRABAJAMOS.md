@@ -6,35 +6,28 @@ Estándar del equipo desde el 13 nov en la tarde, decidido por Santiago. Aplica 
 
 | Rol | Personas | Carpetas |
 |---|---|---|
-| `motor` (diseño de juego y misiones + motor y simulación) | Santiago y Camilo | `design/`, `missions/`, `engine/` |
+| `diseno` (diseño de juego y misiones) | Santiago y Camilo | `design/`, `missions/` |
+| `motor` (motor y simulación) | Jaime | `engine/` |
 | `ui` (pantallas, voz, arte, accesibilidad) | María Paula | `ui/`, `assets/` |
 | `agentes` (tripulación de expertos, Iris, clasificador) | José | `agents/` |
 | `infra` (integración, QA, despliegue y pitch) | José | `infra/`, `tests/`, `pitch/`, `.github/` |
-| `datos` (NASA y ciencia) | Daniel y Jaime | `data/`, `docs/science/` |
+| `datos` (NASA y ciencia) | Daniel | `data/`, `docs/science/` |
 
 Santiago es además el orquestador: coordina, desbloquea y mantiene los documentos de coordinación de `docs/`. Suplente del orquestador: Jaime.
 
-**Traspaso del motor.** Jaime escribió el motor que hoy está en `develop` y pasa a datos. Antes de cambiar de carpeta deja en `engine/ESTADO.md` lo que está a medias y lo que no es obvio, y el primer día revisa los PRs de `engine/` de Santiago y Camilo.
+**Estos roles son definitivos.** No se vuelven a cambiar.
+
+**Diseño y motor trabajan en pareja.** El motor (Jaime) lee las tablas y misiones que escriben Santiago y Camilo en `design/` y `missions/`; ningún número del juego vive en `engine/`. Lo que diseño necesite del motor se pide con un issue `bloquea:motor`, y al revés con `bloquea:diseño`.
 
 **José lleva dos roles.** Si `agentes` se atrasa, lo primero que se reparte es `infra` (pitch y pruebas), no los expertos.
 
-## 2. Qué construimos primero
-
-El motor y los datos van adelantados; **la pantalla y la tripulación todavía no existen**. Un juez solo ve la pantalla. Por eso el orden es:
-
-1. **La ruta dorada jugable en pantalla**, de principio a fin, con la tormenta real que Curiosity midió en Marte (evento curado `2024-05-20-marte`).
-2. **La tripulación de expertos a la vista desde el primer minuto.** Es lo que nos distingue: los expertos acompañan al jugador, se contradicen y cada consejo sale de un dato real con su fuente.
-3. Todo lo demás (más regiones, 3D, Luna, atlas) espera a que 1 y 2 funcionen.
-
-`motor` y `datos` no añaden funciones nuevas hasta que la ruta dorada se juegue en pantalla: su trabajo es darle a `ui` y a `agentes` lo que pidan.
-
-## 3. Idioma
+## 2. Idioma
 
 El inglés es el idioma base. Cada texto se escribe primero en `en`, es el idioma por defecto y el de respaldo. El español se completa después y se elige con el selector. Ningún texto visible va quemado en el código.
 
 Los documentos del equipo, los commits y los PRs siguen en español.
 
-## 4. Tu sesión: Opus dirige, los subagentes ejecutan
+## 3. Tu sesión: Opus dirige, los subagentes ejecutan
 
 Todos tienen OpenCode; Daniel tiene además Codex.
 
@@ -48,7 +41,7 @@ Todos tienen OpenCode; Daniel tiene además Codex.
 
 Cómo se configuran los subagentes y su modelo depende de la herramienta: revísalo en la tuya antes de empezar.
 
-## 5. Ciclo de trabajo
+## 4. Ciclo de trabajo
 
 1. `git fetch origin && git rebase origin/develop`.
 2. Una tarea a la vez, de tu issue de mayor prioridad, en una rama `feat/<slug>-<tema>`.
@@ -58,7 +51,7 @@ Cómo se configuran los subagentes y su modelo depende de la herramienta: revís
 
 Nadie empuja directo a `develop` ni a `main`. `contracts/` solo cambia con un issue `contrato`.
 
-## 6. Cloudflare y claves
+## 5. Cloudflare y claves
 
 **Nadie entra a la cuenta de Cloudflare de Santiago y nadie comparte contraseñas.** No hace falta:
 

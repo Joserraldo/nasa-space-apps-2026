@@ -43,6 +43,10 @@ const BaseActionSchema = z.discriminatedUnion("tipo", [
     tipo: z.literal("ajustar_orbita"),
     deltaAlturaKm: z.number().int().min(-50).max(50),
   }),
+  /** Paso 4 de la ruta dorada: colocar un módulo al aterrizar. Cada módulo mueve 2 medidores. */
+  z.object({ tipo: z.literal("colocar_modulo"), modulo: EquipmentSchema }),
+  /** Paso 7: enviar telemetría a la Tierra. La respuesta llega con retraso de comunicaciones. */
+  z.object({ tipo: z.literal("enviar_telemetria") }),
 ]);
 export type BaseAction = z.infer<typeof BaseActionSchema>;
 

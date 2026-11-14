@@ -15,3 +15,7 @@ Thumbs.db
 
 # TypeScript build
 *.tsbuildinfo
+
+# Vite
+ui/dist/
+ui/dist-types/

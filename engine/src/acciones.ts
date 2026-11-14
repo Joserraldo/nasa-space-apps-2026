@@ -10,6 +10,8 @@ import {
 import {
   COSTOS_ACCION,
   CONSUMO_POR_TICK,
+  MODULOS,
+  RETRASO_COMUNICACIONES,
   DIAS_PARA_GANAR,
   MALA_SUERTE_POR_DIFICULTAD,
   RECURSO_MAX,
@@ -54,6 +56,8 @@ export function costoDe(accion: BaseAction): { inmediato: Partial<Record<Resourc
         retrasado: { [accion.hacia]: accion.cantidad },
         causaKey: base.causaKey,
       };
+    case "colocar_modulo":
+      return { inmediato: { ...base.inmediato }, retrasado: { ...MODULOS[accion.modulo] }, causaKey: base.causaKey };
     case "subir_escudo":
       return {
         inmediato: { energia: (base.inmediato.energia ?? 0) * accion.nivel },
@@ -88,12 +92,14 @@ export function aplicarAccion(estado: GameState, accionCruda: unknown): GameStat
   let s = aplicarDeltas(estado, inmediato, "decision", causaKey, accion);
 
   const retraso = RETRASO_POR_DIFICULTAD[s.dificultad];
+  // La telemetría no depende de la dificultad: tarda lo que tarda la luz hasta la Tierra y de vuelta.
+  const retrasoFijo = accion.tipo === "enviar_telemetria" ? RETRASO_COMUNICACIONES[s.sitio] : null;
   let rng = s.rngEstado;
   const nuevos: PendingEffect[] = [];
   for (const r of RECURSOS) {
     const d = retrasado[r];
     if (!d) continue;
-    const paso = enteroEntre(rng, retraso.min, retraso.max);
+    const paso = retrasoFijo === null ? enteroEntre(rng, retraso.min, retraso.max) : { estado: rng, entero: retrasoFijo };
     rng = paso.estado;
     nuevos.push({
       id: `${s.tick}-${accion.tipo}-${r}`,
@@ -108,6 +114,9 @@ export function aplicarAccion(estado: GameState, accionCruda: unknown): GameStat
   s = { ...s, rngEstado: rng, efectosPendientes: [...s.efectosPendientes, ...nuevos] };
   if (accion.tipo === "ajustar_orbita" && s.orbita) {
     s = { ...s, orbita: ajustarAltura(s.orbita, accion.deltaAlturaKm) };
+  }
+  if (accion.tipo === "colocar_modulo") {
+    s = { ...s, equipos: { ...s.equipos, [accion.modulo]: "ok" } };
   }
   if (accion.tipo === "reparar") {
     s = accion.equipo === "ia_base" ? repararIa(s) : { ...s, equipos: { ...s.equipos, [accion.equipo]: "ok" } };

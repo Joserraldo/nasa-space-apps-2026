@@ -46,7 +46,7 @@ export function cargarDem() {
   const latMedia = ((norte + sur) / 2) * (Math.PI / 180);
   const dy = RADIO_MARTE_M * gradY * (Math.PI / 180);
   const dx = RADIO_MARTE_M * gradX * (Math.PI / 180) * Math.cos(latMedia);
-  const at = (c: number, f: number) => h[Math.min(alto - 1, Math.max(0, f)) * ancho + Math.min(ancho - 1, Math.max(0, c))];
+  const at = (c: number, f: number): number => h[Math.min(alto - 1, Math.max(0, f)) * ancho + Math.min(ancho - 1, Math.max(0, c))]!;
   const celda = (lon: number, lat: number) => ({ c: Math.floor((lon - oeste) / gradX), f: Math.floor((norte - lat) / gradY) });
   return { h, at, celda, dx, dy, ancho, alto };
 }
@@ -73,7 +73,7 @@ function pendienteMedia(d: Dem, c0: number, f0: number): number {
 
 function horizonteMedio(d: Dem, c0: number, f0: number): number {
   const h0 = d.at(c0, f0);
-  const dirs = [[1, 0], [1, 1], [0, 1], [-1, 1], [-1, 0], [-1, -1], [0, -1], [1, -1]];
+  const dirs: [number, number][] = [[1, 0], [1, 1], [0, 1], [-1, 1], [-1, 0], [-1, -1], [0, -1], [1, -1]];
   let suma = 0;
   for (const [sc, sf] of dirs) {
     let max = 0;

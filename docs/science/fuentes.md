@@ -32,13 +32,17 @@ Lista oficial (pestaña Resources del reto, copiada en ORQUESTACION): NASA Open 
 | DONKI | FLR solo vía `ccmc.gsfc.nasa.gov/DONKI-API` (404 en api.nasa.gov). CME, GST, SEP y ENLIL en api.nasa.gov. CORS `*`. Límite 2500/h | 8 tormentas en `data/curated` |
 | **OSDR RadLab** | **Sí tiene Marte y Luna**, no solo la ISS (corrige ORQUESTACION). Marte: `MSL-RAD-Surface` (Curiosity). Luna: `CRaTER-D1D2` (LRO, 2009–2024) e instrumentos de Artemis I (EAD-MU01, HERA-HSU1/2, M42-SN127). `absorbed_dose_rate` en µGy/h. Para RAD **no hay** `dose_equivalent_rate`. Sin datos de RAD en oct 2024 (respuesta vacía). Sin cabecera CORS para otros orígenes | `medicionMarte` de las tormentas |
 | OSDR search | Funciona. CORS solo para `osdr.nasa.gov` (el navegador no puede llamarla) | 3 tarjetas (OSD-772, OSD-546, OSD-360) |
-| Mars Trek | Funciona: catálogo, WMTS y ArcGIS ImageServer (`trekarcgis`), sin clave | Mapa de Jezero (`data/terreno/jezero`) |
+| Mars Trek | Funciona: catálogo, WMTS y ArcGIS ImageServer (`trekarcgis`), sin clave | Mapa de Jezero (`data/terreno/jezero`). También hay un DEM MOLA polar norte en metros (`..._NP/ImageServer`), para `marte_polo_norte`, pero su `exportImage` da error 400. El DEM equirectangular no tiene datos por encima de ~83,5° N |
 | **Mars Rover Photos** | **Caído:** `api.nasa.gov/mars-photos/...` devuelve 404 "No such app" | No se usa |
 
 **RAD en Marte durante tormentas [V, RadLab]** (dosis absorbida, medias diarias UTC, µGy/h):
 - 20 may 2024: fondo 4,1 → **79,7** el mismo día (pico de muestra 304), factor 19,4. CME de origen en DONKI: `2024-05-20T05:36:00-CME-001` (halo rápido; según la nota de DONKI, salió de la cara oculta del Sol). DONKI no tiene FLR ni SEP de ese evento.
 - 10 sep 2017: fondo 7,9 → **17,9** el 11 sep (pico 23,2), factor 2,3. Después baja a ~6,6 (14 sep).
 - 14 may 2024 (X8.7, que el modelo ENLIL mandaba a Marte): **sin aumento** (factor 0,9).
+
+**Artemis I en RadLab [V, 2026-11-13]** (el enunciado oficial nombra los datos de Artemis): `Artemis-I-HERA-HSU1`, del 2022-11-16T06:51 al 2022-12-11T16:58, 36 583 muestras de dosis **absorbida** en µGy/h. Mediana de crucero 16,68 (días intermedios); pico de **8012,58 µGy/h** el 2022-11-16T07:27, unas 480 veces la mediana. La causa del pico no se afirma (sin fuente verificada). Script: `data/scripts/artemis.ts`; resumen en `data/ciencia/artemis.json`.
+
+**Marte, ficha NASA NSSDC [V, 2026-11-13]** (https://nssdc.gsfc.nasa.gov/planetary/factsheet/marsfact.html, actualizada el 19 may 2025): inclinación del eje 25,19°; gravedad superficial 3,73 m/s², que es **0,380** veces la de la Tierra; día de 24,6597 h; semieje mayor 227,956 millones de km (1,524 veces el de la Tierra).
 
 **Dosis de referencia [V en fuente primaria]** (`data/ciencia/radiacion.json`):
 - Marte, superficie: **0,64 ± 0,12 mSv/día** (7 ago 2012 – 1 jun 2013). Cita: Reitz, Matthiä, Hassler et al. 2016, ICES2016 (https://elib.dlr.de/106090/). La página da esta cita, no el artículo de *Science* de 2014.

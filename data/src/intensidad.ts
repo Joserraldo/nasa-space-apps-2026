@@ -19,7 +19,7 @@ const BASE_GOES: Record<string, number> = { A: 1e-8, B: 1e-7, C: 1e-6, M: 1e-5, 
 export function flujoGoes(clase: string): number {
   const m = /^([ABCMX])(\d+(?:\.\d+)?)$/.exec(clase);
   if (!m) throw new Error(`clase GOES inválida: ${clase}`);
-  return BASE_GOES[m[1]] * Number(m[2]);
+  return BASE_GOES[m[1]!]! * Number(m[2]);
 }
 
 export const intensidadFulguracion = (clase: string) =>

@@ -1,18 +1,15 @@
 # Orquestación
 
-Este archivo debe bastar para que otra sesión (u otro humano) retome la coordinación sin el chat original. Lo mantiene el orquestador (Santiago Cabeza). **Suplente del orquestador:** Jaime (`JaimeMrF`).
+Este archivo debe bastar para que otra sesión (u otro humano) retome la coordinación sin el chat original. Lo mantiene el orquestador (`infra`, Santiago Cabeza). **Suplente del orquestador:** por nombrar.
 
-**Actualizado:** 13 nov 2026, tarde. `CLAUDE.md` sigue en FASE 0, pero en `develop` ya hay código de motor, contratos y datos (ver riesgo 1).
-
-> La parte de arriba de este archivo es el estado vigente. El "PROMPT MAESTRO" de más abajo es histórico: sus roles y su idioma están desactualizados. Mandan esta parte y [COMO-TRABAJAMOS.md](COMO-TRABAJAMOS.md).
+**Actualizado:** 13 nov 2026 (víspera, FASE 0: solo documentos).
 
 ## Resumen
 
 - **Reto:** Build a Junior Astronaut Mission Trainer. **Juego:** Solar Shield (IA de la base: Iris).
-- **Roles (13 nov, tarde):** `motor` (+diseño y misiones) Santiago y Camilo · `ui` María Paula · `agentes` José · `infra` (integración, QA, despliegue y pitch) José · `datos` Daniel y Jaime. Santiago es además el orquestador. Tabla completa en el [README](../README.md).
-- **Idioma base del juego:** inglés; el español es la segunda lengua.
+- **Roles (definitivos, 13 nov):** diseño de juego y misiones Camilo (Santiago supervisa) · motor Jaime · ui María Paula · agentes e infra José · datos Daniel. Santiago es además el orquestador. Tabla completa en el [README](../README.md).
 - **Ramas:** `feat/<slug>-<tema>` desde `develop`; PRs < ~300 líneas hacia `develop`; el merge es automático cuando pasa el CI "Tipos y tests" (auto-merge activado el 13 nov; ver protección de `develop` y `main`).
-- **Contratos:** `/contracts` va en v0.2.0 (`GameState`, `Action`, `Seed`, `SpaceWeatherEvent`, `ClassifierOutput`); discusión en el issue #17 (dueños: motor, agentes, datos).
+- **Contratos:** `/contracts` está vacío. El sábado se abren `GameState`, `Action`, `Seed`, `SpaceWeatherEvent` y `ClassifierOutput` (dueños: motor, agentes, datos).
 - **Canal:** issues, PRs, `ESTADO.md` de cada carpeta y `docs/decisiones/`. Discord para lo humano (`#bloqueos`, `#decisiones`).
 - **Herramientas:** Claude Code, OpenCode y Codex, cada quien con su suscripción. Modelos por tarea en [modelos.md](modelos.md).
 
@@ -30,24 +27,9 @@ Regla de corte si P2 no se cumple: Luna → Atlas → desbloqueos → 3D complet
 
 ## Semáforo
 
-motor 🟢 · datos 🟢 · agentes 🔴 · ui 🔴 · infra 🟡
+motor ⚪ · mecanicas ⚪ · agentes ⚪ · datos ⚪ · ui ⚪ · infra 🟢 (⚪ = sin empezar: es FASE 0)
 
-- `motor` y `datos`: con código y pruebas en `develop` (escenario por semilla, órbita, puntaje de sitio, 8 tormentas curadas, Jezero).
-- `agentes`: solo documentos; no hay expertos ni Iris en código.
-- `ui`: sin una sola pantalla.
-- `infra`: hay CI de tipos y tests; no hay link vivo ni despliegue.
-
-**Próximo hito:** la ruta dorada jugable en pantalla. Nada nuevo en motor ni en datos hasta entonces.
-
-## Cómo ganamos (análisis del orquestador, 13 nov)
-
-1. **Lo que el jurado ve es la pantalla, y no existe.** El riesgo ya no es el motor: es llegar al domingo con un simulador probado y nada que jugar. Todo el equipo empuja hacia `ui` y `agentes`.
-2. **El diferenciador es la tripulación de expertos**, y debe verse en el primer minuto: dos expertos que se contradicen con datos reales, y el niño decide. Se cuenta con honestidad: los consejos los calcula código a partir de datos de NASA; el modelo de lenguaje solo entiende la frase del niño. Eso es una fortaleza ante el jurado, no una debilidad.
-3. **El enunciado pide dirigir un puesto avanzado.** La fase de satélite no está en el enunciado: en la demo dura segundos, y la primera decisión con costo en la base llega antes de 60 s.
-4. **Tenemos un dato que casi nadie tendrá:** la tormenta del 20 may 2024, que el instrumento RAD de Curiosity midió en la superficie de Marte. Ese evento es el centro de la demo, con su tarjeta de fuente.
-5. **El enunciado nombra el retraso de comunicaciones y la producción de alimentos.** Los dos deben aparecer en la ruta dorada, aunque sea en su forma más simple (telemetría que tarda en llegar; invernadero dentro de Soporte vital).
-6. **"A simple game that teaches a real constraint beats a beautiful one that doesn't"** es texto literal del enunciado. El 3D es lo último, no lo primero.
-7. **La explicación corta de qué datos de NASA se usaron y por qué** es un punto que el enunciado premia y `datos` ya tiene casi listo: va dentro del juego y en la entrega.
+**Próximo hito:** sábado 9:00, un humano cambia `CLAUDE.md` a FASE 1.
 
 ## Ruta dorada (propuesta, sin aprobar)
 
@@ -64,22 +46,21 @@ Semilla fija de demo, ~2 min, completa en ES y EN. Se convierte en issue `p0` pa
 
 ## Riesgos abiertos
 
-1. **Código antes del inicio oficial.** El 13 nov entraron a `develop` motor, contratos y pipeline de datos; el enunciado y `reglas.md` dicen que no se empieza antes del 14 nov a las 9:00. Riesgo de descalificación. Decide Santiago; lo prudente es preguntar al organizador y guardar la respuesta en [reglas.md](reglas.md).
-2. **Información oficial sin confirmar:** Guía de Entrega, política de IA, licencia, criterios de juicio, formato del video, idioma, repo público o no, jurado local.
-3. **Cambio de roles en la víspera:** quien escribió el motor (Jaime) pasa a datos y lo reciben Santiago y Camilo. Mitigación: nota de traspaso en `engine/ESTADO.md` y Jaime revisa los primeros PRs de `engine/`. Además **José lleva `agentes` e `infra` a la vez**, y `agentes` es el diferenciador y todavía no tiene código: si se atrasa, se reparte `infra`.
-4. **Iris que falla** necesita guion y pruebas, no solo código (agentes + motor). El guion espera el OK de José.
+1. **Información oficial sin confirmar:** Guía de Entrega, política de IA, licencia, criterios de juicio, formato del video, idioma, repo público o no, jurado local. Ver [reglas.md](reglas.md).
+2. **3D en celular y PC viejo:** validar un cubo 3D en ambos antes de invertir en arte. El 2D se construye primero y es el respaldo.
+3. **Datos sin probar:** ningún ID de DONKI se ha verificado con una llamada real; varias cifras de [science/fuentes.md](science/fuentes.md) siguen NO VERIFICADAS.
+4. **Iris que falla** necesita guion y pruebas, no solo código (agentes + mecanicas).
 5. **Límites de tokens desconocidos:** falta el inventario de [modelos.md](modelos.md).
-6. **Sin despliegue:** no hay link vivo; faltan la cuenta de Cloudflare (Santiago) y el flujo de despliegue con sus secretos (José).
-7. **3D en celular y PC viejo:** el 2D se construye primero y es el respaldo.
 
 ## Pendientes de documentos (no los toca `infra` sin su dueño)
 
-- `design/CLAUDE.md` pone la rebanada vertical en "Luna polo sur"; lo decidido es Marte/Jezero.
+- `design/CLAUDE.md` pone la rebanada vertical en "Luna polo sur"; lo decidido es Marte/Jezero. Además `design/` y `missions/` ya tienen dueños distintos.
 - `ui/CLAUDE.md` tiene las tareas de arranque bajo "Fase 0" y la sección de arranque vacía.
-- `missions/` y `tests/` no tienen `CLAUDE.md` ni `ESTADO.md`.
+- `missions/` y `tests/` no tienen `CLAUDE.md` ni `ESTADO.md` para el rol `mecanicas`.
+- Los `CLAUDE.md` de carpeta dicen "Humano responsable: por asignar".
 - PLAN §2.6 (dificultad elegible, turnos) y §13 (sin Three.js) no reflejan las decisiones del 13 nov. La guía de agentes dice "~48 h"; son ~36.
 - Faltan los `docs/decisiones/D*.md` de lo decidido el 13 nov; los issues D1–D11 siguen abiertos.
-- No existe `.claude/settings.json` (plantilla en `infra/`).
+- Faltan las etiquetas `rol:mecanicas` y `bloquea:mecanicas`, y no existe `.claude/settings.json` (plantilla en `infra/`).
 
 ## Necesito de un humano
 
