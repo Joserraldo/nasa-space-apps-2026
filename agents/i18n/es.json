@@ -178,7 +178,7 @@
   "agentes.iris.pregunta.noche_polar.porque": "Los paneles solo funcionan con luz del Sol. Lo que guardamos antes de la noche mantiene la base.",
   "agentes.escena6.doctora.medidaOrbitaLunaSinFactor": "Cerca de la Luna, en órbita, un instrumento también midió esta tormenta. La Luna no tiene aire que nos proteja. ¡Al refugio, ya!",
   "agentes.luna_sur.tormenta.doctora": "Cerca de la Luna, en órbita, un instrumento midió uno de los valores más altos de nuestros datos. ¡No fue en la base, pero sí cerca!",
-  "agentes.luna_sur.tormenta.sinAire": "La Luna no tiene aire que nos cubra, por eso la radiación llega casi entera. ¡Adentro, ya!",
+  "agentes.luna_sur.tormenta.sinAire": "La Luna no tiene aire que frene la radiación. ¡Adentro, ya!",
   "agentes.luna_sur.tormenta.nube": "¡El Sol acaba de lanzar una nube rapidísima!",
   "agentes.luna_sur.tormenta.marte": "La misma tormenta también se midió en Marte. Allá la radiación subió unas {factor} veces.",
   "agentes.luna_sur.dilema.ingeniera": "¡Espera! Si vuelven con las manos vacías, mañana nos quedamos sin agua.",

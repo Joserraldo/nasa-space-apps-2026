@@ -178,7 +178,7 @@
   "agentes.iris.pregunta.noche_polar.porque": "Panels only work with sunlight. What we saved before the night keeps the base going.",
   "agentes.escena6.doctora.medidaOrbitaLunaSinFactor": "Near the Moon, in orbit, an instrument measured this storm too. The Moon has no air to protect us. Shelter, now!",
   "agentes.luna_sur.tormenta.doctora": "Near the Moon, in orbit, an instrument measured one of the highest values in our data. Not in our base, but close!",
-  "agentes.luna_sur.tormenta.sinAire": "The Moon has no air to cover us, so radiation arrives almost all the way. Back inside, now!",
+  "agentes.luna_sur.tormenta.sinAire": "The Moon has no air to slow the radiation down. Back inside, now!",
   "agentes.luna_sur.tormenta.nube": "The Sun just threw out a very fast cloud!",
   "agentes.luna_sur.tormenta.marte": "The same storm was also measured on Mars. There, radiation went up about {factor} times.",
   "agentes.luna_sur.dilema.ingeniera": "Wait! If they come back empty, we run out of water tomorrow.",
