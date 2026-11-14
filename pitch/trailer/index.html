@@ -1,0 +1,52 @@
+<!doctype html>
+<!--
+  Trailer de Solar Shield, versión en INGLÉS (idioma base). 59 s, 1920x1080, 30 fps.
+  La versión en español es index-es.html: mismas escenas y tiempos, otro idioma y otras pistas de voz.
+  Escenas: compositions/intro.html (3D, "Cinematic") · compositions/juego.html (capturas reales) · compositions/cierre.html
+-->
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js"></script>
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body { margin: 0; width: 1920px; height: 1080px; overflow: hidden; background: #000; }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-duration="59" data-width="1920" data-height="1080">
+      <div id="intro" data-composition-id="intro" data-composition-src="compositions/intro.html"
+        data-start="0" data-duration="15" data-track-index="1" data-track-kind="graphics"
+        data-width="1920" data-height="1080" data-variable-values='{"etiqueta":"Cinematic"}'></div>
+      <div id="juego" data-composition-id="juego" data-composition-src="compositions/juego.html"
+        data-start="15" data-duration="34" data-track-index="1" data-track-kind="graphics"
+        data-width="1920" data-height="1080"></div>
+      <div id="cierre" data-composition-id="cierre" data-composition-src="compositions/cierre.html"
+        data-start="49" data-duration="10" data-track-index="1" data-track-kind="graphics"
+        data-width="1920" data-height="1080"></div>
+
+      <!-- Locución (narrador adulto, voz sintética). Regenerar con: node pitch/trailer/voces.mjs -->
+      <audio id="vo-intro" src="assets/voces/en/intro.mp3" data-start="1.6" data-duration="9" data-track-index="3" data-volume="1"></audio>
+      <audio id="vo-juego1" src="assets/voces/en/juego1.mp3" data-start="15.4" data-duration="8" data-track-index="3" data-volume="1"></audio>
+      <audio id="vo-juego2" src="assets/voces/en/juego2.mp3" data-start="23.8" data-duration="9" data-track-index="3" data-volume="1"></audio>
+      <audio id="vo-juego3" src="assets/voces/en/juego3.mp3" data-start="32.9" data-duration="7.4" data-track-index="3" data-volume="1"></audio>
+      <audio id="vo-juego4" src="assets/voces/en/juego4.mp3" data-start="40.3" data-duration="9" data-track-index="3" data-volume="1"></audio>
+      <audio id="vo-cierre" src="assets/voces/en/cierre.mp3" data-start="49.6" data-duration="5.4" data-track-index="3" data-volume="1"></audio>
+
+      <!-- Música y efectos generados con ffmpeg (node pitch/trailer/musica.mjs) -->
+      <audio id="musica" src="assets/audio/musica.mp3" data-start="0" data-duration="59" data-track-index="4" data-volume="0.32"></audio>
+      <audio id="sfx-viento" src="assets/audio/sfx-viento.mp3" data-start="3.9" data-duration="3.2" data-track-index="5" data-volume="0.5"></audio>
+      <audio id="sfx-escudo" src="assets/audio/sfx-escudo.mp3" data-start="6.8" data-duration="1.6" data-track-index="6" data-volume="0.7"></audio>
+      <audio id="sfx-falla" src="assets/audio/sfx-falla.mp3" data-start="11.5" data-duration="2.4" data-track-index="5" data-volume="0.35"></audio>
+      <audio id="sfx-clic-1" src="assets/audio/sfx-clic.mp3" data-start="15" data-duration="0.15" data-track-index="7" data-volume="0.4"></audio>
+      <audio id="sfx-clic-2" src="assets/audio/sfx-clic.mp3" data-start="23.6" data-duration="0.15" data-track-index="7" data-volume="0.4"></audio>
+      <audio id="sfx-clic-3" src="assets/audio/sfx-clic.mp3" data-start="32.6" data-duration="0.15" data-track-index="7" data-volume="0.4"></audio>
+      <audio id="sfx-clic-4" src="assets/audio/sfx-clic.mp3" data-start="40" data-duration="0.15" data-track-index="7" data-volume="0.4"></audio>
+      <audio id="sfx-falla-2" src="assets/audio/sfx-falla.mp3" data-start="40.2" data-duration="1.2" data-track-index="5" data-volume="0.2"></audio>
+    </div>
+    <script>
+      window.__timelines["main"] = gsap.timeline({ paused: true });
+    </script>
+  </body>
+</html>

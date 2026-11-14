@@ -1,0 +1,100 @@
+<!--
+  Juego real (34 s): capturas de la ruta dorada tomadas del juego de verdad (ui/) con pitch/trailer/capturar.mjs.
+  Cada plano es una captura 1920x1080 con un acercamiento lento al punto que importa. Nada aquí es 3D ni simulado.
+  El idioma sale de <html lang> del index (index.html = en, index-es.html = es).
+-->
+<template>
+  <style>
+    #root { position: absolute; inset: 0; background: #0b1230; overflow: hidden; font-family: "Outfit", sans-serif; }
+    .j-plano { position: absolute; inset: 0; overflow: hidden; }
+    .j-marco { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; }
+    .j-marco img { display: block; width: 1920px; height: 1080px; }
+    .j-viñeta { position: absolute; inset: 0; pointer-events: none;
+      background: radial-gradient(ellipse at 50% 45%, rgba(0,0,0,0) 55%, rgba(5,8,25,.55) 100%); }
+    #j-chip {
+      position: absolute; left: 120px; top: 84px; display: flex; align-items: center; gap: 14px;
+      padding: 12px 24px 12px 18px; border-radius: 999px; background: rgba(9, 14, 38, 0.82);
+      border: 2px solid #5be08a; color: #fff; font-weight: 700; font-size: 30px; letter-spacing: 0.14em; text-transform: uppercase;
+    }
+    #j-chip i { width: 16px; height: 16px; border-radius: 50%; background: #5be08a; box-shadow: 0 0 14px #5be08a; }
+    .j-cap { position: absolute; left: 0; right: 0; bottom: 104px; display: flex; justify-content: center; }
+    .j-rotulo {
+      max-width: 1500px;
+      display: flex; align-items: center; gap: 18px; padding: 20px 34px; border-radius: 22px;
+      background: rgba(9, 14, 38, 0.9); border: 2px solid rgba(255,255,255,.18); color: #fff;
+      font-weight: 700; font-size: 44px; line-height: 1.15; white-space: nowrap; box-shadow: 0 12px 40px rgba(0,0,0,.45);
+    }
+    .j-rotulo b { width: 10px; align-self: stretch; border-radius: 6px; background: #ff9a3d; flex: none; }
+    .j-rotulo.fuente { font-size: 36px; font-weight: 700; text-align: left; }
+    .j-rotulo.fuente small { display: block; font-size: 30px; color: #9fe9ff; font-weight: 700; margin-top: 6px; }
+  </style>
+  <div id="root" data-composition-id="juego" data-width="1920" data-height="1080" data-duration="34">
+    <div id="j-a" class="clip j-plano" data-layout-allow-overflow data-start="0" data-duration="2.6" data-track-index="1"><div class="j-marco" id="j-a-m"><img id="j-a-img" src="assets/juego/02-satelite-en.png" alt=""></div></div>
+    <div id="j-b" class="clip j-plano" data-layout-allow-overflow data-start="2.6" data-duration="2.6" data-track-index="1"><div class="j-marco" id="j-b-m"><img id="j-b-img" src="assets/juego/03-aterrizaje-en.png" alt=""></div></div>
+    <div id="j-c" class="clip j-plano" data-layout-allow-overflow data-start="5.2" data-duration="3.4" data-track-index="1"><div class="j-marco" id="j-c-m"><img id="j-c-img" src="assets/juego/04-modulos-en.png" alt=""></div></div>
+    <div id="j-d" class="clip j-plano" data-layout-allow-overflow data-start="8.6" data-duration="4.2" data-track-index="1"><div class="j-marco" id="j-d-m"><img id="j-d-img" src="assets/juego/06-tormenta-en.png" alt=""></div></div>
+    <div id="j-e" class="clip j-plano" data-layout-allow-overflow data-start="12.8" data-duration="4.8" data-track-index="1"><div class="j-marco" id="j-e-m"><img id="j-e-img" src="assets/juego/06-tormenta-en.png" alt=""></div></div>
+    <div id="j-f" class="clip j-plano" data-layout-allow-overflow data-start="17.6" data-duration="7.4" data-track-index="1"><div class="j-marco" id="j-f-m"><img id="j-f-img" src="assets/juego/09-iris-en.png" alt=""></div></div>
+    <div id="j-g" class="clip j-plano" data-layout-allow-overflow data-start="25" data-duration="4.6" data-track-index="1"><div class="j-marco" id="j-g-m"><img id="j-g-img" src="assets/juego/09-iris-en.png" alt=""></div></div>
+    <div id="j-h" class="clip j-plano" data-layout-allow-overflow data-start="29.6" data-duration="4.4" data-track-index="1"><div class="j-marco" id="j-h-m"><img id="j-h-img" src="assets/juego/10-verificar-en.png" alt=""></div></div>
+    <div class="j-viñeta"></div>
+
+    <div id="j-chip"><i></i><span id="j-chip-t">Real gameplay</span></div>
+
+    <div id="j-r-a" class="clip j-cap" data-start="0.3" data-duration="2.3" data-track-index="2"><div class="j-rotulo"><b></b><span id="j-r-a-t">Launch a satellite</span></div></div>
+    <div id="j-r-b" class="clip j-cap" data-start="2.8" data-duration="2.4" data-track-index="2"><div class="j-rotulo"><b></b><span id="j-r-b-t">Choose where to land</span></div></div>
+    <div id="j-r-c" class="clip j-cap" data-start="5.5" data-duration="3.1" data-track-index="2"><div class="j-rotulo"><b></b><span id="j-r-c-t">Every choice has a cost</span></div></div>
+    <div id="j-r-d" class="clip j-cap" data-start="8.9" data-duration="3.9" data-track-index="2"><div class="j-rotulo"><b></b><span id="j-r-d-t">A real storm: May 20, 2024</span></div></div>
+    <div id="j-r-e" class="clip j-cap" data-start="13.1" data-duration="4.5" data-track-index="2"><div class="j-rotulo fuente"><b></b><span><span id="j-r-e-t">Data: NASA CCMC DONKI · Event 2024-05-20T05:36:00-CME-001</span><small id="j-r-e-s">Curated real data, not live</small></span></div></div>
+    <div id="j-r-f" class="clip j-cap" data-start="17.9" data-duration="7.1" data-track-index="2"><div class="j-rotulo"><b></b><span id="j-r-f-t">The crew disagrees</span></div></div>
+    <div id="j-r-g" class="clip j-cap" data-start="25.3" data-duration="4.3" data-track-index="2"><div class="j-rotulo"><b></b><span id="j-r-g-t">Radiation confuses Iris</span></div></div>
+    <div id="j-r-h" class="clip j-cap" data-start="29.9" data-duration="4.1" data-track-index="2"><div class="j-rotulo"><b></b><span id="j-r-h-t">Check the meter. You decide.</span></div></div>
+  </div>
+  <script>
+    (function () {
+      const es = (document.documentElement.lang || "en").startsWith("es");
+      const TXT = es ? {
+        "j-chip-t": "Juego real", "j-r-a-t": "Lanza un satélite", "j-r-b-t": "Elige dónde aterrizar",
+        "j-r-c-t": "Cada decisión tiene un costo", "j-r-d-t": "Una tormenta real: 20 de mayo de 2024",
+        "j-r-e-t": "Datos: NASA CCMC DONKI · Evento 2024-05-20T05:36:00-CME-001", "j-r-e-s": "Datos reales curados, no en vivo",
+        "j-r-f-t": "La tripulación no se pone de acuerdo", "j-r-g-t": "La radiación confunde a Iris", "j-r-h-t": "Revisa el medidor. Tú decides.",
+      } : null;
+      const imgs = Array.from(document.querySelectorAll("#root[data-composition-id='juego'] img"));
+      if (es) {
+        for (const id in TXT) { const el = document.getElementById(id); if (el) el.textContent = TXT[id]; }
+        for (const im of imgs) im.src = im.getAttribute("src").replace("-en.png", "-es.png");
+      }
+      window.__hf = window.__hf || {};
+      window.__hf.buildReady = window.__hf.buildReady || {};
+      window.__hf.buildReady["juego-imgs"] = Promise.all(imgs.map((im) => im.decode().catch(() => {})));
+
+      // Encuadre: escala s centrada en el punto (fx, fy) de la captura, sin dejar ver bordes.
+      const enc = (fx, fy, s) => {
+        const lim = (v, m) => Math.max(-m, Math.min(m, v));
+        return { scale: s, x: lim(-s * (fx - 960), (s - 1) * 960), y: lim(-s * (fy - 540), (s - 1) * 540) };
+      };
+      const tl = gsap.timeline({ paused: true });
+      const mov = (id, t0, dur, a, b) => tl.fromTo(id, { ...enc(...a), transformOrigin: "50% 50%" }, { ...enc(...b), duration: dur, ease: "sine.inOut" }, t0);
+      mov("#j-a-m", 0, 2.6, [960, 330, 1.45], [960, 360, 1.6]);
+      mov("#j-b-m", 2.6, 2.6, [960, 430, 1.35], [930, 430, 1.48]);
+      mov("#j-c-m", 5.2, 3.4, [960, 470, 1.25], [1060, 480, 1.42]);
+      mov("#j-d-m", 8.6, 4.2, [880, 290, 1.5], [880, 300, 1.62]);
+      mov("#j-e-m", 12.8, 4.8, [960, 420, 1.62], [960, 425, 1.72]);
+      mov("#j-f-m", 17.6, 7.4, [960, 70, 1.55], [960, 350, 1.55]);
+      mov("#j-g-m", 25, 4.6, [960, 620, 1.5], [960, 650, 1.65]);
+      mov("#j-h-m", 29.6, 4.4, [960, 780, 1.45], [960, 810, 1.58]);
+      // entrada de cada plano: fundido corto sobre el anterior
+      for (const [id, t] of [["#j-b", 2.6], ["#j-c", 5.2], ["#j-d", 8.6], ["#j-e", 12.8], ["#j-f", 17.6], ["#j-g", 25], ["#j-h", 29.6]]) {
+        tl.fromTo(id + "-m img", { opacity: 0 }, { opacity: 1, duration: 0.25, ease: "power1.out" }, t);
+      }
+      tl.fromTo("#j-a-m img", { opacity: 0 }, { opacity: 1, duration: 0.4, ease: "power1.out" }, 0);
+      tl.fromTo("#j-chip", { opacity: 0, y: -12 }, { opacity: 1, y: 0, duration: 0.4, ease: "power3.out" }, 0.1);
+      // rótulos: suben y se apagan antes de su final
+      for (const [id, t, d] of [["#j-r-a", 0.3, 2.3], ["#j-r-b", 2.8, 2.4], ["#j-r-c", 5.5, 3.1], ["#j-r-d", 8.9, 3.9], ["#j-r-e", 13.1, 4.5], ["#j-r-f", 17.9, 7.1], ["#j-r-g", 25.3, 4.3], ["#j-r-h", 29.9, 4.1]]) {
+        tl.fromTo(id + " .j-rotulo", { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.35, ease: "power3.out" }, t);
+        tl.to(id + " .j-rotulo", { opacity: 0, duration: 0.2, ease: "power1.in" }, t + d - 0.25);
+      }
+      window.__timelines["juego"] = tl;
+    })();
+  </script>
+</template>

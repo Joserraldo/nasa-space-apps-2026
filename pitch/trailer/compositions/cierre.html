@@ -1,0 +1,70 @@
+<!--
+  Cierre (10 s): nombre, frase del pitch (PLAN.md §1) y atribución de datos. Sin logo de NASA.
+  El idioma sale de <html lang> del index.
+-->
+<template>
+  <style>
+    #root { position: absolute; inset: 0; overflow: hidden; font-family: "Outfit", sans-serif; color: #fff;
+      background: radial-gradient(ellipse 90% 70% at 18% 110%, #ff8a3d55 0%, #3a1b3a33 40%, rgba(0,0,0,0) 70%), linear-gradient(180deg, #0a0f2a 0%, #120c26 100%); }
+    #c-estrellas { position: absolute; inset: 0; }
+    #c-centro { position: absolute; left: 0; right: 0; top: 220px; display: flex; flex-direction: column; align-items: center; text-align: center; }
+    #c-marca { display: flex; align-items: center; gap: 34px; }
+    #c-marca svg { width: 150px; height: 150px; }
+    #c-nombre { font-weight: 900; font-size: 168px; letter-spacing: -0.02em; line-height: 1; }
+    #c-nombre span { color: #5fd8f0; margin-left: 0.22em; }
+    #c-frase { margin-top: 46px; font-weight: 600; font-size: 58px; color: #ffe2c2; max-width: 1500px; line-height: 1.15; }
+    #c-chips { margin-top: 44px; display: flex; gap: 18px; }
+    .c-chip { padding: 12px 26px; border-radius: 999px; border: 2px solid rgba(255,255,255,.28); font-size: 30px; font-weight: 600; color: #e6ecff; background: rgba(255,255,255,.05); }
+    #c-creditos { position: absolute; left: 0; right: 0; bottom: 96px; text-align: center; font-family: "Nunito", sans-serif; font-size: 28px; line-height: 1.5; color: #b9c3e6; }
+    #c-creditos b { color: #fff; }
+  </style>
+  <div id="root" data-composition-id="cierre" data-width="1920" data-height="1080" data-duration="10">
+    <svg id="c-estrellas" viewBox="0 0 1920 1080" aria-hidden="true"></svg>
+    <div id="c-centro">
+      <div id="c-marca">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2 4 5v6c0 5 3.5 9 8 11 4.5-2 8-6 8-11V5z" fill="#5fd8f0" fill-opacity=".18" stroke="#5fd8f0" stroke-width="1.6" stroke-linejoin="round"/><circle cx="12" cy="11" r="3.2" fill="#ffb547"/></svg>
+        <div id="c-nombre">Solar<span>Shield</span></div>
+      </div>
+      <div id="c-frase">Learn who to trust when technology fails.</div>
+      <div id="c-chips">
+        <div class="c-chip" id="c-chip-1">Ages 7–12</div>
+        <div class="c-chip" id="c-chip-2">Plays in your browser</div>
+        <div class="c-chip" id="c-chip-3">English · Español</div>
+      </div>
+    </div>
+    <div id="c-creditos">
+      <div id="c-datos"><b>Data:</b> NASA DONKI (CCMC) · NASA OSDR RadLab (Curiosity RAD) · NASA Mars Trek</div>
+      <div id="c-aviso">Unofficial project, not endorsed by NASA.</div>
+    </div>
+  </div>
+  <script>
+    (function () {
+      const es = (document.documentElement.lang || "en").startsWith("es");
+      if (es) {
+        const T = {
+          "c-frase": "Aprende en quién confiar cuando la tecnología falla.",
+          "c-chip-1": "De 7 a 12 años", "c-chip-2": "Se juega en el navegador", "c-chip-3": "English · Español",
+          "c-aviso": "Proyecto no oficial, no avalado por NASA.",
+        };
+        for (const id in T) document.getElementById(id).textContent = T[id];
+        document.getElementById("c-datos").innerHTML = "<b>Datos:</b> NASA DONKI (CCMC) · NASA OSDR RadLab (Curiosity RAD) · NASA Mars Trek";
+      }
+      // estrellas con semilla fija
+      let seed = 5; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+      const svg = document.getElementById("c-estrellas");
+      let html = "";
+      for (let i = 0; i < 140; i++) html += `<circle cx="${(rnd() * 1920).toFixed(1)}" cy="${(rnd() * 760).toFixed(1)}" r="${(0.6 + rnd() * 1.8).toFixed(2)}" fill="#fff" opacity="${(0.2 + rnd() * 0.6).toFixed(2)}"/>`;
+      svg.innerHTML = html;
+
+      const tl = gsap.timeline({ paused: true });
+      tl.fromTo("#c-estrellas", { opacity: 0 }, { opacity: 1, duration: 1.2, ease: "power1.out" }, 0);
+      tl.fromTo("#c-marca svg", { opacity: 0, scale: 0.6, rotation: -20 }, { opacity: 1, scale: 1, rotation: 0, duration: 0.7, ease: "back.out(1.6)" }, 0.3);
+      tl.fromTo("#c-nombre", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.7, ease: "power3.out" }, 0.45);
+      tl.fromTo("#c-frase", { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.6, ease: "power3.out" }, 1.3);
+      tl.fromTo(".c-chip", { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.45, ease: "power3.out", stagger: 0.12 }, 2.3);
+      tl.fromTo("#c-creditos", { opacity: 0 }, { opacity: 1, duration: 0.6, ease: "power1.out" }, 3.0);
+      tl.fromTo("#c-centro", { scale: 1 }, { scale: 1.03, duration: 10, ease: "none" }, 0);
+      window.__timelines["cierre"] = tl;
+    })();
+  </script>
+</template>
