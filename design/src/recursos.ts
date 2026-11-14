@@ -8,6 +8,13 @@ import type { Difficulty, Equipment, QuantityWord, Resource, Resources, Site } f
 
 export const RECURSO_MAX = 100;
 
+/**
+ * Duración de la tormenta de Jezero en ticks de juego, aprobada por Santiago en #114.
+ * El motor debe aplicar [tickTormenta, tickTormenta + duración): daño en 3, 4 y 5; desde 6, no.
+ * Aprobación: https://github.com/Joserraldo/nasa-space-apps-2026/issues/114#issuecomment-6884368837
+ */
+export const DURACION_TORMENTA_TICKS = 3;
+
 /** Valores iniciales por sitio. Jezero es la ruta dorada. */
 export const RECURSOS_INICIALES: Record<Site, Resources> = {
   marte_jezero: { energia: 70, soporte_vital: 80, blindaje: 60 },
