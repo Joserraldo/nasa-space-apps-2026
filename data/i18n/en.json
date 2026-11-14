@@ -110,5 +110,6 @@
   "fuente.dosis.lunaIss": "Zhang et al. 2020, China's Chang’e-4 mission (CNSA), not NASA",
   "fuente.crater": "Radiation near the Moon: CRaTER instrument on NASA's Lunar Reconnaissance Orbiter, via NASA OSDR RadLab. Real curated data, not live.",
   "datos.luna.orbita": "Measured by a spacecraft flying around the Moon, not on the ground.",
-  "datos.luna.medicion": "Near the Moon, radiation went from {fondo} to {pico} µGy/h on {dia}: about {factor} times more than in the five days before."
+  "datos.luna.medicion": "Near the Moon, radiation went from {fondo} to {pico} µGy/h on {dia}: about {factor} times more than in the five days before.",
+  "datos.radiacion.marte-crucero.lugar": "Inside a spaceship on the way to Mars"
 }
