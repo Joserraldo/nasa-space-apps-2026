@@ -1,0 +1,51 @@
+{
+  "id": "osdr-search-api",
+  "dueno": "NASA OSDR",
+  "consultadoEl": "2026-11-14",
+  "consultas": [
+    {
+      "url": "https://osdr.nasa.gov/osdr/data/search",
+      "params": {
+        "term": "radiation",
+        "type": "cgene",
+        "size": 25
+      },
+      "estado": 200,
+      "archivo": "radiation.json",
+      "total": 232
+    },
+    {
+      "url": "https://osdr.nasa.gov/osdr/data/search",
+      "params": {
+        "term": "plant",
+        "type": "cgene",
+        "size": 25
+      },
+      "estado": 200,
+      "archivo": "plant.json",
+      "total": 78
+    },
+    {
+      "url": "https://osdr.nasa.gov/osdr/data/search",
+      "params": {
+        "term": "bone",
+        "type": "cgene",
+        "size": 25
+      },
+      "estado": 200,
+      "archivo": "bone.json",
+      "total": 67
+    },
+    {
+      "url": "https://osdr.nasa.gov/osdr/data/search",
+      "params": {
+        "term": "food",
+        "type": "cgene",
+        "size": 25
+      },
+      "estado": 200,
+      "archivo": "food.json",
+      "total": 152
+    }
+  ]
+}

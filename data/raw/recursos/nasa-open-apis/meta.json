@@ -1,0 +1,14 @@
+{
+  "id": "nasa-open-apis",
+  "dueno": "NASA",
+  "consultadoEl": "2026-11-14",
+  "paginas": [
+    {
+      "url": "https://api.nasa.gov/",
+      "archivo": "index.md",
+      "estado": 200,
+      "caracteres": 57
+    }
+  ],
+  "nota": "Leída con Claude in Chrome: la página necesita JavaScript."
+}

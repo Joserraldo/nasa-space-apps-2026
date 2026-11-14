@@ -1,0 +1,13 @@
+{
+  "id": "csa-stem",
+  "dueno": "Agencia Espacial Canadiense (CSA), socio, no NASA",
+  "consultadoEl": "2026-11-14",
+  "paginas": [
+    {
+      "url": "https://www.asc-csa.gc.ca/eng/youth-educators/resources-stem-and-youth-organizations.asp",
+      "archivo": "index.md",
+      "estado": 200,
+      "caracteres": 3958
+    }
+  ]
+}

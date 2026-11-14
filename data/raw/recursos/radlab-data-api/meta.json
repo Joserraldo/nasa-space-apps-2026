@@ -1,0 +1,13 @@
+{
+  "id": "radlab-data-api",
+  "dueno": "NASA OSDR",
+  "consultadoEl": "2026-11-14",
+  "paginas": [
+    {
+      "url": "https://visualization.osdr.nasa.gov/radlab/gui/data-api/",
+      "archivo": "index.md",
+      "estado": 200,
+      "caracteres": 22975
+    }
+  ]
+}

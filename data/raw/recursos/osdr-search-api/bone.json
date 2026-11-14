@@ -1,0 +1,357 @@
+[
+ {
+  "Accession": "OSD-342",
+  "Study Title": "Targeting myostatin/activin A protects against skeletal muscle and bone loss during spaceflight [plasma proteomics]",
+  "organism": "Mus musculus",
+  "Project Type": "Spaceflight Study",
+  "Flight Program": "International Space Station (ISS)",
+  "Mission": {
+   "Start Date": "15-Dec-2019",
+   "End Date": "07-Jan-2020",
+   "Name": "SpaceX-19"
+  },
+  "Study Factor Name": "Spaceflight     Treatment     Dissection Timeline",
+  "Study Assay Measurement Type": "protein expression profiling",
+  "Study Publication Title": "Targeting myostatin/activin A protects against skeletal muscle and bone loss during spaceflight",
+  "Study Description": "Among the physiological consequences of extended spaceflight are loss of skeletal muscle and bone mass. One signaling pathway that plays an important role in maintaining muscle and bone homeostasis is that regulated by the secreted signaling proteins, myostatin (MSTN) and activin A. Here, we used both genetic and pharmacological approaches to investigate the effect of targeting MSTN/activin A signaling in mice that were sent to the International Space Station. Wild type mice lost significant muscle and bone mass during the 33 d spent in microgravity. Muscle weights of Mstn -/- mice, which are …",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-342"
+ },
+ {
+  "Accession": "OSD-18",
+  "Study Title": "Microarray Profile of Gene Expression during Osteoclast Differentiation in Modeled Microgravity",
+  "organism": "Mus musculus",
+  "Project Type": "Ground Study",
+  "Study Factor Name": "Microgravity Simulation",
+  "Study Assay Measurement Type": "transcription profiling",
+  "Study Publication Title": "Microarray profile of gene expression during osteoclast differentiation in modelled microgravity.",
+  "Study Description": "Microgravity leads to a 10-15% loss of bone mass in astronauts during space flight. Osteoclast is the multinucleated bone resorbing cell. In this study, we used NASA developed ground based Rotary Wall Vessel Bioreactor (RWV), Rotary Cell Culture System (RCCS) to simulate microgravity (uXg) conditions and demonstrated a significant increase (2-fold) in osteoclastogenesis compared to ground based control (Xg) mouse bone marrow cultures. We further determined the gene expression profiling of RAW 264.7 osteoclast progenitor cells in microgravity by agilent microarray analysis. Gene expression patt…",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-18"
+ },
+ {
+  "Accession": "OSD-467",
+  "Study Title": "Transcriptomic profiling of cortical bone from hindlimb unloaded mice",
+  "organism": "Mus musculus",
+  "Project Type": "Ground Study",
+  "Study Factor Name": "Hindlimb Unloading",
+  "Study Assay Measurement Type": "transcription profiling",
+  "Study Publication Title": "RNAseq and RNA molecular barcoding reveal differential gene expression in cortical bone following hindlimb unloading in female mice.",
+  "Study Description": "The goal of this study was to perform RNA-sequencing of cortical bone isolated from 11-week-old female hindlimb unloaded and control mice. Mice were subjected to hindlimb unloading for 7 days, followed by RNA isolation of cortical bone. Cortical transcriptomic profiles were assessed with RNAseq.",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-467"
+ },
+ {
+  "Accession": "OSD-214",
+  "Study Title": "Impact of Antiorthostatic Suspension on Mouse response to Tetanus Toxoid and CpG: bone marrow transcriptomic data",
+  "organism": "Mus musculus",
+  "Project Type": "Ground Study",
+  "Study Factor Name": "Hindlimb Unloading     Tetanus Toxoid     Vaccine Adjuvant",
+  "Study Assay Measurement Type": "transcription profiling",
+  "Study Publication Title": "Effects of skeletal unloading on the antibody repertoire of tetanus toxoid and/or CpG treated C57BL/6J mice",
+  "Study Description": "These data were generated from mice that were skeletally unloaded using antiorthostatic suspension (AOS). Mice were either subjected to AOS or tail restraint without unloading for two weeks before injection with saline +/- tetanus toxoid +/- Cpg. Mice were unloaded for an additional two weeks before being sacrificed. This set of data focused on bone marrow. The spleen data are available in the GLDS-201.",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-214"
+ },
+ {
+  "Accession": "OSD-133",
+  "Study Title": "Acute transcriptional up-regulation specific to osteoblasts/osteoclasts in medaka fish immediately after exposure to microgravity",
+  "organism": "Oryzias latipes",
+  "Project Type": "Spaceflight Study",
+  "Flight Program": "International Space Station (ISS)",
+  "Mission": {
+   "Start Date": "23-Oct-2012",
+   "End Date": "13-Mar-2013",
+   "Name": "Expedition 33/34"
+  },
+  "Study Factor Name": "Spaceflight     Time",
+  "Study Assay Measurement Type": "transcription profiling",
+  "Study Publication Title": "Acute transcriptional up-regulation specific to osteoblasts/osteoclasts in medaka fish immediately after exposure to microgravity",
+  "Study Description": "During space flight, bone mineral density is decreased by the influence of osteoclast activation, which molecular mechanism is expectantly investigated. In the study of medaka bone development, we investigated the system of vertebra formation, and firstly identified the presence of osteoclasts in medaka. Moreover, osteoclast rsorbing activity was affected by hypergravity, indicating the possibility that we can investigate the effect of microgravity on osteoclasts in space. To find this effect, we examine the alteration of osteoclast activity under microgravity with the histological analysis or…",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-133"
+ },
+ {
+  "Accession": "OSD-123",
+  "Study Title": "Exposure of zebrafish larvae to 3g and 5g hyper gravity between 5-6 days post-fertilization.",
+  "organism": "Danio rerio",
+  "Project Type": "Ground Study",
+  "Study Factor Name": "Altered Gravity",
+  "Study Assay Measurement Type": "transcription profiling",
+  "Study Publication Title": "Zebrafish bone and general physiology are differently affected by hormones or changes in gravity.",
+  "Study Description": "The general objective of the study was to determine modulation of gene expression by environmental factors, with a special emphasis on bone formation. For this reason, the specific period of treatment was chosen between 5-6 days post-fertilization (dpf), when bone formation and calcification are taking place. Zebrafish larvae were placed at 5 dpf into a Large Diameter Centrifuge and brought to a gravitational force of 3g or 5g for 24 hours. We show that this treatment causes a clear increase of bone formation, as illustrated by cranial skeleton staining of the bone matrix by Alizarin Red, by m…",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-123"
+ },
+ {
+  "Accession": "OSD-76",
+  "Study Title": "Zebrafish larvae submitted to simulated microgravity on a clinostat (CLINO) at 5dpf for one day",
+  "organism": "Danio rerio",
+  "Project Type": "Ground Study",
+  "Study Factor Name": "Microgravity Simulation",
+  "Study Assay Measurement Type": "transcription profiling",
+  "Study Publication Title": "Effects of microgravity simulation on zebrafish transcriptomes and bone physiology-exposure starting at 5 days post fertilization",
+  "Study Description": "The general objective of the study was to determine modulation of gene expression by environmental factors, specifically simulation of microgravity, with a special emphasis on bone formation. For this reason, the specific period of treatment was chosen between 5-6 days post-fertilization (dpf), when bone formation and calcification are taking place. Zebrafish larvae were placed at 5 dpf into a clinostat (CLINO) for 24 hours, which was shown to simulate microgravity by the specific rotational movements it generates. We show that CLINO exposure causes a clear decrease of bone formation, as illus…",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-76"
+ },
+ {
+  "Accession": "OSD-50",
+  "Study Title": "Evaluation of in vitro macrophage differentiation during space flight",
+  "Project Type": "Spaceflight Study",
+  "Flight Program": "Space Transportation System (STS)",
+  "Mission": {
+   "Start Date": "11/14/2008",
+   "End Date": "11/30/2008",
+   "Name": "STS-126"
+  },
+  "Study Factor Name": "Spaceflight",
+  "Study Assay Measurement Type": "transcription profiling",
+  "Study Publication Title": "Evaluation of in vitro macrophage differentiation during space flight.     Understanding Macrophage Differentiation During Space Flight: The Importance of Ground-Based Experiments Before Space Flight",
+  "Study Description": "We differentiated mouse bone marrow cells in the presence of recombinant macrophage colony stimulating (rM-CSF) factor for 14 days during the flight of space shuttle Space Transportation System (STS)-126. We tested the hypothesis that the receptor expression for M-CSF, c-Fms was reduced. We used flow cytometry to assess molecules on cells that were preserved during flight to define the differentiation state of the developing bone marrow macrophages; including CD11b, CD31, CD44, Ly6C, Ly6G, F4/80, Mac2, c-Fos as well as c-Fms. In addition, RNA was preserved during the flight and was used to per…",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-50"
+ },
+ {
+  "Accession": "OSD-240",
+  "Study Title": "Transcriptional analysis of dorsal skin from mice flown on the RR-5 mission",
+  "organism": "Mus musculus",
+  "Project Type": "Spaceflight Study",
+  "Flight Program": "International Space Station (ISS)",
+  "Mission": {
+   "End Date": "7/3/17",
+   "Start Date": "6/3/17",
+   "Name": "SpaceX-11"
+  },
+  "Study Factor Name": "Spaceflight",
+  "Study Assay Measurement Type": "transcription profiling",
+  "Study Description": "The objective of the Rodent Research-5 (RR-5) study was to evaluate bone loss in mice during spaceflight and to determine if treatment with a modified version of NEL-like molecule-1 (NELL-1) can reduce or prevent bone loss that would otherwise occur during spaceflight. To this end, a cohort of forty 30-weeks-old female BALB/cAnNTac mice were flown to the ISS and housed in the Rodent Habitat. Six days after launch half of the mice were treated with NELL-1 (10 mg/kg in 0.3 ml PBS), while the other half were treated with vehicle control (0.3 mls PBS). Fourteen days after launch animals were again…",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-240"
+ },
+ {
+  "Accession": "OSD-319",
+  "Study Title": "Muscle atrophy, osteoporosis prevention in hibernating mammals",
+  "organism": "Urocitellus parryii",
+  "Project Type": "Ground Study",
+  "Study Factor Name": "Time",
+  "Study Assay Measurement Type": "transcription profiling",
+  "Study Publication Title": "Transcriptional changes in muscle of hibernating arctic ground squirrels (Urocitellus parryii): implications for attenuation of disuse muscle atrophy     Comparative functional genomics of adaptation to muscular disuse in hibernating mammals",
+  "Study Description": "Physical inactivity decreases the mechanical load on the skeleton, which when prolonged leads to losses of muscle strength and bone mass in humans and most mammalian species. Hibernating mammals show no loss in bone mass and less muscle atrophy than would be anticipated over such a prolonged period of physical inactivity. This suggests that diverse hibernating mammals have evolved natural mechanisms that reduce muscle atrophy and conserve bone mass.",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-319"
+ },
+ {
+  "Accession": "OSD-241",
+  "Study Title": "Transcriptional analysis of femoral skin from mice flown on the RR-5 mission",
+  "organism": "Mus musculus",
+  "Project Type": "Spaceflight Study",
+  "Flight Program": "International Space Station (ISS)",
+  "Mission": {
+   "End Date": "07/03/2017",
+   "Start Date": "06/03/2017",
+   "Name": "SpaceX-11"
+  },
+  "Study Factor Name": "Spaceflight",
+  "Study Assay Measurement Type": "transcription profiling",
+  "Study Description": "The objective of the Rodent Research-5 (RR-5) study was to evaluate bone loss in mice during spaceflight and to determine if treatment with a modified version of NEL-like molecule-1 (NELL-1) can reduce or prevent bone loss that would otherwise occur during spaceflight. To this end, a cohort of forty 30-weeks-old female BALB/cAnNTac mice were flown to the ISS and housed in the Rodent Habitat. Six days after launch half of the mice were treated with NELL-1 (10 mg/kg in 0.3 ml PBS), while the other half were treated with vehicle control (0.3 ml PBS). Fourteen days after launch animals were again …",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-241"
+ },
+ {
+  "Accession": "OSD-107",
+  "Study Title": "The Role of PTHrP in Osteoblast Response to Microgravity: Implications for Osteoporosis Development.",
+  "organism": "Mus musculus",
+  "Project Type": "Ground Study",
+  "Study Factor Name": "Treatment     Genotype     Microgravity Simulation",
+  "Study Assay Measurement Type": "transcription profiling",
+  "Study Publication Title": "The Role of Parathyroid Hormone-Related Protein (PTHrP) in Osteoblast Response to Microgravity: Mechanistic Implications for Osteoporosis Development.",
+  "Study Description": "Prolonged skeletal unloading through bedrest results in bone loss similar to that observed in elderly osteoporotic patients, but with an accelerated timeframe. This rapid effect on weight-bearing bones is also observed in astronauts who lose up to 2% of their bone mass per month spent in Space. Despite important implications for Spaceflight travellers and bedridden patients on Earth, the exact mechanisms involved in disuse osteoporosis have not been elucidated. Parathyroid hormone-related protein (PTHrP) regulates many physiological processes including skeletal development, and has been propos…",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-107"
+ },
+ {
+  "Accession": "OSD-466",
+  "Study Title": "Microbiome profiling of feces from mice flown on the RR-10 mission",
+  "organism": "Microbiota",
+  "Project Type": "Spaceflight Study",
+  "Flight Program": "International Space Station (ISS)",
+  "Mission": {
+   "Start Date": "12/05/2020",
+   "End Date": "01/13/2021",
+   "Name": "SpaceX-21"
+  },
+  "Study Factor Name": "Spaceflight     Genotype",
+  "Study Assay Measurement Type": "Metagenomic sequencing",
+  "Study Description": "The objective of the Rodent Research-10 Mission (RR-10) was to investigate how spaceflight affects the cellular and molecular mechanisms of normal bone tissue regeneration in space. To this end, ten (10) 14-15 weeks-old female B6129SF2/J Wild Type (WT), and ten (10) 14-15 weeks-old female B6;129S2-Cdkn1atm1Tyj/J (p21-null) mice received a pre-flight subcutaneous injection of the bone marker (Alizarin Red), and were then delivered to the ISS aboard SpaceX-21. At 7 days before euthanasia, all 20 mice received an intraperitoneal (IP) injection with a bone formation marker (Calcein). At 48 +/- 2 h…",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-466"
+ },
+ {
+  "Accession": "OSD-899",
+  "Study Title": "Transcriptional profiling of cecum from mice flown on the RR-10 mission",
+  "organism": "Mus musculus",
+  "Project Type": "Spaceflight Study",
+  "Flight Program": "International Space Station (ISS)",
+  "Mission": {
+   "End Date": "1/13/21",
+   "Start Date": "12/5/20",
+   "Name": "SpaceX-21"
+  },
+  "Study Factor Name": "Spaceflight     Genotype",
+  "Study Assay Measurement Type": "transcription profiling",
+  "Study Description": "The objective of the Rodent Research-10 mission (RR-10) was to investigate how spaceflight affects the cellular and molecular mechanisms of normal bone tissue regeneration in space. To this end, ten (10) 14-15 weeks-old female B6129SF2/J Wild Type (WT), and ten (10) 14-15 weeks-old female B6;129S2-Cdkn1atm1Tyj/J (p21-null) mice received a pre-flight subcutaneous injection of the bone marker (Alizarin Red), and were then delivered to the ISS aboard SpaceX-21. At 7 days before euthanasia, all 20 mice received an intraperitoneal (IP) injection with a bone formation marker (Calcein). At 48 +/- 2 h…",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-899"
+ },
+ {
+  "Accession": "OSD-396",
+  "Study Title": "Gene-metabolite networks associated with impediment of bone fracture repair in spaceflight",
+  "organism": "Mus musculus",
+  "Project Type": "Spaceflight Study",
+  "Flight Program": "International Space Station (ISS)",
+  "Mission": {
+   "Start Date": "02/19/2017",
+   "End Date": "03/19/2017",
+   "Name": "SpaceX-10"
+  },
+  "Study Factor Name": "Spaceflight     Treatment",
+  "Study Assay Measurement Type": "transcription profiling",
+  "Study Publication Title": "Gene-metabolite networks associated with impediment of bone fracture repair in spaceflight.",
+  "Study Description": "Adverse effects of spaceflight on musculoskeletal health increase the risk of bone injury and impairment of fracture healing. Its yet elusive molecular comprehension warrants immediate attention, since space travel is becoming more frequent. Here we examined the effects of spaceflight on bone fracture healing using a 2 mm femoral segmental bone defect (SBD) model. Forty, 9-week-old, male C57BL/6J mice were randomized into 4 groups: 1) Sham surgery on Ground (G-Sham); 2) Sham surgery housed in Spaceflight (FLT-Sham); 3) SBD surgery on Ground (G-Surgery); and 4) SBD surgery housed in Spaceflight…",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-396"
+ },
+ {
+  "Accession": "OSD-417",
+  "Study Title": "Specific Host Metabolite and Gut Microbiome Alterations Are Associated with Bone-loss During Spaceflight",
+  "organism": "Mus musculus     Microbiota",
+  "Project Type": "Spaceflight Study",
+  "Flight Program": "International Space Station (ISS)",
+  "Mission": {
+   "End Date": "07/03/2017",
+   "Start Date": "06/03/2017",
+   "Name": "SpaceX-11"
+  },
+  "Study Factor Name": "Spaceflight     Time     Euthanasia Location",
+  "Study Assay Measurement Type": "Amplicon Sequencing     Amplicon Sequencing     Metagenomic sequencing     metabolite profiling",
+  "Study Publication Title": "Specific host metabolite and gut microbiome alterations are associated with bone loss during spaceflight",
+  "Study Description": "Understanding the axis of the human microbiome and physiological homeostasis is an essential task in managing deep-space travel associated health risks. The NASA led Rodent Research 5 mission enabled an ancillary investigation of the gut microbiome varying exposure to microgravity (flight) relative to ground controls in the context of previously shown bone mineral density (BMD) loss that was observed in these flight groups. We demonstrate elevated abundance of Lactobacillus murinus and Dorea sp. during microgravity exposure relative to ground control through whole genome sequencing and 16S rRN…",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-417"
+ },
+ {
+  "Accession": "OSD-546",
+  "Study Title": "SCD – Stem Cell Differentiation Toward Osteoblast Onboard the International Space Station",
+  "organism": "Homo sapiens",
+  "Project Type": "Spaceflight Study",
+  "Mission": {
+   "End Date": "09/12/2015  06/11/2015",
+   "Start Date": "03/27/2015  11/23/2014",
+   "Name": "Soyuz TMA-16M  Soyuz TMA-15M"
+  },
+  "Study Factor Name": "Spaceflight     Treatment",
+  "Study Assay Measurement Type": "transcription profiling",
+  "Study Publication Title": "SCD – Stem Cell Differentiation Toward Osteoblast Onboard the International Space Station",
+  "Study Description": "Microgravity produces a variety of physical, chemical, and biological cues leading to an intricate and largely unresolved network of mechanosensitive molecules, transduction pathways, oxidative stress-related responses, and adaptations. The bone loss observed in astronauts and animal models after spaceflight is attributable to alterations in the bone tissue formation that depends on the continuous remodelling through the activities of bone-resorbing osteoclasts of hematopoietic lineage and bone-forming osteoblast of mesenchymal origin. Focusing on osteogenic differentiation, we present the res…",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-546"
+ },
+ {
+  "Accession": "OSD-29",
+  "Study Title": "Genechip analysis of bone marrow osteoprogenitors exposed to microgravity",
+  "organism": "Mus musculus",
+  "Project Type": "Spaceflight Study",
+  "Flight Program": "International Space Station (ISS)",
+  "Study Factor Name": "Spaceflight     Treatment     Altered Gravity",
+  "Study Assay Measurement Type": "transcription profiling",
+  "Study Publication Title": "Activation of nervous system development genes in bone marrow derived mesenchymal stem cells following spaceflight exposure.",
+  "Study Description": "In March 2006, murine Bone Marrow Stromal Cells (BMSC) were flown in the Soyuz 12S to the International Space Station to investigate the effects of microgravity on their osteogenic potential in a three-dimensional environment. BMSC were grown in porous bioceramic Skelite disks (dia 9 mm x T 1.2 mm). The constructs were exposed to microgravity for ca. 8 days, then fixed for RNA extraction. While the flight experiment was performed in fully automated hardware inside the KUBIK incubator, one group of control samples were incubated inside manually operated hardwares (flight control), and the other…",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-29"
+ },
+ {
+  "Accession": "OSD-402",
+  "Study Title": "Single cell transcriptional profiling of femur bone marrow from mice flown on Rodent Research Reference Mission-2 (RRRM-2)",
+  "organism": "Mus musculus",
+  "Project Type": "Spaceflight Study",
+  "Flight Program": "International Space Station (ISS)",
+  "Mission": {
+   "Start Date": "07/25/2019",
+   "End Date": "08/27/2019",
+   "Name": "SpaceX-18"
+  },
+  "Study Factor Name": "Spaceflight     Age",
+  "Study Assay Measurement Type": "transcription profiling",
+  "Study Description": "In the Rodent Research Reference Mission (RRRM-2), forty female C57BL/6NTac mice were flown on the International Space Station. To assess differences in outcomes due to age, twenty 12 week-old and twenty 29 week-old mice were flown, respectively. To directly assess spaceflight effects, half of the young and old mice (10 old, 10 young) were sacrificed on-orbit after 55-58 days (ISS Terminal, ISS-T), while the other half (10 old, 10 young) were returned live to Earth after 32 days and allowed to recover for 24 days (Live Animal Return, LAR) before sacrifice. ISS-T and LAR mice were the same age …",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-402"
+ },
+ {
+  "Accession": "OSD-403",
+  "Study Title": "Single cell transcriptional profiling of humerus bone marrow from mice flown on Rodent Research Reference Mission-2 (RRRM-2)",
+  "organism": "Mus musculus",
+  "Project Type": "Spaceflight Study",
+  "Flight Program": "International Space Station (ISS)",
+  "Mission": {
+   "Start Date": "07/25/2019",
+   "End Date": "08/27/2019",
+   "Name": "SpaceX-18"
+  },
+  "Study Factor Name": "Spaceflight     Age",
+  "Study Assay Measurement Type": "transcription profiling",
+  "Study Description": "In the Rodent Research Reference Mission (RRRM-2), forty female C57BL/6NTac mice were flown on the International Space Station. To assess differences in outcomes due to age, twenty 12 week-old and twenty 29 week-old mice were flown, respectively. To directly assess spaceflight effects, half of the young and old mice (10 old, 10 young) were sacrificed on-orbit after 55-58 days (ISS Terminal, ISS-T), while the other half (10 old, 10 young) were returned live to Earth after 32 days and allowed to recover for 24 days (Live Animal Return, LAR) before sacrifice. ISS-T and LAR mice were the same age …",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-403"
+ },
+ {
+  "Accession": "OSD-60",
+  "Study Title": "Exposure of zebrafish larvae to relative microgravity between 5-6 days post-fertilization",
+  "organism": "Danio rerio",
+  "Project Type": "Ground Study",
+  "Study Factor Name": "Hypergravity",
+  "Study Assay Measurement Type": "transcription profiling",
+  "Study Publication Title": "Zebrafish bone and general physiology are differently affected by hormones or changes in gravity.",
+  "Study Description": "The general objective of the study was to determine modulation of gene expression by environmental factors, with a special emphasis on bone formation. For this reason, the specific period of treatment was chosen between 5-6 days post-fertilization (dpf), when bone formation and calcification are taking place. This experiment was designed as a new type of gravitational experiment, which we like to call relative microgravity, referring to the fact that the larvae first grow in hyper gravity for 5 days and are then returned to 1g normal gravity for 1 day. Zebrafish embryos were placed on a Large …",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-60"
+ },
+ {
+  "Accession": "OSD-667",
+  "Study Title": "Transcriptional profiling of colon from mice flown on the RR-10 mission",
+  "organism": "Mus musculus",
+  "Project Type": "Spaceflight Study",
+  "Flight Program": "International Space Station (ISS)",
+  "Mission": {
+   "End Date": "01/13/2021",
+   "Start Date": "12/05/2020",
+   "Name": "SpaceX-21"
+  },
+  "Study Factor Name": "Spaceflight     Genotype",
+  "Study Assay Measurement Type": "transcription profiling",
+  "Study Description": "The objective of the Rodent Research-10 mission (RR-10) was to investigate how spaceflight affects the cellular and molecular mechanisms of normal bone tissue regeneration in space. To this end, ten (10) 14-15 weeks-old female B6129SF2/J Wild Type (WT), and ten (10) 14-15 weeks-old female B6;129S2-Cdkn1atm1Tyj/J (p21-null) mice received a pre-flight subcutaneous injection of the bone marker (Alizarin Red), and were then delivered to the ISS aboard SpaceX-21. At 7 days before euthanasia, all 20 mice received an intraperitoneal (IP) injection with a bone formation marker (Calcein). At 48 +/- 2 h…",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-667"
+ },
+ {
+  "Accession": "OSD-943",
+  "Study Title": "Longitudinal transcriptomic and epigenetic analysis in astronauts reveals dynamic immune response to spaceflight [DNA methylation]",
+  "organism": "Homo sapiens",
+  "Project Type": "Spaceflight Study",
+  "Mission": {
+   "End Date": "4/25/22",
+   "Start Date": "4/8/22",
+   "Name": "AX-1"
+  },
+  "Study Factor Name": "Spaceflight     Time",
+  "Study Assay Measurement Type": "DNA methylation profiling",
+  "Study Publication Title": "Longitudinal transcriptomic and epigenetic analysis of the blood in two astronauts.",
+  "Study Description": "The space industry has made significant strides, leading to an era of commercial spaceflight. Meanwhile, understanding molecular responses to spaceflight is crucial for astronauts' safety. To this end, we examined transcriptomic and epigenetic changes in two astronauts' blood samples at three timepoints: two weeks before spaceflight (T0), 24 hours after spaceflight (T2), and three months after spaceflight (T3). Transcriptomic analysis identified two gene clusters with opposing transient expression trends post-flight (T2), normalized at T3: one upregulated and the other downregulated. Mapped im…",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-943"
+ },
+ {
+  "Accession": "OSD-903",
+  "Study Title": "Longitudinal transcriptomic and epigenetic analysis in astronauts reveals dynamic immune response to spaceflight [RNA-seq]",
+  "organism": "Homo sapiens",
+  "Project Type": "Spaceflight Study",
+  "Mission": {
+   "End Date": "04/25/2022",
+   "Start Date": "04/08/2022",
+   "Name": "AX-1"
+  },
+  "Study Factor Name": "Time     Spaceflight",
+  "Study Assay Measurement Type": "transcription profiling",
+  "Study Publication Title": "Longitudinal transcriptomic and epigenetic analysis of the blood in two astronauts.",
+  "Study Description": "The space industry has made significant strides, leading to an era of commercial spaceflight. Meanwhile, understanding molecular responses to spaceflight is crucial for astronauts' safety. To this end, we examined transcriptomic and epigenetic changes in two astronauts' blood samples at three timepoints: two weeks before spaceflight (T0), 24 hours after spaceflight (T2), and three months after spaceflight (T3). Transcriptomic analysis identified two gene clusters with opposing transient expression trends post-flight (T2), normalized at T3: one upregulated and the other downregulated. Mapped im…",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-903"
+ },
+ {
+  "Accession": "OSD-539",
+  "Study Title": "Transcriptomic response of bioengineered human cartilage to parabolic flight microgravity is sex-dependent",
+  "organism": "Homo sapiens",
+  "Project Type": "High Altitude Study",
+  "Study Factor Name": "Sex     Treatment",
+  "Study Assay Measurement Type": "transcription profiling",
+  "Study Publication Title": "Transcriptomic response of bioengineered human cartilage to parabolic flight microgravity is sex-dependent.",
+  "Study Description": "Spaceflight and simulated spaceflight microgravity induced osteoarthritic-like alterations at the transcriptomic and proteomic levels in the articular and meniscal cartilages of rodents. But little is known about the effect of spaceflight or simulated spaceflight microgravity on the transcriptome of tissue-engineered cartilage developed from human cells. In this study, we investigate the effect of simulated spaceflight microgravity facilitated by parabolic flights on tissue-engineered cartilage developed from chondrogenically differentiated human bone marrow mesenchymal stem cells obtained fro…",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-539"
+ }
+]

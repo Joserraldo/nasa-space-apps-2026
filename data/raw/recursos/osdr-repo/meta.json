@@ -1,0 +1,14 @@
+{
+  "id": "osdr-repo",
+  "dueno": "NASA OSDR",
+  "consultadoEl": "2026-11-14",
+  "paginas": [
+    {
+      "url": "https://osdr.nasa.gov/bio/repo/",
+      "archivo": "index.md",
+      "estado": 200,
+      "caracteres": 0
+    }
+  ],
+  "nota": "Buscador en JavaScript: se usa la search API."
+}
