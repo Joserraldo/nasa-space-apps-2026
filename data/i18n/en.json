@@ -131,5 +131,18 @@
   "datos.tarjeta.modelo": "NASA's model calculated it would reach Mars on {fecha}.",
   "datos.tarjeta.fuente": "Source: {duenoKey} · retrieved {consultado}",
   "datos.comunicaciones.retraso": "A message between Mars and Earth travels at the speed of light, and it still takes from about 3 to about 22 minutes, depending on where the two planets are. Nothing can go faster!",
-  "datos.comunicaciones.derivado": "The team calculated these times from the closest and farthest Mars–Earth distances (NASA) and the speed of light."
+  "datos.comunicaciones.derivado": "The team calculated these times from the closest and farthest Mars–Earth distances (NASA) and the speed of light.",
+  "fuente.csa": "Canadian Space Agency (CSA), a partner of the challenge, not NASA · © Canadian Space Agency",
+  "datos.ciencia.OSD-269.titulo": "Lettuce from space",
+  "datos.ciencia.OSD-269.texto": "Red romaine lettuce grew on the Space Station in a small garden called Veggie, and scientists checked it for germs and nutrients. It was safe to eat: leafy vegetables can give astronauts fresh food.",
+  "datos.ciencia.OSD-314.titulo": "Plants with Mars gravity",
+  "datos.ciencia.OSD-314.texto": "During a space flight, tiny plants were tested at the low gravity of Mars. There, red light helped their cells grow normally again. This can help design farms in space.",
+  "datos.ciencia.OSD-326.titulo": "Muscles in space",
+  "datos.ciencia.OSD-326.texto": "Mice that spent about four weeks in space had lighter leg muscles than mice that stayed on Earth. Scientists study this to help keep muscles and bones healthy.",
+  "datos.ciencia.OSD-289.titulo": "A small organ that shrinks",
+  "datos.ciencia.OSD-289.texto": "The thymus is a small organ inside the body, and it shrinks during spaceflight. Scientists studied mice on the Space Station to find out why.",
+  "datos.ciencia.csa-comer-en-la-estacion.titulo": "Meals on the Space Station",
+  "datos.ciencia.csa-comer-en-la-estacion.texto": "On the Space Station, each astronaut can have 3 meals and 1 snack a day. On longer trips to the Moon they won't be able to bring all their food, so they will need to grow it.",
+  "datos.ciencia.csa-granja-espacial.titulo": "A space farm from Canada",
+  "datos.ciencia.csa-granja-espacial.texto": "A Canadian contest looked for ways to grow food using very little energy, water and materials. The winning system, CANGrow, from a company in Vancouver, grows strawberries and cherry tomatoes and could make more than 700 kg of nutritious food a year."
 }

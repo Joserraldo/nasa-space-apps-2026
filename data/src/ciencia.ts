@@ -30,12 +30,14 @@ export type Radiacion = z.infer<typeof RadiacionSchema>;
 export const TarjetaOsdrSchema = z.object({
   /** ID real del estudio en OSDR. */
   id: z.string().regex(/^OSD-\d+$/),
-  tema: z.enum(["comida", "huesos", "radiacion"]),
+  tema: z.enum(["comida", "huesos", "musculo", "inmune", "radiacion"]),
   tituloOriginal: z.string(),
   url: z.string().url(),
   dueno: z.string(),
   tituloKey: z.string(),
   textoKey: z.string(),
+  /** Si la tarjeta se agregó otro día que el archivo (el `consultadoEl` general). */
+  consultadoEl: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
 });
 
 export const OsdrSchema = z.object({
@@ -45,6 +47,28 @@ export const OsdrSchema = z.object({
   tarjetas: z.array(TarjetaOsdrSchema).min(1),
 });
 export type Osdr = z.infer<typeof OsdrSchema>;
+
+/**
+ * Tarjetas de la Agencia Espacial Canadiense (socia del reto, no NASA). Sus condiciones permiten uso educativo
+ * no comercial citando "© Canadian Space Agency", sin su logo y sin insinuar su aval (docs/science/recursos-raspados.md).
+ */
+export const TarjetaCsaSchema = z.object({
+  id: z.string().regex(/^csa-[a-z-]+$/),
+  tema: z.literal("comida"),
+  url: z.string().url().startsWith("https://www.asc-csa.gc.ca/"),
+  tituloKey: z.string(),
+  textoKey: z.string(),
+});
+
+export const CsaSchema = z.object({
+  version: z.literal("0.1.0"),
+  consultadoEl: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+  dueno: z.string().includes("no NASA"),
+  credito: z.literal("© Canadian Space Agency"),
+  condiciones: z.string().url(),
+  tarjetas: z.array(TarjetaCsaSchema).min(1),
+});
+export type Csa = z.infer<typeof CsaSchema>;
 
 /** Resumen de la dosis absorbida en Artemis I (HERA, vía RadLab), calculado por scripts/artemis.ts. */
 export const ArtemisSchema = z.object({
