@@ -60,11 +60,11 @@ jobs:
 
       # La clave va por stdin: nunca aparece en el comando ni en el log (GitHub la enmascara igual).
       - name: Clave de la IA al Worker de preview
-        if: steps.hay.outputs.ok == true && github.ref_name == develop && env.BAI_API_KEY != 
+        if: steps.hay.outputs.ok == 'true' && github.ref_name == 'develop' && env.BAI_API_KEY != ''
         working-directory: infra/worker
         run: printf %s "$BAI_API_KEY" | npx --yes wrangler@4 secret put BAI_API_KEY --env preview
 
       - name: Clave de la IA al Worker de producción
-        if: steps.hay.outputs.ok == true && github.ref_name == main && env.BAI_API_KEY != 
+        if: steps.hay.outputs.ok == 'true' && github.ref_name == 'main' && env.BAI_API_KEY != ''
         working-directory: infra/worker
         run: printf %s "$BAI_API_KEY" | npx --yes wrangler@4 secret put BAI_API_KEY --env=""
