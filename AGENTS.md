@@ -8,7 +8,7 @@ Antes de cualquier tarea, lee en este orden:
 2. [PLAN.md](PLAN.md): el plan del equipo.
 3. [docs/reglas.md](docs/reglas.md): reglas del hackathon.
 4. El `CLAUDE.md` y el `ESTADO.md` de la carpeta de tu rol (ver la tabla de roles del [README](README.md)).
-5. [docs/COMO-TRABAJAMOS.md](docs/COMO-TRABAJAMOS.md): roles vigentes, qué se construye primero, idioma base y uso de subagentes.
+5. [docs/COMO-TRABAJAMOS.md](docs/COMO-TRABAJAMOS.md): roles vigentes, idioma base y uso de subagentes.
 6. [docs/ORQUESTACION.md](docs/ORQUESTACION.md) (solo la parte de arriba): estado del equipo, riesgos y próximo hito.
 7. [docs/LOOP.md](docs/LOOP.md): qué hace una iteración.
 

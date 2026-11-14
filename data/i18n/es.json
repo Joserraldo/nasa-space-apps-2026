@@ -111,5 +111,19 @@
   "fuente.crater": "Radiación cerca de la Luna: instrumento CRaTER del Lunar Reconnaissance Orbiter de la NASA, vía NASA OSDR RadLab. Datos reales curados, no en vivo.",
   "datos.luna.orbita": "Lo midió una nave que da vueltas alrededor de la Luna, no en el suelo.",
   "datos.luna.medicion": "Cerca de la Luna, la radiación pasó de {fondo} a {pico} µGy/h el {dia}: unas {factor} veces más que en los cinco días anteriores.",
-  "datos.radiacion.marte-crucero.lugar": "Dentro de una nave camino a Marte"
+  "datos.radiacion.marte-crucero.lugar": "Dentro de una nave camino a Marte",
+  "datos.tarjeta.fecha": "Fecha: {fecha} (UTC)",
+  "datos.tarjeta.id": "Código en DONKI: {id}",
+  "datos.tarjeta.fase.clase": "{tipoKey}: clase {clase}",
+  "datos.tarjeta.fase.velocidad": "{tipoKey}: {velocidad} km/s",
+  "datos.tarjeta.fase.kp": "{tipoKey}: Kp {kp} (medido en la Tierra)",
+  "datos.tarjeta.fase.simple": "{tipoKey}",
+  "datos.tarjeta.tipo.FLR": "Destello solar",
+  "datos.tarjeta.tipo.CME": "Nube solar (CME)",
+  "datos.tarjeta.tipo.SEP": "Partículas energéticas",
+  "datos.tarjeta.tipo.GST": "Tormenta magnética en la Tierra",
+  "datos.tarjeta.tipo.RBE": "Aumento en los cinturones de radiación",
+  "datos.tarjeta.medicion": "En Marte, Curiosity midió {pico} µGy/h el {dia}, unas {factor} veces un día normal ({fondo} µGy/h).",
+  "datos.tarjeta.modelo": "El modelo de la NASA calculó que llegaría a Marte el {fecha}.",
+  "datos.tarjeta.fuente": "Fuente: {duenoKey} · consultado el {consultado}"
 }

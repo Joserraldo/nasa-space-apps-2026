@@ -44,3 +44,12 @@ frase / botón ─► clasificarConAtajos(texto)  ── null ─► (modelo ví
 - `agentes.titulo.<experto>`: para títulos y etiquetas ("Engineer" / "Ingeniera").
 - `agentes.nombre.<experto>`: solo dentro de frases ("call **the Engineer**" / "llama **a la Ingeniera**"), por eso trae artículo y preposición.
 - Para no mostrar la tormenta antes del paso 5, pasar a `responder` la vista de `vistaVisible(estado, tormentaActiva(estado))`.
+
+## Panel de tripulación en una línea
+```ts
+const d = conversar({ texto } /* o { experto: "doctora" } */, estado, {
+  tormentaActiva: tormentaActiva(estado),
+  dosisMarte: referenciaDosis("marte-superficie"),
+});
+```
+Hace todo: atajos/regex, botón → pregunta por defecto, esconde la tormenta antes del paso 5, aclaración si no se entiende e Iris dañada con su falla.

@@ -111,5 +111,19 @@
   "fuente.crater": "Radiation near the Moon: CRaTER instrument on NASA's Lunar Reconnaissance Orbiter, via NASA OSDR RadLab. Real curated data, not live.",
   "datos.luna.orbita": "Measured by a spacecraft flying around the Moon, not on the ground.",
   "datos.luna.medicion": "Near the Moon, radiation went from {fondo} to {pico} µGy/h on {dia}: about {factor} times more than in the five days before.",
-  "datos.radiacion.marte-crucero.lugar": "Inside a spaceship on the way to Mars"
+  "datos.radiacion.marte-crucero.lugar": "Inside a spaceship on the way to Mars",
+  "datos.tarjeta.fecha": "Date: {fecha} (UTC)",
+  "datos.tarjeta.id": "DONKI ID: {id}",
+  "datos.tarjeta.fase.clase": "{tipoKey}: class {clase}",
+  "datos.tarjeta.fase.velocidad": "{tipoKey}: {velocidad} km/s",
+  "datos.tarjeta.fase.kp": "{tipoKey}: Kp {kp} (measured on Earth)",
+  "datos.tarjeta.fase.simple": "{tipoKey}",
+  "datos.tarjeta.tipo.FLR": "Solar flash (flare)",
+  "datos.tarjeta.tipo.CME": "Solar cloud (CME)",
+  "datos.tarjeta.tipo.SEP": "Energetic particles",
+  "datos.tarjeta.tipo.GST": "Magnetic storm on Earth",
+  "datos.tarjeta.tipo.RBE": "Radiation belt boost",
+  "datos.tarjeta.medicion": "On Mars, Curiosity measured {pico} µGy/h on {dia}, about {factor} times a normal day ({fondo} µGy/h).",
+  "datos.tarjeta.modelo": "NASA's model calculated it would reach Mars on {fecha}.",
+  "datos.tarjeta.fuente": "Source: {duenoKey} · retrieved {consultado}"
 }
