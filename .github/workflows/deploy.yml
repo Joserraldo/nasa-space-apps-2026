@@ -1,39 +1,56 @@
-name: Despliegue (Cloudflare Pages)
-# develop → link de prueba (preview) · main → producción.
-# Sin los secretos CLOUDFLARE_API_TOKEN y CLOUDFLARE_ACCOUNT_ID el job se salta (no falla).
+name: Despliegue (Cloudflare Workers)
+# Cada merge a develop publica la PREVIEW (Worker nasa-space-apps-2026-preview).
+# Cada merge a main publica PRODUCCIÓN (Worker nasa-space-apps-2026).
+# Solo se publica si pasan tipos y pruebas. Sin los secretos CLOUDFLARE_API_TOKEN y
+# CLOUDFLARE_ACCOUNT_ID el job se salta (no falla). Basado en el #78 de José.
 on:
   push:
     branches: [develop, main]
   workflow_dispatch:
+
 permissions:
   contents: read
+
 concurrency:
   group: deploy-${{ github.ref }}
   cancel-in-progress: true
+
 jobs:
   desplegar:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     env:
       CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
       CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
     steps:
-      - name: ¿Hay secretos?
+      - name: ¿Hay secretos de Cloudflare?
         id: hay
         run: echo "ok=${{ env.CLOUDFLARE_API_TOKEN != '' && env.CLOUDFLARE_ACCOUNT_ID != '' }}" >> "$GITHUB_OUTPUT"
+
       - if: steps.hay.outputs.ok == 'true'
         uses: actions/checkout@v4
+
       - if: steps.hay.outputs.ok == 'true'
         uses: actions/setup-node@v4
         with: { node-version: 22, cache: npm }
+
       - if: steps.hay.outputs.ok == 'true'
         run: npm ci
-      - name: Tipos y tests (producción solo si pasan)
+
+      - name: Tipos y pruebas (si fallan, no se publica)
         if: steps.hay.outputs.ok == 'true'
         run: npm run typecheck && npm test
-      - name: Construir (ui si existe; si no, página de espera)
+
+      - name: Construir la pantalla
         if: steps.hay.outputs.ok == 'true'
-        run: |
-          if [ -f ui/package.json ]; then npm run build -w ui && cp -r ui/dist salida; else cp -r infra/placeholder salida; fi
-      - name: Publicar en Pages
-        if: steps.hay.outputs.ok == 'true'
-        run: npx --yes wrangler@3 pages deploy salida --project-name solar-shield --branch "${GITHUB_REF_NAME}"
+        run: npm run build
+
+      - name: Publicar preview (develop)
+        if: steps.hay.outputs.ok == 'true' && github.ref_name == 'develop'
+        working-directory: infra/worker
+        run: npx --yes wrangler@4 deploy --env preview
+
+      - name: Publicar producción (main)
+        if: steps.hay.outputs.ok == 'true' && github.ref_name == 'main'
+        working-directory: infra/worker
+        run: npx --yes wrangler@4 deploy --env=""
