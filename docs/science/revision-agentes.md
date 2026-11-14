@@ -23,3 +23,20 @@
 - Marco de la tormenta: `datos.marco.observado | modelado | escenario | rozando`.
 - Medición en Marte: `datos.medicion.rad`, `datos.medicion.sinAumento`.
 - Dosis comparadas: `datos.radiacion.comparacion`. Polo norte: `datos.region.marte_polo_norte.descripcion`. Artemis I: `datos.artemis.texto`.
+
+## Cifras que dicen los expertos (ruta dorada, #41) — revisado el 2026-11-13 sobre #44, #47 y #49
+| Texto | Cifra | Origen | Estado |
+|---|---|---|---|
+| `agentes.escena6.doctora.medida`, `agentes.meteorologa.pronostico.medida` | factor ×19 (redondeo de 19,4) | `medicionMarte` de `2024-05-20-marte` (RAD vía RadLab) | **[V]** |
+| `agentes.escena6.meteorologa.llega`, `agentes.meteorologa.pronostico.real` | fecha 2024-05-20 | `inicio` del evento (DONKI `2024-05-20T05:36:00-CME-001`) | **[V]** |
+| `agentes.doctora.dosis.marte` | 0,64 mSv/día | `referenciaDosis("marte-superficie")` (Reitz et al. 2016) | **[V]**; usar la función del #45 para la tarjeta |
+| `agentes.escena6.ingeniera.costo`, `agentes.iris.*`, `agentes.ingeniera.energia.*` | % de energía y escudo, gasto | estado del juego (motor/design) | No es dato de NASA: no lleva tarjeta de fuente (correcto) |
+| `agentes.doctora.salud.estado` | mSv acumulados del tripulante | estado del juego | Es simulación: no presentarlo como medición |
+
+## Fase satélite (#52) — revisado el 2026-11-13
+| Texto | Revisión |
+|---|---|
+| `agentes.satelite.ingeniera.bateriaBaja` ("en la sombra del planeta los paneles no cargan") | Correcto: cuando el satélite pasa por la sombra, los paneles no reciben luz |
+| `agentes.satelite.meteorologa.senal` ("un mensaje tarda minutos") | Correcto: 3–22 min en un sentido [V+cálculo]. Para la cifra, usar `datos.comunicaciones.retraso` (#65) |
+| `agentes.satelite.doctora.microgravedad` | Correcto: en órbita hay caída libre. Se usa en la fase de nave/satélite, no en la base (en Marte la gravedad es el 38 %) |
+| `agentes.satelite.ingeniera.altura`, `agentes.satelite.meteorologa.tormenta` | Analogía y regla de juego: no son cifras de NASA, no llevan tarjeta |

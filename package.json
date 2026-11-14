@@ -9,13 +9,16 @@
     "engine",
     "agents",
     "data",
-    "missions"
+    "missions",
+    "ui"
   ],
   "scripts": {
-    "typecheck": "tsc -b contracts design engine agents data missions",
+    "typecheck": "tsc -b contracts design engine agents data missions ui infra/worker",
     "test": "vitest run",
     "test:watch": "vitest",
-    "e2e": "playwright test"
+    "e2e": "playwright test",
+    "dev": "npm run dev -w ui",
+    "build": "npm run build -w ui"
   },
   "devDependencies": {
     "@playwright/test": "^1.65.1",
