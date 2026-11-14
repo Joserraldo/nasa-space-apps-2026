@@ -105,5 +105,8 @@ export const terrenoLunaVisible: TerrenoLuna = TerrenoLunaSchema.parse(lunaVisib
 
 /** Tormentas curadas medidas cerca de la Luna (CRaTER, LRO, en órbita). µGy/h, dosis absorbida. */
 export const luna: Luna = LunaSchema.parse(lunaJson);
-/** Medición lunar de una tormenta curada, o undefined si CRaTER no tiene datos (no se inventa). */
+/**
+ * Medición lunar de una tormenta curada, o undefined si CRaTER no tiene datos (no se inventa).
+ * Usa el texto `datos.luna.medicion` solo si `fondoTranquilo` es true; si no, el factor sale engañoso.
+ */
 export const medicionLuna = (id: string): MedicionLuna | undefined => luna.mediciones.find((m) => m.id === id);

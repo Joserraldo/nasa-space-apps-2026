@@ -23,7 +23,7 @@ const iso = (t: number) => new Date(t).toISOString().slice(0, 16);
 async function main() {
   const local = process.argv.includes("--local");
   const dir = join(RAIZ, "raw", "luna");
-  mkdirSync(dir, { recursive: true });
+  if (!local) mkdirSync(dir, { recursive: true });
   const mediciones: MedicionLuna[] = [];
   const sinDatos: string[] = [];
   for (const t of leerConfig().tormentas) {

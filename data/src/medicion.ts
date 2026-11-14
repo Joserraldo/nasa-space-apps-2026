@@ -3,6 +3,8 @@
  * Es la misma de scripts/curar.ts (medicionMarte), escrita como función pura para poder reutilizarla:
  *  fondo = media de las muestras en los 5 días antes de t0; pico = la mayor media diaria (UTC)
  *  en los 3 días después; factor = pico / fondo. Solo si hay ≥ 20 muestras en cada lado.
+ *  Límite conocido: el primer y el último día UTC de la ventana pueden ser parciales; se deja así
+ *  para que la regla sea idéntica a la de RAD (la ruta dorada ×19,4 depende de ella).
  */
 const DIA_MS = 86_400_000;
 const r1 = (x: number) => Math.round(x * 10) / 10;

@@ -36,12 +36,14 @@ export const LunaSchema = z.object({
 export type Luna = z.infer<typeof LunaSchema>;
 
 /**
- * El fondo es "tranquilo" si ninguna media diaria de esos 5 días supera el doble de la mediana
- * de las medias diarias de esa ventana (si una tormenta anterior lo infla, deja de serlo).
+ * El fondo es "tranquilo" si ninguna media diaria de esos días supera el doble de su mediana
+ * (si una tormenta anterior lo infla, deja de serlo). Con menos de 5 días con datos no se afirma: false.
  */
 export function fondoTranquilo(mediasDiarias: number[]): boolean {
+  if (mediasDiarias.length < 5) return false;
   const s = [...mediasDiarias].sort((a, b) => a - b);
-  const med = s[Math.floor(s.length / 2)] ?? 0;
+  const k = Math.floor(s.length / 2);
+  const med = s.length % 2 ? s[k]! : (s[k - 1]! + s[k]!) / 2;
   return med > 0 && s.every((x) => x <= 2 * med);
 }
 
