@@ -14,7 +14,30 @@ El link de cada uno es `https://<worker>.<subdominio>.workers.dev`; el subdomini
 |---|---|
 | `GET /api/health` | `{ ok, entorno, modelo }`. Dice si hay clave del modelo, nunca su valor |
 | `POST /api/clasificar` | `{ "texto": "..." }` → `ClassifierOutput`. Primero regex gratis; el modelo (b.ai) solo si no entiende. Límite 20/min por IP en hash |
+| `POST /api/auth/register` | `{ "usuario", "clave" }` → `201 { usuario }` + cookie de sesión. Usuario: 3–20 letras, números o `_`. Clave: 8–72 caracteres. `409` si ya existe |
+| `POST /api/auth/login` | `{ "usuario", "clave" }` → `200 { usuario }` + cookie. `401` igual para usuario inexistente o clave mala. `429` tras 10 intentos en 15 min |
+| `POST /api/auth/logout` | Borra la sesión en D1 y la cookie |
+| `GET /api/auth/me` | `{ usuario }` o `401` |
+| `GET /api/progress` | `{ datos, actualizado }` del usuario con sesión (`datos: null` si aún no guardó). `401` sin sesión |
+| `PUT /api/progress` | `{ "datos": { ... } }` (objeto JSON, máx. 20 KB) → `{ ok: true }` |
 | todo lo demás | la pantalla |
+
+## Login e invitado (decisión de Santiago, 14 nov)
+- **Con login:** el progreso se guarda en D1 y se recupera en cualquier equipo.
+- **Invitado:** no usa esta API. Su progreso vive solo en el navegador; al salir, la pantalla avisa que lo perderá (lo hace ui).
+- **Datos mínimos** (jugadores de 7–12): solo un nombre de usuario, **sin correo, sin nombre real y sin IP**. La contraseña se guarda con PBKDF2-SHA256 (100 000 iteraciones) y sal.
+- **Sesión opaca, no JWT:** token aleatorio en cookie `ss_sesion` (HttpOnly, Secure, SameSite=Lax, 30 días); en D1 solo su hash. Se puede revocar al cerrar sesión, cosa que un JWT no permite sin más piezas. Nunca en `localStorage`.
+- **CSRF:** las rutas que cambian datos exigen `content-type: application/json` y el mismo Origin.
+- **Desde la pantalla:** `fetch("/api/...", { credentials: "same-origin", headers: { "content-type": "application/json" } })`.
+
+## Base de datos (D1)
+| Entorno | Base | Migraciones |
+|---|---|---|
+| Preview | `solar-shield-preview` | `npx wrangler d1 migrations apply DB --remote --env preview` |
+| Producción | `solar-shield-prod` | `npx wrangler d1 migrations apply DB --remote --env=""` |
+| Local | la crea Wrangler | `npx wrangler d1 migrations apply DB --local --env preview` |
+
+Las migraciones viven en `migrations/` y son versionadas: nunca se edita una ya aplicada, se agrega otra. La `0001` ya está aplicada en preview y en producción (14 nov). Un preview nunca toca usuarios de producción: cada entorno tiene su base.
 
 ## Despliegue automático (una sola vez)
 1. **Cloudflare (Santiago):** My Profile → API Tokens → Create Token → plantilla "Edit Cloudflare Workers". Copia el token y el Account ID (barra lateral de Workers & Pages).
@@ -43,5 +66,4 @@ npx wrangler secret put NASA_API_KEY --env preview  # preview
 - Validar sin publicar: `npx wrangler deploy --dry-run --env preview`.
 
 ## Pendiente (siguientes PRs)
-- Login y modo invitado con progreso en D1 (decisión de Santiago, 14 nov).
 - KV para el límite por IP (hoy sin KV el límite no aplica).

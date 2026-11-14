@@ -19,6 +19,10 @@
     "BAI_MODEL": "qwen3.8-flash"
   },
   "observability": { "enabled": true },
+  // Base de datos de producción (usuarios con login y su progreso). Migraciones en ./migrations.
+  "d1_databases": [
+    { "binding": "DB", "database_name": "solar-shield-prod", "database_id": "3ca64738-11d6-4988-b94a-9962c7807a3a", "migrations_dir": "migrations" }
+  ],
   "env": {
     "preview": {
       "name": "nasa-space-apps-2026-preview",
@@ -26,7 +30,11 @@
         "ENTORNO": "preview",
         "BAI_BASE_URL": "https://api.b.ai/v1",
         "BAI_MODEL": "qwen3.8-flash"
-      }
+      },
+      // Base separada: un preview nunca toca usuarios de producción.
+      "d1_databases": [
+        { "binding": "DB", "database_name": "solar-shield-preview", "database_id": "c08ac513-575e-4c07-a99d-6feb4bc447da", "migrations_dir": "migrations" }
+      ]
     }
   }
 }
