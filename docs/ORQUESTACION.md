@@ -2,7 +2,7 @@
 
 Este archivo debe bastar para que otra sesión (u otro humano) retome la coordinación sin el chat original. Lo mantiene el orquestador (Santiago Cabeza, que desde el 13 nov en la noche solo supervisa y fusiona). **Suplente del orquestador:** Jaime (`JaimeMrF`).
 
-**Actualizado:** 14 nov 2026, 00:00.
+**Actualizado:** 14 nov 2026, 18:30.
 
 ## Resumen
 
@@ -26,18 +26,34 @@ Este archivo debe bastar para que otra sesión (u otro humano) retome la coordin
 
 Regla de corte si P2 no se cumple: Luna → Atlas → desbloqueos → 3D completo → dibujo de ruta en 3D → niveles adaptativos extra. El orquestador propone el momento y Santiago confirma.
 
-## Semáforo (14 nov, 00:00 — hechos, sin opiniones)
+## Estado (sáb 14 nov, 18:30 — hechos)
 
-| Rol | En develop | Abierto |
+- **develop:** compila, 307 pruebas en verde, semilla dorada y partidas ganadora/perdedora en verde (`engine/src/ganable.test.ts`).
+- **Links (despliegue automático con cada merge):** preview https://nasa-space-apps-2026-preview.santiago031541.workers.dev (develop) · producción https://nasa-space-apps-2026.santiago031541.workers.dev (main, versión de las 11:40). Ambos con IA (b.ai) y base de datos D1 propia.
+- **P1 cumplida.** **P2 (22:00):** motor, diseño, datos y agentes listos; falta la pantalla conectada al motor (trabajo local de María Paula, #142).
+
+| Rol | Hecho y en develop | Abierto |
 |---|---|---|
-| motor | Semilla dorada, API para ui, órbita, sitios, Iris adaptativa, pausa automática | #83 y #90 esperan a Jaime |
-| diseño | Misión 1 de Jezero (sitios, polvo, dilema, módulos, tarjetas de ciencia, 10 parejas) | Decisiones "hielo" y daño de la tormenta (Santiago) |
-| ui | Esqueleto React + Vite con las pantallas de la ruta dorada (#68) | Tareas en #58 (María Paula) |
-| agentes | Tres expertos, escena del paso 6, Iris 1–3, clasificador, conversar() | #74, #75, #92 (conflicto) |
-| infra | CI de tipos y pruebas | Despliegue #78 (espera secretos de Cloudflare), Worker #76 y e2e #80 con conflicto |
-| datos | 8 tormentas, Jezero, dosis, referenciaDosis() | #55, #65, #69, #95; issues #91 y #93 |
+| motor (Jaime) | Ventana de tormenta 3–5, victoria al llegar la telemetría, `aterrizar()`, módulos validados, `puedeAplicar()` (rechazo con motivo), consumo por tick de los módulos | #144 (`elegirDilema`: el dilema con el extra del invernadero) |
+| diseño (Camilo; Santiago supervisa) | Misión 1 de Jezero como datos, `DURACION_TORMENTA_TICKS = 3` (aprobada, #114), 7 tarjetas de ciencia y pregunta final con fuente verificada | #135 (quitar la duración repetida) |
+| ui (María Paula) | Esqueleto de Jaime (#68) | **Subir el trabajo local (#142)**, ruta dorada en pantalla (#58), login/invitado (#109), 3D según la guía v8 |
+| agentes (José) | Tripulación, Iris 1–3, Matemático, voces de la misión 1, clasificador, guía de qué llama cada pantalla | #128, #129, #131 (rebase) |
+| infra/pitch (José) | Worker con pantalla y API, despliegue automático, login opcional sin correo + D1, e2e de la ruta dorada en cada PR, guion del video, tráiler, borrador del formulario | — |
+| datos (Daniel) | 8 tormentas reales, terreno de Jezero, dosis verificadas, fuentes de todas las tarjetas, dueños en inglés | #141 (fuente de la gravedad), Luna (#95, #126, borradores #97–#100) |
 
-`develop` compila y pasan 230 de 230 pruebas, incluida la semilla dorada (14 nov, 00:00). No hay link vivo.
+## Plan de construcción de la pantalla y el 3D (acordado el 14 nov)
+
+| Bloque | Qué | Hasta |
+|---|---|---|
+| 0 | Subir lo local y conectar la ruta dorada al motor con lo visual que ya existe: `aterrizar()` (paso 3), `elegirDilema()` (paso 6, #144), telemetría con retraso visible (7), `estado.resultado` + cadena de causas + tarjetas con fuente (8), login/invitado | sáb 22:00 (P2) |
+| 1 | Materiales y cachés, iluminación v8, niño astronauta, inicio nuevo; prueba en un celular y un PC viejo | dom 09:00 |
+| 2 | Terreno de Jezero, kit común, los 5 módulos según el motor | dom 11:00 (P3: decisión 3D o 2D) |
+| 4 | HUD y CSS v8, verificación final (teclado, móvil, reduce-motion, respaldo 2D) | dom 13:00 (congelamiento) |
+| 3 | 8 estaciones, Iris rover, expertas en 3D | después de P4, solo si sobra tiempo |
+
+Guía de arte: la "Guía maestra de construcción 3D procedural (Atlas v8)" de María Paula. Presupuesto por vista: < 80 draw calls, < 80 000 triángulos, DPR máx 1,5 (calidad baja 1, sin sombras). Invariantes: doble clic nunca cobra dos veces; cambiar cámara o perder WebGL no toca el GameState; abrir paneles conserva pausa y foco.
+
+**Decisiones pendientes de Santiago:** ¿Iris pasa a ser un rover (hoy es la IA de la base, D2)? ¿Expertas en 3D o retratos 2D? ¿Se recorta el bloque 3? ¿Las ~70 láminas y el PDF de referencia entran al repo o solo las comprimidas que se usen?
 
 ## Ruta dorada (propuesta, sin aprobar)
 

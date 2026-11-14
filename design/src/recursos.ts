@@ -26,6 +26,15 @@ export const CONSUMO_POR_TICK: Record<Site, Resources> = {
   outpost_sorpresa: { energia: -3, soporte_vital: -3, blindaje: -2 },
 };
 
+/**
+ * Consumo continuo de cada módulo construido y en buen estado, por tick (#90, pedido en #88 §3).
+ * El motor lo suma al consumo pasivo. Hoy está VACÍA a propósito: el consumo sigue como costo único
+ * dentro de MODULOS (plan B) y la ruta dorada no cambia. Para pasar un módulo a consumo por tick:
+ * poner aquí su número negativo y quitar el mismo concepto de MODULOS (y revisar ganable.test.ts).
+ * Valores de juego, no de NASA.
+ */
+export const CONSUMO_MODULO_POR_TICK: Partial<Record<Equipment, Partial<Record<Resource, number>>>> = {};
+
 export type TipoAccionConCosto =
   | "esperar"
   | "redistribuir_energia"
@@ -172,3 +181,10 @@ export const ENERGIA_POR_CANTIDAD: Record<QuantityWord, number> = {
   medio: 25,
   mucho: 45,
 };
+
+/**
+ * Cuántos ticks hace daño una tormenta desde que se revela (tick 3 en Jezero): ticks 3, 4 y 5.
+ * Propuesta de Camilo con 720 simulaciones (#114), aprobada por Santiago el 14 nov.
+ * 3 es la mayor duración que deja ganar con las dos salidas del dilema del paso 6.
+ */
+export const DURACION_TORMENTA_TICKS = 3;

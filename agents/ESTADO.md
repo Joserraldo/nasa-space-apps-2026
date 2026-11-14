@@ -1,14 +1,13 @@
 # Estado — rol 3 (Agentes expertos)
-**Actualizado:** 14 nov 2026, 00:00 · **Rama:** feat/agentes-mision1-voces · **PR:** #92 (abiertos: #74, #75)
+**Actualizado:** 14 nov 2026, 14:45 · **Rama:** feat/agentes-voces-marte-polo-norte · **PR:** ver abajo
 
 ## Hecho (últimas iteraciones)
-- En develop: regex en/es, 3 expertos con fuente, escena 6, avería de Iris, satélite, aterrizaje, director, títulos, Iris 1-2, `conversar()` (#72).
-- #92 misión 1 (ARES): `escenaPolvo` (4b, con Meteoróloga), dilema del refugio con invernadero, `escenaTormenta(vista, dilema)` con las opciones de #89, `preguntaIris` nivel 2.
-- #74 Matemático: `queSiMatematico`, `compararOpciones` (ya y después), aviso de usos. #75 frases cortas.
+- En develop: expertos con fuente, escenas 4b/6, Iris 1-3, `conversar()`, Matemático (#74), README por pantalla (#119), `MedicionCitada` y Kp en la Tierra (#120).
+- Voces de misiones de datos (pedido de José, sin esperar merges): Marte polo norte (#97) en esta rama — zonas por latitud, escarcha, dilema de la batería con "medido en Gale", noche polar, pregunta de Iris.
 
 ## Qué sigue
-- Voces de las 4 misiones de datos (#97-#100): Doctora con CRaTER "en órbita" (#95), Meteoróloga con Kp "en la Tierra".
-- Matemático y voces conectados en las pantallas de ui.
+- Voces Luna polo sur (#98, datos de #95 CRaTER y #126 terreno), luego outpost (#99) y Luna lado visible (#100, #125).
+- Loop se detiene cuando los 4 PRs de voces estén abiertos y en verde.
 
 ## Bloqueos
-- SourceCard de InSight (#91). Dato de hielo en Jezero (Santiago).
+- Las 4 misiones dependen de que Camilo las apruebe. Fuente F1 (hielo de agua) de #97 sin aprobar por Daniel.

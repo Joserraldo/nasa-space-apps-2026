@@ -141,3 +141,10 @@ describe("misión 1: tarjetas de ciencia y pregunta final", () => {
     for (const m of MISION_JEZERO.modulosDisponibles) expect(conTarjeta.has(m), m).toBe(true);
   });
 });
+
+describe("tarjetas de ciencia con fuente verificada (#93, #104)", () => {
+  it("todas las tarjetas y la pregunta final tienen fuente: ninguna queda oculta", () => {
+    for (const t of MISION_JEZERO.tarjetasCiencia) expect(t.fuenteKey, t.id).not.toBeNull();
+    expect(MISION_JEZERO.preguntaFinal.fuenteKey).not.toBeNull();
+  });
+});

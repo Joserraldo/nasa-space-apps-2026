@@ -1,0 +1,15 @@
+{
+  "id": "mars-trek",
+  "dueno": "NASA JPL",
+  "consultadoEl": "2026-11-14",
+  "paginas": [
+    {
+      "url": "https://trek.nasa.gov/mars/",
+      "archivo": "index.md",
+      "estado": 200,
+      "caracteres": 194,
+      "nota": "Contenido escrito a mano (la página es una aplicación JavaScript)."
+    }
+  ],
+  "nota": "Visor en JavaScript: se usan sus servicios en jezero-descargar.ts."
+}

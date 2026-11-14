@@ -1,4 +1,4 @@
-import type { Action, Expert } from "@solar-shield/contracts";
+import type { Action, Expert, SourceCard } from "@solar-shield/contracts";
 import { ENERGIA_POR_CANTIDAD } from "./a-accion.js";
 import type { Dialogo } from "./dialogo.js";
 import type { VistaAgente } from "./expertos.js";
@@ -22,14 +22,36 @@ export interface OpcionDilemaVista {
 }
 
 /**
+ * Cifra de radiación con su lugar (docs/ideas/voces-misiones-datos.md §2). La arma quien integra con datos
+ * (ej. CRaTER de LRO en órbita lunar, #95). El lugar elige la frase: nunca "en tu base" si se midió en órbita.
+ */
+export interface MedicionCitada {
+  /** pico / fondo, tal como lo da datos. */
+  factor: number;
+  /** `gale_lejos`: RAD (Curiosity) midió en el cráter Gale, lejos de la base (misión del polo norte). */
+  lugar: "superficie_marte" | "gale_lejos" | "orbita_luna";
+  fuente: SourceCard;
+}
+
+const CLAVE_MEDIDA: Record<MedicionCitada["lugar"], string> = {
+  superficie_marte: "agentes.escena6.doctora.medida",
+  gale_lejos: "agentes.escena6.doctora.medidaGale",
+  orbita_luna: "agentes.escena6.doctora.medidaOrbitaLuna",
+};
+
+/**
  * @param dilema opciones de `MISION_JEZERO.dilemaPaso6.opciones`. Si se pasan, mandan las acciones de la misión;
  * si no, se usan las de siempre (refugio vs. energía al escudo).
+ * @param medicion cifra citada de otro lugar (misiones de la Luna). Sin ella, la Doctora usa `medicionMarte` (Curiosity).
  */
-export function escenaTormenta(v: VistaAgente, dilema?: readonly OpcionDilemaVista[]): EscenaTormenta | null {
+export function escenaTormenta(v: VistaAgente, dilema?: readonly OpcionDilemaVista[], medicion?: MedicionCitada): EscenaTormenta | null {
   const t = v.tormenta;
   if (!t) return null;
   const fecha = t.inicio.slice(0, 10);
-  const medida = t.medicionMarte && t.medicionMarte.factor >= 1.5 ? Math.round(t.medicionMarte.factor) : null;
+  const citada: MedicionCitada | null = medicion ?? (t.medicionMarte ? { factor: t.medicionMarte.factor, lugar: "superficie_marte", fuente: t.fuente } : null);
+  const medida = citada && citada.factor >= 1.5 ? citada : null;
+  // Kp solo existe en la Tierra (DONKI GST): la Meteoróloga lo dice con su lugar.
+  const kp = t.fases?.find((f) => f.tipo === "GST" && f.observadoEn === "Tierra" && f.magnitudTexto)?.magnitudTexto;
   const de = (e: Expert) => dilema?.find((o) => o.defiende === e)?.accion;
   const refugio: Action = de("doctora") ?? { tipo: "refugiarse" };
   const escudo: Action = de("ingeniera") ?? { tipo: "redistribuir_energia", hacia: "blindaje", cantidad: ENERGIA_POR_CANTIDAD.mucho };
@@ -43,17 +65,18 @@ export function escenaTormenta(v: VistaAgente, dilema?: readonly OpcionDilemaVis
     lineas: [
       { clave: "agentes.escena6.meteorologa.llega", vars: { fecha, nombreKey: `datos.tormenta.${t.id}.nombre` } },
       ...(t.marcoMarte ? [{ clave: `datos.marco.${t.marcoMarte}` }] : []),
+      ...(kp ? [{ clave: "agentes.escena6.meteorologa.kpTierra", vars: { kp } }] : []),
     ],
   };
-  // La Doctora cita lo que midió Curiosity (si hay medición); si no, solo el principio de protegerse.
+  // La Doctora cita la medición con su lugar (si hay); si no, solo el principio de protegerse.
   const doctora: Dialogo = {
     experto: "doctora",
     prioridad: "consejo",
-    fuente: t.fuente,
+    fuente: medida?.fuente ?? t.fuente,
     accion: refugio,
     lineas: [
       medida
-        ? { clave: "agentes.escena6.doctora.medida", vars: { factor: medida } }
+        ? { clave: CLAVE_MEDIDA[medida.lugar], vars: { factor: Math.round(medida.factor) } }
         : { clave: "agentes.escena6.doctora.sinMedida" },
       // Dilema del refugio (idea de ARES): con invernadero sano, refugiarse lo deja sin cuidar.
       { clave: v.equipos.invernadero === "ok" ? "agentes.escena6.doctora.costoInvernadero" : "agentes.escena6.doctora.costo" },

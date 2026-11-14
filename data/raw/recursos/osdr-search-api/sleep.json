@@ -1,0 +1,40 @@
+[
+ {
+  "Accession": "OSD-195",
+  "Study Title": "Effects of 21 days of bedrest on human skeletal muscle gene expression",
+  "organism": "Homo sapiens",
+  "Project Type": "Ground Study",
+  "Study Factor Name": "Bed Rest     Time",
+  "Study Assay Measurement Type": "transcription profiling",
+  "Study Publication Title": "PlanHab (Planetary Habitat Simulation): the combined and separate effects of 21 days bed rest and hypoxic confinement on human skeletal muscle miRNA expression",
+  "Study Description": "The present study concerns the effects of 21 days of sustained recumbence (bedrest) on skeletal muscle gene expression. 14 male subjects participated in normoxic bedrest (NBR) with muscle unloading, for 21 days, this is a substudy of tha PlanHab-study which apart from normoxic bedrest also involved hypoxic bedrest and hypoxic ambulation. Throughout both bedrest interventions, each subject remained in a horizontal position at all times. He was allowed one pillow for the head and to occasionally lean on an elbow while eating or being transferred to a gurney. Muscular exercise was prohibited. Dur…",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-195"
+ },
+ {
+  "Accession": "OSD-32",
+  "Study Title": "Effect of microgravity on brain gene expression in mice",
+  "organism": "Mus musculus",
+  "Project Type": "Ground Study",
+  "Study Factor Name": "Hindlimb Unloading",
+  "Study Assay Measurement Type": "transcription profiling",
+  "Study Publication Title": "Effect of microgravity on gene expression in mouse brain.",
+  "Study Description": "Changes in gravitational force such as that experienced by astronauts during space flight induce a redistribution of fluids from the caudad to the cephalad portion of the body together with an elimination of normal head-to-foot hydrostatic pressure gradients. To assess brain gene profile changes associated with microgravity and fluid shift, a large-scale analysis of mRNA expression levels was performed in the brains of 2 weeks control and hindlimb-unloaded (HU) mice using cDNA microarrays. Although to different extent, all functional categories displayed significantly regulated genes indicatin…",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-32"
+ },
+ {
+  "Accession": "OSD-253",
+  "Study Title": "Transcriptional analysis of kidneys from mice flown on the RR-7 mission",
+  "organism": "Mus musculus",
+  "Project Type": "Spaceflight Study",
+  "Flight Program": "International Space Station (ISS)",
+  "Mission": {
+   "End Date": "08/03/2018",
+   "Start Date": "06/29/2018",
+   "Name": "SpaceX-15"
+  },
+  "Study Factor Name": "Spaceflight     Strain     Duration     Treatment",
+  "Study Assay Measurement Type": "transcription profiling",
+  "Study Description": "The objective of the Rodent Research-7 mission (RR-7) was to study the impact of the space environment on the gut microbiota of two strains of mice and how any changes in-turn affect the immune system, metabolic system, and circadian or daily rhythms. To this end, ten 11-week-old female C57BL/6J and ten 11-week-old female C3H/HeJ mice were flown to the International Space Station on June 29, 2018 on SpaceX-15 and housed in two Rodent Habitats. Samples of food, swabs from living surfaces, and fecal pellets were collected from each animal before launch and regularly during the mission. The missi…",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-253"
+ }
+]

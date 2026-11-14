@@ -1,0 +1,103 @@
+{
+  "id": "csa-food",
+  "dueno": "Agencia Espacial Canadiense (CSA), socio, no NASA",
+  "consultadoEl": "2026-11-14",
+  "paginas": [
+    {
+      "url": "https://www.asc-csa.gc.ca/eng/youth-educators/toolkits/food-production/",
+      "archivo": "index.md",
+      "estado": 200,
+      "caracteres": 5571
+    },
+    {
+      "url": "https://www.asc-csa.gc.ca/eng/astronauts/living-in-space/eating-in-space.asp",
+      "archivo": "eating-in-space.md",
+      "estado": 200,
+      "caracteres": 16351
+    },
+    {
+      "url": "https://www.asc-csa.gc.ca/eng/sciences/food-production/",
+      "archivo": "food-production.md",
+      "estado": 200,
+      "caracteres": 1917
+    },
+    {
+      "url": "https://www.asc-csa.gc.ca/eng/sciences/food-production/growing-healthy-food-in-space-and-remote-areas.asp",
+      "archivo": "growing-healthy-food-in-space-and-remote-areas.md",
+      "estado": 200,
+      "caracteres": 3780
+    },
+    {
+      "url": "https://www.asc-csa.gc.ca/eng/sciences/food-production/deep-space-food-challenge.asp",
+      "archivo": "deep-space-food-challenge.md",
+      "estado": 200,
+      "caracteres": 7013
+    },
+    {
+      "url": "https://www.asc-csa.gc.ca/eng/youth-educators/activities/fitness-and-nutrition/",
+      "archivo": "fitness-and-nutrition.md",
+      "estado": 200,
+      "caracteres": 10772
+    },
+    {
+      "url": "https://www.asc-csa.gc.ca/eng/youth-educators/activities/fitness-and-nutrition/interplanetary-farming.asp",
+      "archivo": "interplanetary-farming.md",
+      "estado": 200,
+      "caracteres": 7751
+    },
+    {
+      "url": "https://www.asc-csa.gc.ca/eng/youth-educators/activities/fitness-and-nutrition/master-chef-mars.asp",
+      "archivo": "master-chef-mars.md",
+      "estado": 200,
+      "caracteres": 3465
+    },
+    {
+      "url": "https://www.asc-csa.gc.ca/eng/youth-educators/activities/fitness-and-nutrition/close-encounters-of-the-tasty-kind.asp",
+      "archivo": "close-encounters-of-the-tasty-kind.md",
+      "estado": 200,
+      "caracteres": 6391
+    },
+    {
+      "url": "https://www.asc-csa.gc.ca/eng/youth-educators/activities/fitness-and-nutrition/healthy-meals-in-microgravity.asp",
+      "archivo": "healthy-meals-in-microgravity.md",
+      "estado": 200,
+      "caracteres": 3992
+    },
+    {
+      "url": "https://www.asc-csa.gc.ca/eng/youth-educators/activities/fitness-and-nutrition/iss-ingredients-reading-food-labels.asp",
+      "archivo": "iss-ingredients-reading-food-labels.md",
+      "estado": 200,
+      "caracteres": 7816
+    },
+    {
+      "url": "https://www.asc-csa.gc.ca/eng/youth-educators/activities/fitness-and-nutrition/keeping-food-safe-on-earth-and-in-space.asp",
+      "archivo": "keeping-food-safe-on-earth-and-in-space.md",
+      "estado": 200,
+      "caracteres": 8408
+    },
+    {
+      "url": "https://www.asc-csa.gc.ca/eng/youth-educators/activities/fitness-and-nutrition/o-canada-food-on-the-international-space-station.asp",
+      "archivo": "o-canada-food-on-the-international-space-station.md",
+      "estado": 200,
+      "caracteres": 7003
+    },
+    {
+      "url": "https://www.asc-csa.gc.ca/eng/youth-educators/activities/fitness-and-nutrition/soaring-in-space-with-canada-food-guide.asp",
+      "archivo": "soaring-in-space-with-canada-food-guide.md",
+      "estado": 200,
+      "caracteres": 6362
+    },
+    {
+      "url": "https://www.asc-csa.gc.ca/eng/youth-educators/activities/fitness-and-nutrition/space-jam-an-astronaut-lunch.asp",
+      "archivo": "space-jam-an-astronaut-lunch.md",
+      "estado": 200,
+      "caracteres": 5936
+    },
+    {
+      "url": "https://www.asc-csa.gc.ca/eng/youth-educators/tomatosphere.asp",
+      "archivo": "tomatosphere.md",
+      "estado": 200,
+      "caracteres": 6647
+    }
+  ]
+}

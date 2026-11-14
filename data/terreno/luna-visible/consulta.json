@@ -1,0 +1,66 @@
+{
+  "consultadoEl": "2026-11-14",
+  "dem": {
+    "capa": "LRO_LOLA_DEM_Global_128ppd_v04",
+    "unidad": "m",
+    "tipo": "Int16LE",
+    "ancho": 64,
+    "alto": 64
+  },
+  "sombreado": {
+    "capa": "LRO_LOLA_ClrShade_Global_128ppd_v04"
+  },
+  "sitios": [
+    {
+      "id": "llanura-tranquilidad",
+      "mision": "Apollo 11 LM descent stage",
+      "tipo": "Crewed Landing",
+      "lat": 0.67416,
+      "lon": 23.47314,
+      "enlaceNssdc": "https://nssdc.gsfc.nasa.gov/nmc/spacecraft/display.action?id=1969-059C",
+      "bbox": {
+        "oeste": 23.22314,
+        "sur": 0.42416,
+        "este": 23.72314,
+        "norte": 0.92416
+      },
+      "urlPos": "https://trek.nasa.gov/moon/trekarcgis/rest/services/CombinedNomenclature/MapServer/0/query?where=Spacecraft%3D'Apollo%2011%20LM%20descent%20stage'&outFields=Spacecraft,type,Lat_Y,Lon_X,link&returnGeometry=false&f=json",
+      "urlDem": "https://trek.nasa.gov/moon/trekarcgis/rest/services/LRO_LOLA_DEM_Global_128ppd_v04/ImageServer/exportImage?bbox=23.22314,0.42416,23.72314,0.92416&bboxSR=104903&size=64,64&format=bsq&pixelType=F32&interpolation=RSP_BilinearInterpolation&f=image",
+      "urlSombra": "https://trek.nasa.gov/moon/trekarcgis/rest/services/LRO_LOLA_ClrShade_Global_128ppd_v04/ImageServer/exportImage?bbox=23.22314,0.42416,23.72314,0.92416&bboxSR=104903&size=256,256&format=jpg&f=image"
+    },
+    {
+      "id": "tierras-altas-descartes",
+      "mision": "Apollo 16 LM descent stage",
+      "tipo": "Crewed Landing",
+      "lat": -8.9734,
+      "lon": 15.5011,
+      "enlaceNssdc": "https://nssdc.gsfc.nasa.gov/nmc/spacecraft/display.action?id=1972-031C",
+      "bbox": {
+        "oeste": 15.2511,
+        "sur": -9.2234,
+        "este": 15.7511,
+        "norte": -8.7234
+      },
+      "urlPos": "https://trek.nasa.gov/moon/trekarcgis/rest/services/CombinedNomenclature/MapServer/0/query?where=Spacecraft%3D'Apollo%2016%20LM%20descent%20stage'&outFields=Spacecraft,type,Lat_Y,Lon_X,link&returnGeometry=false&f=json",
+      "urlDem": "https://trek.nasa.gov/moon/trekarcgis/rest/services/LRO_LOLA_DEM_Global_128ppd_v04/ImageServer/exportImage?bbox=15.2511,-9.2234,15.7511,-8.7234&bboxSR=104903&size=64,64&format=bsq&pixelType=F32&interpolation=RSP_BilinearInterpolation&f=image",
+      "urlSombra": "https://trek.nasa.gov/moon/trekarcgis/rest/services/LRO_LOLA_ClrShade_Global_128ppd_v04/ImageServer/exportImage?bbox=15.2511,-9.2234,15.7511,-8.7234&bboxSR=104903&size=256,256&format=jpg&f=image"
+    },
+    {
+      "id": "borde-rima-hadley",
+      "mision": "Apollo 15 LM descent stage",
+      "tipo": "Crewed Landing",
+      "lat": 26.13239,
+      "lon": 3.6333,
+      "enlaceNssdc": "https://nssdc.gsfc.nasa.gov/nmc/spacecraft/display.action?id=1971-063C",
+      "bbox": {
+        "oeste": 3.3833,
+        "sur": 25.88239,
+        "este": 3.8833,
+        "norte": 26.38239
+      },
+      "urlPos": "https://trek.nasa.gov/moon/trekarcgis/rest/services/CombinedNomenclature/MapServer/0/query?where=Spacecraft%3D'Apollo%2015%20LM%20descent%20stage'&outFields=Spacecraft,type,Lat_Y,Lon_X,link&returnGeometry=false&f=json",
+      "urlDem": "https://trek.nasa.gov/moon/trekarcgis/rest/services/LRO_LOLA_DEM_Global_128ppd_v04/ImageServer/exportImage?bbox=3.3833,25.88239,3.8833,26.38239&bboxSR=104903&size=64,64&format=bsq&pixelType=F32&interpolation=RSP_BilinearInterpolation&f=image",
+      "urlSombra": "https://trek.nasa.gov/moon/trekarcgis/rest/services/LRO_LOLA_ClrShade_Global_128ppd_v04/ImageServer/exportImage?bbox=3.3833,25.88239,3.8833,26.38239&bboxSR=104903&size=256,256&format=jpg&f=image"
+    }
+  ]
+}

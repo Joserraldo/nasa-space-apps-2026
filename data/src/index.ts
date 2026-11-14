@@ -16,12 +16,14 @@ import c_2017_09_06_x93 from "../curated/2017-09-06-x93.json";
 import c_2017_09_10_x82 from "../curated/2017-09-10-x82.json";
 import indiceCurado from "../curated/index.json";
 import jezeroJson from "../terreno/jezero/jezero.json";
+import lunaVisibleJson from "../terreno/luna-visible/luna-visible.json";
 import radiacionJson from "../ciencia/radiacion.json";
 import osdrJson from "../ciencia/osdr.json";
 import artemisJson from "../ciencia/artemis.json";
-import { ArtemisSchema, FUENTE_DOSIS, OsdrSchema, RadiacionSchema, type Artemis, type Osdr, type Radiacion } from "./ciencia";
+import csaJson from "../ciencia/csa.json";
+import { ArtemisSchema, CsaSchema, FUENTE_DOSIS, OsdrSchema, RadiacionSchema, type Artemis, type Csa, type Osdr, type Radiacion } from "./ciencia";
 import type { SourceCard } from "./contrato";
-import { TerrenoSchema, type Terreno } from "./terreno";
+import { TerrenoLunaSchema, TerrenoSchema, type Terreno, type TerrenoLuna } from "./terreno";
 import { aConvenio } from "./convenio";
 import { TormentaSchema, type Tormenta } from "./tormenta";
 
@@ -33,6 +35,8 @@ export * from "./radlab";
 export * from "./ciencia";
 export * from "./region";
 export * from "./tarjeta";
+export * from "./comunicaciones";
+export * from "./fuentes";
 export { aConvenio, magnitud } from "./convenio";
 
 /** Mocks validados al cargarse: si alguien rompe un JSON, falla aquí y no en la pantalla. */
@@ -56,6 +60,8 @@ export const terrenoJezero: Terreno = TerrenoSchema.parse(jezeroJson);
 export const radiacion: Radiacion = RadiacionSchema.parse(radiacionJson);
 /** Tarjetas de ciencia con ID real de estudio de OSDR. */
 export const tarjetasOsdr: Osdr = OsdrSchema.parse(osdrJson);
+/** Tarjetas de comida de la CSA (socia, no NASA). La fuente se muestra con `fuente.csa` y el crédito "© Canadian Space Agency". */
+export const tarjetasCsa: Csa = CsaSchema.parse(csaJson);
 
 /** Artemis I: dosis absorbida dentro de Orion (HERA, vía RadLab). µGy/h, nunca mSv. */
 export const artemis: Artemis = ArtemisSchema.parse(artemisJson);
@@ -75,3 +81,19 @@ export function referenciaDosis(id: string): { valor: number; unidad: "mSv/día"
     fuente: { nombreKey, url: r.url, idFuente: r.id, consultadoEl: radiacion.consultadoEl, dueno: r.dueno, estadoDato: "curado" },
   };
 }
+
+/**
+ * Tarjeta de fuente del terreno de Jezero (SourceCard del contrato), para los consejos de aterrizaje.
+ * Los puntajes plano/luz/blindaje son DERIVADOS por el equipo: ui debe mostrar también
+ * la nota `terrenoJezero.fuente.derivadoKey` ("valores del juego calculados a partir de la altura real").
+ */
+export function fuenteTerreno(): SourceCard {
+  const f = terrenoJezero.fuente;
+  return { nombreKey: f.nombreKey, url: f.urls[0]!, idFuente: "jezero", consultadoEl: f.consultadoEl, dueno: f.dueno, estadoDato: "curado" };
+}
+
+/**
+ * Luna lado visible (Moon Trek): 3 sitios Apolo. Las rutas son relativas a data/terreno/luna-visible/.
+ * Elevación = medida (LOLA); pendiente, relieve y plano = derivados; luz y blindaje = null (sin fuente verificada).
+ */
+export const terrenoLunaVisible: TerrenoLuna = TerrenoLunaSchema.parse(lunaVisibleJson);

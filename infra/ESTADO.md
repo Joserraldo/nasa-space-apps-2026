@@ -1,16 +1,16 @@
 # Estado — infra
-**Actualizado:** 14 nov 2026, 01:10 · **Rama:** feat/infra-clave-ia-limite · **Responsable:** José
+**Actualizado:** 14 nov 2026, 12:50 · **Rama:** feat/infra-e2e-ci · **PR:** e2e en CI (este)
 **Tokens:** 🟢
 
-## Hecho
-- Un solo Worker para pantalla y API (`infra/worker/`), producción y preview (#76), despliegue automático por Actions (#78, #105).
-- Secretos `CLOUDFLARE_ACCOUNT_ID` y `CLOUDFLARE_API_TOKEN` guardados en GitHub.
-- `deploy.yml` copia `BAI_API_KEY` de GitHub al Worker en cada despliegue.
-- Límite de la IA activo: 20/min por IP con el limitador nativo de Cloudflare (antes dependía de un KV que nunca se conectó).
+## Hecho (últimas iteraciones)
+- Un solo Worker para pantalla y API, preview (develop) y producción (main) por Actions (#76, #78, #105); límite IA 20/min por IP.
+- En develop: e2e de la ruta dorada (#80), guion del video (#79) y formulario (#81).
+- e2e pasa contra el preview (`nasa-space-apps-2026-preview…workers.dev`) y contra Vite.
+- Job `E2E ruta dorada` en `ci.yml`: cada PR y push a develop/main corre Playwright (solo Chromium, cacheado) contra Vite.
 
 ## Qué sigue
-- Login + invitado con progreso en D1.
+- Hacer obligatorio el check `E2E ruta dorada` en la protección de develop/main (Santiago).
+- Antes de main: releer librerías del lockfile final (POR VERIFICAR en `pitch/formulario/atribuciones.md`).
 
 ## Bloqueos
-- El primer despliegue con el token falló con "Invalid access token": revisar el token con Santiago y volver a guardarlo.
-- Desconectar el Worker de la copia kcitas (Santiago).
+- LICENSE del proyecto: decide José. #66 se puede cerrar (resuelto por #107 y #65): decide José.

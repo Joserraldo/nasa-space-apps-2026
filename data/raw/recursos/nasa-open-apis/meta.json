@@ -1,0 +1,116 @@
+{
+  "id": "nasa-open-apis",
+  "dueno": "NASA",
+  "consultadoEl": "2026-11-14",
+  "paginas": [
+    {
+      "url": "https://api.nasa.gov/assets/html/overview.html",
+      "archivo": "overview.md",
+      "estado": 200,
+      "caracteres": 297
+    },
+    {
+      "url": "https://api.nasa.gov/assets/html/authentication.html",
+      "archivo": "authentication.md",
+      "estado": 200,
+      "caracteres": 2067
+    },
+    {
+      "url": "https://api.nasa.gov/assets/json/apis.json#APOD",
+      "archivo": "api-apod.md",
+      "estado": 200,
+      "caracteres": 2660
+    },
+    {
+      "url": "https://api.nasa.gov/assets/json/apis.json#Asteroids NeoWs",
+      "archivo": "api-asteroids-neows.md",
+      "estado": 200,
+      "caracteres": 2140
+    },
+    {
+      "url": "https://api.nasa.gov/assets/json/apis.json#DONKI",
+      "archivo": "api-donki.md",
+      "estado": 200,
+      "caracteres": 7857
+    },
+    {
+      "url": "https://api.nasa.gov/assets/json/apis.json#EONET",
+      "archivo": "api-eonet.md",
+      "estado": 200,
+      "caracteres": 1684
+    },
+    {
+      "url": "https://api.nasa.gov/assets/json/apis.json#EPIC",
+      "archivo": "api-epic.md",
+      "estado": 200,
+      "caracteres": 3304
+    },
+    {
+      "url": "https://api.nasa.gov/assets/json/apis.json#Exoplanet",
+      "archivo": "api-exoplanet.md",
+      "estado": 200,
+      "caracteres": 2030
+    },
+    {
+      "url": "https://api.nasa.gov/assets/json/apis.json#GIBS",
+      "archivo": "api-gibs.md",
+      "estado": 200,
+      "caracteres": 5148
+    },
+    {
+      "url": "https://api.nasa.gov/assets/json/apis.json#Insight",
+      "archivo": "api-insight.md",
+      "estado": 200,
+      "caracteres": 3196
+    },
+    {
+      "url": "https://api.nasa.gov/assets/json/apis.json#NASA Image and Video Library",
+      "archivo": "api-nasa-image-and-video-library.md",
+      "estado": 200,
+      "caracteres": 1427
+    },
+    {
+      "url": "https://api.nasa.gov/assets/json/apis.json#Open Science Data Repository",
+      "archivo": "api-open-science-data-repository.md",
+      "estado": 200,
+      "caracteres": 70839
+    },
+    {
+      "url": "https://api.nasa.gov/assets/json/apis.json#Satellite Situation Center",
+      "archivo": "api-satellite-situation-center.md",
+      "estado": 200,
+      "caracteres": 1059
+    },
+    {
+      "url": "https://api.nasa.gov/assets/json/apis.json#SSD/CNEOS",
+      "archivo": "api-ssd-cneos.md",
+      "estado": 200,
+      "caracteres": 3736
+    },
+    {
+      "url": "https://api.nasa.gov/assets/json/apis.json#Techport",
+      "archivo": "api-techport.md",
+      "estado": 200,
+      "caracteres": 754
+    },
+    {
+      "url": "https://api.nasa.gov/assets/json/apis.json#TechTransfer",
+      "archivo": "api-techtransfer.md",
+      "estado": 200,
+      "caracteres": 1512
+    },
+    {
+      "url": "https://api.nasa.gov/assets/json/apis.json#TLE API",
+      "archivo": "api-tle-api.md",
+      "estado": 200,
+      "caracteres": 1008
+    },
+    {
+      "url": "https://api.nasa.gov/assets/json/apis.json#Vesta/Moon/Mars Trek WMTS",
+      "archivo": "api-vesta-moon-mars-trek-wmts.md",
+      "estado": 200,
+      "caracteres": 10273
+    }
+  ],
+  "nota": "index.md: notas leídas con Claude in Chrome. El resto sale de los archivos estáticos que carga la página."
+}

@@ -9,6 +9,7 @@ import {
 } from "@solar-shield/contracts";
 import {
   COSTOS_ACCION,
+  CONSUMO_MODULO_POR_TICK,
   CONSUMO_POR_TICK,
   MODULOS,
   RETRASO_COMUNICACIONES,
@@ -18,7 +19,9 @@ import {
   RETRASO_POR_DIFICULTAD,
   TICKS_POR_DIA,
 } from "@solar-shield/design";
+import { MISION_JEZERO } from "@solar-shield/missions";
 import { actualizarIa, repararIa } from "./ia.js";
+import { tormentaEnCurso } from "./tormenta.js";
 import { ajustarAltura, avanzarOrbita, senalDeDano } from "./orbita.js";
 import { elegir, enteroEntre, siguiente } from "./rng.js";
 
@@ -88,6 +91,9 @@ export function aplicarAccion(estado: GameState, accionCruda: unknown): GameStat
     };
   }
 
+  // Rechazo limpio: si la acción no se puede hacer, devuelve el MISMO estado (ni cobra ni agenda nada).
+  if (!puedeAplicar(estado, accion).ok) return estado;
+
   const { inmediato, retrasado, causaKey } = costoDe(accion);
   let s = aplicarDeltas(estado, inmediato, "decision", causaKey, accion);
 
@@ -124,6 +130,119 @@ export function aplicarAccion(estado: GameState, accionCruda: unknown): GameStat
   return s;
 }
 
+/** Encola efectos con el retraso de la dificultad (mismo mecanismo que las acciones). */
+export function encolarRetrasado(
+  estado: GameState,
+  deltas: Partial<Record<Resource, number>>,
+  descripcionKey: string,
+  idBase: string,
+): GameState {
+  const retraso = RETRASO_POR_DIFICULTAD[estado.dificultad];
+  let rng = estado.rngEstado;
+  const nuevos: PendingEffect[] = [];
+  for (const r of RECURSOS) {
+    const d = deltas[r];
+    if (!d) continue;
+    const p = enteroEntre(rng, retraso.min, retraso.max);
+    rng = p.estado;
+    nuevos.push({ id: `${estado.tick}-${idBase}-${r}`, aplicaEnTick: estado.tick + p.entero, recurso: r, delta: d, origen: "decision", descripcionKey, oculto: retraso.ocultos });
+  }
+  return { ...estado, rngEstado: rng, efectosPendientes: [...estado.efectosPendientes, ...nuevos] };
+}
+
+/** Aplica un efecto inmediato + retrasado registrado como decisión (aterrizaje, extras del dilema…). */
+export function aplicarEfecto(
+  estado: GameState,
+  efecto: { inmediato: Partial<Record<Resource, number>>; retrasado: Partial<Record<Resource, number>> },
+  descripcionKey: string,
+  idBase: string,
+): GameState {
+  const s = aplicarDeltas(estado, efecto.inmediato, "decision", descripcionKey);
+  return encolarRetrasado(s, efecto.retrasado, descripcionKey, idBase);
+}
+
+/** Módulos que el jugador ya construyó en esta partida (según la cadena de causas). */
+export function modulosColocados(estado: GameState): string[] {
+  const m = new Set<string>();
+  for (const c of estado.causas) {
+    if (c.origen === "decision" && c.accion?.tipo === "colocar_modulo") m.add(c.accion.modulo);
+  }
+  return [...m];
+}
+
+/**
+ * Consumo por tick de los módulos que el jugador construyó y siguen en estado "ok" (#90).
+ * Un módulo averiado o destruido no gasta. La tabla viene de design/ (CONSUMO_MODULO_POR_TICK).
+ */
+export function consumoDeModulos(
+  estado: GameState,
+  tabla: Partial<Record<string, Partial<Record<Resource, number>>>> = CONSUMO_MODULO_POR_TICK,
+): Partial<Record<Resource, number>> {
+  const total: Partial<Record<Resource, number>> = {};
+  for (const m of modulosColocados(estado)) {
+    if (estado.equipos[m as keyof GameState["equipos"]] !== "ok") continue;
+    const c = tabla[m];
+    if (!c) continue;
+    for (const r of RECURSOS) if (c[r]) total[r] = (total[r] ?? 0) + c[r]!;
+  }
+  return total;
+}
+
+/**
+ * Regla del motor, no solo de la pantalla (#113): solo módulos de la misión, sin repetir,
+ * y como máximo MISION_JEZERO.modulosAColocar. Si no se puede, la acción no hace nada.
+ */
+export function puedeColocar(estado: GameState, modulo: string): boolean {
+  const ya = modulosColocados(estado);
+  return (
+    (MISION_JEZERO.modulosDisponibles as readonly string[]).includes(modulo) &&
+    !ya.includes(modulo) &&
+    ya.length < MISION_JEZERO.modulosAColocar
+  );
+}
+
+export type MotivoRechazo = "partida_terminada" | "sin_simulaciones" | "modulo_no_permitido" | "recursos_insuficientes";
+export type Permiso = { ok: true } | { ok: false; motivo: MotivoRechazo; recurso?: Resource };
+
+/**
+ * ¿Se puede hacer esta acción ahora? Pura: no cambia nada. ui la usa para apagar botones y decir por qué;
+ * aplicarAccion usa la misma regla, así que una acción rechazada devuelve el mismo estado.
+ * Recursos: el costo inmediato no puede dejar ningún medidor en 0 (`recurso` dice cuál falta).
+ */
+export function puedeAplicar(estado: GameState, accionCruda: unknown): Permiso {
+  const accion = ActionSchema.parse(accionCruda);
+  if (estado.resultado !== "en_curso") return { ok: false, motivo: "partida_terminada" };
+  if (accion.tipo === "simular") {
+    return estado.simulacionesRestantes === 0 ? { ok: false, motivo: "sin_simulaciones" } : { ok: true };
+  }
+  if (accion.tipo === "colocar_modulo" && !puedeColocar(estado, accion.modulo)) return { ok: false, motivo: "modulo_no_permitido" };
+  const { inmediato } = costoDe(accion);
+  for (const r of RECURSOS) {
+    const d = inmediato[r] ?? 0;
+    if (d < 0 && estado.recursos[r] + d <= 0) return { ok: false, motivo: "recursos_insuficientes", recurso: r };
+  }
+  return { ok: true };
+}
+
+/**
+ * Aterrizar en uno de los sitios candidatos de la misión (paso 3). Cobra su costo una sola vez:
+ * el inmediato ahora y el retrasado con el retraso de la dificultad. No es una Action del contrato
+ * (no cambia contracts/): la pantalla la llama al confirmar el sitio. Sitio desconocido o ya
+ * aterrizado → no hace nada.
+ */
+export function aterrizar(estado: GameState, sitioId: string): GameState {
+  if (estado.resultado !== "en_curso") return estado;
+  if (estado.causas.some((c) => c.descripcionKey === "causa.aterrizaje")) return estado;
+  const sitio = MISION_JEZERO.sitiosCandidatos.find((c) => c.id === sitioId);
+  if (!sitio) return estado;
+  let s = aplicarDeltas(estado, sitio.aterrizaje.inmediato, "decision", "causa.aterrizaje");
+  // Marca el aterrizaje aunque el costo inmediato fuera cero, para no cobrarlo dos veces.
+  if (!s.causas.some((c) => c.descripcionKey === "causa.aterrizaje")) {
+    s = { ...s, causas: [...s.causas, { tick: s.tick, origen: "decision", descripcionKey: "causa.aterrizaje" }] };
+  }
+  return encolarRetrasado(s, sitio.aterrizaje.retrasado, "causa.aterrizaje", "aterrizaje");
+}
+
 /** Simula una acción sin tocar el estado real: devuelve el estado hipotético tras avanzar hasta que sus efectos entren. */
 export function queEsSi(estado: GameState, accion: BaseAction): GameState {
   let s = aplicarAccion(estado, accion);
@@ -150,13 +269,17 @@ export function avanzarTick(estado: GameState): GameState {
   s = { ...s, dia: Math.floor(s.tick / TICKS_POR_DIA) + 1 };
 
   s = aplicarDeltas(s, CONSUMO_POR_TICK[s.sitio], "sistema", "causa.consumo");
+  // #90: los módulos construidos y en buen estado gastan cada tick lo que diga diseño.
+  s = aplicarDeltas(s, consumoDeModulos(s), "sistema", "causa.consumo");
 
   const listos = s.efectosPendientes.filter((e) => e.aplicaEnTick <= s.tick);
   const futuros = s.efectosPendientes.filter((e) => e.aplicaEnTick > s.tick);
   for (const e of listos) s = aplicarDeltas(s, { [e.recurso]: e.delta }, e.origen, e.descripcionKey);
   s = { ...s, efectosPendientes: futuros };
+  const llegoTelemetria = listos.some((e) => e.descripcionKey === "causa.enviar_telemetria");
 
-  const senal = senalDeDano(s);
+  // #113: la tormenta solo hace daño dentro de su ventana (desde que se revela, DURACION_TORMENTA_TICKS).
+  const senal = tormentaEnCurso(s) ? senalDeDano(s) : 0;
   if (senal > 0) {
     const dano = -Math.round(senal * 10);
     if (dano !== 0) s = aplicarDeltas(s, { blindaje: dano, energia: Math.ceil(dano / 2) }, "mala_suerte", "causa.tormenta");
@@ -179,7 +302,10 @@ export function avanzarTick(estado: GameState): GameState {
   const huboDecision = estado.causas.some((c) => c.tick === estado.tick && c.origen === "decision");
   s = actualizarIa(s, huboDecision, senal);
 
+  // Fin de la misión (MISION_JEZERO.fin): pierde si algo llega a 0, aunque la telemetría llegue
+  // en ese mismo tick; gana cuando la telemetría llega a la Tierra con todo por encima de 0.
   if (RECURSOS.some((r) => s.recursos[r] <= 0)) s = { ...s, resultado: "fallo" };
+  else if (llegoTelemetria) s = { ...s, resultado: "exito" };
   else if (s.dia > DIAS_PARA_GANAR) s = { ...s, resultado: "exito" };
   return s;
 }

@@ -52,3 +52,48 @@ export const TerrenoSchema = z.object({
   }),
 });
 export type Terreno = z.infer<typeof TerrenoSchema>;
+
+/** Radio de la Luna (esfera IAU, 1 737 400 m) usado por Moon Trek (SR 104903). */
+export const RADIO_LUNA_M = 1_737_400;
+/** Cuadro de 0,5° × 0,5° alrededor de cada sitio (64 × 64 px del DEM LOLA de 128 px/grado). */
+export const LUNA_CUADRO = { medioGrados: 0.25, px: 64 } as const;
+
+export const SitioLunaSchema = z.object({
+  id: z.string().regex(/^[a-z0-9-]+$/),
+  nombreKey: z.string(),
+  descripcionKey: z.string(),
+  /** Misión Apolo cuyo módulo de descenso fija la posición (capa CombinedNomenclature de Moon Trek). */
+  mision: z.string(),
+  lon: z.number(),
+  lat: z.number(),
+  bbox: z.object({ oeste: z.number(), sur: z.number(), este: z.number(), norte: z.number() }),
+  dem: z.object({ archivo: z.string(), ancho: z.number().int(), alto: z.number().int(), metrosPorPixel: z.number() }),
+  sombreado: z.string(),
+  /** Medido (DEM LOLA vía Moon Trek). */
+  elevacionM: z.number(),
+  /** Derivado: pendiente media (grados) en un radio de 1,5 km, igual que Jezero. */
+  pendienteGrados: z.number().min(0),
+  /** Derivado: máximo − mínimo del DEM en el cuadro de 0,5° (~15 km). */
+  relieveM: z.number().min(0),
+  /** Derivado 0–1 (1 = mejor), como en Jezero. Solo el plano tiene fuente; luz y blindaje quedan pendientes (null). */
+  puntajes: z.object({ plano: Puntaje, luz: Puntaje.nullable(), blindaje: Puntaje.nullable() }),
+});
+export type SitioLuna = z.infer<typeof SitioLunaSchema>;
+
+export const TerrenoLunaSchema = z.object({
+  version: z.literal("0.1.0"),
+  id: z.literal("luna-visible"),
+  nombreKey: z.string(),
+  sitios: z.array(SitioLunaSchema).length(3),
+  fuente: z.object({
+    nombreKey: z.literal("fuente.moonTrek"),
+    dueno: z.string(),
+    urls: z.array(z.string().url()).min(1),
+    consultadoEl: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+    estadoDato: z.literal("curado"),
+    derivadoKey: z.literal("datos.terreno.derivado"),
+    /** Criterios sin fuente verificada: no se inventan valores. */
+    pendientes: z.array(z.enum(["luz", "blindaje"])),
+  }),
+});
+export type TerrenoLuna = z.infer<typeof TerrenoLunaSchema>;

@@ -18,7 +18,8 @@ frase / botón ─► clasificarConAtajos(texto)  ── null ─► (modelo ví
 | `clasificarConAtajos(texto)` | Regex en/es sin modelo. `null` = no se entendió → probar el modelo o mostrar botones. |
 | `responder(salida, vista, { dosisMarte })` | Respuesta del experto. `dosisMarte = referenciaDosis("marte-superficie")` de `@solar-shield/data`. |
 | `aAccion(salida)` | Intención → `Action` del motor (o `null` si es una consulta). |
-| `escenaTormenta(vista, dilema?)` | Paso 6 de la ruta dorada: 4 diálogos en orden y `opciones: [refugiarse, escudo]`. Con `dilema = MISION_JEZERO.dilemaPaso6.opciones`, cada experto propone la acción que defiende en la misión y "aguantar" es la tercera opción. Con invernadero `ok`, la Doctora nombra la comida de mañana (dilema del refugio). |
+| `escenaTormenta(vista, dilema?, medicion?)` | Paso 6 de la ruta dorada: 4 diálogos en orden y `opciones: [refugiarse, escudo]`. Con `dilema = MISION_JEZERO.dilemaPaso6.opciones`, cada experto propone la acción que defiende en la misión y "aguantar" es la tercera opción. Con invernadero `ok`, la Doctora nombra la comida de mañana (dilema del refugio). |
+| `MedicionCitada { factor, lugar, fuente }` | Cifra de radiación de otro lugar para la Doctora (`lugar: "orbita_luna"` = CRaTER, #95). Sin `fuente` no hay cifra. La Meteoróloga cita el Kp solo si una fase GST se midió en la Tierra. |
 | `escenaPolvo(vista, { insight })` | Paso 4b de la misión 1 (mala suerte): polvo en los paneles. `opciones: [salida_exterior panel_solar, esperar]`. El caso real de InSight solo se cita si datos pasa su `SourceCard`. |
 | `preguntaIris(tema, nivel)` / `responderPreguntaIris(p, i \| null)` | Iris nivel 2: pregunta de 3 opciones que **nunca bloquea** (`saltable`). Siempre explica el porqué; `null` = el niño la saltó. |
 | `irisDanada(vista, vez)` | Iris nivel 3: la 1.ª falla siempre es número falso; luego rota por semilla. Trae `falla`. |
@@ -47,6 +48,25 @@ frase / botón ─► clasificarConAtajos(texto)  ── null ─► (modelo ví
 - `agentes.nombre.<experto>`: solo dentro de frases ("call **the Engineer**" / "llama **a la Ingeniera**"), por eso trae artículo y preposición.
 - Para no mostrar la tormenta antes del paso 5, pasar a `responder` la vista de `vistaVisible(estado, tormentaActiva(estado))`.
 
+## Matemático "¿Y si…?"
+```ts
+const despues = aplicarAccion(estado, accion); // copia: el motor es puro
+const d = queSiMatematico(accion, estado.recursos, despues.recursos);
+```
+Agentes no simula: los números salen del motor y el Matemático solo dice qué sube y qué baja. Trae `accion` para que el jugador confirme.
+
+Para comparar las opciones de una escena (paso 6, polvo 4b):
+```ts
+const d = compararOpciones(estado, escena.opciones.map((accion) => ({ accion, despues: aplicarAccion(estado, accion) })));
+```
+Por opción da una cabecera (`agentes.matematico.opcion` con `accionKey`), lo que cambia ya y lo que el motor dejó en `efectosPendientes` (`luegoSube` / `luegoBaja` con `ticks`). No trae `accion`: el jugador elige con los botones de la escena.
+
+Usos limitados (`SIMULACIONES_POR_DIFICULTAD` en design/; el contador lo lleva ui):
+```ts
+const d = conAvisoUsos(queSiMatematico(accion, antes, despues), restantes); // restantes después de este uso; null = ilimitado
+if (restantes === 0 /* ya antes de pedir */) mostrar(sinUsosMatematico());
+```
+Avisa con 2 o 1 usos restantes y cuando fue el último. Con 0 usos, ui no calcula y muestra `sinUsosMatematico()`.
 ## Panel de tripulación en una línea
 ```ts
 const d = conversar({ texto } /* o { experto: "doctora" } */, estado, {
@@ -55,3 +75,34 @@ const d = conversar({ texto } /* o { experto: "doctora" } */, estado, {
 });
 ```
 Hace todo: atajos/regex, botón → pregunta por defecto, esconde la tormenta antes del paso 5, aclaración si no se entiende e Iris dañada con su falla.
+
+## Qué llama cada pantalla de ui (ruta dorada, #41 / #59)
+Una línea por pantalla. `estado` es el `GameState` del motor; ui solo pinta `Dialogo` y pasa al motor la `accion` que el niño confirme.
+
+| Pantalla (`ui/src/…`) | Llamada |
+|---|---|
+| `pantallas/Satelite.tsx` | `consejosSatelite(estado)` (ya conectado). |
+| `pantallas/ElegirSitio.tsx` | `consejosAterrizaje(sitios)` con los `SitioCandidato` de la misión. |
+| `componentes/Tripulacion.tsx` | `conversar({ texto } \| { experto }, estado, { tormentaActiva: tormentaActiva(estado), dosisMarte: referenciaDosis("marte-superficie"), vecesFallaIris })` — reemplaza `clasificarConAtajos` + `responder` + `PREGUNTA_POR_EXPERTO` (es `preguntaDelBoton`). |
+| Paso 4b (polvo, pantalla nueva o aviso en la base) | `escenaPolvo(estado, { insight })` → pintar `dialogos` y dos botones con `opciones`; `null` = no hay panel, no mostrar nada. |
+| `pantallas/Tormenta.tsx` | `escenaTormenta(estado, MISION_JEZERO.dilemaPaso6.opciones)` (de `@solar-shield/missions`) en vez de `escenaTormenta(estado)`. |
+| Tormenta y polvo: botón "¿Y si…?" | `compararOpciones(estado, opciones.map((accion) => ({ accion, despues: aplicarAccion(copia(estado), accion) })))`. |
+| Iris nivel 2 (al colocar un módulo o al revelarse la tormenta) | `preguntaIris(tema, estado.iaBase)` (solo devuelve pregunta con `"pistas"`; si no, `null`) → 3 botones + "saltar"; al elegir, `responderPreguntaIris(p, i)` o `responderPreguntaIris(p, null)`. Nunca bloquea. |
+| Iris dañada (`Tormenta.tsx`) | `irisDanada(estado, vez)` y, al pulsar "verificar", `verificarIris(falla, estado)` (ya conectado). |
+
+### Medición en órbita lunar (cuando entre #95)
+Sin escribir cifras a mano; los ids están en `luna.mediciones` de `@solar-shield/data`:
+```ts
+import { luna, medicionLuna, fuenteCrater } from "@solar-shield/data";
+const m = medicionLuna("<id de la tormenta>");
+escenaTormenta(estado, dilema, m ? { factor: m.factor, lugar: "orbita_luna", fuente: fuenteCrater(m, luna.consultadoEl) } : undefined);
+```
+
+## Misión Marte polo norte (#97, depende de que diseño la apruebe)
+| Paso | Llamada |
+|---|---|
+| 3 (zonas, sin mapa) | `consejosZonasPoloNorte({ solMaxGrados, fuente })` con `solMaxGrados[z] = solMaxVerano(LATITUD_ZONA_POLO_NORTE[z])` y la fuente de `regionPoloNorte()` (data). Sin contexto, sin grados. |
+| 4b (escarcha) | `escenaEscarcha(estado)`: igual que `escenaPolvo` (mismas `opciones`). |
+| 6 (dilema de la batería) | `escenaTormentaPoloNorte(estado, dilema)`: la Doctora dice "medido lejos, en el cráter Gale"; la Ingeniera defiende la batería. Matemático: `compararOpciones` sin cambios. |
+| 7 (noche polar) | `avisoNochePolar(estado)`: Ingeniera con la energía del estado e Iris con "el tiempo va rápido" (fuente NSSDC). |
+| 8 (pregunta) | `preguntaIris("noche_polar", estado.iaBase)`. |

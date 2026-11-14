@@ -31,7 +31,7 @@ Lista oficial (pestaña Resources del reto, copiada en ORQUESTACION): NASA Open 
 |---|---|---|
 | DONKI | FLR solo vía `ccmc.gsfc.nasa.gov/DONKI-API` (404 en api.nasa.gov). CME, GST, SEP y ENLIL en api.nasa.gov. CORS `*`. Límite 2500/h | 8 tormentas en `data/curated` |
 | **OSDR RadLab** | **Sí tiene Marte y Luna**, no solo la ISS (corrige ORQUESTACION). Marte: `MSL-RAD-Surface` (Curiosity). Luna: `CRaTER-D1D2` (LRO, 2009–2024) e instrumentos de Artemis I (EAD-MU01, HERA-HSU1/2, M42-SN127). `absorbed_dose_rate` en µGy/h. Para RAD **no hay** `dose_equivalent_rate`. Sin datos de RAD en oct 2024 (respuesta vacía). Sin cabecera CORS para otros orígenes | `medicionMarte` de las tormentas |
-| OSDR search | Funciona. CORS solo para `osdr.nasa.gov` (el navegador no puede llamarla) | 3 tarjetas (OSD-772, OSD-546, OSD-360) |
+| OSDR search | Funciona. CORS solo para `osdr.nasa.gov` (el navegador no puede llamarla) | 7 tarjetas (OSD-772, OSD-546, OSD-360; el 14 nov, OSD-269, OSD-314, OSD-326 y OSD-289, cada frase comprobada contra la descripción completa del estudio) |
 | Mars Trek | Funciona: catálogo, WMTS y ArcGIS ImageServer (`trekarcgis`), sin clave | Mapa de Jezero (`data/terreno/jezero`). También hay un DEM MOLA polar norte en metros (`..._NP/ImageServer`), para `marte_polo_norte`, pero su `exportImage` da error 400. El DEM equirectangular no tiene datos por encima de ~83,5° N |
 | **Mars Rover Photos** | **Caído:** `api.nasa.gov/mars-photos/...` devuelve 404 "No such app" | No se usa |
 
@@ -46,10 +46,23 @@ Lista oficial (pestaña Resources del reto, copiada en ORQUESTACION): NASA Open 
 
 **Tarjetas de ciencia de la misión 1 [2026-11-14]** (detalle en `tarjetas-mision1.md`, #93): OSDR **OSD-772** [V]: chiles cultivados en el Advanced Plant Habitat de la ISS, 137 días, 26 frutos. Comprobadas, pero **fuera de la lista oficial (pendientes de aprobación de Daniel)**: InSight se quedó sin energía por el polvo en los paneles (JPL, 21 dic 2022); 98 % de recuperación de agua en la ISS (NASA, 20 jun 2023); las partículas de una tormenta solar pueden cambiar bits en chips (NASA Earthdata, 2 jul 2024).
 
+**Retraso de comunicaciones Marte–Tierra [V + cálculo, 2026-11-13]:** NSSDC da una distancia mínima de 54,6 y una máxima de 401,4 millones de km. Dividido por c = 299 792,458 km/s, un sentido tarda de **3,0 a 22,3 min**. **Corrige el "4–24 min"** del PLAN §2.2 y de `design/src/recursos.ts`. Código: `data/src/comunicaciones.ts`.
+
 **Dosis de referencia [V en fuente primaria]** (`data/ciencia/radiacion.json`):
 - Marte, superficie: **0,64 ± 0,12 mSv/día** (7 ago 2012 – 1 jun 2013). Cita: Reitz, Matthiä, Hassler et al. 2016, ICES2016 (https://elib.dlr.de/106090/). La página da esta cita, no el artículo de *Science* de 2014.
 - Luna, superficie: **1369 µSv/día**, medido por LND en Chang’e-4 (**CNSA**). En el mismo periodo, la ISS (DOSIS 3D DOSTEL) dio **731 µSv/día**. Zhang et al. 2020, *Sci. Adv.* 6(39) eaaz1334, texto completo en PMC7518862. El resumen da la dosis absorbida: 13,2 ± 1 µGy/h en silicio.
 - Las comparaciones Marte/ISS son aproximadas porque se midieron en años distintos (ciclo solar distinto).
+
+## 0c. Fuentes de NASA fuera de la lista oficial, aprobadas (2026-11-14)
+
+Daniel (rol datos) las aprobó el 2026-11-14. Cada una respalda solo la afirmación que se indica; el código las expone con `fuenteAprobada()` (`data/src/fuentes.ts`).
+
+| Fuente | Afirmación que respalda [V] | Clave |
+|---|---|---|
+| NASA JPL, 21 dic 2022 (retiro de InSight) | InSight se quedó sin energía porque el polvo se acumuló en sus paneles. Revisada el 14 nov; hoy jpl.nasa.gov responde 403 a `curl` (bloqueo a bots), en el navegador carga | `fuente.jpl.insight` |
+| NASA, 20 jun 2023 (ECLSS de la Estación) | El sistema alcanzó la meta de recuperar el 98 % del agua | `fuente.nasa.agua` |
+| NASA Earthdata, 2 jul 2024 | Las partículas de alta energía de una tormenta de radiación solar pueden cambiar un bit (de 0 a 1 o de 1 a 0) en el chip de una nave | `fuente.nasa.bitflip` |
+| Moon Trek (`trek.nasa.gov/moon`, JPL), NASA SVS 5187, nomenclátor de USGS y science.nasa.gov | Aprobadas para las misiones lunares y de Marte propuestas (#97–#100). Sus `fuente.*` se crean cuando diseño apruebe esas misiones; cada cifra se sigue verificando antes de usarla | (por crear) |
 
 ## 1. DONKI (Database Of Notifications, Knowledge, Information)
 

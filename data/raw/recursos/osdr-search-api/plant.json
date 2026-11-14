@@ -1,0 +1,1122 @@
+[
+ {
+  "Accession": "OSD-594",
+  "Study Title": "Advancing the automation of plant nucleic acid extraction for rapid diagnosis of plant diseases in space",
+  "organism": "Microbiota",
+  "Project Type": "Ground Study",
+  "Study Factor Name": "Organism Part     Treatment",
+  "Study Assay Measurement Type": "Metagenomic sequencing",
+  "Study Publication Title": "Advancing the automation of plant nucleic acid extraction for rapid diagnosis of plant diseases in space",
+  "Study Description": "Human space exploration missions will continue the development of sustainable plant cultivation in what are obviously novel habitat settings. Effective pathology mitigation strategies are needed to cope with plant disease outbreaks in any space-based plant growth system. However, few technologies currently exist for space-based diagnosis of plant pathogens. Therefore, we developed a method of extracting plant nucleic acid that will facilitate the rapid diagnosis of plant diseases for future spaceflight applications. The microHomogenizer from Claremont BioSolutions, originally designed for bact…",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-594"
+ },
+ {
+  "Accession": "OSD-177",
+  "Study Title": "Draft Genome Sequences of Two Fusarium oxysporum Isolates Cultured from Infected Zinnia hybrida Plants Grown on the International Space Station",
+  "organism": "Fusarium oxysporum",
+  "Project Type": "Spaceflight Study",
+  "Flight Program": "Internation Space Station (ISS)",
+  "Mission": {
+   "Start Date": "18-Apr-2014",
+   "End Date": "18-May-2014",
+   "Name": "SpaceX-3"
+  },
+  "Study Factor Name": "Spaceflight",
+  "Study Assay Measurement Type": "genome sequencing",
+  "Study Publication Title": "Draft Genome Sequences of Two Fusarium oxysporum Isolates Cultured from Infected Zinnia hybrida Plants Grown on the International Space Station.",
+  "Study Description": "Draft genome sequences of two Fusarium oxysporum isolates cultured from infected Zinnia hybrida plants grown on the International Space Station",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-177"
+ },
+ {
+  "Accession": "OSD-772",
+  "Study Title": "PH-04 Chile Peppers in Space",
+  "organism": "Microbiota",
+  "Project Type": "Spaceflight Study",
+  "Flight Program": "International Space Station (ISS)",
+  "Mission": {
+   "End Date": "",
+   "Start Date": "06/03/2021",
+   "Name": "SpaceX-22"
+  },
+  "Study Factor Name": "Spaceflight     Organism Part     Sample Location",
+  "Study Assay Measurement Type": "Amplicon Sequencing",
+  "Study Description": "Growing plants in spaceflight presents challenges to achieve optimal plant growth and productivity. One of NASA's goals is growing edible crops in spaceflight to supplement the astronauts' diet with fresh vegetables and assess food safety of the crops. It is important to understand the optimal growing conditions for crops grown in spaceflight conditions. Leafy greens have been grown on the International Space Station in the Veggie plant chamber and were safe for the astronauts to eat. The Advanced Plant Habitat (APH), an enclosed, controlled plant growth facility on the ISS has also been used …",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-772"
+ },
+ {
+  "Accession": "OSD-773",
+  "Study Title": "Exposed Root On Orbit Test System (XROOTS), an aeroponic and hydroponic plant growth system technical demonstration on the International Space Station (ISS)",
+  "organism": "Microbiota",
+  "Project Type": "Spaceflight Study",
+  "Flight Program": "International Space Station (ISS)",
+  "Mission": {
+   "End Date": "  04/15/2023  06/22/2022",
+   "Start Date": "09/01/2022  03/14/2023  02/19/2022",
+   "Name": "SpaceX-26  SpaceX-27  NG-17"
+  },
+  "Study Factor Name": "Spaceflight",
+  "Study Assay Measurement Type": "Amplicon Sequencing     Amplicon Sequencing",
+  "Study Publication Title": "Microbial community characterization of multi-crop growouts in the XROOTS aeroponic-hydroponic system on the International Space Station.",
+  "Study Description": "Technical demonstration of the XROOTS payload integrated with the Veggie Hardware to demonstrate an aeroponic and hydroponic plant growth system in microgravity. The intent was to evaluate a nutrient delivery system using an ebb/flow nutrient solution recovery system. Additionally plants were harvested and returned to Earth for food safety, microbiome and chemistry evaluation.",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-773"
+ },
+ {
+  "Accession": "OSD-358",
+  "Study Title": "Diagnosing an Opportunistic Fungal Pathogen on Spaceflight-Grown Plants Using the MinION Sequencing Platform",
+  "organism": "Burkholderia contaminans     Fusarium sporotrichioides     Fusarium oxysporum     Zinnia",
+  "Project Type": "Spaceflight Study",
+  "Mission": {
+   "End Date": "18-May-2014  11-May-2016",
+   "Start Date": "18-Apr-2014  08-Apr-2016",
+   "Name": "SpaceX-3  SpaceX-8"
+  },
+  "Study Factor Name": "Spaceflight     Organism Part",
+  "Study Assay Measurement Type": "Metagenomic sequencing",
+  "Study Publication Title": "Diagnosing an Opportunistic Fungal Pathogen on Spaceflight-Grown Plants Using the MinION Sequencing Platform",
+  "Study Description": "Sustainable agriculture in microgravity is integral to future long-term space exploration. To ensure the efficient and sustainable cultivation of plants in space, a contingency plan to monitor plant health and mitigate plant diseases is necessary. Yet, neither methods nor tools currently exist to evaluate the plant microbial interactions or to diagnose potential plant diseases in space-based bioregenerative life support systems (BLSS). Here we show how the MinION sequencing platform can be used to diagnose the opportunistic pathogen, Fusarium oxysporum; a fungal infection on Zinnia hybrida pla…",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-358"
+ },
+ {
+  "Accession": "OSD-971",
+  "Study Title": "Genetic alterations of the putrescine metabolic pathway attenuate plant responses to spaceflight",
+  "organism": "Arabidopsis thaliana",
+  "Project Type": "Spaceflight Study",
+  "Flight Program": "International Space Station (ISS)",
+  "Mission": {
+   "End Date": "10/01/2021",
+   "Start Date": "08/29/2021",
+   "Name": "SpaceX-23"
+  },
+  "Study Factor Name": "Spaceflight     Organism Part     Genotype",
+  "Study Assay Measurement Type": "transcription profiling",
+  "Study Publication Title": "Genetic alterations of the putrescine metabolic pathway attenuate plant responses to spaceflight",
+  "Study Description": "This study investigates the impact of altering the polyamine (putrescine, Put) metabolic pathway on plant responses to spaceflight conditions in Arabidopsis thaliana. By engineering lines with modified Put synthesis and degradation pathways, we observed distinct transcriptional and phenotypic responses to spaceflight. Put-accumulating plants including an ARGININE DECARBOXYLASE-over-expressing (OxPtADC) line and Copper-AMINE OXIDASE3 (cuao3) knockdown mutants, exhibited fewer differentially expressed genes (DEGs) than the wild type, suggesting that increased Put accumulation may mitigate some s…",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-971"
+ },
+ {
+  "Accession": "OSD-412",
+  "Study Title": "Spatial characterization of microbial communities on multi-species leafy greens grown simultaneously in the Veggie vegetable production systems on the International Space Station VEG-03D",
+  "organism": "Microbiota",
+  "Project Type": "Spaceflight Study",
+  "Flight Program": "International Space Station (ISS)",
+  "Mission": {
+   "Start Date": "08/14/2017",
+   "End Date": "09/17/2017",
+   "Name": "SpaceX-12"
+  },
+  "Study Factor Name": "Spaceflight     Organism Part",
+  "Study Assay Measurement Type": "Amplicon Sequencing",
+  "Study Publication Title": "Spatial Characterization of Microbial Communities on Multi-Species Leafy Greens Grown Simultaneously in the Vegetable Production Systems on the International Space Station",
+  "Study Description": "Investigates the microbial communities of plants and Veggie pillow components with culturable and non-culturable methods providing qualitative and quantitative data. This studies also stresses the food safety component of fresh crops grown on the ISS. The VEG-03D technology demonstration was completed achieving simultaneous multi-species plant growth within a Veggie unit on the International Space Station (ISS). Microbiological characterization using molecular and culture-based methods was performed on leaves and roots from two harvests of three leafy greens, red romaine lettuce (Lactuca sativ…",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-412"
+ },
+ {
+  "Accession": "OSD-615",
+  "Study Title": "Glycome profiling and immunohistochemistry uncover changes in cell walls of Arabidopsis thaliana roots during spaceflight: Advanced Plant EXperiment (APEX) 03-1 Raw Dataset",
+  "organism": "Arabidopsis thaliana",
+  "Project Type": "Spaceflight Study",
+  "Flight Program": "International Space Station, NASA Biological and Physical Sciences Program",
+  "Mission": {
+   "End Date": "02/11/2015",
+   "Start Date": "01/10/2015",
+   "Name": "SpaceX-5"
+  },
+  "Study Factor Name": "Spaceflight     Growth Time",
+  "Study Assay Measurement Type": "Glycomic Profile",
+  "Study Publication Title": "Glycome profiling and immunohistochemistry uncover changes in cell walls of Arabidopsis thaliana roots during spaceflight",
+  "Study Description": "This study was conducted to uncover the underlying molecular mechanisms by which microgravity impacts cell wall architecture in the model plant Arabidopsis thaliana using the Vegetable Production System (Veggie) housed on the International Space Station (ISS). Based on our previous space flight studies using the Biological Research in Canisters (BRIC) hardware on the STS-131 Space Shuttle mission, we found that plants respond to microgravity in large part through the transcriptional reprogramming of genes that control cell wall remodeling. This follow-up spaceflight experiment called the Advan…",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-615"
+ },
+ {
+  "Accession": "OSD-414",
+  "Study Title": "Spatial characterization of microbial communities on multi-species leafy greens grown simultaneously in the Veggie vegetable production systems on the International Space Station VEG-03F",
+  "organism": "Microbiota",
+  "Project Type": "Spaceflight Study",
+  "Flight Program": "International Space Station (ISS)",
+  "Mission": {
+   "End Date": "09/17/2017",
+   "Start Date": "08/14/2017",
+   "Name": "SpaceX-12"
+  },
+  "Study Factor Name": "Spaceflight     Organism Part",
+  "Study Assay Measurement Type": "Amplicon Sequencing",
+  "Study Publication Title": "Spatial Characterization of Microbial Communities on Multi-Species Leafy Greens Grown Simultaneously in the Vegetable Production Systems on the International Space Station",
+  "Study Description": "Investigates the microbial communities of plants and Veggie pillow components with culturable and non-culturable methods providing qualitative and quantitative data. This studies also stresses the food safety component of fresh crops grown on the ISS. The VEG-03F technology demonstration took place within a Veggie unit on the International Space Station (ISS). Microbiological characterization using molecular methods was performed on leaves and roots from one harvest of red romaine lettuce (Lactuca sativa cv. ‘Outredgeous’) and associated rooting pillow components and Veggie chamber surfaces. C…",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-414"
+ },
+ {
+  "Accession": "OSD-413",
+  "Study Title": "Spatial characterization of microbial communities on multi-species leafy greens grown simultaneously in the Veggie vegetable production systems on the International Space Station VEG-03E",
+  "organism": "Microbiota",
+  "Project Type": "Spaceflight Study",
+  "Flight Program": "International Space Station (ISS)",
+  "Mission": {
+   "End Date": "09/17/2017",
+   "Start Date": "08/14/2017",
+   "Name": "SpaceX-12"
+  },
+  "Study Factor Name": "Spaceflight     Organism Part",
+  "Study Assay Measurement Type": "amplicon sequencing",
+  "Study Publication Title": "Spatial Characterization of Microbial Communities on Multi-Species Leafy Greens Grown Simultaneously in the Vegetable Production Systems on the International Space Station",
+  "Study Description": "Investigates the microbial communities of plants and Veggie pillow components with culturable and non-culturable methods providing qualitative and quantitative data. This studies also stresses the food safety component of fresh crops grown on the ISS. The VEG-03E technology demonstration was completed within a Veggie unit on the International Space Station (ISS). Microbiological characterization using molecular and culture-based methods was performed on leaves and roots from two harvests of green leaf lettuce, (Lactuca sativa cv. Waldmann’s) and associated rooting pillow components and Veggie …",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-413"
+ },
+ {
+  "Accession": "OSD-268",
+  "Study Title": "Microbiological and nutritional analysis of lettuce crops grown on the International Space Station-VEG01B",
+  "organism": "Microbiota",
+  "Project Type": "Spaceflight Study",
+  "Flight Program": "International Space Station (ISS)",
+  "Mission": {
+   "End Date": "05/18/2014",
+   "Start Date": "04/18/2014",
+   "Name": "SpaceX-3"
+  },
+  "Study Factor Name": "Spaceflight     Organism Part",
+  "Study Assay Measurement Type": "Amplicon Sequencing     Amplicon Sequencing",
+  "Study Publication Title": "Microbiological and Nutritional Analysis of Lettuce Crops Grown on the International Space Station.",
+  "Study Description": "Lettuce crops grown in the Veggie payload aboard ISS, harvested and returned for chemical, microbiological and molecular analysis",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-268"
+ },
+ {
+  "Accession": "OSD-132",
+  "Study Title": "Whole genome sequencing and assembly of Eukaryotic microbes isolated from ISS environmental surface, Kirovograd region soil, Chernobyl Nuclear Power Plant and Chernobyl Exclusion Zone",
+  "organism": "Beauveria bassiana     Aspergillus niger     Aspergillus terreus     Aureobasidium pullulans     Cladosporium cladosporioides     Fusarium solani     Trichoderma virens     Cladosporium sphaerospermum",
+  "Project Type": "Spaceflight Study",
+  "Flight Program": "International Space Station (ISS)",
+  "Study Factor Name": "radiation",
+  "Study Assay Measurement Type": "genome sequencing",
+  "Study Publication Title": "Draft Genome Sequences of Several Fungal Strains Selected for Exposure to Microgravity at the International Space Station.",
+  "Study Description": "The whole-genome sequences of eight fungal strains that were selected for exposure to microgravity at the International Space Station are presented here. These baseline sequences will help to understand the observed production of novel bioactive compounds.",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-132"
+ },
+ {
+  "Accession": "OSD-269",
+  "Study Title": "Microbiological and nutritional analysis of lettuce crops grown on the International Space Station-VEG03A",
+  "organism": "Microbiota",
+  "Project Type": "Spaceflight Study",
+  "Flight Program": "International Space Station (ISS)",
+  "Mission": {
+   "End Date": "11-May-2016",
+   "Start Date": "08-Apr-2016",
+   "Name": "SpaceX-8"
+  },
+  "Study Factor Name": "Spaceflight     Organism Part",
+  "Study Assay Measurement Type": "Amplicon Sequencing",
+  "Study Publication Title": "Microbiological and nutritional analysis of lettuce crops grown on the International Space Station     Plant Pillow Preparation for the Veggie Plant Growth System on the International Space Station",
+  "Study Description": "The ability to grow safe, fresh food to supplement packaged foods of astronauts in space has been an important goal for NASA. Food crops grown in space experience different environmental conditions than plants grown on Earth (e.g., reduced gravity, elevated radiation levels). To study the effects of space conditions, red romaine lettuce, Lactuca sativa cv ‘Outredgeous,’ plants were grown in Veggie plant growth chambers on the International Space Station (ISS) and compared with ground-grown plants. Multiple plantings were grown on ISS and harvested using either a single, final harvest, or seque…",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-269"
+ },
+ {
+  "Accession": "OSD-411",
+  "Study Title": "Plant Gravity Perception: Pilot (PGP Pilot)",
+  "organism": "Arabidopsis thaliana",
+  "Project Type": "Ground Study",
+  "Study Factor Name": "Genotype     Organism Part     Treatment",
+  "Study Assay Measurement Type": "transcription profiling",
+  "Study Description": "This study examined tissue-specific early transcriptional responses upon reorientation in wild type and starchless pgm-1 mutant seedlings of Arabidopsis. Seedlings were grown in vertical Petri dishes for four days. Treatment samples were reoriented 90 degrees for ten minutes while control plants remained vertical. All seedlings were flash frozen in liquid nitrogen and RNA was extracted from root tips, mature root, hypocotyl, and cotyledon fractions of the seedlings. RNA was sequenced via NovaSeq.",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-411"
+ },
+ {
+  "Accession": "OSD-264",
+  "Study Title": "Genomic Characterization and Virulence Potential of Two Fusarium oxysporum Isolates Cultured from the International Space Station",
+  "organism": "Fusarium oxysporum",
+  "Project Type": "Spaceflight Study",
+  "Study Factor Name": "Spaceflight",
+  "Study Assay Measurement Type": "genome sequencing",
+  "Study Publication Title": "Genomic Characterization and Virulence Potential of Two Fusarium oxysporum Isolates Cultured from the International Space Station.",
+  "Study Description": "Two isolates of Fusarium oxysporum, ISS-F3 and ISS-F4, were cultured from the dining table on the International Space Station (ISS). Genomic analyses using EF-1α sequences, presence/absence of effector proteins, k-mer comparisons, and single nucleotide polymorphisms indicate that these two strains are genomically different from 65 known sequenced strains. Functional analysis revealed that ISS-F3/F4 had higher relative abundances of polyketide synthase domains than a non-plant-pathogenic soil isolate, used for biocontrol properties (Fo47), and a clinical isolate (FOSC-3a). Putative secondary me…",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-264"
+ },
+ {
+  "Accession": "OSD-59",
+  "Study Title": "RNA-Seq transcriptome analysis of reactive oxygen species gene network in Mizuna plants grown in long-term space flight",
+  "organism": "Brassica rapa",
+  "Project Type": "Spaceflight Study",
+  "Flight Program": "International Space Station (ISS)",
+  "Mission": {
+   "Start Date": "30-Nov-09",
+   "End Date": "18-Mar-10",
+   "Name": "Expedition 22"
+  },
+  "Study Factor Name": "Spaceflight",
+  "Study Assay Measurement Type": "transcription profiling",
+  "Study Publication Title": "Genome-wide expression analysis of reactive oxygen species gene network in Mizuna plants grown in long-term spaceflight.",
+  "Study Description": "Space environment is suspected to generate reactive oxygen species (ROS) and induce oxidative stress in plants, however, little is known about the gene expression of ROS gene network in plants grown in long-term space flight. RNA-Seq was used to define the large-scale gene expression profiles of Mizuna harvested after 27 days cultivation in the international space station to understand the molecular response and adaptation to space environment.Results: Total reads of transcripts from the Mizuna grown in the international space station as well as on the ground by RNA-Seq using next generation s…",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-59"
+ },
+ {
+  "Accession": "OSD-307",
+  "Study Title": "Evaluating the Lettuce Metatranscriptome with MinION Sequencing for Future Spaceflight Food Production Application",
+  "organism": "Microbiota",
+  "Project Type": "Ground Study",
+  "Study Factor Name": "Relative Humidity     CO2 Concentration     Temperature",
+  "Study Assay Measurement Type": "metatranscriptome sequencing assay",
+  "Study Publication Title": "Evaluating the lettuce metatranscriptome with MinION sequencing for future spaceflight food production applications.",
+  "Study Description": "Healthy plants are vital for successful, long-duration missions in space, as they provide the crew with life support, food production, and psychological benefits. The microorganisms that associate with plant tissues play a critical role in improving plant growth, health, and production. To that end, it is necessary to develop methodologies that investigate the metabolic activities of the plant’s microbiome in orbit to enable rapid responses regarding the care of plants in space. In this study, we developed a protocol to characterize the endophytic and epiphytic microbial metatranscriptome of r…",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-307"
+ },
+ {
+  "Accession": "OSD-766",
+  "Study Title": "The microbial communities of a tomato crop grown in Veggie under different lighting regimes on the International Space Station",
+  "organism": "Microbiota",
+  "Project Type": "Spaceflight Study",
+  "Flight Program": "International Space Station (ISS)",
+  "Mission": {
+   "End Date": "01/09/2023",
+   "Start Date": "11/26/2022",
+   "Name": "SpaceX-26"
+  },
+  "Study Factor Name": "Spaceflight     light regimen     Organism Part",
+  "Study Assay Measurement Type": "Amplicon Sequencing     Amplicon Sequencing",
+  "Study Publication Title": "The microbial communities of a tomato crop grown in Veggie under different lighting regimes on the International Space Station",
+  "Study Description": "The VEG-05 experiment was conducted on ISS between 12/14/2022-3/24/2023 (101 days) to investigate tomato-growth responses and plant-microbiome differences due to two lighting recipes:  90%R:10%B as the “red-rich” treatment and 50%R:50%B as the “blue-rich” treatment.  A ground control was performed in controlled environment chambers at Kennedy Space Center providing. After a 48-hour delay, CO2 concentrations, relative humidity and temperature from data downlinked on the ISS were configured to run in the ground control growth chamber.  To capture humidity and temperature inside of the Veggie uni…",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-766"
+ },
+ {
+  "Accession": "OSD-476",
+  "Study Title": "Plants grown in Apollo lunar regolith present stress-associated transcriptomes that inform prospects for lunar exploration",
+  "organism": "Arabidopsis thaliana",
+  "Project Type": "Ground Study",
+  "Study Factor Name": "Treatment",
+  "Study Assay Measurement Type": "transcription profiling     Morphometric analysis",
+  "Study Publication Title": "Plants grown in Apollo lunar regolith present stress-associated transcriptomes that inform prospects for lunar exploration",
+  "Study Description": "The extent to which plants can enhance human life support on other worlds depends on the ability of plants to thrive in extraterrestrial environments using in situ resources. Using samples from Apollo 11, 12 and 17, we show that the terrestrial plant Arabidopsis thaliana germinates and grows in diverse lunar regoliths. However, our results show that growth is challenging; the lunar regolith plants were slow to develop, expressed genes indicative of ionic stresses, and many showed severe stress morphologies. Therefore, although in situ lunar regolith can be useful for plant production in lunar …",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-476"
+ },
+ {
+  "Accession": "OSD-22",
+  "Study Title": "Root transcriptome remodeling of Arabidopsis in response to high levels of magnesium sulfate",
+  "organism": "Arabidopsis thaliana",
+  "Project Type": "Ground Study",
+  "Study Factor Name": "soil environment exposure     Time     Genotype",
+  "Study Assay Measurement Type": "transcription profiling",
+  "Study Publication Title": "Growth performance and root transcriptome remodeling of Arabidopsis in response to Mars-like levels of magnesium sulfate.",
+  "Study Description": "Martian regolith (unconsolidated surface material) is a potential medium for plant growth in bioregenerative life support systems during manned missions on Mars. However, hydrated magnesium sulfate mineral levels in the regolith of Mars can reach as high as 10 wt%, and would be expected to be highly inhibitory to plant growth. A global approach was used to identify novel genes with potential to enhance tolerance to high MgSO4 stress. The early Arabidopsis root transcriptome response to elevated concentrations of magnesium sulfate was characterized in col-0, and also between col-0 and the mutan…",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-22"
+ },
+ {
+  "Accession": "OSD-520",
+  "Study Title": "Changes in DNA Methylation in Arabidopsis thaliana Plants Exposed Over Multiple Generations to Gamma Radiation",
+  "organism": "Arabidopsis thaliana",
+  "Project Type": "Ground Study",
+  "Study Factor Name": "Generation     Ionizing Radiation",
+  "Study Assay Measurement Type": "DNA methylation profiling",
+  "Study Publication Title": "Changes in DNA Methylation in Arabidopsis thaliana Plants Exposed Over Multiple Generations to Gamma Radiation.",
+  "Study Description": "Previous studies have found indications that exposure to ionising radiation (IR) results in DNA methylation changes in plants. However, this phenomenon is yet to be studied across multiple generations. Furthermore, the exact role of these changes in the IR-induced plant response is still far from understood. Here, we study the effect of gamma radiation on DNA methylation and its effect across generations in young Arabidopsis plants. A multigenerational set-up was used in which three generations (Parent, generation 1, and generation 2) of 7-day old Arabidopsis thaliana plants were exposed to ei…",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-520"
+ },
+ {
+  "Accession": "OSD-565",
+  "Study Title": "Utilizing the KSC Fixation Tube to Conduct Human-Tended Plant Biology Experiments on a Suborbital Spaceflight",
+  "organism": "Arabidopsis thaliana",
+  "Project Type": "Ground Study",
+  "Study Factor Name": "Treatment     Organism Part     Microgravity Simulation",
+  "Study Assay Measurement Type": "transcription profiling",
+  "Study Publication Title": "Utilizing the KSC Fixation Tube to Conduct Human-Tended Plant Biology Experiments on a Suborbital Spaceflight",
+  "Study Description": "Suborbital spaceflights now enable human-tended research investigating short-term gravitational effects in biological systems, eliminating the need for complex automation. Here, we discuss a method utilizing KSC Fixation Tubes (KFTs) to both carry biology to suborbital space as well as fix that biology at certain stages of flight. Plants on support media were inserted into the sample side of KFTs preloaded with RNAlater in the fixation chamber. The KFTs were activated at various stages of a simulated flight to fix the plants. RNA-seq analysis conducted on tissue samples housed in KFTs, showed …",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-565"
+ },
+ {
+  "Accession": "OSD-218",
+  "Study Title": "Plant development on ISS differs from the development on the ground and is influenced by the genetic background",
+  "organism": "Arabidopsis thaliana",
+  "Project Type": "Spaceflight Study",
+  "Flight Program": "International Space Station (ISS)",
+  "Mission": {
+   "End Date": "02/11/2015",
+   "Start Date": "01/10/2015",
+   "Name": "SpaceX-5"
+  },
+  "Study Factor Name": "Age     Spaceflight     Cultivar",
+  "Study Assay Measurement Type": "transcription profiling",
+  "Study Description": "The development of Col-0 and WS plants on orbit differs from that on the ground as demonstrated by the comparison of the gene expression profiles between 4 days old to 8 days old plant in the two environments. The Col-0 plants used different genes reflecting different physiological processes than WS plants, suggesting the role of the genetic background in the developmental decisions. The 4 days old Col-0 plant in orbit showed deficit in wax and suberin production relatively to the 8 days old plants, the difference unregistered on the ground. There was more dramatic difference in the overexpres…",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-218"
+ },
+ {
+  "Accession": "OSD-767",
+  "Study Title": "Stress and light spectral quality influence the transcriptome of a tomato crop on the International Space Station",
+  "organism": "Solanum lycopersicum",
+  "Project Type": "Spaceflight Study",
+  "Flight Program": "International Space Station (ISS)",
+  "Mission": {
+   "End Date": "01/09/2023",
+   "Start Date": "11/26/2022",
+   "Name": "SpaceX-26"
+  },
+  "Study Factor Name": "Spaceflight     light regimen     Organism Part",
+  "Study Assay Measurement Type": "transcription profiling",
+  "Study Publication Title": "Stress and light spectral quality influence the transcriptome of a tomato crop on the International Space Station",
+  "Study Description": "Spaceflight introduces unique environmental stresses that challenge plant growth and development, necessitating an understanding of molecular responses to enable sustainable agriculture for long-duration missions. This study investigated the transcriptomic responses of tomato (Solanum lycopersicum cv. Red Robin) grown under red and blue rich light spectra aboard the International Space Station (ISS) and in ground controls at Kennedy Space Center. Using RNA sequencing, we analyzed leaf and adventitious root tissues to uncover gene expression changes driven by spaceflight conditions and light qu…",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-767"
+ },
+ {
+  "Accession": "OSD-622",
+  "Study Title": "Microgravity effects on leaf morphology, cell structure, carbon metabolism and mRNA expression of dwarf wheat",
+  "organism": "Triticum aestivum",
+  "Project Type": "Spaceflight Study",
+  "Flight Program": "International Space Station (ISS)",
+  "Mission": {
+   "Start Date": "04/08/2002",
+   "End Date": "04/19/2002",
+   "Name": "STS-110"
+  },
+  "Study Factor Name": "Spaceflight     Age at sample harvest     Gravity environment at imbibition     duration",
+  "Study Assay Measurement Type": "transcription profiling",
+  "Study Publication Title": "Microgravity effects on leaf morphology, cell structure, carbon metabolism and mRNA expression of dwarf wheat     Plant molecular biology in the space station era: Utilization of KSC fixation tubes with RNAlater     STS-110 to carry first Station plant experiment: PESTO payload developed by KSC Life Sciences     Organ-specific remodeling of the Arabidopsis transcriptome in response to spaceflight.",
+  "Study Description": "The PESTO experiment was launched on April 8, 2002 onboard STS-110 (Atlantis) and was returned on June 19, 2002 onboard STS-111 (Endeavor), a total of 73 days in space. The ground control was conducted on a 14-day delay, and was harvested on July 3, 2002. During this period there were a total of 7 harvests of PESTO wheat and priming of 6 wheat root modules on orbit. A total of 18 plants were fixed on orbit for morphological and structural analysis, 4 plants were fixed for RNA and molecular genetic analysis and greater than 150 plants were frozen for biochemical analysis. A total of 3018 images…",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-622"
+ },
+ {
+  "Accession": "OSD-136",
+  "Study Title": "Dissecting Low Atmospheric Pressure Stress: Transcriptome Responses to the Components of Hypobaria in Arabidopsis [Experiment 2]",
+  "organism": "Arabidopsis thaliana",
+  "Project Type": "Ground Study",
+  "Study Factor Name": "Atmospheric Pressure",
+  "Study Assay Measurement Type": "transcription profiling",
+  "Study Publication Title": "Dissecting Low Atmospheric Pressure Stress: Transcriptome Responses to the Components of Hypobaria in Arabidopsis",
+  "Study Description": "Controlled hypobaria presents biology with an environment that is never encountered in terrestrial ecology, yet the apparent components of hypobaria are stresses typical of terrestrial ecosystems. High altitude, for example, presents terrestrial hypobaria always with hypoxia as a component stress, since the relative partial pressure of O2 is constant in the atmosphere. Laboratory-controlled hypobaria, however, allows the dissection of pressure effects away from the effects typically associated with altitude, in particular hypoxia, as the partial pressure of O2 can be varied. In this study, who…",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-136"
+ },
+ {
+  "Accession": "OSD-625",
+  "Study Title": "Single-molecule long-read methylation profiling reveals regional DNA methylation regulated by Elongator Complex Subunit 2 in Arabidopsis roots experiencing spaceflight",
+  "organism": "Arabidopsis thaliana",
+  "Project Type": "Spaceflight Study",
+  "Flight Program": "International Space Station (ISS)",
+  "Mission": {
+   "Start Date": "2/19/17",
+   "End Date": "3/19/17",
+   "Name": "SpaceX-10"
+  },
+  "Study Factor Name": "Spaceflight     Genotype",
+  "Study Assay Measurement Type": "Targeted DNA Methylation Profiling",
+  "Study Publication Title": "Single-molecule long-read methylation profiling reveals regional DNA methylation regulated by Elongator Complex Subunit 2 in Arabidopsis roots experiencing spaceflight",
+  "Study Description": "The Advanced Plant Experiment-04 - Epigenetic Expression (APEX-04-EpEx) experiment onboard the International Space Station examined the spaceflight-altered cytosine methylation in two genetic lines of Arabidopsis thaliana, wild-type Col-0 and the mutant elp2-5, which is deficient in an epigenetic regulator Elongator Complex Subunit 2 (ELP2). Whole-genome bisulfite sequencing (WGBS) revealed distinct spaceflight associated methylation differences, presenting the need to explore specific space-altered methylation at single-molecule resolution to associate specific changes over large regions of s…",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-625"
+ },
+ {
+  "Accession": "OSD-7",
+  "Study Title": "The Arabidopsis spaceflight transcriptome: a comparison of whole plants to discrete root, hypocotyl and shoot responses to the orbital environment",
+  "organism": "Arabidopsis thaliana",
+  "Project Type": "Spaceflight Study",
+  "Flight Program": "Space Shuttle, International Space Station (ISS)",
+  "Mission": {
+   "Start Date": "11/16/09",
+   "End Date": "11/27/09",
+   "Name": "STS-129"
+  },
+  "Study Factor Name": "Spaceflight     Organism Part",
+  "Study Assay Measurement Type": "transcription profiling",
+  "Study Publication Title": "Organ-specific remodeling of the Arabidopsis transcriptome in response to spaceflight.",
+  "Study Description": "Arabidopsis thaliana was evaluated for its response to the spaceflight environment in three replicated experiments on the International Space Station. Two approaches were used; GFP reporter genes were used to collect gene expression data in real time within unique GFP imaging hardware, and plants were harvested on orbit to RNAlater for subsequent analyses of gene expression with using Affymetrix and SAGE transcriptome analyses. Three tissue types were examined (leaves, hypocotyls and roots) and compared to analyses conducted with whole plants. Transcriptome analyses with whole plants suggested…",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-7"
+ },
+ {
+  "Accession": "OSD-267",
+  "Study Title": "Microbiological and nutritional analysis of lettuce crops grown on the International Space Station-VEG01A",
+  "organism": "Microbiota",
+  "Project Type": "Spaceflight Study",
+  "Flight Program": "International Space Station (ISS)",
+  "Mission": {
+   "End Date": "05/18/2014",
+   "Start Date": "04/18/2014",
+   "Name": "SpaceX-3"
+  },
+  "Study Factor Name": "Spaceflight     Organism Part",
+  "Study Assay Measurement Type": "Amplicon Sequencing     Amplicon Sequencing",
+  "Study Publication Title": "Microbiological and Nutritional Analysis of Lettuce Crops Grown on the International Space Station",
+  "Study Description": "The ability to grow safe, fresh food to supplement packaged foods of astronauts in space has been an important goal for NASA. Food crops grown in space experience different environmental conditions than plants grown on Earth (e.g., reduced gravity, elevated radiation levels). To study the effects of space conditions, red romaine lettuce, Lactuca sativa cv ‘Outredgeous,’ plants were grown in Veggie plant growth chambers on the International Space Station (ISS) and compared with ground-grown plants. Multiple plantings were grown on ISS and harvested using either a single, final harvest, or seque…",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-267"
+ },
+ {
+  "Accession": "OSD-480",
+  "Study Title": "Plant Gravity Perception (PGP) Flight Study",
+  "organism": "Arabidopsis thaliana",
+  "Project Type": "Spaceflight Study",
+  "Flight Program": "International Space Station (ISS)",
+  "Mission": {
+   "End Date": "01/13/2018",
+   "Start Date": "12/15/2017",
+   "Name": "SpaceX-13"
+  },
+  "Study Factor Name": "Organism Part     Altered Gravity     Genotype     Spaceflight     Treatment",
+  "Study Assay Measurement Type": "transcription profiling",
+  "Study Publication Title": "Physiological and transcriptomic assessment of Arabidopsis identifies two distinct gravity signaling systems",
+  "Study Description": "This study investigated plant responses to a range of gravity treatments. Altered gravity was achieved by growing seedlings on the ISS within the centrifuge of the European Modular Cultivation System (EMCS) and applying a specific rotation rate for a fixed time in the experiment. Seeds of wild-type (Col-0) and starchless (pgm-1) were used to determine the contribution of statoliths to gravity perception. Plants experienced an estimated 0.003 up to 1.0 g depending on the specific experimental run and position of the seed cassette on the centrifuge arm. Images were captured at various points dur…",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-480"
+ },
+ {
+  "Accession": "OSD-531",
+  "Study Title": "Identification of gravitropic response indicator genes in Arabidopsis inflorescence stems",
+  "organism": "Arabidopsis thaliana",
+  "Project Type": "Ground Study",
+  "Study Factor Name": "Treatment     Time     Tissue segment",
+  "Study Assay Measurement Type": "transcription profiling",
+  "Study Publication Title": "Identification of gravitropic response indicator genes in Arabidopsis inflorescence stems",
+  "Study Description": "Differential organ growth during gravitropic response is caused by differential accumulation of auxin, that is, relative higher auxin concentration in lower flanks than in upper flanks of responding organs. Auxin responsive reporter systems such as DR5::GUS and DR5::GFP have usually been used as indicators of gravitropic response in roots and hypocotyls of Arabidopsis. However, in the inflorescence stems, the reporter systems don't work well to monitor gravitropic response. Here, we aim to certify appropriate gravitropic response indicators (GRIs) in inflorescence stems. We performed microarra…",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-531"
+ },
+ {
+  "Accession": "OSD-658",
+  "Study Title": "Simulated Galactic Cosmic Ray Exposure Activates Dose-Dependent DNA Repair Response and Downregulates Glucosinolate Pathway in Arabidopsis Seedlings",
+  "organism": "Arabidopsis thaliana",
+  "Project Type": "Ground Study",
+  "Study Factor Name": "Ionizing Radiation     Absorbed Radiation Dose",
+  "Study Assay Measurement Type": "transcription profiling",
+  "Study Description": "This study's objective was to develop an understanding of the biological effects of space radiation on plants with the goal of producing fresh food during long duration space missions to support astronauts' nutritional and psychological needs.10-day-old Arabidopsis seedlings were exposed to simulated Galactic Cosmic Rays (GCR) and assessed for transcriptomic changes. The simulated GCR irradiation was carried out in the NASA Space Radiation Laboratory (NSRL) at Brookhaven National Lab (BNL). The exposures were conducted acutely for two dose points at 40 cGy or 80 cGy, with sequential delivery o…",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-658"
+ },
+ {
+  "Accession": "OSD-416",
+  "Study Title": "Characterizing Epigenetic Changes in Methylation Mutants (elp2-5 and met1-7) in Response to Spaceflight. [Bisulfite-Seq]",
+  "organism": "Arabidopsis thaliana",
+  "Project Type": "Spaceflight Study",
+  "Flight Program": "International Space Station (ISS)",
+  "Mission": {
+   "Start Date": "02/19/2017",
+   "End Date": "03/19/2017",
+   "Name": "SpaceX-10"
+  },
+  "Study Factor Name": "Spaceflight     Genotype     Organism Part",
+  "Study Assay Measurement Type": "DNA methylation profiling",
+  "Study Publication Title": "Epigenomic Regulators Elongator Complex Subunit 2 and Methyltransferase 1 Differentially Condition the Spaceflight Response in Arabidopsis.",
+  "Study Description": "Epigenetic changes in the DNA methylome are increasingly shown to play an integral role in regulating gene expression necessary for plants’ adaption to environmental stressors. Plants subjected to the novel environment of spaceflight onboard the International Space Station (ISS), show stress-related transcriptomic changes most notably associated with pathogen stress response. Here, we investigate how known terrestrial stress associated epigenetic modulations might play a role in spaceflight adaptation. To examine the role of 5mCyt in spaceflight adaptation, the APEX04-EPEX experiment conducted…",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-416"
+ },
+ {
+  "Accession": "OSD-375",
+  "Study Title": "Transcriptional profiling of roots and shoots from Brachypodium distachyon seedlings flown on the ISS",
+  "organism": "Brachypodium distachyon",
+  "Project Type": "Spaceflight Study",
+  "Flight Program": "International Space Station (ISS)",
+  "Mission": {
+   "Start Date": "02-Apr-2018",
+   "End Date": "05-May-2018",
+   "Name": "SpaceX-14"
+  },
+  "Study Factor Name": "Spaceflight     Accession     Organism Part",
+  "Study Assay Measurement Type": "transcription profiling",
+  "Study Description": "Most major cereal grain crops are monocots. Yet, most investigations of plant adaptation to the spaceflight environment have been carried out on the dicotyledonous model plant, Arabidopsis thaliana. It remains unknown whether the conclusions from such studies can be extrapolated to monocotyledonous plants. To fill this knowledge gap, seedlings of three different accessions of Brachypodium distachyon (Bd21, Bd21-3, and Gaz8), a model for temperate grasses including cereal crops, were grown on the International Space Station in the Veggie hardware and on the ground in matched conditions. To sync…",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-375"
+ },
+ {
+  "Accession": "OSD-134",
+  "Study Title": "Dissecting Low Atmospheric Pressure Stress: Transcriptome Responses to the Components of Hypobaria in Arabidopsis [Experiment 1]",
+  "organism": "Arabidopsis thaliana",
+  "Project Type": "Ground Study",
+  "Study Factor Name": "Atmospheric Pressure     Organism Part",
+  "Study Assay Measurement Type": "transcription profiling",
+  "Study Publication Title": "Dissecting Low Atmospheric Pressure Stress: Transcriptome Responses to the Components of Hypobaria in Arabidopsis",
+  "Study Description": "Controlled hypobaria presents biology with an environment that is never encountered in terrestrial ecology, yet the apparent components of hypobaria are stresses typical of terrestrial ecosystems. High altitude, for example, presents terrestrial hypobaria always with hypoxia as a component stress, since the relative partial pressure of O2 is constant in the atmosphere. Laboratory-controlled hypobaria, however, allows the dissection of pressure effects away from the effects typically associated with altitude, in particular hypoxia, as the partial pressure of O2 can be varied. In this study, who…",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-134"
+ },
+ {
+  "Accession": "OSD-437",
+  "Study Title": "Transcriptional and Post transcriptional Regulation of Seedling Development in Microgravity",
+  "organism": "Arabidopsis thaliana",
+  "Project Type": "Spaceflight Study",
+  "Flight Program": "International Space Station (ISS)",
+  "Mission": {
+   "End Date": "09/26/2016",
+   "Start Date": "07/18/2016",
+   "Name": "SpaceX-9"
+  },
+  "Study Factor Name": "Age     Altered Gravity     Spaceflight",
+  "Study Assay Measurement Type": "transcription profiling",
+  "Study Publication Title": "Conserved plant transcriptional responses to microgravity from two consecutive spaceflight experiments",
+  "Study Description": "The project focuses on understanding the transcriptional and post-transcriptional mechanisms that regulate early seedling development in spaceflight and microgravity. One of the goals of  the PRR experiment was to study the role of small regulatory RNAs in plant response to the space environment using Arabidopsis thaliana.",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-437"
+ },
+ {
+  "Accession": "OSD-723",
+  "Study Title": "Substrate Matters: Ionic Silver Alters Lettuce Growth, Nutrient Uptake, and Root Microbiome in a Hydroponics System",
+  "organism": "Microbiota",
+  "Project Type": "Ground Study",
+  "Study Factor Name": "Organism Part     Growth Time     Treatment     Growth Medium",
+  "Study Assay Measurement Type": "Metagenomic sequencing",
+  "Study Publication Title": "Substrate Matters: Ionic Silver Alters Lettuce Growth, Nutrient Uptake, and Root Microbiome in a Hydroponics System.",
+  "Study Description": "Ionic silver (Ag+) is being investigated as a residual biocide for use in NASA spacecraft potable water systems on future crewed missions. This water will be used to irrigate future spaceflight crop production systems. We have evaluated the impact of three concentrations (31 ppb, 125 ppb, and 500 ppb) of ionic silver biocide solutions on lettuce in an arcillite (calcinated clay particle substrate) and hydroponic (substrate-less) growth setup after 28 days. Lettuce plant growth was reduced in the hydroponic samples treated with 31 ppb silver and severely stunted for samples treated at 125 ppb a…",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-723"
+ },
+ {
+  "Accession": "OSD-38",
+  "Study Title": "Proteomics and Transcriptomics analysis of Arabidopsis Seedlings in Microgravity",
+  "organism": "Arabidopsis thaliana",
+  "Project Type": "Spaceflight Study",
+  "Flight Program": "International Space Station (ISS)",
+  "Mission": {
+   "End Date": "02/11/2015",
+   "Start Date": "01/10/2015",
+   "Name": "SpaceX-5"
+  },
+  "Study Factor Name": "Spaceflight     Sample Preservation Method",
+  "Study Assay Measurement Type": "protein expression profiling     transcription profiling",
+  "Study Publication Title": "Transcriptome and proteome responses in RNAlater preserved tissue of Arabidopsis thaliana.     Growth in spaceflight hardware results in alterations to the transcriptome and proteome.     Methods for on-orbit germination of Arabidopsis thaliana for proteomic analysis.     Proteomic approaches and their application to plant gravitropism.     Spaceflight induces novel regulatory responses in Arabidopsis seedling as revealed by combined proteomic and transcriptomic analyses     Test of Arabidopsis Space Transcriptome: A Discovery Environment to Explore Multiple Plant Biology Spaceflight Experiments",
+  "Study Description": "On Earth plants are constantly exposed to a gravitational field of 1G. Gravity affects a plant in every step of its development. Germinating seedlings orient their radicle and hypocotyl and growing plants position organs at a specific Gravitropic Set-point Angle dictated by the asymmetric distribution of auxin depending on the gravity vector. Hence gravitropism is one of the fundamental growth responses in plants. For any experiment studying the effects of gravity on plants, the ultimate control is the microgravity in space. In this study, Arabidopsis seeds were flown to the International Spac…",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-38"
+ },
+ {
+  "Accession": "OSD-329",
+  "Study Title": "Transcription profiling of atm mutant, adm mutant and wild type whole plants and roots of Arabidopsis after gamma ray irradiation in a time series",
+  "organism": "Arabidopsis thaliana",
+  "Project Type": "Ground Study",
+  "Study Factor Name": "Genotype     Organism Part     Ionizing Radiation     Time of Sample Collection After Treatment",
+  "Study Assay Measurement Type": "transcription profiling",
+  "Study Description": "Whole seedlings of wild type (4d) and atm mutants (4d) have been analyzed after a gamma ray irradiation of 0.75h, 1.5h, 3h and 5h (time course). Roots of wt (4d), atm (3d) and atr (4d) mutants have been analyzed after a 1h irradiation. Ataxia Telangiectasia Mutated (ATM), encodes a large protein with a phosph@idylinositol 3-kinase (PI3K)-like domain at the C terminus (reviewed by Rotman and Shiloh, 1998). PI3K-related proteins make up a large family of Ser-Thr protein kinases, numerous members of which are involved in the regulation of cell cycle progression, responses to DNA damage, and the m…",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-329"
+ },
+ {
+  "Accession": "OSD-45",
+  "Study Title": "Action of microgravity on root development",
+  "organism": "Arabidopsis thaliana",
+  "Project Type": "Ground Study",
+  "Study Factor Name": "Microgravity Simulation     Time",
+  "Study Assay Measurement Type": "transcription profiling",
+  "Study Description": "Arabidopsis were grown on horizontal or vertical clinostat for 4, 8 or 12 days. Seedlings on horizontal clinostat were in simulated microgravity and seedlings on vertical clinostat are considered as a control. Comparison was made between plants grown on simulated microgravitry and vertical position. 6 dye-swap - treated vs untreated comparison",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-45"
+ },
+ {
+  "Accession": "OSD-120",
+  "Study Title": "Genetic dissection of the Arabidopsis spaceflight transcriptome: Are some responses dispensable for the physiological adaptation of plants to spaceflight?",
+  "organism": "Arabidopsis thaliana",
+  "Project Type": "Spaceflight Study",
+  "Flight Program": "International Space Station (ISS)",
+  "Mission": {
+   "End Date": "05/18/2014",
+   "Start Date": "04/18/2014",
+   "Name": "SpaceX-3"
+  },
+  "Study Factor Name": "Ecotype     Spaceflight     Treatment",
+  "Study Assay Measurement Type": "transcription profiling     Image Analysis",
+  "Study Publication Title": "Genetic dissection of the Arabidopsis spaceflight transcriptome: Are some responses dispensable for the physiological adaptation of plants to spaceflight?",
+  "Study Description": "Experimentation on the International Space Station has reached the stage where repeated and nuanced transcriptome studies are beginning to illuminate the structural and metabolic differences between plants grown in space compared to plants on the Earth. Genes that are important in establishing the spaceflight responses are being identified, their roles in spaceflight physiological adaptation are increasingly understood, and the fact that different genotypes adapt differently is recognized. However, the basic question of whether these spaceflight responses are actually required for survival has…",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-120"
+ },
+ {
+  "Accession": "OSD-296",
+  "Study Title": "Transcription profiling of Arabidopsis seedings exposed to UV-B irradiation",
+  "organism": "Arabidopsis thaliana",
+  "Project Type": "Ground Study",
+  "Study Factor Name": "Genotype     Treatment     Light     Time",
+  "Study Assay Measurement Type": "transcription profiling",
+  "Study Publication Title": "Interaction of COP1 and UVR8 regulates UV-B-induced photomorphogenesis and stress acclimation in Arabidopsis",
+  "Study Description": "Interaction of COP1 and UVR8, which regulate UV-B-induced photomorphogenesis and stress acclimation in Arabidopsis thaliana.",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-296"
+ },
+ {
+  "Accession": "OSD-581",
+  "Study Title": "A molecular study of Italian ryegrass grown on Martian regolith simulant",
+  "organism": "Lolium multiflorum",
+  "Project Type": "Ground Study",
+  "Study Factor Name": "soil environment exposure     Organism Part",
+  "Study Assay Measurement Type": "protein expression profiling",
+  "Study Publication Title": "A molecular study of Italian ryegrass grown on Martian regolith simulant",
+  "Study Description": "In the last decade, the exploration of deep space has become the objective of the national space programs of many countries. The International Space Exploration Coordination Group has set a roadmap whose long-range strategy envisions the expansion of human presence in the solar system to progress with exploration and knowledge and to accelerate innovation. Crewed missions to Mars could be envisaged by 2040. In this scenario, finding ways to use the local resources for the provision of food, construction materials, propellants, pharmaceuticals is needed. Plants are important resources for deep …",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-581"
+ },
+ {
+  "Accession": "OSD-205",
+  "Study Title": "HSFA2 functions in the physiological adaptation of undifferentiated plant cells to spaceflight microgravity environment",
+  "organism": "Arabidopsis thaliana",
+  "Project Type": "Spaceflight Study",
+  "Flight Program": "International Space Station (ISS)",
+  "Mission": {
+   "Start Date": "03/01/2013",
+   "End Date": "03/26/2013",
+   "Name": "SpaceX-2"
+  },
+  "Study Factor Name": "Spaceflight     Genotype",
+  "Study Assay Measurement Type": "transcription profiling",
+  "Study Publication Title": "HSFA2 Functions in the Physiological Adaptation of Undifferentiated Plant Cells to Spaceflight",
+  "Study Description": "The Heat Shock Factor A2 (HsfA2), as a part of the HSF network, is essential to the plant's response to almost any environmental stress and to the cellular homeostatic control mechanisms. Plant cell cultures disabled in HsfA2 function were grown aboard the International Space Station (ISS) in order to ascertain whether or not they use the same terrestrially effective systems to adapt to the novel environment of spaceflight. Cultured lines of Arabidopsis thaliana derived from wild type (WT) cultivar Col-0 and from a knock-out line deficient in the gene encoding HSFA2 (HSFA2 KO) were launched to…",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-205"
+ },
+ {
+  "Accession": "OSD-44",
+  "Study Title": "Transcriptomics analysis of etiolated Arabidopsis thaliana seedlings in response to microgravity",
+  "organism": "Arabidopsis thaliana",
+  "Project Type": "Spaceflight Study",
+  "Flight Program": "Space Transportation System (STS)",
+  "Mission": {
+   "Start Date": "4/5/2010",
+   "End Date": "4/20/2010",
+   "Name": "STS-131"
+  },
+  "Study Factor Name": "Genotype     Spaceflight",
+  "Study Assay Measurement Type": "transcription profiling",
+  "Study Publication Title": "Transcriptional response of Arabidopsis seedlings during spaceflight reveals peroxidase and cell wall remodeling genes associated with root hair development. American Journal of Botany.",
+  "Study Description": "Gene expression profile of two-week-old etiolated Arabidopsis seedlings under microgravity on board space flight BRIC16 were compared with ground grown control in both wild-type and act2-3 mutant plants.",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-44"
+ },
+ {
+  "Accession": "OSD-121",
+  "Study Title": "Biological Research in Canisters-16 (BRIC-16): Transcriptomics, Glycomics, and Morphometric photography.",
+  "organism": "Arabidopsis thaliana",
+  "Project Type": "Spaceflight Study",
+  "Flight Program": "STS-131",
+  "Mission": {
+   "Start Date": "4/5/10",
+   "End Date": "4/20/10",
+   "Name": "STS-131"
+  },
+  "Study Factor Name": "Spaceflight",
+  "Study Assay Measurement Type": "transcription profiling     Morphometric analysis     Glycomic Profile",
+  "Study Publication Title": "Comparative transcriptomics indicate changes in cell wall organization and stress response in seedlings during spaceflight     Morphometric analyses of petioles of seedlings grown in a spaceflight experiment",
+  "Study Description": "These investigations studied the fundamentals of how plants perceive gravity and develop in microgravity. It informs how gene regulation is altered by spaceflight conditions. We noted expression changes in genes involved in hypoxia and heat shock responses, DNA repair, and cell wall structure between spaceflight samples compared to the ground controls. In addition, glycome profiling supported our expression analyses in that there was a difference in cell wall components between ground control and spaceflight-grown plants. Comparing our studies to those of the other BRIC-16 experiments demonstr…",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-121"
+ },
+ {
+  "Accession": "OSD-223",
+  "Study Title": "The effect of spaceflight on transgenic Arabidopsis plants with compromised signaling",
+  "organism": "Arabidopsis thaliana",
+  "Project Type": "Spaceflight Study",
+  "Flight Program": "Space Transportation System (STS)",
+  "Mission": {
+   "End Date": "07/21/2011",
+   "Start Date": "07/08/2011",
+   "Name": "STS-135"
+  },
+  "Study Factor Name": "Spaceflight     Genotype     Organism Part     Altered Gravity",
+  "Study Assay Measurement Type": "transcription profiling",
+  "Study Publication Title": "Uncovering Transcriptional Responses to Fractional Gravity in Arabidopsis Roots     Conserved plant transcriptional responses to microgravity from two consecutive spaceflight experiments",
+  "Study Description": "Understanding the molecular mechanisms by which plants sense and adapt to changes in the space environment is essential for generating plants that are better adapted to withstand space flight, microgravity, and other adverse conditions encountered in space. The objective of our spaceflight experiment “Plant Signaling in Microgravity” (carried out on the International Space Station, ISS), was to compare transcript profiles of wild type and transgenic InsP 5-ptase plants with compromised InsP3 signaling. The transgenic Arabidopsis plants constitutively express the mammalian type I inositol polyp…",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-223"
+ },
+ {
+  "Accession": "OSD-518",
+  "Study Title": "Opposing influences of TAC1 and LAZY1 on Lateral Shoot Orientation in Arabidopsis",
+  "organism": "Arabidopsis thaliana",
+  "Project Type": "Ground Study",
+  "Study Factor Name": "Genotype     Treatment",
+  "Study Assay Measurement Type": "transcription profiling",
+  "Study Publication Title": "Opposing influences of TAC1 and LAZY1 on Lateral Shoot Orientation in Arabidopsis.",
+  "Study Description": "TAC1 and LAZY1 are members of a gene family that regulates lateral shoot orientation in plants. TAC1 promotes outward orientations in response to light, while LAZY1 promotes upward shoot orientations in response to gravity via altered auxin transport. We performed genetic, molecular, and biochemical assays to investigate possible interactions between these genes. In Arabidopsis they were expressed in similar tissues and double mutants revealed the wide-angled lazy1 branch phenotype, indicating it is epistatic to the tac1 shoot phenotype. Surprisingly, the lack of TAC1 did not influence gravitr…",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-518"
+ },
+ {
+  "Accession": "OSD-519",
+  "Study Title": "PUCHI represses early meristem formation in developing lateral roots of Arabidopsis thaliana",
+  "organism": "Arabidopsis thaliana",
+  "Project Type": "Ground Study",
+  "Study Factor Name": "Genotype     Organism Part     Treatment     Time",
+  "Study Assay Measurement Type": "transcription profiling",
+  "Study Publication Title": "PUCHI represses early meristem formation in developing lateral roots of Arabidopsis thaliana.",
+  "Study Description": "Time-series RNAseq analysis following lateral root induction by gravistimulation. Lateral root organogenesis is a key process in the development of a plant’s root system and its adaptation to the environment. During lateral root formation, an early phase of cell proliferation first produces a four-cell-layered primordium, and only from this stage onwards is a root meristem-like structure, expressing root stem cell niche marker genes, being established in the developing organ. Previous studies reported that the gene regulatory network controlling lateral root formation is organized into two sub…",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-519"
+ },
+ {
+  "Accession": "OSD-251",
+  "Study Title": "RNAseq analysis of the response of Arabidopsis thaliana to fractional gravity under blue-light stimulation during spaceflight",
+  "organism": "Arabidopsis thaliana",
+  "Project Type": "Spaceflight Study",
+  "Flight Program": "International Space Station (ISS)",
+  "Mission": {
+   "End Date": "03/26/2013  10/25/2014",
+   "Start Date": "03/01/2013  09/21/2014",
+   "Name": "SpaceX-2  SpaceX-4"
+  },
+  "Study Factor Name": "Spaceflight     Altered Gravity",
+  "Study Assay Measurement Type": "transcription profiling",
+  "Study Publication Title": "RNA-seq analyses of Arabidopsis thaliana seedlings after exposure to blue-light phototropic stimuli in microgravity     RNAseq analysis of the response of Arabidopsis thaliana to fractional gravity under blue-light stimulation during spaceflight",
+  "Study Description": "Traveling to nearby extraterrestrial objects having a reduced gravity level (partial gravity) compared to Earth's gravity is becoming a realistic objective for space agencies. The use of plants as part of life support systems will require a better understanding of the interactions among plant growth responses including tropisms, under partial gravity conditions. Here, we present results from our latest space experiments on the ISS, in which seeds of Arabidopsis thaliana were germinated, and seedlings grew for six days under different gravity levels, namely micro-g, several intermediate partial…",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-251"
+ },
+ {
+  "Accession": "OSD-810",
+  "Study Title": "RNA-seq analysis in simulated microgravity unveils down-regulation of the beta-rhizobial siderophore phymabactin.",
+  "organism": "Paraburkholderia phymatum",
+  "Project Type": "Ground Study",
+  "Study Factor Name": "Microgravity Simulation",
+  "Study Assay Measurement Type": "transcription profiling",
+  "Study Publication Title": "RNA-seq analysis in simulated microgravity unveils down-regulation of the beta-rhizobial siderophore phymabactin.",
+  "Study Description": "Exploiting the symbiotic interaction between crops and nitrogen-fixing bacteria is a simple and ecological method to promote plant growth in prospective extraterrestrial human outposts. In this study, we performed an RNA-seq analysis to investigate the adaptation of the legume symbiont Paraburkholderia phymatum STM815^T to simulated microgravity (s0-g) at the transcriptome level. The results revealed a drastic effect on gene expression, with roughly 23% of P. phymatum genes being differentially regulated in s0-g. Among those, 951 genes were upregulated and 858 downregulated in the cells grown …",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-810"
+ },
+ {
+  "Accession": "OSD-624",
+  "Study Title": "Arabidopsis transcriptome in Virgin Galactic human-tended suborbital spaceflight",
+  "organism": "Arabidopsis thaliana",
+  "Project Type": "High Altitude Study",
+  "Flight Program": "Virgin Galactic SpaceShipTwo",
+  "Mission": {
+   "End Date": "2021-06-11",
+   "Start Date": "2021-06-11",
+   "Name": "Unity 22"
+  },
+  "Study Factor Name": "Time     Altered Gravity     Organism Part",
+  "Study Assay Measurement Type": "transcription profiling",
+  "Study Publication Title": "Transcriptomic dynamics in the transition from ground to space are revealed by Virgin Galactic human-tended suborbital spaceflight.",
+  "Study Description": "The Virgin Galactic Unity 22 mission conducted the first astronaut-manipulated suborbital spaceflight experiment. The experiment examined the operationalization of Kennedy Space Center Fixation Tubes (KFTs) as a generalizable approach to preserving biology at various phases of suborbital flight. The biology chosen for this experiment was Arabidopsis thaliana, ecotype Col-0, because of the plant’s history of spaceflight experimentation within KFTs and wealth of comparative data from orbital experiments. KFTs were deployed as a wearable device, a leg pouch attached to the astronaut, which proved…",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-624"
+ },
+ {
+  "Accession": "OSD-147",
+  "Study Title": "Arg1 functions in the physiological adaptation of undifferentiated plant cells to spaceflight",
+  "organism": "Arabidopsis thaliana",
+  "Project Type": "Spaceflight Study",
+  "Flight Program": "International Space Station (ISS)",
+  "Mission": {
+   "Start Date": "03/01/2013",
+   "End Date": "03/26/2013",
+   "Name": "SpaceX-2"
+  },
+  "Study Factor Name": "Spaceflight     Genotype",
+  "Study Assay Measurement Type": "transcription profiling",
+  "Study Publication Title": "ARG1 Functions in the Physiological Adaptation of Undifferentiated Plant Cells to Spaceflight.     HSFA2 Functions in the Physiological Adaptation of Undifferentiated Plant Cells to Spaceflight",
+  "Study Description": "In this study transcriptome profiling was used to gain insight into the spaceflight adaptation role of Altered response to gravity-1 (Arg1), a gene known to affect gravity responses in plants on Earth. The study compared expression profiles of cultured lines of Arabidopsis thaliana derived from wild type (WT) cultivar Col-0 to profiles from a knock-out line deficient in the gene encoding (ARG1 KO), both on the ground and in space. The cell lines were launched on SpaceX CRS-2 as part of the Cellular Expression Logic (CEL) experiment of the BRIC17 spaceflight mission. The cultured cell lines wer…",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-147"
+ },
+ {
+  "Accession": "OSD-346",
+  "Study Title": "RNAseq analysis of the response of Arabidopsis thaliana phytochrome mutants (PhyA, PhyB) to fractional gravity under blue-light stimulation during spaceflight",
+  "organism": "Arabidopsis thaliana",
+  "Project Type": "Spaceflight Study",
+  "Flight Program": "International Space Station (ISS)",
+  "Mission": {
+   "End Date": "03/26/2013",
+   "Start Date": "03/01/2013",
+   "Name": "SpaceX-2"
+  },
+  "Study Factor Name": "Genotype     Spaceflight     Altered Gravity     Treatment",
+  "Study Assay Measurement Type": "transcription profiling",
+  "Study Publication Title": "RNAseq analysis of the response of Arabidopsis thaliana to fractional gravity under blue-light stimulation during spaceflight     RNA-seq analyses of Arabidopsis thaliana seedlings after exposure to blue-light phototropic stimuli in microgravity     Changes in operational procedures to improve spaceflight experiments in plant biology in the European Modular Cultivation System     A novel blue-light phototropic response is revealed in roots of Arabidopsis thaliana in microgravity",
+  "Study Description": "Traveling to nearby extraterrestrial objects having a reduced gravity level (partial gravity) compared to Earth's gravity is becoming a realistic objective for space agencies. The use of plants as part of life support systems will require a better understanding of the interactions among plant growth responses including tropisms, under partial gravity conditions. Here, we present results from the Seedling Growth space experiments on the ISS, to complement the previously released GLDS-251 dataset including seeds of Arabidopsis thaliana wildtype plants. Seeds were germinated, and seedlings grew f…",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-346"
+ },
+ {
+  "Accession": "OSD-37",
+  "Study Title": "Comparison of the spaceflight transcriptome of four commonly used Arabidopsis thaliana ecotypes",
+  "organism": "Arabidopsis thaliana",
+  "Project Type": "Spaceflight Study",
+  "Flight Program": "International Space Station (ISS)",
+  "Mission": {
+   "End Date": "10/25/2014",
+   "Start Date": "09/21/2014",
+   "Name": "SpaceX-4"
+  },
+  "Study Factor Name": "Spaceflight     Ecotype",
+  "Study Assay Measurement Type": "transcription profiling",
+  "Study Publication Title": "Variation in the transcriptome of different ecotypes of Arabidopsis thaliana reveals signatures of oxidative stress in plant responses to spaceflight     Test of Arabidopsis Space Transcriptome: A Discovery Environment to Explore Multiple Plant Biology Spaceflight Experiments",
+  "Study Description": "This experiment compared the spaceflight transcriptomes of four commonly used natural variants (ecotypes) of Arabidopsis thaliana using RNAseq. In nature, Arabidopsis is a native of Europe/Asia/Northwestern Africa and is found across the globe growing in a wide range of environments. The geographical spread of these various populations has led to a slow divergence leading to distinct ecotypes. Understanding the impact of this ecotypic variability is an important factor when using Arabidopsis as a model. Seeds of the ecotypes Col_0, Ler-2, Ws-2 and Cvi-0 were flown to the International Space St…",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-37"
+ },
+ {
+  "Accession": "OSD-496",
+  "Study Title": "The SOG1 transcriptional activator and the MyB3R family of repressors control a complex gene network in response to DNA damage in Arabidopsis [SOG1 ChIP-seq]",
+  "organism": "Arabidopsis thaliana",
+  "Project Type": "Ground Study",
+  "Study Factor Name": "Genotype     antibody     Ionizing Radiation     Time of Sample Collection After Treatment",
+  "Study Assay Measurement Type": "protein-DNA binding site identification",
+  "Study Publication Title": "SOG1 activator and MYB3R repressors regulate a complex DNA damage network in Arabidopsis.",
+  "Study Description": "To combat DNA damage, organisms mount a DNA damage response (DDR) that results in cell cycle regulation, DNA repair and, in severe cases, cell death. Underscoring the importance of gene regulation in this response, studies in Arabidopsis have demonstrated that all of the aforementioned processes rely on SUPPRESSOR OF GAMMA RESPONSE 1 (SOG1), a NAC family transcription factor (TF) that has been functionally equated to the mammalian tumor suppressor, p53. However, the expression networks connecting SOG1 to these processes remain largely unknown and, although the DDR spans from minutes to hours, …",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-496"
+ },
+ {
+  "Accession": "OSD-362",
+  "Study Title": "An LaeA- and BrlA-Dependent Cellular Network Governs Tissue-Specific Secondary Metabolism in the Human Pathogen Aspergillus fumigatus",
+  "organism": "Aspergillus fumigatus",
+  "Project Type": "Ground Study",
+  "Study Factor Name": "Strain     Treatment",
+  "Study Assay Measurement Type": "transcription profiling",
+  "Study Publication Title": "An LaeA- and BrlA-Dependent Cellular Network Governs Tissue-Specific Secondary Metabolism in the Human Pathogen Aspergillus fumigatus",
+  "Study Description": "Biosynthesis of many ecologically important secondary metabolites (SMs) in filamentous fungi is controlled by several global transcriptional regulators, like the chromatin modifier LaeA, and tied to both development and vegetative growth. In Aspergillus molds, asexual development is regulated by the BrlA  AbaA  WetA transcriptional cascade. To elucidate BrlA pathway involvement in SM regulation, we examined the transcriptional and metabolic profiles of ΔbrlA, ΔabaA, and ΔwetA mutant and wild-type strains of the human pathogen Aspergillus fumigatus. We find that BrlA, in addition to regulating …",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-362"
+ },
+ {
+  "Accession": "OSD-8",
+  "Study Title": "Gravitational and magnetic field variations synergize to cause subtle variations in the global transcriptional state of Arabidopsis in vitro callus cultures",
+  "organism": "Arabidopsis thaliana",
+  "Project Type": "Ground Study",
+  "Study Factor Name": "Altered Gravity     Magnetic Field",
+  "Study Assay Measurement Type": "transcription profiling",
+  "Study Publication Title": "Gravitational and magnetic field variations synergize to cause subtle variations in the global transcriptional state of Arabidopsis in vitro callus cultures",
+  "Study Description": "Using diamagnetic levitation, we have exposed A. thaliana in vitro callus cultures to five environments with different levels of effective gravity (from levitation i.e. simulated mg* to 2g*) and magnetic fields (10.1 to 16.5 Tesla) and we have compared the results with those of similar experiments done in a Random Position Machine (simulated micro g) and a Large Diameter Centrifuge (2g) free of high magnetic fields. Microarray analysis indicates that there are changes in overall gene expression of the cultured cells exposed to these unusual environments but also that gravitational and magnetic…",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-8"
+ },
+ {
+  "Accession": "OSD-385",
+  "Study Title": "Persistence of Escherichia coli in the microbiomes of red Romaine lettuce (Lactuca sativa cv. ‘Outredgeous’)- does seed sanitization matter?",
+  "organism": "Microbiota",
+  "Project Type": "Ground Study",
+  "Study Factor Name": "Treatment     Seed Sanitization     Organism Part",
+  "Study Assay Measurement Type": "Amplicon Sequencing",
+  "Study Publication Title": "Persistence of Escherichia coli in the microbiomes of red Romaine lettuce (Lactuca sativa cv. ‘Outredgeous’) and mizuna mustard (Brassica rapa var. japonica) - does seed sanitization matter?",
+  "Study Description": "Seed sanitization via chemical processes removes/reduces microbes from the external surfaces of the seed and thereby could have an impact on the plants‚health or productivity. To determine the impact of seed sanitization on the plants‚microbiome and pathogen persistence, sanitized and unsanitized seeds from two leafy green crops, red Romaine lettuce (Lactuca sativa cv. ‚Outredgeous‚) and mizuna mustard (Brassica rapa var. japonica) were exposed to Escherichia coli and grown in controlled environment growth chambers simulating environmental conditions aboard the International Space Station. Pla…",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-385"
+ },
+ {
+  "Accession": "OSD-386",
+  "Study Title": "Persistence of Escherichia coli in the microbiomes of mizuna mustard (Brassica rapa var. japonica) - does seed sanitization matter?",
+  "organism": "Microbiota",
+  "Project Type": "Ground Study",
+  "Study Factor Name": "Treatment     Seed Sanitization     Organism Part",
+  "Study Assay Measurement Type": "Amplicon Sequencing",
+  "Study Publication Title": "Persistence of Escherichia coli in the microbiomes of red Romaine lettuce (Lactuca sativa cv. ‘Outredgeous’) and mizuna mustard (Brassica rapa var. japonica) - does seed sanitization matter?",
+  "Study Description": "Seed sanitization via chemical processes removes/reduces microbes from the external surfaces of the seed and thereby could have an impact on the plants' health or productivity. To determine the impact of seed sanitization on the plants' microbiome and pathogen persistence, sanitized and unsanitized seeds from two leafy green crops, red Romaine lettuce (Lactuca sativa cv. 'Outredgeous') and mizuna mustard (Brassica rapa var. japonica) were exposed to Escherichia coli and grown in controlled environment growth chambers simulating environmental conditions aboard the International Space Station. P…",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-386"
+ },
+ {
+  "Accession": "OSD-321",
+  "Study Title": "Relevance of Unfolded Protein Response to Spaceflight-Induced Transcriptional Reprogramming in Arabidopsis",
+  "organism": "Arabidopsis thaliana",
+  "Project Type": "Spaceflight Study",
+  "Flight Program": "International Space Station (ISS)",
+  "Mission": {
+   "End Date": "09/17/2017",
+   "Start Date": "08/14/2017",
+   "Name": "SpaceX-12"
+  },
+  "Study Factor Name": "Spaceflight     Genotype",
+  "Study Assay Measurement Type": "transcription profiling",
+  "Study Publication Title": "Relevance of the Unfolded Protein Response to Spaceflight-Induced Transcriptional Reprogramming in Arabidopsis",
+  "Study Description": "Plants are primary producers of food and oxygen on Earth and will likewise be indispensable to the establishment of large-scale sustainable ecosystems and human survival in space. To contribute to the understanding of how plants respond to spaceflight stresses, we examined the relevance of the unfolded protein response (UPR), a conserved signaling cascade that responds to a number of unfavorable environmental stresses, in the model plant species Arabidopsis thaliana. To do so, we compared the transcriptional responses of wild type and UPR-defective seedlings to spaceflight during the SpaceX-CR…",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-321"
+ },
+ {
+  "Accession": "OSD-281",
+  "Study Title": "During development, the Sku5 mutant roots engage different genes than wild type WS roots, either on the ground or in spaceflight.",
+  "organism": "Arabidopsis thaliana",
+  "Project Type": "Spaceflight study",
+  "Flight Program": "Internation Space Station (ISS)",
+  "Mission": {
+   "End Date": "02/11/2015",
+   "Start Date": "01/10/2015",
+   "Name": "SpaceX-5"
+  },
+  "Study Factor Name": "Spaceflight     Age     Genotype",
+  "Study Assay Measurement Type": "transcription profiling",
+  "Study Publication Title": "Genetic dissection of the Arabidopsis spaceflight transcriptome: Are some responses dispensable for the physiological adaptation of plants to spaceflight?",
+  "Study Description": "The wild type WS plants and the Sku5 mutant plants in the WS background were germinated on ISS or on the ground and the gene expression profiles in roots at 4 days or 8 days were established. The Sku5 gene (AT4G12420) codes for a multi-copper oxidase-like protein SKU5 protein that is involved in directed root tip growth. The Sku5 protein is glycosylated, GPI-anchored and localizes to the plasma membrane and the cell wall. The Sku5 gene is expressed most strongly in expanding tissues. The development of WS and Sku5 plants on orbit differs from that on the ground as demonstrated by the compariso…",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-281"
+ },
+ {
+  "Accession": "OSD-313",
+  "Study Title": "Dissecting transcriptional responses of nucleolin mutants to red light stimulation and darkness in ground reference conditions",
+  "organism": "Arabidopsis thaliana",
+  "Project Type": "Ground Study",
+  "Study Factor Name": "Genotype     Treatment",
+  "Study Assay Measurement Type": "transcription profiling",
+  "Study Publication Title": "The Importance of Earth Reference Controls in Spaceflight -Omics Research: Characterization of Nucleolin Mutants from the Seedling Growth Experiments.",
+  "Study Description": "Understanding plant adaptive responses to the space environment is a requisite for enabling space farming. Spaceflight produce deleterious effects on plant cells, particularly affecting ribosome biogenesis, a complex stress-sensitive process coordinated with cell division and differentiation, known to be activated by red light. Here, we have used mutants from the two nucleolin genes in Arabidopsis (NUC1 and NUC2), encoding the main regulator of the ribosome biogenesis in the nucleolus, in order to better understand their role in adaptive response mechanisms to stress. Thus, we show that nucleo…",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-313"
+ },
+ {
+  "Accession": "OSD-193",
+  "Study Title": "During development, the Sku6 mutant roots engage different genes than wild type Col-0 roots, either on the ground or in spaceflight",
+  "organism": "Arabidopsis thaliana",
+  "Project Type": "Spaceflight Study",
+  "Flight Program": "International Space Station (ISS)",
+  "Mission": {
+   "End Date": "02/11/2015",
+   "Start Date": "01/10/2015",
+   "Name": "SpaceX-5"
+  },
+  "Study Factor Name": "Time     Genotype     Spaceflight",
+  "Study Assay Measurement Type": "transcription profiling",
+  "Study Publication Title": "Root skewing-associated genes impact the spaceflight response of Arabidopsis thaliana",
+  "Study Description": "The wild type Col-0 plants and the Sku-6 mutant plants of the Col-0 background were germinated on ISS or on the ground and the gene expression profiles in roots at 4 days or 8 days were established. The Sku6 gene (At2g03680) codes for a protein that localizes to microtubule within the cortical array and putatively acting as an intramolecular linker. The development of Col-0 and Sku-6 plants on orbit differs from that on the ground as demonstrated by the comparison of the gene expression profiles between 4 days old to 8 days old plant in the two environments. However the development of Sku-6 mu…",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-193"
+ },
+ {
+  "Accession": "OSD-510",
+  "Study Title": "The SOG1 transcriptional activator and the MYB3R family of repressors control a complex gene network in response to DNA damage in Arabidopsis [RNA-seq DREMmodel]",
+  "organism": "Arabidopsis thaliana",
+  "Project Type": "Ground Study",
+  "Study Factor Name": "Ionizing Radiation     Time of Sample Collection After Treatment     Genotype",
+  "Study Assay Measurement Type": "transcription profiling",
+  "Study Publication Title": "SOG1 activator and MYB3R repressors regulate a complex DNA damage network in Arabidopsis.",
+  "Study Description": "To combat DNA damage, organisms mount a DNA damage response (DDR) that results in cell cycle regulation, DNA repair and, in severe cases, cell death. Underscoring the importance of gene regulation in this response, studies in Arabidopsis have demonstrated that all of the aforementioned processes rely on SUPPRESSOR OF GAMMA RESPONSE 1 (SOG1), a NAC family transcription factor (TF) that has been functionally equated to the mammalian tumor suppressor, p53. However, the expression networks connecting SOG1 to these processes remain largely unknown and, although the DDR spans from minutes to hours, …",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-510"
+ },
+ {
+  "Accession": "OSD-782",
+  "Study Title": "Multi-omics profiling reveals ethylene signalling as a key pathway underlying both genetic and epigenetic responses to low-dose ionizing radiation in Arabidopsis",
+  "organism": "Arabidopsis thaliana",
+  "Project Type": "Ground Study",
+  "Study Factor Name": "Ionizing Radiation     Absorbed Radiation Dose     Time of Sample Collection After Treatment",
+  "Study Assay Measurement Type": "transcription profiling",
+  "Study Publication Title": "Multi-omics profiling reveals ethylene signalling as a key pathway underlying both genetic and epigenetic responses to low-dose ionizing radiation in Arabidopsis",
+  "Study Description": "There is increasing interest in the effects of low-dose ionizing radiation (IR) on plants as might occur during spaceflight, or as a consequence of human activities, such as nuclear power generation, that may result in the release of radioactive materials into the environment. High doses of IR have long been used for the induction of mutations in plants with the goal of generating desirable traits for agribusiness. However, less is known about the responses of plants to acute low doses of IR exposure. Here, we take a multi-omics approach to characterize the response to low dose IR in A. thalia…",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-782"
+ },
+ {
+  "Accession": "OSD-508",
+  "Study Title": "The SOG1 transcriptional activator and the MYB3R family of repressors control a complex gene network in response to DNA damage in Arabidopsis [RNA-seq t vs t0]",
+  "organism": "Arabidopsis thaliana",
+  "Project Type": "Ground Study",
+  "Study Factor Name": "Ionizing Radiation     Time of Sample Collection After Treatment     Genotype",
+  "Study Assay Measurement Type": "transcription profiling",
+  "Study Publication Title": "SOG1 activator and MYB3R repressors regulate a complex DNA damage network in Arabidopsis.",
+  "Study Description": "To combat DNA damage, organisms mount a DNA damage response (DDR) that results in cell cycle regulation, DNA repair and, in severe cases, cell death. Underscoring the importance of gene regulation in this response, studies in Arabidopsis have demonstrated that all of the aforementioned processes rely on SUPPRESSOR OF GAMMA RESPONSE 1 (SOG1), a NAC family transcription factor (TF) that has been functionally equated to the mammalian tumor suppressor, p53. However, the expression networks connecting SOG1 to these processes remain largely unknown and, although the DDR spans from minutes to hours, …",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-508"
+ },
+ {
+  "Accession": "OSD-498",
+  "Study Title": "The SOG1 transcriptional activator and the MYB3R family of repressors control a complex gene network in response to DNA damage in Arabidopsis [RNA-seq gIR vs mock wt]",
+  "organism": "Arabidopsis thaliana",
+  "Project Type": "Ground Study",
+  "Study Factor Name": "Time of Sample Collection after Treatment     Ionizing Radiation",
+  "Study Assay Measurement Type": "transcription profiling",
+  "Study Publication Title": "SOG1 activator and MYB3R repressors regulate a complex DNA damage network in Arabidopsis.",
+  "Study Description": "To combat DNA damage, organisms mount a DNA damage response (DDR) that results in cell cycle regulation, DNA repair and, in severe cases, cell death. Underscoring the importance of gene regulation in this response, studies in Arabidopsis have demonstrated that all of the aforementioned processes rely on SUPPRESSOR OF GAMMA RESPONSE 1 (SOG1), a NAC family transcription factor (TF) that has been functionally equated to the mammalian tumor suppressor, p53. However, the expression networks connecting SOG1 to these processes remain largely unknown and, although the DDR spans from minutes to hours, …",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-498"
+ },
+ {
+  "Accession": "OSD-502",
+  "Study Title": "The SOG1 transcriptional activator and the MYB3R family of repressors control a complex gene network in response to DNA damage in Arabidopsis [RNA-seq myb3r135 vs wt]",
+  "organism": "Arabidopsis thaliana",
+  "Project Type": "Ground Study",
+  "Study Factor Name": "Genotype     Ionizing Radiation",
+  "Study Assay Measurement Type": "transcription profiling",
+  "Study Publication Title": "SOG1 activator and MYB3R repressors regulate a complex DNA damage network in Arabidopsis.",
+  "Study Description": "To combat DNA damage, organisms mount a DNA damage response (DDR) that results in cell cycle regulation, DNA repair and, in severe cases, cell death. Underscoring the importance of gene regulation in this response, studies in Arabidopsis have demonstrated that all of the aforementioned processes rely on SUPPRESSOR OF GAMMA RESPONSE 1 (SOG1), a NAC family transcription factor (TF) that has been functionally equated to the mammalian tumor suppressor, p53. However, the expression networks connecting SOG1 to these processes remain largely unknown and, although the DDR spans from minutes to hours, …",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-502"
+ },
+ {
+  "Accession": "OSD-522",
+  "Study Title": "Integrative Transcriptomics and Proteomics Profiling of Arabidopsis thaliana Elucidates Novel Mechanisms Underlying Spaceflight Adaptation",
+  "organism": "Arabidopsis thaliana",
+  "Project Type": "Spaceflight Study",
+  "Flight Program": "International Space Station (ISS)",
+  "Mission": {
+   "End Date": "01/13/2018  05/05/2018",
+   "Start Date": "12/15/2017  04/02/2018",
+   "Name": "SpaceX-13  SpaceX-14"
+  },
+  "Study Factor Name": "Organism Part     Spaceflight",
+  "Study Assay Measurement Type": "protein expression profiling     transcription profiling",
+  "Study Publication Title": "Integrative Transcriptomics and Proteomics Profiling of Arabidopsis thaliana Elucidates Novel Mechanisms Underlying Spaceflight Adaptation",
+  "Study Description": "Spaceflight presents a unique environment with complex stressors, including microgravity and radiation, that can influence plant physiology at molecular levels. Combining transcriptomics and proteomics approaches, this research gives insights into the coordination of transcriptome and proteome in Arabidopsis’ molecular and physiological responses to Spaceflight environmental stress. Arabidopsis seedlings were germinated and grown in microgravity (ug) aboard the International Space Station (ISS) in NASA Biological Research in Canisters -Light Emitting Diode (BRIC LED) hardware, with the ground …",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-522"
+ },
+ {
+  "Accession": "OSD-427",
+  "Study Title": "Characterizing Epigenetic Changes in Methylation Mutants (elp2-5 and met1-7) in Response to Spaceflight. [RNA-Seq]",
+  "organism": "Arabidopsis thaliana",
+  "Project Type": "Spaceflight Study",
+  "Flight Program": "International Space Station (ISS)",
+  "Mission": {
+   "Start Date": "02/19/2017",
+   "End Date": "03/19/2017",
+   "Name": "SpaceX-10"
+  },
+  "Study Factor Name": "Spaceflight     Genotype     Organism part",
+  "Study Assay Measurement Type": "transcription profiling",
+  "Study Publication Title": "Epigenomic Regulators Elongator Complex Subunit 2 and Methyltransferase 1 Differentially Condition the Spaceflight Response in Arabidopsis",
+  "Study Description": "Epigenetic changes in the DNA methylome are increasingly shown to play an integral role in regulating gene expression necessary for plants adaption to environmental stressors. Plants subjected to the novel environment of spaceflight onboard the International Space Station (ISS), show stress-related transcriptomic changes most notably associated with pathogen stress response. Here, we investigate how known terrestrial stress associated epigenetic modulations might play a role in spaceflight adaptation. To examine the role of 5mCyt in spaceflight adaptation, the APEX04-EPEX experiment conducted …",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-427"
+ },
+ {
+  "Accession": "OSD-678",
+  "Study Title": "Light has a principal role in the Arabidopsis transcriptomic response to the spaceflight environment",
+  "organism": "Arabidopsis thaliana",
+  "Project Type": "Spaceflight Study",
+  "Flight Program": "ISS National Laboratory",
+  "Mission": {
+   "End Date": "05/18/2014",
+   "Start Date": "04/18/2014",
+   "Name": "SpaceX-3"
+  },
+  "Study Factor Name": "Spaceflight     Ecotype     Treatment     Genotype",
+  "Study Assay Measurement Type": "transcription profiling",
+  "Study Publication Title": "Light has a principal role in the Arabidopsis transcriptomic response to the spaceflight environment.",
+  "Study Description": "The Characterizing Arabidopsis Root Attractions (CARA) spaceflight experiment provides comparative transcriptome analyses of plants grown in both light and dark conditions within the same spaceflight. CARA compared three genotypes of Arabidopsis grown in ambient light and in the dark on board the International Space Station (ISS); Col-0, Ws, and phyD, a phytochrome D mutant in the Col-0 background. In all genotypes, leaves responded to spaceflight with a higher number of differentially expressed genes (DEGs) than root tips, and each genotype displayed distinct light / dark transcriptomic patte…",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-678"
+ },
+ {
+  "Accession": "OSD-217",
+  "Study Title": "Characterization of Epigenetic Regulation in an Extraterrestrial Environment: The Arabidopsis Spaceflight Methylome",
+  "organism": "Arabidopsis thaliana",
+  "Project Type": "Spaceflight Study",
+  "Flight Program": "International Space Station (ISS)",
+  "Mission": {
+   "Start Date": "10-Jan-2015",
+   "End Date": "11-Feb-2015",
+   "Name": "SpaceX-5"
+  },
+  "Study Factor Name": "Spaceflight     Organism Part",
+  "Study Assay Measurement Type": "DNA methylation profiling     transcription profiling",
+  "Study Publication Title": "Epigenomics in an extraterrestrial environment: organ-specific alteration of DNA methylation and gene expression elicited by spaceflight in Arabidopsis thaliana.",
+  "Study Description": "When germinated and grown on-board the ISS (International Space Station), plant do not exhibit abnormal structures but they do have altered growth habits and this project aims to investigate the molecular mechanisms that provide the foundation for the altered growth habits observed in orbit. APEX03-2 (Advanced Plant Experiment 03-2), also known as TAGES-ISA (Transgenic Arabidopsis Gene Expression System-Intracellular Signaling Architecture) specifically addresses the growth and molecular changes that occur in Arabidopsis thaliana plants during spaceflight by using molecular and genetic tools, …",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-217"
+ },
+ {
+  "Accession": "OSD-69",
+  "Study Title": "Microbial Observatory (ISS-MO): Indoor microbiome study of the International Space Station surfaces",
+  "Project Type": "Spaceflight Study",
+  "Flight Program": "International space station (ISS)",
+  "Mission": {
+   "End Date": "10-Jun-2015",
+   "Start Date": "10-Nov-2014",
+   "Name": "ISS Increments 42"
+  },
+  "Study Factor Name": "Spaceflight     Treatment",
+  "Study Assay Measurement Type": "Metagenomic sequencing",
+  "Study Publication Title": "Succession and persistence of microbial communities and antimicrobial resistance genes associated with International Space Station environmental surfaces.",
+  "Study Description": "Presented here is the environmental microbiome study of the International Space Station surfaces. The environmental samples were collected with the polyester wipes from eight different locations in the ISS during two consecutive sampling sessions (three months apart). The specific objective was to unveil the pool of genes for each location during two separate sessions to learn of functional and metabolic diversity of microorganisms in the ISS. The International Space Station (ISS) as a closed built environment has its own environmental microbiome which is shaped by microgravity, radiation, and…",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-69"
+ },
+ {
+  "Accession": "OSD-265",
+  "Study Title": "Selecting for Chlamydomonas reinhardtii fitness in the KSC Veggie Unit",
+  "organism": "Chlamydomonas reinhardtii",
+  "Project Type": "Ground Study",
+  "Study Factor Name": "Growth Cycle     Strain     Sample Storage     UV Mutagenesis     Organism Part",
+  "Study Assay Measurement Type": "genome sequencing",
+  "Study Publication Title": "Competitive Growth Assay of Mutagenized Chlamydomonas reinhardtii Compatible With the International Space Station Veggie Plant Growth Chamber",
+  "Study Description": "The Space Algae Experiment Verification Test completed a competitive growth selection on mutagenized microalgae in a series of batch cultures that were passaged for three growth cycles. The experiment was conducted with ground control conditions similar to those actually used in spaceflight. Cultures were limited in growth rate due to gas permeable membranes to provide oxygen and carbon dioxide exchange and a lack of agitation to mix the cells throughout the liquid media. Two strains were grown and three biological replicates were completed for each strain. Specific variables (factors) tested …",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-265"
+ },
+ {
+  "Accession": "OSD-16",
+  "Study Title": "Spaceflight adaptation requires organ specific alterations in the proteomes of Arabidopsis",
+  "organism": "Arabidopsis thaliana",
+  "Project Type": "Spaceflight Study",
+  "Flight Program": "International Space Station (ISS)",
+  "Mission": {
+   "Start Date": "Nov-16-2009",
+   "End Date": "Feb-08-2010",
+   "Name": "STS-129"
+  },
+  "Study Factor Name": "Spaceflight     Organism Part",
+  "Study Assay Measurement Type": "protein expression profiling",
+  "Study Publication Title": "Spaceflight induces specific alterations\nin the proteomes of Arabidopsis. Astrobiology.",
+  "Study Description": "Life in spaceflight demonstrates remarkable adaptive processes within the specialized environments of space vehicles which are subject to the myriad of attending and unique environmental issues associated with orbital trajectories. To examine the adaptive processes that occur in plants in space, leaves and roots from Arabidopsis seedlings that were grown from seed for 12 days on the International Space Station and preserved on orbit in RNAlater were returned to earth and analyzed using iTRAQ broad scale proteomics procedures.",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-16"
+ },
+ {
+  "Accession": "OSD-314",
+  "Study Title": "Adaptive response of Arabidopsis seedlings in microgravity and Mars reduced gravity environment is enhanced by red light photostimulation",
+  "organism": "Arabidopsis thaliana",
+  "Project Type": "Spaceflight Study",
+  "Flight Program": "International Space Station (ISS)",
+  "Mission": {
+   "End Date": "25-Oct-2014  21-May-2015",
+   "Start Date": "20-Sep-2014  14-Apr-2015",
+   "Name": "SpaceX-4  SpaceX-6"
+  },
+  "Study Factor Name": "Spaceflight     Altered Gravity     Light",
+  "Study Assay Measurement Type": "transcription profiling",
+  "Study Publication Title": "From Spaceflight to Mars g-Levels: Adaptive Response of A. Thaliana Seedlings in a Reduced Gravity Environment Is Enhanced by Red-Light Photostimulation",
+  "Study Description": "The response of plants to the spaceflight environment and microgravity is still not well understood, although there has been an increased emphasis on this topic. Even less is known about plants' response to partial or reduced gravity levels. In the absence of the directional cues provided by the gravity vector, the plant is especially perceptive to other cues such as light. Here, we investigate the response of Arabidopsis thaliana 6-day-old seedlings to microgravity and the Mars partial gravity level during spaceflight, as well as the effects of red light photostimulation by determining merist…",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-314"
+ },
+ {
+  "Accession": "OSD-31",
+  "Study Title": "Experimental design and environmental parameters affect Rhodospirillum rubrum S1H response to space flight.",
+  "organism": "Rhodospirillum rubrum",
+  "Project Type": "Spaceflight Study",
+  "Flight Program": "ISS",
+  "Mission": {
+   "Start Date": "Oct-18-2003",
+   "End Date": "Oct-28-2003",
+   "Name": "Soyuz TMA-3 launch  Soyuz TMA-2 return"
+  },
+  "Study Factor Name": "Spaceflight     Ionizing Radiation     Microgravity Simulation",
+  "Study Assay Measurement Type": "transcription profiling",
+  "Study Publication Title": "Experimental design and environmental parameters affect Rhodospirillum rubrum S1H response to space flight.",
+  "Study Description": "In view of long-haul space exploration missions, the European Space Agency initiated the Micro-Ecological Life Support System Alternative (MELiSSA) project targeting the total recycling of organic waste produced by the astronauts into oxygen, water and food using a loop of bacterial and higher plant bioreactors. In that purpose, the alpha-proteobacterium, Rhodospirillum rubrum S1H, was sent twice to the International Space Station and was analyzed post-flight using a newly developed R. rubrum whole genome oligonucleotide microarray and high throughput gel-free proteomics with Isotope-Coded Pro…",
+  "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-31"
+ }
+]

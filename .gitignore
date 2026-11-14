@@ -16,7 +16,19 @@ Thumbs.db
 # TypeScript build
 *.tsbuildinfo
 
+# Playwright
+test-results/
+playwright-report/
+
 # Vite
 ui/dist/
 ui/dist-types/
 .dev.vars
+
+# Trailer (pitch/trailer): medios generados y renders, se regeneran con sus scripts
+pitch/trailer/assets/
+pitch/trailer/out/
+pitch/trailer/renders/
+pitch/trailer/.hyperframes/
+pitch/trailer/**/*.mp3
+pitch/trailer/**/*.mp4
