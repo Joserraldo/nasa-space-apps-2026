@@ -99,5 +99,18 @@
   "agentes.matematico.sube": "With this, {recursoKey} would go up from {desde} to {hasta}.",
   "agentes.matematico.baja": "With this, {recursoKey} would go down from {desde} to {hasta}.",
   "agentes.matematico.igual": "Nothing would change in the base.",
-  "agentes.matematico.decides": "It's just math: you decide."
+  "agentes.matematico.decides": "It's just math: you decide.",
+  "agentes.matematico.compara": "Let me compare your options, one by one.",
+  "agentes.matematico.opcion": "Option {n}: {accionKey}.",
+  "agentes.matematico.luegoSube": "Later, in {ticks} turns, {recursoKey} goes up {cantidad}.",
+  "agentes.matematico.luegoBaja": "Later, in {ticks} turns, {recursoKey} goes down {cantidad}.",
+  "agentes.accion.esperar": "wait",
+  "agentes.accion.redistribuir_energia": "move energy",
+  "agentes.accion.reparar": "repair",
+  "agentes.accion.subir_escudo": "boost the shield",
+  "agentes.accion.refugiarse": "go to the shelter",
+  "agentes.accion.salida_exterior": "go outside",
+  "agentes.accion.ajustar_orbita": "adjust the orbit",
+  "agentes.accion.colocar_modulo": "place a module",
+  "agentes.accion.enviar_telemetria": "send data to Earth"
 }

@@ -99,5 +99,18 @@
   "agentes.matematico.sube": "Con esto, {recursoKey} subiría de {desde} a {hasta}.",
   "agentes.matematico.baja": "Con esto, {recursoKey} bajaría de {desde} a {hasta}.",
   "agentes.matematico.igual": "No cambiaría nada en la base.",
-  "agentes.matematico.decides": "Es solo una cuenta: tú decides."
+  "agentes.matematico.decides": "Es solo una cuenta: tú decides.",
+  "agentes.matematico.compara": "Déjame comparar tus opciones, una por una.",
+  "agentes.matematico.opcion": "Opción {n}: {accionKey}.",
+  "agentes.matematico.luegoSube": "Después, en {ticks} turnos, {recursoKey} sube {cantidad}.",
+  "agentes.matematico.luegoBaja": "Después, en {ticks} turnos, {recursoKey} baja {cantidad}.",
+  "agentes.accion.esperar": "esperar",
+  "agentes.accion.redistribuir_energia": "mover energía",
+  "agentes.accion.reparar": "reparar",
+  "agentes.accion.subir_escudo": "subir el escudo",
+  "agentes.accion.refugiarse": "ir al refugio",
+  "agentes.accion.salida_exterior": "salir afuera",
+  "agentes.accion.ajustar_orbita": "ajustar la órbita",
+  "agentes.accion.colocar_modulo": "colocar un módulo",
+  "agentes.accion.enviar_telemetria": "enviar datos a la Tierra"
 }

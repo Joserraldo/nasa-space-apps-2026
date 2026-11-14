@@ -51,3 +51,9 @@ const despues = aplicarAccion(estado, accion); // copia: el motor es puro
 const d = queSiMatematico(accion, estado.recursos, despues.recursos);
 ```
 Agentes no simula: los números salen del motor y el Matemático solo dice qué sube y qué baja. Trae `accion` para que el jugador confirme.
+
+Para comparar las opciones de una escena (paso 6, polvo 4b):
+```ts
+const d = compararOpciones(estado, escena.opciones.map((accion) => ({ accion, despues: aplicarAccion(estado, accion) })));
+```
+Por opción da una cabecera (`agentes.matematico.opcion` con `accionKey`), lo que cambia ya y lo que el motor dejó en `efectosPendientes` (`luegoSube` / `luegoBaja` con `ticks`). No trae `accion`: el jugador elige con los botones de la escena.
