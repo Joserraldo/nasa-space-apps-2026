@@ -1,0 +1,108 @@
+{
+  "version": "0.1.0",
+  "id": "luna-visible",
+  "nombreKey": "datos.terreno.lunaVisible.nombre",
+  "sitios": [
+    {
+      "id": "llanura-tranquilidad",
+      "nombreKey": "datos.terreno.sitio.llanura-tranquilidad.nombre",
+      "descripcionKey": "datos.terreno.sitio.llanura-tranquilidad.descripcion",
+      "mision": "Apollo 11 LM descent stage",
+      "lon": 23.47314,
+      "lat": 0.67416,
+      "bbox": {
+        "oeste": 23.22314,
+        "sur": 0.42416,
+        "este": 23.72314,
+        "norte": 0.92416
+      },
+      "dem": {
+        "archivo": "llanura-tranquilidad/elevacion.bin",
+        "ancho": 64,
+        "alto": 64,
+        "metrosPorPixel": 237
+      },
+      "sombreado": "llanura-tranquilidad/sombreado.jpg",
+      "elevacionM": -1927,
+      "pendienteGrados": 1,
+      "relieveM": 270,
+      "puntajes": {
+        "plano": 0.9,
+        "luz": null,
+        "blindaje": null
+      }
+    },
+    {
+      "id": "tierras-altas-descartes",
+      "nombreKey": "datos.terreno.sitio.tierras-altas-descartes.nombre",
+      "descripcionKey": "datos.terreno.sitio.tierras-altas-descartes.descripcion",
+      "mision": "Apollo 16 LM descent stage",
+      "lon": 15.5011,
+      "lat": -8.9734,
+      "bbox": {
+        "oeste": 15.2511,
+        "sur": -9.2234,
+        "este": 15.7511,
+        "norte": -8.7234
+      },
+      "dem": {
+        "archivo": "tierras-altas-descartes/elevacion.bin",
+        "ancho": 64,
+        "alto": 64,
+        "metrosPorPixel": 235
+      },
+      "sombreado": "tierras-altas-descartes/sombreado.jpg",
+      "elevacionM": 12,
+      "pendienteGrados": 1.7,
+      "relieveM": 689,
+      "puntajes": {
+        "plano": 0.83,
+        "luz": null,
+        "blindaje": null
+      }
+    },
+    {
+      "id": "borde-rima-hadley",
+      "nombreKey": "datos.terreno.sitio.borde-rima-hadley.nombre",
+      "descripcionKey": "datos.terreno.sitio.borde-rima-hadley.descripcion",
+      "mision": "Apollo 15 LM descent stage",
+      "lon": 3.6333,
+      "lat": 26.13239,
+      "bbox": {
+        "oeste": 3.3833,
+        "sur": 25.88239,
+        "este": 3.8833,
+        "norte": 26.38239
+      },
+      "dem": {
+        "archivo": "borde-rima-hadley/elevacion.bin",
+        "ancho": 64,
+        "alto": 64,
+        "metrosPorPixel": 225
+      },
+      "sombreado": "borde-rima-hadley/sombreado.jpg",
+      "elevacionM": -1927,
+      "pendienteGrados": 0.9,
+      "relieveM": 1497,
+      "puntajes": {
+        "plano": 0.91,
+        "luz": null,
+        "blindaje": null
+      }
+    }
+  ],
+  "fuente": {
+    "nombreKey": "fuente.moonTrek",
+    "dueno": "NASA Moon Trek (JPL); DEM LRO LOLA (NASA); posiciones: capa CombinedNomenclature de Moon Trek (NSSDC)",
+    "urls": [
+      "https://trek.nasa.gov/moon/"
+    ],
+    "consultadoEl": "2026-11-14",
+    "estadoDato": "curado",
+    "derivadoKey": "datos.terreno.derivado",
+    "pendientes": [
+      "luz",
+      "blindaje"
+    ]
+  }
+}
