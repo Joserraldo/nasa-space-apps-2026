@@ -1,0 +1,56 @@
+{
+  "_nota": "Guion del trailer (versión corta de pitch/guion-video.md). Inglés = idioma base. Una línea de locución por escena. voces.mjs lee este archivo.",
+  "voces": {
+    "edge": {
+      "en": "en-US-AndrewNeural",
+      "es": "es-CO-GonzaloNeural",
+      "velocidad": {
+        "en": "+0%",
+        "es": "+6%"
+      }
+    },
+    "elevenlabs": {
+      "en": "JBFqnCBsd6RMkjVDRZzb",
+      "es": "JBFqnCBsd6RMkjVDRZzb",
+      "modelo": "eleven_multilingual_v2"
+    }
+  },
+  "lineas": [
+    {
+      "id": "intro",
+      "escena": "Intro cinemática 3D (0–15 s)",
+      "en": "Imagine you run a base on Mars. A real solar storm is coming. And the computer that helps you is about to get confused.",
+      "es": "Imagina que diriges una base en Marte. Viene una tormenta solar real. Y la computadora que te ayuda está a punto de confundirse."
+    },
+    {
+      "id": "juego1",
+      "escena": "Juego: satélite, aterrizaje y módulos",
+      "en": "In Solar Shield, kids launch a satellite, choose where to land and build a base. Every choice has a cost.",
+      "es": "En Solar Shield, los niños lanzan un satélite, eligen dónde aterrizar y arman su base. Todo tiene un costo."
+    },
+    {
+      "id": "juego2",
+      "escena": "Juego: la tormenta real y su tarjeta de fuente",
+      "en": "Then a real storm arrives: May twentieth, twenty twenty-four, from NASA's DONKI records. Curated real data, not live.",
+      "es": "Luego llega una tormenta real: el 20 de mayo de 2024, del registro DONKI de la NASA. Datos reales curados, no en vivo."
+    },
+    {
+      "id": "juego3",
+      "escena": "Juego: los expertos se contradicen",
+      "en": "The crew are experts, and they disagree. The Doctor says take shelter. The Engineer says power the shield.",
+      "es": "Los expertos no se ponen de acuerdo. La Doctora dice refugio. La Ingeniera, energía al escudo."
+    },
+    {
+      "id": "juego4",
+      "escena": "Juego: Iris dañada y el niño verifica",
+      "en": "And radiation scrambles Iris. She says everything is perfect. It isn't. So kids check the meter, and decide.",
+      "es": "Y la radiación confunde a Iris. Dice que todo está perfecto. No lo está. El niño revisa el medidor y decide."
+    },
+    {
+      "id": "cierre",
+      "escena": "Cierre",
+      "en": "Solar Shield. Learn who to trust when technology fails.",
+      "es": "Solar Shield. Aprende en quién confiar cuando la tecnología falla."
+    }
+  ]
+}
