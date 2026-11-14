@@ -8,7 +8,7 @@
       "tema": "comida",
       "tituloOriginal": "PH-04 Chile Peppers in Space",
       "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-772",
-      "dueno": "NASA (Kennedy Space Center), datos en NASA OSDR",
+      "dueno": "NASA (Kennedy Space Center); data in NASA OSDR",
       "tituloKey": "datos.ciencia.OSD-772.titulo",
       "textoKey": "datos.ciencia.OSD-772.texto"
     },
@@ -17,7 +17,7 @@
       "tema": "huesos",
       "tituloOriginal": "SCD – Stem Cell Differentiation Toward Osteoblast Onboard the International Space Station",
       "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-546",
-      "dueno": "Experimento seleccionado por la ESA; datos en NASA OSDR",
+      "dueno": "Experiment selected by ESA; data in NASA OSDR",
       "tituloKey": "datos.ciencia.OSD-546.titulo",
       "textoKey": "datos.ciencia.OSD-546.texto"
     },
@@ -26,7 +26,7 @@
       "tema": "radiacion",
       "tituloOriginal": "Effects of low dose space radiation exposures on the splenic metabolome",
       "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-360",
-      "dueno": "Estudio en tierra financiado en parte por NASA (beca NNX15AD65G); datos en NASA OSDR",
+      "dueno": "Ground study partly funded by NASA (grant NNX15AD65G); data in NASA OSDR",
       "tituloKey": "datos.ciencia.OSD-360.titulo",
       "textoKey": "datos.ciencia.OSD-360.texto"
     },
@@ -35,7 +35,7 @@
       "tema": "comida",
       "tituloOriginal": "Microbiological and nutritional analysis of lettuce crops grown on the International Space Station-VEG03A",
       "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-269",
-      "dueno": "NASA (Kennedy Space Center), datos en NASA OSDR",
+      "dueno": "NASA (Kennedy Space Center); data in NASA OSDR",
       "tituloKey": "datos.ciencia.OSD-269.titulo",
       "textoKey": "datos.ciencia.OSD-269.texto",
       "consultadoEl": "2026-11-14"
@@ -45,7 +45,7 @@
       "tema": "comida",
       "tituloOriginal": "Adaptive response of Arabidopsis seedlings in microgravity and Mars reduced gravity environment is enhanced by red light photostimulation",
       "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-314",
-      "dueno": "Experimento en el EMCS (ESA), financiado por la Agencia Estatal de Investigación de España; datos en NASA OSDR",
+      "dueno": "Experiment in ESA's EMCS, funded by Spain's State Research Agency; data in NASA OSDR",
       "tituloKey": "datos.ciencia.OSD-314.titulo",
       "textoKey": "datos.ciencia.OSD-314.texto",
       "consultadoEl": "2026-11-14"
@@ -55,7 +55,7 @@
       "tema": "musculo",
       "tituloOriginal": "Gene-metabolite network linked to inhibited bioenergetics in association with spaceflight induced loss of quadriceps muscle",
       "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-326",
-      "dueno": "Ratones en vuelo (Rodent Habitat, misión SpaceX-10), financiado por NIH y el Departamento de Defensa de EE. UU.; datos en NASA OSDR",
+      "dueno": "Mice in flight (Rodent Habitat, SpaceX-10 mission), funded by NIH and the U.S. Department of Defense; data in NASA OSDR",
       "tituloKey": "datos.ciencia.OSD-326.titulo",
       "textoKey": "datos.ciencia.OSD-326.texto",
       "consultadoEl": "2026-11-14"
@@ -65,7 +65,7 @@
       "tema": "inmune",
       "tituloOriginal": "Impact of spaceflight on gene expression in the thymus",
       "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-289",
-      "dueno": "Experimento de JAXA (Japón) con ratones en la ISS; datos en NASA OSDR",
+      "dueno": "JAXA (Japan) experiment with mice on the ISS; data in NASA OSDR",
       "tituloKey": "datos.ciencia.OSD-289.titulo",
       "textoKey": "datos.ciencia.OSD-289.texto",
       "consultadoEl": "2026-11-14"

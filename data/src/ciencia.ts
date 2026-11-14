@@ -63,7 +63,7 @@ export const TarjetaCsaSchema = z.object({
 export const CsaSchema = z.object({
   version: z.literal("0.1.0"),
   consultadoEl: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
-  dueno: z.string().includes("no NASA"),
+  dueno: z.string().includes("not NASA"),
   credito: z.literal("© Canadian Space Agency"),
   condiciones: z.string().url(),
   tarjetas: z.array(TarjetaCsaSchema).min(1),

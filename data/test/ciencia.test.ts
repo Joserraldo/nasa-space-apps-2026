@@ -63,7 +63,7 @@ describe("ciencia", () => {
   });
 
   it("tarjetas de la CSA: socia, no NASA, con crédito, cifras de su página y textos en/es", () => {
-    expect(tarjetasCsa.dueno).toContain("no NASA");
+    expect(tarjetasCsa.dueno).toContain("not NASA");
     expect(tarjetasCsa.credito).toBe("© Canadian Space Agency");
     expect(en["fuente.csa"]).toContain("not NASA");
     expect(es["fuente.csa"]).toContain("no NASA");

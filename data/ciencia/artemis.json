@@ -147,7 +147,7 @@
   ],
   "fuente": {
     "nombreKey": "fuente.radlab",
-    "dueno": "Misión Artemis I (NASA); datos vía NASA OSDR RadLab",
+    "dueno": "Artemis I mission (NASA); data via NASA OSDR RadLab",
     "url": "https://visualization.osdr.nasa.gov/radlab/api/?instrument_id=Artemis-I-HERA-HSU1&absorbed_dose_rate>0&format=json",
     "consultadoEl": "2026-11-13"
   }

@@ -59,7 +59,7 @@ export function curarLuna(): TerrenoLuna {
     sitios,
     fuente: {
       nombreKey: "fuente.moonTrek",
-      dueno: "NASA Moon Trek (JPL); DEM LRO LOLA (NASA); posiciones: capa CombinedNomenclature de Moon Trek (NSSDC)",
+      dueno: "NASA Moon Trek (JPL); DEM LRO LOLA (NASA); positions: Moon Trek CombinedNomenclature layer (NSSDC)",
       urls: ["https://trek.nasa.gov/moon/"],
       consultadoEl: consulta.consultadoEl,
       estadoDato: "curado",
