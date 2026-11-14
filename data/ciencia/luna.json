@@ -1,0 +1,89 @@
+{
+  "version": "0.1.0",
+  "consultadoEl": "2026-11-14",
+  "lugar": "órbita lunar",
+  "mediciones": [
+    {
+      "id": "2024-05-20-marte",
+      "t0": "2024-05-20T05:36Z",
+      "instrumento": "CRaTER-D1D2",
+      "unidad": "µGy/h",
+      "fondo": 139.4,
+      "pico": 14.3,
+      "picoMuestra": 15.7,
+      "diaPico": "2024-05-21",
+      "factor": 0.1,
+      "fondoTranquilo": false,
+      "url": "https://visualization.osdr.nasa.gov/radlab/api/?instrument_id=CRaTER-D1D2&timestamp>=2024-05-15T05:36&timestamp<2024-05-23T05:36&absorbed_dose_rate>0&format=json"
+    },
+    {
+      "id": "2024-05-11-x58",
+      "t0": "2024-05-11T01:23Z",
+      "instrumento": "CRaTER-D1D2",
+      "unidad": "µGy/h",
+      "fondo": 52.8,
+      "pico": 2096.1,
+      "picoMuestra": 2096.1,
+      "diaPico": "2024-05-14",
+      "factor": 39.7,
+      "fondoTranquilo": false,
+      "url": "https://visualization.osdr.nasa.gov/radlab/api/?instrument_id=CRaTER-D1D2&timestamp>=2024-05-06T01:23&timestamp<2024-05-14T01:23&absorbed_dose_rate>0&format=json"
+    },
+    {
+      "id": "2024-05-10-gannon",
+      "t0": "2024-05-09T09:13Z",
+      "instrumento": "CRaTER-D1D2",
+      "unidad": "µGy/h",
+      "fondo": 5.2,
+      "pico": 1082.5,
+      "picoMuestra": 1928.6,
+      "diaPico": "2024-05-11",
+      "factor": 206.3,
+      "fondoTranquilo": true,
+      "url": "https://visualization.osdr.nasa.gov/radlab/api/?instrument_id=CRaTER-D1D2&timestamp>=2024-05-04T09:13&timestamp<2024-05-12T09:13&absorbed_dose_rate>0&format=json"
+    },
+    {
+      "id": "2024-05-14-x87",
+      "t0": "2024-05-14T16:51Z",
+      "instrumento": "CRaTER-D1D2",
+      "unidad": "µGy/h",
+      "fondo": 631.8,
+      "pico": 881,
+      "picoMuestra": 1037,
+      "diaPico": "2024-05-14",
+      "factor": 1.4,
+      "fondoTranquilo": false,
+      "url": "https://visualization.osdr.nasa.gov/radlab/api/?instrument_id=CRaTER-D1D2&timestamp>=2024-05-09T16:51&timestamp<2024-05-17T16:51&absorbed_dose_rate>0&format=json"
+    },
+    {
+      "id": "2017-09-06-x93",
+      "t0": "2017-09-06T12:02Z",
+      "instrumento": "CRaTER-D1D2",
+      "unidad": "µGy/h",
+      "fondo": 192.2,
+      "pico": 2101.1,
+      "picoMuestra": 4237.9,
+      "diaPico": "2017-09-07",
+      "factor": 10.9,
+      "fondoTranquilo": false,
+      "url": "https://visualization.osdr.nasa.gov/radlab/api/?instrument_id=CRaTER-D1D2&timestamp>=2017-09-01T12:02&timestamp<2017-09-09T12:02&absorbed_dose_rate>0&format=json"
+    },
+    {
+      "id": "2017-09-10-x82",
+      "t0": "2017-09-10T16:06Z",
+      "instrumento": "CRaTER-D1D2",
+      "unidad": "µGy/h",
+      "fondo": 722.2,
+      "pico": 19481.6,
+      "picoMuestra": 22968.8,
+      "diaPico": "2017-09-11",
+      "factor": 27,
+      "fondoTranquilo": false,
+      "url": "https://visualization.osdr.nasa.gov/radlab/api/?instrument_id=CRaTER-D1D2&timestamp>=2017-09-05T16:06&timestamp<2017-09-13T16:06&absorbed_dose_rate>0&format=json"
+    }
+  ],
+  "sinDatos": [
+    "2024-10-03-x90",
+    "2024-10-10-g4"
+  ]
+}
