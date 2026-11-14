@@ -1,4 +1,4 @@
-import { readFileSync, statSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import { curarLunaSur } from "../scripts/luna-sur-curar";
@@ -57,5 +57,23 @@ describe("terreno Luna polo sur", () => {
       expect(es[k], k).toBeTruthy();
       expect(en[k], k).toBeTruthy();
     }
+  });
+});
+
+describe("DEM lunar guardado sin rellenos", () => {
+  it("cada elevacion.bin está dentro del rango real de LOLA (−9126 a 10767 m)", () => {
+    const raiz = join(__dirname, "..", "terreno");
+    let archivos = 0;
+    for (const d of ["luna-visible", "luna-polo-sur"])
+      for (const s of readdirSync(join(raiz, d))) {
+        const p = join(raiz, d, s, "elevacion.bin");
+        if (!existsSync(p)) continue;
+        const b = readFileSync(p);
+        const a = new Int16Array(b.buffer, b.byteOffset, b.length / 2);
+        expect(Math.min(...a), p).toBeGreaterThan(-9200);
+        expect(Math.max(...a), p).toBeLessThan(10800);
+        archivos++;
+      }
+    expect(archivos).toBe(9);
   });
 });
