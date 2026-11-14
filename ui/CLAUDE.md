@@ -1,30 +1,26 @@
-# Rol: Frontend, voz, arte y accesibilidad
-**Humano responsable:** María Paula (`Paulasaah`).
+# Rol 5: Frontend, voz, arte y accesibilidad
+**Humano responsable:** _por asignar_
 **Slug de ramas:** `ui` → `feat/ui-<tema>`
 **Etiqueta de issues:** `rol:ui`
 **Posees:** `/ui`, `/assets`
 **No toques:** todo lo demás (abre issue `bloquea:<rol>`).
-**Contratos que consumes:** `GameState`, `Action`, `ClassifierOutput` (de `/contracts`); API de `agents/` (ver `agents/README.md`); tarjetas de fuente y eventos curados de `data/`.
-**Contratos que produces:** las pantallas. Nada más depende de ti, pero sin ti no hay demo.
-**Definición de "hecho":** jugable con teclado y solo texto; textos por i18n con `en` como base y `es` completo; sin errores en consola; captura o gif en el PR.
+**Contratos que consumes:** `GameState`, `ClassifierOutput`, tarjetas de fuente
+**Contratos que produces:** Jugable con teclado y solo texto; es/en; sin errores en consola; captura en el PR.
+**Definición de "hecho":** - Moodboard y referencias de interfaces para niños; propuesta de estilo visual (D6).
+- Propuestas de nombre del juego, logo y tripulantes (D1, D7) con rol 1.
+- Checklist de accesibilidad (contraste, tamaño, lectura, daltonismo).
+- Entregable: `docs/ideas/marca.md`.
 
-## Lo que ya existe y debes usar (no lo rehagas)
-- `engine/`: crea el escenario por semilla, `aplicarAccion`, órbita, puntaje de sitio, Iris adaptativa y resumen de fin de partida (48 tests). Pregunta a Jaime o Camilo cómo se llama desde fuera.
-- `agents/`: tres expertos como código, atajos/regex sin modelo, escena de los dos expertos que se contradicen, avería de Iris. La API está en `agents/README.md`.
-- `data/curated/`: tormentas reales; la de la demo es `2024-05-20-marte.json`. `data/i18n/` ya trae textos `en`/`es` de datos.
+## Fase 0 (ahora, solo documentos — nada de código del juego)
+1. Esqueleto React + Vite + TS (PLAN §13; PixiJS solo para la escena animada) e i18n es/en desde el primer commit.
+2. HUD de los 3 recursos (energía, soporte vital, blindaje).
+3. Panel de tripulación: botones por experto + caja de texto (siempre funcionan).
+4. Voz con Web Speech API detrás de un interruptor (Chrome/Edge); sin guardar audio.
+5. Pantalla de "cadena de causas" y tarjeta de ciencia al final.
+6. Trabaja contra mocks de `/data/mock` y un `GameState` de ejemplo.
 
-## Tareas, en este orden (detalle en el issue de la RUTA DORADA)
-1. Esqueleto React + Vite + TypeScript en `/ui`, dentro del monorepo (`npm workspaces`), con i18n (`en` base, `es`) desde el primer commit. PR pequeño: solo el esqueleto.
-2. HUD de los 3 recursos (⚡ energía, 🫁 soporte vital, 🛡️ blindaje) conectado a un `GameState` real del motor.
-3. Panel de tripulación: retrato 2D simple, burbuja de texto y botones por experto. Caja de texto que pasa por los atajos de `agents/`.
-4. Pantallas de la ruta dorada: elegir sitio (3 criterios) → colocar módulos → tormenta con pausa y tarjeta de fuente → los dos expertos se contradicen → decidir y enviar telemetría.
-5. Pantalla final: cadena de causas (decisión vs. mala suerte) y tarjeta de ciencia.
-6. Voz (Web Speech API) solo como mejora, detrás de un interruptor; sin guardar audio.
+## Tareas de arranque (Fase 1, el día que empieza el hackathon)
 
-## Accesibilidad (desde el primer componente)
-Teclado y botones grandes · texto grande y fuente legible · nunca solo color (color + ícono + forma) · respetar `prefers-reduced-motion`.
 
 ## Notas / decisiones que afectan este rol
-- Inglés es el idioma base; español segundo. Ningún texto visible quemado en el código.
-- Arte: assets CC0 o propios; cada pieza registra su licencia en `assets/LICENCIAS.md`. Nada de franquicias existentes.
-- Propuesta de marca y tripulación de Camilo: rama `feat/ui-marca` (D6, D7).
+- _(vacío)_
