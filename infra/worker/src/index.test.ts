@@ -13,7 +13,7 @@ describe("Worker: rutas", () => {
   it("/api/health responde sin revelar claves", async () => {
     const r = await enrutar(new Request("https://x.dev/api/health"), env({ BAI_API_KEY: "secreta-de-prueba" }));
     const cuerpo = await r.json();
-    expect(cuerpo).toEqual({ ok: true, entorno: "preview", modelo: true });
+    expect(cuerpo).toEqual({ ok: true, entorno: "preview", modelo: true, baseDeDatos: false });
     expect(JSON.stringify(cuerpo)).not.toContain("secreta-de-prueba");
   });
 
