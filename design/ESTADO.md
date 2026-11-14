@@ -1,5 +1,5 @@
 # Estado — diseño de juego y misiones
-**Actualizado:** 13 nov 2026, 23:15 · **Rama:** feat/diseno-mision1 (apilada sobre #86) · **PR:** #89 · **Responsables:** Santiago y Camilo
+**Actualizado:** 13 nov 2026, 23:25 · **Rama:** feat/diseno-mision1 (apilada sobre #86) · **PR:** #89 · **Responsables:** Santiago y Camilo
 **Tokens:** 🟢
 
 ## Hecho (misión 1, #88)
@@ -10,8 +10,13 @@
 - (3) #77 resuelto en #84 · (4) textos de la cadena de causas: hechos en #85 (`design/i18n`).
 - (4) Tarjetas de ciencia (7) y pregunta final del paso 8 en `jezero.ts` + textos en/es. 5 tarjetas y la pregunta sin fuente: no se muestran; pedido a datos en #93. 218/218 pruebas.
 
+- (5) `missions/test/parejas.test.ts`: las 10 parejas con la semilla dorada hasta 3 ticks de tormenta. Ninguna gana gratis ni domina a las demás. 222/222 pruebas. Pendiente que Jaime la revise (usa su API).
+
+## Hallazgo de balance (no corregido: decide diseño con Jaime)
+- Si el jugador NO hace nada en la tormenta, el blindaje llega a 0 en 7 de 10 parejas (fin de partida en el tick 5-6). Solo las parejas con escudo quedan en 8-12. La tormenta quita ~60 de blindaje en 3 ticks: o se baja el daño, o el dilema del paso 6 es obligatorio para sobrevivir (puede ser lo que se quiere).
+
 ## Qué sigue
-- (5) Prueba de las 10 parejas de módulos con la semilla dorada: coordinar con Jaime (usa el motor).
+- Goal de #56 cubierto en lo que es de diseño. Falta: decisión "hielo" (Santiago), fuentes de tarjetas (#93), consumo por tick (#90), revisión de Jaime.
 
 ## Números de ARES (CamiloM21/ares-mission-trainer, leídos el 13 nov)
 - Potencia (kW): panel 8 (11,6 ampliado), base 2,4, electrólisis 2,2, invernadero 2,8, reciclador 1,2 — `src/model.js:144-149`. Relación útil: invernadero gasta más que nada; reciclador la mitad que electrólisis.
