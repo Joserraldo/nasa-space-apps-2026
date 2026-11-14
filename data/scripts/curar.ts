@@ -168,8 +168,9 @@ export function curar(): Tormenta[] {
         nombreKey: "fuente.donki",
         dueno: [
           "NASA CCMC (DONKI)",
-          tieneKp ? "índice Kp: NOAA" : "",
-          medicion ? "radiación en Marte: RAD de MSL Curiosity (NASA) vía OSDR RadLab" : "",
+          // En inglés (idioma base): ui muestra `dueno` tal cual en la tarjeta de fuente.
+          tieneKp ? "Kp index: NOAA" : "",
+          medicion ? "Mars radiation: MSL Curiosity RAD (NASA) via OSDR RadLab" : "",
         ].filter(Boolean).join("; "),
         url: "https://ccmc.gsfc.nasa.gov/tools/DONKI/",
         consultadoEl: g.consultadoEl,

@@ -65,7 +65,7 @@
   ],
   "fuente": {
     "nombreKey": "fuente.donki",
-    "dueno": "NASA CCMC (DONKI); índice Kp: NOAA; radiación en Marte: RAD de MSL Curiosity (NASA) vía OSDR RadLab",
+    "dueno": "NASA CCMC (DONKI); Kp index: NOAA; Mars radiation: MSL Curiosity RAD (NASA) via OSDR RadLab",
     "url": "https://ccmc.gsfc.nasa.gov/tools/DONKI/",
     "consultadoEl": "2026-11-13"
   }
