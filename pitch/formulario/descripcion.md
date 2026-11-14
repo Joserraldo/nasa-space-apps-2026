@@ -50,7 +50,7 @@ The game runs in the browser with no download and no account, in English and Spa
 - All data are curated and static (downloaded 2026-11-13); each card names the source and date. Details: `datos-nasa.md`.
 
 ## Tools and technology
-TypeScript across the project; Zod to validate data and the classifier output; Vitest for tests; React and Vite for the interface; Cloudflare Pages and Workers for hosting and the optional classifier (**POR VERIFICAR:** confirm the final stack and versions in `atribuciones.md`); the browser's Web Speech API for optional voice; a small language model only as an optional phrase classifier. Built with AI coding agents (Claude Code, OpenCode, Codex) under human review; see `ia-uso.md`.
+TypeScript across the project; Zod to validate data and the classifier output; Vitest for tests; React and Vite for the interface; Cloudflare Workers for the site and API, with D1 for optional accounts (**POR VERIFICAR:** confirm the final stack and versions in `atribuciones.md`); the browser's Web Speech API for optional voice; a small language model only as an optional phrase classifier. Built with AI coding agents (Claude Code, OpenCode, Codex) under human review; see `ia-uso.md`.
 
 ## Future work
 - Add the Moon (south pole) and more Mars sites.
@@ -109,7 +109,7 @@ El juego corre en el navegador, sin descarga ni cuenta, en inglés y español. U
 - Todo es curado y estático (descargado el 2026-11-13); cada tarjeta nombra la fuente y la fecha. Detalle: `datos-nasa.md`.
 
 ## Herramientas y tecnología
-TypeScript en todo el proyecto; Zod para validar datos y la salida del clasificador; Vitest para pruebas; React y Vite para la interfaz; Cloudflare Pages y Workers para el sitio y el clasificador opcional (**POR VERIFICAR:** confirmar la pila final y versiones en `atribuciones.md`); Web Speech API del navegador para voz opcional; un modelo de lenguaje pequeño solo como clasificador opcional de frases. Hecho con agentes de código (Claude Code, OpenCode, Codex) bajo revisión humana; ver `ia-uso.md`.
+TypeScript en todo el proyecto; Zod para validar datos y la salida del clasificador; Vitest para pruebas; React y Vite para la interfaz; Cloudflare Workers para el sitio y la API, con D1 para cuentas opcionales (**POR VERIFICAR:** confirmar la pila final y versiones en `atribuciones.md`); Web Speech API del navegador para voz opcional; un modelo de lenguaje pequeño solo como clasificador opcional de frases. Hecho con agentes de código (Claude Code, OpenCode, Codex) bajo revisión humana; ver `ia-uso.md`.
 
 ## Trabajo futuro
 - Añadir la Luna (polo sur) y más sitios de Marte.

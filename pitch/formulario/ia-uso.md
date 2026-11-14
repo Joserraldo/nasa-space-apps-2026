@@ -25,10 +25,10 @@ The first layer is not a model: buttons, shortcuts and **regex** in English and 
 
 ### Privacy and keys
 - The API key lives only on the server side (a Cloudflare Worker environment variable; GitHub secret `BAI_API_KEY` for the repo). **Never in the browser or in the code.**
-- The Worker forwards only the phrase: no IP, no identifiers. It rate-limits per IP (KV).
-- The Worker is written and tested with a fake model (`infra/worker`, PR #76: 5 tests, zero paid calls). **POR VERIFICAR:** that it is deployed (`wrangler deploy`, KV namespace) in the submitted build, or say the classifier is not part of it.
+- The Worker forwards only the phrase: no IP, no identifiers. It rate-limits to 20 questions per minute per player, keyed by a hash of the IP (never the IP itself), with Cloudflare's built-in rate limiter. Regex shortcuts do not count.
+- The Worker is tested with a fake model (`infra/worker`, zero paid calls in tests) and deploys automatically from GitHub Actions: `develop` to preview, `main` to production (PRs #105, #106). The key reaches the Worker as a secret copied from GitHub at deploy time.
 - **No audio of minors is stored.** Voice uses the browser's Web Speech API; speech is turned into text and discarded; the game keeps no recordings. Note that the browser itself (for example Chrome) may process speech on its own provider's service; that is why text and buttons always work. **POR VERIFICAR:** wording about browser processing.
-- No accounts, no personal data. Progress is saved only in the player's own browser.
+- Accounts are optional; guests play without one. With an account we store only a chosen username (no email, no real name, no IP), a salted PBKDF2-SHA256 password hash and the game progress (Cloudflare D1, PR #108). The session is an HttpOnly cookie; only its hash is stored.
 
 ### Real evaluation results (D4, 2026-11-13)
 We compared two small models on 30 children's phrases (1 pass each, 60 calls; script `agents/evals/correr.ts`, raw data in `agents/evals/resultados-2026-11-13.json`). Our rule was: choose the model with the most correct actions **and** p95 latency under 1.5 s.

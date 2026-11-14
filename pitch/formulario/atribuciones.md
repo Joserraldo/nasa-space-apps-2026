@@ -51,7 +51,7 @@ Licenses are the `license` field recorded in `package-lock.json`. Libraries used
 
 | Service | Use | Note |
 |---|---|---|
-| Cloudflare (Pages / Workers) | Hosting and the optional classifier endpoint | **POR VERIFICAR:** not deployed yet; confirm when it is |
+| Cloudflare (Workers, D1, rate limiting) | One Worker serves the game and the API (classifier, optional login, progress) | Deployed from GitHub Actions since 14 Nov |
 | Language-model provider for the optional classifier (b.ai, API compatible with OpenAI) | Only sorts a typed phrase into JSON; see [ia-uso.md](ia-uso.md) | Models tested: `qwen3.8-flash`, `deepseek-v4.1-flash`. Not enabled by default (see D4) |
 | Browser Web Speech API | Optional voice input and output | Done in the player's browser; the game stores no audio |
 
