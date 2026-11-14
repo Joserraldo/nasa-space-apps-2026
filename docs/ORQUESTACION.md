@@ -1,15 +1,16 @@
 # Orquestación
 
-Este archivo debe bastar para que otra sesión (u otro humano) retome la coordinación sin el chat original. Lo mantiene el orquestador (`infra`, Santiago Cabeza). **Suplente del orquestador:** por nombrar.
+Este archivo debe bastar para que otra sesión (u otro humano) retome la coordinación sin el chat original. Lo mantiene el orquestador (Santiago Cabeza, que desde el 13 nov en la noche solo supervisa y fusiona). **Suplente del orquestador:** Jaime (`JaimeMrF`).
 
-**Actualizado:** 13 nov 2026 (víspera, FASE 0: solo documentos).
+**Actualizado:** 14 nov 2026, 00:00.
 
 ## Resumen
 
 - **Reto:** Build a Junior Astronaut Mission Trainer. **Juego:** Solar Shield (IA de la base: Iris).
 - **Roles (definitivos, 13 nov):** diseño de juego y misiones Camilo (Santiago supervisa) · motor Jaime · ui María Paula · agentes e infra José · datos Daniel. Santiago es además el orquestador. Tabla completa en el [README](../README.md).
-- **Ramas:** `feat/<slug>-<tema>` desde `develop`; PRs < ~300 líneas hacia `develop`; el merge es automático cuando pasa el CI "Tipos y tests" (auto-merge activado el 13 nov; ver protección de `develop` y `main`).
-- **Contratos:** `/contracts` está vacío. El sábado se abren `GameState`, `Action`, `Seed`, `SpaceWeatherEvent` y `ClassifierOutput` (dueños: motor, agentes, datos).
+- **Ramas:** `feat/<slug>-<tema>` desde `develop`; PRs < ~300 líneas hacia `develop`. Fusiona Santiago, solo con squash, cuando pasa el CI "Tipos y tests".
+- **Contratos:** `/contracts` va en v0.2.0 (`GameState`, `Action`, `Seed`, `SpaceWeatherEvent`, `ClassifierOutput`); dueños motor, agentes y datos.
+- **Prompts de arranque por rol:** `docs/prompts/`.
 - **Canal:** issues, PRs, `ESTADO.md` de cada carpeta y `docs/decisiones/`. Discord para lo humano (`#bloqueos`, `#decisiones`).
 - **Herramientas:** Claude Code, OpenCode y Codex, cada quien con su suscripción. Modelos por tarea en [modelos.md](modelos.md).
 
@@ -25,11 +26,18 @@ Este archivo debe bastar para que otra sesión (u otro humano) retome la coordin
 
 Regla de corte si P2 no se cumple: Luna → Atlas → desbloqueos → 3D completo → dibujo de ruta en 3D → niveles adaptativos extra. El orquestador propone el momento y Santiago confirma.
 
-## Semáforo
+## Semáforo (14 nov, 00:00 — hechos, sin opiniones)
 
-motor ⚪ · mecanicas ⚪ · agentes ⚪ · datos ⚪ · ui ⚪ · infra 🟢 (⚪ = sin empezar: es FASE 0)
+| Rol | En develop | Abierto |
+|---|---|---|
+| motor | Semilla dorada, API para ui, órbita, sitios, Iris adaptativa, pausa automática | #83 y #90 esperan a Jaime |
+| diseño | Misión 1 de Jezero (sitios, polvo, dilema, módulos, tarjetas de ciencia, 10 parejas) | Decisiones "hielo" y daño de la tormenta (Santiago) |
+| ui | Esqueleto React + Vite con las pantallas de la ruta dorada (#68) | Tareas en #58 (María Paula) |
+| agentes | Tres expertos, escena del paso 6, Iris 1–3, clasificador, conversar() | #74, #75, #92 (conflicto) |
+| infra | CI de tipos y pruebas | Despliegue #78 (espera secretos de Cloudflare), Worker #76 y e2e #80 con conflicto |
+| datos | 8 tormentas, Jezero, dosis, referenciaDosis() | #55, #65, #69, #95; issues #91 y #93 |
 
-**Próximo hito:** sábado 9:00, un humano cambia `CLAUDE.md` a FASE 1.
+`develop` compila y pasan 230 de 230 pruebas, incluida la semilla dorada (14 nov, 00:00). No hay link vivo.
 
 ## Ruta dorada (propuesta, sin aprobar)
 
