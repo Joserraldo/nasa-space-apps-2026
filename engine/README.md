@@ -20,6 +20,8 @@ const final = resumenPartida(s);                              // paso 8: cadena 
 ```
 
 - `paso(estado, accion?)` = `aplicarAccion` (si hay acción) + `avanzarTick`. Para pausar: `pausar(estado, true)`.
+- **Pausa automática:** `const sig = conPausaAutomatica(s, paso(s))` deja `sig.pausado = true` si llegó la tormenta, hubo avería, mala suerte, cambió la IA o terminó la partida. `novedades(s, sig)` dice exactamente qué pasó para mostrarlo. Reanudar es `pausar(sig, false)`.
+- `retoDelDia("AAAA-MM-DD")` sortea una tormenta real del catálogo curado de `data/`; misma fecha, misma partida para toda la clase.
 - `queEsSi(estado, accion)` devuelve el estado hipotético para el Matemático sin tocar el real.
 - Todo lo que cambia un recurso queda en `estado.causas` con `origen: decision | mala_suerte | sistema`.
 - Las cifras de la tormenta vienen de `@solar-shield/data` con su `SourceCard`; el motor no inventa números.

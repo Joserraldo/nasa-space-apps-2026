@@ -1,5 +1,5 @@
 # Rol 2: Motor y simulación
-**Humano responsable:** Jaime (`JaimeMrF`) y Camilo (`CamiloM21`).
+**Humano responsable:** Jaime (`JaimeMrF`)
 **Slug de ramas:** `motor` → `feat/motor-<tema>`
 **Etiqueta de issues:** `rol:motor`
 **Posees:** `/engine`

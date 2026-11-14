@@ -1,5 +1,5 @@
 # Estado — rol 3 (Agentes expertos)
-**Actualizado:** 13 nov 2026 · **Rama:** feat/agentes-director · **PR:** #52, #63, director abriendo
+**Actualizado:** 13 nov 2026 · **Rama:** feat/agentes-conversar · **PR:** #72 (issue #59)
 
 ## Hecho (últimas iteraciones)
 - Fusionados: #43 regex en/es · #44 3 expertos en/es con fuente · #47 escena 6 · #49 avería de Iris · #50 README · #46 data/ en CI.
@@ -7,7 +7,7 @@
 - Fase satélite (#52) y aterrizaje: cada voz defiende su criterio (luz, blindaje, plano).
 
 ## Qué sigue (issue #41)
-- Director (`dialogosDelPaso`, `encolar`): ui solo pinta la cola. Falta que ui lo conecte (María Paula).
+- #67 fusionado: aterrizaje + director + cola. Revisé el borrador de ui (#68, Jaime) y le dejé sugerencias.
 - Matemático "¿Y si…?" con el simulador del motor; acortar frases > 25 palabras.
 
 ## Bloqueos

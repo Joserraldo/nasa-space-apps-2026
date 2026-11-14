@@ -22,16 +22,16 @@
 
 ## Roles y carpetas
 
-Roles definidos por Santiago el 13 nov en la tarde. Santiago es el orquestador del equipo y entra a apoyar el rol que vaya atrasado. Cómo se trabaja: [docs/COMO-TRABAJAMOS.md](docs/COMO-TRABAJAMOS.md).
+Roles definitivos, fijados por Santiago el 13 nov en la tarde. Santiago es además el orquestador del equipo. Cómo se trabaja: [docs/COMO-TRABAJAMOS.md](docs/COMO-TRABAJAMOS.md).
 
 | Rol | Slug (ramas) | Carpetas | Personas (GitHub) |
 |---|---|---|---|
-| Diseño de juego y misiones + Motor y simulación | `motor` | [design/](design/), [missions/](missions/), [engine/](engine/) | Jaime Alejandro Vega Barbosa (`JaimeMrF`) y Camilo (`CamiloM21`) |
+| Diseño de juego y misiones | `diseno` | [design/](design/), [missions/](missions/) | Camilo (`CamiloM21`); Santiago Cabeza (`kcitas`) supervisa |
+| Motor y simulación | `motor` | [engine/](engine/) | Jaime Alejandro Vega Barbosa (`JaimeMrF`) |
 | Frontend, voz, arte y accesibilidad | `ui` | [ui/](ui/), [assets/](assets/) | María Paula Saavedra Martínez (`Paulasaah`) |
 | Agentes expertos | `agentes` | [agents/](agents/) | José (`Joserraldo`) |
 | Integración, QA, despliegue y pitch | `infra` | [infra/](infra/), [tests/](tests/), [pitch/](pitch/), [.github/](.github/) | José (`Joserraldo`) |
 | Datos NASA y ciencia | `datos` | [data/](data/), [docs/science/](docs/science/) | Daniel (`Daniverd15`) |
-| Orquestación | — | docs de coordinación | Santiago Cabeza (`kcitas`) |
 
 Compartido: [contracts/](contracts/) (dueños: motor, agentes y datos). Coordinación: [docs/ORQUESTACION.md](docs/ORQUESTACION.md), modelos por tarea en [docs/modelos.md](docs/modelos.md), registro de uso de IA en [docs/ia-uso.md](docs/ia-uso.md). Si tu herramienta es Codex u OpenCode, empieza por [AGENTS.md](AGENTS.md).
 

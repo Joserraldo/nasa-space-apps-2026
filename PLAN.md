@@ -117,17 +117,18 @@ En todas: **fallar muestra la cadena de causas y una tarjeta de ciencia real.** 
 
 ## 3. Equipo y roles
 
-Actualizado el 13 nov (tarde) por decisión de Santiago, que es el orquestador del equipo y apoya el rol que vaya atrasado. Cómo se trabaja día a día: [docs/COMO-TRABAJAMOS.md](docs/COMO-TRABAJAMOS.md).
+Roles definitivos, fijados el 13 nov (tarde) por Santiago, que es además el orquestador del equipo. Cómo se trabaja día a día: [docs/COMO-TRABAJAMOS.md](docs/COMO-TRABAJAMOS.md).
 
 | Slug | Rol | Posee (carpetas) | Personas (GitHub) |
 |---|---|---|---|
-| `motor` | **Diseño de juego y misiones + Motor y simulación**: GameState, ticks, semilla, balance, tablas de recursos, mazo de eventos y misiones | `/design`, `/missions`, `/engine` | Jaime Alejandro Vega Barbosa (`JaimeMrF`) y Camilo (`CamiloM21`) |
+| `diseno` | **Diseño de juego y misiones**: tablas de recursos y balance, misión de Jezero, mazo de eventos, dificultad adaptativa, textos de la cadena de causas | `/design`, `/missions` | Camilo (`CamiloM21`); Santiago Cabeza (`kcitas`) supervisa |
+| `motor` | **Motor y simulación**: GameState, ticks, semilla, `aplicarAccion`, órbita, semilla dorada | `/engine` | Jaime Alejandro Vega Barbosa (`JaimeMrF`) |
 | `ui` | **Frontend, voz, arte y accesibilidad** | `/ui`, `/assets` | María Paula Saavedra Martínez (`Paulasaah`) |
 | `agentes` | **Agentes expertos**: clasificador, expertos como código, IA de la base, evals | `/agents` | José (`Joserraldo`) |
 | `infra` | **Integración, QA, despliegue y pitch**: CI, Cloudflare, pruebas e2e, video, formulario | `/infra`, `/tests`, `/pitch`, `/.github` | José (`Joserraldo`) |
 | `datos` | **Datos NASA y ciencia**: pipeline DONKI/RadLab → JSON curados, mocks, tarjetas de fuente, glosario | `/data`, `/docs/science` | Daniel (`Daniverd15`) |
 
-`/contracts` es de `motor`, `agentes` y `datos`. Donde otro documento todavía diga "rol N" o `mecanicas`: 1 (diseño), 2 y `mecanicas` = hoy `motor`; 3 = `agentes`; 4 = `datos`; 5 = `ui`; 6 = `infra`. Revisión cruzada sugerida: `motor`↔`ui`, `agentes`↔`datos`.
+`/contracts` es de `motor`, `agentes` y `datos`. Donde otro documento todavía diga "rol N" o `mecanicas`: 1 y `mecanicas` = `diseno`; 2 = `motor`; 3 = `agentes`; 4 = `datos`; 5 = `ui`; 6 = `infra`. Revisión cruzada sugerida: `diseno`↔`motor`, `ui`↔`agentes`, `datos`↔`infra`.
 
 Si una parte se demora, **dos personas pueden ir a la misma área** (lo más probable: `/agents` y `/ui`). Se reasigna en la reunión diaria.
 
@@ -148,7 +149,7 @@ fix/<rol>-<tema>
 ```
 
 ### Etiquetas de issues
-`rol:motor` `rol:agentes` `rol:datos` `rol:ui` `rol:infra` (`rol:diseño` queda en desuso: usar `rol:motor`) · `bloquea:<rol>` · `contrato` · `decisión` · `idea` · `bug` · `p0` `p1` `p2`
+`rol:diseño` `rol:motor` `rol:agentes` `rol:datos` `rol:ui` `rol:infra` · `bloquea:<rol>` · `contrato` · `decisión` · `idea` · `bug` · `p0` `p1` `p2`
 
 ### Tablero (GitHub Projects)
 Columnas: **Ideas → Por hacer → En curso → En revisión → Hecho**. Vista agrupada por rol.
