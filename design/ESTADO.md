@@ -1,12 +1,13 @@
 # Estado — diseño de juego y misiones
-**Actualizado:** 13 nov 2026, 22:45 · **Rama:** feat/diseno-mision1 (apilada sobre #86) · **PR:** #89 · **Responsables:** Santiago y Camilo
+**Actualizado:** 13 nov 2026, 23:00 · **Rama:** feat/diseno-mision1 (apilada sobre #86) · **PR:** #89 · **Responsables:** Santiago y Camilo
 **Tokens:** 🟢
 
 ## Hecho (misión 1, #88)
 - (1) `eventoPolvo` y `dilemaPaso6` en `missions/src/jezero.ts`, con textos en/es y pruebas (#89). Se mantienen los 4 sitios y los criterios medidos (plano/luz/blindaje): no hay dato de hielo en Jezero → decisión pendiente de Santiago.
 
+- (2) `MODULOS` según el #88 §3: consumo de ⚡ como costo único (plan B): reciclador −1, invernadero −3, escudo −3, antena −1 (orden por kW de ARES). `COSTOS_ACCION` ya movía ≥2 medidores en todas: sin cambios. Consumo por tick pedido a motor en #90. 215/215 pruebas.
+
 ## Qué sigue
-- (2) Módulos y costos (§3 del #88) en `design/src/recursos.ts`. El motor aplica `MODULOS` UNA vez (no por tick): el "⚡ −2 por tick" del #88 va como costo único o se pide a Jaime (`bloquea:motor`).
 - (3) #77 ya resuelto en #84 · (4) textos de causas y tarjetas de ciencia · (5) prueba de las 10 parejas con Jaime.
 
 ## Números de ARES (CamiloM21/ares-mission-trainer, leídos el 13 nov)
