@@ -19,5 +19,27 @@
 .mu-expresion { font-size: 14px; font-weight: var(--tipo-peso-etiqueta); text-align: center; }
 .mu-celda { display: grid; place-items: center; background: color-mix(in srgb, var(--color-lila) 60%, var(--color-marfil)); }
 
+/* Paneles de la E7 en 2 x 2 (ui/04); en pantallas angostas se apilan. */
+.mu-paneles { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 440px), 1fr)); gap: var(--esp-4); align-items: start; }
+.mu-tres { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--esp-2); align-items: stretch; }
+.mu-dos { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); gap: var(--esp-3); align-items: start; }
+.mu-centro, .mu-dos-fuente { grid-template-columns: minmax(0, 4fr) minmax(0, 7fr); }
+.mu-columna-chica { display: grid; gap: var(--esp-2); justify-items: center; min-inline-size: 0; }
+.mu-columna-chica { justify-items: stretch; }
+.mu-fila-chips { display: flex; gap: var(--esp-2); align-items: center; }
+.mu-campo { flex: 1; min-inline-size: 0; min-block-size: var(--toque-minimo); font: inherit; font-size: 16px; background: var(--color-marfil); color: var(--color-indigo-texto); border: var(--borde-fino) solid color-mix(in srgb, var(--color-ciruela) 40%, transparent); padding: 0 var(--esp-3); }
+@media (max-width: 560px) { .mu-dos, .mu-dos-fuente { grid-template-columns: 1fr; } .mu-tres { gap: var(--esp-1); } }
+.mu-tres > .fc, .mu-tres .retrato-ficha { min-width: 0; }
+.mu-tres .retrato-nombre { text-align: center; }
+@media (max-width: 560px) {
+  .mu-tres .retrato-ficha { padding-inline: var(--esp-1); }
+  .mu-tres .retrato-marco { width: 84px; height: 84px; }
+  .mu-tres .retrato-marco svg { width: 96px; height: 96px; }
+  .mu-accesos { grid-template-columns: 1fr; }
+}
+.mu-centro .fb-caja, .mu-centro .fb { max-inline-size: 100%; }
+.mu-centro .fb-texto { white-space: normal; text-align: center; font-size: 16px; line-height: 1.1; }
+.mu-centro > .fc, .mu-centro .retrato-ficha { inline-size: 100%; min-width: 0; box-sizing: border-box; }
+.mu-tres .retrato-boton, .mu-tres .retrato-ficha { inline-size: 100%; box-sizing: border-box; }
 /* ?vista=hud: fondo de tokens que hace de escena marciana (cielo de Marte arriba, regolito abajo). */
 .mu-escena { position: fixed; inset: 0; background: linear-gradient(var(--color-montana-lejana) 0 30%, var(--color-regolito-claro) 30% 100%); }

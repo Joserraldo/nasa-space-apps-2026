@@ -74,13 +74,18 @@ function Lista({ d }: { d: Partial<Record<Resource, number>> }) {
   );
 }
 
-/** Costo inmediato y efecto posterior en bloques separados (DISEÑO §5.1). */
-export function CostRow({ inmediato, retrasado }: { inmediato: Partial<Record<Resource, number>>; retrasado: Partial<Record<Resource, number>> }) {
+/**
+ * Costo inmediato y efecto posterior (DISEÑO §5.1, ui/04): filas limpias de icono, nombre y valor
+ * (negativo en rojo, positivo en verde, sin barras de fondo) y "Later" como pastilla. Sin
+ * `retrasado` no hay bloque "Later". `compacta` oculta el rótulo "Costs now" a la vista (el lector
+ * de pantalla lo sigue oyendo), como en la tarjeta "Action confirmed".
+ */
+export function CostRow({ inmediato, retrasado, compacta = false }: { inmediato: Partial<Record<Resource, number>>; retrasado?: Partial<Record<Resource, number>> | undefined; compacta?: boolean }) {
   const { t } = useT();
   return (
     <div className="costos">
-      <section className="costos-bloque"><h4>{t("ui.comun.costo.ahora")}</h4><Lista d={inmediato} /></section>
-      <section className="costos-bloque"><h4>{t("ui.comun.costo.despues")}</h4><Lista d={retrasado} /></section>
+      <section className="costos-bloque"><h4 className={compacta ? "oculto-visual" : undefined}>{t("ui.comun.costo.ahora")}</h4><Lista d={inmediato} /></section>
+      {retrasado && <section className="costos-bloque"><h4>{t("ui.comun.costo.despues")}</h4><Lista d={retrasado} /></section>}
     </div>
   );
 }
@@ -108,7 +113,7 @@ export function EfectoPendiente({ efecto, tick }: { efecto: PendingEffect; tick:
   const { t } = useT();
   const turnos = Math.max(0, efecto.aplicaEnTick - tick);
   return efecto.oculto
-    ? <Mensaje tipo="pendiente" tituloKey="ui.comun.pendiente.oculto" detalleKey="ui.comun.pendiente.turnos" vars={{ n: turnos }} />
-    : <Mensaje tipo="pendiente" tituloKey="ui.comun.pendiente.titulo" detalleKey="ui.comun.pendiente.detalle"
+    ? <Mensaje tipo="pendiente" tituloKey="ui.comun.pendiente.oculto" detalleKey={turnos === 1 ? "ui.comun.pendiente.turno" : "ui.comun.pendiente.turnos"} vars={{ n: turnos }} />
+    : <Mensaje tipo="pendiente" tituloKey="ui.comun.pendiente.titulo" detalleKey={turnos === 1 ? "ui.comun.pendiente.detalle_uno" : "ui.comun.pendiente.detalle"}
         vars={{ delta: signo(efecto.delta), recursoKey: `ui.recurso.${efecto.recurso}`, n: turnos }} />;
 }
