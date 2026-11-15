@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { conversar, escenaTormenta, type Dialogo, type Entrada } from "@solar-shield/agents";
 import type { Equipment, GameState } from "@solar-shield/contracts";
 import { referenciaDosis } from "@solar-shield/data";
@@ -10,29 +10,26 @@ import { TarjetaFuente } from "../componentes/TarjetaFuente.js";
 import { ExpertPortrait } from "../componentes/base/ExpertPortrait.js";
 import { FacetButton } from "../componentes/base/FacetButton.js";
 import { Icono } from "../componentes/base/Iconos.js";
-import { CostRow, ICONO_RECURSO, RECURSOS } from "../componentes/base/Piezas.js";
-import { EscenaBase } from "../escena/EscenaBase.js";
-import { vistaEscena } from "../escena/vista.js";
-import { hayGraficos3D } from "../escena/soporte.js";
+import { CostRow } from "../componentes/base/Piezas.js";
 import { DecisionRegistrada } from "./DecisionRegistrada.js";
+import { useAltoHoja, useMundo } from "./MundoBase.js";
 import "../componentes/base/facetas.css";
 import "./tormenta.css";
 
 /** Los tres expertos de ui/04 "Choose your expert" (personajes/07), en el orden de la lámina. */
 const EXPERTOS = ["ingeniera", "doctora", "meteorologa"] as const;
-/** Lo que se le pregunta a la tripulación al tocar el acceso de cada recurso (lo entiende el clasificador). */
-const PREGUNTA_RECURSO = { energia: "energy", soporte_vital: "health", blindaje: "shield" } as const;
 type Experto = (typeof EXPERTOS)[number];
 const OPCIONES = MISION_JEZERO.dilemaPaso6.opciones;
 /** La opción que defiende cada experta; la meteoróloga no defiende ninguna, así que le toca la que nadie recomienda. */
 const opcionDe = (p: Experto) => (OPCIONES.find((o) => o.defiende === p) ?? OPCIONES.find((o) => o.defiende === null) ?? OPCIONES[0]!).id;
-const SIN_EVENTOS: never[] = [];
 const NADA = () => undefined;
 
 /**
- * E7 Tormenta, panel 01 de ui/04 (ESCENAS §2.7): la escena en pausa detrás, el chip "Paused" y
- * "Choose your expert" con tres retratos, el campo "Ask your crew…" y un acceso por recurso con su
- * valor real. Las respuestas salen de `conversar()`, igual que en la base. Los paneles 02 a 04
+ * E7 Tormenta, panel 01 de ui/04 (ESCENAS §2.7): capa sobre el mundo compartido (`MundoBase`), que
+ * sigue a la vista con la base y el niño. El panel va acoplado como el de decisión: a la derecha
+ * (máximo 40 %) en escritorio y apaisado, hoja inferior en vertical, con desplazamiento interno.
+ * Chip "Paused", "Choose your expert" con tres retratos y el campo "Ask your crew…". Los recursos
+ * se leen solo en el HUD (sin repetir medidores en el panel). Las respuestas salen de `conversar()`, igual que en la base. Los paneles 02 a 04
  * (comparar, verificar, decisión registrada) van en el mismo marco. Es la pantalla de la fase
  * tormenta (reemplaza a la vieja `Tormenta.tsx`).
  * Panel 04 "Decision recorded": con `registro` (el estado de antes de confirmar) muestra lo que
@@ -53,9 +50,15 @@ export function PantallaTormenta({ estado, colocados, registro, onSeguir, onDeci
   const [plan, setPlan] = useState<{ experta: Experto; opcionId: string } | null>(null);
   const [conservada, setConservada] = useState<string | undefined>(undefined);
   const [verificando, setVerificando] = useState(false);
-  const [sinGl, setSinGl] = useState(() => !hayGraficos3D());
   const escena = useMemo(() => escenaTormenta(estado, OPCIONES), [estado.tormenta]);
-  const vista = vistaEscena(estado, { fase: "tormenta", colocados });
+  // La decisión está abierta toda la fase: el mundo se ve pero no se mueve ni se "usa".
+  const { fijarBloqueado } = useMundo();
+  useEffect(() => { fijarBloqueado(true); return () => fijarBloqueado(false); }, [fijarBloqueado]);
+  // Cada panel (elegir, comparar, verificar, decisión) empieza arriba: el título no queda tapado.
+  const cara = useRef<HTMLDivElement>(null);
+  const vistaPanel = registro ? "decision" : plan ? (verificando ? "verificar" : "comparar") : "elegir";
+  useEffect(() => { cara.current?.scrollTo?.({ top: 0 }); }, [vistaPanel]);
+  useAltoHoja(cara, true);
 
   function hablar(entrada: Entrada) {
     const d = conversar(entrada, estado, { tormentaActiva: tormentaActiva(estado), dosisMarte: referenciaDosis("marte-superficie"), vecesFallaIris: fallasIris });
@@ -74,13 +77,8 @@ export function PantallaTormenta({ estado, colocados, registro, onSeguir, onDeci
 
   return (
     <section className="tormenta-e7" aria-labelledby="tormenta-titulo">
-      <div className="tormenta-escena" aria-hidden="true">
-        {!sinGl && <EscenaBase vista={vista} eventos={SIN_EVENTOS} calidad="baja" camara="tercera" movimientoReducido
-          onLugarCercano={NADA} onUsar={NADA} onCalidad={NADA} onWebGLPerdido={() => setSinGl(true)} />}
-      </div>
-
       <div className="fc tormenta-panel">
-        <div className={`fc-cara tormenta-cara${plan && verificando ? " tormenta-cara-verif" : ""}`}>
+        <div ref={cara} className={`fc-cara tormenta-cara${plan && verificando ? " tormenta-cara-verif" : ""}`}>
           <header className="tormenta-cabeza">
             <h2 id="tormenta-titulo" className="tormenta-titulo">{t(registro ? "ui.decision.titulo" : plan ? (verificando ? "ui.tormenta.verificar" : "ui.tormenta.comparar") : "ui.tormenta.elegir")}</h2>
             <span className="fc"><span className="fc-cara fc-chico tormenta-pausa"><Icono nombre="reloj" tam={20} /><span>{t("ui.comun.pausado")}</span></span></span>
@@ -104,16 +102,6 @@ export function PantallaTormenta({ estado, colocados, registro, onSeguir, onDeci
             <input id="tormenta-campo" type="text" value={texto} onChange={(e) => setTexto(e.target.value)} placeholder={t("ui.base.tripulacion.campo")} />
             <FacetButton type="submit" labelKey="ui.tripulacion.enviar" onClick={NADA} />
           </form>
-
-          <ul className="tormenta-accesos">
-            {RECURSOS.map((r) => (
-              <li key={r}>
-                <FacetButton icon={ICONO_RECURSO[r]} labelKey="ui.tormenta.acceso"
-                  labelVars={{ recurso: t(`ui.recurso.${r}`), valor: Math.round(estado.recursos[r]) }}
-                  onClick={() => { setElegido(null); hablar({ texto: PREGUNTA_RECURSO[r] }); }} />
-              </li>
-            ))}
-          </ul>
 
           {dialogo && (
             <div className="tormenta-respuesta" role="status" aria-live="polite">
@@ -152,8 +140,6 @@ function PlanComparado({ estado, colocados, plan, dialogo, onOtra, onVerificar, 
       <div className="tormenta-plan-experta">
         <ExpertPortrait persona={plan.experta} compacto />
         {linea && <p className="tormenta-frase">{t(linea.clave, linea.vars)}</p>}
-        <FacetButton icon="tripulacion" labelKey="ui.tormenta.otra" onClick={onOtra} className="tormenta-otra" />
-        <FacetButton icon="enlace" labelKey="ui.tormenta.fuente" onClick={onVerificar} className="tormenta-otra" />
       </div>
       <div className="tormenta-plan-accion">
         <span className="fc"><span className="fc-cara fc-chico tormenta-pieza"><span>{o.accion.tipo === "redistribuir_energia" ? t("ui.accion.redistribuir") : describirAccion(o.accion, t)}</span></span></span>
@@ -164,6 +150,11 @@ function PlanComparado({ estado, colocados, plan, dialogo, onOtra, onVerificar, 
             onClick={() => onDecidir?.([], o.id)} />
           <FacetButton labelKey="ui.comun.atras" onClick={onAtras} />
         </div>
+      </div>
+      {/* En la columna del panel, "Ask another expert" y la fuente van después de decidir (lámina de tableta). */}
+      <div className="tormenta-plan-mas">
+        <FacetButton icon="tripulacion" labelKey="ui.tormenta.otra" onClick={onOtra} className="tormenta-otra" />
+        <FacetButton icon="enlace" labelKey="ui.tormenta.fuente" onClick={onVerificar} className="tormenta-otra" />
       </div>
     </div>
   );

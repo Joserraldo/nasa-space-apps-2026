@@ -13,9 +13,11 @@ import { Portada } from "./componentes/Portada.js";
 import { Intro } from "./componentes/Intro.js";
 import { Carga } from "./componentes/Carga.js";
 import { Creditos } from "./componentes/Creditos.js";
+import { Transicion } from "./componentes/Transicion.js";
+import { MundoBase } from "./pantallas/MundoBase.js";
 import type { TemaPregunta } from "@solar-shield/agents";
 import { MISION_JEZERO } from "@solar-shield/missions";
-import { cargarAjustes, guardarAjustes } from "./juego/ajustes.js";
+import { cargarAjustes, guardarAjustes, type CalidadGrafica } from "./juego/ajustes.js";
 import { almacenDelNavegador, cargarPartida, guardarPartida } from "./juego/guardado.js";
 import { inicial, reducir } from "./juego/reductor.js";
 import { tocar } from "./juego/sonido.js";
@@ -33,14 +35,18 @@ export function App() {
   return (
     <IdiomaContext.Provider value={ajustes.idioma}>
       <Pantalla idioma={ajustes.idioma} setIdioma={(idioma) => setAjustes((a) => ({ ...a, idioma }))}
-        sonido={ajustes.sonido} setSonido={(sonido) => setAjustes((a) => ({ ...a, sonido }))} />
+        sonido={ajustes.sonido} setSonido={(sonido) => setAjustes((a) => ({ ...a, sonido }))}
+        grafica={{ calidad: ajustes.calidad, movimientoReducido: ajustes.movimientoReducido,
+          onCalidad: (calidad) => setAjustes((a) => (a.calidad === calidad ? a : { ...a, calidad })) }} />
     </IdiomaContext.Provider>
   );
 }
 
-function Pantalla({ idioma, setIdioma, sonido, setSonido }: {
+function Pantalla({ idioma, setIdioma, sonido, setSonido, grafica }: {
   idioma: Idioma; setIdioma: (i: Idioma) => void;
   sonido: boolean; setSonido: (s: boolean) => void;
+  /** Ajustes guardados de la escena: la calidad que propone la escena se recuerda. */
+  grafica: { calidad: CalidadGrafica; movimientoReducido: boolean; onCalidad(c: CalidadGrafica): void };
 }) {
   const { t } = useT();
   const [j, enviar] = useReducer(reducir, undefined, inicial);
@@ -52,6 +58,8 @@ function Pantalla({ idioma, setIdioma, sonido, setSonido }: {
   }, [j]);
   const [velocidad, setVelocidad] = useState(1);
   const enBase = j.fase === "base";
+  // E5 a E7 comparten un solo mundo 3D (MundoBase): cambiar de fase no vuelve a montar la escena.
+  const enMundo = j.fase === "modulos" || enBase || j.fase === "tormenta";
   // Inicio en tres momentos (ESCENAS E0 a E2): portada, intro de 4 viñetas y carga. Después, la órbita.
   const [inicio, setInicio] = useState<"portada" | "intro" | "carga">("portada");
   const [creditos, setCreditos] = useState(false);
@@ -86,40 +94,54 @@ function Pantalla({ idioma, setIdioma, sonido, setSonido }: {
   const accion = (a: Action) => { tocar("confirmar", sonido); enviar({ tipo: "accion", accion: a }); };
   const continuar = () => { if (guardada) { tocar("confirmar", sonido); enviar({ tipo: "restaurar", juego: guardada }); } };
 
+  const reloj = enBase ? { velocidad, onPausa: () => enviar({ tipo: "pausa", pausado: !j.estado.pausado }), onVelocidad: setVelocidad } : undefined;
+  const objetivo = j.fase === "modulos" ? { labelKey: "ui.comun.hud.objetivo.modulos", vars: { n: MISION_JEZERO.modulosAColocar } }
+    : { labelKey: j.fase === "tormenta" ? "ui.comun.hud.objetivo.tormenta" : "ui.comun.hud.objetivo.base" };
+
   return (
-    <div className={enBase ? "app app-base" : "app"}>
-      {(j.fase === "modulos" || enBase || j.fase === "tormenta") && (
-        <HudBase estado={j.estado} ultimas={enBase ? j.ultimas : null}
-          objetivo={j.fase === "modulos" ? { labelKey: "ui.comun.hud.objetivo.modulos", vars: { n: MISION_JEZERO.modulosAColocar } } : { labelKey: j.fase === "tormenta" ? "ui.comun.hud.objetivo.tormenta" : "ui.comun.hud.objetivo.base" }}
-          reloj={enBase ? { velocidad, onPausa: () => enviar({ tipo: "pausa", pausado: !j.estado.pausado }), onVelocidad: setVelocidad } : undefined} />
-      )}
+    <div className={enMundo ? "app app-mundo" : "app"}>
+      {/* En la base el HUD lo pone la pantalla, que es dueña de la fila de abajo (Crew, Map, [E], [V]). */}
+      {(j.fase === "modulos" || j.fase === "tormenta") && <HudBase estado={j.estado} ultimas={null} objetivo={objetivo} />}
 
       <main>
-        {j.fase === "inicio" && inicio === "portada" && (
-          <Portada idioma={idioma} onIdioma={setIdioma} sonido={sonido} onSonido={alternarSonido}
-            puedeContinuar={guardada !== null} onEmpezar={() => setInicio("intro")} onContinuar={continuar} onCreditos={() => setCreditos(true)} />
+        {enMundo ? (
+          <MundoBase fase={j.fase as "modulos" | "base" | "tormenta"} estado={j.estado} colocados={j.colocados}
+            calidad={grafica.calidad} movimientoReducido={grafica.movimientoReducido} onCalidad={grafica.onCalidad}>
+            <Transicion clave={j.fase}>
+              {j.fase === "modulos" && (
+                <>
+                  <PantallaModulos estado={j.estado} colocados={j.colocados} onColocar={(m) => { tocar("confirmar", sonido); enviar({ tipo: "modulo", modulo: m }); }} onListo={() => enviar({ tipo: "fase", fase: "base" })} />
+                  {TEMAS_IRIS.find((m) => m === j.colocados.at(-1)) && <PreguntaDeIris key={j.colocados.length} tema={j.colocados.at(-1) as TemaPregunta} nivel={j.estado.iaBase} />}
+                </>
+              )}
+              {j.fase === "tormenta" && (
+                <PantallaTormenta estado={j.estado} colocados={j.colocados} registro={j.registro} onSeguir={() => enviar({ tipo: "seguir" })}
+                  onDecidir={(previas, opcionId) => { tocar("confirmar", sonido); enviar({ tipo: "dilema", previas, opcionId }); }} />
+              )}
+              {enBase && (
+                <PantallaBase estado={j.estado} colocados={j.colocados} ultimas={j.ultimas} hud={{ reloj, objetivo }}
+                  onAccion={accion} onReanudar={() => enviar({ tipo: "pausa", pausado: false })} />
+              )}
+            </Transicion>
+          </MundoBase>
+        ) : (
+          <Transicion clave={j.fase === "inicio" ? inicio : j.fase}>
+            {j.fase === "inicio" && inicio === "portada" && (
+              <Portada idioma={idioma} onIdioma={setIdioma} sonido={sonido} onSonido={alternarSonido}
+                puedeContinuar={guardada !== null} onEmpezar={() => setInicio("intro")} onContinuar={continuar} onCreditos={() => setCreditos(true)} />
+            )}
+            {j.fase === "inicio" && inicio === "intro" && <Intro onTerminar={() => setInicio("carga")} />}
+            {j.fase === "inicio" && inicio === "carga" && <Carga consejo={0} sonido={sonido} onSonido={alternarSonido} onSaltar={empezarMision} />}
+            {j.fase === "satelite" && <PantallaOrbita estado={j.estado} onContinuar={() => enviar({ tipo: "fase", fase: "sitio" })} />}
+            {j.fase === "sitio" && <PantallaSitio estado={j.estado} onElegir={(s) => { tocar("confirmar", sonido); enviar({ tipo: "sitio", sitio: s }); }} />}
+            {j.fase === "final" && <PantallaFinal estado={j.estado} onOtra={() => enviar({ tipo: "nueva" })} />}
+          </Transicion>
         )}
-        {j.fase === "inicio" && inicio === "intro" && <Intro onTerminar={() => setInicio("carga")} />}
-        {j.fase === "inicio" && inicio === "carga" && <Carga consejo={0} sonido={sonido} onSonido={alternarSonido} onSaltar={empezarMision} />}
         {creditos && <Creditos onCerrar={() => setCreditos(false)} />}
-        {j.fase === "satelite" && <PantallaOrbita estado={j.estado} onContinuar={() => enviar({ tipo: "fase", fase: "sitio" })} />}
-        {j.fase === "sitio" && <PantallaSitio estado={j.estado} onElegir={(s) => { tocar("confirmar", sonido); enviar({ tipo: "sitio", sitio: s }); }} />}
-        {j.fase === "modulos" && (
-          <>
-            <PantallaModulos estado={j.estado} colocados={j.colocados} onColocar={(m) => { tocar("confirmar", sonido); enviar({ tipo: "modulo", modulo: m }); }} onListo={() => enviar({ tipo: "fase", fase: "base" })} />
-            {TEMAS_IRIS.find((m) => m === j.colocados.at(-1)) && <PreguntaDeIris key={j.colocados.length} tema={j.colocados.at(-1) as TemaPregunta} nivel={j.estado.iaBase} />}
-          </>
-        )}
-        {j.fase === "tormenta" && (
-          <PantallaTormenta estado={j.estado} colocados={j.colocados} registro={j.registro} onSeguir={() => enviar({ tipo: "seguir" })}
-            onDecidir={(previas, opcionId) => { tocar("confirmar", sonido); enviar({ tipo: "dilema", previas, opcionId }); }} />
-        )}
-        {enBase && (
-          <PantallaBase estado={j.estado} colocados={j.colocados} ultimas={j.ultimas} onAccion={accion} onReanudar={() => enviar({ tipo: "pausa", pausado: false })} />
-        )}
-        {j.fase === "final" && <PantallaFinal estado={j.estado} onOtra={() => enviar({ tipo: "nueva" })} />}
       </main>
-      <footer>{t("ui.aviso.nasa")}</footer>
+      {/* El aviso de proyecto no oficial va en la portada, la órbita, el sitio, los créditos y el final;
+          durante el juego en la base no le quita una fila al mundo. */}
+      {!enMundo && <footer>{t("ui.aviso.nasa")}</footer>}
     </div>
   );
 }
