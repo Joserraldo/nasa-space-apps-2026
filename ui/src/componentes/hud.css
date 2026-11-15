@@ -1,0 +1,16 @@
+/* HUD de mundo/01 (DISEÑO §5.2): placas separadas arriba a la derecha; día, turno y reloj a la izquierda.
+   Solo tokens; la escala la pone HudBase con `zoom` (ESCENAS §2.7). */
+.hud-base {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: var(--esp-2) var(--esp-3);
+  padding: max(var(--esp-2), env(safe-area-inset-top)) max(var(--esp-3), env(safe-area-inset-right)) var(--esp-2) max(var(--esp-3), env(safe-area-inset-left));
+  color: var(--color-indigo-texto);
+}
+.hud-reloj, .hud-placas { display: flex; flex-wrap: wrap; align-items: center; gap: var(--esp-2); }
+.hud-placas { justify-content: flex-end; margin-left: auto; }
+.hud-placas .placa { min-width: 128px; }
+.hud-dia { margin: 0; padding: var(--esp-2) var(--esp-4); min-height: 48px; display: flex; align-items: center; gap: var(--esp-1); font-weight: var(--tipo-peso-etiqueta); font-variant-numeric: tabular-nums; }
+.hud-reloj .fb { min-height: 48px; }

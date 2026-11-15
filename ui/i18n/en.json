@@ -9,6 +9,8 @@
   "ui.velocidad": "Speed",
   "ui.dia": "Day {dia}",
   "ui.tick": "Turn {tick}",
+  "ui.hud.titulo": "Base status",
+  "ui.hud.velocidad": "Speed {v}x",
   "ui.recurso.energia": "Energy",
   "ui.recurso.soporte_vital": "Life support",
   "ui.recurso.blindaje": "Shielding",
