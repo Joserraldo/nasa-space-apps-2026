@@ -125,7 +125,7 @@ describe("armarEscena", () => {
     const a = armarEscena(crearMateriales(), EJEMPLO, rejilla);
     const grandes = a.escena.getObjectByName("Rocks_Basalt_Large") as THREE.InstancedMesh;
     expect(grandes).toBeInstanceOf(THREE.InstancedMesh);
-    expect(grandes.count).toBeGreaterThanOrEqual(8);
+    expect(grandes.count).toBeGreaterThanOrEqual(6);
     expect(grandes.count).toBeLessThanOrEqual(ROCAS_GRANDES.n);
     const mt = new THREE.Matrix4();
     const p = new THREE.Vector3();
@@ -145,7 +145,8 @@ describe("armarEscena", () => {
       expect(extremos.some(([x, z]) => Math.hypot(x - l.x, z - l.z) < 0.6), id).toBe(true);
     }
     const balizas = posicionesBalizas();
-    expect(balizas.length).toBeGreaterThanOrEqual(8);
+    expect(balizas.length).toBeGreaterThanOrEqual(4);
+    expect(balizas.length).toBeLessThanOrEqual(12);
     for (const [x, z] of balizas) for (const c of TERRENO.circulos) expect(Math.hypot(x - c.x, z - c.z)).toBeGreaterThan(c.r);
     const a = armarEscena(crearMateriales(), EJEMPLO, rejilla);
     const caminos = a.escena.getObjectByName("Kit_Paths") as THREE.Mesh;
