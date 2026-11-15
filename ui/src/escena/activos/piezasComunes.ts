@@ -220,7 +220,7 @@ export function crearPanelSolar(m: Materiales): THREE.Group {
 
 /**
  * Panel solar de mesa (lámina `mundo/01`): placa rectangular de 3×2 celdas índigo con marco marfil,
- * inclinada hacia atrás sobre dos patas, mirando a +z. Pivote en el suelo, centro en x = z = 0.
+ * inclinada hacia atrás sobre un pedestal central, mirando a +z. Pivote en el suelo, centro en x = z = 0.
  */
 export function crearPanelSolarInclinado(m: Materiales, ancho = 1.15, alto = 0.95, grados = 33): THREE.Group {
   const placa = new THREE.Group();
@@ -235,12 +235,11 @@ export function crearPanelSolarInclinado(m: Materiales, ancho = 1.15, alto = 0.9
       placa.add(parte(m, "Boots", celda, [(c - 1) * cw, (f - 0.5) * ch, 0.032], `SolarTilt_Cell${f}${c}`));
     }
   }
-  const pata = caja(0.12, 0.5, 0.12);
   return grupo(
     "Kit_SolarTilt",
-    parte(m, "SuitBase", pata, [-ancho * 0.3, 0.25, -0.12], "SolarTilt_LegL"),
-    parte(m, "SuitBase", pata, [ancho * 0.3, 0.25, -0.12], "SolarTilt_LegR"),
-    parte(m, "SuitBase", caja(ancho * 0.8, 0.06, 0.3), [0, 0.03, -0.1], "SolarTilt_Foot"),
+    parte(m, "SuitBase", caja(ancho * 0.55, 0.1, 0.46), [0, 0.05, -0.1], "SolarTilt_Plinth"),
+    parte(m, "SuitBase", tronco(0.1, 0.14, 0.42, 6), [0, 0.31, -0.1], "SolarTilt_Pedestal"),
+    parte(m, "Boots", caja(0.26, 0.05, 0.2), [0, 0.54, -0.1], "SolarTilt_Collar"),
     placa,
   );
 }

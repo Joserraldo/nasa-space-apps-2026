@@ -31,7 +31,7 @@ export const CAJAS: readonly { readonly x: number; readonly z: number; readonly 
  * Equipo solar de la plataforma de la mesa (`mundo/01`): dos paneles decorativos a la derecha de la
  * consola, mirando a la cámara. `x` es relativo a la consola de la mesa; `z` a su centro. [E]
  */
-export const PANELES_MESA = { dx: [2.1, 3.5], dz: -0.1, escala: 1, ancho: 1.15, fondo: 0.85 } as const;
+export const PANELES_MESA = { dx: [2.3, 3.95], dz: -0.1, escala: 1.3, ancho: 1.3, fondo: 1.0 } as const;
 
 /** Consola de un lugar: en el centro del modelo, mirando al punto donde se para el jugador. */
 function consola(id: LugarId, escala: number): { x: number; z: number; giro: number; escala: number } {
