@@ -86,6 +86,8 @@
   "ui.causa.reparar": "Repairing",
   "ui.causa.subir_escudo": "Raising the shield",
   "ui.causa.refugiarse": "Going to the shelter",
+  "ui.causa.aterrizaje": "Landing at the chosen site",
+  "ui.causa.apagar_invernadero": "Turning off the greenhouse to shelter",
   "ui.causa.salida_exterior": "Spacewalk",
   "ui.causa.ajustar_orbita": "Adjusting orbit",
   "ui.causa.colocar_modulo": "Placing a module",

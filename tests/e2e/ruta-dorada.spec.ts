@@ -66,6 +66,9 @@ test("ruta dorada: de la órbita al resumen, en inglés", async ({ page }) => {
   for (const r of ["Energy", "Life support", "Shielding"]) {
     await expect(page.getByRole("meter", { name: r })).toBeVisible();
   }
+  // El aterrizaje (paso 3, aterrizar()) ya se cobró: aparece en el registro de causas.
+  await page.locator("details summary").click();
+  await expect(page.getByText(/Landing at the chosen site/).first()).toBeVisible();
 
   // Paso 5: llega la tormenta real del 20 may 2024, con pausa y tarjeta de fuente.
   const tormenta = page.getByRole("heading", { name: /Space weather alert/ });
@@ -76,12 +79,13 @@ test("ruta dorada: de la órbita al resumen, en inglés", async ({ page }) => {
   await expect(page.getByRole("link", { name: "See the source" }).first()).toHaveAttribute("href", /ccmc\.gsfc\.nasa\.gov/);
   await expect(page.getByText("Real curated data, not live").first()).toBeVisible();
 
-  // Paso 6: la Doctora (refugio) y la Ingeniera (energía al escudo) se contradicen.
+  // Paso 6: la Doctora (refugio) y la Ingeniera (escudo nivel 2) se contradicen; salidas de MISION_JEZERO.dilemaPaso6.
   await expect(page.getByRole("heading", { name: "Your crew disagrees" })).toBeVisible();
   await expect(page.getByText("Everyone to the shelter, now!")).toBeVisible();
   await expect(page.getByText(/put energy into the shield and keep working/)).toBeVisible();
   const refugio = page.getByRole("button", { name: "Go to the shelter" });
-  const escudo = page.getByRole("button", { name: /Send energy to the shield/ });
+  const escudo = page.getByRole("button", { name: "Raise the shield" });
+  await expect(page.getByRole("button", { name: "Wait a turn" })).toBeVisible();
   await expect(refugio).toBeVisible();
   await expect(escudo).toBeVisible();
 
