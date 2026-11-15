@@ -47,12 +47,11 @@ export function crearHabitat(m: Materiales, largo = LARGO_HABITAT): THREE.Group 
   return grupo("Building_Habitat", ...partes);
 }
 
-/** Anillo de `n` ventanas cian chaflanadas alrededor del eje y, a radio `r` y altura `y`. */
-function ventanasAnillo(m: Materiales, r: number, y: number, n: number): THREE.Object3D[] {
-  const ancho = 2 * r * Math.tan(Math.PI / n) * 0.78;
+/** Anillo de `n` montantes marfil entre los paneles de vidrio, a radio `r`, altura `y` y alto `h`. */
+function montantesAnillo(m: Materiales, r: number, y: number, h: number, n: number): THREE.Object3D[] {
   return Array.from({ length: n }, (_, i) => {
-    const a = (i / n) * Math.PI * 2;
-    const v = parte(m, "Emissive", chaflan(ancho, 1.0, 0.05, 0.18), [Math.sin(a) * r, y, Math.cos(a) * r], "Control_Pane");
+    const a = ((i + 0.5) / n) * Math.PI * 2;
+    const v = parte(m, "SuitBase", caja(0.2, h, 0.22), [Math.sin(a) * r, y, Math.cos(a) * r], "Control_Pane");
     v.rotation.y = a;
     return v;
   });
@@ -70,13 +69,12 @@ export function crearTorreControl(m: Materiales): THREE.Group {
     parte(m, "Accent", tronco(1.5, 1.5, 0.12, 8), [-1.9, 2.95, 1.2], "Control_CapL"),
     parte(m, "Accent", tronco(1.5, 1.5, 0.12, 8), [1.9, 2.95, 1.2], "Control_CapR"),
     parte(m, "SuitBase", tronco(4.3, 3.6, 0.7, 12), [0, 4.2, 0], "Control_FlangeLow"),
-    parte(m, "SuitBase", tronco(3.85, 3.85, 1.5, 12), [0, 5.3, 0], "Control_Core"),
-    parte(m, "Glass", tronco(4.05, 4.05, 1.5, 12), [0, 5.3, 0], "Control_Windows"),
-    ...ventanasAnillo(m, 3.9, 5.3, 12),
-    parte(m, "SuitBase", tronco(3.9, 4.4, 0.6, 12), [0, 6.35, 0], "Control_FlangeHigh"),
-    parte(m, "SuitBase", tronco(1.4, 3.7, 0.9, 12), [0, 7.1, 0], "Control_Roof"),
-    parte(m, "SuitBase", tronco(0.08, 0.1, 1.9, 6), [0.6, 8.5, 0], "Control_Mast"),
-    parte(m, "SuitBase", geometriaBase("kit-esfera-mastil", () => new THREE.IcosahedronGeometry(0.2, 0)), [0.6, 9.55, 0], "Control_MastBall"),
+    parte(m, "Emissive", tronco(4.6, 4.6, 2.0, 12), [0, 5.65, 0], "Control_Windows"),
+    ...montantesAnillo(m, 4.68, 5.65, 2.1, 12),
+    parte(m, "SuitBase", tronco(4.5, 5.0, 0.5, 12), [0, 6.95, 0], "Control_FlangeHigh"),
+    parte(m, "SuitBase", tronco(1.4, 3.9, 0.8, 12), [0, 7.6, 0], "Control_Roof"),
+    parte(m, "SuitBase", tronco(0.08, 0.1, 1.9, 6), [0.6, 8.9, 0], "Control_Mast"),
+    parte(m, "SuitBase", geometriaBase("kit-esfera-mastil", () => new THREE.IcosahedronGeometry(0.2, 0)), [0.6, 9.95, 0], "Control_MastBall"),
     parte(m, "SuitBase", chaflan(2.2, 2.6, 1.4, 0.5), [0, 1.3, 3.1], "Control_Porch"),
     parte(m, "Boots", caja(1.2, 1.8, 0.05), [0, 1.0, 3.82], "Control_DoorLeaf"),
     parte(m, "Emissive", caja(1.0, 0.1, 0.03), [0, 2.2, 3.82], "Control_DoorLight"),
