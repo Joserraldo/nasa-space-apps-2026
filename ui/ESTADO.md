@@ -21,8 +21,10 @@ Una sección por persona, máximo 5 líneas, y nadie edita la de otro (FLUJO §8
 - Sin registrar todavía.
 
 ## Ubicación (Camilo)
-**Rama:** — · **PR:** ninguno · **Tokens:** —
-- Sin registrar todavía.
+**Rama:** feat/ui-ubicacion-mapa · **PR:** por abrir · **Tokens:** verde
+- Hecho: mapa desde LUGARES, estados, objetivo, posición y lista accesible; 531 tests, build, E2E y tres capturas en verde.
+- Sigue: aprobación visual de Paula y conexión de José; contrato #205 pendiente, sin copiar mundo.ts.
+- Bloqueo: integrar tokens/Nunito de Jaime y callback de navegación; colisiones conservadas en su otra rama.
 
 ## Integración (José)
 **Rama:** — · **PR:** ninguno · **Tokens:** —
