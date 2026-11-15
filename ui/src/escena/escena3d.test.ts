@@ -13,7 +13,7 @@ import { liberarCache, liberarEscena, liberarMateriales } from "./liberar";
 import { LUGARES, TERRENO } from "./mundo";
 import type { EstadoModulo, VistaEscena } from "./vista";
 import { MODULOS_BASE } from "./activos/modulos";
-import { CAMARAS } from "./escena3d";
+import { CAMARAS, fovParaAspecto } from "./escena3d";
 import { decorado } from "./activos/baseExterior";
 import { crearHabitat, crearTorreControl } from "./activos/edificios";
 import { lugar } from "./mundo";
@@ -206,8 +206,8 @@ describe("armarEscena", () => {
 
 describe("encuadre de tercera persona (mundo/01)", () => {
   /** Rectángulo en pantalla (NDC) de los vértices de un objeto vistos desde `CAMARAS.tercera` a 1024×683. */
-  function enPantalla(o: THREE.Object3D) {
-    const camara = new THREE.PerspectiveCamera(55, 1024 / 683, 0.1, 600);
+  function enPantalla(o: THREE.Object3D, ancho = 1024, alto = 683) {
+    const camara = new THREE.PerspectiveCamera(fovParaAspecto("tercera", ancho / alto), ancho / alto, 0.1, 600);
     camara.position.set(...CAMARAS.tercera.pos);
     camara.lookAt(new THREE.Vector3(...CAMARAS.tercera.mira));
     camara.updateMatrixWorld(true);
@@ -240,6 +240,36 @@ describe("encuadre de tercera persona (mundo/01)", () => {
     expect(pt.y1).toBeLessThan(1);
     liberarEscena(torre);
     liberarEscena(habitat);
+  });
+
+  const punto = (x: number, y: number, z: number, ancho: number, alto: number) => {
+    const camara = new THREE.PerspectiveCamera(fovParaAspecto("tercera", ancho / alto), ancho / alto, 0.1, 600);
+    camara.position.set(...CAMARAS.tercera.pos);
+    camara.lookAt(new THREE.Vector3(...CAMARAS.tercera.mira));
+    camara.updateMatrixWorld(true);
+    return new THREE.Vector3(x, y, z).project(camara);
+  };
+
+  it("la consola queda en la mitad inferior y el horizonte en el tercio superior (1024x683)", () => {
+    const m = lugar("mesa");
+    expect(punto(m.mx, 1, m.mz, 1024, 683).y).toBeLessThan(0);
+    expect(punto(0, 0, -500, 1024, 683).y).toBeGreaterThan(1 / 3);
+  });
+
+  it.each([[844, 390], [390, 844]])("el hábitat y la consola siguen en el cuadro a %ix%i", (w, h) => {
+    const m = lugar("mesa"), hb = lugar("habitat");
+    for (const p of [punto(m.mx, 1, m.mz, w, h), punto(hb.mx, 2, hb.mz, w, h)]) {
+      expect(Math.abs(p.x)).toBeLessThan(0.95);
+      expect(Math.abs(p.y)).toBeLessThan(0.95);
+    }
+  });
+
+  it("el campo visual se abre solo en cuadros más altos que anchos y tiene tope", () => {
+    expect(fovParaAspecto("tercera", 1.5)).toBeCloseTo(60);
+    expect(fovParaAspecto("tercera", 2.2)).toBeCloseTo(60);
+    expect(fovParaAspecto("tercera", 0.8)).toBeGreaterThan(60);
+    expect(fovParaAspecto("tercera", 0.2)).toBe(90);
+    expect(fovParaAspecto("primera", 0.5)).toBe(70);
   });
 });
 
