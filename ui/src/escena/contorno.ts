@@ -32,7 +32,8 @@ export function geometriaCascoConsola(materiales: Materiales): THREE.BufferGeome
     if (!(o instanceof THREE.Mesh) || !PARTES_SILUETA.includes(o.name)) return;
     const g = o.geometry.index ? o.geometry.toNonIndexed() : o.geometry.clone();
     g.applyMatrix4(o.matrixWorld);
-    posiciones.push(...(g.getAttribute("position").array as ArrayLike<number>));
+    const p = g.getAttribute("position").array;
+    for (let i = 0; i < p.length; i++) posiciones.push(p[i]!);
     g.dispose();
   });
   const casco = new THREE.BufferGeometry();

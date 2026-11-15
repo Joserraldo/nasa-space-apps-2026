@@ -78,41 +78,50 @@ const ANCLA_X = 0.74;
 /** Altura del puño en el espacio de la cámara: solo asoma la mano por abajo. */
 const Y_PUNO = -0.36;
 
-function construir(aspecto: number, fovGrados: number): THREE.BufferGeometry {
-  const semiancho = 0.5 * Math.tan((fovGrados * Math.PI) / 360) * aspecto;
-  const semialto = 0.5 * Math.tan((fovGrados * Math.PI) / 360);
+/** Una sola vez: ambas manos centradas en x = 0 (el lado se reparte al anclar). Devuelve los vértices de la izquierda. */
+function construir(): { geometria: THREE.BufferGeometry; izquierda: number } {
   const geos: THREE.BufferGeometry[] = [];
+  let izquierda = 0;
   for (const lado of [-1, 1] as const) {
-    // Espacio de la cámara (mira hacia −Z): en la esquina, inclinado hacia delante, palma al centro.
+    // Espacio de la cámara (mira hacia −Z): abajo, inclinado hacia delante, palma al centro.
     const m = new THREE.Matrix4().compose(
-      new THREE.Vector3(lado * semiancho * ANCLA_X, Y_PUNO * (semialto / 0.35) , -0.5),
+      new THREE.Vector3(0, Y_PUNO, -0.5),
       new THREE.Quaternion().setFromEuler(new THREE.Euler(-0.8, 0, -lado * 0.25, "ZXY")),
       new THREE.Vector3(ESCALA, ESCALA, ESCALA),
     );
     for (const g of guante(lado)) {
       g.applyMatrix4(m);
       geos.push(g);
+      if (lado === -1) izquierda += g.getAttribute("position").count;
     }
   }
-  return unir(geos);
+  return { geometria: unir(geos), izquierda };
 }
 
 export function crearGuantes(materiales: Materiales): Guantes {
-  const malla = new THREE.Mesh(construir(1.5, 70), materiales.Rock);
+  const { geometria, izquierda } = construir();
+  const pos = geometria.getAttribute("position") as THREE.BufferAttribute;
+  const base = Float32Array.from(pos.array);
+  const malla = new THREE.Mesh(geometria, materiales.Rock);
   malla.name = "Gloves_FirstPerson";
   malla.visible = false;
   malla.frustumCulled = false;
-  let aspectoActual = 1.5;
+  let semianchoActual = NaN;
+  const anclar = (aspecto: number, fov: number) => {
+    if (!(aspecto > 0)) return;
+    const x = 0.5 * Math.tan((fov * Math.PI) / 360) * aspecto * ANCLA_X;
+    if (x === semianchoActual) return;
+    semianchoActual = x;
+    // Solo mueve en X los vértices de cada mano: sin reconstruir geometrías.
+    for (let i = 0; i < pos.count; i++) pos.setX(i, base[i * 3]! + (i < izquierda ? -x : x));
+    pos.needsUpdate = true;
+  };
+  anclar(1.5, 70);
   return {
     raiz: malla,
     mostrar(v) {
       malla.visible = v;
     },
-    anclar(aspecto, fov) {
-      if (!(aspecto > 0) || Math.abs(aspecto - aspectoActual) < 1e-3) return;
-      aspectoActual = aspecto;
-      malla.geometry.dispose();
-      malla.geometry = construir(aspecto, fov);
-    },
+    anclar,
   };
 }
