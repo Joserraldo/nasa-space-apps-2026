@@ -141,14 +141,14 @@ export const MISION_LUNA_VISIBLE: Omit<Mision, "eventoPolvo"> = {
     // Hora del amanecer: cálculo del equipo sobre NASA SVS 5187 (PR #147, horizonte plano).
     { id: "noche_en_tormenta", textoKey: "mision.lunaVisible.ciencia.nocheTormenta", fuenteKey: "fuente.svs" },
     { id: "sitio_terreno", textoKey: "mision.lunaVisible.ciencia.terreno", fuenteKey: "fuente.moonTrek" },
-    // POR VERIFICAR: NSSDC Moon fact sheet; falta `fuente.nssdcMoon` en data (fuente.nssdc es la de Marte). Oculta.
-    { id: "noche_larga", modulo: "bateria", textoKey: "mision.lunaVisible.ciencia.noche", fuenteKey: null },
-    // POR VERIFICAR: 1361,0 W/m² (NSSDC Moon). Oculta hasta que exista `fuente.nssdcMoon`.
-    { id: "luz_del_sol", modulo: "panel_solar", textoKey: "mision.lunaVisible.ciencia.panel", fuenteKey: null },
+    // [V] Ficha lunar de NSSDC: periodo sinódico 29,53 d y 95–390 K (#159, LISTA por cálculo).
+    { id: "noche_larga", modulo: "bateria", textoKey: "mision.lunaVisible.ciencia.noche", fuenteKey: "fuente.nssdcMoon" },
+    // [V] Ficha lunar de NSSDC: 1361,0 W/m² (#159, LISTA).
+    { id: "luz_del_sol", modulo: "panel_solar", textoKey: "mision.lunaVisible.ciencia.panel", fuenteKey: "fuente.nssdcMoon" },
     // Zhang et al. 2020 (Chang'e-4, CNSA, no NASA): las bases bajo regolito tienen más blindaje.
     { id: "escudo_regolito", modulo: "escudo", textoKey: "mision.lunaVisible.ciencia.regolito", fuenteKey: "fuente.dosis.lunaIss" },
-    // POR VERIFICAR: ≈1,3 s = 384 400 km (NSSDC Moon) / c. Oculta hasta que exista `fuente.nssdcMoon`.
-    { id: "mensajes_rapidos", modulo: "antena", textoKey: "mision.lunaVisible.ciencia.antena", fuenteKey: null },
+    // [V] Ficha lunar de NSSDC: 384 400 km / c ≈ 1,3 s (#159, LISTA por cálculo).
+    { id: "mensajes_rapidos", modulo: "antena", textoKey: "mision.lunaVisible.ciencia.antena", fuenteKey: "fuente.nssdcMoon" },
     // Misma fuente que la tarjeta de Jezero (sin cifra).
     { id: "agua_reciclada", modulo: "reciclador_agua", textoKey: "mision.lunaVisible.ciencia.reciclador", fuenteKey: "fuente.nasa.agua" },
   ],
