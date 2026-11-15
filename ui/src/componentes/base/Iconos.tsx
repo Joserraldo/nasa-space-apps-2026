@@ -7,7 +7,8 @@
 
 export type NombreIcono =
   | "tripulacion" | "mapa" | "check" | "check_exito" | "microfono" | "energia" | "vida" | "escudo"
-  | "aviso" | "error" | "reloj" | "enlace" | "atras";
+  | "aviso" | "error" | "reloj" | "enlace" | "atras"
+  | "jugar" | "candado" | "engranaje" | "sonido_off" | "sonido_on" | "planeta" | "satelite";
 
 const C = "currentColor";
 
@@ -64,6 +65,47 @@ const DIBUJOS: Record<NombreIcono, JSX.Element> = {
     <g fill={C}>
       <polygon points="3,5 11,5 11,7 5,7 5,19 17,19 17,13 19,13 19,21 3,21" />
       <polygon points="13,3 21,3 21,11 19,11 19,6.4 11.7,13.7 10.3,12.3 17.6,5 13,5" />
+    </g>
+  ),
+  jugar: <polygon fill={C} points="6,3 20,12 6,21" />,
+  candado: (
+    <g fill={C}>
+      <polygon fillRule="evenodd" points="7,10 7,6.5 9,3.5 15,3.5 17,6.5 17,10 15,10 15,7.2 14,5.6 10,5.6 9,7.2 9,10" />
+      <polygon points="4.5,10 19.5,10 19.5,20 18,21.5 6,21.5 4.5,20" />
+    </g>
+  ),
+  engranaje: (
+    <g fill={C}>
+      <polygon fillRule="evenodd" points="10.4,1.8 13.6,1.8 14.2,4.6 16.4,5.6 18.8,4 21,6.2 19.4,8.6 20.4,10.8 23.2,11.4 23.2,14.6 20.4,15.2 19.4,17.4 21,19.8 18.8,22 16.4,20.4 14.2,21.4 13.6,24 10.4,24 9.8,21.4 7.6,20.4 5.2,22 3,19.8 4.6,17.4 3.6,15.2 0.8,14.6 0.8,11.4 3.6,10.8 4.6,8.6 3,6.2 5.2,4 7.6,5.6 9.8,4.6" transform="translate(0,-0.9)" />
+      <polygon fill="var(--color-marfil)" points="10.3,9 13.7,9 15.6,10.9 15.6,14.3 13.7,16.2 10.3,16.2 8.4,14.3 8.4,10.9" transform="translate(0,-0.6)" />
+    </g>
+  ),
+  sonido_off: (
+    <g fill={C}>
+      <polygon points="2,9 6,9 11,4.5 11,19.5 6,15 2,15" />
+      <polygon points="14,8.4 15.4,7 18,9.6 20.6,7 22,8.4 19.4,11 22,13.6 20.6,15 18,12.4 15.4,15 14,13.6 16.6,11" />
+    </g>
+  ),
+  sonido_on: (
+    <g fill={C}>
+      <polygon points="2,9 6,9 11,4.5 11,19.5 6,15 2,15" />
+      <polygon points="14,8 15.4,7 17.2,9.6 17.2,14.4 15.4,17 14,16 15.4,13.6 15.4,10.4" />
+      <polygon points="17.6,5 19.2,4 21.8,8.2 21.8,15.8 19.2,20 17.6,19 19.8,15.2 19.8,8.8" />
+    </g>
+  ),
+  planeta: (
+    <g>
+      <polygon fill="var(--color-regolito-claro)" points="9,4 15,4 19,8 19,15 15,19 9,19 5,15 5,8" />
+      <polygon fill="var(--color-roca-basalto)" points="9,8 12,7 13,10 10,11" />
+      <polygon fill="none" stroke="var(--color-ciruela)" strokeWidth="1.6" points="1.5,14 6,11.2 18,9.6 22.5,10.6 18,13.4 6,15" />
+    </g>
+  ),
+  satelite: (
+    <g>
+      <polygon fill={C} points="9.5,8.5 14.5,8.5 15.5,10 15.5,14 14.5,15.5 9.5,15.5 8.5,14 8.5,10" />
+      <polygon fill="var(--color-icono-escudo)" points="1,9 7,9 7,15 1,15" />
+      <polygon fill="var(--color-icono-escudo)" points="17,9 23,9 23,15 17,15" />
+      <polygon fill={C} points="11.2,2.5 12.8,2.5 12.8,8.5 11.2,8.5" />
     </g>
   ),
   atras: <polygon fill={C} points="10,4 12,6 7.4,10.6 21,10.6 21,13.4 7.4,13.4 12,18 10,20 2,12" />,

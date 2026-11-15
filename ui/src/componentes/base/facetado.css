@@ -37,6 +37,13 @@
 }
 .fb-primary { --fb-alto: 56px; --fb-punta: 18px; font-size: var(--tipo-tam-subtitulo); font-weight: var(--tipo-peso-titulo); }
 
+/* Menú de la portada (inicio/01): grande, ancho fijo, icono a la izquierda con separador. */
+.fb-menu { --fb-alto: 68px; --fb-punta: 22px; width: 100%; font-size: var(--tipo-tam-portada); font-weight: var(--tipo-peso-portada); }
+.fb-menu .fb-superficie { justify-content: flex-start; gap: var(--esp-4); padding-left: calc(var(--fb-punta) + var(--esp-5)); }
+.fb-menu .fb-icono { color: var(--color-ciruela); }
+.fb-menu .fb-texto { padding-left: var(--esp-4); border-left: var(--borde) solid color-mix(in srgb, var(--color-ciruela) 35%, transparent); }
+.fb-caja:has(> .fb-menu) { width: 100%; }
+
 .fb > * { grid-area: 1 / 1; }
 
 /* El foco lo dibuja el propio botón (no :focus-visible global): dos hexágonos más grandes, sin recorte. */

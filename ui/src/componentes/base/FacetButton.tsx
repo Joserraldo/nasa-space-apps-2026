@@ -12,7 +12,8 @@ import "./facetado.css";
  * - Textos solo por clave i18n.
  */
 export interface FacetButtonProps {
-  variant?: "primary" | "secondary";
+  /** `menu`: botones grandes de la portada (inicio/01), con icono, separador y Nunito 900. */
+  variant?: "primary" | "secondary" | "menu";
   labelKey: string;
   labelVars?: Vars | undefined;
   icon?: NombreIcono | undefined;
@@ -51,7 +52,7 @@ export function FacetButton({
       >
         <span className="fb-sombra" aria-hidden="true" />
         <span className="fb-superficie">
-          {icono && <Icono nombre={icono} tam={variant === "primary" ? 26 : 22} className="fb-icono" />}
+          {icono && <Icono nombre={icono} tam={variant === "menu" ? 30 : variant === "primary" ? 26 : 22} className="fb-icono" />}
           {/* Mientras procesa se dibujan las dos etiquetas superpuestas para que el ancho no salte. */}
           <span className="fb-texto">
             <span className={busy ? "fb-oculta" : undefined}>{etiqueta}</span>

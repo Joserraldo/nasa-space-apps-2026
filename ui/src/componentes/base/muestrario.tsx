@@ -5,6 +5,9 @@ import { partidaDorada } from "@solar-shield/engine";
 import { ConfirmarAccion } from "./ConfirmarAccion.js";
 import { FacetButton } from "./FacetButton.js";
 import { Mensaje, ResourcePlaque } from "./Piezas.js";
+import { Carga } from "../Carga.js";
+import { Intro } from "../Intro.js";
+import { Portada } from "../Portada.js";
 import "../../estilos/tokens.css";
 import "../../estilos/base.css";
 import "./muestrario.css";
@@ -82,8 +85,23 @@ function Muestrario() {
   );
 }
 
+/** ?vista=portada | intro | carga muestra esa pantalla a pantalla completa (para las capturas a 1024x683, 844x390 y 390x844). */
 function Raiz() {
-  const [idioma, setIdioma] = useState<Idioma>(() => (new URLSearchParams(location.search).get("lang") === "es" ? "es" : "en"));
+  const params = new URLSearchParams(location.search);
+  const [idioma, setIdioma] = useState<Idioma>(() => (params.get("lang") === "es" ? "es" : "en"));
+  const [sonido, setSonido] = useState(false);
+  const vista = params.get("vista");
+  const n = Number(params.get("n") ?? 0);
+  if (vista) {
+    const nada = () => {};
+    return (
+      <IdiomaContext.Provider value={idioma}>
+        {vista === "portada" && <Portada idioma={idioma} onIdioma={setIdioma} sonido={sonido} onSonido={() => setSonido(!sonido)} puedeContinuar={params.has("guardado")} onEmpezar={nada} onContinuar={nada} onAjustes={nada} onCreditos={nada} />}
+        {vista === "intro" && <Intro inicial={n} onTerminar={nada} />}
+        {vista === "carga" && <Carga consejo={n} sonido={sonido} onSonido={() => setSonido(!sonido)} />}
+      </IdiomaContext.Provider>
+    );
+  }
   return (
     <IdiomaContext.Provider value={idioma}>
       <div className="mu-idioma">
