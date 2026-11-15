@@ -108,5 +108,20 @@
   "ui.sitio.rango.excelente": "Excelente",
   "ui.sitio.rango.bueno": "Bueno",
   "ui.sitio.rango.regular": "Regular",
-  "ui.sitio.rango.arriesgado": "Arriesgado"
+  "ui.sitio.rango.arriesgado": "Arriesgado",
+  "ui.comun.tripulacion": "Tripulación",
+  "ui.comun.mapa": "Mapa",
+  "ui.comun.atras": "Atrás",
+  "ui.comun.enviar": "Enviar",
+  "ui.comun.voz": "Voz",
+  "ui.comun.ocupado": "Procesando…",
+  "ui.comun.motivo.sin_energia": "No hay energía suficiente",
+  "ui.comun.muestrario.titulo": "Solar Shield: variantes de la interfaz",
+  "ui.comun.muestrario.acciones": "Acciones",
+  "ui.comun.muestrario.estado.normal": "Normal",
+  "ui.comun.muestrario.estado.hover": "Al pasar el puntero",
+  "ui.comun.muestrario.estado.pressed": "Presionado",
+  "ui.comun.muestrario.estado.foco": "Foco (teclado)",
+  "ui.comun.muestrario.colocar_panel": "Colocar panel",
+  "ui.comun.muestrario.elegir": "Elegir"
 }

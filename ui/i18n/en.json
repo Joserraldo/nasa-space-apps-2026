@@ -108,5 +108,20 @@
   "ui.sitio.rango.excelente": "Excellent",
   "ui.sitio.rango.bueno": "Good",
   "ui.sitio.rango.regular": "Fair",
-  "ui.sitio.rango.arriesgado": "Risky"
+  "ui.sitio.rango.arriesgado": "Risky",
+  "ui.comun.tripulacion": "Crew",
+  "ui.comun.mapa": "Map",
+  "ui.comun.atras": "Back",
+  "ui.comun.enviar": "Send",
+  "ui.comun.voz": "Voice",
+  "ui.comun.ocupado": "Working…",
+  "ui.comun.motivo.sin_energia": "Not enough energy",
+  "ui.comun.muestrario.titulo": "Solar Shield: UI variants",
+  "ui.comun.muestrario.acciones": "Actions",
+  "ui.comun.muestrario.estado.normal": "Normal",
+  "ui.comun.muestrario.estado.hover": "Hover",
+  "ui.comun.muestrario.estado.pressed": "Pressed",
+  "ui.comun.muestrario.estado.foco": "Focus (keyboard)",
+  "ui.comun.muestrario.colocar_panel": "Place panel",
+  "ui.comun.muestrario.elegir": "Choose"
 }

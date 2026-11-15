@@ -1,0 +1,79 @@
+/**
+ * Iconos facetados propios (DISEÑO §8: nada de Lucide, Heroicons ni emojis). Cada uno es un SVG de
+ * polígonos en una caja de 24 x 24, dibujado como los de las láminas `ui/02` y `ui/03`. Colores solo
+ * por variables de tokens; los neutros usan `currentColor` para heredar el texto.
+ * Un icono nunca es la única etiqueta: siempre va con texto al lado, por eso es `aria-hidden`.
+ */
+
+export type NombreIcono =
+  | "tripulacion" | "mapa" | "check" | "microfono" | "energia" | "vida" | "escudo"
+  | "aviso" | "error" | "reloj" | "enlace" | "atras";
+
+const C = "currentColor";
+
+const DIBUJOS: Record<NombreIcono, JSX.Element> = {
+  tripulacion: (
+    <g fill={C}>
+      <polygon points="7,3 10,3 11.5,5 11.5,8 10,10 7,10 5.5,8 5.5,5" />
+      <polygon points="2,20 2.8,14.5 5,12 12,12 14.2,14.5 15,20" />
+      <polygon points="15,4.5 17.5,4.5 18.8,6.2 18.8,8.8 17.5,10.5 15,10.5 13.8,8.8 13.8,6.2" opacity="0.85" />
+      <polygon points="15.6,20 15.2,14.8 14.2,12.6 19.5,12.6 21.3,14.6 22,20" opacity="0.85" />
+    </g>
+  ),
+  mapa: (
+    <g fill={C}>
+      <polygon fillRule="evenodd" points="12,2 16.5,3.8 18.5,8 17.6,12.5 12,22 6.4,12.5 5.5,8 7.5,3.8" />
+      <polygon fill="var(--color-marfil)" points="12,5.6 14.3,6.6 15.2,8.8 14.3,11 12,12 9.7,11 8.8,8.8 9.7,6.6" />
+    </g>
+  ),
+  check: <polygon fill="var(--color-teal)" points="3,12.5 6.2,9.4 9.8,13 18,4.8 21.2,8 9.8,19.4" />,
+  microfono: (
+    <g fill={C}>
+      <polygon points="9,2.5 15,2.5 16,4 16,11.5 15,13 9,13 8,11.5 8,4" />
+      <polygon points="5,10 6.8,10 6.8,12 8.6,14.6 12,15.6 15.4,14.6 17.2,12 17.2,10 19,10 19,12.6 16.6,16.2 13,17.4 13,20 16,20 16,22 8,22 8,20 11,20 11,17.4 7.4,16.2 5,12.6" />
+    </g>
+  ),
+  energia: <polygon fill="var(--color-icono-energia)" points="14,1.5 5,13.5 11,13.5 9.5,22.5 19,9.5 13,9.5" />,
+  vida: (
+    <g fill="var(--color-icono-vida)">
+      <polygon points="11,22 11,13 13,13 13,22" />
+      <polygon points="12,13.5 6.5,13 3,9.5 3,5 8,5.5 11.5,9" />
+      <polygon points="12.5,12 13,7.5 16.5,3.5 21,3 21,7.5 17,11.5" />
+    </g>
+  ),
+  escudo: (
+    <polygon fill="none" stroke="var(--color-icono-escudo)" strokeWidth="2.4" strokeLinejoin="miter"
+      points="12,2.5 20,5.2 19.6,12.5 16.8,17.6 12,21.2 7.2,17.6 4.4,12.5 4,5.2" />
+  ),
+  aviso: (
+    <g>
+      <polygon fill="var(--color-ambar)" points="12,2.5 22.5,20.5 1.5,20.5" />
+      <polygon fill="var(--color-indigo-texto)" points="10.9,8 13.1,8 12.7,14.5 11.3,14.5" />
+      <polygon fill="var(--color-indigo-texto)" points="11,16 13,16 13,18 11,18" />
+    </g>
+  ),
+  error: <polygon fill="var(--color-error)" points="5,3 12,10 19,3 21,5 14,12 21,19 19,21 12,14 5,21 3,19 10,12 3,5" />,
+  reloj: (
+    <g>
+      <polygon fill="none" stroke={C} strokeWidth="2.2" points="8.3,2.5 15.7,2.5 21,7.8 21,15.2 15.7,20.5 8.3,20.5 3,15.2 3,7.8" />
+      <polygon fill={C} points="11,6 13,6 13,11 16.5,13 15.5,14.7 11,12.2" />
+    </g>
+  ),
+  enlace: (
+    <g fill={C}>
+      <polygon points="3,5 11,5 11,7 5,7 5,19 17,19 17,13 19,13 19,21 3,21" />
+      <polygon points="13,3 21,3 21,11 19,11 19,6.4 11.7,13.7 10.3,12.3 17.6,5 13,5" />
+    </g>
+  ),
+  atras: <polygon fill={C} points="10,4 12,6 7.4,10.6 21,10.6 21,13.4 7.4,13.4 12,18 10,20 2,12" />,
+};
+
+export function Icono({ nombre, tam = 24, className }: { nombre: NombreIcono; tam?: number; className?: string }) {
+  return (
+    <svg className={className} width={tam} height={tam} viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      {DIBUJOS[nombre]}
+    </svg>
+  );
+}
+
+export const NOMBRES_ICONO = Object.keys(DIBUJOS) as NombreIcono[];

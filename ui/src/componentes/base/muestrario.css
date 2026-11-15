@@ -1,0 +1,15 @@
+/* Solo el muestrario (desarrollo). Ordena las piezas como la lámina ui/03 y fuerza estados para la captura. */
+.muestrario { max-width: 1100px; margin: 0 auto; padding: var(--esp-5) var(--esp-4); }
+.muestrario h1 { font-size: var(--tipo-tam-titulo-grande); }
+.muestrario h2 { font-size: var(--tipo-tam-titulo); border-top: var(--borde-fino) solid color-mix(in srgb, var(--color-ciruela) 35%, transparent); padding-top: var(--esp-3); }
+.mu-fila { display: flex; flex-wrap: wrap; align-items: flex-start; gap: var(--esp-4); margin-bottom: var(--esp-4); }
+.mu-fila figure { margin: 0; display: flex; flex-direction: column; align-items: center; gap: var(--esp-1); }
+.mu-fila figcaption { font-size: 15px; }
+.mu-idioma { position: fixed; top: var(--esp-2); right: var(--esp-2); }
+
+/* Estados forzados (copian las reglas de facetado.css). */
+.mu-forzar-hover .fb { transform: translateY(-2px); --fb-fondo: var(--color-lila); }
+.mu-forzar-hover .fb-sombra { transform: translateY(calc(var(--fb-bisel) + 2px)); }
+.mu-forzar-pressed .fb { transform: translateY(1px) scale(.985); --fb-fondo: color-mix(in srgb, var(--color-lila) 70%, var(--color-ciruela) 8%); }
+.mu-forzar-pressed .fb-sombra { transform: translateY(1px); }
+.mu-forzar-foco .fb::before, .mu-forzar-foco .fb::after { opacity: 1; }
