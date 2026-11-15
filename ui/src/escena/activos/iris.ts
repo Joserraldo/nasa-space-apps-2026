@@ -5,7 +5,8 @@
  * bola y ruedas oscuras gruesas. No humanoide, no vuela.
  *
  * Mira hacia +Z (como `rumbo` de `guia.ts`): la escena solo mueve `raiz` y llama a `animar`.
- * Árbol de pivotes: `Iris > Rig > Cuerpo > (Antena)` y `Rig > Rueda_0..3` (cada rueda gira en su eje).
+ * Árbol de pivotes (huesos de una malla rígida, ver `rigido.ts`): `Iris > Rig > IrisHuesos > Cuerpo
+ * > Antena` y `IrisHuesos > Rueda_0..3` (cada rueda gira en su eje).
  *
  * Niveles de NIVELES §5, visibles en la pantalla y en la postura:
  * - `tutorial`: ojos abiertos y atentos.
@@ -13,7 +14,8 @@
  * - `danada` (o equipo averiado): cara `error` con interferencia y faro en color de alerta.
  * - `offline`: pantalla apagada y faro apagado (la escena la deja en `DOCK_IRIS`).
  *
- * Presupuesto: 9 mallas (draw calls) y menos de 700 triángulos. Colores solo por tokens.
+ * Presupuesto: 3 draw calls (cuerpo, pantalla, faro) y menos de 700 triángulos. Colores solo por tokens.
+ * Al quitarla, llamar `liberar()`: suelta además la textura de huesos, que `liberarEscena` no ve.
  */
 import * as THREE from "three";
 import type { BaseAiLevel } from "@solar-shield/contracts";
@@ -21,8 +23,8 @@ import type { GestoIris } from "@solar-shield/agents";
 
 import { colorToken, geometriaBase, type Materiales } from "../materiales";
 import { COLORES } from "../../estilos/tokens";
-import { fusionar } from "./fusionar";
-import { caja, chaflan, grupo, parte, tronco } from "./piezasComunes";
+import { caja, chaflan, tronco } from "./piezasComunes";
+import { hueso, mallaRigida, materialFacetado, type Pieza } from "./rigido";
 
 export type { GestoIris };
 
@@ -44,7 +46,7 @@ export interface OpcionesAnimar {
 
 export interface ModeloIris {
   raiz: THREE.Group;
-  pivotes: { rig: THREE.Group; cuerpo: THREE.Group; antena: THREE.Group; ruedas: readonly THREE.Group[] };
+  pivotes: { rig: THREE.Group; cuerpo: THREE.Bone; antena: THREE.Bone; ruedas: readonly THREE.Bone[] };
   fijarEstado(estado: EstadoIris): void;
   /** Gesto del rover (`GuiaLugar.gesto`); `null` = reposo. */
   fijarGesto(gesto: GestoIris | null): void;
@@ -168,23 +170,43 @@ const POSTURA: Readonly<Record<GestoIris | "reposo", { cx: number; cz: number; a
 };
 
 export function crearIris(m: Materiales, opciones: OpcionesIris = {}): ModeloIris {
-  // --- Cuerpo fusionado por material (SuitBase y Boots), sin la pantalla ni el faro.
-  const armado = grupo(
-    "IrisArmado",
-    parte(m, "SuitBase", chaflan(CUERPO.w, CUERPO.h, CUERPO.d, 0.08), [0, CUERPO.y, 0], "casco"),
-    // Bisel oscuro de la pantalla (octógono, firma de la familia).
-    parte(m, "Boots", chaflan(0.5, 0.24, 0.03, 0.06), [0, CUERPO.y + 0.02, FRENTE], "bisel"),
-    // Bajo del chasis y paragolpes oscuros.
-    parte(m, "Boots", caja(0.5, 0.07, 0.5), [0, CUERPO.y - CUERPO.h / 2 - 0.02, 0], "chasis"),
-    // Pedestal y panel solar del techo, con su rejilla marfil.
-    parte(m, "SuitBase", caja(0.12, 0.05, 0.12), [0, TECHO + 0.025, -0.02], "pedestal"),
-    parte(m, "Boots", caja(0.56, 0.035, 0.46), [0, TECHO + 0.065, -0.02], "panel"),
-    parte(m, "SuitBase", caja(0.57, 0.04, 0.02), [0, TECHO + 0.067, -0.02], "rejillaX"),
-    parte(m, "SuitBase", caja(0.02, 0.04, 0.47), [0, TECHO + 0.067, -0.02], "rejillaZ"),
-  );
-  const cuerpoFusionado = fusionar(armado, "IrisCuerpo");
+  // --- Huesos: cuerpo (con la antena) y una rueda por eje, cada una en su centro.
+  const raizHuesos = hueso("IrisHuesos", [0, 0, 0]);
+  const cuerpo = hueso("Cuerpo", [0, 0, 0], raizHuesos);
+  const antena = hueso("Antena", [0.22, TECHO + 0.08, -0.2], cuerpo);
+  const ejes: readonly (readonly [number, number])[] = [
+    [-EJE_X, EJE_Z], [EJE_X, EJE_Z], [-EJE_X, -EJE_Z], [EJE_X, -EJE_Z],
+  ];
+  const ruedas = ejes.map(([x, z], i) => hueso(`Rueda_${i}`, [x, R_RUEDA, z], raizHuesos));
 
-  // --- Pantalla con la cara en un lienzo (textura propia de esta instancia).
+  // --- Una sola malla con color por vértice (1 draw call). Medidas en el espacio del rover.
+  const rueda = geometriaBase("iris-rueda", () => {
+    const g = new THREE.CylinderGeometry(R_RUEDA, R_RUEDA, ANCHO_RUEDA, 10, 1);
+    g.rotateZ(Math.PI / 2);
+    return g;
+  });
+  const piezas: Pieza[] = [
+    { geo: chaflan(CUERPO.w, CUERPO.h, CUERPO.d, 0.08), color: "traje-marfil", hueso: cuerpo, pos: [0, CUERPO.y, 0] },
+    // Bisel oscuro de la pantalla (octógono, firma de la familia).
+    { geo: chaflan(0.5, 0.24, 0.03, 0.06), color: "indigo-botas", hueso: cuerpo, pos: [0, CUERPO.y + 0.02, FRENTE] },
+    // Bajo del chasis.
+    { geo: caja(0.5, 0.07, 0.5), color: "indigo-botas", hueso: cuerpo, pos: [0, CUERPO.y - CUERPO.h / 2 - 0.02, 0] },
+    // Pedestal y panel solar del techo, con su rejilla marfil.
+    { geo: caja(0.12, 0.05, 0.12), color: "traje-marfil", hueso: cuerpo, pos: [0, TECHO + 0.025, -0.02] },
+    { geo: caja(0.56, 0.035, 0.46), color: "indigo-botas", hueso: cuerpo, pos: [0, TECHO + 0.065, -0.02] },
+    { geo: caja(0.57, 0.04, 0.02), color: "traje-marfil", hueso: cuerpo, pos: [0, TECHO + 0.067, -0.02] },
+    { geo: caja(0.02, 0.04, 0.47), color: "traje-marfil", hueso: cuerpo, pos: [0, TECHO + 0.067, -0.02] },
+    // Antena corta con bola, atrás a la derecha.
+    { geo: tronco(0.014, 0.018, 0.28, 6), color: "traje-marfil", hueso: antena, pos: [0.22, TECHO + 0.22, -0.2] },
+    { geo: geometriaBase("iris-bola", () => new THREE.IcosahedronGeometry(0.045, 0)), color: "traje-marfil", hueso: antena, pos: [0.22, TECHO + 0.38, -0.2] },
+    ...ruedas.map((r, i): Pieza => ({ geo: rueda, color: "indigo-botas", hueso: r, pos: [ejes[i]![0], R_RUEDA, ejes[i]![1]] })),
+  ];
+  const rig = new THREE.Group();
+  rig.name = "Rig";
+  const material = materialFacetado("IrisFacetado");
+  const malla = mallaRigida("IrisCuerpo", rig, raizHuesos, piezas, material);
+
+  // --- Pantalla con la cara en un lienzo (textura propia de esta instancia), hija del cuerpo.
   const lienzo = (opciones.lienzo ?? lienzoPorDefecto)();
   const ctx = lienzo?.getContext("2d") ?? null;
   let textura: THREE.CanvasTexture | null = null;
@@ -197,10 +219,7 @@ export function crearIris(m: Materiales, opciones: OpcionesIris = {}): ModeloIri
   }
   const matPantalla = new THREE.MeshBasicMaterial({ color: textura ? 0xffffff : colorToken("espacio"), map: textura });
   matPantalla.name = "IrisPantalla";
-  const pantalla = new THREE.Mesh(
-    geometriaBase("iris-pantalla", () => new THREE.PlaneGeometry(0.42, 0.19)),
-    matPantalla,
-  );
+  const pantalla = new THREE.Mesh(geometriaBase("iris-pantalla", () => new THREE.PlaneGeometry(0.42, 0.19)), matPantalla);
   pantalla.name = "IrisPantalla";
   pantalla.position.set(0, CUERPO.y + 0.02, FRENTE + 0.016);
 
@@ -218,41 +237,11 @@ export function crearIris(m: Materiales, opciones: OpcionesIris = {}): ModeloIri
   );
   faro.name = "IrisFaro";
   faro.position.set(-0.17, CUERPO.y - 0.14, FRENTE + 0.01);
+  cuerpo.add(pantalla, faro);
 
-  // --- Antena con bola, atrás a la derecha, en su pivote (base del mástil).
-  const antenaFusionada = fusionar(
-    grupo(
-      "AntenaArmada",
-      parte(m, "SuitBase", tronco(0.014, 0.018, 0.28, 6), [0, 0.14, 0], "mastil"),
-      parte(m, "SuitBase", geometriaBase("iris-bola", () => new THREE.IcosahedronGeometry(0.045, 0)), [0, 0.3, 0], "bola"),
-    ),
-    "IrisAntena",
-  );
-  const antena = grupo("Antena", antenaFusionada);
-  antena.position.set(0.22, TECHO + 0.08, -0.2);
-
-  const cuerpo = grupo("Cuerpo", cuerpoFusionado, pantalla, faro, antena);
-
-  // --- Ruedas: cada una en su pivote sobre el eje.
-  const geoRueda = geometriaBase("iris-rueda", () => {
-    const g = new THREE.CylinderGeometry(R_RUEDA, R_RUEDA, ANCHO_RUEDA, 10, 1);
-    g.rotateZ(Math.PI / 2);
-    return g;
-  });
-  const ejes: readonly (readonly [number, number])[] = [
-    [-EJE_X, EJE_Z], [EJE_X, EJE_Z], [-EJE_X, -EJE_Z], [EJE_X, -EJE_Z],
-  ];
-  const ruedas = ejes.map(([x, z], i) => {
-    const llanta = new THREE.Mesh(geoRueda, m.Boots);
-    llanta.name = `Llanta_${i}`;
-    llanta.castShadow = true;
-    const p = grupo(`Rueda_${i}`, llanta);
-    p.position.set(x, R_RUEDA, z);
-    return p;
-  });
-
-  const rig = grupo("Rig", cuerpo, ...ruedas);
-  const raiz = grupo("Iris", rig);
+  const raiz = new THREE.Group();
+  raiz.name = "Iris";
+  raiz.add(rig);
 
   // --- Estado.
   let estado: EstadoIris = { nivel: "pistas", averiada: false };
@@ -316,11 +305,9 @@ export function crearIris(m: Materiales, opciones: OpcionesIris = {}): ModeloIri
       textura?.dispose();
       matPantalla.dispose();
       matFaro.dispose();
-      for (const o of [cuerpoFusionado, antenaFusionada]) {
-        o.traverse((x) => {
-          if (x instanceof THREE.Mesh) x.geometry.dispose();
-        });
-      }
+      material.dispose();
+      malla.geometry.dispose();
+      malla.skeleton.dispose(); // textura de huesos: liberarEscena no la ve
     },
   };
 }

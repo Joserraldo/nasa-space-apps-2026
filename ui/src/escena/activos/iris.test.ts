@@ -33,14 +33,14 @@ describe("Iris rover", () => {
     expect(caraIris({ nivel: "offline", averiada: true })).toBe("apagada");
   });
 
-  it("es liviano: 9 draw calls y menos de 700 triángulos, con 4 ruedas en su pivote", () => {
+  it("es liviano: 3 draw calls y menos de 700 triángulos, con 4 ruedas en su pivote", () => {
     const m = crearMateriales();
     const iris = crearIris(m, { lienzo: () => null });
     const { mallas, triangulos } = contar(iris.raiz);
-    expect(mallas).toBeLessThanOrEqual(9);
+    expect(mallas).toBe(3);
     expect(triangulos).toBeLessThan(700);
     expect(iris.pivotes.ruedas).toHaveLength(4);
-    expect(iris.raiz.getObjectByName("Rig")?.getObjectByName("Cuerpo")?.getObjectByName("Antena")).toBeDefined();
+    expect(iris.raiz.getObjectByName("Rig")?.getObjectByName("Cuerpo")?.getObjectByName("Antena")).toBeInstanceOf(THREE.Bone);
     iris.liberar();
     liberarMateriales(Object.values(m));
     liberarCache();
@@ -120,7 +120,8 @@ describe("Iris rover", () => {
     const m = crearMateriales();
     const iris = crearIris(m, { lienzo: () => null });
     const r = liberarEscena(iris.raiz);
-    expect(r.materiales).toBe(2); // pantalla y faro, propios de esta instancia
+    expect(r.materiales).toBe(3); // facetado, pantalla y faro: propios de esta instancia
+    iris.liberar();
     liberarMateriales(Object.values(m));
     liberarCache();
   });
