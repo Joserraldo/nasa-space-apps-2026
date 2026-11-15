@@ -1,0 +1,31 @@
+{
+  "tokensRef": "3195f53",
+  "viewports": [
+    {
+      "width": 1024,
+      "height": 683,
+      "mouse": 10,
+      "teclado": 2,
+      "toqueMinimo": 44
+    },
+    {
+      "width": 844,
+      "height": 390,
+      "mouse": 10,
+      "teclado": 2,
+      "toqueMinimo": 44
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "mouse": 10,
+      "teclado": 2,
+      "toqueMinimo": 44
+    }
+  ],
+  "es": true,
+  "movimientoReducido": true,
+  "posicionActualizable": true,
+  "estadosActualizables": true,
+  "errores": []
+}
