@@ -1,7 +1,7 @@
 import * as THREE from "three";
 import { describe, expect, it } from "vitest";
 import { BANCO, LUGARES, TERRENO } from "../mundo";
-import { CAMINO, CAMINOS, PLAZA, geometriaCaminos } from "./caminos";
+import { CAMINO, CAMINOS, PLAZA, geometriaCaminos, huellasDe } from "./caminos";
 
 type Tri = { a: THREE.Vector3; b: THREE.Vector3; c: THREE.Vector3; n: THREE.Vector3 };
 
@@ -88,8 +88,79 @@ describe("caminos de losas", () => {
       }
   });
 
-  it("la plaza queda bajo la consola de la mesa", () => {
+  it("la pared exterior de la plataforma se emite una sola vez por cara (sin paredes coplanares)", () => {
+    const alto = CAMINO.altoPlaza + 0.02;
+    const caras = [
+      { n: [0, -1], d: PLAZA.z0, largo: PLAZA.x1 - PLAZA.x0, eje: "z" },
+      { n: [0, 1], d: PLAZA.z1, largo: PLAZA.x1 - PLAZA.x0, eje: "z" },
+      { n: [-1, 0], d: PLAZA.x0, largo: PLAZA.z1 - PLAZA.z0, eje: "x" },
+      { n: [1, 0], d: PLAZA.x1, largo: PLAZA.z1 - PLAZA.z0, eje: "x" },
+    ] as const;
+    let area = 0;
+    for (const c of caras)
+      for (const t of tris) {
+        const enPlano = [t.a, t.b, t.c].every(p => Math.abs(p[c.eje] - c.d) < 1e-6);
+        if (enPlano && t.n.x * c.n[0] + t.n.z * c.n[1] > 0.9) area += new THREE.Triangle(t.a, t.b, t.c).getArea();
+      }
+    // Los ramales se comen un trozo de la pared: nunca sobra área (ninguna cara repetida).
+    expect(area).toBeLessThanOrEqual(2 * (PLAZA.x1 - PLAZA.x0 + PLAZA.z1 - PLAZA.z0) * alto + 1e-6);
+    expect(area).toBeGreaterThan(0.5 * (PLAZA.x1 - PLAZA.x0) * alto);
+  });
+
+  it("el centro de la plataforma y su marco comparten vértices en la arista común (sin grietas en T)", () => {
+    const col = g.getAttribute("color"), pos = g.getAttribute("position");
+    const porColor = new Map<string, THREE.Vector3[]>();
+    for (let i = 0; i < pos.count; i += 3) {
+      if (Math.abs(pos.getY(i) - CAMINO.altoPlaza) > 1e-6 || pos.getY(i + 1) !== pos.getY(i) || pos.getY(i + 2) !== pos.getY(i)) continue;
+      const clave = [col.getX(i), col.getY(i), col.getZ(i)].map(c => c.toFixed(4)).join();
+      porColor.set(clave, [...(porColor.get(clave) ?? []), ...[0, 1, 2].map(k => new THREE.Vector3().fromBufferAttribute(pos, i + k))]);
+    }
+    expect(porColor.size).toBe(2); // centro y marco
+    const [uno, otro] = [...porColor.values()] as [THREE.Vector3[], THREE.Vector3[]];
+    const b = CAMINO.bordePlaza;
+    const enBorde = (v: THREE.Vector3) => {
+      const dentro = v.x > PLAZA.x0 + b - 1e-6 && v.x < PLAZA.x1 - b + 1e-6 && v.z > PLAZA.z0 + b - 1e-6 && v.z < PLAZA.z1 - b + 1e-6;
+      const enLinea = [PLAZA.x0 + b, PLAZA.x1 - b].some(x => Math.abs(v.x - x) < 1e-6) || [PLAZA.z0 + b, PLAZA.z1 - b].some(z => Math.abs(v.z - z) < 1e-6);
+      return dentro && enLinea;
+    };
+    const tiene = (lista: THREE.Vector3[], v: THREE.Vector3) => lista.some(o => o.distanceTo(v) < 1e-6);
+    for (const [a, c] of [[uno, otro], [otro, uno]] as const)
+      for (const v of a.filter(enBorde)) expect(tiene(c, v), `vértice (${v.x.toFixed(3)}, ${v.z.toFixed(3)}) de un lado sin pareja en el otro`).toBe(true);
+  });
+
+  it("el pavimento cubre los codos, también los muy cerrados (inglete limitado)", () => {
+    const w = CAMINO.ancho / 2;
+    type Pt = readonly [number, number];
+    /** Punto dentro de un polígono convexo (vértices en cualquier sentido). */
+    const dentroConvexo = (h: readonly Pt[], x: number, z: number) => {
+      const c = h.map((a, i) => { const b = h[(i + 1) % h.length]!; return (b[0] - a[0]) * (z - a[1]) - (b[1] - a[1]) * (x - a[0]); });
+      return c.every(v => v >= -1e-9) || c.every(v => v <= 1e-9);
+    };
+    const cubierto = (huellas: readonly (readonly Pt[])[], x: number, z: number) => huellas.some(h => dentroConvexo(h, x, z));
+    // Giros de 60° a 170°: por fuera del codo, sobre la bisectriz, hasta 1,5·w del vértice.
+    for (const grados of [60, 100, 120, 140, 160, 170]) {
+      const t = (grados * Math.PI) / 180;
+      const huellas = huellasDe([[[-5, 0], [0, 0], [5 * Math.cos(t), 5 * Math.sin(t)]]], w);
+      const l = Math.hypot(Math.sin(t), 1 + Math.cos(t));
+      const d: Pt = [Math.sin(t) / l, -(1 + Math.cos(t)) / l];
+      const punta = Math.min(Math.sqrt(2 / (1 + Math.cos(t))), Math.sqrt(2 / 0.6)); // largo del inglete, en w
+      for (const f of [0.3, 0.6, 0.9, 0.97])
+        expect(cubierto(huellas, d[0] * f * punta * w, d[1] * f * punta * w), `giro de ${grados}°, al ${f * 100} % del inglete`).toBe(true);
+    }
+    // Los codos reales de la red: el disco de radio w alrededor de cada vértice interior queda lleno.
+    const red = huellasDe(CAMINOS, w);
+    for (const tramo of CAMINOS)
+      for (let i = 1; i < tramo.length - 1; i++)
+        for (let a = 0; a < 360; a += 15) {
+          const x = tramo[i]![0] + Math.cos((a * Math.PI) / 180) * w * 0.95, z = tramo[i]![1] + Math.sin((a * Math.PI) / 180) * w * 0.95;
+          expect(cubierto(red, x, z), `codo ${tramo[i]} a ${a}°`).toBe(true);
+        }
+  });
+
+  it("la plataforma abarca la consola de la mesa y el punto donde se para el jugador", () => {
     const mesa = LUGARES.find(l => l.id === "mesa")!;
-    expect(Math.hypot(mesa.mx - PLAZA.x, mesa.mz - PLAZA.z)).toBeLessThan(PLAZA.radio - 0.9);
+    expect(mesa.mx - 1.2).toBeGreaterThan(PLAZA.x0);
+    expect(mesa.mz).toBeGreaterThan(PLAZA.z0 + 0.6);
+    expect(mesa.z).toBeLessThan(PLAZA.z1);
   });
 });
