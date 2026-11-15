@@ -18,7 +18,6 @@ import { PantallaModulos } from "./pantallas/PantallaModulos.js";
 import { PantallaFinal } from "./pantallas/PantallaFinal.js";
 import { PantallaOrbita } from "./pantallas/PantallaOrbita.js";
 import { PantallaBase } from "./pantallas/PantallaBase.js";
-import { Tormenta } from "./pantallas/Tormenta.js";
 import { PantallaTormenta } from "./pantallas/PantallaTormenta.js";
 import { PreguntaDeIris } from "./componentes/PreguntaDeIris.js";
 import { Portada } from "./componentes/Portada.js";
@@ -39,6 +38,8 @@ interface Juego {
   sitio: PuntajeSitio | null;
   ultimas: Novedades | null;
   tormentaVista: boolean;
+  /** El estado de antes de la decisión de la tormenta: mientras exista se muestra "Decision recorded" (ui/04 panel 04). */
+  registro: GameState | null;
 }
 
 type Evento =
@@ -46,13 +47,14 @@ type Evento =
   | { tipo: "fase"; fase: Fase }
   | { tipo: "accion"; accion: Action }
   | { tipo: "dilema"; previas: Action[]; opcionId: string }
+  | { tipo: "seguir" }
   | { tipo: "tick" }
   | { tipo: "pausa"; pausado: boolean }
   | { tipo: "sitio"; sitio: PuntajeSitio }
   | { tipo: "modulo"; modulo: Equipment };
 
 function inicial(): Juego {
-  return { fase: "inicio", estado: partidaDorada(), colocados: [], sitio: null, ultimas: null, tormentaVista: false };
+  return { fase: "inicio", estado: partidaDorada(), colocados: [], sitio: null, ultimas: null, tormentaVista: false, registro: null };
 }
 
 function reducir(j: Juego, e: Evento): Juego {
@@ -70,8 +72,10 @@ function reducir(j: Juego, e: Evento): Juego {
     case "dilema": {
       let s = j.estado;
       for (const a of e.previas) s = aplicarAccion(s, a);
-      return { ...j, estado: pausar(elegirDilema(s, e.opcionId), false), fase: "base" };
+      const estado = elegirDilema(s, e.opcionId);
+      return estado === s ? j : { ...j, estado, registro: j.estado };
     }
+    case "seguir": return { ...j, estado: pausar(j.estado, false), registro: null, fase: "base" };
     case "pausa": return { ...j, estado: pausar(j.estado, e.pausado) };
     case "tick": {
       if (j.estado.pausado || j.estado.resultado !== "en_curso") return j;
@@ -146,12 +150,8 @@ function Pantalla({ idioma, setIdioma }: { idioma: Idioma; setIdioma: (i: Idioma
           </>
         )}
         {j.fase === "tormenta" && (
-          <>
-            {/* Panel a de E7 detrás de ?tormenta=nueva: la ruta dorada aún depende de Tormenta.tsx (paneles b a d pendientes). */}
-            {new URLSearchParams(window.location.search).get("tormenta") === "nueva"
-              ? <PantallaTormenta estado={j.estado} colocados={j.colocados} onDecidir={(previas, opcionId) => enviar({ tipo: "dilema", previas, opcionId })} />
-              : <Tormenta estado={j.estado} onDecidir={(previas, opcionId) => enviar({ tipo: "dilema", previas, opcionId })} onAccion={accion} />}
-          </>
+          <PantallaTormenta estado={j.estado} colocados={j.colocados} registro={j.registro} onSeguir={() => enviar({ tipo: "seguir" })}
+            onDecidir={(previas, opcionId) => enviar({ tipo: "dilema", previas, opcionId })} />
         )}
         {enBase && (
           <PantallaBase estado={j.estado} ultimas={j.ultimas} onAccion={accion} onReanudar={() => enviar({ tipo: "pausa", pausado: false })} />

@@ -85,18 +85,25 @@ export function resolver(p: { x: number; z: number }, radio: number, t: Terreno,
     const dz = p.z - cz;
     const d = Math.hypot(dx, dz);
     const m = cr + radio;
-    if (d < m && d > 1e-4) {
-      p.x = cx + (dx / d) * m;
-      p.z = cz + (dz / d) * m;
+    if (d < m) {
+      // El centro exacto también colisiona; el desempate hacia +X es determinista.
+      p.x = cx + (d > 1e-8 ? dx / d : 1) * m;
+      p.z = cz + (d > 1e-8 ? dz / d : 0) * m;
     }
   };
   for (const c of t.circulos) empujar(c.x, c.z, c.r);
   for (const c of extra) empujar(c.x, c.z, c.r);
-  for (const c of t.capsulas) empujar(Math.max(c.x0, Math.min(c.x1, p.x)), c.z, c.r);
+  for (const c of t.capsulas) {
+    const cx = Math.max(c.x0, Math.min(c.x1, p.x));
+    // En el eje de una cápsula se sale por el lateral, no a lo largo de su eje.
+    if (Math.hypot(p.x - cx, p.z - c.z) < 1e-8) p.z = c.z + c.r + radio;
+    else empujar(cx, c.z, c.r);
+  }
   const l = Math.hypot(p.x, p.z);
-  if (l > t.limite) {
-    p.x *= t.limite / l;
-    p.z *= t.limite / l;
+  const limite = Math.max(0, t.limite - radio);
+  if (l > limite) {
+    p.x *= limite / l;
+    p.z *= limite / l;
   }
 }
 
@@ -136,6 +143,18 @@ export function moverPersonaje(
   t: Terreno,
   radio: number,
   extra: readonly Circulo[] = [],
+): Cuerpo {
+  if (!Number.isFinite(dt) || dt <= 0 || !Number.isFinite(vx) || !Number.isFinite(vz)) return c;
+  // Contactos intermedios: no saltar al otro lado de un edificio por un frame largo.
+  const pasos = Math.max(1, Math.ceil(Math.hypot(vx, vz) * dt / Math.max(0.05, radio * 0.5)));
+  let actual = c;
+  for (let i = 0; i < pasos; i++) actual = moverPaso(actual, vx, vz, dt / pasos, t, radio, extra);
+  return actual;
+}
+
+function moverPaso(
+  c: Cuerpo, vx: number, vz: number, dt: number,
+  t: Terreno, radio: number, extra: readonly Circulo[],
 ): Cuerpo {
   const intento = (dx: number, dz: number): { x: number; z: number } | null => {
     const p = { x: c.x + dx, z: c.z + dz };
