@@ -14,6 +14,7 @@ Cada persona añade una fila cuando empieza a usar una herramienta o un modelo p
 | Santiago (`kcitas`) | Claude Code | Opus 5.5 (subagente para leer páginas web) | 14 nov, noche: ciclos de orquestación (verificar develop y la semilla dorada, revisar PRs e issues, cerrar issues ya resueltos), ajustes de texto de #157 que pidió Santiago, precisiones de datos del pitch (#161) y segundos del video en `pitch/criterios.md`. | 14 nov |
 | Santiago (`kcitas`) | Claude Code | Fable 5.2 | Prototipo 3D de Jezero fuera del repo (Blender, a partir del DEM de Mars Trek); no integrado | 13 nov |
 | María Paula (`Paulasaah`) | Claude Code | Opus 5.5 | Reorganización de la dirección visual en `docs/referenciapau/`, D6 y D7, prompts por rol, verificación del enunciado del reto | 14 nov |
+| María Paula (`Paulasaah`) | Codex | Modelo seleccionado en su sesión | Integración de modelos existentes de develop, pruebas y plan de trabajo para Santiago y María Paula. El plan asigna Haiku a lectura, Opus a implementación y Fable a auditoría futura; no afirma que hayan ejecutado este PR. | 15 nov |
 | _(por confirmar con su autor)_ | por confirmar | por confirmar | Investigación del 2 nov en `docs/reglas.md` y `docs/science/fuentes.md` | 2 nov |
 
 ## Dentro del juego
