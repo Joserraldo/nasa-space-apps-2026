@@ -1,11 +1,14 @@
 import { existsSync, readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
-import type { EfectoOpcion } from "./jezero.js";
+import type { EfectoOpcion, SitioCandidato } from "./jezero.js";
 import { MISION_MARTE_POLO_NORTE as M, ZONA_DE_SITIO } from "./marte-polo-norte.js";
 import { TEXTOS_MARTE_POLO_NORTE as T } from "./textos.js";
 
 const RECURSOS = ["energia", "soporte_vital", "blindaje"] as const;
+
+// Vista ancha del tipo: `satisfies` deja la constante estrecha y aquí se indexa por recurso.
+const sitios: SitioCandidato[] = M.sitiosCandidatos;
 
 const rutaTerreno = fileURLToPath(new URL(`../../data/terreno/${M.terrenoId}/${M.terrenoId}.json`, import.meta.url));
 
@@ -33,12 +36,12 @@ describe("misión Marte polo norte", () => {
   });
 
   it("cada sitio tiene su zona de la propuesta (la que usan las voces de agentes)", () => {
-    expect(M.sitiosCandidatos.map((s) => s.id).sort()).toEqual(Object.keys(ZONA_DE_SITIO).sort());
+    expect(sitios.map((s) => s.id).sort()).toEqual(Object.keys(ZONA_DE_SITIO).sort());
   });
 
   it("ningún aterrizaje es gratis: mueve ≥ 2 medidores y algo baja ya", () => {
-    expect(M.sitiosCandidatos.length).toBeGreaterThanOrEqual(3);
-    for (const s of M.sitiosCandidatos) {
+    expect(sitios.length).toBeGreaterThanOrEqual(3);
+    for (const s of sitios) {
       const movidos = RECURSOS.filter((r) => (s.aterrizaje.inmediato[r] ?? 0) !== 0 || (s.aterrizaje.retrasado[r] ?? 0) !== 0);
       expect(movidos.length, s.id).toBeGreaterThanOrEqual(2);
       expect(Object.values(s.aterrizaje.inmediato).some((v) => v < 0), s.id).toBe(true);
@@ -46,9 +49,9 @@ describe("misión Marte polo norte", () => {
   });
 
   it("ningún sitio domina a otro en todos los medidores", () => {
-    const sitios = M.sitiosCandidatos.map((s) => ({ id: s.id, n: neto(s.aterrizaje) }));
-    for (const a of sitios)
-      for (const b of sitios) {
+    const sitiosNetos = sitios.map((s) => ({ id: s.id, n: neto(s.aterrizaje) }));
+    for (const a of sitiosNetos)
+      for (const b of sitiosNetos) {
         if (a.id === b.id) continue;
         const domina = RECURSOS.every((r) => a.n[r] >= b.n[r]) && RECURSOS.some((r) => a.n[r] > b.n[r]);
         expect(domina, `${a.id} domina a ${b.id}`).toBe(false);
@@ -78,6 +81,19 @@ describe("misión Marte polo norte", () => {
     expect(new Set(ops.map((o) => o.defiende).filter((e) => e !== null)).size).toBeGreaterThanOrEqual(2);
     expect(ActionSchema.safeParse(M.eventoPolvo.limpiar).success).toBe(true);
     expect(M.eventoPolvo.enSemillaDorada).toBe(false);
+  });
+
+  it("la salida del escudo es la neutral: la Doctora y la Ingeniera siguen recomendando otras (#196)", () => {
+    const ops = M.dilemaPaso6.opciones;
+    expect(ops.find((o) => o.id === "refugiarse")?.defiende).toBe("doctora");
+    expect(ops.find((o) => o.id === "escudo_con_bateria")?.defiende).toBeNull();
+    expect(ops.find((o) => o.id === "guardar_bateria")?.defiende).toBe("ingeniera");
+  });
+
+  it("objetivo, dificultad y tope de ticks son los aprobados provisionalmente en #196", () => {
+    expect(M.objetivo).toBe("explorar");
+    expect(M.dificultad).toBe("media");
+    expect(M.fin.tickLimite).toBe(10);
   });
 
   it("cada fuente citada existe en los textos de datos; sin fuente solo lo marcado POR VERIFICAR", () => {
