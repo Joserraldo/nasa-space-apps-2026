@@ -130,6 +130,7 @@ export interface PersonajeB extends Personaje {
 }
 
 const materialCuerpo = new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.85, metalness: 0 });
+materialCuerpo.userData.compartido = true;
 const materialCasco = new THREE.MeshStandardMaterial({
   color: 0xd3aeea,
   transparent: true,
@@ -140,6 +141,7 @@ const materialCasco = new THREE.MeshStandardMaterial({
   depthWrite: false,
   side: THREE.BackSide,
 });
+materialCasco.userData.compartido = true;
 
 const PIEZAS = ["traje", "cara", "oreja", "nariz", "cuello", "pelo", "gafas", "equipo"];
 

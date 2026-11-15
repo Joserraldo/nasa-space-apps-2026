@@ -281,6 +281,7 @@ const material = new THREE.MeshStandardMaterial({
   polygonOffsetFactor: -2,
   polygonOffsetUnits: -2,
 });
+material.userData.compartido = true;
 
 /** `grupo` queda en altos de cráneo con origen en el centro del cráneo. */
 export function crearRostroB(r: RasgosB, sonda: Sonda): Rostro {

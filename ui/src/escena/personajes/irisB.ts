@@ -146,7 +146,9 @@ function construirPanel(s: Superficie, c: V3, medio: [number, number], columnas:
 }
 
 const materialCuerpo = new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.8, metalness: 0 });
+materialCuerpo.userData.compartido = true;
 const materialCara = new THREE.MeshBasicMaterial({ vertexColors: true, side: THREE.DoubleSide, toneMapped: false });
+materialCara.userData.compartido = true;
 
 const PIEZAS = ["chasis", "pantalla", "ruedas", "paneles", "antena", "detalles"];
 

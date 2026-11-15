@@ -2,8 +2,10 @@ import * as THREE from "three";
 import { animar, GESTOS, type Gesto } from "./animaciones.js";
 import { EXPRESIONES, type Expresion } from "./cabeza.js";
 import { FICHAS, type IdPersonaje } from "./fichas.js";
-import { CARAS_IRIS, crearIris, type CaraIris, type Iris } from "./iris.js";
-import { crearPersonaje, type Personaje } from "./personaje.js";
+import { CARAS_IRIS, crearIris as crearIrisA, type CaraIris, type Iris } from "./iris.js";
+import { crearIrisB } from "./irisB.js";
+import { crearPersonaje as crearPersonajeA, type Personaje } from "./personaje.js";
+import { crearPersonajeB } from "./personajeB.js";
 
 /**
  * Hoja de revisión de la tripulación (herramienta de desarrollo, no forma parte del juego).
@@ -87,9 +89,13 @@ const relleno = new THREE.DirectionalLight(0xe6d2ff, 0.5);
 relleno.position.set(3, 1.5, -3);
 escena.add(relleno);
 
+const usarA = q.get("variante") === "a";
 type Modelo = { tipo: "pj"; pj: Personaje } | { tipo: "iris"; iris: Iris };
 const modelos: Modelo[] = celdas.map((c) => {
-  const modelo: Modelo = c.id === "iris" ? { tipo: "iris", iris: crearIris() } : { tipo: "pj", pj: crearPersonaje(c.id) };
+  const modelo: Modelo =
+    c.id === "iris"
+      ? { tipo: "iris", iris: usarA ? crearIrisA() : crearIrisB() }
+      : { tipo: "pj", pj: usarA ? crearPersonajeA(c.id) : crearPersonajeB(c.id) };
   const grupo = modelo.tipo === "iris" ? modelo.iris.grupo : modelo.pj.grupo;
   grupo.rotation.y = c.giro;
   grupo.visible = false;
