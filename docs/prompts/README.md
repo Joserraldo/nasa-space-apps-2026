@@ -52,7 +52,7 @@ Cómo se reparte el trabajo de ui y cómo se integra: [FLUJO.md](../referenciapa
 
 ### Modelos y esfuerzo
 
-Verificado el 14 nov en este equipo: `claude` acepta `--model` (`fable`, `opus`, `sonnet`, `haiku`) y `--effort` (`low`, `medium`, `high`, `xhigh`, `max`); los subagentes de Claude Code reciben `model` y `effort` al lanzarlos; OpenCode lista `opencode/deepseek-v4.1-flash-free` y `openai/gpt-6.1-sol`; Codex fija el esfuerzo con `model_reasoning_effort`.
+Verificado el 14 nov en este equipo: `claude` acepta `--model` (`fable`, `opus`, `sonnet`, `haiku`) y `--effort` (`low`, `medium`, `high`, `xhigh`, `max`); los subagentes de Claude Code reciben `model` y `effort` al lanzarlos; OpenCode lista `opencode/deepseek-v4.1-flash-free` y `openai/gpt-6.1-sol`; Codex fija el esfuerzo con `model_reasoning_effort`; Daniel usa Codex con GPT-6.1 (dicho por María Paula).
 
 | Sesión o tarea | Modelo | Esfuerzo | Cómo se abre |
 | --- | --- | --- | --- |
@@ -68,7 +68,7 @@ Verificado el 14 nov en este equipo: `claude` acepta `--model` (`fable`, `opus`,
 | Diseño (Camilo) | Opus 5.5 | `medium` | `claude --model opus --effort medium` |
 | Agentes e infra (José) | Opus 5.5 | `medium` | `claude --model opus --effort medium` |
 | Datos (Daniel) | Opus 5.5 | `medium` | `claude --model opus --effort medium` |
-| Datos (Daniel): verificación y scripts | Codex con GPT-6.1 Sol si su cuenta lo tiene | `medium` | `codex -m <modelo> -c model_reasoning_effort="medium"` (Daniel confirma el nombre del modelo en su Codex) |
+| Datos (Daniel): verificación y scripts | Codex con GPT-6.1 | `medium` | `codex -c model_reasoning_effort="medium"` (GPT-6.1 como modelo de su Codex) |
 | Componentes, tests unitarios, bugs claros | Sonnet 5.5 (subagente) | `medium` | `model: sonnet, effort: medium` |
 | Buscar en el repo, i18n EN/ES, JSON, documentación | Haiku 5.5 (subagente) | `low` | `model: haiku, effort: low` |
 | Lote mecánico sobre archivos que nadie más toca | DeepSeek V4.1 Flash en OpenCode | (sin ajuste) | `opencode -m opencode/deepseek-v4.1-flash-free` |
