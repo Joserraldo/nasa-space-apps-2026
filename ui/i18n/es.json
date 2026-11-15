@@ -27,6 +27,7 @@
   "ui.paso.3.total": "Puntaje para esta misión",
   "ui.paso.3.elegir": "Aterrizar aquí",
   "ui.paso.4.titulo": "Coloca {n} módulos",
+  "ui.paso.4.elige": "Elige un módulo para ver cuánto cuesta y qué te devuelve después.",
   "ui.paso.4.texto": "Cada módulo cuesta energía y tiempo de la tripulación ahora, y ayuda después. Elige bien.",
   "ui.paso.4.colocar": "Colocar",
   "ui.paso.4.costo": "Cuesta ahora",
@@ -270,5 +271,10 @@
   "ui.tormenta.elegir": "Elige a tu experto",
   "ui.tormenta.comparar": "Compara tu plan",
   "ui.tormenta.otra": "Preguntar a otro experto",
+  "ui.tormenta.verificar": "Verifica la alerta",
+  "ui.tormenta.fuente": "Revisa la fuente",
+  "ui.tormenta.pregunta.proteger": "¿Qué necesita protección?",
+  "ui.tormenta.pregunta.sensor": "¿Qué muestra el sensor?",
+  "ui.tormenta.verFuente": "Ver fuente",
   "ui.tormenta.acceso": "{recurso} {valor}"
 }
