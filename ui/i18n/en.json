@@ -330,5 +330,8 @@
   "ui.hud.usar.iris.corto": "Ask",
   "ui.hud.camara.corto": "Camera",
   "ui.decision.panel": "Your decision",
-  "ui.base.consulta": "Talk with your crew"
+  "ui.base.consulta": "Talk with your crew",
+  "ui.hud.objetivo.ir": "Go to {lugarKey}",
+  "ui.hud.objetivo.experto": "Ask {expertoKey} at {lugarKey}",
+  "ui.hud.objetivo.averia": "Iris needs a repair at {lugarKey}"
 }

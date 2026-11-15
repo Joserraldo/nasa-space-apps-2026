@@ -4,7 +4,7 @@ import { puedeAplicar } from "@solar-shield/engine";
 import { LUGARES } from "../escena/mundo.js";
 import { traducir } from "../i18n.js";
 import { inicial, reducir, type Juego } from "../juego/reductor.js";
-import { mundoBloqueado, usoDelLugar } from "./lugares.js";
+import { mundoBloqueado, objetivoDeLaBase, usoDelLugar } from "./lugares.js";
 
 /** De la portada a la base viva (sitio y dos módulos), como la ruta dorada. */
 function enBase(): Juego {
@@ -73,5 +73,22 @@ describe("bloqueo del mundo", () => {
   it("libre solo si no hay nada abierto ni un campo de texto activo", () => {
     expect(mundoBloqueado(nada)).toBe(false);
     for (const k of Object.keys(nada) as (keyof typeof nada)[]) expect(mundoBloqueado({ ...nada, [k]: true })).toBe(true);
+  });
+});
+
+describe("objetivo de la base (guía de Iris)", () => {
+  it("nombra un lugar real de la tabla y se traduce entero en los dos idiomas", () => {
+    for (const j of [enBase(), conTormenta()]) {
+      const o = objetivoDeLaBase(j.estado);
+      if (o.lugar) expect(LUGARES.map((l) => l.id)).toContain(o.lugar);
+      for (const idioma of ["en", "es"] as const) {
+        const texto = traducir(idioma, o.labelKey, o.vars);
+        expect(texto).not.toMatch(/[{}]|ui\.|agentes\./);
+      }
+    }
+  });
+  it("sin Iris (offline) vuelve al objetivo general", () => {
+    const o = objetivoDeLaBase({ ...enBase().estado, iaBase: "offline" });
+    expect(o).toEqual({ labelKey: "ui.comun.hud.objetivo.base", lugar: null });
   });
 });

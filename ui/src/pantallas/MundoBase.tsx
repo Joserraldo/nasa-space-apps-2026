@@ -38,12 +38,14 @@ export interface Mundo {
   fijarInstalando(m: Equipment | null): void;
   /** Quién atiende "usar" (tecla E de la escena). Sin nadie, usar no hace nada. */
   fijarUso(fn: ((l: LugarObjetivo) => void) | null): void;
+  /** Lugar adonde guía Iris ahora: la escena lo resalta (`VistaEscena.lugarObjetivo`). */
+  fijarObjetivo(l: LugarObjetivo | null): void;
 }
 
 const NADA = () => undefined;
 const MUNDO_VACIO: Mundo = {
   sin3d: true, cercano: null, camara: "tercera", alternarCamara: NADA, destino: null, irA: NADA, entrada: null,
-  movimientoReducido: true, fijarBloqueado: NADA, fijarInstalando: NADA, fijarUso: NADA,
+  movimientoReducido: true, fijarBloqueado: NADA, fijarInstalando: NADA, fijarUso: NADA, fijarObjetivo: NADA,
 };
 const MundoContexto = createContext<Mundo>(MUNDO_VACIO);
 /** Aparte: cambia hasta 5 veces por segundo y solo lo lee el mapa. */
@@ -102,6 +104,7 @@ export function MundoBase({ fase, estado, colocados, calidad, movimientoReducido
   const [bloqueadoCapa, setBloqueadoCapa] = useState(false);
   const [campo, setCampo] = useState(false);
   const [instalando, setInstalando] = useState<Equipment | null>(null);
+  const [lugarObjetivo, setLugarObjetivo] = useState<LugarObjetivo | null>(null);
   const uso = useRef<((l: LugarObjetivo) => void) | null>(null);
 
   // Escribir en un campo (preguntar a la tripulación) frena el mundo: las letras no lo mueven.
@@ -119,8 +122,8 @@ export function MundoBase({ fase, estado, colocados, calidad, movimientoReducido
   const bloqueado = bloqueadoCapa || campo;
 
   const fv = faseVista(fase, estado);
-  const vista = useMemo(() => vistaEscena(estado, { fase: fv, colocados, instalando: fase === "modulos" ? instalando : null, averiaRevelada: fase !== "modulos" }),
-    [estado, colocados, fv, fase, instalando]);
+  const vista = useMemo(() => vistaEscena(estado, { fase: fv, colocados, instalando: fase === "modulos" ? instalando : null, averiaRevelada: fase !== "modulos", lugarObjetivo }),
+    [estado, colocados, fv, fase, instalando, lugarObjetivo]);
   // Eventos del último tick: se comparan el estado anterior y el actual (una vez por tick).
   const previo = useRef(estado);
   const eventos = useMemo(() => {
@@ -140,7 +143,7 @@ export function MundoBase({ fase, estado, colocados, calidad, movimientoReducido
   }, [sin3d]);
   const mundo = useMemo<Mundo>(() => ({
     sin3d, cercano, camara, alternarCamara, destino, irA, entrada, movimientoReducido,
-    fijarBloqueado: setBloqueadoCapa, fijarInstalando: setInstalando, fijarUso,
+    fijarBloqueado: setBloqueadoCapa, fijarInstalando: setInstalando, fijarUso, fijarObjetivo: setLugarObjetivo,
   }), [sin3d, cercano, camara, alternarCamara, destino, irA, entrada, movimientoReducido, fijarUso]);
 
   return (

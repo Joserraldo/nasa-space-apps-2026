@@ -19,7 +19,7 @@ import type { Persona } from "../componentes/base/Retrato.js";
 import "../componentes/base/facetas.css";
 import { vistaEscena, type LugarObjetivo } from "../escena/vista.js";
 import { DecisionRegistrada } from "./DecisionRegistrada.js";
-import { mundoBloqueado, usoDelLugar } from "./lugares.js";
+import { mundoBloqueado, objetivoDeLaBase, usoDelLugar } from "./lugares.js";
 import { useAltoHoja, useMundo, usePosicionJugador } from "./MundoBase.js";
 import "./base.css";
 
@@ -57,8 +57,8 @@ export function PantallaBase({ estado, colocados = [], ultimas, hud, onAccion, o
   estado: GameState;
   colocados?: readonly Equipment[];
   ultimas: Novedades | null;
-  /** Reloj y objetivo del HUD, que pone App; la fila de abajo la pone esta pantalla. */
-  hud: Pick<HudBaseProps, "reloj" | "objetivo">;
+  /** Reloj del HUD, que pone App; el objetivo (guía de Iris) y la fila de abajo los pone esta pantalla. */
+  hud: Pick<HudBaseProps, "reloj">;
   onAccion(a: Action): void;
   onReanudar(): void;
 }) {
@@ -84,6 +84,10 @@ export function PantallaBase({ estado, colocados = [], ultimas, hud, onAccion, o
   const abierto = { dialogo: dialogo !== null, plan: plan !== null, registro: registro !== null, panel: panel !== null, novedad: hayNovedad, campo: false };
   const hayPanel = mundoBloqueado(abierto);
   useAltoHoja(hoja, hayPanel);
+  // Objetivo de Iris: texto de la píldora del HUD y lugar resaltado en la escena y el mapa.
+  const objetivo = useMemo(() => objetivoDeLaBase(estado), [estado]);
+  useEffect(() => { mundo.fijarObjetivo(objetivo.lugar); }, [objetivo.lugar, mundo.fijarObjetivo]);
+  useEffect(() => () => mundo.fijarObjetivo(null), [mundo.fijarObjetivo]);
 
   // El mundo no se mueve ni se "usa" con algo abierto encima (frontera A/B: prop `bloqueado`).
   useEffect(() => { mundo.fijarBloqueado(hayPanel); }, [hayPanel, mundo.fijarBloqueado]);
@@ -200,7 +204,7 @@ export function PantallaBase({ estado, colocados = [], ultimas, hud, onAccion, o
 
   return (
     <section className={`base-e6${hayPanel ? " base-e6-con-panel" : ""}`} aria-label={t("ui.hud.titulo")}>
-      <HudBase estado={estado} ultimas={ultimas} reloj={hud.reloj} objetivo={hud.objetivo} tactil={tactil} panelAbierto={hayPanel}
+      <HudBase estado={estado} ultimas={ultimas} reloj={hud.reloj} objetivo={{ labelKey: objetivo.labelKey, vars: objetivo.vars }} tactil={tactil} panelAbierto={hayPanel}
         mundo={{
           onTripulacion: () => alternarPanel("tripulacion"),
           onMapa: () => alternarPanel("mapa"),
@@ -257,7 +261,7 @@ export function PantallaBase({ estado, colocados = [], ultimas, hud, onAccion, o
               {plan ? (
                 <ConfirmarAccion estado={estado} accion={plan} onCancelar={cerrarPlan} onConfirmar={confirmar} />
               ) : panel === "mapa" ? (
-                <MapaDeLaBase modulos={modulos} destino={mundo.destino} onIrA={(l) => { mundo.irA(l); cerrarTodo(); }} />
+                <MapaDeLaBase modulos={modulos} destino={mundo.destino ?? objetivo.lugar} onIrA={(l) => { mundo.irA(l); cerrarTodo(); }} />
               ) : panel === "tripulacion" ? (
                 <>
                   <section className="fc"><div className="fc-cara base-bloque">

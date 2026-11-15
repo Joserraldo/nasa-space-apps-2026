@@ -1,8 +1,9 @@
-import type { Entrada } from "@solar-shield/agents";
+import { guiaIrisLugar, type Entrada } from "@solar-shield/agents";
 import type { BaseAction, GameState } from "@solar-shield/contracts";
 import { telemetriaPendiente, tormentaActiva } from "@solar-shield/engine";
 import type { NombreIcono } from "../componentes/base/Iconos.js";
 import type { LugarObjetivo } from "../escena/vista.js";
+import type { Vars } from "../i18n.js";
 
 /**
  * Qué hace "usar" cada lugar de la base (tecla E, botón de acción táctil o la escena), según la tabla
@@ -51,4 +52,19 @@ export function mundoBloqueado(abierto: {
   dialogo: boolean; plan: boolean; registro: boolean; panel: boolean; novedad: boolean; campo: boolean;
 }): boolean {
   return abierto.dialogo || abierto.plan || abierto.registro || abierto.panel || abierto.novedad || abierto.campo;
+}
+
+/**
+ * Objetivo del momento en la base, desde la guía de Iris (rescatado de #269): el texto de la píldora
+ * del HUD ("Ask the Engineer at the workshop", como "Inspect the solar controller" de la lámina) y el
+ * lugar que la escena y el mapa resaltan. Sin Iris (offline) vuelve al objetivo general de la fase.
+ */
+export function objetivoDeLaBase(estado: GameState): { labelKey: string; vars?: Vars; lugar: LugarObjetivo | null } {
+  const paso = telemetriaPendiente(estado) ? 8 : tormentaActiva(estado) ? 7 : 5;
+  const guia = guiaIrisLugar(estado, paso, { averiaRevelada: estado.iaBase === "danada" });
+  if (!guia) return { labelKey: "ui.comun.hud.objetivo.base", lugar: null };
+  const lugarKey = `agentes.iris.lugar.${guia.destino}`;
+  if (guia.gesto === "pedir_reparacion") return { labelKey: "ui.hud.objetivo.averia", vars: { lugarKey }, lugar: guia.destino };
+  if (guia.experto) return { labelKey: "ui.hud.objetivo.experto", vars: { lugarKey, expertoKey: `agentes.nombre.${guia.experto}` }, lugar: guia.destino };
+  return { labelKey: "ui.hud.objetivo.ir", vars: { lugarKey }, lugar: guia.destino };
 }
