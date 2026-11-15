@@ -132,3 +132,41 @@ describe("cielo de Marte", () => {
     expect(LUZ.exposicion).toBe(1.06);
   });
 });
+
+describe("módulos de la base (sin Three)", async () => {
+  const { MODULOS_BASE, partesVisibles, construidos, respetaMaximoConstruidos, TIEMPOS_MODULO_MS } = await import("./activos/modulos");
+  type E = import("@solar-shield/contracts").Equipment;
+  type S = import("./vista").EstadoModulo;
+  const vista = (cambios: Partial<Record<E, S>>): Record<E, S> => ({
+    panel_solar: "ausente", bateria: "ausente", reciclador_agua: "ausente", invernadero: "ausente",
+    escudo: "ausente", antena: "ausente", ia_base: "funcionando", ...cambios,
+  });
+
+  it("los cinco anclajes son los de ESCENAS §3.2 y el anclaje se ve siempre", () => {
+    expect([...MODULOS_BASE].sort()).toEqual(["antena", "escudo", "invernadero", "panel_solar", "reciclador_agua"]);
+    for (const s of ["ausente", "instalando", "funcionando", "averiado"] as const) expect(partesVisibles(s).anclaje).toBe(true);
+  });
+
+  it("cada estado muestra lo suyo: andamio al instalar, vivos solo al funcionar", () => {
+    expect(partesVisibles("ausente")).toMatchObject({ solido: false, andamio: false, vivos: false });
+    expect(partesVisibles("instalando")).toMatchObject({ solido: false, andamio: true, vivos: false });
+    expect(partesVisibles("funcionando")).toMatchObject({ solido: true, andamio: false, vivos: true });
+    expect(partesVisibles("averiado")).toMatchObject({ solido: true, vivos: false });
+    expect(TIEMPOS_MODULO_MS).toEqual({ instalando: 400, operativo: 240 });
+  });
+
+  it("las 10 parejas de 2 módulos se ven construidas y respetan el máximo; 3 no", () => {
+    let parejas = 0;
+    for (let i = 0; i < MODULOS_BASE.length; i++)
+      for (let j = i + 1; j < MODULOS_BASE.length; j++) {
+        const v = vista({ [MODULOS_BASE[i]!]: "funcionando", [MODULOS_BASE[j]!]: "instalando" });
+        expect(construidos(v)).toHaveLength(2);
+        expect(respetaMaximoConstruidos(v)).toBe(true);
+        parejas++;
+      }
+    expect(parejas).toBe(10);
+    expect(respetaMaximoConstruidos(vista({ panel_solar: "funcionando", escudo: "funcionando", antena: "funcionando" }))).toBe(false);
+    // La IA y la batería no son anclajes: no cuentan como módulos construidos.
+    expect(construidos(vista({ bateria: "funcionando" }))).toHaveLength(0);
+  });
+});
