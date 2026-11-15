@@ -11,6 +11,9 @@ import { ExpertPortrait } from "../componentes/base/ExpertPortrait.js";
 import { FacetButton } from "../componentes/base/FacetButton.js";
 import { Icono } from "../componentes/base/Iconos.js";
 import { CostRow } from "../componentes/base/Piezas.js";
+import { ChipPregunta } from "../componentes/base/Accesos.js";
+import { ChipPausa } from "../componentes/base/PanelFacetado.js";
+import "../componentes/base/paneles.css";
 import { DecisionRegistrada } from "./DecisionRegistrada.js";
 import { useAltoHoja, useMundo } from "./MundoBase.js";
 import "../componentes/base/facetas.css";
@@ -77,11 +80,12 @@ export function PantallaTormenta({ estado, colocados, registro, onSeguir, onDeci
 
   return (
     <section className="tormenta-e7" aria-labelledby="tormenta-titulo">
-      <div className="fc tormenta-panel">
-        <div ref={cara} className={`fc-cara tormenta-cara${plan && verificando ? " tormenta-cara-verif" : ""}`}>
-          <header className="tormenta-cabeza">
-            <h2 id="tormenta-titulo" className="tormenta-titulo">{t(registro ? "ui.decision.titulo" : plan ? (verificando ? "ui.tormenta.verificar" : "ui.tormenta.comparar") : "ui.tormenta.elegir")}</h2>
-            <span className="fc"><span className="fc-cara fc-chico tormenta-pausa"><Icono nombre="reloj" tam={20} /><span>{t("ui.comun.pausado")}</span></span></span>
+      {/* Cinta ciruela numerada de ui/04 ("01 / CHOOSE YOUR EXPERT"), rescatada de #309 (PanelFacetado). */}
+      <div className="fc pf tormenta-panel">
+        <div ref={cara} className={`fc-cara pf-cara tormenta-cara${plan && verificando ? " tormenta-cara-verif" : ""}`}>
+          <header className="pf-cab tormenta-cabeza">
+            <h2 id="tormenta-titulo" className="pf-cinta tormenta-titulo">{`0${{ elegir: 1, comparar: 2, verificar: 3, decision: 4 }[vistaPanel]} / `}{t(registro ? "ui.decision.titulo" : plan ? (verificando ? "ui.tormenta.verificar" : "ui.tormenta.comparar") : "ui.tormenta.elegir")}</h2>
+            <ChipPausa />
           </header>
 
           {registro ? <DecisionRegistrada antes={registro} despues={estado} onContinuar={() => onSeguir?.()} />
@@ -100,7 +104,7 @@ export function PantallaTormenta({ estado, colocados, registro, onSeguir, onDeci
           <form className="tormenta-preguntar" onSubmit={enviar}>
             <label className="oculto-visual" htmlFor="tormenta-campo">{t("ui.base.tripulacion.campo")}</label>
             <input id="tormenta-campo" type="text" value={texto} onChange={(e) => setTexto(e.target.value)} placeholder={t("ui.base.tripulacion.campo")} />
-            <FacetButton type="submit" labelKey="ui.tripulacion.enviar" onClick={NADA} />
+            <FacetButton type="submit" icon="avion_papel" labelKey="ui.tripulacion.enviar" onClick={NADA} />
           </form>
 
           {dialogo && (
@@ -191,7 +195,7 @@ function Verificar({ estado, dialogos, onAtras }: { estado: GameState; dialogos:
         <TarjetaFuente fuente={fuente} />
         <ul className="tormenta-preguntas">
           {PREGUNTAS.map((q) => (
-            <li key={q.id}><FacetButton icon={q.icono} labelKey={`ui.tormenta.pregunta.${q.id}`} selected={pregunta === q.id ? true : undefined} onClick={() => setPregunta(q.id)} /></li>
+            <li key={q.id}><ChipPregunta icono={q.icono} labelKey={`ui.tormenta.pregunta.${q.id}`} selected={pregunta === q.id ? true : undefined} onClick={() => setPregunta(q.id)} /></li>
           ))}
         </ul>
         {linea && <p className="tormenta-respuesta-fuente" role="status">{t(linea.clave, linea.vars)}</p>}

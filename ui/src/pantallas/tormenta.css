@@ -17,7 +17,8 @@
   max-block-size: 100%; overflow-y: auto; overscroll-behavior: contain; scrollbar-gutter: stable;
 }
 .tormenta-cabeza { display: flex; align-items: center; justify-content: space-between; gap: var(--esp-2); flex-wrap: wrap; }
-.tormenta-titulo { margin: 0; font-size: var(--tipo-tam-titulo); }
+.tormenta-cara.pf-cara { padding: 0 var(--esp-3) var(--esp-3); }
+.tormenta-cabeza.pf-cab { padding-inline: 0; }
 .tormenta-cabeza > .fc { display: block; flex: none; }
 .tormenta-pausa { display: flex; align-items: center; gap: var(--esp-2); padding: var(--esp-1) var(--esp-3); white-space: nowrap; font-weight: var(--tipo-peso-etiqueta); font-size: 16px; }
 
@@ -76,17 +77,16 @@
 @media (max-height: 500px) and (orientation: landscape) {
   .tormenta-panel { inline-size: 40%; }
   .tormenta-cara { gap: var(--esp-2); padding: var(--esp-2) var(--esp-3); }
-  .tormenta-titulo { font-size: var(--tipo-tam-subtitulo); }
   .tormenta-expertos .retrato-marco, .tormenta-plan-experta .retrato-marco { width: 52px; height: 52px; }
   .tormenta-expertos .retrato-marco svg, .tormenta-plan-experta .retrato-marco svg { width: 48px; height: 48px; }
   .tormenta-expertos .retrato-especialidad { display: none; }
-  .tormenta-plan-botones { grid-template-columns: 1fr; }
+  .tormenta-plan-botones .fb-icono { display: none; }
   .tormenta-cara .decision-personajes { display: none; }
 }
 
 /* ---- Celular vertical: hoja inferior de hasta la mitad del alto; la base y el niño arriba ---- */
 @media (orientation: portrait) and (max-width: 700px) {
-  .tormenta-panel { inset: auto 0 0 0; inline-size: auto; max-block-size: 55dvh; }
+  .tormenta-panel { inset: auto 0 0 0; inline-size: auto; max-block-size: 50dvh; }
   .tormenta-panel > .tormenta-cara { padding-inline: max(var(--esp-3), env(safe-area-inset-left)) max(var(--esp-3), env(safe-area-inset-right));
     padding-block-end: max(var(--esp-3), env(safe-area-inset-bottom)); }
   .tormenta-expertos .retrato-marco { width: 64px; height: 64px; }
