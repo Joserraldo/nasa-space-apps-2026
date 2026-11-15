@@ -25,6 +25,7 @@ import { Intro } from "./componentes/Intro.js";
 import { Carga } from "./componentes/Carga.js";
 import { Creditos } from "./componentes/Creditos.js";
 import type { TemaPregunta } from "@solar-shield/agents";
+import { MISION_JEZERO } from "@solar-shield/missions";
 
 /** Módulos que tienen pregunta de Iris nivel 2 al colocarlos. */
 const TEMAS_IRIS: readonly Equipment[] = ["panel_solar", "reciclador_agua", "invernadero", "escudo"];
@@ -130,6 +131,7 @@ function Pantalla({ idioma, setIdioma }: { idioma: Idioma; setIdioma: (i: Idioma
     <div className={enBase ? "app app-base" : "app"}>
       {(j.fase === "modulos" || enBase || j.fase === "tormenta") && (
         <HudBase estado={j.estado} ultimas={enBase ? j.ultimas : null}
+          objetivo={j.fase === "modulos" ? { labelKey: "ui.comun.hud.objetivo.modulos", vars: { n: MISION_JEZERO.modulosAColocar } } : { labelKey: j.fase === "tormenta" ? "ui.comun.hud.objetivo.tormenta" : "ui.comun.hud.objetivo.base" }}
           reloj={enBase ? { velocidad, onPausa: () => enviar({ tipo: "pausa", pausado: !j.estado.pausado }), onVelocidad: setVelocidad } : undefined} />
       )}
 
