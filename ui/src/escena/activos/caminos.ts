@@ -278,8 +278,8 @@ export function geometriaCaminos(): THREE.BufferGeometry {
 // Balizas
 // ---------------------------------------------------------------------------------------------
 
-/** Número de balizas del anillo (máximo de la prueba: 12) y distancia de cada una al eje. [E] */
-export const BALIZAS = { n: 12, fase: 0.1, aparte: 0.95 } as const;
+/** Balizas: `n` en el anillo y `troncal` en el camino ancho (total máx. de la prueba escena3d.test.ts: 12) y distancia de cada una al eje. [E] */
+export const BALIZAS = { n: 4, fase: 0.1, aparte: 0.95, troncal: 8, pasoTroncal: 1.7, aparteTroncal: 1.15 } as const;
 const ANILLO_CENTRO: P2 = [1.5, -1.0];
 
 /** Choca con un sólido de `TERRENO`, el banco o la plaza (con `margen`). */
@@ -313,6 +313,32 @@ export function posicionesBalizas(): P2[] {
     const x = x0 + nx * BALIZAS.aparte, z = z0 + nz * BALIZAS.aparte;
     if (chocaConBase(x, z, 0.6) || sobreCamino(x, z, 0.25)) continue;
     salida.push([x, z]);
+  }
+  const ancho = balizasTroncal();
+  return [...ancho, ...salida.filter(([x, z]) => ancho.every(([a, b]) => Math.hypot(x - a, z - b) > 1.2))];
+}
+
+/**
+ * Balizas del camino ancho (`mundo/01`): alternadas a izquierda y derecha, una cada `pasoTroncal`
+ * metros desde la entrada del primer plano hacia la torre, justo fuera de la cinta.
+ */
+function balizasTroncal(): P2[] {
+  const salida: P2[] = [];
+  let lado = 1;
+  for (const tramo of TRONCAL) {
+   let resto = 1.2;
+   if (tramo !== TRONCAL[0]) lado = -1;
+   for (let k = 0; k < tramo.length - 1 && salida.length < BALIZAS.troncal; k++) {
+    const a = tramo[k]!, b = tramo[k + 1]!, l = Math.hypot(b[0] - a[0], b[1] - a[1]);
+    const ux = (b[0] - a[0]) / l, uz = (b[1] - a[1]) / l;
+    for (let d = resto; d < Math.min(l - 0.3, tramo === TRONCAL[0] ? 99 : 2.6) && salida.length < BALIZAS.troncal; d += BALIZAS.pasoTroncal) {
+      const x = a[0] + ux * d - uz * lado * BALIZAS.aparteTroncal, z = a[1] + uz * d + ux * lado * BALIZAS.aparteTroncal;
+      lado = -lado;
+      if (chocaConBase(x, z, 0.6) || sobreCamino(x, z, 0.25)) continue;
+      salida.push([x, z]);
+      resto = d + BALIZAS.pasoTroncal - l;
+    }
+   }
   }
   return salida;
 }
