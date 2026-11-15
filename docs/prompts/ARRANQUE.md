@@ -28,9 +28,9 @@ Ola 1 (apenas se fusiona #168), todos a la vez:
   Revisor ───── cola de PRs
   Santiago ──── fusiones de P2 y documentación
 
-Ola 2 (cuando María Paula avisa "mi trabajo ya está en la rama"):
-  Jaime borra estilos.css y mision.css · José borra la bienvenida oscura · Daniel borra el prototipo de la escena
-  Después cada uno sigue con los archivos que ya existían
+Ola 2 (cuando se fusiona #197, el último PR de la subida; no se sube nada visual):
+  Jaime borra estilos.css · José reemplaza cada pantalla vieja por una nueva · Daniel escribe la escena nueva
+  Nadie re-estiliza nada del preview desplegado (FLUJO §2.3)
 
 Ola 3 (con los contratos fusionados): todos en paralelo hasta el punto de control 1
 

@@ -1,16 +1,15 @@
 # Estado — infra
-**Actualizado:** 14 nov 2026, 12:50 · **Rama:** feat/infra-e2e-ci · **PR:** e2e en CI (este)
-**Tokens:** 🟢
+**Actualizado:** 15 nov 2026, 00:40 · **Rama:** feat/infra-preview-escenarios · **PR:** #207 (aprobado por el revisor, falta fusión humana)
+**Tokens:** verde
 
 ## Hecho (últimas iteraciones)
-- Un solo Worker para pantalla y API, preview (develop) y producción (main) por Actions (#76, #78, #105); límite IA 20/min por IP.
-- En develop: e2e de la ruta dorada (#80), guion del video (#79) y formulario (#81).
-- e2e pasa contra el preview (`nasa-space-apps-2026-preview…workers.dev`) y contra Vite.
-- Job `E2E ruta dorada` en `ci.yml`: cada PR y push a develop/main corre Playwright (solo Chromium, cacheado) contra Vite.
+- #151 fusionado en develop; la CI (`ci.yml`) ya corre en PRs y push a `feat/ui-escenarios`.
+- Contrato de props de `EscenaBase` cerrado (#190), con `eventos` de Daniel.
+- Preview del rediseño: entorno `escenarios` en `wrangler.jsonc` (Worker `nasa-space-apps-2026-escenarios`, base de preview, límite propio) y pasos en `deploy.yml` para push a `feat/ui-escenarios`. `--dry-run` en verde.
 
 ## Qué sigue
-- Hacer obligatorio el check `E2E ruta dorada` en la protección de develop/main (Santiago).
-- Antes de main: releer librerías del lockfile final (POR VERIFICAR en `pitch/formulario/atribuciones.md`).
+- Tras fusionar: llevar develop a `feat/ui-escenarios` (el push usa el `deploy.yml` de esa rama) y comprobar la URL en celular.
+- Pantallas nuevas (front-integracion tarea 0) cuando entren `tokens.ts` y Nunito de Jaime.
 
 ## Bloqueos
-- LICENSE del proyecto: decide José. #66 se puede cerrar (resuelto por #107 y #65): decide José.
+- Pantallas esperan #208 y #209 de Jaime (tokens y base sin estilos.css). LICENSE y cierre de #66: decide José.

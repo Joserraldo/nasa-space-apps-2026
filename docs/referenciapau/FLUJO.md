@@ -11,7 +11,7 @@
 | --- | --- | --- | --- | --- |
 | **Dirección visual y personajes** | **María Paula** | Niño astronauta, Ingeniera 3D, Iris rover (estados, ojos, gestos, movimiento de guía), Doctora y Meteoróloga si alcanza, niño flotando y nave de la portada. Aprueba la fidelidad de **todo** contra las láminas. | `ui/src/escena/activos/astronautas.ts`, `ui/src/escena/activos/iris.ts`, `ui/src/escena/activos/portada.ts`, `ui/src/escena/guia.ts` | [front-personajes.md](../prompts/front-personajes.md) |
 | **Escenario 3D** | **Daniel** | Renderer y ciclo de vida, cielo y luz de Marte, terreno de Jezero desde el DEM, rocas, kit de piezas, base compacta, los 5 módulos, rendimiento y degradación (3D completo, liviano, 2D). | `ui/src/escena/escena3d.ts`, `EscenaBase.tsx`, `materiales.ts`, `liberar.ts`, `cielo.ts`, `soporte.ts`, `modelos.ts`, `escena.test.ts`, `activos/piezasComunes.ts`, `activos/instancias.ts`, `activos/terreno.ts`, `activos/modulos.ts`, `activos/estaciones.ts` | [front-escenario.md](../prompts/front-escenario.md) |
-| **Ubicación y recorrido** | **Camilo** | Dónde va cada cosa (`LUGARES`, anclajes de módulos), colisiones, caminar, cámaras de 3.ª y 1.ª persona (`KeyV`), los dos circuitos, panel `Map` y lista accesible de lugares. Además prueba la ruta dorada. | `ui/src/escena/mundo.ts`, `fisica.ts`, `navegacion.ts`, `navegacion.test.ts`, `ui/src/componentes/Mapa.tsx` | [front-ubicacion.md](../prompts/front-ubicacion.md) |
+| **Ubicación y recorrido** | **Camilo** | Dónde va cada cosa (`LUGARES`, anclajes de módulos), colisiones, caminar, cámaras de 3.ª y 1.ª persona (`KeyV`), los dos circuitos, panel `Map` y lista accesible de lugares. Además prueba la ruta dorada. | `ui/src/escena/mundo.ts`, `fisica.ts`, `navegacion.ts`, `navegacion.test.ts`, `entradaTactil.ts`, `ui/src/componentes/Mapa.tsx`, `ControlesTactiles.tsx` | [front-ubicacion.md](../prompts/front-ubicacion.md) |
 | **Integración y pantallas** | **José** | Flujo de fases, conexión con motor, agentes y datos, reductor, `vista.ts`, i18n, un solo `ConfirmarAccion`, Iris compañera en pantalla, montaje de lo que entregan los demás. | `ui/src/App.tsx`, `main.tsx`, `i18n.ts`, `ui/src/juego/**`, `ui/src/pantallas/**`, `ui/src/escena/vista.ts`, `ui/i18n/**`, `ui/package.json`, y los componentes de comportamiento: `Tripulacion.tsx`, `Dialogos.tsx`, `Hud.tsx`, `Acciones.tsx`, `Cuenta.tsx`, `Polvo.tsx`, `PreguntaDeIris.tsx`, `QueSi.tsx` | [front-integracion.md](../prompts/front-integracion.md) |
 | **Interfaz de las láminas v8** | **Jaime** | Desde cero, replicando `ui/00–04`, `inicio/01–03`, `personajes/07` y el HUD de `mundo/01`; nada visual del esqueleto actual. Tokens CSS, botones con todos sus estados, placas de recursos, retratos, costo y efecto pendiente, mensajes, tarjeta de fuente, menú y preferencias de la portada, intro, carga, "qué datos usamos", glosario en contexto, iconos y logo. | `ui/src/componentes/base/**`, `ui/src/estilos/**` (reemplaza `estilos.css` y `mision.css`), `ui/public/**`, `TarjetaFuente.tsx`, `Glosario.tsx`, `DatosUsados.tsx`, `Portada.tsx`, `Intro.tsx`, `Carga.tsx`, `Iconos.tsx`, `LogoSolarShield.tsx`, `RetratoIris.tsx` | [front-interfaz.md](../prompts/front-interfaz.md) |
 | **Audio y voz** (al final) | **Jaime**, o quien termine primero con OK de María Paula | Música, efectos, lectura en voz alta, entrada de voz ([AUDIO.md](AUDIO.md)). | `ui/src/audio/**`, `assets/audio/**`, `assets/LICENCIAS.md` | [front-audio.md](../prompts/front-audio.md) |
@@ -59,8 +59,8 @@ develop  (demo estable; la fusiona Santiago)
 ### 2.1 Qué se puede empezar ya y qué espera
 
 - **Ya, sin esperar:** archivos **nuevos** de cada parte, en su rama desde `feat/ui-escenarios`. Daniel: `materiales.ts`, `liberar.ts`, `cielo.ts`, `activos/terreno.ts`, `activos/piezasComunes.ts`, `activos/instancias.ts`, `activos/modulos.ts`. Jaime: `componentes/base/`, `estilos/`, `Portada.tsx`, `Intro.tsx`, `Carga.tsx`, `Glosario.tsx`, `DatosUsados.tsx`. Camilo: `componentes/Mapa.tsx`. María Paula: `activos/astronautas.ts`, `activos/iris.ts`, `activos/portada.ts`.
-- **Espera la subida de María Paula:** los archivos que **ya existen** en su trabajo local de `feat/ui-escena-3d`. En `ui/src/`: `App.tsx`, `main.tsx`, `i18n.ts`, `estilos.css`, `mision.css`; `componentes/Dialogos.tsx`, `Hud.tsx`, `Tripulacion.tsx`, `Acciones.tsx`, `Cuenta.tsx`, `Iconos.tsx`, `LogoSolarShield.tsx`, `RetratoIris.tsx`; `pantallas/ColocarModulos.tsx`, `ElegirSitio.tsx`, `Final.tsx`, `Satelite.tsx`, `Tormenta.tsx`, `Base3D.tsx`; `escena/escena3d.ts`, `EscenaBase.tsx`, `modelos.ts`, `soporte.ts`, `mundo.ts`, `fisica.ts`, `navegacion.ts`, `guia.ts`, `vista.ts` y sus tests; `juego/reductor.ts` y `cuenta.ts` con sus tests. Fuera de `src/`: `ui/index.html`, `ui/package.json`, `ui/i18n/en.json`, `ui/i18n/es.json` y `ui/public/icono.svg`. Tocarlos antes pisa su trabajo.
-- **Esperan solo para no pisar la lógica** (motor, i18n, reductor, firmas de la escena, respaldo 2D). **Lo visual de esos archivos no es punto de partida de nada:** se borra en la fase 0b (§2.2) y se rehace desde las láminas. Nadie copia colores, formas, clases CSS ni geometría del trabajo anterior.
+- **La subida de María Paula terminó con #197 y fue solo lógica:** reductor y cuenta (#184) y lógica de escena (#197). **No se suben** el render 3D del prototipo (`escena3d.ts`, `modelos.ts`, `EscenaBase.tsx`), sus componentes visuales (`Acciones`, `Iconos`, `LogoSolarShield`, `RetratoIris`), los CSS ni las pantallas de su trabajo local: eran base vieja (§2.3). Ningún archivo espera nada.
+- Lo que no está en la rama se escribe **nuevo**, desde su lámina, por su dueño de §1.
 
 ### 2.2 Borrar el diseño anterior (fase 0b)
 
@@ -70,12 +70,20 @@ El diseño que había antes del atlas v8 **se borra**, no se adapta. Lo borra ca
 | --- | --- |
 | **Jaime** | `ui/src/estilos.css` y `ui/src/mision.css` completos (tema oscuro, `#0b1026`, `#1a2350`, `--hud: #141a2b`, `--life: #9be15d`). Los reemplaza por `ui/src/estilos/` con los tokens v8 para que la app siga compilando. |
 | **José** | En `App.tsx` y `pantallas/`: la bienvenida oscura de `Base3D.tsx` (`.vineta-mundo`, `.bienvenida-mision`, `.boton-despegar` verde, `.comunicador-iris`), el `<Hud />` en la fase `inicio`, toda clase o import del tema viejo y **los emojis** que hoy usa la UI como iconos (en `develop`: `App.tsx`, `Dialogos.tsx`, `Hud.tsx`, `ColocarModulos.tsx`, `Final.tsx` y `Tormenta.tsx`); los reemplaza `Iconos.tsx`. |
-| **Daniel** | En `escena3d.ts`, `modelos.ts` y `EscenaBase.tsx`: el cielo `#323272`, los paneles oscuros, los visores opacos y cualquier geometría o material del prototipo. Quedan las firmas que consume la escena (APLICACION §1). |
+| **Daniel** | Nada: el prototipo 3D no se subió. Escribe `escena3d.ts`, `EscenaBase.tsx` y `materiales.ts` nuevos, sin el cielo `#323272`, los paneles oscuros ni los visores opacos del prototipo. |
 | **María Paula** | Revisa que no quede nada y lo aprueba. |
 
 Lo único que se conserva es la lógica: conexión con el motor, i18n, reductor, firmas de la escena y respaldo 2D.
 
 **Cierre de la fase 0b:** María Paula agrega `ui/src/sin-emojis.test.ts`, una prueba que recorre `ui/src/` y `ui/i18n/` y falla si encuentra un emoji o un símbolo decorativo de texto (rango Unicode de emojis y dingbats). Desde ahí la CI lo frena sola. Al resolver conflictos de la subida con `develop` (PR 6), ningún emoji de `develop` vuelve a entrar.
+
+### 2.3 No se trabaja sobre la base vieja
+
+El preview desplegado (`develop`: tema oscuro 2D, fuente Atkinson, emojis como iconos) y el prototipo 3D local **no son punto de partida de nada**. El rediseño se hace completo desde las láminas:
+- **Cada pantalla y cada pieza se escribe nueva**, en un archivo nuevo, desde su lámina (§4) y DISEÑO. El archivo viejo que reemplaza se borra **en el mismo PR**.
+- **Prohibido re-estilizar:** cambiar colores, clases o tamaños de un componente viejo para que se parezca a la lámina. El revisor lo marca como pedido de cambios.
+- **Se reutiliza solo lógica sin aspecto:** motor, datos, agentes, claves de i18n, `ui/src/juego/` (reductor, cuenta, eventos, ajustes), la lógica de escena (`mundo`, `fisica`, `navegacion`, `guia`, `soporte`) y el contrato `VistaEscena`.
+- **Al terminar no queda nada del preview viejo:** ni archivos, ni clases, ni colores, ni la fuente Atkinson, ni emojis. Se comprueba en el punto de control 1.
 
 ## 3. Contratos entre partes
 
@@ -106,6 +114,7 @@ Ningún asset es una imagen de las láminas, salvo el logo. Todo se reconstruye.
 | Ubicación de lugares, anclajes, caminos y circuitos | Camilo | `exterior/03`, [`mapa-base-jezero.svg`](mapa-base-jezero.svg) | Tabla `LUGARES` y colisiones simples | `escena/mundo.ts`, `fisica.ts` |
 | Cámaras 3.ª y 1.ª persona, caminar | Camilo | `mundo/01`, `mundo/02` | Navegación sin atravesar paredes | `escena/navegacion.ts` |
 | Panel `Map` y lista de lugares | Camilo | [ESCENAS.md](ESCENAS.md) §3.4 | SVG desde `LUGARES` | `componentes/Mapa.tsx` |
+| Controles táctiles (joystick, zona de cámara, botón de acción) | Camilo | Familia de `ui/03` (no hay lámina propia) | DOM con eventos de puntero y `FacetButton` de Jaime | `componentes/ControlesTactiles.tsx`, `escena/entradaTactil.ts` |
 | Niño 3D | María Paula | `personajes/08–10`, `inicio/capas/astronauta` | Grupos con pivotes | `escena/activos/astronautas.ts` |
 | Ingeniera 3D (bloque 2); Doctora y Meteoróloga si alcanza | María Paula | `personajes/01, 03, 05`, `mundo/01` | Misma familia de traje que el niño | `escena/activos/astronautas.ts` |
 | Iris rover 3D y su movimiento de guía | María Paula | `mundo/01`, `inicio/02`, `personajes/07` | 4 ruedas con pivote, panel, pantalla con ojos; niveles de NIVELES §5 | `escena/activos/iris.ts`, `escena/guia.ts` |
