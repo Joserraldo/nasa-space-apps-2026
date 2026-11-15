@@ -16,7 +16,7 @@
 | Dato pegado a cada misión ("no crea recursos de la nada") | Cada acción enseña algo | Cada módulo tiene su `cienciaKey` con fuente (rol datos) |
 | Gravedad 3.73 / 1.62 m/s² e irradiancia 586 / 1361 W/m² | Parecen cifras reales, pero **en el código de ARES no traen fuente** (`src/model.js:12-15`, lo encontró diseño en #89) | Solo se usan si datos las verifica y les pone tarjeta de fuente (NASA NSSDCA, fichas de Marte y Luna). Todo lo demás se declara "valor de juego" |
 | `model.js` puro, serializable, con tests de secuencia completa | Arquitectura | Ya lo hacemos así (`engine/` + `missions/` como datos) |
-| 10 modelos `.glb` MIT (hábitat, paneles, invernadero, rover…) | Arte gratis y con licencia | Opcional para ui (`assets/`), con atribución. La decisión de 2D/3D es de ui (D6). **Actualización 14 nov: D6 decidió no usar `.glb`; todo se construye con código.** |
+| 10 modelos `.glb` MIT (hábitat, paneles, invernadero, rover…) | Arte gratis y con licencia | Opcional para ui (`assets/`), con atribución. La decisión de 2D/3D es de ui (D6) |
 
 **Lo que no se rescata:** textos quemados en español (aquí el inglés es la base y todo pasa por i18n), mundo 3D para caminar (demasiado para 48 h y para niños de 7 años), 14 atajos de teclado, palabras como "electrólisis" y "regolito" sin explicar, y las tareas gratis (limpiar paneles daba +7 sin costo).
 
@@ -58,7 +58,7 @@ Prueba que diseño debe pasar: con 2 módulos **ninguna pareja gana sin perder a
 - **motor (Jaime):** leer los nuevos campos de la misión; evento de polvo (multiplica el rendimiento de `panel_solar`); acción "apagar invernadero" si diseño la pide (es un cambio de contrato: issue `contrato`).
 - **agentes (José):** líneas de los expertos para el paso 3 (criterios), el polvo (4b) y el dilema del refugio (6); pregunta de Iris nivel 2 basada en los quizzes de ARES; todo con fuente.
 - **datos (Daniel):** verificar y dar tarjeta de fuente a las constantes de ARES (gravedad, irradiancia), que vienen sin fuente y de la tormenta (#61).
-- **ui (María Paula):** decidir si reutiliza los `.glb` de ARES (licencia MIT, con atribución) o se queda en 2D. **Actualización 14 nov:** decidido en [D6](../decisiones/D6-estilo-visual.md): 3D procedural, sin `.glb`.
+- **ui (María Paula):** decidir si reutiliza los `.glb` de ARES (licencia MIT, con atribución) o se queda en 2D.
 
 ## 5. Riesgos
 

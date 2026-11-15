@@ -40,7 +40,7 @@ Details, URLs and dates are in [datos-nasa.md](datos-nasa.md). All data was quer
 
 Licenses are the `license` field recorded in `package-lock.json`. Libraries used only to build and test (TypeScript, Vitest, tsx, @types/node) are not shipped to players.
 
-**POR VERIFICAR:** re-read this table from the final `package-lock.json` before sending. Today (`develop`, 14 nov) the screen uses React (no PixiJS or Three.js); with #142 it adds `three` ^0.160.0 (MIT, decision D6), so add it to this table and the Worker (`infra/worker`) uses no framework, only `fetch` (no Hono).
+**POR VERIFICAR:** re-read this table from the final `package-lock.json` before sending. Today (`develop`, 14 nov) the screen uses React (no PixiJS or Three.js) and the Worker (`infra/worker`) uses no framework, only `fetch` (no Hono).
 
 ## 3. Fonts, images, sounds, 3D models
 

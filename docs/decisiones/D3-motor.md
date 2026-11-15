@@ -21,6 +21,3 @@ Es un juego de decisiones por turnos: lo que se ve son medidores, tarjetas y con
 - **datos:** publican `SpaceWeatherEvent` con tarjeta de fuente; el motor solo lee `intensidad` normalizada.
 - **ui:** React + Vite; la escena PixiJS es un componente; nada de texto quemado (i18n).
 - **infra:** CI corre `npm run typecheck` y `npm test` en cada PR; build de Vite a Cloudflare Pages.
-
-## Actualización 14 nov
-La escena ya no usa PixiJS: se construye con **Three.js `^0.160.0` procedural** ([D6](D6-estilo-visual.md)). React + Vite para la interfaz y el motor en TypeScript puro no cambian.
