@@ -22,6 +22,12 @@ import { ElegirSitio } from "./pantallas/ElegirSitio.js";
 import { Final } from "./pantallas/Final.js";
 import { Satelite } from "./pantallas/Satelite.js";
 import { Tormenta } from "./pantallas/Tormenta.js";
+import { Polvo } from "./componentes/Polvo.js";
+import { PreguntaDeIris } from "./componentes/PreguntaDeIris.js";
+import type { TemaPregunta } from "@solar-shield/agents";
+
+/** Módulos que tienen pregunta de Iris nivel 2 al colocarlos. */
+const TEMAS_IRIS: readonly Equipment[] = ["panel_solar", "reciclador_agua", "invernadero", "escudo"];
 
 type Fase = "inicio" | "satelite" | "sitio" | "modulos" | "base" | "tormenta" | "final";
 
@@ -134,12 +140,13 @@ function Pantalla({ idioma, setIdioma }: { idioma: Idioma; setIdioma: (i: Idioma
           <>
             <Hud estado={j.estado} />
             <ColocarModulos colocados={j.colocados} onColocar={(m) => enviar({ tipo: "modulo", modulo: m })} onListo={() => enviar({ tipo: "fase", fase: "base" })} />
+            {TEMAS_IRIS.find((m) => m === j.colocados.at(-1)) && <PreguntaDeIris key={j.colocados.length} tema={j.colocados.at(-1) as TemaPregunta} nivel={j.estado.iaBase} />}
           </>
         )}
         {j.fase === "tormenta" && (
           <>
             <Hud estado={j.estado} />
-            <Tormenta estado={j.estado} onDecidir={(previas, opcionId) => enviar({ tipo: "dilema", previas, opcionId })} />
+            <Tormenta estado={j.estado} onDecidir={(previas, opcionId) => enviar({ tipo: "dilema", previas, opcionId })} onAccion={accion} />
           </>
         )}
         {enBase && (
@@ -163,6 +170,7 @@ function Pantalla({ idioma, setIdioma }: { idioma: Idioma; setIdioma: (i: Idioma
                     {j.ultimas.malaSuerte.map((c, i) => <p key={`m${i}`}>⚠ {t("ui.novedad.mala_suerte")}: {t(c.descripcionKey)} <span className="delta menos">{c.delta}</span></p>)}
                     {j.ultimas.iaCambio && <p>◉ {t(`ui.iris.estado.${j.ultimas.iaCambio.a}`)}</p>}
                     {j.ultimas.efectosLlegaron.map((c, i) => <p key={`e${i}`}>✓ {t("ui.novedad.efecto")}: {t(c.descripcionKey)} <span className="delta mas">+{c.delta}</span></p>)}
+                    {j.ultimas.malaSuerte.some((c) => c.descripcionKey === "mala_suerte.tormenta_polvo") && <Polvo estado={j.estado} onAccion={accion} onElegir={(a) => { accion(a); enviar({ tipo: "pausa", pausado: false }); }} />}
                     <button onClick={() => enviar({ tipo: "pausa", pausado: false })}>▶ {t("ui.reanudar")}</button>
                   </div>
                 )}

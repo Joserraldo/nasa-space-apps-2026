@@ -5,12 +5,14 @@ import { MISION_JEZERO } from "@solar-shield/missions";
 import { useT } from "../i18n.js";
 import { Burbuja, describirAccion } from "../componentes/Dialogos.js";
 import { TarjetaFuente } from "../componentes/TarjetaFuente.js";
+import { PreguntaDeIris } from "../componentes/PreguntaDeIris.js";
+import { QueSi } from "../componentes/QueSi.js";
 
 /**
  * Pasos 5 y 6: la tormenta real llega (pausa + tarjeta de fuente); dos expertos se contradicen;
  * Iris dañada da un número que no coincide con el medidor; el jugador verifica y decide.
  */
-export function Tormenta({ estado, onDecidir }: { estado: GameState; onDecidir: (previas: Action[], opcionId: string) => void }) {
+export function Tormenta({ estado, onDecidir, onAccion }: { estado: GameState; onDecidir: (previas: Action[], opcionId: string) => void; onAccion?: (a: Action) => void }) {
   const { t } = useT();
   // Las salidas del dilema vienen de la misión; el motor las aplica con elegirDilema().
   const opciones = MISION_JEZERO.dilemaPaso6.opciones;
@@ -30,6 +32,7 @@ export function Tormenta({ estado, onDecidir }: { estado: GameState; onDecidir: 
 
       <h2>{t("ui.paso.6.titulo")}</h2>
       {escena.dialogos.map((d, i) => <Burbuja key={i} d={d} />)}
+      <PreguntaDeIris tema="tormenta" nivel={estado.iaBase} />
 
       {iris && (
         <>
@@ -47,6 +50,7 @@ export function Tormenta({ estado, onDecidir }: { estado: GameState; onDecidir: 
           </button>
         ))}
       </div>
+      <QueSi estado={estado} opciones={escena.opciones} onSimular={onAccion} />
       <div>
         <button disabled={!elegida} onClick={() => onDecidir(verificacion?.accion && verificada ? [verificacion.accion] : [], elegida!)}>
           {t("ui.continuar")}

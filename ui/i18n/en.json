@@ -58,6 +58,8 @@
   "ui.tripulacion.hacer": "Do it",
   "ui.iris.titulo": "Iris, the base AI",
   "ui.iris.verificar": "Check with the Engineer",
+  "ui.iris.saltar": "Skip",
+  "ui.quesi.boton": "What if…? Ask the Mathematician",
   "ui.iris.estado.tutorial": "Iris is guiding you",
   "ui.iris.estado.pistas": "Iris gives hints",
   "ui.iris.estado.danada": "Iris is damaged by radiation",
