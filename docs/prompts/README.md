@@ -2,6 +2,8 @@
 
 **Orquestador del equipo:** Santiago (`kcitas`). **Orquestadora del desarrollo 3D y de la pantalla:** María Paula (`Paulasaah`) (decisión de Santiago, 14 nov). **Revisión de PRs y tablero de pendientes:** sesión revisora de Claude ([revisor.md](revisor.md)). **Fusiona:** Santiago (`kcitas`), solo con squash, cuando pasa la CI.
 
+**Desde el dom 15 nov a las 11:30 manda [cierre-fidelidad.md](cierre-fidelidad.md):** el plan de la tarde y los prompts con su loop para José, Camilo, Daniel y Jaime. `feat/ui-escenarios` ya entró a `develop` (#262) y todo PR va hacia `develop`.
+
 **Para arrancar: [ARRANQUE.md](ARRANQUE.md)** (quién inicia, cómo se abre cada sesión, la lista de tareas por persona, el flujo y el calendario).
 
 Cada persona abre su sesión, pega **su** prompt y después lanza el loop que el prompt indica. Si un prompt choca con un `CLAUDE.md` de carpeta o con un prompt viejo del historial, manda este.
