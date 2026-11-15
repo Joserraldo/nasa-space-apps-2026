@@ -1,12 +1,14 @@
 import { existsSync, readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
-import type { EfectoOpcion } from "./jezero.js";
+import type { EfectoOpcion, SitioCandidato } from "./jezero.js";
 import { AVERIA_ANTENA_LUNA_VISIBLE, FUENTES_PENDIENTES_LUNA_VISIBLE, MISION_LUNA_VISIBLE } from "./luna-lado-visible.js";
 import { TEXTOS_LUNA_VISIBLE } from "./textos.js";
 
 const M = MISION_LUNA_VISIBLE;
 const RECURSOS = ["energia", "soporte_vital", "blindaje"] as const;
+// Vista ancha del tipo: `satisfies` deja la constante estrecha y aquí se indexa por recurso.
+const sitios: SitioCandidato[] = M.sitiosCandidatos;
 const leer = <T>(ruta: string): T => JSON.parse(readFileSync(fileURLToPath(new URL(ruta, import.meta.url)), "utf-8")) as T;
 
 function neto(e: EfectoOpcion): Record<(typeof RECURSOS)[number], number> {
@@ -23,12 +25,12 @@ describe("misión Luna lado visible", () => {
 
   it("cada sitio candidato existe en data/terreno", () => {
     const ids = leer<{ sitios: { id: string }[] }>(`../../data/terreno/${M.terrenoId}/${M.terrenoId}.json`).sitios.map((s) => s.id);
-    expect(M.sitiosCandidatos.length).toBeGreaterThanOrEqual(3);
-    for (const s of M.sitiosCandidatos) expect(ids).toContain(s.id);
+    expect(sitios.length).toBeGreaterThanOrEqual(3);
+    for (const s of sitios) expect(ids).toContain(s.id);
   });
 
   it("ningún aterrizaje es gratis: mueve ≥ 2 medidores y algo baja ya", () => {
-    for (const s of M.sitiosCandidatos) {
+    for (const s of sitios) {
       const movidos = RECURSOS.filter((r) => (s.aterrizaje.inmediato[r] ?? 0) !== 0 || (s.aterrizaje.retrasado[r] ?? 0) !== 0);
       expect(movidos.length, s.id).toBeGreaterThanOrEqual(2);
       expect(Object.values(s.aterrizaje.inmediato).some((v) => v < 0), s.id).toBe(true);
@@ -36,9 +38,9 @@ describe("misión Luna lado visible", () => {
   });
 
   it("ningún sitio domina a otro en todos los medidores", () => {
-    const sitios = M.sitiosCandidatos.map((s) => ({ id: s.id, n: neto(s.aterrizaje) }));
-    for (const a of sitios)
-      for (const b of sitios) {
+    const sitiosNetos = sitios.map((s) => ({ id: s.id, n: neto(s.aterrizaje) }));
+    for (const a of sitiosNetos)
+      for (const b of sitiosNetos) {
         if (a.id === b.id) continue;
         const domina = RECURSOS.every((r) => a.n[r] >= b.n[r]) && RECURSOS.some((r) => a.n[r] > b.n[r]);
         expect(domina, `${a.id} domina a ${b.id}`).toBe(false);
@@ -46,7 +48,7 @@ describe("misión Luna lado visible", () => {
   });
 
   it("de noche ningún sitio devuelve energía con retraso", () => {
-    for (const s of M.sitiosCandidatos) expect(s.aterrizaje.retrasado.energia ?? 0, s.id).toBeLessThanOrEqual(0);
+    for (const s of sitios) expect(s.aterrizaje.retrasado.energia ?? 0, s.id).toBeLessThanOrEqual(0);
   });
 
   it("la avería de Iris se revela después de la tormenta y el tope de ticks la deja llegar", () => {
@@ -72,6 +74,23 @@ describe("Luna lado visible: dilema y mala suerte", () => {
     for (const o of ops) expect(ActionSchema.safeParse(o.accion).success, o.id).toBe(true);
     const defensores = ops.map((o) => o.defiende).filter((e) => e !== null);
     expect(new Set(defensores).size).toBeGreaterThanOrEqual(2);
+  });
+
+  it("las expertas siguen en lados opuestos y el escudo y la Tierra son neutrales (#196)", () => {
+    const ops = M.dilemaPaso6.opciones;
+    expect(ops.find((o) => o.id === "refugio")?.defiende).toBe("doctora");
+    expect(ops.find((o) => o.id === "subir_escudo")?.defiende).toBeNull();
+    expect(ops.find((o) => o.id === "ahorrar_bateria")?.defiende).toBe("ingeniera");
+    expect(ops.find((o) => o.id === "preguntar_tierra")?.defiende).toBeNull();
+  });
+
+  it("en la Luna no se inventa un evento de polvo: la mala suerte es la antena", () => {
+    expect("eventoPolvo" in M).toBe(false);
+  });
+
+  it("dificultad y tope de ticks son los aprobados provisionalmente en #196", () => {
+    expect(M.dificultad).toBe("media");
+    expect(M.fin.tickLimite).toBe(10);
   });
 
   it("la antena averiada no sale en la semilla dorada y se arregla con acciones válidas", async () => {

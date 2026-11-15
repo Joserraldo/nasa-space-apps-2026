@@ -17,15 +17,16 @@ Una sección por persona, máximo 5 líneas, y nadie edita la de otro (FLUJO §8
 - Bloqueo: ninguno.
 
 ## Escenario (Daniel)
-**Rama:** feat/ui-escena-consolidada · **PR:** consolida #206, #223–#232 y #235 · **Tokens:** 🟢
-- Hecho: pila #223–#232 + base (#206: EscenaBase, escena3d, armado, baseExterior, pavimento, capturas) + materiales con tokens (#235) en una sola rama.
-- Consolidado por el agente de José mientras Daniel no tiene tokens; Daniel revisa al volver.
+**Rama:** feat/ui-escena-r6-camara · **PR:** #253 (sobre #252) · **Tokens:** 🟡
+- Hecho: cámara adaptable, losas y plataforma, rocas y módulos sin solapes; montaje en #247; arranque sin WebGL notifica a la pantalla sin excepción React.
+- Verificado: 694 pruebas, tipos, build y E2E; 2 regresiones en navegador (StrictMode/desmontaje y fallo de creación WebGL).
+- Sigue: revisar #253 y consolidar cuando entre #237 aprobado; no añadir capas. Celular y PC viejo pendientes (medición Intel local no los sustituye).
 
 ## Ubicación (Camilo)
 **Rama:** feat/ui-ubicacion-tactiles · **PR:** #298 hacia develop · **Tokens:** amarillo
-- Hecho: entrada+componente recuperados, 18 pruebas y697totales; navegador en3tamaños con HUD libre, pausa/limpieza, Nunito/tokens y E2E1/1.
-- Sigue: revisión de Paula y montaje con José/Daniel; #216 ya fusionado y física en #297. Original y QA preservados.
-- Bloqueo: montaje en escena/HUD de José/Daniel y celular físico; #254 espera la pila. No se afirma juego3D móvil integrado.
+- Hecho: entrada+componente recuperados,18pruebas específicas; navegador3tamaños con HUD libre,pausa/limpieza,Nunito/tokens y E2E1/1 previo.
+- Sigue: revisión de Paula y montaje con José/Daniel; #216/#267/#297 fusionados. Original y QA preservados.
+- Bloqueo: montaje de movimiento/cámara/mapa y celular físico; #254 espera la pila de Daniel. No se afirma juego3D móvil integrado.
 
 ## Integración (José)
 **Rama:** feat/ui-integracion-orientacion · **PR:** hacia feat/ui-escenarios · **Tokens:** verde

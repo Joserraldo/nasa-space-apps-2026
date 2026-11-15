@@ -12,7 +12,7 @@ La capa no intercepta eventos; solo los botones son interactivos. Los gestos se 
 - Entrada pura: 13 pruebas; componente SSR: 5 pruebas. SSR no comprueba el efecto DOM.
 - `node ui/evidencias/tactiles/verificar.mjs`: EXIT0, multitáctil emulado en1024x683,844x390,390x844.
 - Comprobados: mover+mirar simultáneos, HUD clicable detrás, doble toque, E/V y callbacks, ocultación de botones, teclado, pointercancel/limpieza, visibilitychange simulado, restauración de touchAction, EN/ES y movimiento reducido.
-- Typecheck0,697 pruebas/98archivos y build0 en el conjunto local preparado.
+- Sobre develop a674508: typecheck0,785 pruebas/104archivos,build0 y E2E1/1 en el conjunto completo.
 - E2E reintento1/1,exit0. El primer intento agotó90s en page.goto; no se atribuye su resolución a un cambio de código, y se conserva log/trace en build/cierre-ubicacion.
 - Resultados y capturas generados por el script de esta carpeta.
 

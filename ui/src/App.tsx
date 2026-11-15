@@ -16,9 +16,10 @@ import { IdiomaContext, useT, type Idioma } from "./i18n.js";
 import { PantallaSitio } from "./pantallas/PantallaSitio.js";
 import { PantallaModulos } from "./pantallas/PantallaModulos.js";
 import { PantallaFinal } from "./pantallas/PantallaFinal.js";
-import { Satelite } from "./pantallas/Satelite.js";
+import { PantallaOrbita } from "./pantallas/PantallaOrbita.js";
 import { PantallaBase } from "./pantallas/PantallaBase.js";
 import { Tormenta } from "./pantallas/Tormenta.js";
+import { PantallaTormenta } from "./pantallas/PantallaTormenta.js";
 import { PreguntaDeIris } from "./componentes/PreguntaDeIris.js";
 import { Portada } from "./componentes/Portada.js";
 import { Intro } from "./componentes/Intro.js";
@@ -136,7 +137,7 @@ function Pantalla({ idioma, setIdioma }: { idioma: Idioma; setIdioma: (i: Idioma
         {j.fase === "inicio" && inicio === "intro" && <Intro onTerminar={() => setInicio("carga")} />}
         {j.fase === "inicio" && inicio === "carga" && <Carga consejo={0} sonido={sonido} onSonido={() => setSonido((x) => !x)} onSaltar={empezarMision} />}
         {creditos && <Creditos onCerrar={() => setCreditos(false)} />}
-        {j.fase === "satelite" && <Satelite estado={j.estado} onContinuar={() => enviar({ tipo: "fase", fase: "sitio" })} />}
+        {j.fase === "satelite" && <PantallaOrbita estado={j.estado} onContinuar={() => enviar({ tipo: "fase", fase: "sitio" })} />}
         {j.fase === "sitio" && <PantallaSitio estado={j.estado} onElegir={(s) => enviar({ tipo: "sitio", sitio: s })} />}
         {j.fase === "modulos" && (
           <>
@@ -146,7 +147,10 @@ function Pantalla({ idioma, setIdioma }: { idioma: Idioma; setIdioma: (i: Idioma
         )}
         {j.fase === "tormenta" && (
           <>
-            <Tormenta estado={j.estado} onDecidir={(previas, opcionId) => enviar({ tipo: "dilema", previas, opcionId })} onAccion={accion} />
+            {/* Panel a de E7 detrás de ?tormenta=nueva: la ruta dorada aún depende de Tormenta.tsx (paneles b a d pendientes). */}
+            {new URLSearchParams(window.location.search).get("tormenta") === "nueva"
+              ? <PantallaTormenta estado={j.estado} colocados={j.colocados} onDecidir={(previas, opcionId) => enviar({ tipo: "dilema", previas, opcionId })} />
+              : <Tormenta estado={j.estado} onDecidir={(previas, opcionId) => enviar({ tipo: "dilema", previas, opcionId })} onAccion={accion} />}
           </>
         )}
         {enBase && (
