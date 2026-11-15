@@ -147,5 +147,19 @@
   "datos.ciencia.csa-comer-en-la-estacion.titulo": "Comer en la Estación Espacial",
   "datos.ciencia.csa-comer-en-la-estacion.texto": "En la Estación Espacial, cada astronauta puede comer 3 comidas y 1 merienda al día. En viajes más largos a la Luna no podrán llevar toda su comida: tendrán que cultivarla.",
   "datos.ciencia.csa-granja-espacial.titulo": "Una granja espacial de Canadá",
-  "datos.ciencia.csa-granja-espacial.texto": "Un concurso de Canadá buscó formas de cultivar comida gastando muy poca energía, agua y materiales. El sistema ganador, CANGrow, de una empresa de Vancouver, cultiva fresas y tomates cherry y podría producir más de 700 kg de comida nutritiva al año."
+  "datos.ciencia.csa-granja-espacial.texto": "Un concurso de Canadá buscó formas de cultivar comida gastando muy poca energía, agua y materiales. El sistema ganador, CANGrow, de una empresa de Vancouver, cultiva fresas y tomates cherry y podría producir más de 700 kg de comida nutritiva al año.",
+  "datos.usados.artemis": "La radiación dentro de la nave Orión, en la misión Artemis I (2022), la midieron detectores a bordo (datos de NASA OSDR RadLab).",
+  "datos.usados.luna": "Los mapas de la Luna vienen de NASA Moon Trek, con la altura del suelo medida por el instrumento láser LOLA de la nave LRO de la NASA; qué tan plano es cada sitio lo calculamos nosotros.",
+  "datos.usados.osdrEstudios": "Siete experimentos reales de NASA OSDR nos cuentan sobre la comida, los huesos, los músculos, las defensas del cuerpo y la radiación.",
+  "datos.usados.csa": "Las tarjetas de comida vienen de la Agencia Espacial Canadiense, socia del reto: no es la NASA.",
+  "datos.usados.tipos": "Siempre separamos lo que se midió, lo que calculó un modelo de computadora y lo que calculamos nosotros.",
+  "datos.usados.aviso": "Es un proyecto no oficial, no avalado por NASA, y cada dato dice de dónde viene.",
+  "datos.glosario.orbita.palabra": "Órbita",
+  "datos.glosario.orbita.def": "El camino regular y repetido que sigue un objeto en el espacio alrededor de otro, como la Estación Espacial alrededor de la Tierra.",
+  "datos.glosario.timo.palabra": "Timo",
+  "datos.glosario.timo.def": "Un órgano de las defensas del cuerpo: fabrica glóbulos blancos que combaten infecciones. En los vuelos espaciales se encoge.",
+  "datos.glosario.modulo-de-aterrizaje.palabra": "Módulo de aterrizaje",
+  "datos.glosario.modulo-de-aterrizaje.def": "Una nave hecha para llegar a la superficie de un planeta y enviar datos a la Tierra. InSight fue uno en Marte.",
+  "datos.glosario.rover.palabra": "Rover",
+  "datos.glosario.rover.def": "Un vehículo robot con ruedas, hecho para moverse por la superficie de otro mundo."
 }
