@@ -8,7 +8,7 @@ import {
   CAMINOS, CLARO, DEM_JEZERO, MALLA_JEZERO, ROCAS, ROCAS_GRANDES, armarEscena, posicionesBalizas, rejillaJezero, rocaGrandeLibre,
 } from "./armado";
 import { cacheGeometrias, crearMateriales } from "./materiales";
-import { liberarCache, liberarEscena } from "./liberar";
+import { liberarCache, liberarEscena, liberarMateriales } from "./liberar";
 import { LUGARES, TERRENO } from "./mundo";
 import type { EstadoModulo, VistaEscena } from "./vista";
 import { MODULOS_BASE } from "./activos/modulos";
@@ -192,10 +192,15 @@ describe("liberación", () => {
     const a = armarEscena(m, EJEMPLO, rejilla);
     a.ponerTerreno(rejilla); // reemplazar el terreno libera el anterior
     const pendientes = new Set<{ dispose(): void }>();
+    const liberaciones = new Map<object, number>();
     const vigilar = (r: THREE.EventDispatcher<{ dispose: object }> & { dispose(): void }) => {
       if (pendientes.has(r)) return;
       pendientes.add(r);
-      r.addEventListener("dispose", () => pendientes.delete(r));
+      liberaciones.set(r, 0);
+      r.addEventListener("dispose", () => {
+        pendientes.delete(r);
+        liberaciones.set(r, liberaciones.get(r)! + 1);
+      });
     };
     a.escena.traverse((o) => {
       const x = o as Partial<THREE.Mesh>;
@@ -210,9 +215,10 @@ describe("liberación", () => {
     // Mismo orden que `Escena3D.dispose()`.
     a.liberar();
     liberarEscena(a.escena, { compartidos: true });
-    for (const mat of Object.values(m)) mat.dispose();
+    liberarMateriales(Object.values(m));
     liberarCache();
     expect(pendientes.size).toBe(0);
+    for (const veces of liberaciones.values()) expect(veces).toBe(1);
     expect(a.escena.children.filter((o) => o.name === "Sky_Dome")).toHaveLength(0);
   });
 });

@@ -12,7 +12,7 @@ import type { EventoFeedback } from "../juego/eventos";
 import { armarEscena, rejillaJezero, type EscenaArmada } from "./armado";
 import { LUZ } from "./cielo";
 import { crearMateriales, type Materiales } from "./materiales";
-import { liberarCache, liberarEscena } from "./liberar";
+import { liberarCache, liberarEscena, liberarMateriales } from "./liberar";
 import { lugar, lugarCercano, type LugarId } from "./mundo";
 import type { VistaEscena } from "./vista";
 import { MODULOS_BASE, type ModuloBase } from "./activos/modulos";
@@ -228,7 +228,7 @@ export function crearEscena3D(canvas: HTMLCanvasElement, opciones: OpcionesEscen
       document.removeEventListener("visibilitychange", alVisibilidad);
       armada.liberar();
       liberarEscena(armada.escena, { compartidos: true });
-      for (const m of Object.values(materiales)) m.dispose();
+      liberarMateriales(Object.values(materiales));
       liberarCache();
       renderer.dispose();
     },

@@ -93,3 +93,15 @@ export function liberarCache(): number {
   vaciarCache();
   return n;
 }
+
+/** Libera materiales compartidos incluso si no llegaron a montarse en la escena. */
+export function liberarMateriales(materiales: Iterable<THREE.Material>): number {
+  let n = 0;
+  for (const m of materiales) {
+    if (yaLiberados.has(m)) continue;
+    yaLiberados.add(m);
+    m.dispose();
+    n++;
+  }
+  return n;
+}
