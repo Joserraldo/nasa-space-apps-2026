@@ -1,0 +1,134 @@
+/** Andamios, estados y anclajes de los cinco módulos de Jezero. */
+import * as THREE from "three";
+import { geometriaBase, type Materiales } from "../materiales";
+import { lugarDelModulo } from "../mundo";
+import type { EstadoModulo } from "../vista";
+import { FORMA_MODULO as FORMA, MODULOS_BASE, crearFormaModulo, partesVisibles, type ModuloBase } from "./modulos";
+import { instanciar, type TransformacionPieza } from "./instancias";
+import type { Huella } from "./piezasComunes";
+import { fusionar } from "./fusionar";
+
+// ---------------------------------------------------------------------------------------------
+// Andamio
+// ---------------------------------------------------------------------------------------------
+
+type V3 = [number, number, number];
+
+function malla(m: Materiales, slot: keyof Materiales, g: THREE.BufferGeometry, pos: V3, sombra = true): THREE.Mesh {
+  const x = new THREE.Mesh(g, m[slot]);
+  x.position.set(...pos);
+  x.castShadow = sombra;
+  x.receiveShadow = true;
+  return x;
+}
+
+const caja = (w: number, h: number, d: number) =>
+  geometriaBase(`armado-caja-${w}-${h}-${d}`, () => new THREE.BoxGeometry(w, h, d));
+
+/** Andamio de "instalando": cuatro postes teal y un marco arriba, del tamaño de la huella. */
+function crearAndamio(m: Materiales, ancho: number, fondo: number, alto: number): THREE.Group {
+  const g = new THREE.Group();
+  const x = ancho / 2, z = fondo / 2;
+  for (const [px, pz] of [[-x, -z], [x, -z], [-x, z], [x, z]] as const) {
+    g.add(malla(m, "Accent", caja(0.12, alto, 0.12), [px, alto / 2, pz]));
+  }
+  for (const y of [alto, alto / 2]) {
+    g.add(malla(m, "Accent", caja(ancho, 0.1, 0.1), [0, y, -z]));
+    g.add(malla(m, "Accent", caja(ancho, 0.1, 0.1), [0, y, z]));
+    g.add(malla(m, "Accent", caja(0.1, 0.1, fondo), [-x, y, 0]));
+    g.add(malla(m, "Accent", caja(0.1, 0.1, fondo), [x, y, 0]));
+  }
+  return fusionar(g, "Scaffold");
+}
+
+// ---------------------------------------------------------------------------------------------
+// Módulos
+// ---------------------------------------------------------------------------------------------
+
+const NOMBRE_MODULO: Readonly<Record<ModuloBase, string>> = {
+  panel_solar: "Module_SolarPanel",
+  escudo: "Module_Shield",
+  reciclador_agua: "Module_Recycler",
+  invernadero: "Module_Greenhouse",
+  antena: "Module_Antenna",
+};
+
+function crearSolido(m: Materiales, id: ModuloBase): THREE.Object3D {
+  return fusionar(crearFormaModulo(m, id), NOMBRE_MODULO[id]);
+}
+
+export interface ModuloArmado {
+  raiz: THREE.Group;
+  solido: THREE.Object3D;
+  andamio: THREE.Object3D;
+  /** Luz de estado: solo cuando funciona. */
+  vivos: THREE.Object3D;
+  estado: EstadoModulo;
+  /** Momento (ms) en que empezó la transición actual; −1 = empieza en el próximo fotograma. */
+  inicio: number;
+  /** Momento (ms) del último pulso de evento (avería); −Infinity si no hay. */
+  pulso: number;
+}
+
+export function giroHacia(desde: { mx: number; mz: number }, hacia: { x: number; z: number }): number {
+  return Math.atan2(hacia.x - desde.mx, hacia.z - desde.mz);
+}
+
+/** Giro del módulo en su anclaje: el fijo de su forma o mirando al punto del jugador. */
+export function giroModulo(id: ModuloBase): number {
+  const l = lugarDelModulo(id)!;
+  return FORMA[id].giro ?? giroHacia(l, l);
+}
+
+/** Huella en planta de cada módulo construido en su anclaje (la misma caja que su placa y su andamio). */
+export function huellasModulos(): Huella[] {
+  return MODULOS_BASE.map((id) => {
+    const l = lugarDelModulo(id)!;
+    const [ancho, fondo] = FORMA[id].huella;
+    return { id: `modulo:${id}`, x: l.mx, z: l.mz, ancho, fondo, giro: giroModulo(id) };
+  });
+}
+
+export function armarModulo(m: Materiales, id: ModuloBase): ModuloArmado {
+  const l = lugarDelModulo(id)!;
+  const f = FORMA[id];
+  const raiz = new THREE.Group();
+  raiz.name = `Module_${id}`;
+  raiz.position.set(l.mx, 0, l.mz);
+  raiz.rotation.y = giroModulo(id);
+  const solido = crearSolido(m, id);
+  const andamio = crearAndamio(m, f.huella[0], f.huella[1], f.alto);
+  const vivos = malla(m, "Emissive", geometriaBase("armado-luz-estado", () => new THREE.IcosahedronGeometry(0.13, 0)), [0, f.alto + 0.2, 0], false);
+  vivos.name = `Module_${id}_Live`;
+  raiz.add(solido, andamio, vivos);
+  const modulo: ModuloArmado = { raiz, solido, andamio, vivos, estado: "ausente", inicio: 0, pulso: -Infinity };
+  aplicarEstado(modulo, "ausente");
+  return modulo;
+}
+
+export function aplicarEstado(mod: ModuloArmado, estado: EstadoModulo): void {
+  const p = partesVisibles(estado);
+  mod.solido.visible = p.solido;
+  mod.andamio.visible = p.andamio;
+  mod.vivos.visible = p.vivos;
+  if (estado !== mod.estado) mod.inicio = -1;
+  mod.estado = estado;
+}
+
+/** Anclajes: una placa octogonal por módulo, todas en un `InstancedMesh` (siempre visibles). */
+export function armarAnclajes(m: Materiales): THREE.Group {
+  const placa = geometriaBase("armado-anclaje", () => new THREE.CylinderGeometry(0.5, 0.5, 0.06, 8, 1));
+  const t: TransformacionPieza[] = MODULOS_BASE.map((id) => {
+    const l = lugarDelModulo(id)!;
+    const f = FORMA[id];
+    return { posicion: [l.mx, 0.03, l.mz], rotacion: [0, giroModulo(id), 0], escala: [f.huella[0], 1, f.huella[1]] };
+  });
+  const g = instanciar(() => {
+    const p = malla(m, "SuitBase", placa, [0, 0, 0], false);
+    const x = new THREE.Group();
+    x.name = "Module_Anchor";
+    x.add(p);
+    return x;
+  }, t);
+  return g;
+}
