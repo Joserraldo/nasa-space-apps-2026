@@ -1,0 +1,51 @@
+{
+  "celularReal": "pendiente",
+  "escena3D": "sin integrar",
+  "viewports": [
+    {
+      "width": 1024,
+      "height": 683,
+      "multitactil": true,
+      "botones": true,
+      "hudSinIntercepcion": true,
+      "botonesOcultables": true,
+      "touchActionRestaurado": true,
+      "dobleToque": true,
+      "pausaSimulada": true,
+      "limpieza": true,
+      "es": true,
+      "movimientoReducido": true,
+      "errores": []
+    },
+    {
+      "width": 844,
+      "height": 390,
+      "multitactil": true,
+      "botones": true,
+      "hudSinIntercepcion": true,
+      "botonesOcultables": true,
+      "touchActionRestaurado": true,
+      "dobleToque": true,
+      "pausaSimulada": true,
+      "limpieza": true,
+      "es": true,
+      "movimientoReducido": true,
+      "errores": []
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "multitactil": true,
+      "botones": true,
+      "hudSinIntercepcion": true,
+      "botonesOcultables": true,
+      "touchActionRestaurado": true,
+      "dobleToque": true,
+      "pausaSimulada": true,
+      "limpieza": true,
+      "es": true,
+      "movimientoReducido": true,
+      "errores": []
+    }
+  ]
+}
