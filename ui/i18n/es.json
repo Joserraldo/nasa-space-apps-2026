@@ -218,5 +218,10 @@
   "ui.comun.muestrario.expresion.habla_redonda": "Habla / redonda",
   "ui.comun.muestrario.expresion.parpadeo": "Parpadeo",
   "ui.carga.saltar": "Saltar",
-  "ui.comun.cerrar": "Cerrar"
+  "ui.comun.cerrar": "Cerrar",
+  "ui.base.acciones.ayuda": "Elige una acción para ver cuánto cuesta ahora y qué trae después.",
+  "ui.base.tripulacion.campo": "Pregunta a tu tripulación…",
+  "ui.base.dialogo.otra": "Preguntar a otra experta",
+  "ui.base.dialogo.plan": "Comparar el plan: {plan}",
+  "ui.base.novedad.detalle": "{causaKey} {delta}"
 }
