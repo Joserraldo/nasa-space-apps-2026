@@ -2,6 +2,7 @@ import { useT } from "../i18n.js";
 import { FacetButton } from "./base/FacetButton.js";
 import { Icono } from "./base/Iconos.js";
 import { LogoSolarShield } from "./base/LogoSolarShield.js";
+import { Retrato } from "./base/Retrato.js";
 import "./base/inicio.css";
 
 /**
@@ -25,6 +26,8 @@ export function Carga({ consejo = 0, sonido, onSonido }: { consejo?: number; son
       <div className="carga-iconos" aria-hidden="true">
         {(["energia", "vida", "escudo"] as const).map((ic) => <span key={ic} className="carga-icono"><Icono nombre={ic} tam={40} /></span>)}
       </div>
+      {/* El niño mira la tableta mientras se prepara la misión (inicio/03). */}
+      <div className="carga-nino" aria-hidden="true"><Retrato persona="nino" expresion="feliz" tam={200} parpadear /></div>
       <div className="fc carga-panel">
         <div className="fc-cara carga-cara">
           <h2 id="carga-titulo">{t("ui.carga.titulo")}</h2>

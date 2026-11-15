@@ -55,7 +55,8 @@ describe("Carga (inicio/03)", () => {
     expect(h).toContain(`role="status"`);
     expect(h).toContain(`aria-busy="true"`);
     expect(h).toContain("Preparing your mission");
-    expect(h).not.toMatch(/\d+\s*%/);
+    // Solo el texto visible: las mezclas de color del retrato también llevan "%".
+    expect(h.replace(/<[^>]+>/g, " ")).not.toMatch(/\d+\s*%/);
   });
 
   it("el consejo es el que se pide (sin azar) y da la vuelta", () => {
