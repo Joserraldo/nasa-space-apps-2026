@@ -1,16 +1,15 @@
-# Estado — rol 2 (Motor y simulación)
-**Actualizado:** 2026-11-15 · **Rama:** feat/motor-variabilidad · **PR:** variabilidad (P3) → develop
-
+# Estado — motor y simulación
+Actualizado: 15 nov 2026 · Camilo, apoyo a Jaime · Rama: `feat/motor-fin-misiones` · PR: hacia `develop` (ver rama).
+Tokens: 🟡
 ## Hecho
-- Multi-misión (#152, parte motor, Daniel cubriendo a Jaime): la misión es el último parámetro opcional de todas las funciones públicas; `partidaDeMision(mision, semilla?)`. Revisado por Jaime.
-- P3, variabilidad: `variabilidad.test.ts`. Con el catálogo curado, dos semillas arman escenarios distintos (sitio, objetivo, tormenta, avería, órbita). En la misma misión, otra semilla cambia la suerte y la tripulación, no las reglas. Con tres semillas, cuidar a la tripulación gana y descuidarla pierde. Misma semilla y mismas decisiones: misma partida.
-- #90 consumo de módulos por tick (#143) y rechazo limpio `puedeAplicar` (#139), en develop.
-
-## Qué sigue
-- Propuesta (issue `contrato`, no hecho): guardar `misionId` en GameState para no pasar la misión en cada llamada.
-- `MISION_JEZERO.fin.tickLimite` sin aplicar: falta que diseño diga qué pasa al vencer el tiempo sin telemetría.
-- Revisar el uso del motor en los PRs de pantalla del frontend v8.
-
-## Bloqueos
-- ninguno
-Tokens: verde
+- Recuperados acciones/dilema y dos pruebas; original respaldado antes de editar.
+- Plazo: recurso cero prevalece, objetivo en límite gana, plazo sin objetivo falla; sin victoria global por día.
+- La compensación del hielo se suma antes de cobrar/sortear; sin energía transitoria ni causa de invernadero.
+- Jezero conserva la ruta y el orden RNG de extras disjuntos.
+- QA recuperado: rutas fijas de cuatro misiones, costos, retrasos, dilemas y determinismo; original preservado.
+## Qué sigue / bloqueos
+- Local: typecheck, 537 pruebas y build OK; revisión de Jaime/Santiago y CI en el PR.
+- Luna visible no certificada: falta tick de amanecer aprobado; telemetría heredada contradice #196.
+- Noche polar/batería, efectos especiales y protección por zonas requieren definición/integración separada.
+- Los 10 ticks siguen provisionales; no se declaran completadas las cinco misiones.
+- Sin merges ni cambios de UI, agentes, contratos o ramas ajenas.
