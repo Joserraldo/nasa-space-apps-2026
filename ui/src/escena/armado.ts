@@ -29,6 +29,7 @@ import {
   TAMANO_MUNDO_POR_DEFECTO,
   aplanarClaro,
   crearMontanas,
+  crearGravilla,
   crearRocas,
   crearTerreno,
   instanciarRocas,
@@ -113,7 +114,7 @@ export function rocasGrandes(claro: Rejilla): TransformacionRoca[] {
  * círculos de colisión en `TERRENO` (mundo.ts) con `radioRocaPrimerPlano`. [E]
  */
 export const ROCAS_PRIMER_PLANO: readonly TransformacionRoca[] = [
-  { posicion: [7.2, 0, 2.1], escala: [0.8, 1.6, 0.76], rotacion: [0.05, 0.6, -0.04] },
+  { posicion: [7.6, 0, 2.4], escala: [0.8, 1.6, 0.76], rotacion: [0.05, 0.6, -0.04] },
   { posicion: [12, 0, 3.4], escala: [0.8, 0.8, 0.8], rotacion: [0, 2.1, 0.06] },
   { posicion: [-11, 0, 3.5], escala: [1.5, 1.3, 1.4], rotacion: [-0.04, 1.4, 0.03] },
   { posicion: [-11.8, 0, 0.4], escala: [0.8, 0.75, 0.75], rotacion: [0.05, 0.3, 0] },
@@ -199,7 +200,11 @@ export function armarEscena(
       const t = crearTerreno(materiales, { rejilla: claro.rejilla, malla: MALLA_JEZERO });
       const rocas = crearRocas(materiales, t, ROCAS.n, ROCAS.semilla, { radioMin: ROCAS.radioMin, radio: ROCAS.radio });
       const grandes = instanciarRocas(materiales, rocasGrandes(claro.rejilla), "Rocks_Basalt_Large");
-      terreno.add(t.malla, rocas, grandes);
+      const ocupado = [...huellasBase(), ...huellasModulos()];
+      const gravilla = crearGravilla(materiales, t, {
+        excluir: (x, z) => chocaConBase(x, z, 0.3) || sobreCamino(x, z, 0.2) || ocupado.some((h) => distanciaAHuella(h, x, z) < 0.3),
+      });
+      terreno.add(t.malla, rocas, grandes, gravilla);
       terreno.position.y = -claro.altura;
     },
     pulsar(id, ahora) {
