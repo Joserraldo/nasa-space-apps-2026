@@ -238,7 +238,10 @@ export function armarEdificios(m: Materiales): THREE.Group {
   // Estaciones por fuera y corredores de vidrio entre edificios vecinos.
   for (const e of POS_ESTACIONES) g.add(colocar(crearEstacion(m, e.id), [e.x, 0, e.z], [0, alCentro(e.x, e.z), 0]));
   const [com, enf, lab] = POS_ESTACIONES, hab = { x: 0, z: -10.9, radio: 1.1 };
-  for (const [a, b] of [[hab, enf], [com, enf], [enf, lab], [lab, decorado("cupula")]]) {
+  type Huella = { x: number; z: number; radio: number };
+  const pares: [Huella | undefined, Huella | undefined][] = [[hab, enf], [com, enf], [enf, lab], [lab, decorado("cupula")]];
+  for (const [a, b] of pares) {
+    if (!a || !b) continue;
     const k = corredorEntre(a, b);
     if (k) g.add(colocar(crearCorredor(m, k.largo), [k.x, 0, k.z], [0, k.giro, 0]));
   }
