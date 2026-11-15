@@ -63,7 +63,7 @@ if (parametros.get("medir") === "1") {
   const marcas: number[] = [];
   const fotogramaMedido = (ahora: number) => {
     marcas.push(ahora);
-    while (marcas.length > 0 && ahora - marcas[0] > VENTANA_MS) marcas.shift();
+    while (marcas.length > 0 && ahora - (marcas[0] ?? ahora) > VENTANA_MS) marcas.shift();
     requestAnimationFrame(fotogramaMedido);
   };
   requestAnimationFrame(fotogramaMedido);
@@ -88,10 +88,10 @@ if (parametros.get("medir") === "1") {
     let promedio = "—";
     let minimo = "—";
     if (marcas.length > 1) {
-      const duracion = marcas[marcas.length - 1] - marcas[0];
+      const duracion = (marcas.at(-1) ?? 0) - (marcas[0] ?? 0);
       promedio = String(Math.round(((marcas.length - 1) * 1000) / duracion));
       let mayorHueco = 0;
-      for (let i = 1; i < marcas.length; i++) mayorHueco = Math.max(mayorHueco, marcas[i] - marcas[i - 1]);
+      for (let i = 1; i < marcas.length; i++) mayorHueco = Math.max(mayorHueco, (marcas[i] ?? 0) - (marcas[i - 1] ?? 0));
       minimo = String(Math.round(1000 / mayorHueco));
     }
     const cuenta = escena.contar();
