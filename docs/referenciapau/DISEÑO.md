@@ -138,6 +138,16 @@ Los tamaños son el punto de partida (escala 1,25 sobre 18 px) y se ajustan con 
 - Cámara de juego en tercera persona alta y por detrás del niño, ligera picada (ver `mundo/01`). Valores de partida en [FLUJO.md](FLUJO.md) §9. Primera persona con guantes visibles en las esquinas inferiores (ver `mundo/02`). Las dos cámaras muestran el mismo mundo con las mismas reglas.
 - Cuatro ambientes de luz de referencia, definidos por [`personajes/10-nino-luz-lectura.png`](referencias/personajes/10-nino-luz-lectura.png): **día en Marte**, **interior/laboratorio**, **atardecer exterior**, **alerta/refugio**. Todo personaje y material se valida en los cuatro.
 
+### 3.4 Render del low poly en `three@0.160`
+
+Para que las facetas se lean como en las láminas y los pasteles no salgan lavados ni oscuros:
+- **Material base:** `MeshLambertMaterial` con `flatShading: true` en todo lo mate (más barato que `MeshStandardMaterial` en celular). Standard solo si una pieza necesita brillo. Nunca se suavizan las normales de rocas, terreno, cascos ni cabello.
+- **Color:** `renderer.outputColorSpace = SRGBColorSpace` (el valor por defecto) y los colores salen de `tokens.ts`. `renderer.toneMapping = NoToneMapping` para que cada pieza quede del color de su token; si se ve plano, se prueba `AgXToneMapping` y se decide con la captura al lado de la lámina. `ACESFilmicToneMapping` no se usa: desatura y oscurece los pasteles. `NeutralToneMapping` no existe en esta versión.
+- **Sombras lilas:** three no tiñe las sombras y `shadow.intensity` no existe en `0.160`. El lila sale de una `HemisphereLight` (cielo cálido, suelo `ciruela`), una direccional moderada desde arriba a la izquierda y la niebla del color del horizonte. Nunca negro.
+- **Sin contornos negros, sin efecto de dibujo animado y sin posprocesado** (bloom, SSAO, desenfoque): no están en las láminas y no entran en el presupuesto.
+- **Antialias** del renderer en calidad completa; apagado en liviana.
+- Toda pieza se valida en los cuatro ambientes de luz de §3.3 antes de marcarla `aprobada`.
+
 ---
 
 ## 4. Personajes
