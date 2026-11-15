@@ -1,7 +1,7 @@
 /**
  * Contorno cian del objeto interactivo más cercano (lámina `mundo/01`, la consola resaltada).
  *
- * Barato: un casco invertido (caras traseras) de la consola, un 9 % más grande, con un material
+ * Barato: un casco invertido (caras traseras) de la consola, un 16 % más grande, con un material
  * básico del token `cian`. Una sola malla y una sola llamada de dibujo, que se recoloca sobre la
  * consola del lugar cercano y se oculta si no hay consola a la mano. Sin pasadas de postproceso.
  */
@@ -14,8 +14,8 @@ import { lugar, type LugarId } from "./mundo";
 
 /** Partes de la consola que forman la silueta (sin teclas ni iconos: no cambian el contorno). */
 const PARTES_SILUETA = ["Console_ScreenFrame", "Console_Desk", "Console_LegL", "Console_LegR", "Console_BackPanel"];
-/** Cuánto crece el casco respecto de la consola (grosor de la línea, ~8 cm). */
-const ESCALA_CASCO = 1.09;
+/** Cuánto crece el casco respecto de la consola (grosor de la línea, ~15 cm). */
+const ESCALA_CASCO = 1.16;
 
 export interface Contorno {
   malla: THREE.Mesh;
@@ -48,7 +48,7 @@ export function geometriaCascoConsola(materiales: Materiales): THREE.BufferGeome
 export function crearContorno(materiales: Materiales): Contorno {
   const geometria = geometriaCascoConsola(materiales);
   const centro = new THREE.Vector3(...(geometria.userData.centro as [number, number, number]));
-  const material = new THREE.MeshBasicMaterial({ color: colorToken("cian"), side: THREE.BackSide, toneMapped: false });
+  const material = new THREE.MeshBasicMaterial({ color: colorToken("cian").multiplyScalar(1.25), side: THREE.BackSide, toneMapped: false });
   material.name = "Outline_Cyan";
   const malla = new THREE.Mesh(geometria, material);
   malla.name = "Outline_Interactive";

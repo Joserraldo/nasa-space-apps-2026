@@ -246,6 +246,7 @@ export function crearEscena3D(canvas: HTMLCanvasElement, opciones: OpcionesEscen
       camara.aspect = ancho / alto;
       camara.fov = fovParaAspecto(camaraActual, camara.aspect);
       camara.updateProjectionMatrix();
+      guantes.anclar(camara.aspect, 70);
     },
     contar() {
       return contarRender(armada.escena);

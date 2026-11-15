@@ -15,6 +15,8 @@ export interface Guantes {
   raiz: THREE.Mesh;
   /** Visible solo en primera persona. */
   mostrar(visible: boolean): void;
+  /** Reancla las manos a las esquinas inferiores para este aspecto y campo visual (grados). */
+  anclar(aspecto: number, fov: number): void;
 }
 
 
@@ -32,23 +34,24 @@ function pieza(g: THREE.BufferGeometry, color: THREE.Color, m: THREE.Matrix4): T
   return n;
 }
 
-/** Un guante con el antebrazo hacia +Y; lado −1 izquierdo, +1 derecho. */
+/** Un guante con el antebrazo hacia +Y; lado −1 izquierdo, +1 derecho. Dedos con volumen y pulgar separado. */
 function guante(lado: -1 | 1): THREE.BufferGeometry[] {
   const cian = colorToken("cian");
   const marfil = colorToken("traje-marfil");
   const partes = [
-    pieza(new THREE.CylinderGeometry(0.062, 0.07, 0.16, 8), marfil, mat(0, 0.04, 0)),
-    pieza(new THREE.BoxGeometry(0.115, 0.1, 0.05), cian, mat(0, 0.16, 0)),
+    pieza(new THREE.CylinderGeometry(0.066, 0.074, 0.07, 8), marfil, mat(0, 0.035, 0)),
+    pieza(new THREE.BoxGeometry(0.12, 0.085, 0.07), cian, mat(0, 0.11, 0)),
   ];
-  // Cuatro dedos con la punta algo curvada hacia delante.
+  // Cuatro dedos de dos falanges, curvados hacia la palma (−Z hacia delante, el guante mira al centro).
   for (let i = 0; i < 4; i++) {
-    const x = (i - 1.5) * 0.029;
-    const largo = i === 0 || i === 3 ? 0.07 : 0.085;
-    partes.push(pieza(new THREE.BoxGeometry(0.026, largo, 0.032), cian, mat(x, 0.21 + largo / 2, -0.004, -0.15)));
-    partes.push(pieza(new THREE.BoxGeometry(0.024, 0.04, 0.03), cian, mat(x, 0.215 + largo + 0.012, -0.03, -0.55)));
+    const x = (i - 1.5) * 0.031;
+    const largo = i === 0 || i === 3 ? 0.05 : 0.06;
+    partes.push(pieza(new THREE.BoxGeometry(0.029, largo, 0.034), cian, mat(x, 0.15 + largo / 2, -0.004, -0.3)));
+    partes.push(pieza(new THREE.BoxGeometry(0.027, 0.04, 0.032), cian, mat(x, 0.15 + largo + 0.012, -0.03, -1.0)));
   }
-  // Pulgar hacia fuera.
-  partes.push(pieza(new THREE.BoxGeometry(0.03, 0.08, 0.034), cian, mat(lado * 0.075, 0.19, 0.005, 0, -lado * 0.7)));
+  // Pulgar separado, hacia el centro de la pantalla.
+  partes.push(pieza(new THREE.BoxGeometry(0.034, 0.055, 0.038), cian, mat(-lado * 0.08, 0.12, 0.01, 0, lado * 0.9)));
+  partes.push(pieza(new THREE.BoxGeometry(0.03, 0.04, 0.034), cian, mat(-lado * 0.105, 0.165, 0.0, 0, lado * 0.5)));
   return partes;
 }
 
@@ -68,28 +71,48 @@ function unir(geos: THREE.BufferGeometry[]): THREE.BufferGeometry {
   return salida;
 }
 
-export function crearGuantes(materiales: Materiales): Guantes {
+/** Escala de los guantes respecto de su modelo (≈ 40 % menos que la primera versión). */
+const ESCALA = 0.72;
+/** Fracción del semiancho visible (a 0,5 m de la cámara) a la que se ancla cada guante. */
+const ANCLA_X = 0.74;
+/** Altura del puño en el espacio de la cámara: solo asoma la mano por abajo. */
+const Y_PUNO = -0.36;
+
+function construir(aspecto: number, fovGrados: number): THREE.BufferGeometry {
+  const semiancho = 0.5 * Math.tan((fovGrados * Math.PI) / 360) * aspecto;
+  const semialto = 0.5 * Math.tan((fovGrados * Math.PI) / 360);
   const geos: THREE.BufferGeometry[] = [];
   for (const lado of [-1, 1] as const) {
-    // Espacio de la cámara (mira hacia −Z): abajo en la esquina, inclinados hacia delante y hacia dentro.
+    // Espacio de la cámara (mira hacia −Z): en la esquina, inclinado hacia delante, palma al centro.
     const m = new THREE.Matrix4().compose(
-      new THREE.Vector3(lado * 0.4, -0.4, -0.5),
-      new THREE.Quaternion().setFromEuler(new THREE.Euler(-0.95, 0, -lado * 0.35, "ZXY")),
-      new THREE.Vector3(1, 1, 1),
+      new THREE.Vector3(lado * semiancho * ANCLA_X, Y_PUNO * (semialto / 0.35) , -0.5),
+      new THREE.Quaternion().setFromEuler(new THREE.Euler(-0.8, 0, -lado * 0.25, "ZXY")),
+      new THREE.Vector3(ESCALA, ESCALA, ESCALA),
     );
     for (const g of guante(lado)) {
       g.applyMatrix4(m);
       geos.push(g);
     }
   }
-  const malla = new THREE.Mesh(unir(geos), materiales.Rock);
+  return unir(geos);
+}
+
+export function crearGuantes(materiales: Materiales): Guantes {
+  const malla = new THREE.Mesh(construir(1.5, 70), materiales.Rock);
   malla.name = "Gloves_FirstPerson";
   malla.visible = false;
   malla.frustumCulled = false;
+  let aspectoActual = 1.5;
   return {
     raiz: malla,
     mostrar(v) {
       malla.visible = v;
+    },
+    anclar(aspecto, fov) {
+      if (!(aspecto > 0) || Math.abs(aspecto - aspectoActual) < 1e-3) return;
+      aspectoActual = aspecto;
+      malla.geometry.dispose();
+      malla.geometry = construir(aspecto, fov);
     },
   };
 }
