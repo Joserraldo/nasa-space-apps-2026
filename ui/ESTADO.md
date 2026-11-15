@@ -17,8 +17,10 @@ Una sección por persona, máximo 5 líneas, y nadie edita la de otro (FLUJO §8
 - Bloqueo: ninguno.
 
 ## Escenario (Daniel)
-**Rama:** — · **PR:** ninguno · **Tokens:** —
-- Sin registrar todavía.
+**Rama:** feat/ui-materiales-tokens · **PR:** subida de materiales de #206 · **Tokens:** 🟡
+- Hecho: materiales y liberación con dueño explícito consumen los tokens oficiales; piel/cabello infantiles por defecto, reemplazables por identidad.
+- Verificado: 596 pruebas, tipos, build y E2E sobre la rama base actual.
+- Sigue: sustituir la primera subida provisional y continuar la integración del escenario; no duplicar la paleta.
 
 ## Ubicación (Camilo)
 **Rama:** feat/ui-ubicacion-lugares · **PR:** #205 · **Tokens:** verde
