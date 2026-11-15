@@ -54,14 +54,25 @@ export interface FinMision {
   tickLimite: number;
 }
 
+/** Causa del evento de mala suerte. Las claves conocidas dan autocompletado; cualquier otra clave i18n también vale. */
+export type CausaMalaSuerte =
+  | "mala_suerte.tormenta_polvo"
+  | "mala_suerte.micrometeorito"
+  | "mala_suerte.fallo_panel"
+  | "mala_suerte.fuga_agua"
+  | (string & {});
+
 /**
  * Evento de mala suerte del paso 4b (propuesta #88, viene de la tarea "limpiar paneles" de ARES):
  * el polvo tapa los paneles y la energía que dan rinde menos hasta que alguien los limpia.
  * No sale en la semilla dorada, para que el video sea estable.
  */
 export interface EventoPolvo {
-  /** Clave de la causa que ya existe en el motor y en los textos de diseño. */
-  descripcionKey: "mala_suerte.tormenta_polvo";
+  /**
+   * Clave de la causa de mala suerte (ya existe en el motor y en los textos de diseño).
+   * Por defecto la tormenta de polvo; otras misiones usan p. ej. `mala_suerte.micrometeorito`.
+   */
+  descripcionKey: CausaMalaSuerte;
   equipo: Extract<Equipment, "panel_solar">;
   /** Fracción de la energía del panel que llega mientras hay polvo (0,5 = la mitad, propuesta #88). Valor de juego. */
   rendimientoPanel: number;
