@@ -35,12 +35,12 @@ Regla de corte si P2 no se cumple: Luna → Atlas → desbloqueos → 3D complet
 
 | Rol | Hecho y en develop | Abierto |
 |---|---|---|
-| motor (Jaime) | Ventana de tormenta 3–5, victoria al llegar la telemetría, `aterrizar()`, módulos validados, `puedeAplicar()`, consumo por tick, `elegirDilema()` (#144) | #152 (motor multimisión, bloquea diseño) |
-| diseño (Camilo; Santiago supervisa) | Misión 1 de Jezero como datos, `DURACION_TORMENTA_TICKS = 3` (#135), 7 tarjetas de ciencia y pregunta final con fuente verificada | Revisar las 4 misiones propuestas como datos (#153–#156) |
+| motor (Jaime) | Ventana de tormenta 3–5, victoria al llegar la telemetría, `aterrizar()`, módulos validados, `puedeAplicar()`, consumo por tick, `elegirDilema()` (#144) | Revisar los PRs de Daniel que toquen `engine/` (#152 pasó a Daniel) |
+| diseño (Camilo; Santiago supervisa) | Misión 1 de Jezero como datos, `DURACION_TORMENTA_TICKS = 3` (#135), 7 tarjetas de ciencia y pregunta final con fuente verificada | #152 y la revisión de #153–#156 pasaron a Daniel (decisión de Santiago, 21:20) |
 | ui (María Paula; orquesta el 3D y la pantalla) | Esqueleto (#68), dirección v8 (#157, #164, #166), ruta dorada conectada (#163, #151) | Login/invitado (#109), bloque 1 del 3D (dom 09:00). `ui/ESTADO.md` sin actualizar desde el 13 nov |
 | agentes (José) | Tripulación, Iris 1–3, Matemático, voces de la misión 1 y de Luna polo sur (#128), clasificador, Iris compañera v8 (#149) | #129, #131 (sin conflictos, esperan #152) |
 | infra/pitch (José) | Worker con pantalla y API, despliegue automático, login opcional sin correo + D1, e2e de la ruta dorada en cada PR, guion del video, tráiler, borrador del formulario, precisiones de datos (#165) | Criterios oficiales 2026 sin verificar |
-| datos (Daniel) | 8 tormentas reales, terreno de Jezero, dosis verificadas, fuentes de todas las tarjetas, "qué datos usamos" con glosario (#158), funciones para las pantallas (#162) | Rebase de #95, #126, #147, #148 y #159 (solo `data/i18n`), #160, #141, borradores #97–#100 |
+| datos (Daniel) | 8 tormentas reales, terreno de Jezero, dosis verificadas, fuentes de todas las tarjetas, "qué datos usamos" con glosario (#158), funciones para las pantallas (#162) | **#152 (decisión de Santiago, 21:20):** motor que recibe la misión como parámetro, huecos del tipo `Mision` y revisión de #153–#156, sin cambiar la semilla dorada. Además: rebase de #95, #126, #147, #148 y #159 (solo `data/i18n`), #160, #141 |
 
 ## Plan de construcción de la pantalla y el 3D (acordado el 14 nov)
 
