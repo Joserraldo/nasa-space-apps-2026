@@ -104,7 +104,7 @@ export function EfectoPendiente({ efecto, tick }: { efecto: PendingEffect; tick:
   const { t } = useT();
   const turnos = Math.max(0, efecto.aplicaEnTick - tick);
   return efecto.oculto
-    ? <Mensaje tipo="pendiente" tituloKey="ui.comun.pendiente.oculto" detalleKey="ui.comun.pendiente.turnos" vars={{ n: turnos }} />
-    : <Mensaje tipo="pendiente" tituloKey="ui.comun.pendiente.titulo" detalleKey="ui.comun.pendiente.detalle"
+    ? <Mensaje tipo="pendiente" tituloKey="ui.comun.pendiente.oculto" detalleKey={turnos === 1 ? "ui.comun.pendiente.turno" : "ui.comun.pendiente.turnos"} vars={{ n: turnos }} />
+    : <Mensaje tipo="pendiente" tituloKey="ui.comun.pendiente.titulo" detalleKey={turnos === 1 ? "ui.comun.pendiente.detalle_uno" : "ui.comun.pendiente.detalle"}
         vars={{ delta: signo(efecto.delta), recursoKey: `ui.recurso.${efecto.recurso}`, n: turnos }} />;
 }
