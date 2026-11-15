@@ -87,6 +87,8 @@
 }
 .intro-etiqueta:focus-visible { box-shadow: none; outline: var(--foco-ancho) solid var(--color-cian); outline-offset: var(--foco-separacion); }
 .intro-iconos { display: flex; justify-content: center; gap: var(--esp-5); padding: var(--esp-4) 0; }
+.intro-iconos { align-items: center; flex-wrap: wrap; }
+.intro-retrato { display: grid; place-items: center; }
 .intro-icono { display: grid; place-items: center; width: 112px; height: 112px; background: var(--color-lila); color: var(--color-ciruela);
   clip-path: polygon(24px 0, calc(100% - 24px) 0, 100% 24px, 100% calc(100% - 24px), calc(100% - 24px) 100%, 24px 100%, 0 calc(100% - 24px), 0 24px); }
 .intro-texto {
@@ -114,6 +116,11 @@
 .carga-icono { display: grid; place-items: center; width: 64px; height: 64px; background: var(--color-marfil);
   clip-path: polygon(14px 0, calc(100% - 14px) 0, 100% 14px, 100% calc(100% - 14px), calc(100% - 14px) 100%, 14px 100%, 0 calc(100% - 14px), 0 14px); }
 .carga-panel { width: min(100%, 640px); }
+.carga-nino { position: absolute; left: 3%; bottom: var(--esp-4); }
+.carga-nino svg { width: clamp(180px, 26vw, 280px); height: auto; }
+/* Pantalla ancha: el niño a la izquierda y el panel corrido a la derecha (inicio/03). */
+@media (min-width: 900px) { .carga-panel { justify-self: end; margin-right: 5%; width: min(60%, 640px); } }
+@media (max-width: 899px) { .carga-nino { position: static; order: -1; } .carga-nino svg { width: 120px; height: 120px; } }
 .carga-cara { --fc-ch: var(--chaflan-grande); display: grid; justify-items: center; gap: var(--esp-3); padding: var(--esp-5) var(--esp-5) var(--esp-4); text-align: center; }
 .carga-cara h2 { margin: 0; font-size: var(--tipo-tam-titulo-grande); }
 .carga-puntos { display: inline-flex; gap: var(--esp-3); }

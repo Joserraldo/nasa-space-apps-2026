@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { useT } from "../i18n.js";
 import { FacetButton } from "./base/FacetButton.js";
 import { Icono, type NombreIcono } from "./base/Iconos.js";
+import { Retrato, type Persona } from "./base/Retrato.js";
 import "./base/inicio.css";
 
 /**
@@ -10,11 +11,12 @@ import "./base/inicio.css";
  * "Skip intro" en cualquier viñeta lleva al mismo punto que "Continue" en la última.
  * Flechas del teclado para avanzar y retroceder. No muestra decisiones tomadas.
  */
-const VINETAS: readonly { iconos: NombreIcono[] }[] = [
-  { iconos: ["planeta"] },
-  { iconos: ["satelite"] },
-  { iconos: ["tripulacion"] },
-  { iconos: ["energia", "vida", "escudo"] },
+/** Cada viñeta muestra a quién y qué tiene delante, como inicio/02: el niño, la tripulación e Iris. */
+const VINETAS: readonly { personas: Persona[]; iconos: NombreIcono[] }[] = [
+  { personas: ["nino"], iconos: ["planeta"] },
+  { personas: ["nino"], iconos: ["satelite"] },
+  { personas: ["ingeniera", "doctora", "meteorologa", "ia_base"], iconos: [] },
+  { personas: ["nino"], iconos: ["energia", "vida", "escudo"] },
 ];
 export const TOTAL_VINETAS = VINETAS.length;
 
@@ -44,6 +46,7 @@ export function Intro({ onTerminar, inicial = 0 }: { onTerminar(): void; inicial
             {String(n).padStart(2, "0")} / {t(`ui.intro.${n}.titulo`)}
           </h2>
           <div className="intro-iconos" aria-hidden="true">
+            {VINETAS[i]!.personas.map((p) => <span key={p} className="intro-retrato"><Retrato persona={p} expresion={p === "nino" ? "feliz" : "neutral"} tam={VINETAS[i]!.personas.length > 1 ? 104 : 140} parpadear /></span>)}
             {VINETAS[i]!.iconos.map((ic) => <span key={ic} className="intro-icono"><Icono nombre={ic} tam={64} /></span>)}
           </div>
           <p className="intro-texto">{t(`ui.intro.${n}.texto`)}</p>

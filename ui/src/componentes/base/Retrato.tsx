@@ -16,131 +16,181 @@ export const PERSONAS: readonly Persona[] = ["nino", "ingeniera", "doctora", "me
 const v = (token: string) => `var(--color-${token})`;
 const mezcla = (a: string, b: string, pa: number) => `color-mix(in srgb, ${v(a)} ${pa}%, ${v(b)})`;
 
-/** Cabeza y pelo de cada humano. El niño tiene la cabeza más grande respecto al cuerpo (DISEÑO §4.2). */
-const HUMANOS = {
-  nino: {
-    cabeza: "76,60 124,60 136,76 138,112 126,130 104,138 84,134 70,120 66,96 66,74",
-    pelo: ["66,86 62,64 76,46 100,38 126,44 142,62 140,84 132,72 118,62 98,60 80,66 72,80", "64,90 70,74 76,92 70,104"],
-    acento: "teal", emblema: null, gafas: false, oreja: [66, 104],
-  },
-  ingeniera: {
-    cabeza: "80,58 122,58 134,74 136,108 126,128 106,136 88,132 74,118 70,94 72,72",
-    pelo: ["66,124 56,96 60,64 80,44 108,40 132,50 144,70 140,88 128,70 108,60 86,62 76,76 76,104 84,128", "58,126 66,112 82,132 70,140"],
-    acento: "naranja", emblema: "llave", gafas: false, oreja: [72, 102],
-  },
-  doctora: {
-    cabeza: "80,58 122,58 134,74 136,108 126,128 106,136 88,132 74,118 70,94 72,72",
-    pelo: ["70,100 64,70 80,48 106,42 130,50 142,66 136,80 120,64 98,60 82,68 78,92", "52,118 54,96 70,90 80,104 76,126 62,130"],
-    acento: "teal", emblema: "escudo", gafas: true, oreja: [72, 102],
-  },
-  meteorologa: {
-    cabeza: "80,58 122,58 134,74 136,108 126,128 106,136 88,132 74,118 70,94 72,72",
-    pelo: ["68,104 62,72 78,48 104,38 130,42 146,58 142,72 120,62 112,74 96,64 84,72 78,96", "112,74 120,62 140,72 130,78"],
-    acento: "ciruela-traje", emblema: "sol", gafas: false, oreja: [72, 102],
-  },
-} as const;
+/**
+ * Humanos (DISEÑO §4.4, láminas personajes/02, 04, 06 y 09): cabeza grande en tres cuartos hacia la
+ * derecha, dentro de un casco que es un disco lila DETRÁS de la cabeza (la cara se ve con su color),
+ * con aro claro y brillo arriba a la izquierda. Pelo con volumen en dos o tres tonos, ojos altos y
+ * oscuros, cejas gruesas, aro teal del cuello con volumen y luz cian grande en el pecho.
+ * Luz desde arriba a la izquierda (DISEÑO §3.3): las caras de la derecha y de abajo van más oscuras.
+ */
+type Rol = Exclude<Persona, "ia_base">;
 
-function Boca({ e, x, y, piel }: { e: Expresion; x: number; y: number; piel: string }) {
-  const tinta = v("indigo-texto");
-  const dentro = v("roca-basalto");
-  switch (e) {
-    case "feliz":
-    case "habla_abierta":
-      return <polygon points={`${x - 10},${y - 2} ${x + 10},${y - 2} ${x + 7},${y + 6} ${x},${y + 9} ${x - 7},${y + 6}`} fill={dentro} stroke={tinta} strokeWidth="1.5" strokeLinejoin="round" />;
-    case "habla_redonda":
-      return <polygon points={`${x - 3},${y - 3} ${x + 3},${y - 3} ${x + 5},${y + 1} ${x + 3},${y + 5} ${x - 3},${y + 5} ${x - 5},${y + 1}`} fill={dentro} stroke={tinta} strokeWidth="1.5" />;
-    case "preocupada":
-      return <polygon points={`${x - 6},${y + 4} ${x - 3},${y} ${x + 3},${y} ${x + 6},${y + 4} ${x + 3},${y + 3} ${x - 3},${y + 3}`} fill={dentro} stroke={tinta} strokeWidth="1.5" />;
-    case "pensando":
-      return <polyline points={`${x - 5},${y + 2} ${x + 6},${y}`} fill="none" stroke={tinta} strokeWidth="2.4" strokeLinecap="round" />;
-    case "habla_cerrada":
-      return <polyline points={`${x - 6},${y} ${x},${y + 3} ${x + 6},${y}`} fill="none" stroke={tinta} strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />;
-    default:
-      return <polyline points={`${x - 8},${y - 1} ${x - 3},${y + 3} ${x + 3},${y + 3} ${x + 8},${y - 1}`} fill="none" stroke={tinta} strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />;
-  }
-}
+const sombra = (token: string, pct = 22) => `color-mix(in srgb, ${v(token)} ${100 - pct}%, ${v("ciruela")})`;
+const luz = (token: string, pct = 25) => `color-mix(in srgb, ${v(token)} ${100 - pct}%, ${v("marfil")})`;
+
+/** Ojos (izquierdo y derecho, en tres cuartos el derecho queda un poco más chico). */
+const OJOS = [[99, 99, 1], [125, 98, 0.92]] as const;
 
 function Ojos({ e, cerrar }: { e: Expresion; cerrar: boolean }) {
   const tinta = v("indigo-texto");
-  const ojos = [[90, 96], [116, 96]] as const;
   if (e === "parpadeo" || cerrar) {
-    return <g>{ojos.map(([x, y]) => <polyline key={x} points={`${x - 5},${y} ${x},${y + 3} ${x + 5},${y}`} fill="none" stroke={tinta} strokeWidth="2.4" strokeLinecap="round" />)}</g>;
+    return <g>{OJOS.map(([x, y]) => <polyline key={x} points={`${x - 6},${y} ${x},${y + 4} ${x + 6},${y}`} fill="none" stroke={tinta} strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />)}</g>;
   }
-  const alto = e === "feliz" ? 5 : 6;
-  return <g>{ojos.map(([x, y]) => <polygon key={x} fill={tinta} points={`${x - 2.5},${y - alto} ${x + 2.5},${y - alto} ${x + 3.5},${y - 2} ${x + 3.5},${y + 2} ${x + 2.5},${y + alto - 1} ${x - 2.5},${y + alto - 1} ${x - 3.5},${y + 2} ${x - 3.5},${y - 2}`} />)}</g>;
+  // Feliz: un poco más bajos (las mejillas suben). Preocupada y pensando: igual de altos.
+  const alto = e === "feliz" || e === "habla_abierta" ? 6.5 : 8;
+  return (
+    <g>
+      {OJOS.map(([x, y, k]) => (
+        <g key={x}>
+          <polygon fill={tinta} points={`${x - 3 * k},${y - alto} ${x + 3 * k},${y - alto} ${x + 4.5 * k},${y - alto + 3} ${x + 4.5 * k},${y + alto - 3} ${x + 3 * k},${y + alto} ${x - 3 * k},${y + alto} ${x - 4.5 * k},${y + alto - 3} ${x - 4.5 * k},${y - alto + 3}`} />
+        </g>
+      ))}
+    </g>
+  );
 }
 
 function Cejas({ e, color }: { e: Expresion; color: string }) {
-  // Preocupada: suben por dentro. Pensando: una ceja arriba. El resto, rectas y tranquilas.
   const [iz, de] = e === "preocupada"
-    ? [["83,85 95,81"], ["111,81 123,85"]]
+    ? ["91,86 105,81", "119,81 133,86"]
     : e === "pensando"
-      ? [["83,86 95,85"], ["110,81 123,79"]]
-      : [["83,84 95,83"], ["111,83 123,84"]];
-  return <g stroke={color} strokeWidth="3.4" strokeLinecap="round">{[...iz, ...de].map((p) => <polyline key={p} points={p} fill="none" />)}</g>;
+      ? ["91,85 105,85", "118,80 133,78"]
+      : ["91,84 105,82", "118,82 133,84"];
+  return <g stroke={color} strokeWidth="4.5" strokeLinecap="round">{[iz, de].map((p) => <polyline key={p} points={p} fill="none" />)}</g>;
 }
 
-function Emblema({ tipo }: { tipo: "llave" | "escudo" | "sol" | null }) {
-  if (tipo === "llave") return <polygon fill={v("naranja")} points="122,178 128,172 132,176 138,170 142,174 136,180 140,184 134,190 128,184 124,188 120,184 126,180" />;
-  if (tipo === "sol") return (
+function Boca({ e }: { e: Expresion }) {
+  const tinta = v("indigo-texto");
+  const dentro = v("roca-basalto");
+  const lengua = v("regolito-claro");
+  const x = 114, y = 119;
+  switch (e) {
+    case "feliz":
+    case "habla_abierta":
+      return (
+        <g>
+          <polygon points={`${x - 11},${y - 3} ${x + 11},${y - 3} ${x + 8},${y + 6} ${x},${y + 10} ${x - 8},${y + 6}`} fill={dentro} stroke={tinta} strokeWidth="1.6" strokeLinejoin="round" />
+          <polygon points={`${x - 5},${y + 6} ${x + 5},${y + 6} ${x + 3},${y + 9} ${x - 3},${y + 9}`} fill={lengua} />
+        </g>
+      );
+    case "habla_redonda":
+      return <polygon points={`${x - 3},${y - 4} ${x + 3},${y - 4} ${x + 5},${y} ${x + 3},${y + 5} ${x - 3},${y + 5} ${x - 5},${y}`} fill={dentro} stroke={tinta} strokeWidth="1.6" />;
+    case "preocupada":
+      return <polygon points={`${x - 7},${y + 4} ${x - 3},${y - 1} ${x + 3},${y - 1} ${x + 7},${y + 4} ${x + 3},${y + 2} ${x - 3},${y + 2}`} fill={dentro} stroke={tinta} strokeWidth="1.6" />;
+    case "pensando":
+      return <polyline points={`${x - 6},${y + 2} ${x + 7},${y - 1}`} fill="none" stroke={tinta} strokeWidth="3" strokeLinecap="round" />;
+    case "habla_cerrada":
+      return <polyline points={`${x - 7},${y} ${x},${y + 4} ${x + 7},${y}`} fill="none" stroke={tinta} strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />;
+    default:
+      return <polyline points={`${x - 9},${y - 2} ${x - 4},${y + 3} ${x + 4},${y + 3} ${x + 9},${y - 2}`} fill="none" stroke={tinta} strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />;
+  }
+}
+
+/** Pelo: [atrás de la cabeza, adelante, facetas de luz]. Atrás va antes que la cabeza; adelante, después. */
+const PELO: Record<Rol, { atras: string[]; adelante: string[]; luces: string[] }> = {
+  nino: {
+    atras: ["54,112 48,82 56,56 74,36 100,26 128,28 150,42 160,64 158,90 150,100 142,76 128,66 106,64 88,70 78,86 74,112"],
+    adelante: ["72,98 64,74 72,50 94,36 122,36 144,48 154,68 152,82 140,72 126,64 108,62 92,68 82,80 80,100"],
+    luces: ["72,50 94,36 104,38 86,50 76,62", "122,36 144,48 150,60 132,52", "56,84 60,66 66,72 62,94"],
+  },
+  ingeniera: {
+    atras: ["60,150 52,118 52,84 62,58 84,40 112,34 138,42 154,60 160,90 158,120 152,146 140,150 142,118 140,90 132,70 110,62 90,68 80,88 78,120 74,146"],
+    adelante: ["74,98 70,72 82,52 104,42 130,46 148,62 152,80 140,70 120,60 100,62 86,72 80,90"],
+    luces: ["82,52 104,42 114,44 96,54 86,64", "62,96 66,74 72,90 68,118", "146,96 152,112 150,134 144,124"],
+  },
+  doctora: {
+    atras: ["66,100 62,74 72,54 92,40 118,36 140,44 154,62 156,80 144,68 124,60 102,62 86,70 78,90 76,104", "44,122 46,104 58,94 72,98 76,114 68,130 54,132"],
+    adelante: ["76,96 74,74 86,56 108,46 132,50 148,64 150,78 138,70 120,62 102,64 88,72 82,90"],
+    luces: ["86,56 108,46 116,48 100,56 90,64", "48,108 58,98 64,104 52,114"],
+  },
+  meteorologa: {
+    atras: ["64,108 60,78 68,56 88,40 114,34 138,40 154,54 158,72 150,86 140,74 124,66 104,66 88,74 80,92 76,110"],
+    adelante: ["72,98 70,72 82,52 104,40 130,40 152,52 158,66 148,80 136,72 126,82 112,74 98,84 86,80 80,96"],
+    luces: ["84,52 104,42 118,42 100,54 90,60", "130,42 152,52 156,62 138,56", "104,64 120,66 112,72"],
+  },
+};
+
+const ACENTO: Record<Rol, string | null> = { nino: null, ingeniera: "naranja", doctora: "teal", meteorologa: "ciruela-traje" };
+
+function Emblema({ rol }: { rol: Rol }) {
+  if (rol === "ingeniera") return <polygon fill={v("naranja")} points="124,192 129,187 132,190 137,185 140,188 135,193 138,196 122,196" />;
+  if (rol === "meteorologa") return (
     <g fill={v("ambar")}>
-      <polygon points="130,174 136,174 140,178 140,184 136,188 130,188 126,184 126,178" />
-      <polygon points="132,166 134,166 134,171 132,171" /><polygon points="132,191 134,191 134,196 132,196" />
-      <polygon points="118,180 123,180 123,182 118,182" /><polygon points="143,180 148,180 148,182 143,182" />
+      <polygon points="126,180 132,180 136,184 136,190 132,194 126,194 122,190 122,184" />
+      <polygon points="128,173 130,173 130,177 128,177" /><polygon points="128,197 130,197 130,200 128,200" />
+      <polygon points="115,186 119,186 119,188 115,188" /><polygon points="139,186 143,186 143,188 139,188" />
+      <polygon points="119,177 121,175 124,178 122,180" /><polygon points="136,194 138,192 141,195 139,197" />
+      <polygon points="138,175 140,177 137,180 135,178" /><polygon points="121,197 119,195 122,192 124,194" />
     </g>
   );
-  if (tipo === "escudo") return <polygon fill={v("teal")} stroke={v("traje-marfil")} strokeWidth="1.5" points="132,172 140,175 139,184 132,190 125,184 124,175" />;
+  if (rol === "doctora") return <polygon fill={v("teal")} stroke={v("traje-marfil")} strokeWidth="1.5" points="134,176 142,179 141,188 134,194 127,188 126,179" />;
   return null;
 }
 
-function Humano({ persona, e, cerrar }: { persona: Exclude<Persona, "ia_base">; e: Expresion; cerrar: boolean }) {
-  const h = HUMANOS[persona];
+function Humano({ persona, e, cerrar }: { persona: Rol; e: Expresion; cerrar: boolean }) {
   const piel = v(`piel-${persona}`);
   const pelo = v(`cabello-${persona}`);
+  const pp = PELO[persona];
+  const acento = ACENTO[persona];
+  const cabeza = "80,62 104,52 130,56 144,74 146,104 136,126 116,138 98,138 84,128 76,108 74,84";
   return (
     <g>
-      {/* Mochila, traje y hombros. */}
-      <polygon fill={mezcla("ciruela", "marfil", 22)} points="22,152 54,148 58,200 20,200" />
-      <polygon fill={v("traje-marfil")} points="40,166 66,150 134,150 160,166 168,200 32,200" />
-      {persona === "doctora"
-        ? <g fill={v("teal")}><polygon points="44,164 64,152 72,158 54,176" /><polygon points="128,152 156,164 152,176 122,160" /><polygon points="122,160 132,156 112,200 100,200" /></g>
-        : <g fill={v(h.acento)}><polygon points="34,170 64,154 70,176 38,190" /><polygon points="136,154 166,170 162,190 130,176" /></g>}
-      {persona === "ingeniera" && <g fill={mezcla("ciruela", "marfil", 55)}><polygon points="68,160 74,158 82,200 76,200" /><polygon points="126,158 132,160 124,200 118,200" /></g>}
-      {/* Luz del pecho y emblema del rol. */}
-      <polygon fill={v("cian")} points="95,166 105,166 110,171 110,179 105,184 95,184 90,179 90,171" />
-      <polygon fill={v("lila")} points="98,170 102,170 105,173 105,177 102,180 98,180 95,177 95,173" />
-      <Emblema tipo={h.emblema} />
-      {/* Cuello. */}
-      <polygon fill={piel} points="90,128 112,128 114,146 88,146" />
-      {/* Cuello del traje: anillo teal facetado. */}
-      <polygon fill={v("teal")} points="52,148 70,138 130,138 148,148 140,160 60,160" />
-      <polygon fill={mezcla("teal", "indigo-texto", 70)} points="66,146 76,142 124,142 134,146 128,150 72,150" />
-      {/* Pelo de atrás, cabeza, oreja, pelo de adelante. */}
-      {h.pelo[1] && <polygon fill={pelo} points={h.pelo[1]} />}
-      <polygon fill={piel} points={h.cabeza} />
-      <polygon fill={piel} stroke={mezcla("roca-basalto", "marfil", 25)} strokeWidth="1" points={`${h.oreja[0] - 8},${h.oreja[1] - 8} ${h.oreja[0]},${h.oreja[1] - 10} ${h.oreja[0] + 2},${h.oreja[1] + 6} ${h.oreja[0] - 6},${h.oreja[1] + 8}`} />
-      <polygon fill={pelo} points={h.pelo[0]} />
-      {/* Facetas de luz: la luz viene de arriba a la izquierda (DISEÑO §3.3). */}
-      <polygon fill={v("marfil")} opacity="0.14" points={h.cabeza.split(" ").slice(0, 4).join(" ") + " 100,98"} />
-      <Cejas e={e} color={pelo === v("cabello-meteorologa") ? mezcla("cabello-meteorologa", "indigo-texto", 50) : pelo} />
+      {/* Casco: disco lila detrás de todo (la cara conserva su color). */}
+      <polygon fill={`color-mix(in srgb, ${v("lila")} 84%, ${v("ciruela-traje")})`} points="100,4 133,11 160,30 177,58 182,90 177,122 160,150 133,168 100,174 67,168 40,150 23,122 18,90 23,58 40,30 67,11" />
+      <polygon fill={luz("lila", 20)} points="100,4 133,11 160,30 140,26 112,16 82,18 58,30 40,30 67,11" opacity="0.9" />
+
+      {/* Mochila, traje, hombros y luz del pecho. */}
+      <polygon fill={sombra("lila", 30)} points="14,168 46,160 50,200 12,200" />
+      <polygon fill={luz("lila", 20)} points="14,168 46,160 40,166 18,172" />
+      <polygon fill={v("traje-marfil")} points="36,174 62,160 140,160 166,174 176,200 26,200" />
+      <polygon fill={sombra("traje-marfil", 14)} points="140,160 166,174 176,200 146,200 138,176" />
+      {acento === "teal"
+        ? <g fill={v("teal")}><polygon points="44,172 66,160 76,168 56,186" /><polygon points="128,160 160,172 156,186 120,170" /><polygon points="120,170 132,166 114,200 100,200" /></g>
+        : acento && <g><polygon fill={v(acento)} points="30,182 62,162 74,180 66,200 34,200" /><polygon fill={sombra(acento, 18)} points="138,162 170,180 174,200 140,200 132,182" /><polygon fill={luz(acento, 25)} points="30,182 62,162 58,172 36,186" /></g>}
+      {persona === "ingeniera" && <g fill={sombra("lila", 45)}><polygon points="74,166 80,164 88,200 82,200" /><polygon points="126,164 132,166 124,200 118,200" /></g>}
+      <polygon fill={sombra("traje-marfil", 10)} points="92,174 112,174 120,182 120,194 112,202 92,202 84,194 84,182" />
+      <polygon fill={v("cian")} points="95,178 109,178 115,184 115,192 109,198 95,198 89,192 89,184" />
+      <polygon fill={luz("cian", 60)} points="95,179 104,179 98,185 92,189 91,184" />
+      <Emblema rol={persona} />
+
+      {/* Cuello: piel en sombra y aro teal con volumen (cara de arriba clara, frente más oscuro). */}
+      <polygon fill={sombra(`piel-${persona}`, 30)} points="92,132 118,132 120,150 90,150" />
+      <polygon fill={sombra("teal", 12)} points="46,152 72,160 128,160 154,152 154,164 128,172 72,172 46,164" />
+      <polygon fill={luz("teal", 25)} points="46,152 72,144 128,144 154,152 128,160 72,160" />
+      <polygon fill={sombra("teal", 40)} points="74,148 126,148 136,152 126,155 74,155 64,152" />
+
+      {/* Pelo de atrás, cabeza con facetas, oreja, cara, pelo de adelante. */}
+      {pp.atras.map((p) => <polygon key={p} fill={sombra(`cabello-${persona}`, 18)} points={p} />)}
+      <polygon fill={piel} points={cabeza} />
+      <polygon fill={luz(`piel-${persona}`, 14)} points="80,62 104,52 112,70 92,90 74,84" />
+      <polygon fill={sombra(`piel-${persona}`, 16)} points="130,56 144,74 146,104 136,126 116,138 128,108 132,80" />
+      <polygon fill={sombra(`piel-${persona}`, 10)} points="84,128 98,138 116,138 106,128 92,122" />
+      <polygon fill={piel} points="64,92 76,86 80,108 70,114 62,104" />
+      <polygon fill={sombra(`piel-${persona}`, 22)} points="68,96 74,94 75,106 70,108" />
+      <polygon fill={sombra(`piel-${persona}`, 18)} points="116,104 121,104 119,111 114,111" />
+      {pp.adelante.map((p) => <polygon key={p} fill={pelo} points={p} />)}
+      {pp.luces.map((p) => <polygon key={p} fill={luz(`cabello-${persona}`, 30)} points={p} />)}
+      <Cejas e={e} color={persona === "meteorologa" ? sombra("cabello-meteorologa", 45) : sombra(`cabello-${persona}`, 25)} />
       <Ojos e={e} cerrar={cerrar} />
-      {h.gafas && (
-        <g fill="none" stroke={v("traje-marfil")} strokeWidth="3.4" strokeLinejoin="round">
-          <polygon points="82,88 98,88 102,93 102,100 98,105 82,105 78,100 78,93" />
-          <polygon points="108,88 124,88 128,93 128,100 124,105 108,105 104,100 104,93" />
-          <polyline points="102,95 104,95" /><polyline points="78,94 72,92" />
+      {persona === "doctora" && (
+        <g fill="none" stroke={v("traje-marfil")} strokeWidth="4" strokeLinejoin="round">
+          <polygon points="91,89 107,89 112,94 112,104 107,109 91,109 86,104 86,94" />
+          <polygon points="117,89 133,89 137,94 137,104 133,109 117,109 113,104 113,94" />
+          <polyline points="112,98 113,98" /><polyline points="86,96 76,94" />
         </g>
       )}
-      <Boca e={e} x={104} y={116} piel={piel} />
-      {/* Antena del casco y casco: vidrio lila transparente, nunca opaco (DISEÑO §3.2). */}
-      <g transform="translate(14,4)">
-        <polygon fill={v("traje-marfil")} points="40,64 46,64 46,96 40,96" />
-        <polygon fill={v("traje-marfil")} stroke={mezcla("ciruela", "marfil", 30)} strokeWidth="1" points="36,90 50,90 50,108 36,108" />
-        <polygon fill={v("traje-marfil")} stroke={mezcla("ciruela", "marfil", 30)} strokeWidth="1" points="38,46 48,46 52,52 52,58 48,64 38,64 34,58 34,52" />
-      </g>
-      <polygon fill={v("lila")} fillOpacity="0.16" stroke={mezcla("ciruela", "lila", 22)} strokeOpacity="0.85" strokeWidth="7"
-        points="100,10 138,20 162,46 170,84 162,122 140,146 100,154 60,146 38,122 30,84 38,46 62,20" />
-      <polygon fill={v("marfil")} opacity="0.45" points="62,24 90,16 70,38 50,56" />
+      <Boca e={e} />
+
+      {/* Antena del casco, adelante y a la izquierda. */}
+      <polygon fill={v("traje-marfil")} stroke={sombra("lila", 35)} strokeWidth="1.2" points="40,44 46,44 46,82 40,82" />
+      <polygon fill={sombra("traje-marfil", 18)} points="44,44 46,44 46,82 44,82" />
+      <polygon fill={v("traje-marfil")} stroke={sombra("lila", 35)} strokeWidth="1.2" points="34,76 52,76 54,80 54,100 50,104 36,104 32,100 32,80" />
+      <polygon fill={sombra("traje-marfil", 18)} points="46,76 52,76 54,80 54,100 50,104 46,104" />
+      <polygon fill={v("traje-marfil")} stroke={sombra("lila", 35)} strokeWidth="1.2" points="38,28 48,28 53,33 53,41 48,46 38,46 33,41 33,33" />
+      <polygon fill={luz("traje-marfil", 60)} points="38,30 44,30 38,36 35,36" />
+
+      {/* Vidrio: aro claro y brillo arriba a la izquierda, sin tapar la cara. */}
+      <polygon fill="none" stroke={`color-mix(in srgb, ${v("lila")} 70%, ${v("ciruela-traje")})`} strokeWidth="3.5" strokeLinejoin="round" points="100,5 133,12 159,31 176,58 181,90 176,122 159,149 133,167 100,173 67,167 41,149 24,122 19,90 24,58 41,31 67,12" />
+      <polygon fill={v("marfil")} opacity="0.4" points="58,24 84,14 70,28 52,44 40,62 42,42" />
     </g>
   );
 }

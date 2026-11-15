@@ -1,4 +1,5 @@
 import type { PendingEffect, Resource } from "@solar-shield/contracts";
+import { IA } from "@solar-shield/design";
 import { useT } from "../../i18n.js";
 import { Icono, type NombreIcono } from "./Iconos.js";
 import "./facetas.css";
@@ -10,8 +11,11 @@ import "./facetas.css";
 
 export const RECURSOS: readonly Resource[] = ["energia", "soporte_vital", "blindaje"];
 export const ICONO_RECURSO: Record<Resource, NombreIcono> = { energia: "energia", soporte_vital: "vida", blindaje: "escudo" };
-/** Por debajo de esto el recurso está bajo: se dice con icono y texto, no solo con color. */
-export const UMBRAL_BAJO = 25;
+/**
+ * Por debajo de esto el recurso está bajo: se dice con icono y texto, no solo con color.
+ * Es el mismo umbral de peligro que usa el motor (design/ia.ts), para que la placa y Iris coincidan.
+ */
+export const UMBRAL_BAJO = IA.umbralPeligro;
 
 const signo = (n: number) => (n > 0 ? `+${n}` : `${n}`);
 
