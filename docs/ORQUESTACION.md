@@ -2,7 +2,7 @@
 
 Este archivo debe bastar para que otra sesión (u otro humano) retome la coordinación sin el chat original. Lo mantiene el orquestador (Santiago Cabeza, que desde el 13 nov en la noche solo supervisa y fusiona). **Suplente del orquestador:** Jaime (`JaimeMrF`).
 
-**Actualizado:** 14 nov 2026, 21:15.
+**Actualizado:** 14 nov 2026, 22:30.
 
 ## Resumen
 
@@ -26,7 +26,10 @@ Este archivo debe bastar para que otra sesión (u otro humano) retome la coordin
 
 Regla de corte si P2 no se cumple: Luna → Atlas → desbloqueos → 3D completo → dibujo de ruta en 3D → niveles adaptativos extra. El orquestador propone el momento y Santiago confirma.
 
-## Estado (sáb 14 nov, 21:15 — hechos)
+## Estado (sáb 14 nov, 22:30 — hechos)
+
+- **Frontend v8 (ARRANQUE, ola 1 en curso):** `feat/ui-escenarios` al día con develop. María Paula empezó la subida de su código (#184, subida 1/6). José abrió los contratos #181, #182 y #186 hacia esa rama (los fusiona María Paula; #182 y #186 chocan solo en `agents/ESTADO.md`). Daniel tiene `feat/ui-escenario-base` sin PR todavía. Jaime y Camilo sin ramas de la ola 1 (avisados en #168). Nadie borró archivos viejos: eso es la ola 2.
+- **#152 (Daniel):** motor para varias misiones y huecos del tipo `Mision` en develop (#169–#177). Misiones: entró #153; #154–#156 con las fuentes y textos de la revisión de Daniel, y se fusionan de a una porque comparten `missions/src/textos.ts`.
 
 - **develop (279f3a6):** compila, 347 pruebas en verde, semilla dorada y partidas ganadora/perdedora en verde (16/16), build de ui y e2e de la ruta dorada en verde en CI; preview desplegado.
 - **Links (despliegue automático con cada merge):** preview https://nasa-space-apps-2026-preview.santiago031541.workers.dev (develop) · producción https://nasa-space-apps-2026.santiago031541.workers.dev (main, versión de las 11:40). Ambos con IA (b.ai) y base de datos D1 propia.
