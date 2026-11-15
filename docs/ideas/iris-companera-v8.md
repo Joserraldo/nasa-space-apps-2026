@@ -46,10 +46,15 @@ En las láminas v8, Iris es un **rover solar de cuatro ruedas** que acompaña al
 `agents` exporta `DestinoIris`, una copia exacta de los 10 `LugarId` de `ui/src/escena/mundo.ts` (rama local de Pau). Si ui cambia un id, falla un test de tipos en ui, no en el juego. Mover el tipo a `contracts/` sería mejor, pero requiere un issue `contrato`: queda como siguiente paso si Pau y Camilo lo aprueban.
 
 ```ts
-const g = guiaIrisLugar(vista, pasoActual, { averiaRevelada });
-// g === null → Iris en su dock (offline)
-// g.destino: LugarId · g.ruta: true solo en tutorial · g.dialogo: líneas i18n · g.experto?: a quién consultar al llegar
-const b = briefingIris(); // paso 1, omitible
+type DestinoIris = "mesa" | "taller" | "sensor" | "habitat" | "panel_solar" | "escudo" | "reciclador_agua" | "invernadero" | "antena" | "banco"; // copia de LugarId
+type GestoIris = "senalar" | "mirar" | "pedir_reparacion" | "explicar";
+type CaraIris = "normal" | "error";
+interface GuiaLugar { destino: DestinoIris; ruta: boolean; experto?: Expert; dialogo: Dialogo; gesto: GestoIris; cara: CaraIris }
+
+function guiaIrisLugar(v: VistaAgente, paso: number, opts?: { averiaRevelada?: boolean }): GuiaLugar | null;
+// null → Iris en su dock (offline) · ruta: true solo en tutorial · experto?: a quién consultar al llegar
+// gesto: pedir_reparacion (avería revelada) · senalar (tutorial) · mirar (pistas) · cara: error solo con avería revelada
+function briefingIris(): { dialogo: Dialogo; gesto: "explicar"; cara: "normal" }; // paso 1, omitible
 ```
 
 ## Cómo se prueba
