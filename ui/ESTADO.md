@@ -11,7 +11,7 @@ Una sección por persona, máximo 5 líneas, y nadie edita la de otro (FLUJO §8
 ```
 
 ## Personajes (María Paula)
-**Rama:** feat/ui-personajes-tripulacion-animada · **PR:** en preparación · **Tokens:** amarillo
+**Rama:** feat/ui-personajes-tripulacion-animada · **PR:** #270 (borrador) · **Tokens:** amarillo
 - Única base vigente: nueva implementación de Claude en `escena/personajes/`, cuatro tripulantes e Iris; versiones anteriores retiradas por pedido de María Paula.
 - Continuación: equipo por gesto, reparar/observar/alertar/verificar, quieto en marcha/ruedas y liberación idempotente del esqueleto. Fábricas y preview; integración en escena pendiente.
 - Verificado: typecheck, 690 pruebas (22 de personajes), build y e2e ruta dorada 1/1; capturas nuevas sin errores JS. Humanos 3 calls, Iris 2.
