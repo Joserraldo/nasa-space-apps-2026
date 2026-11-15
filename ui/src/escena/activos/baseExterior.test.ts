@@ -120,9 +120,13 @@ describe("base compacta sobre LUGARES (exterior/03, mapa-base-jezero.svg)", () =
     const en = (id: LugarId) => (p: readonly [number, number]) => Math.hypot(p[0] - lugar(id).x, p[1] - lugar(id).z) < 1e-9;
     const pares: [LugarId, LugarId][] = [
       ["taller", "panel_solar"], ["taller", "escudo"], ["escudo", "habitat"],
-      ["sensor", "reciclador_agua"], ["reciclador_agua", "invernadero"], ["invernadero", "antena"], ["taller", "banco"],
+      ["sensor", "reciclador_agua"], ["reciclador_agua", "invernadero"], ["invernadero", "antena"],
     ];
     for (const [a, b] of pares) expect(CAMINOS.some((t) => t.some(en(a)) && t.some(en(b))), `${a} → ${b}`).toBe(true);
+    // El banco cuelga de la entrada desde la cámara (un ramal corto en vez de un atajo hasta la plaza).
+    const ramal = CAMINOS.find((t) => t.some(en("banco")))!;
+    const nudo = ramal[ramal.length - 1]!;
+    expect(CAMINOS.some((t) => t !== ramal && t.some((p) => p[0] === nudo[0] && p[1] === nudo[1])), "banco → entrada").toBe(true);
   });
 
   it("ningún eje de camino atraviesa un sólido de TERRENO", () => {

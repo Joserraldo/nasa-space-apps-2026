@@ -13,8 +13,10 @@ import { liberarCache, liberarEscena, liberarMateriales } from "./liberar";
 import { LUGARES, TERRENO } from "./mundo";
 import type { EstadoModulo, VistaEscena } from "./vista";
 import { MODULOS_BASE } from "./activos/modulos";
-import { CAMARAS } from "./escena3d";
-import { decorado } from "./activos/baseExterior";
+import { CAMARAS, fovParaAspecto } from "./escena3d";
+import { CONSOLAS, decorado } from "./activos/baseExterior";
+import { giroHacia } from "./activos/modulosArmados";
+import { crearConsola } from "./activos/piezasComunes";
 import { crearHabitat, crearTorreControl } from "./activos/edificios";
 import { lugar } from "./mundo";
 import { PRESUPUESTO, aplanarClaro, alturaEnMundo, contarRender } from "./activos/terreno";
@@ -206,8 +208,8 @@ describe("armarEscena", () => {
 
 describe("encuadre de tercera persona (mundo/01)", () => {
   /** Rectángulo en pantalla (NDC) de los vértices de un objeto vistos desde `CAMARAS.tercera` a 1024×683. */
-  function enPantalla(o: THREE.Object3D) {
-    const camara = new THREE.PerspectiveCamera(55, 1024 / 683, 0.1, 600);
+  function enPantalla(o: THREE.Object3D, ancho = 1024, alto = 683) {
+    const camara = new THREE.PerspectiveCamera(fovParaAspecto("tercera", ancho / alto), ancho / alto, 0.1, 600);
     camara.position.set(...CAMARAS.tercera.pos);
     camara.lookAt(new THREE.Vector3(...CAMARAS.tercera.mira));
     camara.updateMatrixWorld(true);
@@ -240,6 +242,104 @@ describe("encuadre de tercera persona (mundo/01)", () => {
     expect(pt.y1).toBeLessThan(1);
     liberarEscena(torre);
     liberarEscena(habitat);
+  });
+
+  const punto = (x: number, y: number, z: number, ancho: number, alto: number) => {
+    const camara = new THREE.PerspectiveCamera(fovParaAspecto("tercera", ancho / alto), ancho / alto, 0.1, 600);
+    camara.position.set(...CAMARAS.tercera.pos);
+    camara.lookAt(new THREE.Vector3(...CAMARAS.tercera.mira));
+    camara.updateMatrixWorld(true);
+    return new THREE.Vector3(x, y, z).project(camara);
+  };
+
+  it("2 rocas grandes (escala >= 1,4) caen en el tercio inferior del cuadro, una en cada mitad (1024x683)", () => {
+    const grandes = ROCAS_PRIMER_PLANO.filter((r) => Math.max(...r.escala) >= 1.4);
+    const abajo = grandes.map((r) => punto(r.posicion[0], r.escala[1] * 1.2, r.posicion[2], 1024, 683))
+      .filter((p) => p.y < -1 / 3 && p.y > -1 && Math.abs(p.x) < 1);
+    expect(abajo.length).toBe(2);
+    expect(abajo.filter((p) => p.x < 0).length).toBe(1);
+    expect(abajo.filter((p) => p.x > 0).length).toBe(1);
+    expect(ROCAS_PRIMER_PLANO.length).toBeLessThanOrEqual(4);
+  });
+
+  it("la consola queda en la mitad inferior y el horizonte en el tercio superior (1024x683)", () => {
+    const m = lugar("mesa");
+    expect(punto(m.mx, 1, m.mz, 1024, 683).y).toBeLessThan(0);
+    expect(punto(0, 0, -500, 1024, 683).y).toBeGreaterThan(1 / 3);
+  });
+
+  /** Cámara de tercera persona a `ancho`×`alto`, con el FOV que le corresponde a ese aspecto. */
+  function camaraTercera(ancho: number, alto: number): THREE.PerspectiveCamera {
+    const camara = new THREE.PerspectiveCamera(fovParaAspecto("tercera", ancho / alto), ancho / alto, 0.1, 600);
+    colocarCamaraTercera(camara);
+    return camara;
+  }
+
+  function colocarCamaraTercera(camara: THREE.PerspectiveCamera) {
+    camara.position.set(...CAMARAS.tercera.pos);
+    camara.lookAt(new THREE.Vector3(...CAMARAS.tercera.mira));
+    camara.updateMatrixWorld(true);
+  }
+
+  /** Esquinas (NDC) del `Box3` del objeto que quedan fuera del cuadro, con un margen de 0,02. */
+  function esquinasFuera(o: THREE.Object3D, camara: THREE.Camera): { x: number; y: number }[] {
+    o.updateMatrixWorld(true);
+    const b = new THREE.Box3().setFromObject(o);
+    const fuera: { x: number; y: number }[] = [];
+    for (let i = 0; i < 8; i++) {
+      const p = new THREE.Vector3(i & 1 ? b.max.x : b.min.x, i & 2 ? b.max.y : b.min.y, i & 4 ? b.max.z : b.min.z).project(camara);
+      if (Math.abs(p.x) > 1 - 0.02 || Math.abs(p.y) > 1 - 0.02) fuera.push({ x: p.x, y: p.y });
+    }
+    return fuera;
+  }
+
+  /** Hábitat colocado como en `armarEdificios`. */
+  function habitatEnEscena(): THREE.Group {
+    const h = lugar("habitat");
+    const g = crearHabitat(crearMateriales());
+    g.position.set(h.mx, 0, h.mz);
+    return g;
+  }
+
+  /** Consola de la mesa colocada como en `armarEdificios` (misma escala y giro). */
+  function consolaMesa(): THREE.Group {
+    const l = lugar("mesa");
+    const k = CONSOLAS.find((c) => c.lugar === "mesa")!;
+    const g = crearConsola(crearMateriales());
+    g.position.set(l.mx, 0, l.mz);
+    g.rotation.y = giroHacia(l, l);
+    g.scale.setScalar(k.escala);
+    return g;
+  }
+
+  it.each([[844, 390], [390, 844]])("el hábitat y la consola caben enteros en el cuadro a %ix%i (8 esquinas de cada caja)", (w, h) => {
+    const camara = camaraTercera(w, h);
+    const habitat = habitatEnEscena(), consola = consolaMesa();
+    expect(esquinasFuera(habitat, camara), "hábitat").toEqual([]);
+    expect(esquinasFuera(consola, camara), "consola").toEqual([]);
+    liberarEscena(habitat);
+    liberarEscena(consola);
+  });
+
+  it("al redimensionar de 1024x683 a 390x844 el FOV cambia y la consola sigue entera en el cuadro", () => {
+    const camara = camaraTercera(1024, 683);
+    const fovAntes = camara.fov;
+    camara.aspect = 390 / 844;
+    camara.fov = fovParaAspecto("tercera", camara.aspect);
+    camara.updateProjectionMatrix();
+    expect(camara.fov).toBeGreaterThan(fovAntes);
+    expect(camara.fov).toBeCloseTo(fovParaAspecto("tercera", 390 / 844));
+    const consola = consolaMesa();
+    expect(esquinasFuera(consola, camara), "consola").toEqual([]);
+    liberarEscena(consola);
+  });
+
+  it("el campo visual se abre solo en cuadros más altos que anchos y tiene tope", () => {
+    expect(fovParaAspecto("tercera", 1.5)).toBeCloseTo(60);
+    expect(fovParaAspecto("tercera", 2.2)).toBeCloseTo(60);
+    expect(fovParaAspecto("tercera", 0.8)).toBeGreaterThan(60);
+    expect(fovParaAspecto("tercera", 0.2)).toBe(90);
+    expect(fovParaAspecto("primera", 0.5)).toBe(70);
   });
 });
 
