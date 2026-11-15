@@ -1,16 +1,17 @@
 # Estado — datos
-**Actualizado:** 2026-11-14 · **Rama:** feat/datos-auditoria-p4 · **PR:** #192 (incluye #191)
+**Actualizado:** 2026-11-14 23:00 · **Rama:** feat/datos-auditoria-p4 · **PR:** #192 (incluye #191) · #193 abierto
 
 ## Hecho
-- Corregí `docs/science/datos-usados.md` en es/en: las fuentes lunares y de Marte norte ya están integradas y el hielo no se presenta sin cita (#191).
-- Extendí la auditoría P4 a Luna visible, polo sur lunar, Marte norte, luz SVS y mediciones CRaTER: exige dueño, URL, fecha, estado curado y claves en/es, e impide publicar texto de hielo sin atribución (#192).
-- La gravedad de Marte y la Luna va en #187 y cierra #141 al fusionarse.
-- #61 y D8 (#8) ya tienen entregables fusionados; esperan cierre o visto bueno del equipo.
+- Fusionados hoy: #126 (polo sur lunar), #148, #159, #160, #177 y #187 (gravedad de Marte 3,73 y Luna 1,62 [V] NSSDC; cierra #141).
+- `docs/science/datos-usados.md` en es/en: fuentes lunares y de Marte norte integradas; el hielo no se presenta sin cita (#191).
+- Auditoría P4 ampliada a Luna visible, polo sur, Marte norte, luz SVS y CRaTER: dueño, URL, fecha, estado curado y claves (#192).
+- Escenario 3D: `feat/ui-escenario-base` con cielo, terreno y 9 tests sin Three; espera el permiso de three (#180).
 
 ## Qué sigue
-- Revisión y fusión de #187, #191 y #192, en ese orden; coordinar con UI el uso de `GRAVEDAD_MARTE_MS2`.
-- El efecto del sitio sobre módulos espera la aprobación del contrato #178.
+- Fusión de #192 y #193; coordinar con UI el uso de `GRAVEDAD_MARTE_MS2`.
+- Glosario: sol (día de Marte), telemetría y tick, en EN y ES.
+- Efecto del sitio sobre módulos cuando aprueben el contrato #178.
 
 ## Bloqueos
-- La capa de hielo `SP_IceLoc_280m` de Moon Trek carece de procedencia científica verificable; su texto sigue apagado (ver `docs/science/terreno.md`).
-Tokens: 🟢
+- #180 (three en ui/package.json) y #178 (contrato). La capa de hielo de Moon Trek sigue sin procedencia verificable: texto apagado.
+Tokens: amarillo
