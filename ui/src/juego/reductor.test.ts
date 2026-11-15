@@ -81,10 +81,12 @@ describe("reductor de la pantalla", () => {
       rangoKey: "rango.bueno",
       total: 0.8,
     };
-    let j = reducir(inicial(), { tipo: "sitio", sitio });
-    const trasAterrizar = j.estado;
-    j = reducir(j, { tipo: "sitio", sitio });
-    expect(j.estado).toBe(trasAterrizar);
+    expect(reducir(inicial(), { tipo: "sitio", sitio }).fase).toBe("inicio");
+    let j = reducir(reducir(inicial(), { tipo: "fase", fase: "sitio" }), { tipo: "sitio", sitio });
+    expect(j.fase).toBe("modulos");
+    const trasAterrizar = j;
+    j = reducir(j, { tipo: "sitio", sitio: { ...sitio, id: "otro" } });
+    expect(j).toBe(trasAterrizar);
     j = reducir(j, { tipo: "modulo", modulo: "panel_solar" });
     j = reducir(j, { tipo: "modulo", modulo: "escudo" });
     expect(j.estado.recursos).toEqual({ energia: 55, soporte_vital: 74, blindaje: 52 });

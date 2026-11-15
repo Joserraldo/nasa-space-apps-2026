@@ -1,5 +1,5 @@
-import type { PuntajeSitio } from "@solar-shield/engine";
-import type { Equipment, GameState } from "@solar-shield/contracts";
+import { compactarCausas, modulosColocados, type PuntajeSitio } from "@solar-shield/engine";
+import { EquipmentSchema, GameStateSchema, type Equipment, type GameState } from "@solar-shield/contracts";
 import type { Fase, Juego } from "./reductor.js";
 
 /** Limite de carga del Worker (`/api/progress`) definido en `infra/worker/src/cuentas.ts`. */
@@ -55,21 +55,26 @@ export function marcarPistaSesion(activa: boolean): void {
   }
 }
 
-/** Empaqueta el progreso jugable cumpliendo el tope de 20 KB de `/api/progress`. */
+/**
+ * Empaqueta el progreso jugable cumpliendo el tope de 20 KB de `/api/progress`.
+ * Nunca recorta causas: el motor deriva de ellas los módulos colocados, el aterrizaje ya cobrado,
+ * las insignias y el resumen final. Si no cabe, compacta sin pérdida con `compactarCausas` del motor;
+ * si aun así no cabe, devuelve `null` (la pantalla muestra el error de tamaño) en vez de guardar una partida rota.
+ */
 export function serializarProgreso(j: Juego): JuegoGuardado | null {
-  const recorteCausas = (causas: GameState["causas"], max: number): JuegoGuardado => ({
+  const empaquetar = (estado: GameState): JuegoGuardado => ({
     v: 1,
     fase: j.fase,
-    estado: max < causas.length ? { ...j.estado, causas: causas.slice(-max) } : j.estado,
+    estado,
     colocados: j.colocados,
     sitio: j.sitio,
     tormentaVista: j.tormentaVista,
   });
 
-  const completo = recorteCausas(j.estado.causas, j.estado.causas.length);
+  const completo = empaquetar(j.estado);
   if (bytesJson({ datos: completo }) <= PROGRESO_MAX_BYTES) return completo;
 
-  const compacto = recorteCausas(j.estado.causas, 30);
+  const compacto = empaquetar(compactarCausas(j.estado));
   return bytesJson({ datos: compacto }) <= PROGRESO_MAX_BYTES ? compacto : null;
 }
 
@@ -82,18 +87,34 @@ export function deserializarProgreso(crudo: unknown): Juego | null {
   if (!crudo || typeof crudo !== "object" || Array.isArray(crudo)) return null;
   const d = crudo as Partial<JuegoGuardado>;
   if (d.v !== 1 || !d.fase || !FASES_VALIDAS.includes(d.fase)) return null;
-  if (!d.estado || typeof d.estado !== "object") return null;
-  const est = d.estado as Partial<GameState>;
-  if (!est.recursos || typeof est.tick !== "number" || typeof est.resultado !== "string") return null;
-  if (!Array.isArray(d.colocados)) return null;
+  // El estado entra al motor tal cual: se valida contra el contrato, no a mano.
+  const est = GameStateSchema.safeParse(d.estado);
+  if (!est.success) return null;
+  const sitio = d.sitio ?? null;
+  if (sitio !== null && !esPuntajeSitio(sitio)) return null;
   return {
     fase: d.fase,
-    estado: d.estado,
-    colocados: d.colocados,
-    sitio: d.sitio ?? null,
+    estado: est.data,
+    // Los módulos salen del estado (fuente de verdad del motor), no de la lista guardada.
+    colocados: modulosColocados(est.data).filter((m): m is Equipment => EquipmentSchema.safeParse(m).success),
+    sitio,
     ultimas: null,
     tormentaVista: Boolean(d.tormentaVista),
   };
+}
+
+function esPuntajeSitio(v: unknown): v is PuntajeSitio {
+  if (!v || typeof v !== "object" || Array.isArray(v)) return false;
+  const p = v as Record<string, unknown>;
+  return (
+    typeof p.id === "string" &&
+    typeof p.nombreKey === "string" &&
+    typeof p.rangoKey === "string" &&
+    typeof p.total === "number" &&
+    !!p.porCriterio &&
+    typeof p.porCriterio === "object" &&
+    Object.values(p.porCriterio).every((n) => typeof n === "number")
+  );
 }
 
 function mapearErrorCuenta(codigo: string | undefined, modo: "login" | "register" | "progress"): string {

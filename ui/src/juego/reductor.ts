@@ -63,6 +63,8 @@ export function reducir(j: Juego, e: Evento): Juego {
     case "fase":
       return { ...j, fase: e.fase };
     case "sitio":
+      // Solo en el paso de elegir sitio: un evento repetido más tarde no regresa a módulos ni cambia el sitio.
+      if (j.fase !== "sitio") return j;
       return { ...j, sitio: e.sitio, estado: aterrizar(j.estado, e.sitio.id), fase: "modulos" };
     case "modulo": {
       if (!puedeColocar(j, e.modulo)) return j;
