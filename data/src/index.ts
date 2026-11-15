@@ -17,6 +17,9 @@ import c_2017_09_10_x82 from "../curated/2017-09-10-x82.json";
 import indiceCurado from "../curated/index.json";
 import jezeroJson from "../terreno/jezero/jezero.json";
 import lunaVisibleJson from "../terreno/luna-visible/luna-visible.json";
+import luzLunaJson from "../terreno/luna-visible/luz-2024.json";
+import marteNorteJson from "../terreno/marte-norte/marte-norte.json";
+import lunaPoloSurJson from "../terreno/luna-polo-sur/luna-polo-sur.json";
 import radiacionJson from "../ciencia/radiacion.json";
 import osdrJson from "../ciencia/osdr.json";
 import artemisJson from "../ciencia/artemis.json";
@@ -25,7 +28,7 @@ import lunaJson from "../ciencia/luna.json";
 import { ArtemisSchema, CsaSchema, FUENTE_DOSIS, OsdrSchema, RadiacionSchema, type Artemis, type Csa, type Osdr, type Radiacion } from "./ciencia";
 import type { SourceCard } from "./contrato";
 import { LunaSchema, type Luna, type MedicionLuna } from "./luna";
-import { TerrenoLunaSchema, TerrenoSchema, type Terreno, type TerrenoLuna } from "./terreno";
+import { LuzLunaSchema, TerrenoLunaPoloSurSchema, TerrenoLunaSchema, TerrenoMarteNorteSchema, TerrenoSchema, type LuzLuna, type Terreno, type TerrenoLuna, type TerrenoLunaPoloSur, type TerrenoMarteNorte } from "./terreno";
 import { aConvenio } from "./convenio";
 import { TormentaSchema, type Tormenta } from "./tormenta";
 
@@ -110,3 +113,21 @@ export const luna: Luna = LunaSchema.parse(lunaJson);
  * Usa el texto `datos.luna.medicion` solo si `fondoTranquilo` es true; si no, el factor sale engañoso.
  */
 export const medicionLuna = (id: string): MedicionLuna | undefined => luna.mediciones.find((m) => m.id === id);
+
+/**
+ * Luz de los 3 sitios en 2024: punto subsolar de NASA SVS 5187 (tabla horaria) y, DERIVADO por el equipo,
+ * elevación del Sol en la hora de cada tormenta curada de 2024 y próximo amanecer. Horizonte plano.
+ */
+export const luzLunaVisible: LuzLuna = LuzLunaSchema.parse(luzLunaJson);
+
+/**
+ * Marte, polo norte (Mars Trek, DEM MOLA polar): 4 sitios del nomenclátor de la UAI. Las rutas son relativas a
+ * data/terreno/marte-norte/. Elevación = medida; pendiente, relieve y plano = derivados; luz y blindaje = null.
+ */
+export const terrenoMarteNorte: TerrenoMarteNorte = TerrenoMarteNorteSchema.parse(marteNorteJson);
+
+/**
+ * Luna polo sur (Moon Trek): 6 cráteres del polo sur (posición: nomenclátor IAU). Rutas relativas a data/terreno/luna-polo-sur/.
+ * Elevación = medida (LOLA polar 30 m); pendiente, relieve y plano = derivados; luz = null (Moon Trek no tiene capa de iluminación media); blindaje = null.
+ */
+export const terrenoLunaPoloSur: TerrenoLunaPoloSur = TerrenoLunaPoloSurSchema.parse(lunaPoloSurJson);

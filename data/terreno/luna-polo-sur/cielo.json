@@ -1,0 +1,148 @@
+{
+  "consultadoEl": "2026-11-15",
+  "cita": "Mazarico, E., et al. (2011), Illumination conditions of the lunar polar regions using LOLA topography, Icarus 211, 1066-1081, doi:10.1016/j.icarus.2010.10.030",
+  "pagina": "https://pgda.gsfc.nasa.gov/products/69",
+  "capa": {
+    "archivo": "SKYV_65S_240M",
+    "url": "http://imbrium.mit.edu/EXTRAS/ILLUMINATION/IMG/SKYV_65S_240M.IMG",
+    "etiqueta": "http://imbrium.mit.edu/EXTRAS/ILLUMINATION/IMG/SKYV_65S_240M.LBL"
+  },
+  "unidad": "steradian (ángulo sólido del cielo visible; 0 = tapado, 2π = suelo llano, 4π = sin obstáculos)",
+  "escala": 0.0002,
+  "offset": 6.2832,
+  "resolucionM": 240,
+  "sitios": [
+    {
+      "id": "shackleton",
+      "cieloVisibleSr": {
+        "centro": 4.0586,
+        "media": 4.4367,
+        "minimo": 3.8624,
+        "maximo": 6.3674,
+        "pixeles": 4096
+      },
+      "cieloTapado": {
+        "centro": 0.3541,
+        "media": 0.2939
+      },
+      "verificacion": {
+        "centroDirectoSr": 4.0586,
+        "vecinosFilaSr": [
+          4.0544,
+          4.0586,
+          4.058
+        ]
+      }
+    },
+    {
+      "id": "haworth",
+      "cieloVisibleSr": {
+        "centro": 5.3834,
+        "media": 5.431,
+        "minimo": 4.5972,
+        "maximo": 5.6026,
+        "pixeles": 4096
+      },
+      "cieloTapado": {
+        "centro": 0.1432,
+        "media": 0.1356
+      },
+      "verificacion": {
+        "centroDirectoSr": 5.3834,
+        "vecinosFilaSr": [
+          5.3842,
+          5.3834,
+          5.3826
+        ]
+      }
+    },
+    {
+      "id": "faustini",
+      "cieloVisibleSr": {
+        "centro": 5.4446,
+        "media": 5.3743,
+        "minimo": 4.8328,
+        "maximo": 5.482,
+        "pixeles": 4096
+      },
+      "cieloTapado": {
+        "centro": 0.1335,
+        "media": 0.1447
+      },
+      "verificacion": {
+        "centroDirectoSr": 5.4446,
+        "vecinosFilaSr": [
+          5.4464,
+          5.4446,
+          5.4456
+        ]
+      }
+    },
+    {
+      "id": "malapert",
+      "cieloVisibleSr": {
+        "centro": 5.3994,
+        "media": 5.3796,
+        "minimo": 4.6498,
+        "maximo": 5.5244,
+        "pixeles": 4096
+      },
+      "cieloTapado": {
+        "centro": 0.1407,
+        "media": 0.1438
+      },
+      "verificacion": {
+        "centroDirectoSr": 5.3994,
+        "vecinosFilaSr": [
+          5.396,
+          5.3994,
+          5.3874
+        ]
+      }
+    },
+    {
+      "id": "nobile",
+      "cieloVisibleSr": {
+        "centro": 5.8742,
+        "media": 5.7223,
+        "minimo": 4.5878,
+        "maximo": 6.0378,
+        "pixeles": 4096
+      },
+      "cieloTapado": {
+        "centro": 0.0651,
+        "media": 0.0893
+      },
+      "verificacion": {
+        "centroDirectoSr": 5.8742,
+        "vecinosFilaSr": [
+          5.9094,
+          5.8742,
+          5.8706
+        ]
+      }
+    },
+    {
+      "id": "de-gerlache",
+      "cieloVisibleSr": {
+        "centro": 5.0546,
+        "media": 5.265,
+        "minimo": 4.6438,
+        "maximo": 5.6928,
+        "pixeles": 4096
+      },
+      "cieloTapado": {
+        "centro": 0.1955,
+        "media": 0.162
+      },
+      "verificacion": {
+        "centroDirectoSr": 5.0546,
+        "vecinosFilaSr": [
+          5.0274,
+          5.0546,
+          5.0848
+        ]
+      }
+    }
+  ]
+}

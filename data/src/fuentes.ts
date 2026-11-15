@@ -35,6 +35,78 @@ export const FUENTES_APROBADAS = {
     dueno: "NASA Earthdata",
     estadoDato: "curado",
   },
+  /** Ficha de la Luna: irradiancia 1361,0 W/m², periodo sinódico 29,53 días, distancia media 384 400 km. Tarjetas lunares de luz, noche y mensajes. */
+  nssdcMoon: {
+    nombreKey: "fuente.nssdcMoon",
+    url: "https://nssdc.gsfc.nasa.gov/planetary/factsheet/moonfact.html",
+    idFuente: "nssdc-moonfact",
+    consultadoEl: CONSULTADO,
+    dueno: "NASA NSSDC",
+    estadoDato: "curado",
+  },
+  /** Hielo de agua en regiones lunares en sombra permanente. Tarjeta `hielo_sombra`. */
+  hieloLuna: {
+    nombreKey: "fuente.nasa.hieloLuna",
+    url: "https://science.nasa.gov/moon/moon-water-and-ices/",
+    idFuente: "nasa-science-moon-water-ices",
+    consultadoEl: CONSULTADO,
+    dueno: "NASA Science",
+    estadoDato: "curado",
+  },
+  /** Orion usa la masa a bordo (bolsas con comida y agua) como refugio en una tormenta solar. Tarjeta `masa_protege`. */
+  orionRefugio: {
+    nombreKey: "fuente.nasa.orionRefugio",
+    url: "https://www.nasa.gov/missions/artemis/orion/scientists-and-engineers-evaluate-orion-radiation-protection-plan/",
+    idFuente: "nasa-orion-refugio-radiacion",
+    consultadoEl: CONSULTADO,
+    dueno: "NASA",
+    estadoDato: "curado",
+  },
+  /** Orion se alimenta de cuatro alas de paneles solares. Tarjeta `panel_sol` de outpost-sorpresa. */
+  orionPaneles: {
+    nombreKey: "fuente.nasa.orionPaneles",
+    url: "https://www.nasa.gov/humans-in-space/orion-spacecraft/european-service-module/",
+    idFuente: "nasa-orion-esm-paneles",
+    consultadoEl: CONSULTADO,
+    dueno: "NASA",
+    estadoDato: "curado",
+  },
+  /** El casquete residual del polo norte de Marte es sobre todo hielo de agua (PIA06858). Tarjeta `hielo_de_agua`. */
+  casqueteMarte: {
+    nombreKey: "fuente.jpl.casqueteMarte",
+    url: "https://www.jpl.nasa.gov/images/pia06858-north-polar-cap/",
+    idFuente: "jpl-pia06858-casquete-norte",
+    consultadoEl: CONSULTADO,
+    dueno: "NASA JPL",
+    estadoDato: "curado",
+  },
+  /** En invierno el Sol aparece bajo y inclinar los paneles hacia él sube la energía (Spirit). Tarjeta `sol_bajo`. */
+  spiritInclinacion: {
+    nombreKey: "fuente.jpl.spiritInclinacion",
+    url: "https://www.jpl.nasa.gov/news/nasa-mars-rover-teams-tilted-winter-strategy-works/",
+    idFuente: "jpl-spirit-inclinacion-invierno",
+    consultadoEl: CONSULTADO,
+    dueno: "NASA JPL",
+    estadoDato: "curado",
+  },
+  /** Phoenix cargaba sus baterías con paneles solares; en invierno polar ya no pudo (2008). Tarjeta `guardar_energia`. */
+  phoenix: {
+    nombreKey: "fuente.nasa.phoenix",
+    url: "https://www.nasa.gov/image-article/phoenix-twilight/",
+    idFuente: "nasa-phoenix-twilight",
+    consultadoEl: CONSULTADO,
+    dueno: "NASA",
+    estadoDato: "curado",
+  },
+  /** Las baterías se cargan con los paneles al sol y dan energía cuando los paneles quedan en sombra. Tarjeta `bateria_guarda` (outpost). */
+  baterias: {
+    nombreKey: "fuente.nasa.baterias",
+    url: "https://science.nasa.gov/learn/basics-of-space-flight/chapter11-3/",
+    idFuente: "nasa-basics-space-flight-cap11-baterias",
+    consultadoEl: CONSULTADO,
+    dueno: "NASA (Basics of Space Flight)",
+    estadoDato: "curado",
+  },
 } as const satisfies Record<string, SourceCard>;
 
 export type IdFuenteAprobada = keyof typeof FUENTES_APROBADAS;
