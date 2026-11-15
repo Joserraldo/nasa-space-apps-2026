@@ -17,5 +17,5 @@
 5. Doctora y Meteoróloga 3D solo si el presupuesto medido alcanza; si no, después de P4.
 6. **Aprobar la fidelidad** de cada PR de `ui/` contra su lámina y fusionarlo en `feat/ui-escenarios`.
 
-**Contratos:** respetás las firmas `crearAstronauta`, `crearExpertos`, `crearIris` y los tipos `ModeloAstronauta`, `ModeloExperto`, `ModeloIris` que consume `escena3d.ts` (Daniel). Los materiales y slots los da Daniel en `materiales.ts`; si necesitás uno nuevo, se lo pedís.
+**Contratos:** respetás las firmas `crearAstronauta`, `crearExpertos`, `crearIris` y los tipos `ModeloAstronauta`, `ModeloExperto`, `ModeloIris` que consume `escena3d.ts` (Daniel). Los materiales y slots los da Daniel en `materiales.ts`; si necesitás uno nuevo, se lo pedís. Los colores de trajes salen de `ui/src/estilos/tokens.ts` (DISEÑO §2.2), nunca hex sueltos.
 **Meta:** niño, Iris e Ingeniera fieles a las láminas e integrados en la base antes de P3.

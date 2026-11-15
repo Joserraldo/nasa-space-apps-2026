@@ -14,6 +14,9 @@ Cierra #
 ## Evidencia
 <!-- captura, gif o salida de tests -->
 
+## Ficha de fidelidad (solo si cambia algo visible)
+<!-- Bloque de docs/referenciapau/FLUJO.md §7.1 con la lámina canónica y la captura al lado. Skill: solar-shield-pr-visual. Si no cambia nada visible, borrá esta sección. -->
+
 ## Checklist
 - [ ] Solo toqué carpetas de mi rol (o hay issue `contrato` aprobado)
 - [ ] Menos de ~300 líneas

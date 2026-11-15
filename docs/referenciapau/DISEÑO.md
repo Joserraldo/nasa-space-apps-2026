@@ -32,8 +32,31 @@ Los hex de la UI son objetivos de diseño fijados por el atlas. Los de personaje
 | `lila` | `#EEE5F1` | Diálogos anchos, hover. |
 | `ciruela` | `#53306D` | Texto de contraste, sombras suaves de UI, superficie oscura alternativa. |
 | `cian` | `#73D4E1` | Acento contenido, foco exterior de teclado, contorno del objeto interactivo. |
-| `indigo-texto` | muestrear de `ui/03` | Texto principal sobre marfil. |
-| `ambar` | muestrear de `inicio/03` | Solo pantalla de carga y señal puntual del refugio. |
+| `indigo-texto` | `#30255F` | Texto principal sobre marfil y lila (contraste 11,7 sobre marfil). |
+| `espacio` | `#1C1248` | Fondo de la portada (`inicio/01`). Texto `marfil` encima (14,8). |
+| `ambar` | `#F2B531` | Solo pantalla de carga, señal puntual del refugio y fondo de aviso. Nunca como color de texto. |
+
+**Paleta aprobada por María Paula el 14 nov.** Los valores muestreados de las láminas que fallaban el contraste de texto (WCAG AA 4,5) se reemplazaron por estos: el rojo de `ui/03` (`#E9502C`) daba 3,22 sobre marfil y el verde (`#3CAB3F`) 2,56.
+
+**Los hex impresos en `ui/03` mandan sobre los píxeles.** Medido el 15 nov: el recuadro "Ivory `#F3EEE5`" de la lámina se ve `#F8EDE8` y "Plum `#53306D`" se ve `#673C75`, porque la imagen la generó una IA y deriva el color. Los cuatro tokens de arriba usan el hex impreso; los que no tienen hex impreso se muestrearon y llevan el origen.
+
+### 2.1.1 Colores de estado de la UI (muestreados de `ui/03`)
+
+| Token | Hex | Uso |
+| --- | --- | --- |
+| `error` | `#B33A3A` | Deltas negativos (`-6`), texto e icono de error (`Not enough energy`). 5,07 sobre marfil. |
+| `exito` | `#237443` | Deltas positivos (`+14`), texto e icono de éxito. 4,98 sobre marfil. |
+| `aviso-texto` | `#875000` | Texto de aviso sobre marfil (5,72). El icono de aviso usa `ambar`. |
+| `deshabilitado` / `deshabilitado-texto` | `#D9CFE1` / `#655570` | Botón no disponible, siempre con el motivo escrito (4,52). |
+| `icono-energia` | `#10D4E8` | Rayo de energía. |
+| `icono-vida` | `#47BE5B` | Hoja de soporte vital. |
+| `icono-escudo` | `#1BCEE2` | Escudo de blindaje. |
+| `exito-fondo` | `#E8E7E3` | Fondo del mensaje de éxito (`Panel installed`). |
+| `aviso-fondo` | `#FCE5CB` | Fondo del mensaje de aviso (`Power is low`). |
+| `error-fondo` | `#FBD7DA` | Fondo del mensaje de error. |
+| `info-fondo` | `#E5DAF3` | Mensaje pendiente (`Reply pending`); el icono usa `ciruela`. |
+
+Los iconos de recurso y los fondos de mensaje se muestrearon de `ui/03`. Los iconos siempre van con su texto al lado, así que su color no carga la información. Una información nunca va solo con color: cada estado lleva icono y texto (DISEÑO §8).
 
 ### 2.2 Trajes y personajes (muestreados de `personajes/00-familia-trajes.png`, calibrar)
 
@@ -57,7 +80,38 @@ Los hex de la UI son objetivos de diseño fijados por el atlas. Los de personaje
 | `montana-lejana` | `#8975C6` | Cordillera lejana desaturada hacia lila (perspectiva atmosférica). |
 | `cielo-dia` | ver [MARTE.md](MARTE.md) §4 | Reemplaza el azul de la lámina. |
 
-**Regla de proporción:** marfil y regolito dominan; lila y ciruela dan profundidad; el cian ocupa poco espacio y siempre significa "esto se puede usar o tiene foco". Nunca usar cian como decoración general.
+**Regla de proporción:** marfil y regolito dominan; lila y ciruela dan profundidad; el cian ocupa poco espacio y siempre significa "esto se puede usar o tiene foco". Nunca usar cian como decoración general. Única excepción, porque así está en `ui/03`: los iconos de energía y de escudo (`icono-energia`, `icono-escudo`).
+
+**Una sola fuente de color para CSS y 3D:** `ui/src/estilos/tokens.ts` exporta todos los hex de esta sección. `ui/src/estilos/tokens.css` declara las mismas variables y un test compara las dos. `materiales.ts`, los personajes y cualquier SVG toman el color de `tokens.ts`; un hex suelto en otro archivo es un error de revisión (FLUJO §3).
+
+### 2.4 Tipografía
+
+**Familia única: Nunito** (SIL OFL 1.1, `github.com/googlefonts/nunito`), variable de 200 a 1000, con todos los glifos del español (`á é í ó ú ñ ü ¿ ¡`, verificado).
+
+Por qué Nunito: las láminas las generó una IA y no usan una fuente real, así que se eligió **la más cercana medida**. Se compararon las letras de la lámina con cada candidata (superposición de la tinta, de 0 a 1, en la misma caja):
+
+| Candidata | Título de `inicio/03` | Botón de `ui/03` | `Start mission` de `inicio/01` | `Settings` de `inicio/01` |
+| --- | --- | --- | --- | --- |
+| **Nunito** | **0,74** (800) | **0,71** (700) | **0,73** (900) | 0,78 (900) |
+| Baloo 2 | 0,64 | 0,69 | 0,67 | **0,82** |
+| Plus Jakarta Sans | 0,65 | 0,58 | 0,66 | 0,68 |
+| Lexend | 0,57 | 0,55 | 0,70 | 0,76 |
+| Atkinson Hyperlegible (la del prototipo descartado) | 0,47 | 0,68 | 0,59 | 0,70 |
+
+Nunito es primera en tres de las cuatro muestras y segunda en la otra; una sola familia es más coherente que mezclar. Es la referencia que eligió María Paula el 14 nov (menú de `inicio/01`: sans pesada, compacta y suavemente redondeada). Ojo: es **Nunito**, con terminaciones redondeadas, no Nunito Sans. La itálica del subtítulo (`Explore. Ask. Decide.`) da 0,63 con Nunito Italic contra 0,56 con la recta.
+
+| Uso | Peso | Tamaño de partida |
+| --- | --- | --- |
+| Títulos de pantalla y tarjeta | 800 | 28 a 35 px |
+| Botones principales de la portada (`Start mission`, `Continue`, `Settings`) | 900 | 28 px |
+| Subtítulos y lemas (`Mars training adventure`, `Explore. Ask. Decide.`) | Nunito Italic 800 | 18 a 22 px |
+| Botones, etiquetas, nombres | 700 | 18 px |
+| Cuerpo y diálogos | 600 | 18 a 20 px |
+| Números de placas | 800, `font-variant-numeric: tabular-nums` | 22 px |
+
+Los tamaños son el punto de partida (escala 1,25 sobre 18 px) y se ajustan con la captura al lado de la lámina. Color: `indigo-texto` sobre marfil y lila; `marfil` sobre `ciruela`.
+
+**Se sirve desde el juego**, nunca desde Google Fonts en tiempo de ejecución: funciona sin conexión y no manda datos de niños a terceros. Los dos archivos `woff2` (Nunito y Nunito Italic, subconjunto latin, que cubre el español) van en `ui/public/fuentes/` con su `OFL.txt`, y se anota en `assets/LICENCIAS.md`. `@font-face` con `font-display: swap` y respaldo `system-ui, sans-serif` solo mientras carga. El logo sigue siendo imagen.
 
 ---
 
@@ -81,7 +135,7 @@ Los hex de la UI son objetivos de diseño fijados por el atlas. Los de personaje
 
 - Luz principal cálida, amplia, **desde arriba a la izquierda**. Relleno suave frío. Sombras suaves, teñidas de lila (nunca negras).
 - Exterior de día: sol más débil y más blanco que en la Tierra, cielo que tiñe todo de cálido ([MARTE.md](MARTE.md) §5).
-- Cámara de juego en tercera persona alta y por detrás del niño, ligera picada (ver `mundo/01`). Primera persona con guantes visibles en las esquinas inferiores (ver `mundo/02`). Las dos cámaras muestran el mismo mundo con las mismas reglas.
+- Cámara de juego en tercera persona alta y por detrás del niño, ligera picada (ver `mundo/01`). Valores de partida en [FLUJO.md](FLUJO.md) §9. Primera persona con guantes visibles en las esquinas inferiores (ver `mundo/02`). Las dos cámaras muestran el mismo mundo con las mismas reglas.
 - Cuatro ambientes de luz de referencia, definidos por [`personajes/10-nino-luz-lectura.png`](referencias/personajes/10-nino-luz-lectura.png): **día en Marte**, **interior/laboratorio**, **atardecer exterior**, **alerta/refugio**. Todo personaje y material se valida en los cuatro.
 
 ---

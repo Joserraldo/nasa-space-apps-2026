@@ -212,5 +212,11 @@
   "datos.terreno.luna.tierra": "Desde aquí se ve la Tierra cerca del {pct}% del tiempo, así que los mensajes pueden ir directo a casa.",
   "datos.terreno.luna.cielo": "Las paredes del cráter tapan parte del cielo, así que aquí llega menos radiación del espacio.",
   "fuente.pgda": "NASA Goddard PGDA (iluminación de los polos lunares, Mazarico et al. 2011)",
-  "fuente.li2018": "Li et al. 2018, PNAS (instrumento M3 de la NASA en la nave india Chandrayaan-1)"
+  "fuente.li2018": "Li et al. 2018, PNAS (instrumento M3 de la NASA en la nave india Chandrayaan-1)",
+  "datos.glosario.sol-dia-de-marte.palabra": "Sol (día de Marte)",
+  "datos.glosario.sol-dia-de-marte.def": "Un día en Marte. Dura un poco más que un día en la Tierra: unas 24 horas y 40 minutos.",
+  "datos.glosario.telemetria.palabra": "Telemetría",
+  "datos.glosario.telemetria.def": "Los datos que una nave o una base envía por radio a la Tierra para contar cómo está y qué midió.",
+  "datos.glosario.tick.palabra": "Tick",
+  "datos.glosario.tick.def": "Un paso de tiempo del juego: en cada tick la partida avanza un poco."
 }
