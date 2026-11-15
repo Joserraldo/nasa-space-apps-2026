@@ -122,6 +122,10 @@ test("ruta dorada: de la órbita al resumen, en inglés", async ({ page }) => {
   // E6: toda acción pasa por el único panel de confirmación (APLICACION §5), con su costo del motor.
   const confirmar = page.getByRole("dialog").getByRole("button", { name: "Confirm" });
   await confirmar.click();
+  // Panel 04 también en la base: la tarjeta confirma la acción y "Return to exploration" vuelve a la base.
+  await expect(page.getByRole("heading", { name: "Decision recorded" })).toBeVisible();
+  await expect(page.getByText("Action confirmed")).toBeVisible();
+  await page.getByRole("button", { name: "Return to exploration" }).click();
   await expect(page.getByText(/Earth's answer arrives in \d+ turns/)).toBeVisible();
 
   // Iris dañada (si sigue así tras verificar): se repara desde las acciones.
@@ -129,6 +133,7 @@ test("ruta dorada: de la órbita al resumen, en inglés", async ({ page }) => {
   if (await repararIris.isVisible()) {
     await repararIris.click();
     await confirmar.click();
+    await page.getByRole("button", { name: "Return to exploration" }).click();
   }
 
   // Paso 8: cadena de causas y tarjeta de ciencia.
