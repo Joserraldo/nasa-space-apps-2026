@@ -170,5 +170,12 @@
   "fuente.svs": "Estudio de Visualización Científica de la NASA (fases y libración de la Luna 2024)",
   "datos.luz.derivado": "La posición del Sol en la Luna viene de la NASA. La altura del Sol en cada lugar y las horas del amanecer las calcula el equipo, en terreno plano y sin montañas.",
   "datos.luz.noche": "Cuando llegó esta tormenta, era de noche en este lugar: el Sol volvió a salir el {fecha}.",
-  "datos.luz.dia": "Cuando llegó esta tormenta, era de día en este lugar: el Sol estaba a {elevacion}° sobre el horizonte."
+  "datos.luz.dia": "Cuando llegó esta tormenta, era de día en este lugar: el Sol estaba a {elevacion}° sobre el horizonte.",
+  "fuente.nssdcMoon": "NASA NSSDC (ficha de la Luna)",
+  "fuente.nasa.hieloLuna": "NASA Science (agua y hielo en la Luna)",
+  "fuente.nasa.orionRefugio": "NASA (plan de refugio contra la radiación en Orion)",
+  "fuente.nasa.orionPaneles": "NASA (paneles solares del módulo de servicio de Orion)",
+  "fuente.jpl.casqueteMarte": "NASA JPL (imagen del casquete polar norte de Marte)",
+  "fuente.jpl.spiritInclinacion": "NASA JPL (inclinación de invierno del róver Spirit)",
+  "fuente.nasa.phoenix": "NASA (la sonda Phoenix en el polo norte de Marte)"
 }
