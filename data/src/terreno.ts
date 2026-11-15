@@ -77,6 +77,20 @@ export const SitioLunaSchema = z.object({
   relieveM: z.number().min(0),
   /** Derivado 0–1 (1 = mejor), como en Jezero. Solo el plano tiene fuente; luz y blindaje quedan pendientes (null). */
   puntajes: z.object({ plano: Puntaje, luz: Puntaje.nullable(), blindaje: Puntaje.nullable() }),
+  /**
+   * Derivado: cielo tapado por el relieve = 1 − Ω/2π (Ω = ángulo sólido del cielo sobre el horizonte local), con el DEM LOLA
+   * de un entorno de 40 km (horizonte cada 5°). Es el blindaje natural (`puntajes.blindaje` = `fraccion`), no una dosis. Opcional.
+   */
+  cieloTapado: z
+    .object({
+      fraccion: z.number().min(0).max(1),
+      omegaSr: z.number().min(0).max(2 * Math.PI),
+      horizonteMaxGrados: z.number().min(0),
+      direcciones: z.number().int().positive(),
+      radioKm: z.number().positive(),
+      dem: z.object({ archivo: z.string(), ancho: z.number().int(), alto: z.number().int(), metrosPorPixel: z.number() }),
+    })
+    .optional(),
 });
 export type SitioLuna = z.infer<typeof SitioLunaSchema>;
 
@@ -94,6 +108,8 @@ export const TerrenoLunaSchema = z.object({
     derivadoKey: z.literal("datos.terreno.derivado"),
     /** Criterios sin fuente verificada: no se inventan valores. */
     pendientes: z.array(z.enum(["luz", "blindaje"])),
+    /** Fuente del cielo tapado (blindaje derivado). Opcional. */
+    blindajeFuente: z.object({ metodo: z.string(), cita: z.string(), capa: z.string(), consultadoEl: z.string().regex(/^\d{4}-\d{2}-\d{2}$/) }).optional(),
   }),
 });
 export type TerrenoLuna = z.infer<typeof TerrenoLunaSchema>;

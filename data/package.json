@@ -15,6 +15,7 @@
     "luna:luz": "tsx scripts/luz-luna.ts",
     "marte-norte:descargar": "tsx scripts/marte-norte-descargar.ts",
     "marte-norte:curar": "tsx scripts/marte-norte-curar.ts",
+    "luna:blindaje-descargar": "tsx scripts/luna-blindaje.ts",
     "artemis": "tsx scripts/artemis.ts",
     "luna": "tsx scripts/luna.ts"
   },
