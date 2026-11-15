@@ -144,7 +144,7 @@ describe("cielo de Marte (Three)", () => {
     expect((cielo.domo.material as THREE.MeshBasicMaterial).fog).toBe(false);
   });
 
-  it("luz: direccional arriba a la izquierda, sombras 1024/512, hemisférica cielo=horizonte suelo=regolito", () => {
+  it("luz: direccional arriba a la izquierda, sombras 1024/512, hemisférica cielo=lila (sombras lilas) suelo=regolito", () => {
     const alta = crearCielo(new THREE.Scene(), "dia", "alta");
     const baja = crearCielo(new THREE.Scene(), "dia", "baja");
     expect(alta.sol.position.x).toBeLessThan(0);
@@ -152,7 +152,7 @@ describe("cielo de Marte (Three)", () => {
     expect(alta.sol.castShadow).toBe(true);
     expect(alta.sol.shadow.mapSize.x).toBe(1024);
     expect(baja.sol.shadow.mapSize.x).toBe(512);
-    expect(alta.hemisferica.color.getHexString()).toBe(new THREE.Color(PALETA_CIELO.dia.horizonte).getHexString());
+    expect(alta.hemisferica.color.getHexString()).toBe(new THREE.Color(TOKENS_TEMP.lila).getHexString());
     expect(alta.hemisferica.groundColor.getHexString()).toBe(new THREE.Color(TOKENS_TEMP["regolito-medio"]).getHexString());
   });
 

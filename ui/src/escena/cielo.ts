@@ -52,6 +52,12 @@ export const TAMANO_HALO: Readonly<Record<Ambiente, number>> = { dia: 1, atardec
 export const REGOLITO_MEDIO = "#B76A78";
 /** Sombras teñidas de lila, nunca negras (DISEÑO.md §2.3 `sombra-suelo`, §3.3). */
 export const SOMBRA_SUELO = "#F8B9B2";
+/**
+ * Relleno de la hemisférica de día: `lila` (DISEÑO §2.1). Lo que el Sol no toca recibe sobre todo
+ * este color, así las sombras del suelo leen lila como en la lámina `mundo/01` y nunca negras
+ * (DISEÑO §2.3 `sombra-suelo`, §3.3 "relleno suave frío"). [E] a aprobar por María Paula.
+ */
+export const LILA_RELLENO = "#EEE5F1";
 /** Marfil de referencia para calibrar la exposición (MARTE.md §5). */
 export const MARFIL_CALIBRACION = "#F3EEE5";
 
@@ -69,9 +75,9 @@ export const LUZ = {
   direccionSol: normalizar([-0.6, 1, 0.45]),
   /** Direccional: blanco cálido, más débil y blanco que en la Tierra (DISEÑO.md §3.3). [E] */
   colorSol: "#FFF3E4",
-  /** Hemisférica: cielo = horizonte del ambiente, suelo = `regolito-medio` (MARTE.md §5). */
+  /** Hemisférica: suelo = `regolito-medio` (MARTE.md §5); cielo de día = `lila` (relleno frío), al atardecer = horizonte. */
   hemisferica: {
-    dia: { cielo: PALETA_CIELO.dia.horizonte, suelo: REGOLITO_MEDIO },
+    dia: { cielo: LILA_RELLENO, suelo: REGOLITO_MEDIO },
     atardecer: { cielo: PALETA_CIELO.atardecer.horizonte, suelo: REGOLITO_MEDIO },
   } as Readonly<Record<Ambiente, { cielo: string; suelo: string }>>,
   /** `mapSize` de la sombra: <= 1024; 512 en calidad baja (MARTE.md §5). */

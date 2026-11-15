@@ -40,14 +40,12 @@ export const ESCALA_VERTICAL_POR_DEFECTO = 3;
 /** Lado mayor del terreno en unidades de mundo. [E] a calibrar con la base compacta. */
 export const TAMANO_MUNDO_POR_DEFECTO = 400;
 
-/** Colores del entorno (DISEÑO.md §2.3 "Entorno marciano"). */
-export const COLOR_TERRENO = "#FA8D6F"; // regolito-claro: suelo iluminado
-export const COLOR_ROCA = {
-  /** Cara superior, más clara que los lados (regolito-medio, DISEÑO.md §2.3). */
-  superior: "#B76A78",
-  /** Caras laterales oscuras (roca-basalto, DISEÑO.md §2.3). */
-  lados: "#813E55",
-} as const;
+/**
+ * Suelo (DISEÑO.md §2.3): el `regolito-claro` puro sale naranja saturado tras el tone mapping;
+ * la lámina `mundo/01` lee terracota rosada. Se mezcla con `sombra-suelo` (rosado) en lo llano y
+ * cae hacia `regolito-medio` en laderas y en caras sueltas al azar (facetas visibles). [E]
+ */
+export const MEZCLA_SUELO = { rosado: 0.3, variacion: 0.38, ladera: 0.85 } as const;
 
 export interface Rejilla {
   alturas: Float32Array;
@@ -234,6 +232,8 @@ export interface OpcionesRocas {
   radioMin?: number;
   escalaMin?: number;
   escalaMax?: number;
+  /** Descarta las rocas que caerían en (x, z) (caminos, edificios). Puede dar menos de `n`. */
+  excluir?: (x: number, z: number) => boolean;
 }
 
 /** PRNG determinista (mulberry32). */
@@ -273,10 +273,12 @@ export function rocasBasalticas(
     const x = Math.cos(ang) * dist;
     const z = Math.sin(ang) * dist;
     const e = eMin + azar() * (eMax - eMin);
+    const r1 = azar(), r2 = azar(), r3 = azar(), r4 = azar(), r5 = azar(), r6 = azar();
+    if (opciones.excluir?.(x, z)) continue;
     rocas.push({
       posicion: [x, alturaEnMundo(terreno, opcionesMalla, x, z, m), z],
-      escala: [e * (0.8 + azar() * 0.4), e * (0.5 + azar() * 0.3), e * (0.8 + azar() * 0.4)],
-      rotacion: [(azar() - 0.5) * 0.3, azar() * Math.PI * 2, (azar() - 0.5) * 0.3],
+      escala: [e * (0.8 + r1 * 0.4), e * (0.5 + r2 * 0.3), e * (0.8 + r3 * 0.4)],
+      rotacion: [(r4 - 0.5) * 0.3, r5 * Math.PI * 2, (r6 - 0.5) * 0.3],
     });
   }
   return rocas;
@@ -323,9 +325,28 @@ function pintarPorNormal(geo: THREE.BufferGeometry, arriba: THREE.Color, lados: 
   geo.setAttribute("color", new THREE.BufferAttribute(colores, 3));
 }
 
+/** Pinta el suelo cara a cara: terracota rosada en lo llano, `regolito-medio` en laderas. */
+function pintarSuelo(geo: THREE.BufferGeometry): void {
+  const normal = geo.getAttribute("normal");
+  const colores = new Float32Array(normal.count * 3);
+  const llano = colorToken("regolito-claro").lerp(colorToken("sombra-suelo"), MEZCLA_SUELO.rosado);
+  const medio = colorToken("regolito-medio");
+  const c = new THREE.Color();
+  const azar = aleatorio(SEMILLA_SUELO);
+  for (let v = 0; v < normal.count; v += 3) {
+    const ladera = 1 - Math.min(1, Math.max(0, (normal.getY(v) - 0.55) / 0.4));
+    c.copy(llano).lerp(medio, Math.min(1, azar() * MEZCLA_SUELO.variacion + ladera * MEZCLA_SUELO.ladera));
+    for (let k = 0; k < 3; k++) colores.set([c.r, c.g, c.b], (v + k) * 3);
+  }
+  geo.setAttribute("color", new THREE.BufferAttribute(colores, 3));
+}
+
+/** Semilla decorativa del moteado del suelo. */
+const SEMILLA_SUELO = 2020;
+
 /**
  * Terreno de Jezero como `Mesh` facetado: vértices duplicados por triángulo (normales planas),
- * `regolito-claro` en lo llano y `regolito-medio` en las laderas. Recibe sombras, no las proyecta.
+ * terracota rosada en lo llano y `regolito-medio` en las laderas. Recibe sombras, no las proyecta.
  */
 export function crearTerreno(materiales: Materiales, opciones: OpcionesTerreno): Terreno3D {
   const { rejilla } = opciones;
@@ -334,7 +355,7 @@ export function crearTerreno(materiales: Materiales, opciones: OpcionesTerreno):
   const geo = new THREE.BufferGeometry();
   geo.setAttribute("position", new THREE.BufferAttribute(m.posiciones, 3));
   geo.computeVertexNormals(); // no indexada: cada triángulo con su normal plana
-  pintarPorNormal(geo, colorToken("regolito-claro"), colorToken("regolito-medio"), true);
+  pintarSuelo(geo);
   geo.computeBoundingSphere();
   const malla = new THREE.Mesh(geo, materiales.Rock);
   malla.name = "Terrain_Jezero";
@@ -456,4 +477,75 @@ export function contarRender(escena: THREE.Object3D): CuentaRender {
     cuenta.triangulos += tris * pasadas;
   });
   return cuenta;
+}
+
+// ---------------------------------------------------------------------------------------------
+// Horizonte: cordillera lejana low poly
+// ---------------------------------------------------------------------------------------------
+
+export interface OpcionesMontanas {
+  /** Radio del pie de la cordillera (más allá del borde útil del terreno). */
+  radio: number;
+  /** Altura máxima de los picos sobre y = 0. */
+  alto: number;
+  /** Picos por vuelta. */
+  picos: number;
+  semilla: number;
+}
+
+/** Valores de partida: bajas y lejanas (MARTE §6: "borde del cráter bajo y lejano"). [E] */
+export const MONTANAS: OpcionesMontanas = { radio: 230, alto: 24, picos: 52, semilla: 7 };
+
+/**
+ * Anillo de picos facetados (`montana-lejana`, crestas mezcladas con `lila`): una sola malla con
+ * dos filas de picos (la de atrás más alta y más lila), pocos triángulos, sin sombra.
+ * Comparte el material `Rock` (color de vértice) y recibe la niebla del cielo.
+ */
+export function crearMontanas(materiales: Materiales, o: OpcionesMontanas = MONTANAS): THREE.Mesh {
+  const azar = aleatorio(o.semilla);
+  const pos: number[] = [];
+  const col: number[] = [];
+  const pie = colorToken("montana-lejana").lerp(colorToken("regolito-medio"), 0.35);
+  const cresta = colorToken("montana-lejana");
+  const fondo = colorToken("montana-lejana").lerp(colorToken("lila"), 0.3);
+  const tri = (a: number[], b: number[], c: number[], ca: THREE.Color, cc: THREE.Color) => {
+    pos.push(...a, ...b, ...c);
+    col.push(ca.r, ca.g, ca.b, ca.r, ca.g, ca.b, cc.r, cc.g, cc.b);
+  };
+  for (const [fila, radio, alto, color] of [[1, o.radio * 1.18, o.alto * 1.35, fondo], [0, o.radio, o.alto, cresta]] as const) {
+    const n = o.picos + fila * 7;
+    const desfase = azar() * Math.PI * 2;
+    const puntos: number[][] = [];
+    for (let i = 0; i < n; i++) {
+      const a = desfase + (i / n) * Math.PI * 2;
+      // Picos alternos con valles: silueta baja y quebrada.
+      const h = i % 2 === 0 ? alto * (0.35 + azar() * 0.65) : alto * (0.2 + azar() * 0.3);
+      const r = radio * (0.97 + azar() * 0.06);
+      puntos.push([Math.cos(a) * r, h, Math.sin(a) * r, a]);
+    }
+    for (let i = 0; i < n; i++) {
+      const p = puntos[i]!, q = puntos[(i + 1) % n]!;
+      const pa = p[3]!, qa = q[3]! < pa ? q[3]! + Math.PI * 2 : q[3]!;
+      // Pie delante (hacia el centro) y detrás, bajo el suelo: cada tramo son 2 caras al frente.
+      const r0 = radio * 0.9;
+      const pie1 = [Math.cos(pa) * r0, -40, Math.sin(pa) * r0];
+      const pie2 = [Math.cos(qa) * r0, -40, Math.sin(qa) * r0];
+      const medio = [Math.cos((pa + qa) / 2) * radio * 0.94, (p[1]! + q[1]!) * 0.25, Math.sin((pa + qa) / 2) * radio * 0.94];
+      const c1 = color.clone().lerp(pie, 0.5 + azar() * 0.3);
+      tri(pie1, medio, [p[0]!, p[1]!, p[2]!], pie, i % 2 === 0 ? color : c1);
+      tri(medio, pie2, [q[0]!, q[1]!, q[2]!], pie, i % 2 === 1 ? color : c1);
+      tri([p[0]!, p[1]!, p[2]!], medio, [q[0]!, q[1]!, q[2]!], c1, color);
+      tri(pie1, pie2, medio, pie, pie);
+    }
+  }
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute("position", new THREE.Float32BufferAttribute(pos, 3));
+  geo.setAttribute("color", new THREE.Float32BufferAttribute(col, 3));
+  geo.computeVertexNormals();
+  geo.computeBoundingSphere();
+  const malla = new THREE.Mesh(geo, materiales.Rock);
+  malla.name = "Mountains_Far";
+  malla.castShadow = false;
+  malla.receiveShadow = false;
+  return malla;
 }

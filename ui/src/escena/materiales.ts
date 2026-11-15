@@ -30,6 +30,7 @@ export const TOKENS_TEMP = {
   "roca-basalto": "#813E55",
   "sombra-suelo": "#F8B9B2",
   camino: "#BDAFC4", // DISEÑO §2.3: baldosas lila grisáceo (tramos de camino, slot Rock con color de vértice)
+  "montana-lejana": "#8975C6", // DISEÑO §2.3: cordillera lejana desaturada hacia lila (slot Rock con color de vértice)
   "piel-base": "#C68E6A",
   "cabello-base": "#4A3328",
 } as const;
