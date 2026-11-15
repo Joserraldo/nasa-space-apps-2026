@@ -59,13 +59,13 @@ Ninguna cambia reglas de juego ni contratos. Todas están en los prompts de cada
 
 | # | Mejora | Por qué (del reto) | Quién | Prioridad |
 | --- | --- | --- | --- | --- |
-| 1 | **Comida visible en toda partida:** en el paso 4 la comparación siempre explica que el invernadero produce comida (aunque no se elija), y el final muestra siempre una tarjeta de comida (OSDR chiles o CSA) | La producción de comida es uno de los 5 objetivos | ui, pista M | P0 |
-| 2 | **Términos explicados en contexto:** al tocar "dosis", "radiación", "blindaje", "microgravedad", etc., una explicación corta desde el glosario que ya existe (`datos.glosario.*`). Faltan en el glosario: **"sol" como día de Marte** (hoy "Sol" es la estrella y se presta a confusión), "telemetría" y "tick" | Consideración de lenguaje llano | ui (M monta, I hace el componente); datos agrega las palabras que faltan | P1 |
-| 3 | **"Hoy en el Sol" (opcional, destaca; ya previsto como banner opcional en `docs/ORQUESTACION.md`):** una tarjeta "Today on the Sun" con DONKI en vivo, fecha y fuente, que se muestra **separada** de la tormenta de la misión y con respaldo archivado si falla la llamada | "Lo que destaca": ligar el blindaje a datos actuales | datos + infra (fuente y llamada desde el Worker, sin claves en el navegador), ui (tarjeta) | P2, solo si sobra tiempo |
-| 4 | **Retraso de comunicaciones explicado:** en el paso 7, "la luz tarda de 3 a 22 minutos entre Marte y la Tierra" con su fuente y los ticks restantes | Retraso de comunicaciones es objetivo | ui, pista M (#137) | P0 |
-| 5 | **Pantalla "qué datos de NASA usamos y por qué"** al final | "Lo que destaca": datasets trazables | ui, pista M (#137) | P0 |
-| 6 | **Nueva semilla** en el final, además de repetir la misma | Rejugabilidad | ui, pista M; motor confirma la variabilidad (P3) | P1 |
-| 7 | **Selector de dificultad** con una frase por nivel | Público más amplio (aula, familia) | ui, pista M; diseño aprueba | P2 |
+| 1 | **Comida visible en toda partida:** en el paso 4 la comparación siempre explica que el invernadero produce comida (aunque no se elija), y el final muestra siempre una tarjeta de comida (OSDR chiles o CSA) | La producción de comida es uno de los 5 objetivos | José (integración) | P0 |
+| 2 | **Términos explicados en contexto:** al tocar "dosis", "radiación", "blindaje", "microgravedad", etc., una explicación corta desde el glosario que ya existe (`datos.glosario.*`). Faltan en el glosario: **"sol" como día de Marte** (hoy "Sol" es la estrella y se presta a confusión), "telemetría" y "tick" | Consideración de lenguaje llano | Jaime hace el componente, José lo monta, Daniel agrega las palabras que faltan | P1 |
+| 3 | **"Hoy en el Sol" (opcional, destaca; ya previsto como banner opcional en `docs/ORQUESTACION.md`):** una tarjeta "Today on the Sun" con DONKI en vivo, fecha y fuente, que se muestra **separada** de la tormenta de la misión y con respaldo archivado si falla la llamada | "Lo que destaca": ligar el blindaje a datos actuales | Daniel y José (fuente y llamada desde el Worker, sin claves en el navegador), Jaime (tarjeta) | P2, solo si sobra tiempo |
+| 4 | **Retraso de comunicaciones explicado:** en el paso 7, "la luz tarda de 3 a 22 minutos entre Marte y la Tierra" con su fuente y los ticks restantes | Retraso de comunicaciones es objetivo | José (integración), con Daniel (#137) | P0 |
+| 5 | **Pantalla "qué datos de NASA usamos y por qué"** al final | "Lo que destaca": datasets trazables | José (integración), con Daniel (#137) | P0 |
+| 6 | **Nueva semilla** en el final, además de repetir la misma | Rejugabilidad | José (integración); Jaime confirma la variabilidad (P3) | P1 |
+| 7 | **Selector de dificultad** con una frase por nivel | Público más amplio (aula, familia) | José (integración); Camilo aprueba | P2 |
 
 ## 4. Contraste con el resumen de misiones de Camilo (14 nov)
 

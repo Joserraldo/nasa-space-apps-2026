@@ -13,7 +13,7 @@ Leé solo lo que tu tarea necesita. Cada documento es autónomo y enlaza sus lá
 | Si vas a... | Leé primero | Después |
 | --- | --- | --- |
 | Comprobar que algo cumple el reto de NASA | [RETO.md](RETO.md) | [NIVELES.md](NIVELES.md) |
-| **Saber qué se construye primero y quién lo hace** | [FLUJO.md](FLUJO.md) | [NIVELES.md](NIVELES.md) §8 |
+| **Saber qué se construye primero y quién lo hace** | [FLUJO.md](FLUJO.md) | [`docs/prompts/ARRANQUE.md`](../prompts/ARRANQUE.md) |
 | Entender el juego en 5 minutos | [HISTORIA.md](HISTORIA.md) (premisa, personajes, dónde empieza, conexiones) | Este README (secciones 3 y 4) |
 | Construir cualquier cosa visual (3D o UI) | [DISEÑO.md](DISEÑO.md) | [APLICACION.md](APLICACION.md) |
 | Construir terreno, cielo, luz o rocas | [MARTE.md](MARTE.md) | [DISEÑO.md](DISEÑO.md) §2–3 |
@@ -30,7 +30,7 @@ Leé solo lo que tu tarea necesita. Cada documento es autónomo y enlaza sus lá
 
 | Documento | Responde a |
 | --- | --- |
-| [FLUJO.md](FLUJO.md) | **Quién hace qué y en qué orden.** Pistas de trabajo de ui (integración de misiones, escenario, interfaz, audio), contratos entre pistas, división de assets, fases, validación y orden de fusión. |
+| [FLUJO.md](FLUJO.md) | **Quién programa qué y en qué orden.** Reparto del frontend por persona con sus archivos (personajes, escenario, ubicación, integración, interfaz, audio), rama `feat/ui-escenarios`, contratos, división de assets, fases y validación. |
 | [NIVELES.md](NIVELES.md) | **Todos los niveles.** Las 5 misiones con su ficha, el orden de la campaña, la dificultad, los niveles de Iris y lo que falta decidir. Prioridad 1. |
 | [HISTORIA.md](HISTORIA.md) | **Qué se cuenta.** Lore canónico, personajes y su personalidad, dónde empieza el juego, la misión de Jezero como historia, mapa de conexiones y resumen de la campaña. |
 | [DISEÑO.md](DISEÑO.md) | **Cómo se ve.** Paleta, materiales, luz, estilo low-poly facetado, personajes (poses, rostros, luz), Iris, sistema UI, inicio y lista de prohibiciones. |

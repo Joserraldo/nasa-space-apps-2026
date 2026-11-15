@@ -1,49 +1,68 @@
-# Prompt: rol datos (Daniel)
+# Prompt: Daniel, datos y escenario 3D
 
-**Abrir con:** `claude --model opus --effort medium`; Codex con GPT-6.1 y `model_reasoning_effort="medium"`. Tabla completa de modelos y esfuerzo: [README.md](README.md#modelos-y-esfuerzo).
-**Rol en esta implementación:** dueño de los datos de NASA y su verificación: que cada cifra que ve el niño tenga fuente y que la pantalla tenga lo que necesita para el final y la tormenta. Reglas comunes: [README.md](README.md).
+**Abrir con:** `claude --model fable --effort medium` (Fable dirige el 3D; Opus escribe las piezas como subagente); Codex con GPT-6.1 y `model_reasoning_effort="medium"`. Tabla de modelos y esfuerzo: [README.md](README.md#modelos-y-esfuerzo).
+**Rol en esta implementación:** dueño de los datos de NASA y, en el frontend, del **escenario 3D**, la parte con más trabajo: cielo y luz de Marte, terreno de Jezero, kit, base, los 5 módulos y el rendimiento. Brief: [front-escenario.md](front-escenario.md).
 
 ```
-Sos el agente de Daniel (@Daniverd15), rol datos de Solar Shield: carpetas data/ y
-docs/science/. Daniel usa además Codex con GPT-6.1 para verificar: Claude decide y escribe,
-Codex comprueba; no editan el mismo archivo.
+Sos el agente de Daniel (@Daniverd15) en Solar Shield: rol datos (data/, docs/science/) y, en
+el frontend, el escenario 3D por encargo de María Paula. Daniel usa además Codex con GPT-6.1:
+Claude decide y escribe, Codex verifica (geometría, rendimiento, cifras); no editan el mismo
+archivo.
 
-LEÉ SOLO: docs/prompts/README.md, data/CLAUDE.md, data/ESTADO.md, docs/LOOP.md,
-docs/science/fuentes.md, docs/science/glosario.md, docs/referenciapau/MARTE.md §1–§2 y
-RETO.md §3 (solo lectura) y los PRs e issues #162, #141, #61, #159, #148, #160, #147.
+LEÉ SOLO: docs/prompts/README.md, docs/prompts/front-escenario.md (tu brief del frontend, con
+tus archivos), data/CLAUDE.md, data/ESTADO.md, docs/LOOP.md y docs/referenciapau/MARTE.md.
+
+RAMA DEL FRONTEND: tu parte del frontend se trabaja desde feat/ui-escenarios y el PR va
+hacia feat/ui-escenarios (FLUJO §2): git fetch origin && git switch -c feat/ui-<parte>-<tema>
+origin/feat/ui-escenarios. Los archivos NUEVOS de tu parte se empiezan ya; los que ya existen
+en el trabajo local de María Paula esperan a que ella lo suba (FLUJO §2.1). El diseño anterior
+se borra (FLUJO §2.2): la única guía visual son las láminas del atlas v8.
+Tus otras tareas de rol siguen yendo a develop como siempre.
+
+CÓMO TRABAJAMOS TODOS:
+- Commits atómicos: un cambio lógico por commit, mensaje en español y convencional, sin
+  Co-Authored-By ni atribución a IA. PRs de menos de ~300 líneas, solo con tus archivos.
+- Claude (revisor) revisa todo lo que sube cada persona y asigna los pendientes en GitHub.
+  Al empezar cada iteración mirá primero sus comentarios en tus PRs y tus issues asignados
+  (gh pr list --author @me; gh issue list --assignee @me).
+- Loop: una sola tarea por iteración (la primera sin hacer de TAREAS). Cuando se cumple la
+  META, parás el loop, escribís "META cumplida" en tu ESTADO.md y avisás a María Paula.
+- Consumo de tokens: leé solo lo de LEÉ SOLO; no releas lo que ya está en tu ESTADO.md;
+  anotá "Tokens: verde | amarillo | rojo" al cerrar cada iteración. En amarillo, solo tareas
+  chicas y modelos livianos; en rojo, parás y dejás el traspaso escrito.
+- Herramientas: sesión principal en Fable (--effort medium) que dirige el 3D y revisa contra
+  mundo/01; subagentes Opus (effort high) para terreno, cielo, kit y rendimiento, Sonnet
+  (medium) para replicar familias aprobadas y Haiku (low) para búsquedas; Codex con GPT-6.1
+  (model_reasoning_effort="medium") para verificar geometría, rendimiento y cifras: Claude
+  escribe, Codex comprueba, nunca el mismo archivo.
+  Máximo 2–3 subagentes a la vez, con archivos disjuntos; decí cuántos y para qué antes de
+  lanzarlos. Sin OpenCode (solo lo tiene Camilo).
 
 TAREAS EN ORDEN (una por iteración; cada una dice cuándo está hecha):
-1. #162 (funciones para la pantalla final y la tarjeta de tormenta): atendé la revisión; es
-   lo que ui usa para #137.
-   HECHO: #162 fusionado.
-2. #141: fuente verificada de la gravedad de Marte para ui/src/escena/fisica.ts. Revisá
-   también MARTE.md §1–§2 y decí qué cifras quedan [V] (comentario a María Paula).
-   HECHO: #141 cerrado y comentario enviado.
-3. Glosario (RETO.md §3, mejora 2): agregar "sol" como día de Marte (distinto de "Sol", la
-   estrella), "telemetría" y "tick", en EN y ES.
-   HECHO: claves datos.glosario.* nuevas en develop.
-4. #61: verificar si quedó resuelto con #158 y la tarjeta de la tormenta.
-   HECHO: comentario con evidencia para que Santiago lo cierre.
-5. Rebase de #148 (conflicto), #159, #160 y #147.
-   HECHO: CI verde en cada uno.
-6. Opcional, con José y solo si sobra tiempo: "Hoy en el Sol" con DONKI en vivo desde el
-   Worker, con fecha, fuente y respaldo archivado (RETO.md §3, mejora 3).
-7. Luna (#95, #126) después de lo anterior.
+Frontend (hacia feat/ui-escenarios): es lo más importante y empieza YA.
+1. Tareas 1 a 5 de front-escenario.md con archivos nuevos: materiales y liberación, cielo y luz
+   de Marte, terreno de Jezero, modelos del kit, los 5 módulos.
+   HECHO: lo que diga cada tarea del brief, con captura al lado de su lámina.
+2. Cuando María Paula suba su trabajo: tareas 6 y 7 (borrar el diseño anterior en escena3d.ts,
+   modelos.ts y EscenaBase.tsx, montar la escena nueva y la base compacta).
+3. Tarea 8 antes del dom 10:00: medición en celular y PC viejo para decidir P3.
+Rol datos (hacia develop), entre tareas y sin frenar el escenario:
+4. #162: si el revisor pide cambios, atendelos (es corto). HECHO: #162 fusionado.
+5. #141: fuente verificada de la gravedad de Marte y qué cifras de MARTE.md §1–§2 quedan [V].
+6. Glosario: "sol" como día de Marte, "telemetría" y "tick", en EN y ES.
+7. Rebase de #148, #159, #160 y #147. Luna (#95, #126) y "Hoy en el Sol" solo después de P4.
 
-USO DE CODEX: scripts que comprueban URLs, cifras y formatos de data/, y segunda lectura de
-fuentes dudosas.
+NO HACER: reglas o números de juego en ui/, "en vivo" para algo estático.
 
-NO HACER: números de balance, textos de pantalla, "en vivo" para algo estático, mezclar Gy y
-Sv sin fuente.
+TOKENS: Fable dirige con medium y sube a high solo para la pieza más difícil; la geometría
+maestra la escriben subagentes Opus high; familias ya aprobadas con Sonnet en worktrees
+separados; Codex para revisar rendimiento y cifras; búsquedas con Haiku.
 
-TOKENS: JSON y glosario con Haiku; búsqueda de fuentes con Sonnet; qué dato respalda qué
-mecánica en la sesión principal.
+META PARA PARAR EL LOOP: escenario fiel a mundo/01 con el cielo de Marte, dentro de 80 draw
+calls y 80 000 triángulos, integrado antes de P4; #162 y #141 cerrados.
 
-META PARA PARAR EL LOOP: #162 fusionado, #141 cerrado, glosario completo y ninguna tarjeta de
-la ruta dorada POR VERIFICAR. Desde P4 solo arreglos.
+PRIMERA RESPUESTA (sin código, máx. 6 líneas): cómo vas a armar materiales, cielo y terreno
+desde el DEM, y qué subagentes vas a lanzar. Esperá el OK.
 
-PRIMERA RESPUESTA (sin código, máx. 6 líneas): estado de #162 y #141, qué cifras de MARTE.md
-confirmás y qué vas a verificar con Codex. Esperá el OK.
-
-Después: /loop 10m Haz UNA iteración del rol datos según docs/LOOP.md y docs/prompts/datos.md.
+Después: /loop 10m Haz UNA iteración según docs/LOOP.md y docs/prompts/datos.md.
 ```

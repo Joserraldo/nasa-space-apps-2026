@@ -1,133 +1,151 @@
-# FLUJO: orquestación, implementación y validación de la UI
+# FLUJO: quién programa el frontend, en qué rama y cómo se valida
 
-**Qué es:** quién construye cada cosa, en qué orden, cómo se integra y cómo se valida. **Dueña:** María Paula (rol ui y orquestadora). Aplica a todo lo que entra en `ui/` y `assets/`.
-**Regla base:** un dueño por carpeta y **un solo escritor por archivo**. Los otros roles entregan funciones y datos; solo las sesiones de ui editan `ui/`.
+**Qué es:** el reparto del frontend entre las personas del equipo, los archivos de cada una, la rama donde se trabaja, el orden y la validación. **Orquesta:** María Paula, orquestadora del desarrollo 3D y de la pantalla (decisión de Santiago, 14 nov). Santiago orquesta el equipo y fusiona en `develop`.
+**Regla base:** cada persona escribe **solo sus archivos** (§1). Si necesita algo de un archivo ajeno, se lo pide a su dueño en el PR o en un issue. Todo PR de `ui/` lo aprueba María Paula (CODEOWNERS).
 
 ---
 
-## 1. Quién hace qué
+## 1. Quién programa cada parte
 
-### 1.1 Roles que entregan a la UI (no editan `ui/`)
+| Parte del frontend | Quién | Qué programa | Archivos que escribe (solo esa persona) | Brief |
+| --- | --- | --- | --- | --- |
+| **Dirección visual y personajes** | **María Paula** | Niño astronauta, Ingeniera 3D, Iris rover (estados, ojos, gestos, movimiento de guía), Doctora y Meteoróloga si alcanza, niño flotando y nave de la portada. Aprueba la fidelidad de **todo** contra las láminas. | `ui/src/escena/activos/astronautas.ts`, `ui/src/escena/activos/iris.ts`, `ui/src/escena/activos/portada.ts`, `ui/src/escena/guia.ts` | [front-personajes.md](../prompts/front-personajes.md) |
+| **Escenario 3D** | **Daniel** | Renderer y ciclo de vida, cielo y luz de Marte, terreno de Jezero desde el DEM, rocas, kit de piezas, base compacta, los 5 módulos, rendimiento y degradación (3D completo, liviano, 2D). | `ui/src/escena/escena3d.ts`, `EscenaBase.tsx`, `materiales.ts`, `liberar.ts`, `cielo.ts`, `soporte.ts`, `modelos.ts`, `escena.test.ts`, `activos/piezasComunes.ts`, `activos/instancias.ts`, `activos/terreno.ts`, `activos/modulos.ts`, `activos/estaciones.ts` | [front-escenario.md](../prompts/front-escenario.md) |
+| **Ubicación y recorrido** | **Camilo** | Dónde va cada cosa (`LUGARES`, anclajes de módulos), colisiones, caminar, cámaras de 3.ª y 1.ª persona (`KeyV`), los dos circuitos, panel `Map` y lista accesible de lugares. Además prueba la ruta dorada. | `ui/src/escena/mundo.ts`, `fisica.ts`, `navegacion.ts`, `navegacion.test.ts`, `ui/src/componentes/Mapa.tsx` | [front-ubicacion.md](../prompts/front-ubicacion.md) |
+| **Integración y pantallas** | **José** | Flujo de fases, conexión con motor, agentes y datos, reductor, `vista.ts`, i18n, un solo `ConfirmarAccion`, Iris compañera en pantalla, montaje de lo que entregan los demás. | `ui/src/App.tsx`, `main.tsx`, `i18n.ts`, `ui/src/juego/**`, `ui/src/pantallas/**`, `ui/src/escena/vista.ts`, `ui/i18n/**`, `ui/package.json`, y los componentes de comportamiento: `Tripulacion.tsx`, `Dialogos.tsx`, `Hud.tsx`, `Acciones.tsx`, `Cuenta.tsx`, `Polvo.tsx`, `PreguntaDeIris.tsx`, `QueSi.tsx` | [front-integracion.md](../prompts/front-integracion.md) |
+| **Interfaz de las láminas v8** | **Jaime** | Desde cero, replicando `ui/00–04`, `inicio/01–03`, `personajes/07` y el HUD de `mundo/01`; nada visual del esqueleto actual. Tokens CSS, botones con todos sus estados, placas de recursos, retratos, costo y efecto pendiente, mensajes, tarjeta de fuente, menú y preferencias de la portada, intro, carga, "qué datos usamos", glosario en contexto, iconos y logo. | `ui/src/componentes/base/**`, `ui/src/estilos/**` (reemplaza `estilos.css` y `mision.css`), `ui/public/**`, `TarjetaFuente.tsx`, `Glosario.tsx`, `DatosUsados.tsx`, `Portada.tsx`, `Intro.tsx`, `Carga.tsx`, `Iconos.tsx`, `LogoSolarShield.tsx`, `RetratoIris.tsx` | [front-interfaz.md](../prompts/front-interfaz.md) |
+| **Audio y voz** (al final) | **Jaime**, o quien termine primero con OK de María Paula | Música, efectos, lectura en voz alta, entrada de voz ([AUDIO.md](AUDIO.md)). | `ui/src/audio/**`, `assets/audio/**`, `assets/LICENCIAS.md` | [front-audio.md](../prompts/front-audio.md) |
 
-| Rol | Entrega | Cómo se pide |
-| --- | --- | --- |
-| Motor (Jaime) | Funciones de `engine/` (reglas, ticks, aceptación o rechazo de acciones) | Issue `bloquea:motor` |
-| Diseño (Camilo) | Datos de misión en `missions/` y tablas en `design/` | Issue `bloquea:diseño` |
-| Agentes (José) | Diálogos, consejos e Iris en `agents/` (las "voces de la misión" son textos) | Issue `bloquea:agentes` |
-| Datos (Daniel) | Fuentes, terreno, tarjetas de ciencia en `data/` | Issue `bloquea:datos` |
-| Infra (José) | CI, e2e de la ruta dorada, despliegue | Issue `bloquea:infra` |
+Fuera del frontend:
+- **Revisor (Claude):** revisa cada PR ([`revisor.md`](../prompts/revisor.md)); no escribe código.
+- **Santiago:** fusiona en `develop` y decide recortes.
+- Cada persona mantiene también las tareas de su rol (motor, diseño, agentes, datos): primero cierra lo de P2 y después pasa a su parte del frontend. Está en su prompt.
 
-Si una firma no le sirve a la pantalla, se cambia la API en su carpeta, no se rodea en `ui/`. El PR #151 (José, edita `ui/`) lo absorbe la pista de integración: no se amplía desde agentes.
+**Por qué así:** el escenario 3D es la parte con más trabajo y la más difícil, y va con Daniel, que además tiene Codex con GPT-6.1 como capacidad extra. Jaime toma la interfaz, que se construye **desde cero replicando las láminas de ui** (del esqueleto actual no se toma nada visual). Camilo diseña niveles y mapa. José ya integra pantallas (#151, #163). María Paula dirige el arte y toma los personajes, lo más sensible a la referencia.
 
-### 1.2 Pistas de trabajo dentro de ui
+Un archivo nuevo que no esté en la tabla pertenece a quien lo crea **dentro de su carpeta** (`activos/` de personajes, `componentes/base/`, etc.). Si no está claro, decide María Paula.
 
-Cuatro pistas con **archivos disjuntos** y una rama cada una. Prompts en `docs/prompts/ui-*.md`.
+## 2. Rama de escenarios
 
-**Cómo se ejecutan (respeta `docs/COMO-TRABAJAMOS.md` §3, "una sola sesión principal por persona"):**
-- **Modo por defecto:** una sola sesión principal de María Paula (Opus) que es la pista M. Ella lanza las pistas E, I y A como **subagentes**, pasándoles su prompt como encargo, con máximo 2–3 a la vez y nunca dos sobre el mismo archivo. Así una sola cabeza controla el consumo.
-- **Cada pista trabaja en su propio worktree** para que las ramas no choquen en la misma carpeta: `git worktree add ../solar-shield-<pista> -b feat/ui-<pista>-<tema> origin/develop`. La sesión principal le pasa al subagente la ruta de su worktree; al terminar, revisa el diff, hace el commit y abre el PR.
-- **Modo paralelo (excepción):** sesiones separadas para E o I solo si la orquestadora lo autoriza por escrito en `ui/ESTADO.md` (por ejemplo, para recuperar tiempo antes de P3). Las reglas de archivos y ramas son las mismas.
+El frontend v8 se construye en una **rama alterna**, para que `develop` siga siendo la demo estable (ruta dorada jugable, e2e en verde).
 
-| Pista | Qué construye | Archivos que escribe (solo estos) | Rama |
-| --- | --- | --- | --- |
-| **M · Integración misiones ↔ UI** | Conecta motor, misiones, agentes y datos con las pantallas; flujo de fases; i18n; contratos internos entre pistas. **Es quien integra las misiones con la UI** y quien monta en pantalla lo que entregan E e I. | `ui/src/App.tsx`, `ui/src/main.tsx`, `ui/src/juego/**`, `ui/src/pantallas/**`, `ui/src/escena/vista.ts`, `ui/src/i18n.ts`, `ui/i18n/**`, `ui/package.json` | `feat/ui-integracion-<tema>` |
-| **E · Escenario 3D** | Todo el mundo en Three.js: cielo, luz, terreno, rocas, base, módulos, estaciones, personajes 3D, Iris, cámaras. **Es quien integra el escenario.** | `ui/src/escena/**` excepto `vista.ts` | `feat/ui-escenario-<tema>` |
-| **I · Interfaz** | Tokens CSS, átomos y compuestos (`FacetButton`, `ResourcePlaque`, `ExpertPortrait`, `CostRow`, `PendingEffect`, `ConfirmarAccion`, `TarjetaFuente`), retratos 2D, iconos, logo, portada en DOM. | `ui/src/componentes/**`, `ui/src/estilos/**` (reemplaza `estilos.css` y `mision.css`), `ui/public/**` | `feat/ui-interfaz-<tema>` |
-| **A · Audio y voz** (al final) | Música, efectos, lectura en voz alta y entrada de voz ([AUDIO.md](AUDIO.md)). | `ui/src/audio/**`, `assets/audio/**`, `assets/LICENCIAS.md` | `feat/ui-audio-<tema>` |
+```text
+develop  (demo estable; la fusiona Santiago)
+  └── feat/ui-escenarios  (integración del frontend v8; la fusiona María Paula)
+        ├── feat/ui-personajes-<tema>   María Paula
+        ├── feat/ui-escenario-<tema>    Daniel
+        ├── feat/ui-ubicacion-<tema>    Camilo
+        ├── feat/ui-integracion-<tema>  José
+        ├── feat/ui-interfaz-<tema>     Jaime
+        └── feat/ui-audio-<tema>        Jaime (al final)
+```
 
-Fuera de las pistas:
-- **Validación:** la sesión revisora ([`docs/prompts/revisor.md`](../prompts/revisor.md)) revisa cada PR; no escribe código.
-- **Orquestadora del desarrollo 3D y de la pantalla (María Paula; decisión de Santiago, 14 nov):** asigna, decide lo visual, aprueba la fidelidad contra la lámina y hace el primer recorrido de la ruta dorada. Santiago orquesta el equipo.
-- **Fusión:** Santiago, con squash.
+- Cada persona crea su rama **desde `feat/ui-escenarios`** y abre el PR **hacia `feat/ui-escenarios`**: `git fetch origin && git switch -c feat/ui-<parte>-<tema> origin/feat/ui-escenarios`. Antes de cada tarea: `git rebase origin/feat/ui-escenarios`.
+- Los PRs hacia `feat/ui-escenarios` los revisa el revisor y **los fusiona María Paula** (squash).
+- **CI:** hoy `.github/workflows/ci.yml` solo corre en PRs hacia `develop` y `main`. José agrega `feat/ui-escenarios` (tarea 1 de su prompt). Mientras tanto, cada PR pega la salida local de `npm run typecheck`, `npm test`, `npm run build` y `npm run e2e` (ruta dorada).
+- **Vuelta a `develop`:** un PR `feat/ui-escenarios` → `develop` en dos puntos de control, solo con e2e y la puerta de [APLICACION.md](APLICACION.md) §10 en verde. Lo fusiona Santiago.
+  1. **Antes de P3 (dom ~10:00):** para decidir 3D o 2D con el juego real.
+  2. **Antes de P4 (dom ~12:30):** la versión final.
+- Mientras tanto, `develop` sigue recibiendo arreglos chicos de la ruta dorada (por ejemplo #151). Quien trabaja en escenarios trae `develop` con `git merge origin/develop` dentro de `feat/ui-escenarios` cuando María Paula lo indica.
+- Para medir en un celular sin despliegue: `npm run dev -w ui -- --host` y abrir la IP del equipo desde el celular en la misma red.
 
-Si una pista necesita cambiar un archivo de otra, **no lo edita**: lo pide a esa pista con un comentario en su PR o en el issue (ejemplo: E necesita un dato nuevo en `vista.ts`, se lo pide a M).
+### 2.1 Qué se puede empezar ya y qué espera
 
-## 2. Contratos internos entre pistas
+- **Ya, sin esperar:** archivos **nuevos** de cada parte, en su rama desde `feat/ui-escenarios`. Daniel: `materiales.ts`, `liberar.ts`, `cielo.ts`, `activos/terreno.ts`, `activos/piezasComunes.ts`, `activos/instancias.ts`, `activos/modulos.ts`. Jaime: `componentes/base/`, `estilos/`, `Portada.tsx`, `Intro.tsx`, `Carga.tsx`, `Glosario.tsx`, `DatosUsados.tsx`. Camilo: `componentes/Mapa.tsx`. María Paula: `activos/astronautas.ts`, `activos/iris.ts`, `activos/portada.ts`.
+- **Espera la subida de María Paula:** los archivos que **ya existen** en su trabajo local: {EXISTENTES}. Tocarlos antes pisa su trabajo.
 
-Se fijan **antes** de trabajar en paralelo, en un PR corto de M (y de I para los props). Después no se cambian sin avisar a la pista que los consume.
+### 2.2 Borrar el diseño anterior (fase 0b)
+
+El diseño que había antes del atlas v8 **se borra**, no se adapta. Lo borra cada dueño en sus archivos, en un PR atómico, apenas entra la subida de María Paula:
+
+| Quién | Qué borra |
+| --- | --- |
+| **Jaime** | `ui/src/estilos.css` y `ui/src/mision.css` completos (tema oscuro, `#0b1026`, `#1a2350`, `--hud: #141a2b`, `--life: #9be15d`). Los reemplaza por `ui/src/estilos/` con los tokens v8 para que la app siga compilando. |
+| **José** | En `App.tsx` y `pantallas/`: la bienvenida oscura de `Base3D.tsx` (`.vineta-mundo`, `.bienvenida-mision`, `.boton-despegar` verde, `.comunicador-iris`), el `<Hud />` en la fase `inicio` y toda clase o import del tema viejo. |
+| **Daniel** | En `escena3d.ts`, `modelos.ts` y `EscenaBase.tsx`: el cielo `#323272`, los paneles oscuros, los visores opacos y cualquier geometría o material del prototipo. Quedan las firmas que consume la escena (APLICACION §1). |
+| **María Paula** | Revisa que no quede nada y lo aprueba. |
+
+Lo único que se conserva es la lógica: conexión con el motor, i18n, reductor, firmas de la escena y respaldo 2D.
+
+## 3. Contratos entre partes
+
+Se fijan **antes** de trabajar en paralelo, en PRs cortos. Después no se cambian sin avisar a quien los consume.
 
 | Contrato | Lo define | Lo consume | Qué es |
 | --- | --- | --- | --- |
-| `VistaEscena` (en `ui/src/escena/vista.ts`) | M | E | Derivado puro de `GameState`: módulos ausentes, instalando o funcionando; estado de Iris; tormenta activa; lugar objetivo; fase. E nunca lee `GameState` directo. |
-| Props de `EscenaBase` | M y E juntos | M | Entrada: `vista`, calidad, cámara. Salida: `onLugarCercano(LugarId | null)`, `onUsar(LugarId)`, `onCalidad(nivel)`, `onWebGLPerdido()`. |
-| Props de componentes | I | M | Formas de [APLICACION.md](APLICACION.md) §5 (`FacetButtonProps`, `ResourcePlaqueProps`, `ConfirmarAccionProps`). Textos por clave i18n. |
-| Eventos de feedback | M | I, E, A | Lista de cambios por tick derivada de `novedades(antes, despues)` con id estable (secuencia + tick + índice). Es la **única** fuente para animar, sonar o mostrar deltas. |
-| Ajustes del jugador | M | I, A | Idioma, sonido (música, efectos, voz), movimiento reducido, calidad gráfica. Persisten en `localStorage`. |
+| `VistaEscena` (en `ui/src/escena/vista.ts`) | José | Daniel, María Paula, Camilo | Derivado puro de `GameState`: módulos ausentes, instalando o funcionando; estado de Iris; tormenta activa; lugar objetivo; fase. Nadie en `escena/` lee `GameState` directo. |
+| Props de `EscenaBase` | Daniel y José | José | Entrada: `vista`, calidad, cámara. Salida: `onLugarCercano(LugarId | null)`, `onUsar(LugarId)`, `onCalidad(nivel)`, `onWebGLPerdido()`. |
+| `LUGARES` y anclajes (en `mundo.ts`) | Camilo | Daniel, María Paula, José | Posición de cada lugar, radio de interacción, anclajes de módulos y de personajes. |
+| Fábricas de personajes (`crearAstronauta`, `crearExpertos`, `crearIris`) | María Paula | Daniel | Firmas que ya consume `escena3d.ts` (`ModeloAstronauta`, `ModeloExperto`, `ModeloIris`, `GestoIris`). |
+| Materiales y slots (`materiales.ts`) | Daniel | María Paula | `SuitBase`, `Accent`, `Boots`, `Skin`, `Hair`, `Glass`, `Emissive`, `Rock`, `Plant`. |
+| Props de componentes | Jaime | José | Formas de [APLICACION.md](APLICACION.md) §5 (`FacetButtonProps`, `ResourcePlaqueProps`, `ConfirmarAccionProps`). Textos por clave i18n. |
+| Eventos de feedback | José | Jaime, Daniel, María Paula | Cambios por tick desde `novedades(antes, despues)` con id estable. Única fuente para animar, sonar o mostrar deltas. |
+| Ajustes del jugador | José | Jaime | Idioma, sonido, movimiento reducido, calidad gráfica, en `localStorage`. |
 
-## 3. División de assets
+## 4. División de assets
 
 Ningún asset es una imagen de las láminas, salvo el logo. Todo se reconstruye.
 
-| Asset | Pista | Lámina | Se construye con | Destino |
+| Asset | Quién | Lámina | Se construye con | Destino |
 | --- | --- | --- | --- | --- |
-| Cielo, luz, niebla | E | [MARTE.md](MARTE.md) §4–5 | Three.js | `ui/src/escena/cielo.ts` |
-| Terreno de Jezero y rocas | E | `mundo/01`, `exterior/02` | DEM de `data/terreno/jezero` + buffers facetados | `ui/src/escena/activos/` |
-| Base compacta, kit, módulos | E | `mundo/01`, `piezas/01–10`, `exterior/03` | Fábricas procedurales | `ui/src/escena/activos/` |
-| Estaciones (ampliación) | E | `estaciones/00–08` | Composición del kit | `ui/src/escena/activos/estaciones.ts` |
-| Niño 3D | E | `personajes/08–10`, `inicio/capas/astronauta` | Grupos con pivotes | `ui/src/escena/activos/astronautas.ts` |
-| Ingeniera 3D (bloque 2); Doctora y Meteoróloga 3D (bloque 2 si alcanza el presupuesto, si no después de P4) | E | `personajes/01, 03, 05`, `mundo/01` | Misma familia de traje que el niño: cambian cabeza, cabello, acento y accesorios | idem |
-| Iris rover 3D (bloque 2) | E | `mundo/01`, `inicio/02`, `personajes/07` | Grupos con pivotes (4 ruedas), panel en el techo y pantalla con ojos en canvas; sus 4 niveles visibles (NIVELES §5) | `ui/src/escena/activos/iris.ts` |
-| Portada: fondo, nave, planeta, asteroide, niño flotando | E | `inicio/01`, `inicio/capas/*` | Three.js en el mismo renderer | `ui/src/escena/` |
-| Portada: logo, menú, preferencias | I | `inicio/01`, `ui/00`, `ui/02` | DOM, SVG; logo como imagen | `ui/src/componentes/` |
-| Intro (4 viñetas) | I | `inicio/02` | Tarjetas DOM sobre el fondo de la portada, con iconos SVG y el texto de cada viñeta. Ilustración completa solo si sobra tiempo. | `ui/src/componentes/` |
-| Carga | I | `inicio/03` | DOM + indicador indeterminado | `ui/src/componentes/` |
-| HUD, diálogo, comparación, fuente, final | I (piezas) y M (montaje) | `ui/01–04`, `personajes/07`, `mundo/01` | DOM/CSS con tokens | `ui/src/componentes/`, `ui/src/pantallas/` |
-| Retratos de diálogo (niño, 3 expertas, Iris) | I | `personajes/02, 04, 06, 09`, `ui/01`, `personajes/07` | Misma identidad que el modelo 3D. Primera versión en SVG facetado con las 8 expresiones; si E entrega un render del modelo, se usa ese. Solo para las tarjetas de diálogo, nunca en lugar del personaje en el mundo. | `ui/src/componentes/` |
-| Iconos (recursos, mensajes, acciones) | I | `ui/03` | SVG | `ui/src/componentes/Iconos.tsx` |
-| Mapa (panel `Map`) | I (vista) y M (datos) | [ESCENAS.md](ESCENAS.md) §3.4 | SVG desde `LUGARES` | `ui/src/componentes/` |
-| Música, efectos, voz | A | [AUDIO.md](AUDIO.md) | Web Audio, archivos con licencia, Web Speech API | `ui/src/audio/`, `assets/audio/` |
+| Cielo, luz, niebla | Daniel | [MARTE.md](MARTE.md) §4–5 | Three.js | `escena/cielo.ts` |
+| Terreno de Jezero y rocas | Daniel | `mundo/01`, `exterior/02` | DEM de `data/terreno/jezero` + buffers facetados | `escena/activos/terreno.ts` |
+| Kit de piezas, base compacta, 5 módulos | Daniel | `mundo/01`, `piezas/01–10`, `exterior/03` | Fábricas procedurales | `escena/activos/` |
+| Estaciones (después de P4) | Daniel | `estaciones/00–08` | Composición del kit | `escena/activos/estaciones.ts` |
+| Ubicación de lugares, anclajes, caminos y circuitos | Camilo | `exterior/03`, [`mapa-base-jezero.svg`](mapa-base-jezero.svg) | Tabla `LUGARES` y colisiones simples | `escena/mundo.ts`, `fisica.ts` |
+| Cámaras 3.ª y 1.ª persona, caminar | Camilo | `mundo/01`, `mundo/02` | Navegación sin atravesar paredes | `escena/navegacion.ts` |
+| Panel `Map` y lista de lugares | Camilo | [ESCENAS.md](ESCENAS.md) §3.4 | SVG desde `LUGARES` | `componentes/Mapa.tsx` |
+| Niño 3D | María Paula | `personajes/08–10`, `inicio/capas/astronauta` | Grupos con pivotes | `escena/activos/astronautas.ts` |
+| Ingeniera 3D (bloque 2); Doctora y Meteoróloga si alcanza | María Paula | `personajes/01, 03, 05`, `mundo/01` | Misma familia de traje que el niño | `escena/activos/astronautas.ts` |
+| Iris rover 3D y su movimiento de guía | María Paula | `mundo/01`, `inicio/02`, `personajes/07` | 4 ruedas con pivote, panel, pantalla con ojos; niveles de NIVELES §5 | `escena/activos/iris.ts`, `escena/guia.ts` |
+| Portada 3D: fondo, nave, planeta, asteroide, niño flotando | María Paula | `inicio/01`, `inicio/capas/*` | Three.js en el mismo renderer | `escena/activos/portada.ts` |
+| Tokens, botones, placas, costo, mensajes | Jaime | `ui/02`, `ui/03` | DOM/CSS | `componentes/base/`, `estilos/` |
+| Retratos de diálogo (niño, expertas, Iris) | Jaime | `personajes/02, 04, 06, 09`, `ui/01`, `personajes/07` | SVG facetado con las 8 expresiones; misma identidad que el modelo 3D | `componentes/base/` |
+| Portada DOM (logo, menú, preferencias), intro, carga | Jaime | `inicio/01–03`, `ui/00` | DOM, SVG; logo como imagen | `componentes/Portada.tsx`, `Intro.tsx`, `Carga.tsx` |
+| Tarjeta de fuente, "qué datos usamos", glosario | Jaime | `ui/04` | DOM con datos de `@solar-shield/data` | `componentes/` |
+| HUD, diálogo, comparación, tormenta, final (montaje) | José | `ui/01`, `ui/04`, `personajes/07`, `mundo/01` | Pantallas que usan las piezas de Jaime | `pantallas/`, componentes de comportamiento |
+| Música, efectos, voz | Jaime (al final) | [AUDIO.md](AUDIO.md) | Web Audio, archivos con licencia, Web Speech API | `audio/`, `assets/audio/` |
 
-## 4. Orden de trabajo (fases)
-
-Cada fase termina en una **puerta**. No se abre la siguiente hasta pasarla.
+## 5. Orden de trabajo (fases)
 
 | Fase | Quién | Qué | Puerta para avanzar | Hasta |
 | --- | --- | --- | --- | --- |
-| **Prioridad 1. Definir todos los niveles** | María Paula con diseño, motor y datos | [NIVELES.md](NIVELES.md) completo: las 5 misiones, dificultad y niveles de Iris; decisiones 1 a 6 de NIVELES §7 aprobadas por Camilo y Santiago. No bloquea la fase 0: corre en paralelo porque no toca `ui/`. | Santiago aprueba NIVELES §7. | lo antes posible |
-| **0. Subir y conectar** | M | Subir el trabajo local (#142) en PRs atómicos; ruta dorada jugable con lo visual que ya existe; absorber #151; #118 y #137. E, I y A **no** empiezan a escribir. | Los 8 pasos se juegan en el preview de `develop` y el e2e pasa. | P2 (sáb 22:00) |
-| **1. Contratos internos** | M, I | PR de `VistaEscena`, props de `EscenaBase` y eventos de feedback (M); tokens CSS y props de componentes (I). | Contratos fusionados; typecheck en verde. | dom temprano |
-| **2. Paralelo** | E, I, M | E: bloque 1 (cielo, materiales, niño, portada 3D) y bloque 2 (terreno, kit, base, módulos, Iris rover e Ingeniera en 3D). I: átomos, compuestos, retratos, portada DOM, intro. M: pantallas, flujo de fases, i18n, respaldo 2D. | Cada PR pasa la puerta de [APLICACION.md](APLICACION.md) §10. En P3 se decide 3D o 2D. | P3 (dom 11:00) |
-| **3. Integración** | M | Monta los componentes de I en todas las pantallas y la escena de E en `Base3D`; borra el tema oscuro; un solo camino de confirmación. | Recorrido completo de la ruta dorada en EN y ES con teclado, móvil, movimiento reducido y respaldo 2D; aprobado por la orquestadora. | antes de P4 |
-| **4. Audio y voz** | A | Ajustes de sonido, efectos ligados a eventos, música, lectura en voz alta y entrada de voz. | El juego sigue completo en silencio; sin errores en consola; licencias registradas. | P4 (dom 13:00), si no entra, se entrega sin música |
-| **5. Congelamiento** | todas | Solo arreglos pedidos por el revisor o la orquestadora. Bloque 3 (las 8 estaciones interiores; Doctora y Meteoróloga 3D si no entraron antes) solo después de la entrega. | — | P5 (dom 20:00) |
+| **0. Base de escenarios** | María Paula | Subir su trabajo local de `feat/ui-escena-3d` a `feat/ui-escenarios` en PRs atómicos. **Mientras tanto, los demás ya trabajan en archivos nuevos** (§2.1); los archivos que ya existen en ese trabajo esperan. | Trabajo local fusionado en `feat/ui-escenarios`. | sáb noche |
+| **0b. Borrar el diseño anterior** | Cada dueño en sus archivos | Apenas entra la subida, se borra todo lo visual de antes (§2.2). Desde ahí la única guía visual son las láminas del atlas v8. | Ningún rastro del tema oscuro ni de la geometría del prototipo en `feat/ui-escenarios`. | sáb noche |
+| **0b. P2 en develop** | Santiago, José | La ruta dorada sigue jugable en `develop` (#163 ya está; #151 rebasado sobre #163). | e2e verde en `develop`. | P2 (sáb 22:00) |
+| **1. Contratos** | José, Daniel, Camilo, Jaime | `VistaEscena` y eventos (José), props de `EscenaBase` (Daniel y José), `LUGARES` (Camilo), tokens y props de componentes (Jaime). José agrega `feat/ui-escenarios` a la CI. | Contratos fusionados en `feat/ui-escenarios`. | dom temprano |
+| **2. En paralelo** | Todos | Daniel: cielo, terreno, kit, base, módulos. María Paula: niño, Ingeniera, Iris, portada 3D. Camilo: lugares, colisiones, cámaras, mapa. Jaime: sistema facetado, portada DOM, intro, carga, datos. José: pantallas y flujo con las piezas que llegan. | Cada PR pasa la puerta de [APLICACION.md](APLICACION.md) §10. | dom ~10:00 |
+| **Punto de control 1** | María Paula y Santiago | PR `feat/ui-escenarios` → `develop`; medir en celular y PC viejo. | P3: se decide 3D o respaldo 2D. | P3 (dom 11:00) |
+| **3. Integración** | José (montaje), todos (arreglos) | Componentes de Jaime en todas las pantallas, escena en `Base3D`, tema oscuro borrado, un solo `ConfirmarAccion`, Iris compañera. | Recorrido completo en EN y ES, teclado, móvil, movimiento reducido y respaldo 2D, aprobado por María Paula. | dom ~12:30 |
+| **Punto de control 2** | Santiago | PR final `feat/ui-escenarios` → `develop`. | e2e verde y puerta §10. | antes de P4 |
+| **4. Audio** | Jaime | Solo si la fase 3 terminó antes de P4. | El juego sigue completo en silencio. | P4 (dom 13:00) |
+| **5. Congelamiento** | Todos | Solo arreglos. Estaciones y Doctora y Meteoróloga 3D, después de la entrega. | — | P5 (dom 20:00) |
 
-Las otras 4 misiones no entran en estas fases: M arma el selector de misiones y E sus escenarios **solo** cuando el motor lea varias misiones (#152), diseño las apruebe y exista lámina aprobada ([NIVELES.md](NIVELES.md) §8).
+**Prioridad 1 en paralelo (no toca `ui/`):** definir y aprobar todos los niveles ([NIVELES.md](NIVELES.md) §7). Las otras 4 misiones no entran en el frontend hasta que el motor lea varias misiones (#152), diseño las apruebe y exista lámina ([NIVELES.md](NIVELES.md) §8).
 
-## 5. Cómo se construye cada pieza (implementación)
-
-Para cualquier asset de E o I, siempre en este orden ([APLICACION.md](APLICACION.md) §9 tiene el detalle):
+## 6. Cómo se construye cada pieza
 
 1. Abrir la lámina canónica y la sección de [DISEÑO.md](DISEÑO.md) que le corresponde.
 2. Bloquear el encuadre con formas simples desde la misma cámara de la lámina.
 3. Fijar medidas y silueta. Si no coincide la silueta, no se sigue.
 4. Pieza maestra por familia; después instanciar.
 5. Material y luz en la cámara del juego (con el cielo de MARTE.md, no el azul).
-6. Estados y pivotes (instalando, funcionando, dañado; puertas, paneles, ruedas, extremidades).
-7. Entregar a M por el contrato; M lo conecta.
-8. Validar (§6) y abrir PR.
+6. Estados y pivotes.
+7. Entregar por el contrato (§3) y avisar a José si hay que montarlo.
+8. Validar (§7) y abrir PR hacia `feat/ui-escenarios`.
 
-Buenas prácticas que todas las pistas cumplen: funciones cortas, tablas de configuración en lugar de cadenas de `if`, ningún número de juego en `ui/`, ningún texto quemado, cero asignaciones por fotograma, caché compartida de geometrías y materiales, liberación con dueño explícito, respaldo 2D siempre vivo.
+Buenas prácticas para todos: funciones cortas, tablas de configuración en lugar de cadenas de `if`, ningún número de juego en `ui/`, ningún texto quemado, cero asignaciones por fotograma, caché compartida de geometrías y materiales, liberación con dueño explícito, respaldo 2D siempre vivo. Detalle técnico: [APLICACION.md](APLICACION.md).
 
-## 6. Validación (tres niveles)
+## 7. Validación (tres niveles)
 
 | Nivel | Quién | Qué comprueba | Cómo |
 | --- | --- | --- | --- |
-| 1. Autor | La pista que escribió | Puerta de [APLICACION.md](APLICACION.md) §10: typecheck, test, build, captura al lado de la lámina, draw calls y triángulos, teclado, EN/ES, movimiento reducido, respaldo 2D, cero errores WebGL. | Salida real pegada en el PR. |
-| 2. Revisor | Sesión revisora | Alcance de carpeta y de pista, tamaño, commits atómicos, CI, reglas del producto, prohibidos de [DISEÑO.md](DISEÑO.md) §8, duplicados entre PRs. | `gh pr review` con lista numerada. |
-| 3. Orquestadora del 3D y la pantalla | María Paula | Fidelidad visual contra la lámina y que la historia se entienda ([HISTORIA.md](HISTORIA.md)). | Aprueba o pide cambios en el PR. |
+| 1. Autor | Quien escribió | Puerta de [APLICACION.md](APLICACION.md) §10: typecheck, test, build, e2e, captura al lado de la lámina, draw calls y triángulos, teclado, EN/ES, movimiento reducido, respaldo 2D, cero errores WebGL. | Salida real pegada en el PR. |
+| 2. Revisor | Sesión revisora | Que solo toque sus archivos (§1), tamaño, commits atómicos, CI o salida local, reglas del producto, prohibidos de [DISEÑO.md](DISEÑO.md) §8, choques entre PRs. | `gh pr review` con lista numerada. |
+| 3. Fidelidad | María Paula | Fidelidad visual contra la lámina y que la historia se entienda ([HISTORIA.md](HISTORIA.md)). | Aprueba o pide cambios; fusiona en `feat/ui-escenarios`. |
 
-Después, Santiago fusiona con squash cuando la CI "Tipos y tests" y el e2e están en verde.
+## 8. Coordinación
 
-## 7. Orden de fusión entre pistas
-
-1. M: subir y conectar (fase 0).
-2. M e I: contratos internos y tokens (fase 1).
-3. E e I en paralelo, cada PR por separado (fase 2). Si dos PRs chocan, primero el que desbloquea a otros.
-4. M: integración (fase 3).
-5. A: audio y voz (fase 4).
-
-## 8. Coordinación diaria
-
-- Cada pista escribe su avance en `ui/ESTADO.md` en **una sección propia** (`## Pista M`, `## Pista E`, `## Pista I`, `## Pista A`), máximo 5 líneas cada una. Nadie edita la sección de otra pista.
-- La orquestadora revisa los semáforos cada 30 minutos ([`docs/prompts/orquestadora.md`](../prompts/orquestadora.md)).
-- Un cambio de contrato interno se avisa en el PR de la pista consumidora antes de fusionarlo.
+- `ui/ESTADO.md` tiene **una sección por persona** (`## Personajes (María Paula)`, `## Escenario (Daniel)`, `## Ubicación (Camilo)`, `## Integración (José)`, `## Interfaz (Jaime)`), máximo 5 líneas cada una. Nadie edita la sección de otro.
+- La orquestación del frontend revisa los semáforos cada 30 minutos ([`orquestadora.md`](../prompts/orquestadora.md)).
+- Un cambio de contrato (§3) se avisa en el PR de quien lo consume antes de fusionarlo.

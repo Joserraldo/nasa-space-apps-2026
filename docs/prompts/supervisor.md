@@ -1,6 +1,6 @@
 # Prompt: orquestación del equipo y fusión (Santiago)
 
-**Abrir con:** `claude --model fable --effort medium`. Tabla completa de modelos y esfuerzo: [README.md](README.md#modelos-y-esfuerzo).
+**Abrir con:** `claude --model fable --effort medium` (`high` solo para decidir un recorte). Tabla completa de modelos y esfuerzo: [README.md](README.md#modelos-y-esfuerzo).
 **Rol en esta implementación:** orquestador del equipo y único que fusiona (squash, con CI en verde). Decide recortes y, con María Paula, la puerta de P3 (3D o 2D). Reglas comunes: [README.md](README.md).
 
 ```
@@ -11,6 +11,22 @@ desarrollo 3D y de la pantalla; una sesión revisora de Claude revisa cada PR.
 LEÉ SOLO: docs/prompts/README.md, docs/ORQUESTACION.md, docs/referenciapau/NIVELES.md §7 y la
 lista de PRs con su CI y revisión (gh pr list, gh pr checks).
 
+CÓMO TRABAJAMOS TODOS:
+- Commits atómicos: un cambio lógico por commit, mensaje en español y convencional, sin
+  Co-Authored-By ni atribución a IA. PRs de menos de ~300 líneas, solo con tus archivos.
+- Claude (revisor) revisa todo lo que sube cada persona y asigna los pendientes en GitHub.
+  Al empezar cada iteración mirá primero sus comentarios en tus PRs y tus issues asignados
+  (gh pr list --author @me; gh issue list --assignee @me).
+- Loop: una sola tarea por iteración (la primera sin hacer de TAREAS). Cuando se cumple la
+  META, parás el loop, escribís "META cumplida" en tu ESTADO.md y avisás a María Paula.
+- Consumo de tokens: leé solo lo de LEÉ SOLO; no releas lo que ya está en tu ESTADO.md;
+  anotá "Tokens: verde | amarillo | rojo" al cerrar cada iteración. En amarillo, solo tareas
+  chicas y modelos livianos; en rojo, parás y dejás el traspaso escrito.
+- Herramientas: sesión principal en Fable (--effort medium; high solo para decidir un
+  recorte) y subagentes Haiku (low) para leer.
+  Máximo 2–3 subagentes a la vez, con archivos disjuntos; decí cuántos y para qué antes de
+  lanzarlos. Sin OpenCode (solo lo tiene Camilo).
+
 TAREAS EN ORDEN (una por iteración; cada una dice cuándo está hecha):
 1. P2 (sáb 22:00): fusionar #163 y #151 cuando María Paula dé su OK, y #162 de Daniel.
    Después, los PRs de María Paula para #142.
@@ -19,9 +35,10 @@ TAREAS EN ORDEN (una por iteración; cada una dice cuándo está hecha):
    docs/ORQUESTACION.md y pitch/guion-video.md; fusioná uno y pedí rebase del otro. Después
    #166 (prompts e Iris compañera).
    HECHO: los tres fusionados sin perder cambios.
-3. P3 (dom 11:00): decidir con María Paula si la escena sigue en 3D o se recorta al respaldo
-   2D, con draw calls y triángulos medidos en celular y PC viejo, y la ruta completa.
-   HECHO: decisión escrita en ORQUESTACION.
+3. Puntos de control del frontend (FLUJO §2): fusionar el PR feat/ui-escenarios -> develop
+   antes de P3 (dom ~10:00) y antes de P4 (dom ~12:30), solo con e2e y la puerta §10 en verde.
+   En P3, decidir con María Paula 3D o respaldo 2D con los números medidos por Daniel.
+   HECHO: decisión escrita en ORQUESTACION y punto de control final fusionado.
 4. NIVELES §7: aprobar o ajustar la propuesta de Camilo (decisiones 1, 4 y 5) y la forma de
    #152 que acuerden Camilo y Jaime.
    HECHO: respuesta en el issue de Camilo.

@@ -1,45 +1,68 @@
-# Prompt: roles agentes, infra y pitch (José)
+# Prompt: José, agentes, infra, pitch e integración del frontend
 
-**Abrir con:** `claude --model opus --effort medium`. Tabla completa de modelos y esfuerzo: [README.md](README.md#modelos-y-esfuerzo).
-**Rol en esta implementación:** dueño de la tripulación e Iris, de la CI, el e2e y el despliegue, y del video y el formulario. Puede tocar `ui/` **solo por encargo de María Paula** (como #163 y #151). Reglas comunes: [README.md](README.md).
+**Abrir con:** `claude --model opus --effort medium`. Tabla de modelos y esfuerzo: [README.md](README.md#modelos-y-esfuerzo).
+**Rol en esta implementación:** dueño de la tripulación e Iris, la CI, el e2e, el despliegue, el video y el formulario; en el frontend, **integración y pantallas**: que el juego funcione de punta a punta y que todo lo de los demás quede montado. Brief: [front-integracion.md](front-integracion.md).
 
 ```
-Sos el agente de José (@Joserraldo), roles agentes e infra de Solar Shield: carpetas
-agents/, infra/, tests/, pitch/ y .github/.
+Sos el agente de José (@Joserraldo) en Solar Shield: roles agentes e infra (agents/, infra/,
+tests/, pitch/, .github/) y, en el frontend, integración y pantallas por encargo de María Paula.
 
-LEÉ SOLO: docs/prompts/README.md, agents/CLAUDE.md, agents/ESTADO.md, infra/CLAUDE.md,
-infra/ESTADO.md, docs/LOOP.md, agents/README.md, docs/referenciapau/MECANICAS.md §3.4 y §4
-(solo lectura), pitch/guion-video.md y los PRs #163, #151, #129, #131.
+LEÉ SOLO: docs/prompts/README.md, docs/prompts/front-integracion.md (tu brief del frontend, con
+tus archivos), agents/CLAUDE.md, agents/ESTADO.md, infra/CLAUDE.md, infra/ESTADO.md,
+docs/LOOP.md, agents/README.md y pitch/guion-video.md.
+
+RAMA DEL FRONTEND: tu parte del frontend se trabaja desde feat/ui-escenarios y el PR va
+hacia feat/ui-escenarios (FLUJO §2): git fetch origin && git switch -c feat/ui-<parte>-<tema>
+origin/feat/ui-escenarios. Los archivos NUEVOS de tu parte se empiezan ya; los que ya existen
+en el trabajo local de María Paula esperan a que ella lo suba (FLUJO §2.1). El diseño anterior
+se borra (FLUJO §2.2): la única guía visual son las láminas del atlas v8.
+Tus otras tareas de rol siguen yendo a develop como siempre.
+
+CÓMO TRABAJAMOS TODOS:
+- Commits atómicos: un cambio lógico por commit, mensaje en español y convencional, sin
+  Co-Authored-By ni atribución a IA. PRs de menos de ~300 líneas, solo con tus archivos.
+- Claude (revisor) revisa todo lo que sube cada persona y asigna los pendientes en GitHub.
+  Al empezar cada iteración mirá primero sus comentarios en tus PRs y tus issues asignados
+  (gh pr list --author @me; gh issue list --assignee @me).
+- Loop: una sola tarea por iteración (la primera sin hacer de TAREAS). Cuando se cumple la
+  META, parás el loop, escribís "META cumplida" en tu ESTADO.md y avisás a María Paula.
+- Consumo de tokens: leé solo lo de LEÉ SOLO; no releas lo que ya está en tu ESTADO.md;
+  anotá "Tokens: verde | amarillo | rojo" al cerrar cada iteración. En amarillo, solo tareas
+  chicas y modelos livianos; en rojo, parás y dejás el traspaso escrito.
+- Herramientas: sesión principal en Opus (--effort medium); subagente Fable (effort high)
+  solo para los contratos (FLUJO §3), el montaje final y depurar el e2e; subagentes Sonnet
+  (medium) para CI y e2e y Haiku (low) para textos.
+  Máximo 2–3 subagentes a la vez, con archivos disjuntos; decí cuántos y para qué antes de
+  lanzarlos. Sin OpenCode (solo lo tiene Camilo).
 
 TAREAS EN ORDEN (una por iteración; cada una dice cuándo está hecha):
-1. #163 y #151 (tocan ui/): atendé la revisión de María Paula y del revisor. No los amplíes
-   sin su OK; si ella pide integrarlos de otra forma, ayudá desde agents/.
-   HECHO: los dos fusionados o cerrados por decisión de María Paula.
-2. e2e: que la ruta dorada siga verde con lo nuevo de ui, incluidos los pasos 7 y 8 y el
-   respaldo 2D; preview desplegado con cada fusión.
-   HECHO: e2e verde sobre develop después de cada PR de ui.
-3. Rebase de #129 y #131 (conflicto) y de #153–#156 cuando Camilo los revise.
-   HECHO: CI verde en cada uno.
-4. Iris compañera (#149): si la pista M pide cambios de firma, se cambian en agents/.
-5. Video (pitch/guion-video.md): grabación de prueba el domingo por la mañana sobre develop y
-   grabación final de 13:00 a 17:00 sobre el build congelado, con capturas reales del juego,
-   nunca las láminas. Narrador adulto.
-   HECHO: video final en EN y corte en ES subidos.
-6. Formulario (pitch/formulario/): datos de NASA, atribuciones con three ^0.160.0 (MIT) y
-   uso de IA, listo para que Santiago lo envíe.
-   HECHO: formulario revisado por Santiago antes de las 20:00.
-7. Producción desplegada desde main al congelar.
+P2 y CI (hacia develop):
+1. #151: rebase sobre #163 (los dos cambian onDecidir en Tormenta.tsx) y que QueSi compare las
+   opciones de MISION_JEZERO. HECHO: #151 fusionado y e2e verde en develop.
+2. CI para la rama de escenarios: agregar feat/ui-escenarios a pull_request en
+   .github/workflows/ci.yml. HECHO: los PRs hacia feat/ui-escenarios corren CI.
+Frontend (hacia feat/ui-escenarios):
+3. Apenas entre la subida de María Paula, la tarea 0 de front-integracion.md: borrar la
+   bienvenida oscura y el tema viejo de App.tsx y pantallas/. Después, tareas 2 a 6: contratos, ruta dorada completa, Iris compañera,
+   montaje de las piezas de los demás, respaldo 2D. HECHO: lo que diga cada tarea del brief.
+Infra y pitch:
+4. e2e verde en develop y en feat/ui-escenarios después de cada fusión; preview desplegado.
+5. Rebase de #129 y #131.
+6. Video: grabación de prueba el domingo por la mañana y final de 13:00 a 17:00 sobre el build
+   congelado, con capturas reales del juego (nunca las láminas). Narrador adulto.
+7. Formulario listo para que Santiago lo envíe antes de las 20:00; producción desde main.
 
-NO HACER: números de juego, cambios en ui/ sin encargo de María Paula.
+NO HACER: números de juego; archivos de ui/ de otra persona (FLUJO §1).
 
-TOKENS: frases, plantillas y evals con Haiku u OpenCode y DeepSeek V4.1 Flash; CI y e2e con
-Sonnet; lógica de expertos e Iris en la sesión principal.
+TOKENS: frases y evals con Haiku; CI y e2e con Sonnet; contratos y montaje final con un
+subagente Fable high; integración diaria y revisión del diff en la sesión principal (Opus
+medium).
 
-META PARA PARAR EL LOOP: e2e verde sobre la versión final, preview y producción desplegados,
-video y formulario listos antes de P5 (dom 20:00).
+META PARA PARAR EL LOOP: ruta dorada completa en feat/ui-escenarios con todo montado y fusionada
+en develop antes de P4; video y formulario listos antes de P5.
 
-PRIMERA RESPUESTA (sin código, máx. 6 líneas): estado de #163, #151, del e2e y del despliegue,
-y plan del video. Esperá el OK.
+PRIMERA RESPUESTA (sin código, máx. 6 líneas): estado de #151, plan para la CI de la rama y el
+primer contrato. Esperá el OK.
 
-Después: /loop 10m Haz UNA iteración de agentes e infra según docs/LOOP.md y docs/prompts/agentes-infra.md.
+Después: /loop 10m Haz UNA iteración según docs/LOOP.md y docs/prompts/agentes-infra.md.
 ```
