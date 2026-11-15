@@ -85,9 +85,12 @@ Reglas de uso:
 - `docs/modelos.md` (de Santiago) tiene la escalera general; esta tabla la concreta para estos prompts. Si chocan, manda esta tabla y se avisa a Santiago.
 
 ### Git y PRs
-- Rama `feat/<slug>-<tema>` o `fix/<slug>-<tema>` desde `develop`. `git fetch origin && git rebase origin/develop` antes de cada tarea.
+- **Dos caminos, según lo que se toca:**
+  - **Frontend v8** (lo de los briefs `front-*.md`): rama `feat/ui-<parte>-<tema>` desde `feat/ui-escenarios`, PR hacia `feat/ui-escenarios` (la fusiona María Paula). `feat/ui-escenarios` vuelve a `develop` con un PR en los dos puntos de control, antes de P3 y antes de P4 (lo fusiona Santiago). Detalle: [FLUJO.md](../referenciapau/FLUJO.md) §2.
+  - **Tareas de rol** (motor, diseño, datos, agentes, infra, docs): rama `feat/<slug>-<tema>` o `fix/<slug>-<tema>` desde `develop`, PR hacia `develop` (lo fusiona Santiago).
+- `git fetch origin` y rebase sobre la rama base que corresponda (`origin/feat/ui-escenarios` u `origin/develop`) antes de cada tarea.
 - **Commits atómicos:** un cambio lógico por commit, mensaje en español y convencional (`feat(ui): ...`, `fix(motor): ...`), **sin atribución a IA ni `Co-Authored-By`**.
-- PRs de menos de ~300 líneas hacia `develop`, con la plantilla. Nunca merge, nunca push a `develop` ni `main`, nunca `--force`.
+- PRs de menos de ~300 líneas hacia su rama base, con la plantilla y, si cambia algo visible, la **ficha de fidelidad** de [FLUJO.md](../referenciapau/FLUJO.md) §7.1. Nunca merge, nunca push a `develop` ni `main`, nunca `--force`.
 - Antes de cada PR, pegar la salida real de `npm run typecheck` y `npm test` (y `npm run build` si tocaste `ui/`).
 - Solo se editan las carpetas del rol. Lo de otro rol se pide con issue `bloquea:<rol>`.
 - Antes de editar, `git status`: puede haber cambios sin commitear de otra sesión en la misma carpeta. No los pises.
