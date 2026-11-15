@@ -1,4 +1,5 @@
 import type { Cause, GameState } from "@solar-shield/contracts";
+import { MISION_JEZERO, type Mision } from "@solar-shield/missions";
 import { tormentaActiva } from "./dorada.js";
 
 /**
@@ -20,12 +21,12 @@ export interface Novedades {
   pausar: boolean;
 }
 
-export function novedades(antes: GameState, despues: GameState): Novedades {
+export function novedades(antes: GameState, despues: GameState, mision: Mision = MISION_JEZERO): Novedades {
   const causasNuevas = despues.causas.slice(antes.causas.length);
   const averiasNuevas = (Object.keys(despues.equipos) as (keyof GameState["equipos"])[]).filter(
     (e) => antes.equipos[e] === "ok" && despues.equipos[e] !== "ok",
   );
-  const tormentaLlego = !tormentaActiva(antes) && tormentaActiva(despues);
+  const tormentaLlego = !tormentaActiva(antes, mision) && tormentaActiva(despues, mision);
   const efectosLlegaron = causasNuevas.filter(
     (c) => c.origen === "decision" && c.tick === despues.tick && (c.delta ?? 0) > 0,
   );
@@ -40,6 +41,6 @@ export function novedades(antes: GameState, despues: GameState): Novedades {
 }
 
 /** Avanza y, si hubo algo que merezca atención, deja el estado en pausa. ui decide cuándo reanudar. */
-export function conPausaAutomatica(antes: GameState, despues: GameState): GameState {
-  return novedades(antes, despues).pausar ? { ...despues, pausado: true } : despues;
+export function conPausaAutomatica(antes: GameState, despues: GameState, mision: Mision = MISION_JEZERO): GameState {
+  return novedades(antes, despues, mision).pausar ? { ...despues, pausado: true } : despues;
 }
