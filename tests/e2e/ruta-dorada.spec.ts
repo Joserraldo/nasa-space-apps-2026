@@ -62,6 +62,8 @@ test("ruta dorada: de la órbita al resumen, en inglés", async ({ page }) => {
   // Paso 3: sitios candidatos con 3 criterios y costo visible; ninguno es perfecto.
   await page.getByRole("button", { name: "Continue" }).click();
   await expect(page.getByRole("heading", { name: "Choose where to land" })).toBeVisible();
+  // Cada cambio de pantalla deja el foco en la pantalla nueva (su título o su primer control).
+  await expect(page.locator(".transicion :focus")).toHaveCount(1);
   const aterrizar = page.getByRole("button", { name: "Land here" });
   expect(await aterrizar.count()).toBeGreaterThanOrEqual(2);
   await expect(page.getByText("Sunlight").first()).toBeVisible();
