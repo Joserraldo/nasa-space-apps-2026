@@ -3,7 +3,7 @@ import * as THREE from "three";
 import type { Materiales } from "../materiales";
 import { TERRENO, lugar, type LugarId } from "../mundo";
 import { instanciar } from "./instancias";
-import { PLANTA_KIT, crearBaliza, crearCaja, crearConsola, crearDeposito, crearPanelSolar, type Huella } from "./piezasComunes";
+import { PLANTA_KIT, crearBaliza, crearCaja, crearConsola, crearDeposito, crearPanelSolar, crearPanelSolarInclinado, type Huella } from "./piezasComunes";
 import { crearCapsula, crearCorredor, crearHabitat, crearPlataformaNave, crearRefugio, crearTorreControl, plantaHabitat } from "./edificios";
 import { colocar, crearFormaModulo } from "./modulos";
 import { giroHacia, huellasModulos } from "./modulosArmados";
@@ -31,7 +31,7 @@ export const CAJAS: readonly { readonly x: number; readonly z: number; readonly 
  * Equipo solar de la plataforma de la mesa (`mundo/01`): dos paneles decorativos a la derecha de la
  * consola, mirando a la cámara. `x` es relativo a la consola de la mesa; `z` a su centro. [E]
  */
-export const PANELES_MESA = { dx: [2.2, 3.5], dz: -0.1, escala: 0.5, ancho: 1.0, fondo: 0.55 } as const;
+export const PANELES_MESA = { dx: [2.1, 3.5], dz: -0.1, escala: 1, ancho: 1.15, fondo: 0.85 } as const;
 
 /** Consola de un lugar: en el centro del modelo, mirando al punto donde se para el jugador. */
 function consola(id: LugarId, escala: number): { x: number; z: number; giro: number; escala: number } {
@@ -237,7 +237,7 @@ export function armarEdificios(m: Materiales): THREE.Group {
     g.add(colocar(crearConsola(m), [p.x, 0, p.z], [0, p.giro, 0], p.escala));
   }
   const mesa = lugar("mesa");
-  for (const dx of PANELES_MESA.dx) g.add(colocar(crearPanelSolar(m), [mesa.mx + dx, 0.1, mesa.mz + PANELES_MESA.dz], [0, 0, 0], PANELES_MESA.escala));
+  for (const dx of PANELES_MESA.dx) g.add(colocar(crearPanelSolarInclinado(m), [mesa.mx + dx, 0.1, mesa.mz + PANELES_MESA.dz], [0, 0, 0], PANELES_MESA.escala));
   for (const k of CAJAS) g.add(colocar(crearCaja(m), [k.x, 0, k.z], [0, k.giro, 0]));
   return fusionar(g, "Base_Buildings");
 }

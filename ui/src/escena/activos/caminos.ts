@@ -11,7 +11,7 @@ const MESA = lugar("mesa");
  * Plataforma baja de losas bajo la consola de la mesa y el equipo solar (dos paneles a su derecha,
  * `mundo/01`). Rectángulo alineado con los ejes, como la consola (giro 0): `x0..x1` × `z0..z1`. [E]
  */
-export const PLAZA = { x0: MESA.mx - 1.4, x1: MESA.mx + 4.1, z0: MESA.mz - 1.2, z1: MESA.z + 0.3, x: MESA.mx + 1.0, z: (MESA.mz - 1.2 + MESA.z + 0.4) / 2 } as const;
+export const PLAZA = { x0: MESA.mx - 1.4, x1: MESA.mx + 4.3, z0: MESA.mz - 1.2, z1: MESA.z + 0.3, x: MESA.mx + 1.0, z: (MESA.mz - 1.2 + MESA.z + 0.4) / 2 } as const;
 /** Distancia de un punto al rectángulo de la plataforma (0 dentro). */
 export const distanciaPlaza = (x: number, z: number) => Math.hypot(Math.max(PLAZA.x0 - x, 0, x - PLAZA.x1), Math.max(PLAZA.z0 - z, 0, z - PLAZA.z1));
 /**
