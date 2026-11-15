@@ -98,3 +98,18 @@
   .base-panel { max-block-size: none; }
   .dialogo-experto-cara { grid-template-areas: "retrato texto" "botones botones"; }
 }
+
+/* Tarjeta "Decision recorded" dentro del panel de la base (columna estrecha): una sola columna, personajes en fila. */
+.base-panel .decision { grid-template-columns: 1fr; gap: var(--esp-2); }
+.base-panel .decision-personajes { grid-template-columns: 1fr 1fr; }
+.base-panel .decision-detalle .costos { grid-template-columns: 1fr; }
+.base-panel .decision-detalle .costos-bloque + .costos-bloque { border-left: 0; padding-left: 0; }
+@media (max-height: 480px) and (orientation: landscape) {
+  .base-panel .decision { grid-template-columns: 1fr; }
+  /* Apaisado bajo: sin retratos y "Return to exploration" fijo al fondo del panel; los costos hacen scroll por encima. */
+  .base-panel .decision-personajes { display: none; }
+  .base-panel .base-bloque:has(.decision) { gap: var(--esp-1); padding-block: var(--esp-2); }
+  .base-panel .decision-detalle .mensaje { padding-block: 0; }
+  .base-panel .decision-detalle .mensaje-titulo { font-size: 15px; }
+  .base-panel .decision-detalle > .fb-caja { position: sticky; bottom: 0; z-index: 1; background: var(--color-marfil); padding-block: var(--esp-1); }
+}
