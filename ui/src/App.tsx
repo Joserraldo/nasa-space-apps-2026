@@ -1,16 +1,5 @@
-import { useEffect, useReducer, useState } from "react";
-import type { Action, Equipment, GameState } from "@solar-shield/contracts";
-import {
-  aplicarAccion,
-  aterrizar,
-  avanzarTick,
-  elegirDilema,
-  novedades,
-  partidaDorada,
-  pausar,
-  type Novedades,
-  type PuntajeSitio,
-} from "@solar-shield/engine";
+import { useEffect, useReducer, useRef, useState } from "react";
+import type { Action, Equipment } from "@solar-shield/contracts";
 import { HudBase } from "./componentes/HudBase.js";
 import { IdiomaContext, useT, type Idioma } from "./i18n.js";
 import { PantallaSitio } from "./pantallas/PantallaSitio.js";
@@ -26,87 +15,56 @@ import { Carga } from "./componentes/Carga.js";
 import { Creditos } from "./componentes/Creditos.js";
 import type { TemaPregunta } from "@solar-shield/agents";
 import { MISION_JEZERO } from "@solar-shield/missions";
+import { cargarAjustes, guardarAjustes } from "./juego/ajustes.js";
+import { almacenDelNavegador, cargarPartida, guardarPartida } from "./juego/guardado.js";
+import { inicial, reducir } from "./juego/reductor.js";
+import { tocar } from "./juego/sonido.js";
 
 /** Módulos que tienen pregunta de Iris nivel 2 al colocarlos. */
 const TEMAS_IRIS: readonly Equipment[] = ["panel_solar", "reciclador_agua", "invernadero", "escudo"];
 
-type Fase = "inicio" | "satelite" | "sitio" | "modulos" | "base" | "tormenta" | "final";
-
-interface Juego {
-  fase: Fase;
-  estado: GameState;
-  colocados: Equipment[];
-  sitio: PuntajeSitio | null;
-  ultimas: Novedades | null;
-  tormentaVista: boolean;
-  /** El estado de antes de la decisión de la tormenta: mientras exista se muestra "Decision recorded" (ui/04 panel 04). */
-  registro: GameState | null;
-}
-
-type Evento =
-  | { tipo: "nueva" }
-  | { tipo: "fase"; fase: Fase }
-  | { tipo: "accion"; accion: Action }
-  | { tipo: "dilema"; previas: Action[]; opcionId: string }
-  | { tipo: "seguir" }
-  | { tipo: "tick" }
-  | { tipo: "pausa"; pausado: boolean }
-  | { tipo: "sitio"; sitio: PuntajeSitio }
-  | { tipo: "modulo"; modulo: Equipment };
-
-function inicial(): Juego {
-  return { fase: "inicio", estado: partidaDorada(), colocados: [], sitio: null, ultimas: null, tormentaVista: false, registro: null };
-}
-
-function reducir(j: Juego, e: Evento): Juego {
-  switch (e.tipo) {
-    case "nueva": return inicial();
-    case "fase": return { ...j, fase: e.fase };
-    // Paso 3: el motor cobra el costo del sitio una sola vez (MISION_JEZERO.sitiosCandidatos).
-    case "sitio": return { ...j, estado: aterrizar(j.estado, e.sitio.id), sitio: e.sitio, fase: "modulos" };
-    case "modulo": {
-      const estado = aplicarAccion(j.estado, { tipo: "colocar_modulo", modulo: e.modulo });
-      return { ...j, estado, colocados: [...j.colocados, e.modulo] };
-    }
-    case "accion": return { ...j, estado: aplicarAccion(j.estado, e.accion) };
-    // Paso 6: lo verificado con la experta (si lo hubo) y luego la salida del dilema, con el extra del invernadero.
-    case "dilema": {
-      let s = j.estado;
-      for (const a of e.previas) s = aplicarAccion(s, a);
-      const estado = elegirDilema(s, e.opcionId);
-      return estado === s ? j : { ...j, estado, registro: j.estado };
-    }
-    case "seguir": return { ...j, estado: pausar(j.estado, false), registro: null, fase: "base" };
-    case "pausa": return { ...j, estado: pausar(j.estado, e.pausado) };
-    case "tick": {
-      if (j.estado.pausado || j.estado.resultado !== "en_curso") return j;
-      const sig = avanzarTick(j.estado);
-      const n = novedades(j.estado, sig);
-      if (sig.resultado !== "en_curso") return { ...j, estado: sig, ultimas: n, fase: "final" };
-      if (n.tormentaLlego && !j.tormentaVista) return { ...j, estado: pausar(sig, true), ultimas: n, fase: "tormenta", tormentaVista: true };
-      return { ...j, estado: n.pausar ? pausar(sig, true) : sig, ultimas: n };
-    }
-  }
-}
-
 export function App() {
-  const [idioma, setIdioma] = useState<Idioma>(() => (navigator.language.startsWith("es") ? "es" : "en"));
+  // Idioma y sonido se recuerdan en el navegador (juego/ajustes.ts); inglés es la base.
+  const [ajustes, setAjustes] = useState(() => cargarAjustes(almacenDelNavegador(), {
+    idiomaNavegador: navigator.language,
+    prefiereMovimientoReducido: typeof matchMedia === "function" && matchMedia("(prefers-reduced-motion: reduce)").matches,
+  }));
+  useEffect(() => { guardarAjustes(almacenDelNavegador(), ajustes); }, [ajustes]);
   return (
-    <IdiomaContext.Provider value={idioma}>
-      <Pantalla idioma={idioma} setIdioma={setIdioma} />
+    <IdiomaContext.Provider value={ajustes.idioma}>
+      <Pantalla idioma={ajustes.idioma} setIdioma={(idioma) => setAjustes((a) => ({ ...a, idioma }))}
+        sonido={ajustes.sonido} setSonido={(sonido) => setAjustes((a) => ({ ...a, sonido }))} />
     </IdiomaContext.Provider>
   );
 }
 
-function Pantalla({ idioma, setIdioma }: { idioma: Idioma; setIdioma: (i: Idioma) => void }) {
+function Pantalla({ idioma, setIdioma, sonido, setSonido }: {
+  idioma: Idioma; setIdioma: (i: Idioma) => void;
+  sonido: boolean; setSonido: (s: boolean) => void;
+}) {
   const { t } = useT();
   const [j, enviar] = useReducer(reducir, undefined, inicial);
+  // Partida guardada en este navegador: habilita "Continue" en la portada.
+  const [guardada, setGuardada] = useState(() => cargarPartida(almacenDelNavegador()));
+  useEffect(() => {
+    guardarPartida(almacenDelNavegador(), j);
+    if (j.fase === "inicio") setGuardada(cargarPartida(almacenDelNavegador()));
+  }, [j]);
   const [velocidad, setVelocidad] = useState(1);
   const enBase = j.fase === "base";
   // Inicio en tres momentos (ESCENAS E0 a E2): portada, intro de 4 viñetas y carga. Después, la órbita.
   const [inicio, setInicio] = useState<"portada" | "intro" | "carga">("portada");
   const [creditos, setCreditos] = useState(false);
-  const [sonido, setSonido] = useState(false);
+  // Al encender el sonido suena una nota: el jugador oye que funciona.
+  const alternarSonido = () => { tocar("toque", !sonido); setSonido(!sonido); };
+  // Avisos sonoros de lo que pasa en la partida: llega la tormenta, se gana o se pierde.
+  const faseAnterior = useRef(j.fase);
+  useEffect(() => {
+    if (faseAnterior.current === j.fase) return;
+    faseAnterior.current = j.fase;
+    if (j.fase === "tormenta") tocar("alerta", sonido);
+    else if (j.fase === "final") tocar(j.estado.resultado === "exito" ? "exito" : "fallo", sonido);
+  }, [j.fase, j.estado.resultado, sonido]);
   useEffect(() => { if (j.fase === "inicio") setInicio("portada"); }, [j.fase]);
   const empezarMision = () => enviar({ tipo: "fase", fase: "satelite" });
   // La carga es un respiro corto entre la intro y la órbita; se puede saltar con "Skip".
@@ -125,7 +83,8 @@ function Pantalla({ idioma, setIdioma }: { idioma: Idioma; setIdioma: (i: Idioma
 
   useEffect(() => { document.documentElement.lang = idioma; }, [idioma]);
 
-  const accion = (a: Action) => enviar({ tipo: "accion", accion: a });
+  const accion = (a: Action) => { tocar("confirmar", sonido); enviar({ tipo: "accion", accion: a }); };
+  const continuar = () => { if (guardada) { tocar("confirmar", sonido); enviar({ tipo: "restaurar", juego: guardada }); } };
 
   return (
     <div className={enBase ? "app app-base" : "app"}>
@@ -137,23 +96,23 @@ function Pantalla({ idioma, setIdioma }: { idioma: Idioma; setIdioma: (i: Idioma
 
       <main>
         {j.fase === "inicio" && inicio === "portada" && (
-          <Portada idioma={idioma} onIdioma={setIdioma} sonido={sonido} onSonido={() => setSonido((x) => !x)}
-            puedeContinuar={false} onEmpezar={() => setInicio("intro")} onContinuar={empezarMision} onCreditos={() => setCreditos(true)} />
+          <Portada idioma={idioma} onIdioma={setIdioma} sonido={sonido} onSonido={alternarSonido}
+            puedeContinuar={guardada !== null} onEmpezar={() => setInicio("intro")} onContinuar={continuar} onCreditos={() => setCreditos(true)} />
         )}
         {j.fase === "inicio" && inicio === "intro" && <Intro onTerminar={() => setInicio("carga")} />}
-        {j.fase === "inicio" && inicio === "carga" && <Carga consejo={0} sonido={sonido} onSonido={() => setSonido((x) => !x)} onSaltar={empezarMision} />}
+        {j.fase === "inicio" && inicio === "carga" && <Carga consejo={0} sonido={sonido} onSonido={alternarSonido} onSaltar={empezarMision} />}
         {creditos && <Creditos onCerrar={() => setCreditos(false)} />}
         {j.fase === "satelite" && <PantallaOrbita estado={j.estado} onContinuar={() => enviar({ tipo: "fase", fase: "sitio" })} />}
-        {j.fase === "sitio" && <PantallaSitio estado={j.estado} onElegir={(s) => enviar({ tipo: "sitio", sitio: s })} />}
+        {j.fase === "sitio" && <PantallaSitio estado={j.estado} onElegir={(s) => { tocar("confirmar", sonido); enviar({ tipo: "sitio", sitio: s }); }} />}
         {j.fase === "modulos" && (
           <>
-            <PantallaModulos estado={j.estado} colocados={j.colocados} onColocar={(m) => enviar({ tipo: "modulo", modulo: m })} onListo={() => enviar({ tipo: "fase", fase: "base" })} />
+            <PantallaModulos estado={j.estado} colocados={j.colocados} onColocar={(m) => { tocar("confirmar", sonido); enviar({ tipo: "modulo", modulo: m }); }} onListo={() => enviar({ tipo: "fase", fase: "base" })} />
             {TEMAS_IRIS.find((m) => m === j.colocados.at(-1)) && <PreguntaDeIris key={j.colocados.length} tema={j.colocados.at(-1) as TemaPregunta} nivel={j.estado.iaBase} />}
           </>
         )}
         {j.fase === "tormenta" && (
           <PantallaTormenta estado={j.estado} colocados={j.colocados} registro={j.registro} onSeguir={() => enviar({ tipo: "seguir" })}
-            onDecidir={(previas, opcionId) => enviar({ tipo: "dilema", previas, opcionId })} />
+            onDecidir={(previas, opcionId) => { tocar("confirmar", sonido); enviar({ tipo: "dilema", previas, opcionId }); }} />
         )}
         {enBase && (
           <PantallaBase estado={j.estado} colocados={j.colocados} ultimas={j.ultimas} onAccion={accion} onReanudar={() => enviar({ tipo: "pausa", pausado: false })} />

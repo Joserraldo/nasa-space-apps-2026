@@ -3,6 +3,8 @@ import { expect, test, type Page } from "@playwright/test";
 /**
  * Ruta dorada (issue #41): semilla "jezero-2024-05-20", 8 pasos, en inglés (idioma base).
  * La ui usa un reloj de 4 s por turno; se simula con `page.clock` para no esperar de verdad.
+ * Se salta el tiempo con `fastForward` (dispara el turno una vez) en vez de `runFor`: con la escena 3D
+ * en la base, `runFor` dibujaba 240 cuadros por turno en el navegador sin GPU y rozaba el límite de 90 s.
  * Selectores: roles y texto de `ui/i18n/en.json`. No hay data-testid todavía (ver tests/README.md).
  */
 
@@ -15,7 +17,7 @@ async function avanzarHasta(page: Page, listo: () => Promise<boolean>, maxTurnos
     if (await listo()) return;
     // La ui pausa sola ante novedades (mala suerte, Iris); se reanuda como lo haría el jugador.
     if (await seguir.first().isVisible()) await seguir.first().click();
-    await page.clock.runFor(TURNO_MS);
+    await page.clock.fastForward(TURNO_MS);
     await page.waitForTimeout(30);
   }
   throw new Error(`No se cumplió la condición en ${maxTurnos} turnos`);
