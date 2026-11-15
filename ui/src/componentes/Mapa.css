@@ -1,6 +1,6 @@
 /* FLUJO §3: variables oficiales de Jaime; no se replica su paleta ni el tema anterior. */
 .mapa { color: var(--color-indigo-texto); font: var(--tipo-peso-cuerpo) var(--tipo-tam-cuerpo)/var(--tipo-interlineado) var(--tipo-familia); padding: var(--esp-4); isolation: isolate; position: relative; }
-.mapa::before { content: ""; position: absolute; inset: 0; z-index: -1; background: var(--color-marfil); clip-path: polygon(12px 0,calc(100% - 12px) 0,100% 12px,100% calc(100% - 12px),calc(100% - 12px) 100%,12px 100%,0 calc(100% - 12px),0 12px); }
+.mapa::before { content: ""; position: absolute; inset: 0; z-index: -1; background: var(--color-marfil); clip-path: polygon(var(--chaflan) 0,calc(100% - var(--chaflan)) 0,100% var(--chaflan),100% calc(100% - var(--chaflan)),calc(100% - var(--chaflan)) 100%,var(--chaflan) 100%,0 calc(100% - var(--chaflan)),0 var(--chaflan)); }
 .mapa * { box-sizing: border-box; }
 .mapa h2 { font-size: var(--tipo-tam-titulo); font-weight: var(--tipo-peso-titulo); margin: 0; }
 .mapa p { margin: 0; }
@@ -12,7 +12,7 @@
 .mapa__camino { fill: none; stroke: var(--color-camino); stroke-width: .5; stroke-linejoin: round; }
 .mapa__conexion { stroke: var(--color-ciruela); stroke-width: .04; }
 .mapa button { appearance: none; border: 0; background: none; color: inherit; font: inherit; cursor: pointer; box-shadow: var(--sombra-bisel); isolation: isolate; }
-.mapa button::before,.mapa button::after { content: ""; position: absolute; inset: 0; z-index: -2; background: var(--color-ciruela); clip-path: polygon(8px 0,calc(100% - 8px) 0,100% 8px,100% calc(100% - 8px),calc(100% - 8px) 100%,8px 100%,0 calc(100% - 8px),0 8px); }
+.mapa button::before,.mapa button::after { content: ""; position: absolute; inset: 0; z-index: -2; background: var(--color-ciruela); clip-path: polygon(var(--chaflan-chico) 0,calc(100% - var(--chaflan-chico)) 0,100% var(--chaflan-chico),100% calc(100% - var(--chaflan-chico)),calc(100% - var(--chaflan-chico)) 100%,var(--chaflan-chico) 100%,0 calc(100% - var(--chaflan-chico)),0 var(--chaflan-chico)); }
 .mapa button::after { inset: var(--borde-fino); z-index: -1; background: var(--color-marfil); }
 .mapa button:hover::after { background: var(--color-lila); }
 .mapa button:active { box-shadow: var(--sombra-presionada); }

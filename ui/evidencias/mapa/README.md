@@ -2,9 +2,9 @@
 
 Componente aislado, sin montaje en App ni afirmación de navegación 3D integrada.
 Capturas reales de Chromium con Nunito y los tokens oficiales de Jaime, tomados sin
-modificarlos del commit `3195f53b5aa0874f263b6fb96363a57613f78287`.
-Ese commit todavía no forma parte de la base de este PR. Solo el montaje de prueba
-carga esos archivos: el componente consume sus variables CSS, sin colores alternativos.
+modificarlos del commit público `3195f53` de Jaime.
+La base ya incluye el contrato #205 y los tokens/Nunito mediante #220. El montaje
+mantiene esa revisión histórica para reproducir las capturas; no define colores alternativos.
 
 ## Ficha de fidelidad (FLUJO §7.1)
 
@@ -39,10 +39,12 @@ Se revisaron visualmente las tres capturas. La aceptación de fidelidad correspo
 Desde la raíz del worktree: `node ui/evidencias/mapa/verificar.mjs [ref-de-tokens]`.
 El script crea un montaje en `build/qa-mapa/`, sirve los tokens y fuentes oficiales desde
 Git y regenera las tres capturas. Requiere Chromium de Playwright y el commit indicado.
+La referencia se resuelve con `git rev-parse --verify <ref>^{commit}` antes de leer archivos;
+`resultados.json` conserva solo sus primeros siete caracteres para evitar la alerta de entropía.
 La prueba no modifica tokens, App, mundo, motor ni archivos de colisiones.
 
 - `npm.cmd run typecheck`: exit 0.
-- `npm.cmd test`: 74 archivos, 531 pruebas; exit 0.
+- `npm.cmd test`: 82 archivos, 598 pruebas sobre la base v8 incorporada; exit 0.
 - `npm.cmd run build`: exit 0 (aplicación vigente; el mapa aún no está montado en ella).
 - `npm.cmd run e2e`: ruta dorada en inglés, 1/1; exit 0.
 - Mapa, navegación e i18n: 10/10 pruebas focalizadas; exit 0.
@@ -60,6 +62,14 @@ para solicitar la navegación o situar al niño en el punto de uso del respaldo 
 El componente no cambia posición, objetivo, pausa, GameState ni módulos internamente.
 José conserva el contenedor de apertura/cierre, la pausa previa y la restauración del foco.
 
-Dependencias antes del montaje: contrato #205 (sin copiar mundo.ts), carga global de tokens.css
-y Nunito de Jaime (#208), y callback de navegación de Daniel/José. El PR del mapa solo añade
+El contrato #205 y los tokens/Nunito de Jaime (#220) ya están en la base incorporada.
+Faltan la aprobación visual de Paula y el callback de navegación de Daniel/José. El PR solo añade
 sus claves `ui.mapa.*`, conforme a FLUJO §1.1. No requiere cambiar contratos ni balance.
+
+## GitGuardian: incidente histórico 40101509
+
+El hallazgo corresponde a `tokensRef` en el commit anterior `44a344d`: su valor era el
+SHA completo del commit público `3195f53` de fuentes Nunito de Jaime, no una credencial.
+La evidencia actual y el valor predeterminado del script usan siete caracteres.
+Si el check conserva el hallazgo por el historial publicado, un mantenedor debe clasificarlo
+como falso positivo en GitGuardian. No se reescribe historial ni se hace force push.

@@ -13,9 +13,9 @@ docs/referenciapau/NIVELES.md y RETO.md §6.
 
 RAMA DEL FRONTEND: tu parte del frontend se trabaja desde feat/ui-escenarios y el PR va
 hacia feat/ui-escenarios (FLUJO §2): git fetch origin && git switch -c feat/ui-<parte>-<tema>
-origin/feat/ui-escenarios. Los archivos NUEVOS de tu parte se empiezan ya; los que ya existen
-en el trabajo local de María Paula esperan a que ella lo suba (FLUJO §2.1). El diseño anterior
-se borra (FLUJO §2.2): la única guía visual son las láminas del atlas v8.
+origin/feat/ui-escenarios. Todo se escribe NUEVO desde su lámina: nadie trabaja sobre el
+preview desplegado ni re-estiliza archivos viejos (FLUJO §2.3). La subida de María Paula
+fue solo lógica (#184, #197). La única guía visual son las láminas del atlas v8.
 Tus otras tareas de rol siguen yendo a develop como siempre.
 
 CÓMO TRABAJAMOS TODOS:

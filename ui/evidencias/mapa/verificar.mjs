@@ -7,11 +7,14 @@ import assert from "node:assert/strict";
 import { chromium } from "@playwright/test";
 import { createServer } from "vite";
 
-const ref = process.argv[2] ?? "3195f53b5aa0874f263b6fb96363a57613f78287";
+const ref = process.argv[2] ?? "3195f53";
+// Resuelve y valida la revisión pública antes de leerla; la evidencia guarda solo 7 caracteres.
+const revision = execFileSync("git", ["rev-parse", "--verify", `${ref}^{commit}`], { encoding: "utf8" }).trim();
+const referenciaCorta = revision.slice(0, 7);
 const salida = resolve("ui/evidencias/mapa");
 const temporal = resolve("build/qa-mapa");
 mkdirSync(temporal + "/fuentes", { recursive: true });
-const delGit = p => execFileSync("git", ["show", `${ref}:${p}`]);
+const delGit = p => execFileSync("git", ["show", `${revision}:${p}`]);
 writeFileSync(temporal + "/tokens.css", delGit("ui/src/estilos/tokens.css").toString().replaceAll('url("/fuentes/', 'url("./fuentes/'));
 for (const f of ["nunito-latin.woff2", "nunito-italic-latin.woff2"]) {
   writeFileSync(temporal + "/fuentes/" + f, delGit("ui/public/fuentes/" + f));
@@ -78,7 +81,7 @@ try {
   await page.evaluate(() => window.panel("instalando"));
   await page.getByRole("button",{name:"Panel solar. Instalando",exact:true}).first().waitFor();
   assert.deepEqual(errores,[]);
-  writeFileSync(salida + "/resultados.json", JSON.stringify({tokensRef:ref,viewports:resultados,es:true,movimientoReducido:true,posicionActualizable:true,estadosActualizables:true,errores},null,2)+"\n");
+  writeFileSync(salida + "/resultados.json", JSON.stringify({tokensRef:referenciaCorta,viewports:resultados,es:true,movimientoReducido:true,posicionActualizable:true,estadosActualizables:true,errores},null,2)+"\n");
   console.log("Mapa: 3 tamaños, 30 clics, Enter/Space, EN/ES, posición, estados y movimiento reducido: OK");
 } finally {
   await browser?.close();
