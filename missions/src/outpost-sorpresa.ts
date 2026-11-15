@@ -12,21 +12,19 @@ import type { Mision } from "./jezero.js";
  * Huecos del tipo `Mision` (no se cambió el tipo; se anotan para que diseño y motor decidan):
  * 1. `PasoMision.meta` solo tiene las metas de Jezero. El paso 1 (la sorpresa) y el 2 (orientar la nave)
  *    reutilizan "satelite_suelto" y "ruta_dibujada": ui tiene que dibujarlos distinto.
- * 2. `SitioCandidato.id` apunta a data/terreno/<terrenoId>/; la nave no tiene terreno. Las 3 zonas
- *    (cabina, centro, fondo) son valores de juego y `terrenoId` nombra una carpeta que NO existe.
- *    Motor debe aceptar `sitio_elegido` sin terreno (propuesta §10).
- * 3. `EventoPolvo.descripcionKey` es el literal "mala_suerte.tormenta_polvo". El micrometeorito (§7)
- *    usa la misma mecánica (panel a la mitad, salida exterior), pero la causa que escribe el motor
- *    diría "tormenta de polvo". Hace falta un evento de mala suerte genérico con
- *    `descripcionKey: "mala_suerte.micrometeorito"` (esa clave ya existe en design/i18n).
+ * 2. La nave no tiene terreno: esta misión no lleva `terrenoId` y las 3 zonas (cabina, centro, fondo)
+ *    son valores de juego, no sitios de data/terreno/. Motor debe aceptar `sitio_elegido` sin terreno
+ *    (propuesta §10).
+ * 3. El micrometeorito (§7) usa la mecánica de `eventoPolvo` (panel a la mitad, salida exterior), pero
+ *    con `descripcionKey: "mala_suerte.micrometeorito"` (esa clave ya existe en design/i18n).
  * 4. `OpcionDilema.extraSiTiene` solo mira módulos, no la zona: "refugiarse cuesta más en la cabina"
  *    (§6) no se puede expresar.
- * 5. No hay forma de dar beneficios de módulo por misión: `bateria` sigue con +2 🛡️ (DD-07) y `antena`
- *    con +4 🛡️ en design/src/recursos.ts, aunque la propuesta §3 los quiere sin blindaje.
- * 6. Tampoco hay campo para el retraso de comunicaciones: RETRASO_COMUNICACIONES.outpost_sorpresa es 3
- *    ticks y la propuesta §4 pide 1 (la luz Tierra-Luna tarda ~1,3 s). Lo decide diseño en recursos.ts.
+ * 5. `Mision.modulos` ya admite beneficios por misión; faltan valores aprobados para reemplazar
+ *    la batería con +2 🛡️ (DD-07) y la antena con +4 🛡️ (propuesta §3).
+ * 6. `retrasoComunicacionesTicks` ya permite un retraso por misión. Se conservan los 3 ticks de
+ *    RETRASO_COMUNICACIONES: la propuesta §4 pide 1, todavía sin aprobación de diseño.
  */
-export const MISION_OUTPOST_SORPRESA: Mision = {
+export const MISION_OUTPOST_SORPRESA = {
   id: "outpost-sorpresa",
   nombreKey: "mision.outpost.nombre",
   sitio: "outpost_sorpresa",
@@ -50,8 +48,7 @@ export const MISION_OUTPOST_SORPRESA: Mision = {
     { n: 7, tituloKey: "mision.outpost.paso7", meta: "telemetria_enviada" },
     { n: 8, tituloKey: "mision.outpost.paso8", meta: "fin" },
   ],
-  // Hueco 2: esta carpeta no existe en data/terreno/. Las zonas son de juego.
-  terrenoId: "outpost-sorpresa",
+  // Sin mapa de terreno: el puesto es una nave en el espacio profundo.
   /*
    * Zonas de la nave (propuesta §2). El costo inmediato sale de la propuesta (cabina 🛡️-5 tras la revisión de diseño de Daniel en #155: con -8 quedaba en -5 neto, muy castigada; centro 🫁-6,
    * fondo ⚡-6); el beneficio con retraso es POR AJUSTAR (diseño), puesto para que ninguna domine:
@@ -93,11 +90,11 @@ export const MISION_OUTPOST_SORPRESA: Mision = {
     tickLimite: 10,
   },
   /*
-   * Hueco 3: es el micrometeorito (§7), no polvo. Misma mecánica: el panel rinde la mitad y se arregla
+   * Es el micrometeorito (§7), no polvo. Misma mecánica: el panel rinde la mitad y se arregla
    * con una salida exterior (🛡️ -12 🫁 -5 en COSTOS_ACCION). Evento de juego, sin cifras de NASA.
    */
   eventoPolvo: {
-    descripcionKey: "mala_suerte.tormenta_polvo",
+    descripcionKey: "mala_suerte.micrometeorito",
     equipo: "panel_solar",
     rendimientoPanel: 0.5,
     limpiar: { tipo: "salida_exterior", objetivo: "panel_solar" },
@@ -167,4 +164,4 @@ export const MISION_OUTPOST_SORPRESA: Mision = {
     explicacionKey: "mision.outpost.pregunta.explicacion",
     fuenteKey: "fuente.dosis.marte",
   },
-};
+} satisfies Mision;

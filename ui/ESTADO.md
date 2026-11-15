@@ -17,15 +17,17 @@ Una sección por persona, máximo 5 líneas, y nadie edita la de otro (FLUJO §8
 - Bloqueo: ninguno.
 
 ## Escenario (Daniel)
-**Rama:** feat/ui-escena-consolidada · **PR:** consolida #206, #223–#232 y #235 · **Tokens:** 🟢
-- Hecho: pila #223–#232 + base (#206: EscenaBase, escena3d, armado, baseExterior, pavimento, capturas) + materiales con tokens (#235) en una sola rama.
-- Consolidado por el agente de José mientras Daniel no tiene tokens; Daniel revisa al volver.
+**Rama:** feat/ui-escena-v* · **PR:** cadena #282 → #285 → #286 → #288 → #289 → … → #295 → #300 hacia develop · **Tokens:** 🟡
+- Hecho: pila del escenario pasada a develop (reemplaza #248–#266); entraron #282, #285, #286 y #288. Fidelidad nueva: rocas de esquina, balizas del camino ancho, torre y hábitat.
+- Medido (15 nov, Chrome real, Intel Graphics 0x7D67 integrada, sin vsync, 15 s): PC 1920×1080 alta 258 fps (p95 0,8 ms), baja 777 fps; 1366×768 alta 383 fps. Tirones sueltos de 0,2–0,5 s (¿shaders?).
+- Celular emulado (412×915, dpr 2,6, CPU ÷4): alta 290 fps, baja 480 fps. Es emulación, no reemplaza el celular real.
+- Sigue: fusionar la cadena en orden; medir en un celular y un PC viejo reales.
 
 ## Ubicación (Camilo)
-**Rama:** feat/ui-ubicacion-mapa · **PR:** #216 · **Tokens:** verde
-- Hecho: #205/#220 incorporados; claves conciliadas; chaflanes desde tokens; typecheck, 598 tests, build, E2E y tres capturas en verde.
-- Sigue: revisión de Paula del PR #216 corregido, sin reescribir el historial ni fusionarlo.
-- Bloqueo: aceptación de Paula; incidente histórico 40101509 documentado si reaparece. Otros worktrees intactos.
+**Rama:** feat/ui-ubicacion-colisiones · **PR:** hacia develop · **Tokens:** amarillo
+- Hecho: avance físico recuperado; contactos centrados, subpasos y límite con radio; 31 pruebas específicas, 694 totales, tipos/build/E2E OK.
+- Sigue: #254 después de la pila de Daniel; #216 ya fusionado, sin rehacer el mapa. Táctiles en worktree separado.
+- Bloqueo: mundo/alturas dependen de Daniel; movimiento/cámara/mapa requieren montaje de José/Daniel. Sin prueba en celular físico.
 
 ## Integración (José)
 **Rama:** feat/ui-integracion-orientacion · **PR:** hacia feat/ui-escenarios · **Tokens:** verde

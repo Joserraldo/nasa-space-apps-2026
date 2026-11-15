@@ -49,12 +49,20 @@ export function EscenaBase(props: EscenaBaseProps) {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const p = actuales.current;
-    const escena = crearEscena3D(canvas, {
-      calidad: p.calidad,
-      movimientoReducido: p.movimientoReducido,
-      alPerderContexto: () => actuales.current.onWebGLPerdido(),
-      alExceso: (nivel) => actuales.current.onCalidad(nivel),
-    });
+    let escena: Escena3D;
+    try {
+      escena = crearEscena3D(canvas, {
+        calidad: p.calidad,
+        movimientoReducido: p.movimientoReducido,
+        alPerderContexto: () => actuales.current.onWebGLPerdido(),
+        alExceso: (nivel) => actuales.current.onCalidad(nivel),
+      });
+    } catch {
+      // WebGL puede fallar al crear el contexto, antes de que exista el evento de pérdida.
+      // La pantalla conserva sus controles y decide cómo mostrar el respaldo.
+      actuales.current.onWebGLPerdido();
+      return;
+    }
     escenaRef.current = escena;
     escena.fijarCamara(p.camara);
     escena.actualizar(p.vista, p.eventos);

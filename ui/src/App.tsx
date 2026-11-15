@@ -13,12 +13,12 @@ import {
 } from "@solar-shield/engine";
 import { HudBase } from "./componentes/HudBase.js";
 import { IdiomaContext, useT, type Idioma } from "./i18n.js";
+import { PantallaSitio } from "./pantallas/PantallaSitio.js";
 import { PantallaModulos } from "./pantallas/PantallaModulos.js";
-import { ElegirSitio } from "./pantallas/ElegirSitio.js";
 import { PantallaFinal } from "./pantallas/PantallaFinal.js";
-import { Satelite } from "./pantallas/Satelite.js";
+import { PantallaOrbita } from "./pantallas/PantallaOrbita.js";
 import { PantallaBase } from "./pantallas/PantallaBase.js";
-import { Tormenta } from "./pantallas/Tormenta.js";
+import { PantallaTormenta } from "./pantallas/PantallaTormenta.js";
 import { PreguntaDeIris } from "./componentes/PreguntaDeIris.js";
 import { Portada } from "./componentes/Portada.js";
 import { Intro } from "./componentes/Intro.js";
@@ -38,6 +38,8 @@ interface Juego {
   sitio: PuntajeSitio | null;
   ultimas: Novedades | null;
   tormentaVista: boolean;
+  /** El estado de antes de la decisión de la tormenta: mientras exista se muestra "Decision recorded" (ui/04 panel 04). */
+  registro: GameState | null;
 }
 
 type Evento =
@@ -45,13 +47,14 @@ type Evento =
   | { tipo: "fase"; fase: Fase }
   | { tipo: "accion"; accion: Action }
   | { tipo: "dilema"; previas: Action[]; opcionId: string }
+  | { tipo: "seguir" }
   | { tipo: "tick" }
   | { tipo: "pausa"; pausado: boolean }
   | { tipo: "sitio"; sitio: PuntajeSitio }
   | { tipo: "modulo"; modulo: Equipment };
 
 function inicial(): Juego {
-  return { fase: "inicio", estado: partidaDorada(), colocados: [], sitio: null, ultimas: null, tormentaVista: false };
+  return { fase: "inicio", estado: partidaDorada(), colocados: [], sitio: null, ultimas: null, tormentaVista: false, registro: null };
 }
 
 function reducir(j: Juego, e: Evento): Juego {
@@ -69,8 +72,10 @@ function reducir(j: Juego, e: Evento): Juego {
     case "dilema": {
       let s = j.estado;
       for (const a of e.previas) s = aplicarAccion(s, a);
-      return { ...j, estado: pausar(elegirDilema(s, e.opcionId), false), fase: "base" };
+      const estado = elegirDilema(s, e.opcionId);
+      return estado === s ? j : { ...j, estado, registro: j.estado };
     }
+    case "seguir": return { ...j, estado: pausar(j.estado, false), registro: null, fase: "base" };
     case "pausa": return { ...j, estado: pausar(j.estado, e.pausado) };
     case "tick": {
       if (j.estado.pausado || j.estado.resultado !== "en_curso") return j;
@@ -136,8 +141,8 @@ function Pantalla({ idioma, setIdioma }: { idioma: Idioma; setIdioma: (i: Idioma
         {j.fase === "inicio" && inicio === "intro" && <Intro onTerminar={() => setInicio("carga")} />}
         {j.fase === "inicio" && inicio === "carga" && <Carga consejo={0} sonido={sonido} onSonido={() => setSonido((x) => !x)} onSaltar={empezarMision} />}
         {creditos && <Creditos onCerrar={() => setCreditos(false)} />}
-        {j.fase === "satelite" && <Satelite estado={j.estado} onContinuar={() => enviar({ tipo: "fase", fase: "sitio" })} />}
-        {j.fase === "sitio" && <ElegirSitio estado={j.estado} onElegir={(s) => enviar({ tipo: "sitio", sitio: s })} />}
+        {j.fase === "satelite" && <PantallaOrbita estado={j.estado} onContinuar={() => enviar({ tipo: "fase", fase: "sitio" })} />}
+        {j.fase === "sitio" && <PantallaSitio estado={j.estado} onElegir={(s) => enviar({ tipo: "sitio", sitio: s })} />}
         {j.fase === "modulos" && (
           <>
             <PantallaModulos estado={j.estado} colocados={j.colocados} onColocar={(m) => enviar({ tipo: "modulo", modulo: m })} onListo={() => enviar({ tipo: "fase", fase: "base" })} />
@@ -145,9 +150,8 @@ function Pantalla({ idioma, setIdioma }: { idioma: Idioma; setIdioma: (i: Idioma
           </>
         )}
         {j.fase === "tormenta" && (
-          <>
-            <Tormenta estado={j.estado} onDecidir={(previas, opcionId) => enviar({ tipo: "dilema", previas, opcionId })} onAccion={accion} />
-          </>
+          <PantallaTormenta estado={j.estado} colocados={j.colocados} registro={j.registro} onSeguir={() => enviar({ tipo: "seguir" })}
+            onDecidir={(previas, opcionId) => enviar({ tipo: "dilema", previas, opcionId })} />
         )}
         {enBase && (
           <PantallaBase estado={j.estado} ultimas={j.ultimas} onAccion={accion} onReanudar={() => enviar({ tipo: "pausa", pausado: false })} />

@@ -10,16 +10,16 @@ import type { Mision } from "./jezero.js";
  * noche (NASA SVS 5187, PR #147). La Tierra está a ~1 tick, pero cada llamada gasta una batería
  * que no se recarga hasta el amanecer.
  *
- * HUECOS DEL TIPO `Mision` (no se cambió jezero.ts; se documentan para diseño y motor):
- * 1. `eventoPolvo` es obligatorio y está fijado a polvo sobre el panel. En la Luna casi no hay
- *    atmósfera: una tormenta de polvo sería un error de ciencia. Por eso esta constante es
- *    `Omit<Mision, "eventoPolvo">` y la mala suerte (antena averiada) va en AVERIA_ANTENA_LUNA_VISIBLE.
+ * Estado de integración con `Mision` (eventoPolvo es opcional; no se simula polvo lunar):
+ * 1. En la Luna casi no hay atmósfera: una tormenta de polvo sería un error de ciencia. Por eso esta
+ *    misión NO define `eventoPolvo` y la mala suerte (antena averiada) va en AVERIA_ANTENA_LUNA_VISIBLE.
  * 2. No hay campo para "de noche el panel no da energía hasta el amanecer" (propuesta §2: `amanecerTick`).
  *    Hasta que motor/diseño lo definan, la noche no está modelada en datos.
- * 3. `fin.exitoCuando` solo admite "telemetria_llega"; la propuesta gana "al amanecer (paso 8)".
- * 4. `TarjetaCiencia.fuenteKey` admite una sola fuente; "una tormenta, tres lugares" necesita
+ * 3. `ExitoCuando` ya admite `sobrevivir_hasta_tick`, pero falta aprobar el tick del amanecer.
+ *    #196 prohíbe la victoria anticipada por telemetría; el valor heredado de abajo sigue siendo un bloqueo.
+ * 4. `TarjetaCiencia` admite varias fuentes; "una tormenta, tres lugares" necesita
  *    DONKI (Kp en la Tierra) + CRaTER + RAD. Se cita RadLab (CRaTER y RAD) y falta DONKI.
- * 5. No hay campo para el aviso "datos reales curados, no en vivo" de la tormenta: va en
+ * 5. El aviso "datos reales curados, no en vivo" de la tormenta va en
  *    TEXTOS_LUNA_VISIBLE como `mision.lunaVisible.tormenta.aviso` para que ui lo use.
  */
 
@@ -53,12 +53,12 @@ export const AVERIA_ANTENA_LUNA_VISIBLE: AveriaAntena = {
  */
 export const FUENTES_PENDIENTES_LUNA_VISIBLE: readonly string[] = ["fuente.svs"];
 
-export const MISION_LUNA_VISIBLE: Omit<Mision, "eventoPolvo"> = {
+export const MISION_LUNA_VISIBLE = {
   id: "luna-lado-visible",
   nombreKey: "mision.lunaVisible.nombre",
   sitio: "luna_lado_visible",
   objetivo: "reportar_tierra",
-  // POR DECIDIR (diseño): la propuesta no fija dificultad; se deja la de Jezero.
+  // Provisional, aprobado en #196 (issuecomment-6889442656): media y 10 ticks.
   dificultad: "media",
   // Ya curada: data/curated/2024-05-10-gannon.json (DONKI).
   tormentaId: "2024-05-10-gannon",
@@ -112,11 +112,13 @@ export const MISION_LUNA_VISIBLE: Omit<Mision, "eventoPolvo"> = {
     recursoMalLeido: "blindaje",
     reparaCon: "ingeniera",
   },
-  // Hueco 3: la propuesta gana al amanecer (paso 8); el tipo solo admite la llegada de la telemetría.
+  // Hueco 3: el tipo ya admite `sobrevivir_hasta_tick`, pero falta aprobar el tick del amanecer.
+  // #196 prohíbe la victoria anticipada por telemetría: "telemetria_llega" es el valor heredado y
+  // sigue siendo un BLOQUEO, no una regla aprobada.
   fin: {
     exitoCuando: "telemetria_llega",
     falloCuando: "recurso_en_cero",
-    tickLimite: 10,
+    tickLimite: 10, // Provisional, aprobado en #196.
   },
   // Dilema de la batería (propuesta §6). Los costos de cada acción viven en COSTOS_ACCION (diseño).
   dilemaPaso6: {
@@ -125,8 +127,8 @@ export const MISION_LUNA_VISIBLE: Omit<Mision, "eventoPolvo"> = {
     opciones: [
       // Cuesta soporte vital y algo de energía (refugiarse).
       { id: "refugio", accion: { tipo: "refugiarse" }, defiende: "doctora", textoKey: "mision.lunaVisible.dilema.refugio" },
-      // Cuesta mucha energía de una batería que no se recarga esta noche.
-      { id: "subir_escudo", accion: { tipo: "subir_escudo", nivel: 2 }, defiende: "doctora", textoKey: "mision.lunaVisible.dilema.escudo" },
+      // Cuesta mucha energía de una batería que no se recarga esta noche. Neutral (#196): nadie la recomienda.
+      { id: "subir_escudo", accion: { tipo: "subir_escudo", nivel: 2 }, defiende: null, textoKey: "mision.lunaVisible.dilema.escudo" },
       // Cuesta blindaje: la tormenta sigue golpeando la base.
       { id: "ahorrar_bateria", accion: { tipo: "esperar" }, defiende: "ingeniera", textoKey: "mision.lunaVisible.dilema.ahorrar" },
       // Cuesta energía ya (enviar_telemetria); la respuesta llega en 1 tick. Nadie la recomienda.
@@ -160,4 +162,4 @@ export const MISION_LUNA_VISIBLE: Omit<Mision, "eventoPolvo"> = {
     // POR VERIFICAR: el 1,3 s sale de NSSDC Moon (falta `fuente.nssdcMoon`); el 3–22 min, de fuente.nssdc (Marte).
     fuenteKey: null,
   },
-};
+} satisfies Mision;
