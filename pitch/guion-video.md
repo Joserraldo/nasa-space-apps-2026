@@ -16,10 +16,10 @@ Reglas del guion (revisadas contra `docs/science/revision-agentes.md`):
 
 | Tiempo | En pantalla (paso de la ruta dorada) | Locución (EN) | Rótulos en pantalla | Criterio |
 |---|---|---|---|---|
-| 0:00–0:10 | Gancho: base en Jezero con aviso de tormenta; Iris parpadea | "Imagine you run a base on Mars. A real solar storm is coming. And the computer that helps you is about to get confused." | "Solar Shield" · "For ages 7–12 · In your browser · No download, no account" | Presentación |
+| 0:00–0:10 | Gancho: base en Jezero con aviso de tormenta; Iris parpadea | "Imagine you run a base on Mars. A real solar storm from May 2024 is on its way to your base. And the computer that helps you is about to get confused." | "Solar Shield" · "For ages 7–12 · In your browser · No download, no account" | Presentación |
 | 0:10–0:22 | Pasos 1–2: la nave suelta el satélite; el niño dibuja la ruta sobre Jezero y bajan Batería y Señal | "Kids launch a satellite, then draw a route over Jezero crater, a real place on Mars. Even the route costs battery and signal." | "Jezero crater: NASA Mars Trek terrain" | Validez, Relevancia |
 | 0:22–0:40 | Pasos 3–4: sitios candidatos con 3 criterios; aterriza y coloca 2 módulos, cada uno mueve 2 medidores (**decisión con costo antes de 0:40**) | "Then they choose a landing site and place modules. Every choice helps one meter and hurts another. Nothing is free." | "Every choice has a cost" | Impacto, Relevancia |
-| 0:40–0:55 | Paso 5: llega la tormenta, pausa y tarjeta de fuente (DONKI, ID, fecha). Gráfica del detector de Curiosity | "Then the storm arrives. It is real: May twentieth, twenty twenty-four, with its NASA DONKI record on screen. That day, the RAD detector on the Curiosity rover measured about nineteen times the usual radiation. This is curated real data, not live." | "Data: NASA CCMC DONKI · 2024-05-20T05:36:00-CME-001" · "Curiosity RAD, NASA OSDR RadLab · detector units: µGy/h" · "Curated real data, not live" | Validez |
+| 0:40–0:55 | Paso 5: llega la tormenta, pausa y tarjeta de fuente (DONKI, ID, fecha). Gráfica del detector de Curiosity | "Then the storm arrives. It is real: May twentieth, twenty twenty-four, with its NASA DONKI record on screen. That day, the daily average measured by the RAD detector on Curiosity was about nineteen times higher than on a normal day. This is curated real data, not live." | "Data: NASA CCMC DONKI · 2024-05-20T05:36:00-CME-001" · "Curiosity RAD, NASA OSDR RadLab · detector units: µGy/h" · "Curated real data, not live" | Validez |
 | 0:55–1:17 | Paso 6: Doctora ("refugio") e Ingeniera ("escudo") se contradicen, cada una con su dato. Se ve al niño escribir o decir una frase y aparece la etiqueta JSON | "The crew are experts, and they disagree. The Doctor says take shelter. The Engineer says raise the shield. Each one shows its data. The AI only listens: it turns a kid's words into a short label. The experts are code, so no number is ever invented." | "AI only classifies → strict JSON" · "Experts = code + NASA data" · "Doses for people: mSv/day" | Creatividad, Validez |
 | 1:17–1:35 | Paso 6 (Iris): Iris, dañada, da un número que no coincide con el medidor; el niño mira el medidor y llama a la Ingeniera, que la repara | "Then radiation scrambles Iris, the base computer. She gives a number that doesn't match the meter. The kid checks the meter, asks the Engineer, and fixes her. The lesson: don't just obey a machine. Verify." | "Iris is confused by radiation" · "Check the meter" | Creatividad, Impacto |
 | 1:35–1:47 | Paso 7: el jugador decide y envía telemetría; la barra de envío tarda en llegar | "Next, the kid decides and sends a report to Earth. A message to Earth takes from about 3 to 22 minutes, even at the speed of light." | "Mars–Earth delay: 3–22 min (NASA NSSDC distances + speed of light)" | Relevancia |
@@ -28,13 +28,13 @@ Reglas del guion (revisadas contra `docs/science/revision-agentes.md`):
 
 ## Locución en inglés (texto corrido)
 
-Imagine you run a base on Mars. A real solar storm is coming. And the computer that helps you is about to get confused.
+Imagine you run a base on Mars. A real solar storm from May 2024 is on its way to your base. And the computer that helps you is about to get confused.
 
 Kids launch a satellite, then draw a route over Jezero crater, a real place on Mars. Even the route costs battery and signal.
 
 Then they choose a landing site and place modules. Every choice helps one meter and hurts another. Nothing is free.
 
-Then the storm arrives. It is real: May twentieth, twenty twenty-four, with its NASA DONKI record on screen. That day, the RAD detector on the Curiosity rover measured about nineteen times the usual radiation. This is curated real data, not live.
+Then the storm arrives. It is real: May twentieth, twenty twenty-four, with its NASA DONKI record on screen. That day, the daily average measured by the RAD detector on Curiosity was about nineteen times higher than on a normal day. This is curated real data, not live.
 
 The crew are experts, and they disagree. The Doctor says take shelter. The Engineer says raise the shield. Each one shows its data. The AI only listens: it turns a kid's words into a short label. The experts are code, so no number is ever invented.
 
@@ -48,13 +48,13 @@ Solar Shield. Learn who to trust when technology fails. It even works without in
 
 ## Locución en español
 
-Imagina que diriges una base en Marte. Viene una tormenta solar real. Y la computadora que te ayuda está a punto de confundirse.
+Imagina que diriges una base en Marte. Se acerca a tu base una tormenta solar real de mayo de 2024. Y la computadora que te ayuda está a punto de confundirse.
 
 Los niños lanzan un satélite y dibujan una ruta sobre el cráter Jezero, un lugar real de Marte. Hasta la ruta gasta batería y señal.
 
 Luego eligen dónde aterrizar y colocan módulos. Cada decisión ayuda a un medidor y perjudica a otro. Nada es gratis.
 
-Entonces llega la tormenta. Es real: el veinte de mayo de dos mil veinticuatro, con su registro de DONKI, de la NASA, en pantalla. Ese día, el detector RAD del rover Curiosity midió unas diecinueve veces la radiación normal. Son datos reales curados, no en vivo.
+Entonces llega la tormenta. Es real: el veinte de mayo de dos mil veinticuatro, con su registro de DONKI, de la NASA, en pantalla. Ese día, la media diaria que midió el detector RAD de Curiosity fue unas diecinueve veces mayor que en un día normal. Son datos reales curados, no en vivo.
 
 La tripulación son expertos, y no se ponen de acuerdo. La Doctora dice que hay que refugiarse. La Ingeniera dice que hay que subir el escudo. Cada una muestra su dato. La IA solo escucha: convierte las palabras del niño en una etiqueta corta. Los expertos son código, así que ningún número se inventa.
 
@@ -116,6 +116,7 @@ Solar Shield. Aprende en quién confiar cuando la tecnología falla. Incluso fun
 12. Créditos: atribuciones y "Unofficial project, not endorsed by NASA".
 
 ### Plan B si una pantalla no está lista
+- **No mostrar las láminas de `docs/referenciapau/referencias/` como si fueran capturas del juego:** son arte conceptual de referencia. Si alguna aparece, rotularla "concept art".
 - Usar el **mock o marcador de posición** de esa pantalla y grabar la voz igual. Si el mock trae datos inventados (IDs `MOCK-`), **no** mostrarlo en el plano de la tormenta: poner en su lugar un gráfico editado con los datos reales de `data/curated/2024-05-20-marte.json`.
 - Los pasos 1–2 son los últimos en construirse (2D simple): si faltan, empezar el video en el paso 3 con el gancho sobre la base y recortar la segunda frase de la locución.
 - Si el Worker del clasificador no está desplegado: mostrar atajos y botones (la ruta sin modelo). La locución sigue siendo cierta: el modelo solo clasifica y el juego funciona sin él.

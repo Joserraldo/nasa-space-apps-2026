@@ -1,0 +1,101 @@
+{
+  "consultadoEl": "2026-11-15",
+  "proyeccion": "Estereográfica polar norte, esfera Mars 2000 (R = 3396190 m), meridiano central 0, metros: x = ρ·sin(lon), y = −ρ·cos(lon), ρ = 2R·tan((90−lat)/2)",
+  "dem": {
+    "capa": "mola128_mola64_merge_90Nto90S_SimpleC_clon0_NP",
+    "unidad": "m",
+    "tipo": "Int16LE",
+    "ancho": 160,
+    "alto": 160,
+    "filaCero": "borde de y máxima"
+  },
+  "demGlobal": {
+    "capa": "Mars_MOLA_blend200ppx_HRSC_DEM_clon0dd_200mpp_lzw"
+  },
+  "sitios": [
+    {
+      "id": "crater-louth",
+      "nombre": "Louth",
+      "tipo": "Crater, craters",
+      "diametroKm": 36.2879,
+      "aprobacion": "Adopted by IAU",
+      "lat": 70.18823348,
+      "lon": 103.236072,
+      "x": 1154667.8920352983,
+      "y": 271591.964164276,
+      "bboxM": {
+        "xmin": 1142667.8920352983,
+        "ymin": 259591.96416427603,
+        "xmax": 1166667.8920352983,
+        "ymax": 283591.964164276
+      },
+      "urlPos": "https://trek.nasa.gov/mars/trekarcgis/rest/services/combinedNom_np/MapServer/0/query?where=clean_name%3D'Louth'&outFields=clean_name,type,center_lat,center_lon,diameter,approval&returnGeometry=false&f=json",
+      "urlDem": "https://trek.nasa.gov/mars/trekarcgis/rest/services/mola128_mola64_merge_90Nto90S_SimpleC_clon0_NP/ImageServer/exportImage?bbox=1142667.8920352983,259591.96416427603,1166667.8920352983,283591.964164276&size=160,160&format=bsq&pixelType=F32&interpolation=RSP_BilinearInterpolation&f=image",
+      "identifyPolarM": -4815,
+      "identifyGlobalM": -4838
+    },
+    {
+      "id": "crater-escorial",
+      "nombre": "Escorial",
+      "tipo": "Crater, craters",
+      "diametroKm": 22.2356,
+      "aprobacion": "Adopted by IAU",
+      "lat": 76.89396276,
+      "lon": 304.9604752,
+      "x": -639461.4111644576,
+      "y": -447098.6137657002,
+      "bboxM": {
+        "xmin": -651461.4111644576,
+        "ymin": -459098.6137657002,
+        "xmax": -627461.4111644576,
+        "ymax": -435098.6137657002
+      },
+      "urlPos": "https://trek.nasa.gov/mars/trekarcgis/rest/services/combinedNom_np/MapServer/0/query?where=clean_name%3D'Escorial'&outFields=clean_name,type,center_lat,center_lon,diameter,approval&returnGeometry=false&f=json",
+      "urlDem": "https://trek.nasa.gov/mars/trekarcgis/rest/services/mola128_mola64_merge_90Nto90S_SimpleC_clon0_NP/ImageServer/exportImage?bbox=-651461.4111644576,-459098.6137657002,-627461.4111644576,-435098.6137657002&size=160,160&format=bsq&pixelType=F32&interpolation=RSP_BilinearInterpolation&f=image",
+      "identifyPolarM": -5514,
+      "identifyGlobalM": -5512
+    },
+    {
+      "id": "dunas-olympia-undae",
+      "nombre": "Olympia Undae",
+      "tipo": "Unda, undae",
+      "diametroKm": 1507.96,
+      "aprobacion": "Adopted by IAU",
+      "lat": 81.16395151,
+      "lon": 178.4830254,
+      "x": 13892.944899782813,
+      "y": 524610.6965795122,
+      "bboxM": {
+        "xmin": 1892.944899782813,
+        "ymin": 512610.6965795122,
+        "xmax": 25892.944899782815,
+        "ymax": 536610.6965795122
+      },
+      "urlPos": "https://trek.nasa.gov/mars/trekarcgis/rest/services/combinedNom_np/MapServer/0/query?where=clean_name%3D'Olympia%20Undae'&outFields=clean_name,type,center_lat,center_lon,diameter,approval&returnGeometry=false&f=json",
+      "urlDem": "https://trek.nasa.gov/mars/trekarcgis/rest/services/mola128_mola64_merge_90Nto90S_SimpleC_clon0_NP/ImageServer/exportImage?bbox=1892.944899782813,512610.6965795122,25892.944899782815,536610.6965795122&size=160,160&format=bsq&pixelType=F32&interpolation=RSP_BilinearInterpolation&f=image",
+      "identifyPolarM": -4339,
+      "identifyGlobalM": -4333
+    },
+    {
+      "id": "canon-chasma-boreale",
+      "nombre": "Chasma Boreale",
+      "tipo": "Chasma, chasmata",
+      "diametroKm": 459.883,
+      "aprobacion": "Adopted by IAU",
+      "lat": 82.54124382,
+      "lon": 312.3596579,
+      "x": -327154.5390120173,
+      "y": -298311.0009181842,
+      "bboxM": {
+        "xmin": -339154.5390120173,
+        "ymin": -310311.0009181842,
+        "xmax": -315154.5390120173,
+        "ymax": -286311.0009181842
+      },
+      "urlPos": "https://trek.nasa.gov/mars/trekarcgis/rest/services/combinedNom_np/MapServer/0/query?where=clean_name%3D'Chasma%20Boreale'&outFields=clean_name,type,center_lat,center_lon,diameter,approval&returnGeometry=false&f=json",
+      "urlDem": "https://trek.nasa.gov/mars/trekarcgis/rest/services/mola128_mola64_merge_90Nto90S_SimpleC_clon0_NP/ImageServer/exportImage?bbox=-339154.5390120173,-310311.0009181842,-315154.5390120173,-286311.0009181842&size=160,160&format=bsq&pixelType=F32&interpolation=RSP_BilinearInterpolation&f=image",
+      "identifyPolarM": -4916,
+      "identifyGlobalM": -4985
+    }
+  ]
+}

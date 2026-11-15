@@ -116,3 +116,33 @@ Con `fondoTranquilo: false` la Doctora dice "en órbita" **sin factor** (el fond
 | 6 (dilema del hielo) | `escenaTormentaLunaSur(estado, dilema, crater)` con la `MedicionCitada` de arriba (tormenta `TORMENTA_LUNA_POLO_SUR`). Matemático: `compararOpciones` sin cambios. |
 | 7 (llamar a la Tierra) | `avisoControlLuna()`: "llega en más o menos un segundo" (NSSDC), propone `enviar_telemetria`. |
 | Iris nivel 2 | `preguntaIris("mensaje_luna", estado.iaBase)`. |
+
+## Iris compañera (mundo abierto v8)
+Propuesta en `docs/ideas/iris-companera-v8.md` (aprueban Camilo y María Paula). Solo sugiere adónde ir: nunca aplica una `Action` y llegar al lugar no da nada.
+
+| Momento (ui) | Llamada | Qué pinta ui |
+|---|---|---|
+| Paso 1, al entrar a la base (omitible) | `briefingIris()` | `{ dialogo, gesto: "explicar", cara: "normal" }`: 3 líneas sin cifras. |
+| Cada vez que cambia el paso, un medidor o la avería | `guiaIrisLugar(estado, pasoActual, { averiaRevelada })` | `null` → Iris en su dock del taller (offline). Si no: mover a Iris hacia `destino` (`DestinoIris` = copia de `LugarId`). |
+| `ruta` | — | `true` (tutorial) → trazar la ruta; `false` (pistas) → Iris solo mira hacia el área. |
+| `gesto` / `cara` | — | `pedir_reparacion` + `error` con avería revelada; `senalar` en tutorial; `mirar` en pistas. Si no hay avería, `cara` es `normal`. |
+| `experto` | — | A quién ofrecer al llegar (ausente en `mesa`). |
+
+Prioridad: avería revelada → `taller` · recurso < 30 fuera de tormenta (energía → `taller`, blindaje y soporte → `habitat`) · paso (1-3, 7, 8 `mesa`; 4 `taller`; 5 `sensor`; 6 `habitat`). `"danada"` guía como tutorial; la falla numérica sigue en `irisDanada`.
+## Misión Luna lado visible (#100, depende de que diseño la apruebe)
+| Paso | Llamada |
+|---|---|
+| 3 (sitios Apolo) | `consejosAterrizaje(sitios)` sin cambios, con `terrenoLunaVisible` de #125 y los puntajes que fije diseño. |
+| 4b (antena averiada) | `escenaAntena(estado)`: solo con `antena` averiada; `opciones: [reparar antena, esperar]`. |
+| 5-6 (dilema de la batería de noche) | `escenaTormentaLunaVisible(estado, dilema, crater)` con la `MedicionCitada` de CRaTER (tormenta `TORMENTA_LUNA_VISIBLE`). Matemático: `compararOpciones`. |
+| 7 (llamar a la Tierra) | `avisoControlLuna()` de la misión Luna polo sur. |
+| 8 (una tormenta, tres lugares) | `tresLugares(estado, crater)`: Kp en la Tierra, RAD en Marte y CRaTER en órbita, cada uno con su fuente. Pregunta: `preguntaIris("luna_vs_marte", estado.iaBase)`. |
+
+## Misión outpost sorpresa (#99, depende de que diseño la apruebe)
+| Paso | Llamada |
+|---|---|
+| 1 (no hay suelo) | `sorpresaOutpost({ ...artemis.fuente, idFuente: artemis.instrumento })`. Sin la fuente, Iris no menciona Orion. |
+| 3 (zonas de la nave) | `consejosZonasNave()`: Doctora `centro`, Ingeniera `cabina`, Iris `fondo`. Sin cifras. |
+| 4b (micrometeorito) | `escenaMicrometeorito(estado)` de la misión Luna polo sur. |
+| 6 (refugio con provisiones) | `escenaTormentaOutpost(estado, dilema, crater)` con la `MedicionCitada` de CRaTER (tormenta `TORMENTA_OUTPOST`). Matemático: `compararOpciones`. |
+| 8 (pregunta) | `preguntaIris("viaje_marte", estado.iaBase, referenciaDosis("marte-crucero").fuente)`. Sin fuente devuelve `null`. |

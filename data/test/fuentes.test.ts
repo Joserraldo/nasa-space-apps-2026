@@ -20,4 +20,21 @@ describe("fuentes aprobadas fuera de la lista", () => {
     a.url = "https://example.com";
     expect(fuenteAprobada("insight").url).toContain("jpl.nasa.gov");
   });
+
+  it("las fuentes de las misiones nuevas (#152) existen con url https de NASA y nombre en en/es", () => {
+    const nuevas: IdFuenteAprobada[] = ["nssdcMoon", "hieloLuna", "orionRefugio", "orionPaneles", "casqueteMarte", "spiritInclinacion", "phoenix"];
+    for (const id of nuevas) {
+      const f = SourceCardSchema.parse(fuenteAprobada(id));
+      expect(f.url.startsWith("https://")).toBe(true);
+      expect(f.nombreKey.startsWith("fuente.")).toBe(true);
+      expect(f.dueno).toBeTruthy();
+      expect(f.consultadoEl).toBe("2026-11-14");
+    }
+  });
+
+  it("no hay dos fuentes con la misma clave de nombre ni el mismo idFuente", () => {
+    const todas = ids.map((id) => FUENTES_APROBADAS[id]);
+    expect(new Set(todas.map((f) => f.nombreKey)).size).toBe(todas.length);
+    expect(new Set(todas.map((f) => f.idFuente)).size).toBe(todas.length);
+  });
 });

@@ -1,0 +1,318 @@
+{
+  "version": "0.1.0",
+  "id": "luz-luna-visible",
+  "metodo": "sin(e) = sin(lat)*sin(latSun) + cos(lat)*cos(latSun)*cos(lon - lonSun); flat horizon, point-like Sun, hourly table interpolated linearly",
+  "tabla": {
+    "archivo": "raw/svs-5187/mooninfo_2024.txt",
+    "filas": 8785,
+    "desde": "2024-01-01T00:00Z",
+    "hasta": "2025-01-01T00:00Z",
+    "columnas": {
+      "latSolar": "Slat",
+      "lonSolar": "Slon"
+    }
+  },
+  "tormentas": [
+    {
+      "id": "2024-05-10-gannon",
+      "horaUtc": "2024-05-09T09:13Z",
+      "sitios": [
+        {
+          "sitioId": "llanura-tranquilidad",
+          "subsolar": {
+            "latGrados": 0.9,
+            "lonGrados": 168.32
+          },
+          "elevacionSolGrados": -54.81,
+          "dia": false,
+          "proximoAmanecerUtc": "2024-05-13T20:48Z",
+          "horasHastaAmanecer": 107.59
+        },
+        {
+          "sitioId": "tierras-altas-descartes",
+          "subsolar": {
+            "latGrados": 0.9,
+            "lonGrados": 168.32
+          },
+          "elevacionSolGrados": -61.77,
+          "dia": false,
+          "proximoAmanecerUtc": "2024-05-14T12:47Z",
+          "horasHastaAmanecer": 123.58
+        },
+        {
+          "sitioId": "borde-rima-hadley",
+          "subsolar": {
+            "latGrados": 0.9,
+            "lonGrados": 168.32
+          },
+          "elevacionSolGrados": -59.19,
+          "dia": false,
+          "proximoAmanecerUtc": "2024-05-15T10:48Z",
+          "horasHastaAmanecer": 145.59
+        }
+      ]
+    },
+    {
+      "id": "2024-05-11-x58",
+      "horaUtc": "2024-05-11T01:23Z",
+      "sitios": [
+        {
+          "sitioId": "llanura-tranquilidad",
+          "subsolar": {
+            "latGrados": 0.94,
+            "lonGrados": 147.84
+          },
+          "elevacionSolGrados": -34.35,
+          "dia": false,
+          "proximoAmanecerUtc": "2024-05-13T20:48Z",
+          "horasHastaAmanecer": 67.42
+        },
+        {
+          "sitioId": "tierras-altas-descartes",
+          "subsolar": {
+            "latGrados": 0.94,
+            "lonGrados": 147.84
+          },
+          "elevacionSolGrados": -41.89,
+          "dia": false,
+          "proximoAmanecerUtc": "2024-05-14T12:47Z",
+          "horasHastaAmanecer": 83.41
+        },
+        {
+          "sitioId": "borde-rima-hadley",
+          "subsolar": {
+            "latGrados": 0.94,
+            "lonGrados": 147.84
+          },
+          "elevacionSolGrados": -46.13,
+          "dia": false,
+          "proximoAmanecerUtc": "2024-05-15T10:48Z",
+          "horasHastaAmanecer": 105.42
+        }
+      ]
+    },
+    {
+      "id": "2024-05-14-x87",
+      "horaUtc": "2024-05-14T16:51Z",
+      "sitios": [
+        {
+          "sitioId": "llanura-tranquilidad",
+          "subsolar": {
+            "latGrados": 1.01,
+            "lonGrados": 103.28
+          },
+          "elevacionSolGrados": 10.21,
+          "dia": true,
+          "proximoAmanecerUtc": "2024-06-12T08:03Z",
+          "horasHastaAmanecer": 687.2
+        },
+        {
+          "sitioId": "tierras-altas-descartes",
+          "subsolar": {
+            "latGrados": 1.01,
+            "lonGrados": 103.28
+          },
+          "elevacionSolGrados": 2.04,
+          "dia": true,
+          "proximoAmanecerUtc": "2024-06-13T00:11Z",
+          "horasHastaAmanecer": 703.34
+        },
+        {
+          "sitioId": "borde-rima-hadley",
+          "subsolar": {
+            "latGrados": 1.01,
+            "lonGrados": 103.28
+          },
+          "elevacionSolGrados": -8.2,
+          "dia": false,
+          "proximoAmanecerUtc": "2024-05-15T10:48Z",
+          "horasHastaAmanecer": 17.96
+        }
+      ]
+    },
+    {
+      "id": "2024-05-20-marte",
+      "horaUtc": "2024-05-20T05:36Z",
+      "sitios": [
+        {
+          "sitioId": "llanura-tranquilidad",
+          "subsolar": {
+            "latGrados": 1.12,
+            "lonGrados": 35.78
+          },
+          "elevacionSolGrados": 77.69,
+          "dia": true,
+          "proximoAmanecerUtc": "2024-06-12T08:03Z",
+          "horasHastaAmanecer": 554.45
+        },
+        {
+          "sitioId": "tierras-altas-descartes",
+          "subsolar": {
+            "latGrados": 1.12,
+            "lonGrados": 35.78
+          },
+          "elevacionSolGrados": 67.42,
+          "dia": true,
+          "proximoAmanecerUtc": "2024-06-13T00:11Z",
+          "horasHastaAmanecer": 570.59
+        },
+        {
+          "sitioId": "borde-rima-hadley",
+          "subsolar": {
+            "latGrados": 1.12,
+            "lonGrados": 35.78
+          },
+          "elevacionSolGrados": 50.23,
+          "dia": true,
+          "proximoAmanecerUtc": "2024-06-13T21:36Z",
+          "horasHastaAmanecer": 592.01
+        }
+      ]
+    },
+    {
+      "id": "2024-10-03-x90",
+      "horaUtc": "2024-10-03T12:18Z",
+      "sitios": [
+        {
+          "sitioId": "llanura-tranquilidad",
+          "subsolar": {
+            "latGrados": -0.12,
+            "lonGrados": 171.31
+          },
+          "elevacionSolGrados": -57.84,
+          "dia": false,
+          "proximoAmanecerUtc": "2024-10-08T05:57Z",
+          "horasHastaAmanecer": 113.65
+        },
+        {
+          "sitioId": "tierras-altas-descartes",
+          "subsolar": {
+            "latGrados": -0.12,
+            "lonGrados": 171.31
+          },
+          "elevacionSolGrados": -64.25,
+          "dia": false,
+          "proximoAmanecerUtc": "2024-10-08T21:33Z",
+          "horasHastaAmanecer": 129.25
+        },
+        {
+          "sitioId": "borde-rima-hadley",
+          "subsolar": {
+            "latGrados": -0.12,
+            "lonGrados": 171.31
+          },
+          "elevacionSolGrados": -61.4,
+          "dia": false,
+          "proximoAmanecerUtc": "2024-10-09T21:13Z",
+          "horasHastaAmanecer": 152.93
+        }
+      ]
+    },
+    {
+      "id": "2024-10-10-g4",
+      "horaUtc": "2024-10-09T01:56Z",
+      "sitios": [
+        {
+          "sitioId": "llanura-tranquilidad",
+          "subsolar": {
+            "latGrados": -0.24,
+            "lonGrados": 103.31
+          },
+          "elevacionSolGrados": 10.16,
+          "dia": true,
+          "proximoAmanecerUtc": "2024-11-06T19:15Z",
+          "horasHastaAmanecer": 689.32
+        },
+        {
+          "sitioId": "tierras-altas-descartes",
+          "subsolar": {
+            "latGrados": -0.24,
+            "lonGrados": 103.31
+          },
+          "elevacionSolGrados": 2.2,
+          "dia": true,
+          "proximoAmanecerUtc": "2024-11-07T10:37Z",
+          "horasHastaAmanecer": 704.69
+        },
+        {
+          "sitioId": "borde-rima-hadley",
+          "subsolar": {
+            "latGrados": -0.24,
+            "lonGrados": 103.31
+          },
+          "elevacionSolGrados": -8.79,
+          "dia": false,
+          "proximoAmanecerUtc": "2024-10-09T21:13Z",
+          "horasHastaAmanecer": 19.3
+        }
+      ]
+    }
+  ],
+  "sitios": [
+    {
+      "sitioId": "llanura-tranquilidad",
+      "fraccionConSol2024": 0.487,
+      "amaneceres2024Utc": [
+        "2024-01-16T15:54Z",
+        "2024-02-15T06:20Z",
+        "2024-03-15T20:04Z",
+        "2024-04-14T08:53Z",
+        "2024-05-13T20:48Z",
+        "2024-06-12T08:03Z",
+        "2024-07-11T19:00Z",
+        "2024-08-10T06:03Z",
+        "2024-09-08T17:35Z",
+        "2024-10-08T05:57Z",
+        "2024-11-06T19:15Z",
+        "2024-12-06T09:23Z"
+      ]
+    },
+    {
+      "sitioId": "tierras-altas-descartes",
+      "fraccionConSol2024": 0.489,
+      "amaneceres2024Utc": [
+        "2024-01-17T07:07Z",
+        "2024-02-15T21:39Z",
+        "2024-03-16T11:35Z",
+        "2024-04-15T00:39Z",
+        "2024-05-14T12:47Z",
+        "2024-06-13T00:11Z",
+        "2024-07-12T11:09Z",
+        "2024-08-10T22:06Z",
+        "2024-09-09T09:26Z",
+        "2024-10-08T21:33Z",
+        "2024-11-07T10:37Z",
+        "2024-12-07T00:37Z"
+      ]
+    },
+    {
+      "sitioId": "borde-rima-hadley",
+      "fraccionConSol2024": 0.492,
+      "amaneceres2024Utc": [
+        "2024-01-18T08:29Z",
+        "2024-02-16T22:35Z",
+        "2024-03-17T11:38Z",
+        "2024-04-15T23:37Z",
+        "2024-05-15T10:48Z",
+        "2024-06-13T21:36Z",
+        "2024-07-13T08:29Z",
+        "2024-08-11T19:52Z",
+        "2024-09-10T08:04Z",
+        "2024-10-09T21:13Z",
+        "2024-11-08T11:17Z",
+        "2024-12-08T01:54Z"
+      ]
+    }
+  ],
+  "fuente": {
+    "nombreKey": "fuente.svs",
+    "dueno": "NASA Scientific Visualization Studio, SVS 5187 Moon Phase and Libration 2024 (Ernie Wright, NASA/GSFC)",
+    "urls": [
+      "https://svs.gsfc.nasa.gov/5187/",
+      "https://svs.gsfc.nasa.gov/vis/a000000/a005100/a005187/mooninfo_2024.txt"
+    ],
+    "consultadoEl": "2026-11-14",
+    "estadoDato": "curado",
+    "derivadoKey": "datos.luz.derivado"
+  }
+}

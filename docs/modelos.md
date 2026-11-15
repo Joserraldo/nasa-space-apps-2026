@@ -55,3 +55,7 @@ La sesión principal es Opus en todos los roles. Lo que cambia es qué se queda 
 - Contexto limpio entre tareas; `ESTADO.md` es la memoria.
 - Loops de 10 min solo con trabajo claro; sin tarea o con el equipo dormido, 20–30 min o se paran.
 - Quien se quede sin tokens avisa en `#bloqueos` y sus tareas se reasignan.
+
+## Actualización 14 nov, noche: modelo y esfuerzo por tarea
+
+Dicho por María Paula el 14 nov, noche (corrige lo anterior): todos usan Claude Code con Fable, Opus, Sonnet y Haiku; **solo Camilo tiene OpenCode** (DeepSeek V4.1 Flash); Daniel tiene además Codex con GPT-6.1. En el 3D (Daniel y María Paula) Fable dirige y Opus escribe; Jaime y José usan Opus como sesión principal y Fable para lo más difícil. La tabla concreta de modelo y esfuerzo por sesión y tarea está en [`docs/prompts/README.md`](prompts/README.md#modelos-y-esfuerzo). Verificado en el equipo de María Paula: `claude --model` acepta `fable`, `opus`, `sonnet`, `haiku` y `claude --effort` acepta `low`, `medium`, `high`, `xhigh`, `max`; OpenCode lista `opencode/deepseek-v4.1-flash-free` y `openai/gpt-6.1-sol`.
