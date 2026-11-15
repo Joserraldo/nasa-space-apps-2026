@@ -69,6 +69,18 @@ No hay opción segura y gratuita. Las expertas expresan prioridades distintas; l
 
 Iris (`ia_base`) acompaña desde el inicio en modo `tutorial` y va soltando ayuda (`pistas`) según el rendimiento del niño. En el paso 6 se revela su avería: **lee mal el blindaje por 20 puntos** y recomienda algo equivocado. El medidor del HUD muestra el valor real; el niño detecta la diferencia y la verifica con la Ingeniera (`verificarIris` de `agents/`), que es quien la repara. Desde ahí la misión depende de las decisiones del niño, no de obedecer a la IA.
 
+**Iris compañera en el mundo abierto** (`agents/src/iris-acompana.ts`, #149; reglas a aprobar por diseño, representación adoptada por ui): Iris, como rover, sugiere **adónde ir** en cada paso sin bloquear nada.
+
+| Paso | Destino que sugiere Iris | Experta |
+| --- | --- | --- |
+| 1, 2, 3 | `mesa` | — |
+| 4 | `taller` | Ingeniera |
+| 5 | `sensor` | Meteoróloga |
+| 6 | `habitat` | Doctora |
+| 7, 8 | `mesa` (la consola de enlace base, no el módulo antena) | — |
+
+Prioridad: Iris averiada y revelada → `taller` (repararla); recurso en peligro fuera de la tormenta → lugar de la experta que lo resuelve; si no, el destino del paso. `guiaIrisLugar(vista, paso, { averiaRevelada })` devuelve destino, línea corta, gesto (`senalar`, `mirar`, `pedir_reparacion`, `explicar`) y cara (`normal`, `error`); `briefingIris()` da la bienvenida de 3 líneas al entrar a la base. Llegar al destino no da recursos ni protección.
+
 ### 3.5 Mala suerte
 
 En cada tick el motor puede sortear un evento (micrometeorito, fallo de panel, fuga de agua, tormenta de polvo) según la dificultad. Se registra con origen `mala_suerte` y en el final se separa de las decisiones.
@@ -141,7 +153,7 @@ Ejemplos concretos: entrar al refugio caminando **no** blinda (la protección es
 | Final | `resumenPartida(estado)` | engine |
 | Datos de la misión | `MISION_JEZERO`, `TEXTOS_JEZERO` | missions |
 | Conversar / consejos | `conversar`, `responder`, `consejosSatelite`, `consejosAterrizaje`, `escenaTormenta` | agents |
-| Iris | `irisDanada`, `verificarIris`, `guiaIris`, `preguntaIris` | agents |
+| Iris | `irisDanada`, `verificarIris`, `guiaIris`, `preguntaIris`, `guiaIrisLugar`, `briefingIris` | agents |
 | ¿Y si...? (Matemático) | `queEsSi` (engine), `queSiMatematico`, `compararOpciones` (agents) | engine / agents |
 
 Detalle de qué pantalla llama qué: guía del rol agentes (PR #119 en `develop`).

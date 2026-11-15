@@ -4,16 +4,20 @@
 
 Cada persona abre su sesión, pega **su** prompt y después lanza el loop que el prompt indica. Si un prompt choca con un `CLAUDE.md` de carpeta o con un prompt viejo del historial, manda este.
 
-| Persona | Rol | Prompt | Herramientas |
-| --- | --- | --- | --- |
-| María Paula | orquestadora del 3D y la pantalla | [orquestadora.md](orquestadora.md) | Claude Code + subagentes Sonnet/Haiku + OpenCode (DeepSeek V4.1 Flash) |
-| María Paula | ui, en 4 pistas: integración (M), escenario (E), interfaz (I), audio (A) | [ui.md](ui.md) | Claude Code + subagentes Sonnet/Haiku + OpenCode (DeepSeek V4.1 Flash) |
-| Jaime (`JaimeMrF`) | motor | [motor.md](motor.md) | Claude Code + subagentes Sonnet/Haiku + OpenCode (DeepSeek V4.1 Flash) |
-| Camilo (`CamiloM21`) | diseño y misiones | [diseno.md](diseno.md) | Claude Code + subagentes Sonnet/Haiku + OpenCode (DeepSeek V4.1 Flash) |
-| José (`Joserraldo`) | agentes, infra y pitch | [agentes-infra.md](agentes-infra.md) | Claude Code + subagentes Sonnet/Haiku + OpenCode (DeepSeek V4.1 Flash) |
-| Daniel (`Daniverd15`) | datos | [datos.md](datos.md) | Claude Code + **Codex** + subagentes Sonnet/Haiku |
-| Santiago (`kcitas`) | supervisión y fusión | [supervisor.md](supervisor.md) | Claude Code |
-| Claude | revisor | [revisor.md](revisor.md) | Claude Code |
+## Roles y tareas en esta implementación (desde el sáb 14 nov, noche)
+
+| Persona | Rol en esta implementación | Tareas principales (en orden) | Prompt | Loop | Meta para parar |
+| --- | --- | --- | --- | --- | --- |
+| **Santiago** | Orquestador del equipo; único que fusiona | Fusionar lo de P2 (#163, #151, #162, subida de #142); ordenar #164, #165 y #166; decidir P3 con María Paula; aprobar NIVELES §7; cerrar issues resueltos; enviar el formulario | [supervisor.md](supervisor.md) | 20 min | Formulario enviado (P5) |
+| **María Paula** | Orquestadora del desarrollo 3D y de la pantalla | Seguir las 4 pistas de ui y lo que ui necesita de otros roles; preparar la decisión de P3 | [orquestadora.md](orquestadora.md) | 30 min | Formulario enviado (P5) |
+| **María Paula** | Dueña de la pantalla (pista M) | OK a #163 y #151; subir el trabajo local (#142); pasos 7 y 8 y "qué datos usamos"; cuenta o invitado; contratos; pistas E e I como subagentes; integración | [ui-integracion.md](ui-integracion.md) | 10 min | Ruta dorada completa en el preview, puerta §10 aprobada |
+| **Jaime** | Motor y soporte del motor para la pantalla; suplente del orquestador | Revisar el uso del motor en #163 y #151; responder bloquea:motor; prueba de variabilidad (P3); motor multi-misión (#152) | [motor.md](motor.md) | 10 min | Variabilidad fusionada y sin bloquea:motor |
+| **Camilo** | Diseño y misiones; probador de la ruta dorada | Proponer NIVELES §7 (1, 4 y 5); revisar #153–#156; cerrar #114 y #56; jugar la ruta dorada y reportar bugs; huecos de #152 | [diseno.md](diseno.md) | 10 min | NIVELES aprobado y prueba reportada |
+| **José** | Agentes, CI, despliegue, video y formulario; ui solo por encargo | Atender #163 y #151; e2e verde con lo nuevo; rebases; video y formulario | [agentes-infra.md](agentes-infra.md) | 10 min | Video y formulario listos antes de P5 |
+| **Daniel** | Datos de NASA y verificación (Codex con GPT-6.1) | #162 para la pantalla final; fuente de la gravedad (#141); glosario (sol, telemetría, tick); rebases; "Hoy en el Sol" opcional | [datos.md](datos.md) | 10 min | Ninguna tarjeta de la ruta dorada sin fuente |
+| **Claude (revisor)** | Revisa todo PR y mantiene el tablero | Cola en orden: P2 primero (#163, #151, #162), después ui, docs, datos, agentes, misiones | [revisor.md](revisor.md) | 15 min | P4 sin PRs pendientes |
+
+Las pistas E (escenario 3D), I (interfaz) y A (audio) de ui no son personas: son subagentes que lanza la sesión de María Paula ([ui.md](ui.md)).
 
 ## Prioridades del equipo
 
@@ -52,7 +56,7 @@ Cómo se reparte el trabajo de ui y cómo se integra: [FLUJO.md](../referenciapa
 
 ### Modelos y esfuerzo
 
-Verificado el 14 nov en este equipo: `claude` acepta `--model` (`fable`, `opus`, `sonnet`, `haiku`) y `--effort` (`low`, `medium`, `high`, `xhigh`, `max`); los subagentes de Claude Code reciben `model` y `effort` al lanzarlos; OpenCode lista `opencode/deepseek-v4.1-flash-free` y `openai/gpt-6.1-sol`; Codex fija el esfuerzo con `model_reasoning_effort`.
+Verificado el 14 nov en este equipo: `claude` acepta `--model` (`fable`, `opus`, `sonnet`, `haiku`) y `--effort` (`low`, `medium`, `high`, `xhigh`, `max`); los subagentes de Claude Code reciben `model` y `effort` al lanzarlos; OpenCode lista `opencode/deepseek-v4.1-flash-free` y `openai/gpt-6.1-sol`; Codex fija el esfuerzo con `model_reasoning_effort`; Daniel usa Codex con GPT-6.1 (dicho por María Paula).
 
 | Sesión o tarea | Modelo | Esfuerzo | Cómo se abre |
 | --- | --- | --- | --- |
@@ -68,7 +72,7 @@ Verificado el 14 nov en este equipo: `claude` acepta `--model` (`fable`, `opus`,
 | Diseño (Camilo) | Opus 5.5 | `medium` | `claude --model opus --effort medium` |
 | Agentes e infra (José) | Opus 5.5 | `medium` | `claude --model opus --effort medium` |
 | Datos (Daniel) | Opus 5.5 | `medium` | `claude --model opus --effort medium` |
-| Datos (Daniel): verificación y scripts | Codex con GPT-6.1 Sol si su cuenta lo tiene | `medium` | `codex -m <modelo> -c model_reasoning_effort="medium"` (Daniel confirma el nombre del modelo en su Codex) |
+| Datos (Daniel): verificación y scripts | Codex con GPT-6.1 | `medium` | `codex -c model_reasoning_effort="medium"` (GPT-6.1 como modelo de su Codex) |
 | Componentes, tests unitarios, bugs claros | Sonnet 5.5 (subagente) | `medium` | `model: sonnet, effort: medium` |
 | Buscar en el repo, i18n EN/ES, JSON, documentación | Haiku 5.5 (subagente) | `low` | `model: haiku, effort: low` |
 | Lote mecánico sobre archivos que nadie más toca | DeepSeek V4.1 Flash en OpenCode | (sin ajuste) | `opencode -m opencode/deepseek-v4.1-flash-free` |

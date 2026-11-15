@@ -1,6 +1,6 @@
 # RETO: qué pide NASA y cómo lo cumple Solar Shield
 
-**Fuente:** [Build a Junior Astronaut Mission Trainer](https://www.spaceappschallenge.org/2026/challenges/junior-astronaut-mission-trainer/), pestaña Details, leída el 14 nov 2026 con el navegador (la página carga; `docs/reglas.md` todavía tiene la URL vieja, arreglo en el PR #150). Abajo va parafraseado: el texto completo está en el enlace.
+**Fuente:** [Build a Junior Astronaut Mission Trainer](https://www.spaceappschallenge.org/2026/challenges/junior-astronaut-mission-trainer/), pestaña Details, leída el 14 nov 2026 con el navegador (la URL de `docs/reglas.md` se corrigió en #150). Abajo va parafraseado: el texto completo está en el enlace.
 **Para qué sirve:** que cada decisión de diseño, UI y escenario se pueda justificar contra el enunciado. **Si algo de esta carpeta choca con el reto, gana el reto** y se corrige el documento.
 
 ---
@@ -41,7 +41,7 @@ Estado al 14 nov 2026: **Sí** = ya está en código en `develop`; **Parcial** =
 | Sugiere el reto | Cómo lo cumplimos | Estado | Dónde |
 | --- | --- | --- | --- |
 | Que sirva también para hermanos mayores, padres o aula | 4 dificultades (`facil` a `hardcore`) | Sí en motor; falta selector | NIVELES §4 |
-| Lenguaje llano; explicar en contexto términos como dosis de radiación, microgravedad o sol | Glosario para niños ya en `develop` (`docs/science/glosario.md`, claves `datos.glosario.<palabra>.palabra` y `.def` en `data/i18n`); el PR #158 lo completa | **No en pantalla** | Ver §3, mejora 2 |
+| Lenguaje llano; explicar en contexto términos como dosis de radiación, microgravedad o sol | Glosario para niños ya en `develop` (`docs/science/glosario.md`, claves `datos.glosario.<palabra>.palabra` y `.def` en `data/i18n`), ampliado por #158 | **No en pantalla** | Ver §3, mejora 2 |
 | Jugable en el navegador, sin descarga ni cuenta | Web en Cloudflare; cuenta opcional, se juega como invitado | Sí | `infra/`, #109 |
 | Usar APIs y datos públicos de NASA | Ver arriba | Sí | `data/` |
 | Atribuir las fuentes dentro del juego | `TarjetaFuente` en cada dato real | Parcial | DISEÑO §5.3 |
@@ -51,7 +51,7 @@ Estado al 14 nov 2026: **Sí** = ya está en código en `develop`; **Parcial** =
 | No abrumar: 2 o 3 recursos centrales | Exactamente 3: energía, soporte vital, blindaje | Sí | MECANICAS §2 |
 | **Destaca:** ligar la decisión de blindaje a datos actuales de clima espacial | La tormenta es real pero archivada | **No** | Ver §3, mejora 3 |
 | **Destaca:** rejugabilidad, aprender del fracaso sin castigo | Semillas, misma semilla o nueva al final, perder muestra causas y no "Game Over" | Parcial: falta botón de nueva semilla y prueba de P3 | NIVELES §2, MECANICAS §3 |
-| **Destaca:** explicación corta de qué datasets de NASA se usaron y por qué | `DATOS_USADOS_KEYS` (PR #158) y formulario de entrega | Parcial: falta en pantalla (#137) | `data/`, `pitch/` |
+| **Destaca:** explicación corta de qué datasets de NASA se usaron y por qué | `DATOS_USADOS_KEYS` (completo desde #158) y formulario de entrega | Parcial: falta en pantalla (#137) | `data/`, `pitch/` |
 
 ## 3. Mejoras que salen del reto (asignadas)
 

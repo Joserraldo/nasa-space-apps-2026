@@ -37,7 +37,7 @@ Cuatro pistas con **archivos disjuntos** y una rama cada una. Prompts en `docs/p
 
 Fuera de las pistas:
 - **Validación:** la sesión revisora ([`docs/prompts/revisor.md`](../prompts/revisor.md)) revisa cada PR; no escribe código.
-- **Orquestadora (María Paula):** asigna, decide, aprueba la fidelidad visual contra la lámina y hace el primer recorrido de la ruta dorada.
+- **Orquestadora del desarrollo 3D y de la pantalla (María Paula; decisión de Santiago, 14 nov):** asigna, decide lo visual, aprueba la fidelidad contra la lámina y hace el primer recorrido de la ruta dorada. Santiago orquesta el equipo.
 - **Fusión:** Santiago, con squash.
 
 Si una pista necesita cambiar un archivo de otra, **no lo edita**: lo pide a esa pista con un comentario en su PR o en el issue (ejemplo: E necesita un dato nuevo en `vista.ts`, se lo pide a M).
@@ -83,7 +83,7 @@ Cada fase termina en una **puerta**. No se abre la siguiente hasta pasarla.
 
 | Fase | Quién | Qué | Puerta para avanzar | Hasta |
 | --- | --- | --- | --- | --- |
-| **Prioridad 1. Definir todos los niveles** | Orquestadora con diseño, motor y datos | [NIVELES.md](NIVELES.md) completo: las 5 misiones, dificultad y niveles de Iris; decisiones 1 a 6 de NIVELES §7 aprobadas por Camilo y Santiago. No bloquea la fase 0: corre en paralelo porque no toca `ui/`. | Santiago aprueba NIVELES §7. | lo antes posible |
+| **Prioridad 1. Definir todos los niveles** | María Paula con diseño, motor y datos | [NIVELES.md](NIVELES.md) completo: las 5 misiones, dificultad y niveles de Iris; decisiones 1 a 6 de NIVELES §7 aprobadas por Camilo y Santiago. No bloquea la fase 0: corre en paralelo porque no toca `ui/`. | Santiago aprueba NIVELES §7. | lo antes posible |
 | **0. Subir y conectar** | M | Subir el trabajo local (#142) en PRs atómicos; ruta dorada jugable con lo visual que ya existe; absorber #151; #118 y #137. E, I y A **no** empiezan a escribir. | Los 8 pasos se juegan en el preview de `develop` y el e2e pasa. | P2 (sáb 22:00) |
 | **1. Contratos internos** | M, I | PR de `VistaEscena`, props de `EscenaBase` y eventos de feedback (M); tokens CSS y props de componentes (I). | Contratos fusionados; typecheck en verde. | dom temprano |
 | **2. Paralelo** | E, I, M | E: bloque 1 (cielo, materiales, niño, portada 3D) y bloque 2 (terreno, kit, base, módulos, Iris rover e Ingeniera en 3D). I: átomos, compuestos, retratos, portada DOM, intro. M: pantallas, flujo de fases, i18n, respaldo 2D. | Cada PR pasa la puerta de [APLICACION.md](APLICACION.md) §10. En P3 se decide 3D o 2D. | P3 (dom 11:00) |
@@ -114,7 +114,7 @@ Buenas prácticas que todas las pistas cumplen: funciones cortas, tablas de conf
 | --- | --- | --- | --- |
 | 1. Autor | La pista que escribió | Puerta de [APLICACION.md](APLICACION.md) §10: typecheck, test, build, captura al lado de la lámina, draw calls y triángulos, teclado, EN/ES, movimiento reducido, respaldo 2D, cero errores WebGL. | Salida real pegada en el PR. |
 | 2. Revisor | Sesión revisora | Alcance de carpeta y de pista, tamaño, commits atómicos, CI, reglas del producto, prohibidos de [DISEÑO.md](DISEÑO.md) §8, duplicados entre PRs. | `gh pr review` con lista numerada. |
-| 3. Orquestadora | María Paula | Fidelidad visual contra la lámina y que la historia se entienda ([HISTORIA.md](HISTORIA.md)). | Aprueba o pide cambios en el PR. |
+| 3. Orquestadora del 3D y la pantalla | María Paula | Fidelidad visual contra la lámina y que la historia se entienda ([HISTORIA.md](HISTORIA.md)). | Aprueba o pide cambios en el PR. |
 
 Después, Santiago fusiona con squash cuando la CI "Tipos y tests" y el e2e están en verde.
 

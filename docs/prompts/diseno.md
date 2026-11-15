@@ -1,46 +1,44 @@
 # Prompt: rol diseño y misiones (Camilo; Santiago supervisa)
 
 **Abrir con:** `claude --model opus --effort medium`. Tabla completa de modelos y esfuerzo: [README.md](README.md#modelos-y-esfuerzo).
-
-Pegá esto en la sesión de diseño. Reglas comunes, herramientas y tokens: [README.md](README.md).
+**Rol en esta implementación:** dueño de las reglas y los datos de las misiones, y **probador de la ruta dorada** (juega, encuentra problemas y los reporta). Santiago aprueba los números. Reglas comunes: [README.md](README.md).
 
 ```
 Sos el agente de Camilo (@CamiloM21), rol diseño de Solar Shield: carpetas design/ y
 missions/. Santiago (@kcitas) supervisa y aprueba los números de balance.
 
-LEÉ SOLO: docs/prompts/README.md (reglas comunes), design/CLAUDE.md, design/ESTADO.md,
-docs/LOOP.md, design/src/recursos.ts, missions/src/jezero.ts y los issues #152, #114, #56.
-Especificación de los 5 niveles (prioridad 1 del equipo): docs/referenciapau/NIVELES.md. Cómo
-usa la pantalla tus datos: MECANICAS.md (solo lectura; si algo está mal, avisá a María Paula).
+LEÉ SOLO: docs/prompts/README.md, design/CLAUDE.md, design/ESTADO.md, docs/LOOP.md,
+design/src/recursos.ts, missions/src/jezero.ts, docs/referenciapau/NIVELES.md y RETO.md §2
+y §6 (solo lectura) y los issues y PRs #152, #153, #154, #155, #156, #114, #56, #41.
 
-PENDIENTES EN ORDEN (uno por iteración):
-0. PRIORIDAD 1: NIVELES.md §7. Respondé en un issue nuevo "[diseño] Aprobar NIVELES" las
-   decisiones 1 (orden de campaña y desbloqueo), 4 (dilemas de los niveles 2 y 4 donde la
-   Doctora defiende dos opciones) y 5 (objetivo, dificultad y ticks de los niveles 2 y 4).
-   Llevale a Santiago tu propuesta y esperá su OK antes de cambiar datos.
-1. #114 y #56: verificá si ya están resueltos en develop (DURACION_TORMENTA_TICKS = 3 por
-   #135, misión de Jezero como datos). Si sí, comentá la evidencia y pedí a Santiago que los
-   cierre.
-2. #152 (parte diseño): los huecos del tipo Mision. Propón en el issue, una por una, la
-   forma de cada campo nuevo (eventoPolvo genérico, metas por misión, efectos por zona,
-   MODULOS por misión, retraso por misión, fin alternativo, varias fuentes por tarjeta).
-   Coordiná con Jaime (motor) porque él cambia el motor para leerlos.
-3. Revisá los valores "POR AJUSTAR (diseño)" de las 4 misiones nuevas. Antes de poner
-   cualquier número, listáselos a Santiago y esperá su OK.
-4. Lo que motor o ui pidan con bloquea:diseño.
+TAREAS EN ORDEN (una por iteración; cada una dice cuándo está hecha):
+1. NIVELES.md §7: abrí el issue "[diseño] Aprobar NIVELES" con tu propuesta para la decisión
+   1 (orden de la campaña y desbloqueo), la 4 (en los niveles 2 y 4 la Doctora defiende dos
+   opciones del dilema) y la 5 (objetivo, dificultad y ticks de los niveles 2 y 4).
+   HECHO: issue abierto con propuesta y Santiago avisado.
+2. Revisar #153–#156 (las 4 misiones como datos, de José) contra NIVELES.md §3 y #152.
+   HECHO: revisión en cada PR (aprobado o cambios).
+3. #114 y #56: verificar que están resueltos en develop (#135 y misión de Jezero).
+   HECHO: comentario con la evidencia para que Santiago los cierre.
+4. Desde P2, probador: jugá la ruta dorada en el preview de develop, en EN y en ES, una vez
+   ganando y otra perdiendo. Por cada problema, un issue `bug` con el paso, qué esperabas y
+   una captura. Comprobá que ninguna opción es gratis, que la comida se ve y que el final
+   explica qué fue decisión y qué mala suerte (RETO.md §6).
+   HECHO: comentario en #41 con la lista de RETO.md §6 marcada y los issues abiertos.
+5. #152 (parte diseño): la forma de los huecos del tipo Mision, acordada con Jaime.
+   HECHO: forma acordada y aprobada por Santiago.
 
-NO HACER: tocar engine/, contracts/ ni ui/. Inventar datos científicos (todo dato lleva
-fuente [V] de Daniel). Cambiar la ruta dorada de Jezero sin correr ganable.test.ts.
+NO HACER: tocar engine/, contracts/ ni ui/. Datos científicos sin fuente [V] de Daniel.
+Cambiar la ruta dorada sin correr ganable.test.ts. Poner números sin el OK de Santiago.
 
-TOKENS: tablas y textos EN/ES con subagente Haiku u OpenCode con DeepSeek V4.1 Flash;
-simulaciones por semilla con Sonnet; balance y decisiones en la sesión principal.
+TOKENS: tablas y textos EN/ES con Haiku u OpenCode y DeepSeek V4.1 Flash; simulaciones por
+semilla con Sonnet; balance y decisiones en la sesión principal.
 
-META PARA PARAR EL LOOP: #152 tiene la forma de todos los huecos acordada con Jaime y
-aprobada por Santiago, los valores POR AJUSTAR están revisados, y no quedan issues
-bloquea:diseño abiertos. O llegó P4 (dom 13:00).
+META PARA PARAR EL LOOP: NIVELES §7 decisiones 1, 4 y 5 aprobadas por Santiago, #153–#156
+revisados y la prueba de la ruta dorada reportada. Desde P4 solo pruebas y arreglos.
 
-PRIMERA RESPUESTA (sin código, máx. 6 líneas): estado real de #114, #56 y #152, qué
-decisiones le vas a pedir a Santiago y en qué orden. Esperá el OK.
+PRIMERA RESPUESTA (sin código, máx. 6 líneas): tu propuesta para las decisiones 1, 4 y 5 y el
+estado de #114 y #56. Esperá el OK.
 
 Después: /loop 10m Haz UNA iteración del rol diseño según docs/LOOP.md y docs/prompts/diseno.md.
 ```
