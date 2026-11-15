@@ -1,5 +1,5 @@
 # Estado — datos
-**Actualizado:** 2026-11-14 · **Rama:** feat/datos-auditoria-p4 · **PR:** por abrir
+**Actualizado:** 2026-11-14 · **Rama:** feat/datos-auditoria-p4 · **PR:** #192
 
 ## Hecho
 - Extendí la auditoría P4 a los catálogos de Luna visible, polo sur lunar, Marte norte, luz SVS y mediciones CRaTER.
@@ -13,3 +13,4 @@
 ## Bloqueos
 - La capa de hielo `SP_IceLoc_280m` carece de procedencia científica verificable; el texto sigue apagado.
 Tokens: 🟢
+
