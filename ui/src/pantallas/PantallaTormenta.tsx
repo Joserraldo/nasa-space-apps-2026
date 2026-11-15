@@ -10,7 +10,10 @@ import { TarjetaFuente } from "../componentes/TarjetaFuente.js";
 import { ExpertPortrait } from "../componentes/base/ExpertPortrait.js";
 import { FacetButton } from "../componentes/base/FacetButton.js";
 import { Icono } from "../componentes/base/Iconos.js";
-import { CostRow, ICONO_RECURSO, RECURSOS } from "../componentes/base/Piezas.js";
+import { AccesoRecurso, ChipPregunta } from "../componentes/base/Accesos.js";
+import { TarjetaFuenteCompacta } from "../componentes/base/FuenteCompacta.js";
+import { BarraSeccion, ChipPausa, PanelFacetado } from "../componentes/base/PanelFacetado.js";
+import { CostRow, RECURSOS } from "../componentes/base/Piezas.js";
 import { EscenaBase } from "../escena/EscenaBase.js";
 import { vistaEscena } from "../escena/vista.js";
 import { hayGraficos3D } from "../escena/soporte.js";
@@ -79,52 +82,42 @@ export function PantallaTormenta({ estado, colocados, registro, onSeguir, onDeci
           onLugarCercano={NADA} onUsar={NADA} onCalidad={NADA} onWebGLPerdido={() => setSinGl(true)} />}
       </div>
 
-      <div className="fc tormenta-panel">
-        <div className={`fc-cara tormenta-cara${plan && verificando ? " tormenta-cara-verif" : ""}`}>
-          <header className="tormenta-cabeza">
-            <h2 id="tormenta-titulo" className="tormenta-titulo">{t(registro ? "ui.decision.titulo" : plan ? (verificando ? "ui.tormenta.verificar" : "ui.tormenta.comparar") : "ui.tormenta.elegir")}</h2>
-            <span className="fc"><span className="fc-cara fc-chico tormenta-pausa"><Icono nombre="reloj" tam={20} /><span>{t("ui.comun.pausado")}</span></span></span>
-          </header>
+      <PanelFacetado className="tormenta-panel" numero={registro ? 4 : plan ? (verificando ? 3 : 2) : 1} acciones={!registro && !plan ? <ChipPausa /> : undefined}
+        tituloKey={registro ? "ui.comun.decision.titulo" : plan ? (verificando ? "ui.tormenta.verificar" : "ui.tormenta.comparar") : "ui.tormenta.elegir"}>
+        {registro ? <DecisionRegistrada antes={registro} despues={estado} onContinuar={() => onSeguir?.()} />
+        : plan && verificando && escena ? <Verificar estado={estado} dialogos={escena.dialogos} onAtras={() => setVerificando(false)} />
+        : plan ? <PlanComparado estado={estado} colocados={colocados} plan={plan} dialogo={escena?.dialogos.find((d) => d.experto === plan.experta)}
+          onVerificar={() => setVerificando(true)} onOtra={() => { setConservada(plan.opcionId); setElegido(null); setPlan(null); }} onAtras={() => { setConservada(undefined); setElegido(null); setPlan(null); }} onDecidir={onDecidir} /> : <>
+        <ul className="tormenta-expertos">
+          {EXPERTOS.map((p) => (
+            <li key={p}>
+              <ExpertPortrait persona={p} seleccionado={elegido === p}
+                onElegir={() => { setElegido(p); hablar({ experto: p }); comparar(p); }} />
+            </li>
+          ))}
+        </ul>
 
-          {registro ? <DecisionRegistrada antes={registro} despues={estado} onContinuar={() => onSeguir?.()} />
-          : plan && verificando && escena ? <Verificar estado={estado} dialogos={escena.dialogos} onAtras={() => setVerificando(false)} />
-          : plan ? <PlanComparado estado={estado} colocados={colocados} plan={plan} dialogo={escena?.dialogos.find((d) => d.experto === plan.experta)}
-            onVerificar={() => setVerificando(true)} onOtra={() => { setConservada(plan.opcionId); setElegido(null); setPlan(null); }} onAtras={() => { setConservada(undefined); setElegido(null); setPlan(null); }} onDecidir={onDecidir} /> : <>
-          <ul className="tormenta-expertos">
-            {EXPERTOS.map((p) => (
-              <li key={p}>
-                <ExpertPortrait persona={p} seleccionado={elegido === p}
-                  onElegir={() => { setElegido(p); hablar({ experto: p }); comparar(p); }} />
-              </li>
-            ))}
-          </ul>
+        <form className="tormenta-preguntar" onSubmit={enviar}>
+          <label className="oculto-visual" htmlFor="tormenta-campo">{t("ui.base.tripulacion.campo")}</label>
+          <input id="tormenta-campo" type="text" value={texto} onChange={(e) => setTexto(e.target.value)} placeholder={t("ui.base.tripulacion.campo")} />
+          <FacetButton type="submit" icon="avion_papel" labelKey="ui.tripulacion.enviar" onClick={NADA} />
+        </form>
 
-          <form className="tormenta-preguntar" onSubmit={enviar}>
-            <label className="oculto-visual" htmlFor="tormenta-campo">{t("ui.base.tripulacion.campo")}</label>
-            <input id="tormenta-campo" type="text" value={texto} onChange={(e) => setTexto(e.target.value)} placeholder={t("ui.base.tripulacion.campo")} />
-            <FacetButton type="submit" labelKey="ui.tripulacion.enviar" onClick={NADA} />
-          </form>
+        <ul className="tormenta-accesos">
+          {RECURSOS.map((r) => (
+            <li key={r}><AccesoRecurso recurso={r} valor={estado.recursos[r]} onClick={() => { setElegido(null); hablar({ texto: PREGUNTA_RECURSO[r] }); }} /></li>
+          ))}
+        </ul>
 
-          <ul className="tormenta-accesos">
-            {RECURSOS.map((r) => (
-              <li key={r}>
-                <FacetButton icon={ICONO_RECURSO[r]} labelKey="ui.tormenta.acceso"
-                  labelVars={{ recurso: t(`ui.recurso.${r}`), valor: Math.round(estado.recursos[r]) }}
-                  onClick={() => { setElegido(null); hablar({ texto: PREGUNTA_RECURSO[r] }); }} />
-              </li>
-            ))}
-          </ul>
-
-          {dialogo && (
-            <div className="tormenta-respuesta" role="status" aria-live="polite">
-              <h3>{t(`agentes.titulo.${dialogo.experto}`)}</h3>
-              {dialogo.lineas.map((l, i) => <p key={i}>{t(l.clave, l.vars)}</p>)}
-              {dialogo.fuente && <TarjetaFuente fuente={dialogo.fuente} />}
-            </div>
-          )}
-          </>}
-        </div>
-      </div>
+        {dialogo && (
+          <div className="tormenta-respuesta" role="status" aria-live="polite">
+            <h3>{t(`agentes.titulo.${dialogo.experto}`)}</h3>
+            {dialogo.lineas.map((l, i) => <p key={i}>{t(l.clave, l.vars)}</p>)}
+            {dialogo.fuente && <TarjetaFuente fuente={dialogo.fuente} />}
+          </div>
+        )}
+        </>}
+      </PanelFacetado>
     </section>
   );
 }
@@ -196,11 +189,11 @@ function Verificar({ estado, dialogos, onAtras }: { estado: GameState; dialogos:
         })}
       </div>
       <div className="tormenta-plan-accion tormenta-verif">
-        <span className="fc"><span className="fc-cara fc-chico tormenta-pieza"><span>{t("ui.tormenta.fuente")}</span></span></span>
-        <TarjetaFuente fuente={fuente} />
+        <BarraSeccion icono="libro" tituloKey="ui.tormenta.fuente" />
+        <TarjetaFuenteCompacta dueno={fuente.dueno?.split(/[;(]/)[0]?.trim()} tipoKey={fuente.estadoDato === "mock" ? "datos.etiqueta.mock" : "datos.etiqueta.curado"} id={fuente.idFuente} fecha={fuente.consultadoEl.slice(0, 10)} />
         <ul className="tormenta-preguntas">
           {PREGUNTAS.map((q) => (
-            <li key={q.id}><FacetButton icon={q.icono} labelKey={`ui.tormenta.pregunta.${q.id}`} selected={pregunta === q.id ? true : undefined} onClick={() => setPregunta(q.id)} /></li>
+            <li key={q.id}><ChipPregunta icono={q.icono} labelKey={`ui.tormenta.pregunta.${q.id}`} selected={pregunta === q.id ? true : undefined} onClick={() => setPregunta(q.id)} /></li>
           ))}
         </ul>
         {linea && <p className="tormenta-respuesta-fuente" role="status">{t(linea.clave, linea.vars)}</p>}

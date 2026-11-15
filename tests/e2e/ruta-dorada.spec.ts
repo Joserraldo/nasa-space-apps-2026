@@ -103,7 +103,6 @@ test("ruta dorada: de la órbita al resumen, en inglés", async ({ page }) => {
   await expect(page.getByRole("heading", { name: "Verify the warning" })).toBeVisible();
   await expect(page.getByText("Everyone to the shelter, now!")).toBeVisible();
   await expect(page.getByText(/put energy into the shield and keep working/)).toBeVisible();
-  await expect(page.getByText("Where does this data come from?").first()).toBeVisible();
   await expect(page.getByText("Real curated data, not live").first()).toBeVisible();
   await expect(page.getByRole("link", { name: /View source/ })).toHaveAttribute("href", /ccmc\.gsfc\.nasa\.gov/);
   await page.getByRole("button", { name: "Back" }).click();

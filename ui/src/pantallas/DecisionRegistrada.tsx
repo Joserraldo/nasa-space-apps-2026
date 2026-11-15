@@ -1,9 +1,6 @@
 import type { GameState, Resource } from "@solar-shield/contracts";
-import { useT } from "../i18n.js";
 import { ExpertPortrait } from "../componentes/base/ExpertPortrait.js";
-import { FacetButton } from "../componentes/base/FacetButton.js";
-import { CostRow, Mensaje } from "../componentes/base/Piezas.js";
-import "../componentes/base/facetas.css";
+import { TarjetaDecision } from "../componentes/base/TarjetaDecision.js";
 import "./decision.css";
 
 type Deltas = Partial<Record<Resource, number>>;
@@ -26,24 +23,17 @@ export function cobradoPor(antes: GameState, despues: GameState) {
 
 /**
  * Panel 04 de ui/04 "Decision recorded": tarjeta reutilizable tras toda acción confirmada (E7 y E6).
- * El niño y Iris a la izquierda; "Action confirmed", el costo aplicado y el beneficio pendiente a
- * la derecha, y "Return to exploration" para seguir.
+ * El niño y Iris a la izquierda y, a la derecha, la `TarjetaDecision` con el costo que cobró el motor.
  */
 export function DecisionRegistrada({ antes, despues, onContinuar }: { antes: GameState; despues: GameState; onContinuar(): void }) {
-  const { t } = useT();
-  const { ahora, despuesDe, turnos } = cobradoPor(antes, despues);
+  const { ahora, despuesDe } = cobradoPor(antes, despues);
   return (
-    <div className="decision" role="status" aria-live="polite">
+    <div className="decision">
       <div className="decision-personajes">
-        <ExpertPortrait persona="nino" compacto />
+        <ExpertPortrait persona="nino" expresion="feliz" compacto />
         <ExpertPortrait persona="ia_base" compacto />
       </div>
-      <div className="decision-detalle">
-        <Mensaje tipo="exito" tituloKey="ui.decision.confirmada" />
-        <CostRow inmediato={ahora} retrasado={despuesDe} />
-        {turnos !== null && <Mensaje tipo="pendiente" tituloKey="ui.comun.pendiente.titulo" detalleKey={turnos === 1 ? "ui.comun.pendiente.turno" : "ui.comun.pendiente.turnos"} vars={{ n: turnos }} />}
-        <FacetButton variant="primary" icon="jugar" labelKey="ui.decision.volver" onClick={onContinuar} />
-      </div>
+      <TarjetaDecision aplicado={ahora} retrasado={despuesDe} onVolver={onContinuar} />
     </div>
   );
 }

@@ -277,7 +277,6 @@
   "ui.mapa.lugar.antena": "Antena",
   "ui.mapa.lugar.banco": "Banco de experimentos",
   "ui.tormenta.elegir": "Elige a tu experto",
-  "ui.tormenta.acceso": "{recurso} {valor}",
   "ui.medir.fps_prom": "FPS prom. (5 s)",
   "ui.medir.fps_min": "FPS mín.",
   "ui.medir.draw_calls": "Draw calls",
@@ -295,7 +294,6 @@
   "ui.tormenta.pregunta.proteger": "¿Qué necesita protección?",
   "ui.tormenta.pregunta.sensor": "¿Qué muestra el sensor?",
   "ui.tormenta.verFuente": "Ver fuente",
-  "ui.tormenta.acceso": "{recurso} {valor}",
   "ui.comun.acceso_recurso": "{recurso} {valor}",
   "ui.comun.fuente.compacta": "{dueno} / {tipo}",
   "ui.comun.fuente.archivado": "Evento archivado",
@@ -303,8 +301,5 @@
   "ui.comun.decision.confirmada": "Acción confirmada",
   "ui.comun.decision.volver": "Volver a explorar",
   "ui.comun.decision.registro": "Ver registro de decisiones",
-  "ui.comun.muestrario.paneles": "Paneles de la tormenta (ui/04)",
-  "ui.decision.titulo": "Decisión registrada",
-  "ui.decision.confirmada": "Acción confirmada",
-  "ui.decision.volver": "Volver a explorar"
+  "ui.comun.muestrario.paneles": "Paneles de la tormenta (ui/04)"
 }
