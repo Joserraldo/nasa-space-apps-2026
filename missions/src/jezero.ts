@@ -60,10 +60,16 @@ export interface AveriaIris {
   reparaCon: Expert;
 }
 
+/** Condición de victoria de una misión. */
+export type ExitoCuando = "telemetria_llega" | { tipo: "sobrevivir_hasta_tick"; tick: number };
+
 /** Cuándo termina la partida de demo. */
 export interface FinMision {
-  /** Gana cuando llega la telemetría a la Tierra (paso 7 → 8) sin ningún medidor en 0. */
-  exitoCuando: "telemetria_llega";
+  /**
+   * Gana cuando llega la telemetría a la Tierra (paso 7 → 8) sin ningún medidor en 0, o,
+   * con `{ tipo: "sobrevivir_hasta_tick", tick }`, al llegar a ese tick con todo por encima de 0 (p. ej. el amanecer lunar).
+   */
+  exitoCuando: ExitoCuando;
   /** Pierde si cualquier medidor llega a 0 (regla general del motor). */
   falloCuando: "recurso_en_cero";
   /** Red de seguridad: si en este tick no ha pasado nada, se muestra el paso 8 igual. */

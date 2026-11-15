@@ -305,7 +305,7 @@ export function avanzarTick(estado: GameState, mision: Mision = MISION_JEZERO): 
   // Fin de la misión (mision.fin; hoy solo hay una regla, igual para todas): pierde si algo llega a 0, aunque la telemetría llegue
   // en ese mismo tick; gana cuando la telemetría llega a la Tierra con todo por encima de 0.
   if (RECURSOS.some((r) => s.recursos[r] <= 0)) s = { ...s, resultado: "fallo" };
-  else if (llegoTelemetria) s = { ...s, resultado: "exito" };
+  else if (mision.fin.exitoCuando === "telemetria_llega" ? llegoTelemetria : s.tick >= mision.fin.exitoCuando.tick) s = { ...s, resultado: "exito" };
   else if (s.dia > DIAS_PARA_GANAR) s = { ...s, resultado: "exito" };
   return s;
 }
