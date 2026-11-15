@@ -45,8 +45,6 @@
   "ui.paso.4.puesto": "{moduloKey} placed",
   "ui.paso.4.motivo.faltan": "Place your modules first",
   "ui.paso.4.motivo.lleno": "You already placed all your modules",
-  "ui.paso.5.titulo": "Space weather alert",
-  "ui.paso.6.titulo": "Your crew disagrees",
   "ui.paso.7.telemetria": "Send telemetry to Earth",
   "ui.paso.7.enviada": "Telemetry sent. Earth will answer in {ticks} turns (light takes time to travel).",
   "ui.paso.7.llegando": "Earth's answer arrives in {ticks} turns",
@@ -82,7 +80,6 @@
   "ui.tripulacion.noEntendi": "I didn't catch that. Try tapping a crew member or asking about energy, shield or health.",
   "ui.tripulacion.hacer": "Do it",
   "ui.iris.titulo": "Iris, the base AI",
-  "ui.iris.verificar": "Check with the Engineer",
   "ui.iris.saltar": "Skip",
   "ui.quesi.boton": "What if…? Ask the Mathematician",
   "ui.iris.estado.tutorial": "Iris is guiding you",
@@ -276,5 +273,8 @@
   "ui.tormenta.pregunta.proteger": "What needs protection?",
   "ui.tormenta.pregunta.sensor": "What does the sensor show?",
   "ui.tormenta.verFuente": "View source",
-  "ui.tormenta.acceso": "{recurso} {valor}"
+  "ui.tormenta.acceso": "{recurso} {valor}",
+  "ui.decision.titulo": "Decision recorded",
+  "ui.decision.confirmada": "Action confirmed",
+  "ui.decision.volver": "Return to exploration"
 }
