@@ -116,6 +116,7 @@ Solar Shield. Aprende en quién confiar cuando la tecnología falla. Incluso fun
 12. Créditos: atribuciones y "Unofficial project, not endorsed by NASA".
 
 ### Plan B si una pantalla no está lista
+- **No mostrar las láminas de `docs/referenciapau/referencias/` como si fueran capturas del juego:** son arte conceptual generado con IA (`docs/ia-uso.md`). Si alguna aparece, rotularla "concept art".
 - Usar el **mock o marcador de posición** de esa pantalla y grabar la voz igual. Si el mock trae datos inventados (IDs `MOCK-`), **no** mostrarlo en el plano de la tormenta: poner en su lugar un gráfico editado con los datos reales de `data/curated/2024-05-20-marte.json`.
 - Los pasos 1–2 son los últimos en construirse (2D simple): si faltan, empezar el video en el paso 3 con el gancho sobre la base y recortar la segunda frase de la locución.
 - Si el Worker del clasificador no está desplegado: mostrar atajos y botones (la ruta sin modelo). La locución sigue siendo cierta: el modelo solo clasifica y el juego funciona sin él.
