@@ -21,12 +21,9 @@ import { instanciar, type TransformacionPieza } from "./activos/instancias";
 import {
   crearBaliza,
   crearCaja,
-  crearCapsula,
   crearConsola,
-  crearCorredor,
-  crearHabitat,
-  crearTorreControl,
 } from "./activos/piezasComunes";
+import { crearCapsula, crearCorredor, crearHabitat, crearTorreControl } from "./activos/edificios";
 import {
   ESCALA_VERTICAL_POR_DEFECTO,
   PASO_POR_DEFECTO,
