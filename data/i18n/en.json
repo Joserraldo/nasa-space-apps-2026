@@ -212,5 +212,11 @@
   "datos.terreno.luna.tierra": "From here you can see Earth about {pct}% of the time, so messages can go straight home.",
   "datos.terreno.luna.cielo": "The crater walls hide part of the sky, so less space radiation reaches here.",
   "fuente.pgda": "NASA Goddard PGDA (lunar polar illumination, Mazarico et al. 2011)",
-  "fuente.li2018": "Li et al. 2018, PNAS (M3 instrument, NASA, on India's Chandrayaan-1)"
+  "fuente.li2018": "Li et al. 2018, PNAS (M3 instrument, NASA, on India's Chandrayaan-1)",
+  "datos.glosario.sol-dia-de-marte.palabra": "Sol (Mars day)",
+  "datos.glosario.sol-dia-de-marte.def": "A day on Mars. It is a little longer than a day on Earth: about 24 hours and 40 minutes.",
+  "datos.glosario.telemetria.palabra": "Telemetry",
+  "datos.glosario.telemetria.def": "The data a spacecraft or a base sends to Earth by radio to tell how it is doing and what it measured.",
+  "datos.glosario.tick.palabra": "Tick",
+  "datos.glosario.tick.def": "One step of time in the game: with each tick, the game moves forward a little."
 }
