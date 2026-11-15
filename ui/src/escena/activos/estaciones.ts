@@ -61,18 +61,18 @@ export function crearEstacion(m: Materiales, id: EstacionId): THREE.Group {
     for (let i = 0; i < 8; i++) {
       const a = ((i + 0.5) / 8) * Math.PI * 2;
       if (Math.cos(a) > 0.85) continue; // el frente es la puerta
-      const w = parte(m, "Emissive", chaflan(1.3, 0.8, 0.05, 0.2), [Math.sin(a) * 2.6, 1.4, Math.cos(a) * 2.6], "Station_Window");
+      const w = parte(m, "Emissive", chaflan(1.3, 0.8, 0.05, 0.2), [Math.sin(a) * 2.41, 1.4, Math.cos(a) * 2.41], "Station_Window");
       w.rotation.y = a;
       partes.push(w);
     }
   } else {
     for (const a of [-1.57, -0.785, 1.57]) {
-      const w = parte(m, "Emissive", chaflan(0.7, 0.55, 0.05, 0.14), [Math.sin(a) * 2.62, 1.6, Math.cos(a) * 2.62], "Station_Window");
+      const w = parte(m, "Emissive", chaflan(0.7, 0.55, 0.05, 0.14), [Math.sin(a) * 2.4, 1.6, Math.cos(a) * 2.4], "Station_Window");
       w.rotation.y = a;
       partes.push(w);
     }
     const p = grupo("Station_Plaque", ...placa(m, id === "enfermeria" ? "cruz" : "matraz", 1.55, 0));
-    p.position.set(Math.sin(0.785) * 2.5, 0, Math.cos(0.785) * 2.5);
+    p.position.set(Math.sin(0.785) * 2.4, 0, Math.cos(0.785) * 2.4);
     p.rotation.y = 0.785;
     partes.push(p);
   }
