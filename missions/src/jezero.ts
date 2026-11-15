@@ -180,6 +180,8 @@ export interface Mision {
   modulosAColocar: number;
   /** Tick en el que la tormenta se activa (la pausa automática la hace ui). */
   tickTormenta: number;
+  /** Ticks que tarda la respuesta de la Tierra a la telemetría. Si falta, el motor usa RETRASO_COMUNICACIONES[sitio] de design/. */
+  retrasoComunicacionesTicks?: number;
   pasos: PasoMision[];
   /** Carpeta en data/terreno/ con el mapa y los sitios candidatos. Opcional: una misión sin mapa (p. ej. la nave del outpost) no la tiene. */
   terrenoId?: string;

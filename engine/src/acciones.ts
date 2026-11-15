@@ -99,7 +99,7 @@ export function aplicarAccion(estado: GameState, accionCruda: unknown, mision: M
 
   const retraso = RETRASO_POR_DIFICULTAD[s.dificultad];
   // La telemetría no depende de la dificultad: tarda lo que tarda la luz hasta la Tierra y de vuelta.
-  const retrasoFijo = accion.tipo === "enviar_telemetria" ? RETRASO_COMUNICACIONES[s.sitio] : null;
+  const retrasoFijo = accion.tipo === "enviar_telemetria" ? (mision.retrasoComunicacionesTicks ?? RETRASO_COMUNICACIONES[s.sitio]) : null;
   let rng = s.rngEstado;
   const nuevos: PendingEffect[] = [];
   for (const r of RECURSOS) {
