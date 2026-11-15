@@ -1,0 +1,53 @@
+/*
+ * Base v8: lo global del documento, hecho solo con tokens (tokens.css). Reemplaza al estilos.css
+ * del tema oscuro descartado (FLUJO §2.2, DISEÑO §8). NO estiliza las pantallas viejas: esas se
+ * rehacen nuevas desde las láminas (José) con los componentes de ui/src/componentes/base/ (Jaime).
+ * Aquí va solo: caja, tipografía, texto, foco, movimiento reducido y dos utilidades de disposición.
+ */
+
+*, *::before, *::after { box-sizing: border-box; }
+html, body, #root { height: 100%; margin: 0; }
+
+body {
+  background: var(--color-marfil);
+  color: var(--color-indigo-texto);
+  font-family: var(--tipo-familia);
+  font-weight: var(--tipo-peso-cuerpo);
+  font-size: var(--tipo-tam-cuerpo);
+  line-height: var(--tipo-interlineado);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+h1, h2, h3 { font-weight: var(--tipo-peso-titulo); line-height: 1.15; margin: 0 0 var(--esp-3); }
+h1 { font-size: var(--tipo-tam-titulo-grande); }
+h2 { font-size: var(--tipo-tam-titulo); }
+h3 { font-size: var(--tipo-tam-subtitulo); }
+p { margin: 0 0 var(--esp-3); max-width: 60ch; }
+a { color: var(--color-ciruela); text-underline-offset: 3px; }
+
+/* Controles: heredan la tipografía; el aspecto facetado lo da FacetButton, no una regla global. */
+button, input, select, textarea { font: inherit; color: inherit; }
+button { font-weight: var(--tipo-peso-etiqueta); min-height: var(--toque-minimo); cursor: pointer; }
+button:disabled { cursor: not-allowed; }
+
+/* Foco: anillo exterior cian con trazo oscuro, nunca recortado (DISEÑO §5.3). */
+:focus-visible {
+  outline: var(--foco-ancho) solid var(--color-cian);
+  outline-offset: var(--foco-separacion);
+  box-shadow: 0 0 0 calc(var(--foco-separacion) + var(--foco-ancho) + 1px) var(--color-indigo-texto);
+}
+
+/* Disposición mínima para que las pantallas actuales sigan siendo usables hasta que se rehagan. */
+.fila { display: flex; flex-wrap: wrap; align-items: center; gap: var(--esp-3); }
+.columna { display: flex; flex-direction: column; gap: var(--esp-3); }
+
+/* Solo para lectores de pantalla. */
+.oculto-visual {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
+}

@@ -78,3 +78,17 @@ describe("tokens v8: tokens.ts y tokens.css son la misma fuente (FLUJO §3)", ()
     expect(conAlfa("ciruela", 2)).toBe("#53306DFF");
   });
 });
+
+describe("base.css: solo tokens, nada del tema oscuro", () => {
+  const base = readFileSync(new URL("./base.css", import.meta.url), "utf8");
+
+  it("no tiene ningún color literal: todo sale de var(--…)", () => {
+    const sinComentarios = base.replace(/\/\*[\s\S]*?\*\//g, "");
+    expect(sinComentarios).not.toMatch(/#[0-9a-fA-F]{3,8}\b|rgba?\(|hsla?\(/);
+  });
+
+  it("el estilos.css del tema oscuro ya no existe", async () => {
+    const { existsSync } = await import("node:fs");
+    expect(existsSync(new URL("../estilos.css", import.meta.url))).toBe(false);
+  });
+});
