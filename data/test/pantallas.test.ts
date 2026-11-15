@@ -18,6 +18,9 @@ describe("pantallas para ui", () => {
     existe(d.tituloKey);
     expect(d.lineas.length).toBeGreaterThan(3);
     d.lineas.forEach((l) => existe(l.clave));
+    for (const fuente of ["lunaLuz", "lunaSur", "crater", "marteNorte"]) {
+      expect(d.lineas.map((l) => l.clave)).toContain(`datos.usados.${fuente}`);
+    }
   });
 
   it("tarjetasCienciaFinal: SourceCard válida, claves existentes, orden estable, CSA con crédito", () => {
