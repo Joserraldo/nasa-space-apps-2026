@@ -1,5 +1,5 @@
 # Estado — datos
-**Actualizado:** 2026-11-14 · **Rama:** feat/datos-usados-misiones · **PR:** por abrir
+**Actualizado:** 2026-11-14 · **Rama:** feat/datos-usados-misiones · **PR:** #193
 
 ## Hecho
 - Amplié la pantalla “Qué datos usamos” en en/es: SVS 5187, PGDA lunar, CRaTER orbital y Mars Trek polo norte.
@@ -13,3 +13,4 @@
 ## Bloqueos
 - La atribución de `SP_IceLoc_280m` no está verificada; el texto de hielo sigue apagado.
 Tokens: 🟢
+
