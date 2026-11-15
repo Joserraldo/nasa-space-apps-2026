@@ -22,6 +22,7 @@
     "luna-sur:luz": "tsx scripts/luna-sur-luz.ts",
     "luna-sur:cielo": "tsx scripts/luna-sur-cielo.ts",
     "luna-sur:hielo-coherencia": "tsx scripts/luna-sur-hielo-coherencia.ts",
+    "luna:blindaje-descargar": "tsx scripts/luna-blindaje.ts",
     "artemis": "tsx scripts/artemis.ts",
     "luna": "tsx scripts/luna.ts"
   },
