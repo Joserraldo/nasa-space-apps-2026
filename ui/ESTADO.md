@@ -22,10 +22,10 @@ Una sección por persona, máximo 5 líneas, y nadie edita la de otro (FLUJO §8
 - Consolidado por el agente de José mientras Daniel no tiene tokens; Daniel revisa al volver.
 
 ## Ubicación (Camilo)
-**Rama:** feat/ui-ubicacion-mapa · **PR:** #216 · **Tokens:** verde
-- Hecho: #205/#220 incorporados; claves conciliadas; chaflanes desde tokens; typecheck, 598 tests, build, E2E y tres capturas en verde.
-- Sigue: revisión de Paula del PR #216 corregido, sin reescribir el historial ni fusionarlo.
-- Bloqueo: aceptación de Paula; incidente histórico 40101509 documentado si reaparece. Otros worktrees intactos.
+**Rama:** feat/ui-ubicacion-tactiles · **PR:** contrato hacia develop · **Tokens:** amarillo
+- Hecho: entrada táctil pura recuperada, 13 pruebas; montaje y multitáctil emulado en tres tamaños preparados en local. Original preservado.
+- Sigue: publicar el componente cuando entre este contrato, sin PR duplicado ni CI dependiente de archivos ausentes. #216 ya fusionado; física en #297.
+- Bloqueo: montaje en escena/HUD de José/Daniel y celular físico; #254 espera la pila. No se afirma juego3D móvil integrado.
 
 ## Integración (José)
 **Rama:** feat/ui-integracion-orientacion · **PR:** hacia feat/ui-escenarios · **Tokens:** verde
