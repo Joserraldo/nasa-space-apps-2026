@@ -125,8 +125,8 @@ const rocasGrandesPorRejilla = new WeakMap<Rejilla, TransformacionRoca[]>();
  * círculos de colisión en `TERRENO` (mundo.ts) con `radioRocaPrimerPlano`. [E]
  */
 export const ROCAS_PRIMER_PLANO: readonly TransformacionRoca[] = [
-  { posicion: [-3.1, 0, 2.6], escala: [1.4, 0.95, 1.3], rotacion: [0.04, 0.6, -0.03] }, // grande, abajo a la izquierda
-  { posicion: [2.2, 0, 3.6], escala: [1.4, 0.9, 1.3], rotacion: [-0.03, 2.1, 0.04] }, // grande, abajo a la derecha
+  { posicion: [-3.1, 0, 2.6], escala: [1.4, 0.6, 0.85], rotacion: [0.04, 0.6, -0.03] }, // grande, abajo a la izquierda
+  { posicion: [2.2, 0, 3.6], escala: [1.4, 0.6, 0.85], rotacion: [-0.03, 2.1, 0.04] }, // grande, abajo a la derecha
   { posicion: [-5.6, 0, 1.6], escala: [0.5, 0.6, 0.48], rotacion: [0.05, 0.3, 0] },
   { posicion: [7.2, 0, 3.4], escala: [0.5, 0.55, 0.5], rotacion: [0, 1.4, 0.03] },
 ];
