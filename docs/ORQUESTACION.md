@@ -49,11 +49,20 @@ Regla de corte si P2 no se cumple: Luna → Atlas → desbloqueos → 3D complet
 | 1 | Materiales y cachés, iluminación v8, niño astronauta, inicio nuevo; prueba en un celular y un PC viejo | dom 09:00 |
 | 2 | Terreno de Jezero, kit común, los 5 módulos según el motor | dom 11:00 (P3: decisión 3D o 2D) |
 | 4 | HUD y CSS v8, verificación final (teclado, móvil, reduce-motion, respaldo 2D) | dom 13:00 (congelamiento) |
-| 3 | 8 estaciones, Iris rover, expertas en 3D | después de P4, solo si sobra tiempo |
+| 3 | 8 estaciones interiores (Iris rover y la Ingeniera 3D pasan al bloque 2, aprobado por Santiago) | después de P4, solo si sobra tiempo |
 
 Guía de arte: la "Guía maestra de construcción 3D procedural (Atlas v8)" de María Paula. Presupuesto por vista: < 80 draw calls, < 80 000 triángulos, DPR máx 1,5 (calidad baja 1, sin sombras). Invariantes: doble clic nunca cobra dos veces; cambiar cámara o perder WebGL no toca el GameState; abrir paneles conserva pausa y foco.
 
 **Decisiones pendientes de Santiago:** ¿Iris pasa a ser un rover (hoy es la IA de la base, D2)? ¿Expertas en 3D o retratos 2D? ¿Se recorta el bloque 3? ¿Las ~70 láminas y el PDF de referencia entran al repo o solo las comprimidas que se usen?
+
+**Actualización 14 nov, noche: dirección visual v8 (María Paula, PR #157), aprobada por Santiago el 14 nov:**
+- **María Paula orquesta el desarrollo 3D y de la pantalla** (sus pistas de ui y lo que ui pide a otros roles). Santiago sigue orquestando el equipo y fusionando.
+- **Guía de arte:** ahora es [`docs/referenciapau/README.md`](referenciapau/README.md) (la "Guía maestra" se fusionó ahí). Estilo y render: [D6](decisiones/D6-estilo-visual.md), Three.js procedural + UI en DOM; reemplaza las menciones a PixiJS de este documento, de `PLAN.md` §13 y de D3.
+- **Iris:** rover 3D en el mundo, como en las láminas, desde el bloque 2. Sigue siendo la IA de la base (D2 y `iaBase` no cambian).
+- **Tripulación:** personas 3D en el mundo y retrato de la misma identidad en las tarjetas de diálogo (actualiza "retratos 2D animados" de la tabla de decisiones). La Ingeniera entra en el bloque 2; la Doctora y la Meteoróloga si alcanza el presupuesto, si no después de P4. Nombres: por su rol ([D7](decisiones/D7-tripulantes.md)).
+- **Láminas:** 55 curadas y comprimidas en el repo; el PDF queda fuera.
+- **Prioridades:** definir y aprobar todos los niveles ([NIVELES.md](referenciapau/NIVELES.md) §7) y cumplir el reto ([RETO.md](referenciapau/RETO.md)). Cómo se reparte ui: [FLUJO.md](referenciapau/FLUJO.md). Prompts por rol con modelo y esfuerzo: [`docs/prompts/`](prompts/README.md).
+- La tabla de la sección de roles de más abajo es histórica (dice ui = Camilo); los roles vigentes son los del Resumen.
 
 ## Ruta dorada (propuesta, sin aprobar)
 
@@ -134,8 +143,8 @@ Arquitectura IA (innegociable): el modelo **solo clasifica** (JSON estricto: `{e
 | Nombre (D1) | **Solar Shield** (en inglés) | Verificar que no choque con marcas/juegos existentes antes del video. Subtítulo ES por definir. |
 | IA de la base (D2) | **Iris** | Es el "ojo" de la base y del satélite. No copiar personajes existentes. |
 | Ritmo | **Tiempo real con pausa**, motor por **ticks fijos** | Misma semilla ⇒ mismo resultado. **Pausa automática** en tormenta, avería, consejo y diálogo. Botones pausa/1x/2x. Reloj lento para los más pequeños. |
-| Arte | **3D low-poly estilizado**, luz y color cuidados | Three.js o react-three-fiber. Modelos de librerías CC0/licencia abierta, modelos públicos de NASA donde existan y apoyo de IA; **toda pieza registra su licencia en `assets/LICENCIAS.md`**. Alguien del equipo sabe Three.js; **nadie sabe Blender** ⇒ no depender de modelado propio. |
-| Tripulantes | **Retratos 2D animados** sobre la escena 3D | Expresiones simples (3–5 estados), burbuja de texto, personajes originales. |
+| Arte | **3D low-poly estilizado**, luz y color cuidados (14 nov: construido solo con código en Three.js, sin modelos externos, según [D6](decisiones/D6-estilo-visual.md)) | Three.js o react-three-fiber. Modelos de librerías CC0/licencia abierta, modelos públicos de NASA donde existan y apoyo de IA; **toda pieza registra su licencia en `assets/LICENCIAS.md`**. Alguien del equipo sabe Three.js; **nadie sabe Blender** ⇒ no depender de modelado propio. |
+| Tripulantes | **Retratos 2D animados** sobre la escena 3D (14 nov: ahora personas 3D en el mundo y retrato en el diálogo, ver actualización en Estado) | Expresiones simples (3–5 estados), burbuja de texto, personajes originales. |
 | Audio | **Voz del navegador** (es/en) + música y efectos ligeros | Texto siempre disponible; cada experto con tono/velocidad distinta; sin guardar audio. |
 | Datos reales | **Catálogo curado** de tormentas históricas (DONKI) | "Datos reales curados, no en vivo". Un banner "Hoy en el Sol" en vivo queda como opcional si sobra tiempo y se oculta si la API falla. |
 | Telemetría | **Armar un paquete** eligiendo qué datos mandar con la antena apuntada | Ventana limitada, cuesta energía; ciencia sube puntos, estado de la base evita ayuda tardía. Nunca un botón sin costo. |
@@ -211,7 +220,7 @@ Usuarios de GitHub (confirmados, todos colaboradores del repo; `José` es el due
 > Nota para tu criterio: si `agentes` o `ui` van lentos (el PLAN ya lo anticipa), reasigna una persona a esa área en la reunión diaria. `mecanicas` ayuda a `engine` antes que a nadie.
 
 # STACK (decidido en PLAN §13; confirmar D3–D5 el día 1)
-TypeScript en todo · npm workspaces (`contracts`, `engine`, `agents`, `data`, `ui`, `infra`) · React + Vite · PixiJS solo en la escena animada · Zod para validar JSON de NASA y del clasificador · Hono sobre Cloudflare Workers/Pages Functions · D1/KV (caché NASA, límite de uso, estadísticas anónimas) · Web Speech API (texto y botones siempre disponibles) · i18n JSON es/en · `localStorage` para progreso · Vitest + Playwright · GitHub Actions (tipos + tests + build) · Cloudflare Pages (preview por PR, producción desde `main`).
+TypeScript en todo · npm workspaces (`contracts`, `engine`, `agents`, `data`, `ui`, `infra`) · React + Vite · Three.js procedural en la escena (D6; antes PixiJS) · Zod para validar JSON de NASA y del clasificador · Hono sobre Cloudflare Workers/Pages Functions · D1/KV (caché NASA, límite de uso, estadísticas anónimas) · Web Speech API (texto y botones siempre disponibles) · i18n JSON es/en · `localStorage` para progreso · Vitest + Playwright · GitHub Actions (tipos + tests + build) · Cloudflare Pages (preview por PR, producción desde `main`).
 
 # DATOS NASA: LO QUE SABEMOS Y LO QUE NO
 Fuente interna: `docs/science/fuentes.md` (marcado [V] verificado / NO VERIFICADO). Reglas:
