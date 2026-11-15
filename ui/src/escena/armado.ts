@@ -78,13 +78,19 @@ export function radioRoca(r: TransformacionRoca): number {
 /** Radio en planta máximo de una roca grande (escala máxima con su variación de ±20 %). */
 const RADIO_MAX_ROCA_GRANDE = ROCAS_GRANDES.escalaMax * 1.2 * 1.2;
 
+/** Huellas de módulos y base: fijas, se calculan una sola vez (cada intento de roca las consulta). */
+let huellasCacheadas: Huella[] | null = null;
+function huellasFijasDeBase(): Huella[] {
+  return (huellasCacheadas ??= [...huellasModulos(), ...huellasBase()]);
+}
+
 /**
  * Las rocas grandes no caen sobre la torre, las cápsulas, sus corredores, el resto del decorado,
  * los módulos ni las piezas del kit (con el radio máximo de una roca grande de margen).
  */
 export function rocaGrandeLibre(x: number, z: number): boolean {
   if (DECORADO.some((d) => Math.hypot(x - d.x, z - d.z) < d.radio + 2)) return false;
-  if ([...huellasModulos(), ...huellasBase()].some((h) => distanciaAHuella(h, x, z) < RADIO_MAX_ROCA_GRANDE)) return false;
+  if (huellasFijasDeBase().some((h) => distanciaAHuella(h, x, z) < RADIO_MAX_ROCA_GRANDE)) return false;
   return !(z < -10 && Math.abs(x) < 20) && Math.hypot(x, z - 9) > 5;
 }
 
@@ -93,6 +99,8 @@ export function rocaGrandeLibre(x: number, z: number): boolean {
  * semilla). Se descarta la que pisaría a otra ya puesta (con 0,3 m de aire).
  */
 export function rocasGrandes(claro: Rejilla): TransformacionRoca[] {
+  const hecha = rocasGrandesPorRejilla.get(claro);
+  if (hecha) return hecha;
   const g = ROCAS_GRANDES;
   const todas = rocasBasalticas(g.semilla, g.n, claro, MALLA_JEZERO, {
     radioMin: g.radioMin, radio: g.radio, escalaMin: g.escalaMin, escalaMax: g.escalaMax,
@@ -103,8 +111,11 @@ export function rocasGrandes(claro: Rejilla): TransformacionRoca[] {
     const [x, , z] = r.posicion;
     if (puestas.every((p) => Math.hypot(x - p.posicion[0], z - p.posicion[2]) > radioRoca(r) + radioRoca(p) + 0.3)) puestas.push(r);
   }
+  rocasGrandesPorRejilla.set(claro, puestas);
   return puestas;
 }
+/** `rocasGrandes` por rejilla: la escena y `huellasRocas` piden las mismas y no se recalculan. */
+const rocasGrandesPorRejilla = new WeakMap<Rejilla, TransformacionRoca[]>();
 
 /**
  * Rocas basálticas grandes de primer plano (`mundo/01`: abajo a la izquierda y a la derecha del
@@ -200,7 +211,7 @@ export function armarEscena(
       const t = crearTerreno(materiales, { rejilla: claro.rejilla, malla: MALLA_JEZERO });
       const rocas = crearRocas(materiales, t, ROCAS.n, ROCAS.semilla, { radioMin: ROCAS.radioMin, radio: ROCAS.radio });
       const grandes = instanciarRocas(materiales, rocasGrandes(claro.rejilla), "Rocks_Basalt_Large");
-      const ocupado = [...huellasBase(), ...huellasModulos()];
+      const ocupado = [...huellasFijasDeBase(), ...huellasRocas(claro.rejilla)];
       const gravilla = crearGravilla(materiales, t, {
         excluir: (x, z) => chocaConBase(x, z, 0.3) || sobreCamino(x, z, 0.2) || ocupado.some((h) => distanciaAHuella(h, x, z) < 0.3),
       });
