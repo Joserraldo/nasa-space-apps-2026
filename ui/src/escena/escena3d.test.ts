@@ -14,7 +14,9 @@ import { LUGARES, TERRENO } from "./mundo";
 import type { EstadoModulo, VistaEscena } from "./vista";
 import { MODULOS_BASE } from "./activos/modulos";
 import { CAMARAS, fovParaAspecto } from "./escena3d";
-import { decorado } from "./activos/baseExterior";
+import { CONSOLAS, decorado } from "./activos/baseExterior";
+import { giroHacia } from "./activos/modulosArmados";
+import { crearConsola } from "./activos/piezasComunes";
 import { crearHabitat, crearTorreControl } from "./activos/edificios";
 import { lugar } from "./mundo";
 import { PRESUPUESTO, aplanarClaro, alturaEnMundo, contarRender } from "./activos/terreno";
@@ -266,12 +268,70 @@ describe("encuadre de tercera persona (mundo/01)", () => {
     expect(punto(0, 0, -500, 1024, 683).y).toBeGreaterThan(1 / 3);
   });
 
-  it.each([[844, 390], [390, 844]])("el hábitat y la consola siguen en el cuadro a %ix%i", (w, h) => {
-    const m = lugar("mesa"), hb = lugar("habitat");
-    for (const p of [punto(m.mx, 1, m.mz, w, h), punto(hb.mx, 2, hb.mz, w, h)]) {
-      expect(Math.abs(p.x)).toBeLessThan(0.95);
-      expect(Math.abs(p.y)).toBeLessThan(0.95);
+  /** Cámara de tercera persona a `ancho`×`alto`, con el FOV que le corresponde a ese aspecto. */
+  function camaraTercera(ancho: number, alto: number): THREE.PerspectiveCamera {
+    const camara = new THREE.PerspectiveCamera(fovParaAspecto("tercera", ancho / alto), ancho / alto, 0.1, 600);
+    colocarCamaraTercera(camara);
+    return camara;
+  }
+
+  function colocarCamaraTercera(camara: THREE.PerspectiveCamera) {
+    camara.position.set(...CAMARAS.tercera.pos);
+    camara.lookAt(new THREE.Vector3(...CAMARAS.tercera.mira));
+    camara.updateMatrixWorld(true);
+  }
+
+  /** Esquinas (NDC) del `Box3` del objeto que quedan fuera del cuadro, con un margen de 0,02. */
+  function esquinasFuera(o: THREE.Object3D, camara: THREE.Camera): { x: number; y: number }[] {
+    o.updateMatrixWorld(true);
+    const b = new THREE.Box3().setFromObject(o);
+    const fuera: { x: number; y: number }[] = [];
+    for (let i = 0; i < 8; i++) {
+      const p = new THREE.Vector3(i & 1 ? b.max.x : b.min.x, i & 2 ? b.max.y : b.min.y, i & 4 ? b.max.z : b.min.z).project(camara);
+      if (Math.abs(p.x) > 1 - 0.02 || Math.abs(p.y) > 1 - 0.02) fuera.push({ x: p.x, y: p.y });
     }
+    return fuera;
+  }
+
+  /** Hábitat colocado como en `armarEdificios`. */
+  function habitatEnEscena(): THREE.Group {
+    const h = lugar("habitat");
+    const g = crearHabitat(crearMateriales());
+    g.position.set(h.mx, 0, h.mz);
+    return g;
+  }
+
+  /** Consola de la mesa colocada como en `armarEdificios` (misma escala y giro). */
+  function consolaMesa(): THREE.Group {
+    const l = lugar("mesa");
+    const k = CONSOLAS.find((c) => c.lugar === "mesa")!;
+    const g = crearConsola(crearMateriales());
+    g.position.set(l.mx, 0, l.mz);
+    g.rotation.y = giroHacia(l, l);
+    g.scale.setScalar(k.escala);
+    return g;
+  }
+
+  it.each([[844, 390], [390, 844]])("el hábitat y la consola caben enteros en el cuadro a %ix%i (8 esquinas de cada caja)", (w, h) => {
+    const camara = camaraTercera(w, h);
+    const habitat = habitatEnEscena(), consola = consolaMesa();
+    expect(esquinasFuera(habitat, camara), "hábitat").toEqual([]);
+    expect(esquinasFuera(consola, camara), "consola").toEqual([]);
+    liberarEscena(habitat);
+    liberarEscena(consola);
+  });
+
+  it("al redimensionar de 1024x683 a 390x844 el FOV cambia y la consola sigue entera en el cuadro", () => {
+    const camara = camaraTercera(1024, 683);
+    const fovAntes = camara.fov;
+    camara.aspect = 390 / 844;
+    camara.fov = fovParaAspecto("tercera", camara.aspect);
+    camara.updateProjectionMatrix();
+    expect(camara.fov).toBeGreaterThan(fovAntes);
+    expect(camara.fov).toBeCloseTo(fovParaAspecto("tercera", 390 / 844));
+    const consola = consolaMesa();
+    expect(esquinasFuera(consola, camara), "consola").toEqual([]);
+    liberarEscena(consola);
   });
 
   it("el campo visual se abre solo en cuadros más altos que anchos y tiene tope", () => {
