@@ -13,6 +13,8 @@ import { armarEscena, rejillaJezero, type EscenaArmada } from "./armado";
 import { LUZ } from "./cielo";
 import { crearMateriales, type Materiales } from "./materiales";
 import { liberarCache, liberarEscena, liberarMateriales } from "./liberar";
+import { crearContorno } from "./contorno";
+import { crearGuantes } from "./guantes";
 import { lugar, lugarCercano, type LugarId } from "./mundo";
 import type { VistaEscena } from "./vista";
 import { MODULOS_BASE, type ModuloBase } from "./activos/modulos";
@@ -111,6 +113,11 @@ export function crearEscena3D(canvas: HTMLCanvasElement, opciones: OpcionesEscen
   const mira = new THREE.Vector3().copy(miraHacia);
   camara.position.copy(posHacia);
   camara.lookAt(mira);
+  // Contorno cian del objeto cercano y guantes de la primera persona (la cámara va dentro de la escena).
+  const contorno = crearContorno(materiales);
+  const guantes = crearGuantes(materiales);
+  armada.escena.add(contorno.malla, camara);
+  camara.add(guantes.raiz);
   let inicioCamara = -Infinity;
   let camaraActual: CamaraEscena = "tercera";
 
@@ -155,6 +162,7 @@ export function crearEscena3D(canvas: HTMLCanvasElement, opciones: OpcionesEscen
     mira.lerpVectors(miraDesde, miraHacia, k);
     camara.lookAt(mira);
     armada.animar(ahora, reducido);
+    contorno.colocar(lugarCercano(FOCO.x, FOCO.z));
     renderer.render(armada.escena, camara);
 
     const info = renderer.info.render;
@@ -216,6 +224,7 @@ export function crearEscena3D(canvas: HTMLCanvasElement, opciones: OpcionesEscen
     },
     fijarCamara(c) {
       camaraActual = c;
+      guantes.mostrar(c === "primera");
       camara.fov = fovParaAspecto(c, camara.aspect);
       camara.updateProjectionMatrix();
       posDesde.copy(camara.position);
