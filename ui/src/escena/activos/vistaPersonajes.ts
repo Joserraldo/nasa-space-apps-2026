@@ -1,19 +1,24 @@
 /**
  * Vista previa SOLO para desarrollo (`/personajes.html` con `npm run dev -w ui`): muestra los
  * personajes 3D sueltos para compararlos con su lámina. No entra en el build (Vite solo empaqueta
- * `index.html`). Parámetros: `?iris=fila` (los 4 niveles de izquierda a derecha: tutorial, pistas,
- * danada, offline) o `?iris=<nivel>` (uno de cerca, en tres cuartos como `mundo/01`).
+ * `index.html`). Parámetros:
+ * - `?iris=fila` (los 4 niveles: tutorial, pistas, danada, offline) o `?iris=<nivel>` (uno de cerca).
+ * - `?nino=fila` (los 6 gestos de `personajes/08`) o `?nino=<gesto>`; `&exp=<expresión>` para el rostro;
+ *   `&vista=frente|lado|espalda` gira al niño como la fila de arriba de `personajes/08`.
  * Expone `window.__presupuesto` con `renderer.info` leído después de `render()`.
  */
 import * as THREE from "three";
 import type { BaseAiLevel } from "@solar-shield/contracts";
 import { colorToken, crearMateriales } from "../materiales";
 import { prefiereMenosMovimiento } from "../soporte";
-import { crearIris, type ModeloIris } from "./iris";
+import { crearAstronauta, type ExpresionAstronauta, type GestoAstronauta } from "./astronautas";
+import { crearIris } from "./iris";
 
 const NIVELES: readonly BaseAiLevel[] = ["tutorial", "pistas", "danada", "offline"];
+const GESTOS: readonly GestoAstronauta[] = ["idle", "walk", "wave", "inspect", "kneel", "talk"];
 const parametros = new URLSearchParams(location.search);
-const pedido = parametros.get("iris") ?? "fila";
+const pedidoNino = parametros.get("nino");
+const pedidoIris = parametros.get("iris") ?? (pedidoNino ? null : "fila");
 
 const canvas = document.getElementById("escena") as HTMLCanvasElement;
 const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
@@ -32,21 +37,40 @@ suelo.receiveShadow = true;
 escena.add(suelo);
 
 const m = crearMateriales();
-const modelos: ModeloIris[] = [];
-const lista = pedido === "fila" ? NIVELES : NIVELES.filter((n) => n === pedido);
-lista.forEach((nivel, i) => {
-  const iris = crearIris(m);
-  iris.fijarEstado({ nivel, averiada: false });
-  iris.raiz.position.x = (i - (lista.length - 1) / 2) * 1.3;
-  iris.raiz.rotation.y = -0.6;
-  escena.add(iris.raiz);
-  modelos.push(iris);
-});
+const reducido = prefiereMenosMovimiento();
+const animables: { animar(dt: number, o: { velocidad: number; movimientoReducido: boolean }): void; velocidad: number }[] = [];
+const camara = new THREE.PerspectiveCamera(30, 1, 0.1, 100);
 
-const camara = new THREE.PerspectiveCamera(pedido === "fila" ? 35 : 30, 1, 0.1, 100);
-if (pedido === "fila") camara.position.set(0, 2.2, 5.2);
-else camara.position.set(0.4, 1.0, 2.2);
-camara.lookAt(0, 0.35, 0);
+if (pedidoIris) {
+  const lista = pedidoIris === "fila" ? NIVELES : NIVELES.filter((n) => n === pedidoIris);
+  lista.forEach((nivel, i) => {
+    const iris = crearIris(m);
+    iris.fijarEstado({ nivel, averiada: false });
+    iris.raiz.position.x = (i - (lista.length - 1) / 2) * 1.3;
+    iris.raiz.rotation.y = -0.6;
+    escena.add(iris.raiz);
+    animables.push({ animar: iris.animar, velocidad: 0 });
+  });
+  if (pedidoIris === "fila") camara.position.set(0, 2.2, 5.2);
+  else camara.position.set(0.4, 1.0, 2.2);
+  camara.lookAt(0, 0.35, 0);
+} else {
+  const lista = pedidoNino === "fila" ? GESTOS : GESTOS.filter((g) => g === pedidoNino);
+  const exp = (["neutral", "happy", "curious", "concerned"] as const).find((e) => e === parametros.get("exp")) ?? "happy";
+  const giro = { frente: 0, lado: Math.PI / 2, espalda: Math.PI }[parametros.get("vista") ?? "frente"] ?? 0;
+  lista.forEach((g, i) => {
+    const nino = crearAstronauta(m);
+    nino.fijarGesto(g);
+    nino.fijarExpresion(exp as ExpresionAstronauta);
+    nino.raiz.position.x = (i - (lista.length - 1) / 2) * 0.75;
+    nino.raiz.rotation.y = giro || (g === "walk" ? 0.9 : 0.25);
+    escena.add(nino.raiz);
+    animables.push({ animar: nino.animar, velocidad: 0 });
+  });
+  if (pedidoNino === "fila") camara.position.set(0, 1.4, 5.6);
+  else camara.position.set(0, 0.75, 2.6);
+  camara.lookAt(0, 0.5, 0);
+}
 
 function medir() {
   renderer.setSize(innerWidth, innerHeight, false);
@@ -56,12 +80,11 @@ function medir() {
 medir();
 addEventListener("resize", medir);
 
-const reducido = prefiereMenosMovimiento();
 let antes = performance.now();
 function cuadro(ahora: number) {
   const dt = Math.min(0.05, Math.max(0, (ahora - antes) / 1000));
   antes = ahora;
-  for (const iris of modelos) iris.animar(dt, { velocidad: 0, movimientoReducido: reducido });
+  for (const a of animables) a.animar(dt, { velocidad: a.velocidad, movimientoReducido: reducido });
   renderer.render(escena, camara);
   (window as unknown as { __presupuesto: unknown }).__presupuesto = {
     calls: renderer.info.render.calls,
