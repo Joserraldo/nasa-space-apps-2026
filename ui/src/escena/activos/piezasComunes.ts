@@ -306,8 +306,8 @@ export function crearBaliza(m: Materiales): THREE.Group {
   return grupo(
     "Kit_Beacon",
     parte(m, "SuitBase", tronco(0.2, PLANTA_KIT.baliza, 0.08, 8), [0, 0.04, 0], "Beacon_Foot"),
-    parte(m, "SuitBase", tronco(0.12, 0.15, 0.6, 8), [0, 0.38, 0], "Beacon_Post"),
-    parte(m, "Emissive", tronco(0.1, 0.1, 0.12, 8), [0, 0.74, 0], "Beacon_Light"),
+    parte(m, "SuitBase", tronco(0.15, 0.18, 0.6, 8), [0, 0.38, 0], "Beacon_Post"),
+    parte(m, "Emissive", tronco(0.15, 0.15, 0.12, 8), [0, 0.74, 0], "Beacon_Light"),
   );
 }
 
