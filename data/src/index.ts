@@ -35,6 +35,7 @@ export * from "./radlab";
 export * from "./ciencia";
 export * from "./region";
 export * from "./tarjeta";
+export * from "./pantallas";
 export * from "./comunicaciones";
 export * from "./fuentes";
 export { aConvenio, magnitud } from "./convenio";
