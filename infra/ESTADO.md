@@ -1,5 +1,5 @@
 # Estado — infra
-**Actualizado:** 15 nov 2026, 00:25 · **Rama:** feat/infra-preview-escenarios · **PR:** ver abajo
+**Actualizado:** 15 nov 2026, 00:40 · **Rama:** feat/infra-preview-escenarios · **PR:** #207 (aprobado por el revisor, falta fusión humana)
 **Tokens:** verde
 
 ## Hecho (últimas iteraciones)
@@ -8,7 +8,8 @@
 
 ## Qué sigue
 - Tras fusionar: llevar develop a `feat/ui-escenarios` (el push usa el `deploy.yml` de esa rama) y comprobar la URL en celular.
+- Cerrar #190: OK de José a la adición `eventos` de Daniel (ya está en `EscenaBaseProps` del #206).
 - Pantallas nuevas (front-integracion tarea 0) cuando entren `tokens.ts` y Nunito de Jaime.
 
 ## Bloqueos
-- Pantallas esperan tokens de Jaime. LICENSE y cierre de #66: decide José.
+- Pantallas esperan #208 y #209 de Jaime (tokens y base sin estilos.css). LICENSE y cierre de #66: decide José.
