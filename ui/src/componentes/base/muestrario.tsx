@@ -1,7 +1,10 @@
 import { StrictMode, useState } from "react";
 import { createRoot } from "react-dom/client";
 import { IdiomaContext, useT, type Idioma } from "../../i18n.js";
+import { partidaDorada } from "@solar-shield/engine";
+import { ConfirmarAccion } from "./ConfirmarAccion.js";
 import { FacetButton } from "./FacetButton.js";
+import { Mensaje, ResourcePlaque } from "./Piezas.js";
 import "../../estilos/tokens.css";
 import "../../estilos/base.css";
 import "./muestrario.css";
@@ -15,6 +18,7 @@ function Muestrario() {
   const { t } = useT();
   const [sel, setSel] = useState(false);
   const nada = () => {};
+  const estado = partidaDorada();
   return (
     <main className="muestrario">
       <h1>{t("ui.comun.muestrario.titulo")}</h1>
@@ -44,6 +48,34 @@ function Muestrario() {
           <FacetButton labelKey="ui.comun.muestrario.elegir" selected={sel} onClick={() => setSel((s) => !s)} />
           <FacetButton labelKey="ui.comun.enviar" busy onClick={nada} />
           <FacetButton labelKey="ui.comun.atras" icon="atras" onClick={nada} />
+        </div>
+      </section>
+
+      <section>
+        <h2>{t("ui.comun.muestrario.exploracion")}</h2>
+        <div className="mu-fila">
+          <ResourcePlaque recurso="energia" value={70} />
+          <ResourcePlaque recurso="soporte_vital" value={80} />
+          <ResourcePlaque recurso="blindaje" value={60} />
+          <ResourcePlaque recurso="blindaje" value={12} feedback={[{ id: "1", delta: -10, causaKey: "ui.causa.tormenta" }]} />
+        </div>
+      </section>
+
+      <section>
+        <h2>{t("ui.comun.muestrario.decision")}</h2>
+        <div className="mu-fila">
+          <ConfirmarAccion estado={{ ...estado, pausado: true }} accion={{ tipo: "colocar_modulo", modulo: "panel_solar" }} onCancelar={nada} onConfirmar={nada} />
+          <ConfirmarAccion estado={{ ...estado, recursos: { ...estado.recursos, energia: 5 } }} accion={{ tipo: "reparar", equipo: "ia_base" }} onCancelar={nada} onConfirmar={nada} />
+        </div>
+      </section>
+
+      <section>
+        <h2>{t("ui.comun.muestrario.mensajes")}</h2>
+        <div className="mu-columna">
+          <Mensaje tipo="exito" tituloKey="ui.comun.muestrario.panel_instalado" detalleKey="ui.comun.muestrario.beneficio_pendiente" />
+          <Mensaje tipo="aviso" tituloKey="ui.comun.muestrario.energia_baja" detalleKey="ui.comun.muestrario.revisa_plan" />
+          <Mensaje tipo="error" tituloKey="ui.comun.motivo.recursos_insuficientes.energia" detalleKey="ui.comun.muestrario.otra_opcion" />
+          <Mensaje tipo="pendiente" tituloKey="ui.comun.muestrario.respuesta_pendiente" detalleKey="ui.comun.muestrario.sigue_explorando" />
         </div>
       </section>
     </main>

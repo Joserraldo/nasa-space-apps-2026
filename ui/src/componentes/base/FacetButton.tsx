@@ -14,19 +14,19 @@ import "./facetado.css";
 export interface FacetButtonProps {
   variant?: "primary" | "secondary";
   labelKey: string;
-  labelVars?: Vars;
-  icon?: NombreIcono;
+  labelVars?: Vars | undefined;
+  icon?: NombreIcono | undefined;
   disabled?: boolean;
-  disabledReasonKey?: string;
+  disabledReasonKey?: string | undefined;
   busy?: boolean;
   /** Texto mientras procesa; si falta, "Working…". El ancho no cambia. */
-  busyLabelKey?: string;
-  selected?: boolean;
+  busyLabelKey?: string | undefined;
+  selected?: boolean | undefined;
   onClick(): void;
   type?: "button" | "submit";
-  className?: string;
+  className?: string | undefined;
   /** Contenido extra a la derecha (por ejemplo una tecla `[E]`). */
-  extra?: ReactNode;
+  extra?: ReactNode | undefined;
 }
 
 export function FacetButton({

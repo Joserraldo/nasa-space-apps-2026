@@ -33,7 +33,8 @@ Una sección por persona, máximo 5 líneas, y nadie edita la de otro (FLUJO §8
 - Hecho: `tokens.ts` (fuente única de DISEÑO §2, forma, sombra, tipo y movimiento), `tokens.css` generado con test y Nunito en `ui/public/fuentes/`.
 - Hecho también: `estilos.css` borrado y reemplazado por `estilos/base.css` solo con tokens (PR #209, depende de #208).
 - Hecho también: `FacetButton` con todos los estados de `ui/02` y `ui/03`, iconos facetados propios y muestrario en `componentes/base/muestrario.html`.
-- Sigue: `ResourcePlaque`, `CostRow`, `PendingEffect`, mensajes y `ConfirmarAccion`.
+- Hecho también: `ResourcePlaque`, `CostRow`, `EfectoPendiente`, `Mensaje` y `ConfirmarAccion` (costos y permiso del motor).
+- Sigue: retratos de diálogo, portada, intro y carga.
 - Bloqueo: ninguno.
 
 ## Fidelidad

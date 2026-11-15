@@ -6,7 +6,7 @@
  */
 
 export type NombreIcono =
-  | "tripulacion" | "mapa" | "check" | "microfono" | "energia" | "vida" | "escudo"
+  | "tripulacion" | "mapa" | "check" | "check_exito" | "microfono" | "energia" | "vida" | "escudo"
   | "aviso" | "error" | "reloj" | "enlace" | "atras";
 
 const C = "currentColor";
@@ -27,6 +27,7 @@ const DIBUJOS: Record<NombreIcono, JSX.Element> = {
     </g>
   ),
   check: <polygon fill="var(--color-teal)" points="3,12.5 6.2,9.4 9.8,13 18,4.8 21.2,8 9.8,19.4" />,
+  check_exito: <polygon fill="var(--color-exito)" points="3,12.5 6.2,9.4 9.8,13 18,4.8 21.2,8 9.8,19.4" />,
   microfono: (
     <g fill={C}>
       <polygon points="9,2.5 15,2.5 16,4 16,11.5 15,13 9,13 8,11.5 8,4" />

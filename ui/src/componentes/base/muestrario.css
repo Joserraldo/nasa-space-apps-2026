@@ -13,3 +13,5 @@
 .mu-forzar-pressed .fb { transform: translateY(1px) scale(.985); --fb-fondo: color-mix(in srgb, var(--color-lila) 70%, var(--color-ciruela) 8%); }
 .mu-forzar-pressed .fb-sombra { transform: translateY(1px); }
 .mu-forzar-foco .fb::before, .mu-forzar-foco .fb::after { opacity: 1; }
+.mu-columna { display: grid; gap: var(--esp-2); max-width: 820px; margin-bottom: var(--esp-4); }
+.mu-fila > .fc { min-width: 150px; }
