@@ -23,6 +23,13 @@ Fuera del frontend:
 
 **Por qué así:** el escenario 3D es la parte con más trabajo y la más difícil, y va con Daniel, que además tiene Codex con GPT-6.1 como capacidad extra. Jaime toma la interfaz, que se construye **desde cero replicando las láminas de ui** (del esqueleto actual no se toma nada visual). Camilo diseña niveles y mapa. José ya integra pantallas (#151, #163). María Paula dirige el arte y toma los personajes, lo más sensible a la referencia.
 
+### 1.1 Claves de texto (`ui/i18n/`)
+
+José es dueño de `ui/i18n/`, pero cada persona agrega **sus propias claves en su PR**, sin esperarlo, para que no sea un cuello de botella:
+- Las claves son planas y empiezan con `ui.` (como las 110 de hoy: `ui.paso.*`, `ui.iris.*`). Cada uno usa su prefijo: Jaime `ui.portada.*`, `ui.intro.*`, `ui.carga.*`, `ui.datos.*`, `ui.glosario.*`, `ui.comun.*`; Camilo `ui.mapa.*`; Daniel `ui.escena.*`; María Paula `ui.personajes.*`. Las que ya existen (`ui.iris.*`, `ui.paso.*`, etc.) y el resto son de José.
+- Primero en `en.json`, después la misma clave en `es.json` (skill `solar-shield-i18n`). Solo se agregan claves; cambiar o borrar una ajena se pide a su dueño.
+- Si dos PRs chocan en el JSON, el segundo en fusionarse rebasa y conserva las dos claves.
+
 Un archivo nuevo que no esté en la tabla pertenece a quien lo crea **dentro de su carpeta** (`activos/` de personajes, `componentes/base/`, etc.). Si no está claro, decide María Paula.
 
 ## 2. Rama de escenarios
@@ -167,8 +174,30 @@ Reglas de la ficha:
 - **Si la silueta no coincide, no se sigue** (§6, paso 3). Se corrige antes de pasar a materiales o estados.
 - **Una lámina por pieza:** la columna "Lámina" de §4. Si una pieza no tiene lámina, no se inventa: se pregunta a María Paula.
 
+### 7.2 El e2e no se rompe
+
+`tests/e2e/ruta-dorada.spec.ts` es la puerta de todo PR y busca los controles **por rol y por su texto en inglés** (`getByRole("button", { name: /Resume/ })`). Como la interfaz se rehace desde cero:
+
+- **Quien monta un cambio en el recorrido actualiza el e2e en el mismo PR.** Casi siempre es José (monta las pantallas y es dueño de `/tests/`). Ejemplos: la intro y la carga suman pasos, una pantalla cambia de orden, un botón cambia de texto.
+- **Los controles se buscan por rol y nombre accesible**, nunca por clase CSS ni por estructura del DOM. Un componente nuevo de Jaime expone su rol (`button`, `heading`, `dialog`) y su nombre por clave i18n.
+- **La intro y la carga tienen un botón para saltarlas** (`Skip`), y el e2e lo usa.
+- Cambiar en `ui/i18n/en.json` un texto que usa el e2e sin actualizar el e2e es motivo de pedido de cambios.
+
+### 7.3 Mínimo de fidelidad cuando falta tiempo
+
+Cuando no alcanza, se recorta **de abajo hacia arriba**. Lo obligatorio no se recorta: si una pieza obligatoria no llega, queda su versión más simple **fiel a la lámina** (misma silueta y paleta, sin detalle), nunca una improvisada.
+
+| Nivel | Qué incluye | Puerta |
+| --- | --- | --- |
+| **Obligatorio** | Silueta y proporción de cada pieza visible; paleta con tokens de DISEÑO §2; disposición del HUD de `mundo/01`; cielo de Marte; niño, Iris y base reconocibles contra su lámina; prohibidos de DISEÑO §8; texto legible en EN y ES | P3 |
+| **Deseable** | Chaflán y bisel finos, sombras lilas calibradas, estados y animaciones de cada pieza, gestos y expresiones, Ingeniera junto al niño, portada 3D | P4 |
+| **Después de la entrega** | Estaciones, Doctora y Meteoróloga 3D, ilustración completa de la intro, audio si no llegó | P5 en adelante |
+
+Lo decide María Paula. El orden general de recorte del juego sigue siendo el de `docs/ORQUESTACION.md`.
+
 ## 8. Coordinación
 
-- `ui/ESTADO.md` tiene **una sección por persona** (`## Personajes (María Paula)`, `## Escenario (Daniel)`, `## Ubicación (Camilo)`, `## Integración (José)`, `## Interfaz (Jaime)`), máximo 5 líneas cada una. Nadie edita la sección de otro.
+- `ui/ESTADO.md` tiene **una sección por persona** (`## Personajes (María Paula)`, `## Escenario (Daniel)`, `## Ubicación (Camilo)`, `## Integración (José)`, `## Interfaz (Jaime)`), máximo 5 líneas cada una. Nadie edita la sección de otro. Las secciones las crea María Paula en el último PR de su subida (fase 0). `ui/ESTADO.md` vive en `feat/ui-escenarios`: se edita dentro del PR de frontend de cada uno. El estado del rol de cada persona (motor, datos, diseño, agentes) sigue en el `ESTADO.md` de su carpeta, en `develop`.
+- **Tablero de fidelidad:** sección `## Fidelidad` de `ui/ESTADO.md`, una línea por pieza: `pieza | lámina | sin empezar / en PR #n / aprobada`. La orquestación lo propone y la sesión principal de María Paula lo escribe al aprobar cada PR. Sirve también para elegir capturas para el video.
 - La orquestación del frontend revisa los semáforos cada 30 minutos ([`orquestadora.md`](../prompts/orquestadora.md)).
 - Un cambio de contrato (§3) se avisa en el PR de quien lo consume antes de fusionarlo.

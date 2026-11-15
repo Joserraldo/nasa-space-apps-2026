@@ -22,6 +22,6 @@ Empezá ya por los archivos nuevos (tokens, `componentes/base/`, portada DOM, in
 6. **Datos en pantalla:** `TarjetaFuente` con identificador, fecha y "datos reales, no en vivo"; `DatosUsados` (con las funciones del #162 de Daniel); `Glosario` con los términos en contexto. HECHO: pantalla final con datos y fuentes.
 7. Al final, si sobra tiempo antes de P4: audio y voz ([front-audio.md](front-audio.md)).
 
-**Contratos:** textos siempre por clave i18n (las claves nuevas se las pedís a José); props de APLICACION §5.
+**Contratos:** textos siempre por clave i18n; las claves nuevas las agregás vos en tu PR, en `ui/i18n/en.json` y `es.json`, bajo tu prefijo (FLUJO §1.1); props de APLICACION §5.
 **Además, tu rol de motor:** revisar el uso del motor en los PRs de pantalla, prueba de dos semillas para P3 y #152 (prompt [motor.md](motor.md)).
 **Meta:** todas las piezas, fieles a sus láminas y aprobadas por María Paula una por una, montadas por José antes del punto de control de P4.
