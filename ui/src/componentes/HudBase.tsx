@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import type { GameState } from "@solar-shield/contracts";
 import type { Novedades } from "@solar-shield/engine";
-import { useT } from "../i18n.js";
+import { useT, type Vars } from "../i18n.js";
 import { FacetButton } from "./base/FacetButton.js";
 import { RECURSOS, ResourcePlaque } from "./base/Piezas.js";
 import "./hud.css";
@@ -36,9 +36,11 @@ export interface HudBaseProps {
   ultimas?: Novedades | null | undefined;
   /** Controles del reloj; si faltan (módulos, tormenta), el HUD solo muestra día, turno y recursos. */
   reloj?: { velocidad: number; onPausa(): void; onVelocidad(v: number): void } | undefined;
+  /** Objetivo del momento (guía de Iris), debajo de las placas como en `mundo/01`. */
+  objetivo?: { clave: string; vars?: Vars } | undefined;
 }
 
-export function HudBase({ estado, ultimas, reloj }: HudBaseProps) {
+export function HudBase({ estado, ultimas, reloj, objetivo }: HudBaseProps) {
   const { t } = useT();
   const escala = useEscalaHud();
   const cambios = ultimas ? [...ultimas.efectosLlegaron, ...ultimas.malaSuerte] : [];
@@ -58,11 +60,21 @@ export function HudBase({ estado, ultimas, reloj }: HudBaseProps) {
           </>
         )}
       </div>
-      <div className="hud-placas">
-        {RECURSOS.map((r) => (
-          <ResourcePlaque key={r} recurso={r} value={estado.recursos[r]} pending={estado.efectosPendientes}
-            feedback={cambios.filter((c) => c.recurso === r && c.delta !== undefined).map((c, i) => ({ id: `${c.tick}-${r}-${i}`, delta: c.delta!, causaKey: c.descripcionKey }))} />
-        ))}
+      <div className="hud-derecha">
+        <div className="hud-placas">
+          {RECURSOS.map((r) => (
+            <ResourcePlaque key={r} recurso={r} value={estado.recursos[r]} pending={estado.efectosPendientes}
+              feedback={cambios.filter((c) => c.recurso === r && c.delta !== undefined).map((c, i) => ({ id: `${c.tick}-${r}-${i}`, delta: c.delta!, causaKey: c.descripcionKey }))} />
+          ))}
+        </div>
+        {objetivo && (
+          <div className="fc hud-objetivo">
+            <p className="fc-cara fc-chico">
+              <span className="hud-objetivo-punto" aria-hidden="true" />
+              <span><span className="oculto-visual">{t("ui.hud.objetivo.titulo")}: </span>{t(objetivo.clave, objetivo.vars)}</span>
+            </p>
+          </div>
+        )}
       </div>
     </section>
   );

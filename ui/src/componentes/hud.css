@@ -1,5 +1,5 @@
-/* HUD de mundo/01 (DISEÑO §5.2): placas separadas arriba a la derecha; día, turno y reloj a la izquierda.
-   Solo tokens; la escala la pone HudBase con `zoom` (ESCENAS §2.7). */
+/* HUD de mundo/01 (DISEÑO §5.2): placas separadas arriba a la derecha con el objetivo debajo; día, turno
+   y reloj a la izquierda. Solo tokens; la escala la pone HudBase con `zoom` (ESCENAS §2.7). */
 .hud-base {
   display: flex;
   flex-wrap: wrap;
@@ -14,3 +14,24 @@
 .hud-placas .placa { min-width: 128px; }
 .hud-dia { margin: 0; padding: var(--esp-2) var(--esp-4); min-height: 48px; display: flex; align-items: center; gap: var(--esp-1); font-weight: var(--tipo-peso-etiqueta); font-variant-numeric: tabular-nums; }
 .hud-reloj .fb { min-height: 48px; }
+
+.hud-derecha { display: flex; flex-direction: column; align-items: flex-end; gap: var(--esp-2); margin-left: auto; }
+/* Objetivo del momento (mundo/01): placa marfil con un aro cian, debajo de las placas. */
+.hud-objetivo p { margin: 0; padding: var(--esp-2) var(--esp-4); min-height: 44px; display: flex; align-items: center; gap: var(--esp-2); font-weight: var(--tipo-peso-etiqueta); }
+.hud-objetivo-punto { flex: none; inline-size: 16px; block-size: 16px; border-radius: 50%; border: 3px solid var(--color-cian); }
+
+/* En la base el HUD va encima de la escena a pantalla completa: la franja no captura toques, sus piezas sí. */
+.app-base { position: relative; }
+.app-base > .hud-base { position: absolute; inset-block-start: 0; inset-inline: 0; z-index: 3; pointer-events: none; }
+.app-base > .hud-base > * { pointer-events: none; }
+.app-base > .hud-base > * > * { pointer-events: auto; }
+
+/* Aviso para girar el teléfono (ESCENAS §2.7, FLUJO §9): tapa la pantalla; la partida sigue debajo. */
+.aviso-girar {
+  position: fixed; inset: 0; z-index: 50; box-sizing: border-box;
+  display: grid; place-content: center; justify-items: center; gap: var(--esp-3); text-align: center;
+  padding: max(var(--esp-5), env(safe-area-inset-top)) var(--esp-5) max(var(--esp-5), env(safe-area-inset-bottom));
+  background: var(--color-lila); color: var(--color-indigo-texto); font-size: 18px;
+}
+.aviso-girar p { margin: 0; max-inline-size: 28ch; }
+.aviso-girar-titulo { font-size: var(--tipo-tam-subtitulo); font-weight: 900; }
