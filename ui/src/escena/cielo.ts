@@ -200,7 +200,9 @@ export function crearCielo(escena: THREE.Scene, ambiente: Ambiente = "dia", cali
   sol.shadow.bias = -0.0005;
   sol.shadow.normalBias = 0.02;
 
-  escena.background = new THREE.Color(p.horizonte);
+  const fondoAnterior = escena.background;
+  const fondo = new THREE.Color(p.horizonte);
+  escena.background = fondo;
   escena.fog = niebla;
   escena.add(domo, hemisferica, sol, sol.target);
 
@@ -218,6 +220,7 @@ export function crearCielo(escena: THREE.Scene, ambiente: Ambiente = "dia", cali
     quitar() {
       escena.remove(domo, hemisferica, sol, sol.target);
       if (escena.fog === niebla) escena.fog = null;
+      if (escena.background === fondo) escena.background = fondoAnterior;
       domo.geometry.dispose();
       (domo.material as THREE.Material).dispose();
       sol.dispose();

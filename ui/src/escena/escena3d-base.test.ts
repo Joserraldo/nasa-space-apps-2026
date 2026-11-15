@@ -168,6 +168,21 @@ describe("cielo de Marte (Three)", () => {
     expect(escena.children).toHaveLength(0);
     expect(escena.fog).toBeNull();
   });
+
+  it("quitar() restaura el background anterior, salvo que otro lo haya cambiado", () => {
+    const previo = new THREE.Color("#112233");
+    const escena = new THREE.Scene();
+    escena.background = previo;
+    crearCielo(escena).quitar();
+    expect(escena.background).toBe(previo);
+
+    const ajeno = new THREE.Color("#445566");
+    const otra = new THREE.Scene();
+    const cielo = crearCielo(otra);
+    otra.background = ajeno;
+    cielo.quitar();
+    expect(otra.background).toBe(ajeno);
+  });
 });
 
 describe("terreno y rocas (Three)", () => {
