@@ -29,7 +29,7 @@
 .base-mundo > :not(.base-escena) { position: relative; margin-inline: var(--esp-3); }
 .base-mundo > :last-child { margin-block-end: var(--esp-3); }
 .base-mundo > .dialogo-experto { margin-block-start: auto; }
-.base-novedades { display: grid; gap: var(--esp-2); justify-items: start; margin-block-start: var(--esp-3); }
+.base-novedades { display: grid; gap: var(--esp-2); justify-items: start; margin-block-start: max(var(--esp-3), var(--hud-reserva-izq, 0px)); }
 .base-polvo { padding: var(--esp-3) var(--esp-4); }
 
 /* Diálogo de ui/01: retrato octogonal, separador, nombre y línea; botones debajo a la derecha. */
@@ -52,7 +52,7 @@
 .base-panel {
   display: flex; flex-direction: column; gap: var(--esp-3); min-inline-size: 0; min-block-size: 0;
   max-block-size: 100%; overflow-y: auto; overscroll-behavior: contain;
-  padding: var(--esp-1) var(--esp-2) var(--esp-2);
+  padding: var(--esp-1) var(--esp-2) var(--esp-2); margin-block-start: var(--hud-reserva-der, 0px);
 }
 .base-panel > * { flex: none; }
 .base-panel > .confirmar-entrada .confirmar { max-width: none; }
@@ -97,4 +97,25 @@
   .base-mundo { min-block-size: 240px; }
   .base-panel { max-block-size: none; }
   .dialogo-experto-cara { grid-template-areas: "retrato texto" "botones botones"; }
+}
+
+/* El HUD flota arriba: en celular vertical (una columna) el contenido empieza debajo de todas sus píldoras. */
+@media (orientation: portrait) and (max-width: 700px) {
+  .base-e6 { padding-block-start: var(--hud-reserva, 0px); }
+  .base-panel, .base-novedades { margin-block-start: 0; }
+}
+
+/* Tarjeta "Decision recorded" dentro del panel de la base (columna estrecha): una sola columna, personajes en fila. */
+.base-panel .decision { grid-template-columns: 1fr; gap: var(--esp-2); }
+.base-panel .decision-personajes { grid-template-columns: 1fr 1fr; }
+.base-panel .decision-detalle .costos { grid-template-columns: 1fr; }
+.base-panel .decision-detalle .costos-bloque + .costos-bloque { border-left: 0; padding-left: 0; }
+@media (max-height: 480px) and (orientation: landscape) {
+  .base-panel .decision { grid-template-columns: 1fr; }
+  /* Apaisado bajo: sin retratos y "Return to exploration" fijo al fondo del panel; los costos hacen scroll por encima. */
+  .base-panel .decision-personajes { display: none; }
+  .base-panel .base-bloque:has(.decision) { gap: var(--esp-1); padding-block: var(--esp-2); }
+  .base-panel .decision-detalle .mensaje { padding-block: 0; }
+  .base-panel .decision-detalle .mensaje-titulo { font-size: 15px; }
+  .base-panel .decision-detalle > .fb-caja { position: sticky; bottom: 0; z-index: 1; background: var(--color-marfil); padding-block: var(--esp-1); }
 }

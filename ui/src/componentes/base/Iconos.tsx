@@ -6,7 +6,8 @@
  */
 
 export type NombreIcono =
-  | "tripulacion" | "mapa" | "check" | "check_exito" | "microfono" | "energia" | "vida" | "escudo"
+  | "pausa" | "documento" | "libro" | "pulso" | "avion_papel" | "flecha_derecha"
+  | "tripulacion" | "mapa" | "check" | "check_exito" | "microfono" | "energia" | "vida" | "pulmones" | "escudo"
   | "aviso" | "error" | "reloj" | "enlace" | "atras"
   | "jugar" | "candado" | "engranaje" | "sonido_off" | "sonido_on" | "planeta" | "satelite" | "llave" | "sol";
 
@@ -41,6 +42,14 @@ const DIBUJOS: Record<NombreIcono, JSX.Element> = {
       <polygon points="11,22 11,13 13,13 13,22" />
       <polygon points="12,13.5 6.5,13 3,9.5 3,5 8,5.5 11.5,9" />
       <polygon points="12.5,12 13,7.5 16.5,3.5 21,3 21,7.5 17,11.5" />
+    </g>
+  ),
+  // Pulmones de mundo/01 (soporte vital): dos lóbulos y la tráquea, en teal como el rayo y el escudo.
+  pulmones: (
+    <g fill="var(--color-teal)">
+      <polygon points="10.2,8 10.2,19 8,20.6 4,20.6 2.2,18.4 2.6,12.6 5.6,8.2 8.4,6.6" />
+      <polygon points="13.8,8 13.8,19 16,20.6 20,20.6 21.8,18.4 21.4,12.6 18.4,8.2 15.6,6.6" />
+      <polygon points="11,2 13,2 13,7 14.8,9 13.2,9.8 12,8.6 10.8,9.8 9.2,9 11,7" />
     </g>
   ),
   escudo: (
@@ -119,6 +128,29 @@ const DIBUJOS: Record<NombreIcono, JSX.Element> = {
     </g>
   ),
   atras: <polygon fill={C} points="10,4 12,6 7.4,10.6 21,10.6 21,13.4 7.4,13.4 12,18 10,20 2,12" />,
+  // Iconos de los paneles de la E7 (ui/04). Agregados al final para no chocar con otros cambios.
+  pausa: (
+    <g fill={C}>
+      <polygon points="6,5.5 7.5,4 9.5,4 11,5.5 11,18.5 9.5,20 7.5,20 6,18.5" />
+      <polygon points="13,5.5 14.5,4 16.5,4 18,5.5 18,18.5 16.5,20 14.5,20 13,18.5" />
+    </g>
+  ),
+  documento: (
+    <g>
+      <polygon fill="var(--color-lila)" stroke={C} strokeWidth="1.8" strokeLinejoin="miter" points="5,2.5 14.5,2.5 20,8 20,21.5 5,21.5" />
+      <polygon fill={C} points="8,10 17,10 17,11.8 8,11.8" /><polygon fill={C} points="8,13.8 17,13.8 17,15.6 8,15.6" />
+      <polygon fill={C} points="8,17.6 13,17.6 13,19.2 8,19.2" />
+    </g>
+  ),
+  libro: (
+    <g fill="none" stroke={C} strokeWidth="2" strokeLinejoin="miter">
+      <polygon points="2,5 11,6.4 11,20 2,18.6" /><polygon points="22,5 13,6.4 13,20 22,18.6" />
+      <polygon fill={C} stroke="none" points="11,6.4 13,6.4 13,20 11,20" />
+    </g>
+  ),
+  pulso: <polyline fill="none" stroke="var(--color-teal)" strokeWidth="2.2" strokeLinejoin="miter" points="1,12.5 6,12.5 8.6,5 12.6,19.5 15.6,9 17.2,12.5 23,12.5" />,
+  avion_papel: <polygon fill="var(--color-teal)" points="2,11 22,3 18.5,21 12.8,15.6 9,20 9,13.4 17,7.4 8,12.2" />,
+  flecha_derecha: <polygon fill="var(--color-teal)" points="14,4 12,6 16.6,10.6 3,10.6 3,13.4 16.6,13.4 12,18 14,20 22,12" />,
 };
 
 export function Icono({ nombre, tam = 24, className }: { nombre: NombreIcono; tam?: number; className?: string }) {

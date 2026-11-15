@@ -69,10 +69,12 @@ function normalizar(v: Rgb): Rgb {
 /**
  * Parámetros de luz (MARTE.md §5). Convención de ejes de Three: +x derecha, +y arriba,
  * +z hacia la cámara. `direccionSol` apunta DESDE la escena HACIA el Sol (posición de la luz
- * direccional = objetivo + direccionSol * distancia): arriba a la izquierda y algo al frente.
+ * direccional = objetivo + direccionSol * distancia): arriba a la izquierda, casi de lado, apenas
+ * al frente y a ~38° de altura, así las sombras caen a la derecha y se ven desde la cámara como en
+ * `mundo/01`. Antes ([-0,6, 1, 0,45], ~53°) caían cortas y detrás de cada pieza.
  */
 export const LUZ = {
-  direccionSol: normalizar([-0.6, 1, 0.45]),
+  direccionSol: normalizar([-0.8, 0.65, 0.2]),
   /** Direccional: blanco cálido, más débil y blanco que en la Tierra (DISEÑO.md §3.3). [E] */
   colorSol: "#FFF3E4",
   /** Hemisférica: suelo = `regolito-medio` (MARTE.md §5); cielo de día = `lila` (relleno frío), al atardecer = horizonte. */
@@ -82,10 +84,14 @@ export const LUZ = {
   } as Readonly<Record<Ambiente, { cielo: string; suelo: string }>>,
   /** `mapSize` de la sombra: <= 1024; 512 en calidad baja (MARTE.md §5). */
   tamanoSombra: { alta: 1024, baja: 512 } as Readonly<Record<Calidad, number>>,
-  /** Nombre del tone mapping de Three (`THREE.ACESFilmicToneMapping`). */
-  toneMapping: "ACESFilmic" as const,
-  /** Exposición de partida (MARTE.md §5), a calibrar con el marfil `#F3EEE5`. */
-  exposicion: 1.06,
+  /**
+   * Nombre del tone mapping de Three (`THREE.NoToneMapping`). DISEÑO §3.4 manda sobre MARTE §5:
+   * ACES desaturaba y lavaba el regolito (salía salmón pálido); sin tone mapping cada pieza queda
+   * del color de su token y el marfil `#F3EEE5` lee marfil con la luz calibrada abajo.
+   */
+  toneMapping: "No" as const,
+  /** Exposición: sin tone mapping Three la ignora; se deja en 1 para que no engañe. */
+  exposicion: 1,
   /** Puntuales activas como máximo (pantallas, balizas, faros de Iris). */
   maxPuntuales: 2,
 } as const;
@@ -128,12 +134,20 @@ export function colorCielo(t: number, ambiente: Ambiente = "dia"): Rgb {
 
 /** Radio del domo del cielo (u = m). Debe quedar dentro del `far` de la cámara. [E] */
 export const RADIO_DOMO = 450;
-/** Niebla lineal: empieza cerca de la base y cubre el borde del terreno (lado 400). [E] */
-export const NIEBLA = { cerca: 60, lejos: 420 } as const;
+/**
+ * Niebla lineal: deja el claro y el suelo cercano con su color pleno y aclara las capas de la
+ * cordillera (radios 215–300: de ~30 % a ~50 % de niebla), perspectiva atmosférica de MARTE §3. [E]
+ */
+export const NIEBLA = { cerca: 80, lejos: 520 } as const;
 /** Radio angular (rad) del halo de día; se multiplica por `TAMANO_HALO`. [E] */
 export const RADIO_HALO = 0.2;
-/** Intensidades de partida (luces físicas de Three r160). [E] */
-export const INTENSIDAD = { sol: 2.8, hemisferica: 0.9 } as const;
+/**
+ * Intensidades (luces físicas de Three r160, sin tone mapping). En r160 el blanco pleno de un
+ * material mate pide irradiancia π: suelo llano al sol ≈ (sol·0,62 + hemi·lila) / π ≈ 0,95 de su
+ * token (`regolito-claro` lee naranja saturado) y en sombra ≈ 0,45, teñido de lila (DISEÑO §3.3).
+ * Antes: sol 2,8 y hemisférica 0,9 con ACES, que lavaba el suelo. [E] a aprobar por María Paula.
+ */
+export const INTENSIDAD = { sol: 2.6, hemisferica: 1.55 } as const;
 /** Media caja de la cámara de sombras alrededor de la base. [E] */
 const CAJA_SOMBRA = 40;
 
@@ -145,7 +159,7 @@ export interface Cielo {
   sol: THREE.DirectionalLight;
   hemisferica: THREE.HemisphereLight;
   niebla: THREE.Fog;
-  /** Tone mapping ACES, exposición 1,06 y sombras suaves. */
+  /** Sin tone mapping (DISEÑO §3.4), exposición 1 y sombras suaves. */
   aplicarRenderer(renderer: RendererCielo): void;
   /** Quita todo de la escena y libera el domo. */
   quitar(): void;
@@ -218,7 +232,7 @@ export function crearCielo(escena: THREE.Scene, ambiente: Ambiente = "dia", cali
     hemisferica,
     niebla,
     aplicarRenderer(renderer) {
-      renderer.toneMapping = THREE.ACESFilmicToneMapping;
+      renderer.toneMapping = THREE.NoToneMapping;
       renderer.toneMappingExposure = LUZ.exposicion;
       renderer.shadowMap.enabled = true;
       renderer.shadowMap.type = THREE.PCFSoftShadowMap;

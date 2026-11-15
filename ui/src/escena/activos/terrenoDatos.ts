@@ -38,11 +38,19 @@ export const ESCALA_VERTICAL_POR_DEFECTO = 3;
 export const TAMANO_MUNDO_POR_DEFECTO = 400;
 
 /**
- * Suelo (DISEÑO.md §2.3): el `regolito-claro` puro sale naranja saturado tras el tone mapping;
- * la lámina `mundo/01` lee terracota rosada. Se mezcla con `sombra-suelo` (rosado) en lo llano y
- * cae hacia `regolito-medio` en laderas y en caras sueltas al azar (facetas visibles). [E]
+ * Suelo (DISEÑO.md §2.3): sin tone mapping, `regolito-claro` puro lee el naranja rojizo saturado
+ * de `mundo/01` (antes se mezclaba con `sombra-suelo` para compensar ACES y salía salmón pálido).
+ * Cada cara cae al azar hasta `variacion` hacia `regolito-medio` (facetas leves, también en el
+ * claro llano) y las laderas hasta `ladera`. [E]
  */
-export const MEZCLA_SUELO = { rosado: 0.3, variacion: 0.38, ladera: 0.85 } as const;
+export const MEZCLA_SUELO = { variacion: 0.28, ladera: 0.75 } as const;
+
+/**
+ * Gravilla (lámina `exterior/02`, "rocas pequeñas", y el suelo de `mundo/01`): piedritas de
+ * 0,1–0,3 m repartidas con semilla fija en todo el suelo cercano, fuera del centro de la base.
+ * Decorativa e inventada (MARTE §8): no es dato de Mars Trek. [E]
+ */
+export const GRAVILLA = { n: 1100, semilla: 314, radioMin: 3, radio: 34, escalaMin: 0.14, escalaMax: 0.42 } as const;
 
 export interface Rejilla {
   alturas: Float32Array;

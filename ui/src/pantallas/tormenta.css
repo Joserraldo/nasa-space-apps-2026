@@ -1,0 +1,114 @@
+/*
+ * E7 Tormenta, panel 01 de ui/04 "Choose your expert": escena en pausa detrás y la ficha a la
+ * izquierda. Solo tokens; sombras ciruela, nunca negras. Cian solo para foco y selección.
+ */
+.tormenta-e7 {
+  position: relative; box-sizing: border-box; min-block-size: calc(100dvh - 40px);
+  padding: max(var(--esp-4), var(--hud-reserva-izq, 0px)) max(var(--esp-4), env(safe-area-inset-right)) var(--esp-4) max(var(--esp-4), env(safe-area-inset-left));
+  background: var(--color-lila); color: var(--color-indigo-texto);
+}
+.tormenta-escena { position: absolute; inset: 0; overflow: hidden; }
+.tormenta-escena canvas { inline-size: 100%; block-size: 100%; display: block; }
+.tormenta-panel { position: relative; inline-size: min(100%, 640px); }
+.tormenta-cara { display: grid; gap: var(--esp-3); padding: var(--esp-3) var(--esp-4); }
+.tormenta-cabeza { display: flex; align-items: center; justify-content: space-between; gap: var(--esp-3); }
+.tormenta-titulo { margin: 0; }
+.tormenta-cabeza > .fc { display: block; flex: none; }
+.tormenta-pausa { display: flex; align-items: center; gap: var(--esp-2); padding: var(--esp-1) var(--esp-4); white-space: nowrap; font-weight: var(--tipo-peso-etiqueta); }
+
+.tormenta-expertos, .tormenta-accesos { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--esp-3); }
+.tormenta-expertos .retrato-boton { inline-size: 100%; }
+.tormenta-preguntar { display: flex; gap: var(--esp-2); align-items: center; }
+.tormenta-preguntar input { flex: 1; min-inline-size: 0; min-block-size: var(--toque-minimo); background: var(--color-marfil); border-color: color-mix(in srgb, var(--color-ciruela) 40%, transparent); }
+.tormenta-respuesta { display: grid; gap: var(--esp-1); padding: var(--esp-2) var(--esp-3); background: var(--color-lila); }
+.tormenta-respuesta h3, .tormenta-respuesta p { margin: 0; }
+
+/* Accesos: 3 columnas iguales; el texto baja de línea en vez de desbordar. */
+.tormenta-accesos { gap: var(--esp-2); }
+.tormenta-accesos .fb-caja { display: block; min-inline-size: 0; }
+.tormenta-accesos .fb { inline-size: 100%; min-inline-size: 0; }
+.tormenta-accesos .fb-superficie { padding-inline: var(--esp-2); gap: var(--esp-1); justify-content: center; }
+.tormenta-accesos .fb-texto { white-space: normal; text-align: center; font-size: 15px; line-height: 1.1; text-wrap: balance; min-inline-size: 0; }
+
+/* Etiquetas de los expertos: mismo alto en las 3 fichas, centradas y sin desbordar (EN y ES). */
+.tormenta-expertos .retrato-ficha { min-width: 0; padding-inline: var(--esp-2); }
+.tormenta-expertos .retrato-nombre { display: grid; place-items: center; min-block-size: 2.4em; font-size: 15px; line-height: 1.15; text-align: center; text-wrap: balance; }
+.tormenta-expertos .retrato-especialidad { justify-content: center; font-size: 13px; line-height: 1.15; min-block-size: 2.4em; text-align: center; text-wrap: balance; }
+
+/* Pantalla baja (móvil horizontal): compacta para que el campo y Send queden a la vista. */
+@media (max-height: 480px) {
+  .tormenta-e7 { min-block-size: calc(100dvh - 40px); padding-block-end: var(--esp-2); }
+  .tormenta-panel { inline-size: min(100%, 560px); }
+  .tormenta-cara { gap: var(--esp-1); padding: var(--esp-2) var(--esp-3); max-block-size: calc(100dvh - 90px); overflow-y: auto; }
+  .tormenta-titulo { font-size: 18px; }
+  .tormenta-expertos { gap: var(--esp-2); }
+  .tormenta-expertos .retrato-ficha { padding-block: var(--esp-1); gap: 2px; }
+  .tormenta-expertos .retrato-marco { width: 56px; height: 56px; }
+  .tormenta-expertos .retrato-marco svg { width: 50px; height: 50px; }
+  .tormenta-expertos .retrato-nombre, .tormenta-expertos .retrato-especialidad { min-block-size: 0; font-size: 12px; }
+}
+
+/* Panel 02 "Compare your plan": experta con su frase a la izquierda, acción y costos a la derecha. */
+.tormenta-plan { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); gap: var(--esp-4); align-items: start; }
+.tormenta-plan-experta { min-inline-size: 0; display: grid; justify-items: center; gap: var(--esp-2); }
+.tormenta-plan-experta .retrato-ficha { min-width: 0; }
+.tormenta-frase { margin: 0; font-style: italic; text-align: center; text-wrap: balance; }
+.tormenta-otra { display: block; inline-size: 100%; min-inline-size: 0; }
+.tormenta-otra .fb { inline-size: 100%; min-inline-size: 0; }
+.tormenta-otra .fb-texto { white-space: normal; text-align: center; font-size: 15px; line-height: 1.1; }
+.tormenta-plan-accion { display: grid; gap: var(--esp-3); min-inline-size: 0; }
+.tormenta-pieza { display: block; padding: var(--esp-1) var(--esp-4); text-align: center; font-weight: var(--tipo-peso-etiqueta); background: var(--color-lila); }
+.tormenta-plan-accion .costos { grid-template-columns: 1fr; gap: var(--esp-2); }
+.tormenta-plan-accion .costos-bloque + .costos-bloque { border-left: 0; padding-left: 0; border-top: var(--borde-fino) solid color-mix(in srgb, var(--color-ciruela) 30%, transparent); padding-top: var(--esp-2); }
+.tormenta-plan-botones { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, auto); gap: var(--esp-2); align-items: center; }
+.tormenta-plan-botones .fb-caja { display: block; min-inline-size: 0; }
+.tormenta-plan-botones .fb { inline-size: 100%; min-inline-size: 0; }
+.tormenta-plan-botones .fb-texto { white-space: normal; text-align: center; }
+@media (max-width: 560px) { .tormenta-plan { grid-template-columns: 1fr; } .tormenta-plan-botones { grid-template-columns: 1fr; } }
+@media (max-height: 480px) {
+  .tormenta-plan { gap: var(--esp-2); grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  .tormenta-frase { font-size: 13px; line-height: 1.15; }
+  .tormenta-plan-accion { gap: var(--esp-1); }
+  .tormenta-plan-botones { grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); gap: var(--esp-1); }
+  .tormenta-plan-botones .fb-superficie { padding-inline: var(--esp-2); gap: var(--esp-1); }
+  .tormenta-plan-botones .fb-texto { font-size: 15px; line-height: 1.1; }
+  .tormenta-plan-botones .fb-icono { display: none; }
+  .tormenta-plan-accion .costos-bloque h4 { margin-block-end: var(--esp-1); font-size: 13px; }
+  .tormenta-plan-accion .costos-bloque li { padding-block: 0; }
+  .tormenta-plan-experta .retrato-marco { width: 56px; height: 56px; }
+  .tormenta-plan-experta .retrato-marco svg { width: 50px; height: 50px; }
+}
+
+/* Panel 03 "Verify the warning": las dos expertas que se contradicen, la fuente y dos preguntas. */
+.tormenta-verif-expertas { display: grid; gap: var(--esp-3); min-inline-size: 0; }
+.tormenta-verif-expertas .retrato-ficha { min-width: 0; }
+.tormenta-verif .fuente-enlace { display: none; }
+.tormenta-verif .fuente-cara { padding: var(--esp-2) var(--esp-3); font-size: 15px; }
+.tormenta-preguntas { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--esp-2); }
+.tormenta-preguntas .fb-caja { display: block; min-inline-size: 0; }
+.tormenta-preguntas .fb { inline-size: 100%; min-inline-size: 0; }
+.tormenta-preguntas .fb-texto { white-space: normal; text-align: start; font-size: 15px; line-height: 1.1; }
+.tormenta-respuesta-fuente { margin: 0; padding: var(--esp-2) var(--esp-3); background: var(--color-lila); font-size: 15px; line-height: 1.2; }
+.tormenta-plan-botones a.fb { display: block; text-decoration: none; color: inherit; }
+.tormenta-plan-botones a.fb .fb-texto { white-space: nowrap; font-size: 18px; }
+.tormenta-plan-botones a.fb .fb-superficie { padding-inline: var(--esp-2); gap: var(--esp-1); }
+.tormenta-verif .tormenta-plan-botones { grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); gap: var(--esp-2); }
+@media (max-width: 560px) { .tormenta-verif .tormenta-plan-botones { grid-template-columns: 1fr; } }
+@media (max-height: 480px) and (orientation: landscape) {
+  .tormenta-panel:has(.tormenta-cara-verif) { inline-size: min(100%, 780px); }
+  .tormenta-cara-verif .tormenta-plan { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); }
+  .tormenta-cara-verif .tormenta-pieza, .tormenta-cara-verif .fuente-titulo { display: none; }
+  .tormenta-verif-expertas { grid-template-columns: 1fr 1fr; gap: var(--esp-1); }
+  .tormenta-verif-expertas .tormenta-frase { font-size: 12px; }
+  .tormenta-verif { gap: var(--esp-1); }
+  .tormenta-verif .tormenta-plan-botones { grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); gap: var(--esp-2); }
+  .tormenta-verif .tormenta-plan-botones a.fb .fb-icono { display: block; }
+  .tormenta-verif .fuente-cara { padding: var(--esp-1) var(--esp-2); font-size: 12px; }
+  .tormenta-preguntas { grid-template-columns: 1fr 1fr; gap: var(--esp-1); }
+  .tormenta-preguntas .fb-texto { font-size: 13px; }
+  .tormenta-respuesta-fuente { font-size: 12px; padding: var(--esp-1) var(--esp-2); }
+}
+
+@media (orientation: portrait) and (max-width: 700px) {
+  .tormenta-e7 { padding-block-start: max(var(--esp-4), var(--hud-reserva, 0px)); }
+}

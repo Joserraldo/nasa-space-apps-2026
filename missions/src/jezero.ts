@@ -72,7 +72,7 @@ export interface FinMision {
   exitoCuando: ExitoCuando;
   /** Pierde si cualquier medidor llega a 0 (regla general del motor). */
   falloCuando: "recurso_en_cero";
-  /** Red de seguridad: si en este tick no ha pasado nada, se muestra el paso 8 igual. */
+  /** Plazo máximo: se puede cumplir el objetivo en este tick; si no se cumple, la misión vence. */
   tickLimite: number;
 }
 
@@ -191,13 +191,14 @@ export interface Mision {
   sitiosCandidatos: SitioCandidato[];
   averiaIris: AveriaIris;
   fin: FinMision;
-  eventoPolvo: EventoPolvo;
+  /** Opcional: una misión sin polvo/panel dañado no debe inventar ese evento para usar el motor. */
+  eventoPolvo?: EventoPolvo;
   dilemaPaso6: DilemaPaso6;
   tarjetasCiencia: TarjetaCiencia[];
   preguntaFinal: PreguntaFinal;
 }
 
-export const MISION_JEZERO: Mision = {
+export const MISION_JEZERO: Mision & { eventoPolvo: EventoPolvo } = {
   id: "jezero-dorada",
   nombreKey: "mision.jezero.nombre",
   sitio: "marte_jezero",
@@ -316,4 +317,4 @@ export const MISION_JEZERO: Mision = {
     explicacionKey: "mision.jezero.pregunta.explicacion",
     fuenteKey: "fuente.nasa.bitflip",
   },
-};
+} satisfies Mision;

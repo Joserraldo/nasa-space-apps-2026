@@ -11,28 +11,29 @@ Una sección por persona, máximo 5 líneas, y nadie edita la de otro (FLUJO §8
 ```
 
 ## Personajes (María Paula)
-**Rama:** feat/ui-personajes-entrega · **PR:** #271 (borrador; sustituye #270) · **Tokens:** amarillo
-- Única base vigente: nueva implementación de Claude en `escena/personajes/`, cuatro tripulantes e Iris; versiones anteriores retiradas por pedido de María Paula.
-- Continuación: equipo por gesto, reparar/observar/alertar/verificar, quieto en marcha/ruedas y liberación idempotente del esqueleto. Fábricas y preview; escena exclusiva de José, fuera de nuestra entrega.
-- Verificado: typecheck, 690 pruebas (22 de personajes), build y e2e ruta dorada 1/1; capturas nuevas sin errores JS. Humanos 3 calls, Iris 2.
-- Sigue: revisión visual de la variante B (rama `feat/ui-personajes-b`, apilada sobre #271: cuatro tripulantes e Iris en malla cerrada, `crearPersonajeB`/`crearIrisB`; A intacta) y coordinación con #261/#263. Fidelidad no marcada aprobada.
+**Rama:** feat/ui-personajes-b · **PR:** #316 (hacia develop; reemplaza #271) · **Tokens:** amarillo
+- Hecho: tripulación completa (`nino`, `doctora`, `meteorologa`, `ingeniera`) e Iris en variante B (malla cerrada con pesos mezclados, 8 expresiones proyectadas sobre piel, 14 gestos, herramientas por gesto y paneles plegables en Iris).
+- Verificado: 37/37 pruebas de personajes, `tsc --noEmit` sin errores, liberación idempotente de esqueleto y `userData.compartido = true` en materiales.
+- Sigue: módulo `ui/src/escena/personajes` listo para consumir en el montaje de la escena.
+- Bloqueo: ninguno.
 
 ## Escenario (Daniel)
-**Rama:** feat/ui-escena-consolidada · **PR:** consolida #206, #223–#232 y #235 · **Tokens:** 🟢
-- Hecho: pila #223–#232 + base (#206: EscenaBase, escena3d, armado, baseExterior, pavimento, capturas) + materiales con tokens (#235) en una sola rama.
-- Consolidado por el agente de José mientras Daniel no tiene tokens; Daniel revisa al volver.
+**Rama:** feat/ui-medicion-render-real · **PR:** #306 hacia develop · **Tokens:** 🟡
+- Hecho: diagnóstico opcional conectado al render real, sin segundo RAF; reinicia al pausar/perder WebGL/cambiar calidad. Las piezas visuales de Claude (#295, #300–302) quedan intactas.
+- Verificado: 770 pruebas, tipos, build y E2E; pérdida/restauración en Chrome sin errores y sin FPS obsoletos; revisión ligera independiente sin fallos nuevos.
+- Sigue: revisión de #306 y fusión ordenada de la pila visual; medir en celular y PC viejo reales (la emulación no los sustituye).
 
 ## Ubicación (Camilo)
-**Rama:** feat/ui-ubicacion-mapa · **PR:** #216 · **Tokens:** verde
-- Hecho: #205/#220 incorporados; claves conciliadas; chaflanes desde tokens; typecheck, 598 tests, build, E2E y tres capturas en verde.
-- Sigue: revisión de Paula del PR #216 corregido, sin reescribir el historial ni fusionarlo.
-- Bloqueo: aceptación de Paula; incidente histórico 40101509 documentado si reaparece. Otros worktrees intactos.
+**Rama:** feat/ui-ubicacion-colisiones · **PR:** hacia develop · **Tokens:** amarillo
+- Hecho: avance físico recuperado; contactos centrados, subpasos y límite con radio; 31 pruebas específicas, 694 totales, tipos/build/E2E OK.
+- Sigue: #254 después de la pila de Daniel; #216 ya fusionado, sin rehacer el mapa. Táctiles en worktree separado.
+- Bloqueo: mundo/alturas dependen de Daniel; movimiento/cámara/mapa requieren montaje de José/Daniel. Sin prueba en celular físico.
 
 ## Integración (José)
-**Rama:** feat/ui-integracion-orientacion · **PR:** hacia feat/ui-escenarios · **Tokens:** verde
-- Hecho: contratos `VistaEscena` (#181), eventos (#182), ajustes (#186) y props de `EscenaBase` (#190, cerrado). Lógica del aviso de girar el teléfono (`juego/orientacion.ts`).
-- Sigue: pantallas nuevas desde las láminas cuando entren #208, #209 y #213 de Jaime; preview de esta rama en #207 (hacia develop).
-- Bloqueo: tokens y componentes de Jaime.
+**Rama:** feat/ui-* hacia develop · **PR:** #269, #303, #304, #305 y el montaje de piezas en E7 · **Tokens:** verde
+- Hecho: en develop E3 (#276), E4 (#274), E5 sobre la escena (#280), E7 completa (#278, #283, #296 y #299: Tormenta.tsx borrado, e2e nuevo y respaldo 2D arreglado) y E8; encuadre de escena (#275). Con permiso de Santiago, piezas de Jaime: #303 (paneles de ui/04) y #304 (HUD en píldoras de mundo/01); #268 revisado.
+- Sigue: montar #303 y #304 en la tormenta cuando entren (PR listo encima); #305 (Decision recorded en E6); al final, ruta dorada en el preview en EN, ES y sin WebGL.
+- Bloqueo: #269 (E6 con escena y HUD de mundo/01) espera la pila de Daniel (#247 en conflicto); resaltado del anclaje en E5 espera a Daniel (#279); Map no mueve al niño (Camilo).
 
 ## Interfaz (Jaime)
 **Rama:** — · **PR:** #220 (fusionado, trae toda la pila: #208, #209, #213, #214, #217, #219) · **Tokens:** verde
@@ -58,8 +59,8 @@ Una línea por pieza (FLUJO §4 y §8). Estados: `sin empezar`, `en PR #n`, `apr
 | Cámaras de 3.ª y 1.ª persona | `mundo/01`, `mundo/02` | Camilo | sin empezar |
 | Panel `Map` y respaldo 2D | ESCENAS §3.4, FLUJO §9 | Camilo | sin empezar |
 | Controles táctiles (joystick, cámara, acción) | Familia de `ui/03`, ESCENAS §3.5 | Camilo | sin empezar |
-| Niño 3D | `personajes/08–10` | María Paula | sin empezar |
-| Iris rover | `mundo/01`, `inicio/02`, `personajes/07` | María Paula | sin empezar |
-| Ingeniera 3D | `personajes/01`, `mundo/01` | María Paula | sin empezar |
+| Niño 3D | `personajes/08–10` | María Paula | en PR #316 (variante B aprobada) |
+| Iris rover | `mundo/01`, `inicio/02`, `personajes/07` | María Paula | en PR #316 (variante B aprobada) |
+| Ingeniera 3D | `personajes/01`, `mundo/01` | María Paula | en PR #316 (variante B aprobada) |
 | Portada 3D | `inicio/01`, `inicio/capas/` | María Paula | sin empezar |
-| HUD, diálogo, comparación, tormenta y final (montaje) | `ui/01`, `ui/04`, `personajes/07`, `mundo/01` | José | sin empezar |
+| HUD, diálogo, comparación, tormenta y final (montaje) | `ui/01`, `ui/04`, `personajes/07`, `mundo/01` | José | E3–E5, E7 y E8 fusionadas; E6 en PR #269; piezas de ui/04 en PR #303; HUD en PR #304 |

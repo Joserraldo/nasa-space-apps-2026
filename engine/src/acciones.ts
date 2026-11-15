@@ -13,13 +13,12 @@ import {
   CONSUMO_POR_TICK,
   MODULOS,
   RETRASO_COMUNICACIONES,
-  DIAS_PARA_GANAR,
   MALA_SUERTE_POR_DIFICULTAD,
   RECURSO_MAX,
   RETRASO_POR_DIFICULTAD,
   TICKS_POR_DIA,
 } from "@solar-shield/design";
-import { MISION_JEZERO, type Mision } from "@solar-shield/missions";
+import { MISION_JEZERO, type EfectoOpcion, type Mision } from "@solar-shield/missions";
 import { actualizarIa, repararIa } from "./ia.js";
 import { tormentaEnCurso } from "./tormenta.js";
 import { ajustarAltura, avanzarOrbita, senalDeDano } from "./orbita.js";
@@ -78,6 +77,24 @@ export function costoDe(accion: BaseAction, mision: Mision = MISION_JEZERO): { i
  * `simular` no cambia recursos: devuelve el estado con una causa "sistema" y un uso menos.
  */
 export function aplicarAccion(estado: GameState, accionCruda: unknown, mision: Mision = MISION_JEZERO): GameState {
+  return ejecutarAccion(estado, accionCruda, mision);
+}
+
+/** Uso del dilema: compone una compensación antes de cobrar o sortear su retraso. */
+export function aplicarAccionConExtra(estado: GameState, accion: BaseAction, extra: EfectoOpcion, mision: Mision = MISION_JEZERO): GameState {
+  return ejecutarAccion(estado, accion, mision, extra);
+}
+
+function sumarDeltas(a: Partial<Record<Resource, number>>, b: Partial<Record<Resource, number>>): Partial<Record<Resource, number>> {
+  const suma: Partial<Record<Resource, number>> = {};
+  for (const r of RECURSOS) {
+    const delta = (a[r] ?? 0) + (b[r] ?? 0);
+    if (delta) suma[r] = delta;
+  }
+  return suma;
+}
+
+function ejecutarAccion(estado: GameState, accionCruda: unknown, mision: Mision, extra?: EfectoOpcion): GameState {
   const accion = ActionSchema.parse(accionCruda);
   if (estado.resultado !== "en_curso") return estado;
 
@@ -91,10 +108,15 @@ export function aplicarAccion(estado: GameState, accionCruda: unknown, mision: M
     };
   }
 
-  // Rechazo limpio: si la acción no se puede hacer, devuelve el MISMO estado (ni cobra ni agenda nada).
-  if (!puedeAplicar(estado, accion, mision).ok) return estado;
-
-  const { inmediato, retrasado, causaKey } = costoDe(accion, mision);
+  // Las restricciones de módulo y partida siguen siendo las de la acción base. Si hay
+  // compensación, la suficiencia de recursos se decide sobre el costo inmediato combinado.
+  const permiso = puedeAplicar(estado, accion, mision);
+  if (!permiso.ok && (!extra || permiso.motivo !== "recursos_insuficientes")) return estado;
+  const costo = costoDe(accion, mision);
+  const inmediato = extra ? sumarDeltas(costo.inmediato, extra.inmediato) : costo.inmediato;
+  const retrasado = extra ? sumarDeltas(costo.retrasado, extra.retrasado) : costo.retrasado;
+  const causaKey = costo.causaKey;
+  if (extra && RECURSOS.some((r) => (inmediato[r] ?? 0) < 0 && estado.recursos[r] + inmediato[r]! <= 0)) return estado;
   let s = aplicarDeltas(estado, inmediato, "decision", causaKey, accion);
 
   const retraso = RETRASO_POR_DIFICULTAD[s.dificultad];
@@ -302,11 +324,12 @@ export function avanzarTick(estado: GameState, mision: Mision = MISION_JEZERO): 
   const huboDecision = estado.causas.some((c) => c.tick === estado.tick && c.origen === "decision");
   s = actualizarIa(s, huboDecision, senal);
 
-  // Fin de la misión (mision.fin; hoy solo hay una regla, igual para todas): pierde si algo llega a 0, aunque la telemetría llegue
-  // en ese mismo tick; gana cuando la telemetría llega a la Tierra con todo por encima de 0.
+  // Orden de fin: recurso en cero > objetivo cumplido > plazo agotado sin objetivo.
+  // El objetivo puede cumplirse en el propio tick límite. Pasar días no concede
+  // una victoria alternativa que la misión no haya definido.
   if (RECURSOS.some((r) => s.recursos[r] <= 0)) s = { ...s, resultado: "fallo" };
-  else if (mision.fin.exitoCuando === "telemetria_llega" ? llegoTelemetria : s.tick >= mision.fin.exitoCuando.tick) s = { ...s, resultado: "exito" };
-  else if (s.dia > DIAS_PARA_GANAR) s = { ...s, resultado: "exito" };
+  else if (s.tick <= mision.fin.tickLimite && (mision.fin.exitoCuando === "telemetria_llega" ? llegoTelemetria : s.tick >= mision.fin.exitoCuando.tick)) s = { ...s, resultado: "exito" };
+  else if (s.tick >= mision.fin.tickLimite) s = { ...s, resultado: "fallo" };
   return s;
 }
 

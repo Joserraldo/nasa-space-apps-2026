@@ -1,6 +1,9 @@
 import { describe, expect, it } from "vitest";
 import { MISION_JEZERO, type TarjetaCiencia } from "./jezero.js";
 
+// Vista ancha del tipo: `satisfies` deja la constante estrecha y los campos opcionales no se infieren.
+const tarjetas: TarjetaCiencia[] = MISION_JEZERO.tarjetasCiencia;
+
 describe("TarjetaCiencia: varias fuentes", () => {
   it("acepta fuentesKeys además de fuenteKey", () => {
     const t: TarjetaCiencia = {
@@ -12,7 +15,7 @@ describe("TarjetaCiencia: varias fuentes", () => {
     expect(t.fuentesKeys).toHaveLength(2);
   });
   it("las tarjetas de Jezero no cambian", () => {
-    for (const t of MISION_JEZERO.tarjetasCiencia) expect(t.fuentesKeys).toBeUndefined();
+    for (const t of tarjetas) expect(t.fuentesKeys).toBeUndefined();
   });
 });
 
@@ -28,6 +31,6 @@ describe("TarjetaCiencia: aviso de dato curado", () => {
     expect(t.curado).toBe(true);
   });
   it("las tarjetas de Jezero no llevan el aviso", () => {
-    for (const t of MISION_JEZERO.tarjetasCiencia) expect(t.curado).toBeUndefined();
+    for (const t of tarjetas) expect(t.curado).toBeUndefined();
   });
 });
