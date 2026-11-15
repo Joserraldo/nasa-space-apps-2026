@@ -14,7 +14,7 @@ issues #59, #60, #118, #124 y #41. Cómo representa la pantalla a la tripulació
 docs/referenciapau/MECANICAS.md §3.4 y §4 (solo lectura).
 
 PENDIENTES EN ORDEN (uno por iteración):
-1. Tus PRs abiertos (#129, #131, #149, #150, #151, #153, #154, #155, #156): rebase sobre
+1. Tus PRs abiertos (#129, #131, #151, #153, #154, #155, #156): rebase sobre
    develop y CI en verde. El #151 toca ui/ (carpeta de María Paula): no lo sigas
    ampliando; ella decide cómo se integra con su trabajo local.
 2. #118: responder lo que ui pida sobre firmas de agents/ (si no le sirve a la pantalla,
@@ -22,7 +22,8 @@ PENDIENTES EN ORDEN (uno por iteración):
 3. #59 y #60: verificá qué falta; cerrá con evidencia lo que ya está (despliegue y e2e).
 4. e2e: cuando entre la escena v8, que el e2e de la ruta dorada siga pasando (respaldo 2D
    incluido) y que el preview se despliegue con cada merge.
-5. #124: ya tiene el PR #150; que Santiago lo revise (docs/reglas.md es suyo).
+5. Iris compañera (#149): ui la adopta (docs/referenciapau/MECANICAS.md §3.4). Si la pista M
+   pide cambios de firma, se cambian en agents/.
 6. El tráiler (pitch/trailer/README.md y compositions/intro.html) cita docs/referencias/3d,
    que se borró por D6. Cambiá la procedencia a "prototipo de FASE 0, commit 745427c" y no
    lo uses como estilo para material nuevo.
