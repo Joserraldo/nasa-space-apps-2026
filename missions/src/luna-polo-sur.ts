@@ -15,17 +15,15 @@ import type { Mision } from "./jezero.js";
  * - #95 (data/ciencia/luna.json, clave fuente.crater): la tarjeta de la tormenta cita por ahora fuente.radlab
  *   (CRaTER se consulta por NASA OSDR RadLab); cambiar a fuente.crater cuando #95 entre a develop.
  *
- * HUECOS DEL TIPO `Mision` (no se cambió el tipo; quedan para diseño/motor):
- * 1. `eventoPolvo` es obligatorio y su `descripcionKey` es literal "mala_suerte.tormenta_polvo". En la Luna no hay
- *    tormentas de polvo: la mala suerte de esta misión es el micrometeorito (clave "mala_suerte.micrometeorito",
- *    ya en design/i18n). Se rellena con el mismo efecto (panel a la mitad) y el texto del micrometeorito, pero el
- *    tipo obliga a la clave de polvo. Hace falta `descripcionKey` abierta (o un `eventoMalaSuerte` genérico).
+ * Estado de integración con `Mision` (eventoPolvo es opcional; quedan pendientes para diseño/motor):
+ * 1. La mala suerte es un micrometeorito, con la clave existente en design/i18n.
+ *    La descripción está corregida; su efecto sobre el panel requiere implementación del motor.
  * 2. Paso 2 con decisión (pasada baja / alta del satélite): `PasoMision` no tiene opciones.
  * 3. Criterio 🧊 "hielo cerca" del sitio que sube `reciclador_agua` y panel a la mitad en sitio oscuro:
  *    `SitioCandidato` no tiene efecto por módulo (pedido a motor en la propuesta §9).
  * 4. `salida_exterior` da ⚡ retrasado; la expedición al hielo debería dar 🫁. Se modela con `extra` (plan B #88 §5).
  */
-export const MISION_LUNA_POLO_SUR: Mision = {
+export const MISION_LUNA_POLO_SUR = {
   id: "luna-polo-sur",
   nombreKey: "mision.luna.nombre",
   sitio: "luna_polo_sur",
@@ -93,9 +91,9 @@ export const MISION_LUNA_POLO_SUR: Mision = {
     falloCuando: "recurso_en_cero",
     tickLimite: 10,
   },
-  // HUECO 1: en realidad es el micrometeorito (propuesta §7). El tipo obliga a la clave de polvo; ver arriba.
+  // Micrometeorito (propuesta §7): el tipo ya acepta esta causa; el efecto sobre el panel lo pone el motor.
   eventoPolvo: {
-    descripcionKey: "mala_suerte.tormenta_polvo",
+    descripcionKey: "mala_suerte.micrometeorito",
     equipo: "panel_solar",
     rendimientoPanel: 0.5,
     limpiar: { tipo: "reparar", equipo: "panel_solar" },
@@ -154,4 +152,4 @@ export const MISION_LUNA_POLO_SUR: Mision = {
     explicacionKey: "mision.luna.pregunta.explicacion",
     fuenteKey: "fuente.radlab",
   },
-};
+} satisfies Mision;
