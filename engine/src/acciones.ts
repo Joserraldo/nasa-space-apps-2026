@@ -50,7 +50,7 @@ function aplicarDeltas(
 }
 
 /** Costo y beneficio de una acción base, ya escalados por sus parámetros. */
-export function costoDe(accion: BaseAction): { inmediato: Partial<Record<Resource, number>>; retrasado: Partial<Record<Resource, number>>; causaKey: string } {
+export function costoDe(accion: BaseAction, mision: Mision = MISION_JEZERO): { inmediato: Partial<Record<Resource, number>>; retrasado: Partial<Record<Resource, number>>; causaKey: string } {
   const base = COSTOS_ACCION[accion.tipo];
   switch (accion.tipo) {
     case "redistribuir_energia":
@@ -60,7 +60,7 @@ export function costoDe(accion: BaseAction): { inmediato: Partial<Record<Resourc
         causaKey: base.causaKey,
       };
     case "colocar_modulo":
-      return { inmediato: { ...base.inmediato }, retrasado: { ...MODULOS[accion.modulo] }, causaKey: base.causaKey };
+      return { inmediato: { ...base.inmediato }, retrasado: { ...(mision.modulos?.[accion.modulo] ?? MODULOS[accion.modulo]) }, causaKey: base.causaKey };
     case "subir_escudo":
       return {
         inmediato: { energia: (base.inmediato.energia ?? 0) * accion.nivel },
@@ -94,7 +94,7 @@ export function aplicarAccion(estado: GameState, accionCruda: unknown, mision: M
   // Rechazo limpio: si la acción no se puede hacer, devuelve el MISMO estado (ni cobra ni agenda nada).
   if (!puedeAplicar(estado, accion, mision).ok) return estado;
 
-  const { inmediato, retrasado, causaKey } = costoDe(accion);
+  const { inmediato, retrasado, causaKey } = costoDe(accion, mision);
   let s = aplicarDeltas(estado, inmediato, "decision", causaKey, accion);
 
   const retraso = RETRASO_POR_DIFICULTAD[s.dificultad];
@@ -216,7 +216,7 @@ export function puedeAplicar(estado: GameState, accionCruda: unknown, mision: Mi
     return estado.simulacionesRestantes === 0 ? { ok: false, motivo: "sin_simulaciones" } : { ok: true };
   }
   if (accion.tipo === "colocar_modulo" && !puedeColocar(estado, accion.modulo, mision)) return { ok: false, motivo: "modulo_no_permitido" };
-  const { inmediato } = costoDe(accion);
+  const { inmediato } = costoDe(accion, mision);
   for (const r of RECURSOS) {
     const d = inmediato[r] ?? 0;
     if (d < 0 && estado.recursos[r] + d <= 0) return { ok: false, motivo: "recursos_insuficientes", recurso: r };

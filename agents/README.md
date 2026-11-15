@@ -137,3 +137,12 @@ Prioridad: avería revelada → `taller` · recurso < 30 fuera de tormenta (ener
 | 5-6 (dilema de la batería de noche) | `escenaTormentaLunaVisible(estado, dilema, crater)` con la `MedicionCitada` de CRaTER (tormenta `TORMENTA_LUNA_VISIBLE`). Matemático: `compararOpciones`. |
 | 7 (llamar a la Tierra) | `avisoControlLuna()` de la misión Luna polo sur. |
 | 8 (una tormenta, tres lugares) | `tresLugares(estado, crater)`: Kp en la Tierra, RAD en Marte y CRaTER en órbita, cada uno con su fuente. Pregunta: `preguntaIris("luna_vs_marte", estado.iaBase)`. |
+
+## Misión outpost sorpresa (#99, depende de que diseño la apruebe)
+| Paso | Llamada |
+|---|---|
+| 1 (no hay suelo) | `sorpresaOutpost({ ...artemis.fuente, idFuente: artemis.instrumento })`. Sin la fuente, Iris no menciona Orion. |
+| 3 (zonas de la nave) | `consejosZonasNave()`: Doctora `centro`, Ingeniera `cabina`, Iris `fondo`. Sin cifras. |
+| 4b (micrometeorito) | `escenaMicrometeorito(estado)` de la misión Luna polo sur. |
+| 6 (refugio con provisiones) | `escenaTormentaOutpost(estado, dilema, crater)` con la `MedicionCitada` de CRaTER (tormenta `TORMENTA_OUTPOST`). Matemático: `compararOpciones`. |
+| 8 (pregunta) | `preguntaIris("viaje_marte", estado.iaBase, referenciaDosis("marte-crucero").fuente)`. Sin fuente devuelve `null`. |

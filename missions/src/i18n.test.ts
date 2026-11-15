@@ -1,14 +1,14 @@
 import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
-import { TEXTOS_JEZERO } from "./textos.js";
+import { TEXTOS_JEZERO, TEXTOS_MARTE_POLO_NORTE } from "./textos.js";
 
 const raiz = join(__dirname, "..", "..");
 const leer = (ruta: string): Record<string, string> => JSON.parse(readFileSync(join(raiz, ruta), "utf8"));
 
-// Textos de diseño en JSON; los de la misión viven en missions/src/textos.ts (TEXTOS_JEZERO, de Camilo).
-const en = { ...leer("design/i18n/en.json"), ...TEXTOS_JEZERO.en };
-const es = { ...leer("design/i18n/es.json"), ...TEXTOS_JEZERO.es };
+// Textos de diseño en JSON; los de las misiones viven en missions/src/textos.ts (TEXTOS_JEZERO, de Camilo).
+const en = { ...leer("design/i18n/en.json"), ...TEXTOS_JEZERO.en, ...TEXTOS_MARTE_POLO_NORTE.en };
+const es = { ...leer("design/i18n/es.json"), ...TEXTOS_JEZERO.es, ...TEXTOS_MARTE_POLO_NORTE.es };
 
 /** Claves que el motor, diseño y misiones escriben en el estado y que la pantalla debe poder traducir. */
 function clavesUsadas(): string[] {

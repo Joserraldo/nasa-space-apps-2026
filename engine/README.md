@@ -74,3 +74,4 @@ tormentaActiva(s, mision);
 
 - `Mision.fin.exitoCuando`: `"telemetria_llega"` (Jezero) o `{ tipo: "sobrevivir_hasta_tick", tick }` (gana al llegar a ese tick con todo > 0; el fallo por medidor en 0 se evalúa primero).
 - `Mision.retrasoComunicacionesTicks?` (opcional): ticks que tarda la respuesta de la Tierra a `enviar_telemetria`; si falta, se usa `RETRASO_COMUNICACIONES[sitio]` de `design/`.
+- `Mision.modulos?` (opcional): `{ [módulo]: { [recurso]: delta } }` que sustituye la entrada de `MODULOS` de `design/` solo en esa misión. `costoDe(accion, mision?)` lo respeta.
