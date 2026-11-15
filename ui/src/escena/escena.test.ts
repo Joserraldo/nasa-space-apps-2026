@@ -88,6 +88,21 @@ describe("terreno de Jezero", () => {
   });
 });
 
+describe("orientación de la malla", () => {
+  it("todas las caras miran hacia arriba (+Y) en un terreno plano", () => {
+    // Rejilla plana 3×3: si el enrollado estuviera al revés, la normal saldría hacia −Y.
+    const m = mallaTerreno(new Float32Array(9), 3, 3, { metrosPorPixel: 1, escalaVertical: 1, tamañoMundo: 2 });
+    const p = (v: number) => [m.posiciones[v * 3]!, m.posiciones[v * 3 + 1]!, m.posiciones[v * 3 + 2]!];
+    for (let t = 0; t < m.triangulos; t++) {
+      const [a, b, c] = [p(m.indices[t * 3]!), p(m.indices[t * 3 + 1]!), p(m.indices[t * 3 + 2]!)];
+      const u = [b[0]! - a[0]!, b[1]! - a[1]!, b[2]! - a[2]!];
+      const v = [c[0]! - a[0]!, c[1]! - a[1]!, c[2]! - a[2]!];
+      const normalY = u[2]! * v[0]! - u[0]! * v[2]!; // componente Y de u × v
+      expect(normalY, `triángulo ${t}`).toBeGreaterThan(0);
+    }
+  });
+});
+
 describe("cielo de Marte", () => {
   it("de día no es azul: azul < rojo en cénit y horizonte", () => {
     for (const hex of [PALETA_CIELO.dia.cenit, PALETA_CIELO.dia.horizonte]) {
