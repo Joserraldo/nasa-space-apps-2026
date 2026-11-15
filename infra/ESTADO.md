@@ -4,11 +4,11 @@
 
 ## Hecho (últimas iteraciones)
 - #151 fusionado en develop; la CI (`ci.yml`) ya corre en PRs y push a `feat/ui-escenarios`.
+- Contrato de props de `EscenaBase` cerrado (#190), con `eventos` de Daniel.
 - Preview del rediseño: entorno `escenarios` en `wrangler.jsonc` (Worker `nasa-space-apps-2026-escenarios`, base de preview, límite propio) y pasos en `deploy.yml` para push a `feat/ui-escenarios`. `--dry-run` en verde.
 
 ## Qué sigue
 - Tras fusionar: llevar develop a `feat/ui-escenarios` (el push usa el `deploy.yml` de esa rama) y comprobar la URL en celular.
-- Cerrar #190: OK de José a la adición `eventos` de Daniel (ya está en `EscenaBaseProps` del #206).
 - Pantallas nuevas (front-integracion tarea 0) cuando entren `tokens.ts` y Nunito de Jaime.
 
 ## Bloqueos
