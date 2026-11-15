@@ -36,6 +36,9 @@ const NADA = () => undefined;
  * Panel 02 "Compare your plan": la experta elegida con su frase y la acción con los costos del
  * motor (`costoDe`, más el extra del invernadero que `elegirDilema` cobra). Confirmar manda el
  * mismo evento que la pantalla vieja (`onDecidir`); "Ask another expert" conserva la acción.
+ * Panel 03 "Verify the warning": se abre desde el panel b con "Check the source" y reúne a las dos
+ * expertas que se contradicen (las del dilema: Ingeniera y Doctora), la tarjeta de la fuente NASA y
+ * dos preguntas cuyas respuestas son líneas reales de `escenaTormenta`. "Back" vuelve al panel b.
  */
 export function PantallaTormenta({ estado, colocados, onDecidir }: { estado: GameState; colocados: readonly Equipment[]; onDecidir?: (previas: [], opcionId: string) => void }) {
   const { t } = useT();
@@ -45,6 +48,7 @@ export function PantallaTormenta({ estado, colocados, onDecidir }: { estado: Gam
   const [fallasIris, setFallasIris] = useState(0);
   const [plan, setPlan] = useState<{ experta: Experto; opcionId: string } | null>(null);
   const [conservada, setConservada] = useState<string | undefined>(undefined);
+  const [verificando, setVerificando] = useState(false);
   const escena = useMemo(() => escenaTormenta(estado, OPCIONES), [estado.tormenta]);
   const vista = vistaEscena(estado, { fase: "tormenta", colocados });
 
@@ -71,14 +75,15 @@ export function PantallaTormenta({ estado, colocados, onDecidir }: { estado: Gam
       </div>
 
       <div className="fc tormenta-panel">
-        <div className="fc-cara tormenta-cara">
+        <div className={`fc-cara tormenta-cara${plan && verificando ? " tormenta-cara-verif" : ""}`}>
           <header className="tormenta-cabeza">
-            <h2 id="tormenta-titulo" className="tormenta-titulo">{t(plan ? "ui.tormenta.comparar" : "ui.tormenta.elegir")}</h2>
+            <h2 id="tormenta-titulo" className="tormenta-titulo">{t(plan ? (verificando ? "ui.tormenta.verificar" : "ui.tormenta.comparar") : "ui.tormenta.elegir")}</h2>
             <span className="fc"><span className="fc-cara fc-chico tormenta-pausa"><Icono nombre="reloj" tam={20} /><span>{t("ui.comun.pausado")}</span></span></span>
           </header>
 
-          {plan ? <PlanComparado estado={estado} colocados={colocados} plan={plan} dialogo={escena?.dialogos.find((d) => d.experto === plan.experta)}
-            onOtra={() => { setConservada(plan.opcionId); setElegido(null); setPlan(null); }} onAtras={() => { setConservada(undefined); setElegido(null); setPlan(null); }} onDecidir={onDecidir} /> : <>
+          {plan && verificando && escena ? <Verificar estado={estado} dialogos={escena.dialogos} onAtras={() => setVerificando(false)} />
+          : plan ? <PlanComparado estado={estado} colocados={colocados} plan={plan} dialogo={escena?.dialogos.find((d) => d.experto === plan.experta)}
+            onVerificar={() => setVerificando(true)} onOtra={() => { setConservada(plan.opcionId); setElegido(null); setPlan(null); }} onAtras={() => { setConservada(undefined); setElegido(null); setPlan(null); }} onDecidir={onDecidir} /> : <>
           <ul className="tormenta-expertos">
             {EXPERTOS.map((p) => (
               <li key={p}>
@@ -128,9 +133,9 @@ function costosDe(opcionId: string, colocados: readonly Equipment[]) {
 }
 
 /** Panel 02 de ui/04: la experta con su frase a la izquierda; la acción, sus costos y los botones a la derecha. */
-function PlanComparado({ estado, colocados, plan, dialogo, onOtra, onAtras, onDecidir }: {
+function PlanComparado({ estado, colocados, plan, dialogo, onOtra, onVerificar, onAtras, onDecidir }: {
   estado: GameState; colocados: readonly Equipment[]; plan: { experta: Experto; opcionId: string }; dialogo: Dialogo | undefined;
-  onOtra(): void; onAtras(): void; onDecidir: ((previas: [], opcionId: string) => void) | undefined;
+  onOtra(): void; onVerificar(): void; onAtras(): void; onDecidir: ((previas: [], opcionId: string) => void) | undefined;
 }) {
   const { t } = useT();
   const { o, inmediato, retrasado } = costosDe(plan.opcionId, colocados);
@@ -142,6 +147,7 @@ function PlanComparado({ estado, colocados, plan, dialogo, onOtra, onAtras, onDe
         <ExpertPortrait persona={plan.experta} compacto />
         {linea && <p className="tormenta-frase">{t(linea.clave, linea.vars)}</p>}
         <FacetButton icon="tripulacion" labelKey="ui.tormenta.otra" onClick={onOtra} className="tormenta-otra" />
+        <FacetButton icon="enlace" labelKey="ui.tormenta.fuente" onClick={onVerificar} className="tormenta-otra" />
       </div>
       <div className="tormenta-plan-accion">
         <span className="fc"><span className="fc-cara fc-chico tormenta-pieza"><span>{o.accion.tipo === "redistribuir_energia" ? t("ui.accion.redistribuir") : describirAccion(o.accion, t)}</span></span></span>
@@ -150,6 +156,58 @@ function PlanComparado({ estado, colocados, plan, dialogo, onOtra, onAtras, onDe
           <FacetButton variant="primary" icon="check" labelKey="ui.comun.confirmar" disabled={!permiso.ok || !onDecidir}
             disabledReasonKey={permiso.ok ? undefined : `ui.comun.motivo.${permiso.motivo}${permiso.recurso ? `.${permiso.recurso}` : ""}`}
             onClick={() => onDecidir?.([], o.id)} />
+          <FacetButton labelKey="ui.comun.atras" onClick={onAtras} />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+const PREGUNTAS = [
+  { id: "proteger", icono: "escudo", experta: "doctora" },
+  { id: "sensor", icono: "energia", experta: "ingeniera" },
+] as const;
+
+/** Panel 03 de ui/04: las dos expertas que se contradicen a la izquierda; fuente, preguntas y enlace a la derecha. */
+function Verificar({ estado, dialogos, onAtras }: { estado: GameState; dialogos: readonly Dialogo[]; onAtras(): void }) {
+  const { t } = useT();
+  const [pregunta, setPregunta] = useState<(typeof PREGUNTAS)[number]["id"] | null>(null);
+  const fuente = estado.tormenta!.fuente;
+  const de = (e: Experto) => dialogos.find((d) => d.experto === e);
+  const respuesta = PREGUNTAS.find((q) => q.id === pregunta);
+  const linea = respuesta && de(respuesta.experta)?.lineas[1];
+  return (
+    <div className="tormenta-plan">
+      <div className="tormenta-verif-expertas">
+        {(["ingeniera", "doctora"] as const).map((e) => {
+          const l = de(e)?.lineas[0];
+          return (
+            <div key={e} className="tormenta-plan-experta">
+              <ExpertPortrait persona={e} compacto />
+              {l && <p className="tormenta-frase">{t(l.clave, l.vars)}</p>}
+            </div>
+          );
+        })}
+      </div>
+      <div className="tormenta-plan-accion tormenta-verif">
+        <span className="fc"><span className="fc-cara fc-chico tormenta-pieza"><span>{t("ui.tormenta.fuente")}</span></span></span>
+        <TarjetaFuente fuente={fuente} />
+        <ul className="tormenta-preguntas">
+          {PREGUNTAS.map((q) => (
+            <li key={q.id}><FacetButton icon={q.icono} labelKey={`ui.tormenta.pregunta.${q.id}`} selected={pregunta === q.id ? true : undefined} onClick={() => setPregunta(q.id)} /></li>
+          ))}
+        </ul>
+        {linea && <p className="tormenta-respuesta-fuente" role="status">{t(linea.clave, linea.vars)}</p>}
+        <div className="tormenta-plan-botones">
+          <span className="fb-caja">
+            <a className="fb fb-primary" href={fuente.url} target="_blank" rel="noopener noreferrer">
+              <span className="fb-sombra" aria-hidden="true" />
+              <span className="fb-superficie">
+                <Icono nombre="enlace" tam={26} className="fb-icono" />
+                <span className="fb-texto">{t("ui.tormenta.verFuente")}<span className="oculto-visual"> {t("ui.datos.ventana_nueva")}</span></span>
+              </span>
+            </a>
+          </span>
           <FacetButton labelKey="ui.comun.atras" onClick={onAtras} />
         </div>
       </div>
