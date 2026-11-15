@@ -1,12 +1,13 @@
 /**
  * data/terreno/luna-visible (Moon Trek) → luna-visible.json con 3 sitios Apolo. Sin red.
  * Elevación = medida (LOLA). Pendiente (radio 1,5 km, igual que Jezero), relieve y puntaje "plano" = DERIVADOS.
- * Luz y blindaje: SIN fuente verificada → null (pendiente). No se inventan valores.
+ * Luz: SIN fuente verificada → null (pendiente). Blindaje = cielo tapado por el relieve (derivado del DEM de entorno de 40 km, luna-blindaje.ts).
  */
 import { readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { LUNA_CUADRO, RADIO_LUNA_M, TerrenoLunaSchema, type SitioLuna, type TerrenoLuna } from "../src/terreno";
 import { RAIZ } from "./config";
+import { ENTORNO, cieloTapadoDe, leerEntorno } from "./luna-blindaje";
 import { REGLAS } from "./jezero-curar";
 
 const DIR = join(RAIZ, "terreno", "luna-visible");
@@ -16,6 +17,7 @@ const r2 = (x: number) => Math.round(x * 100) / 100;
 export function curarLuna(): TerrenoLuna {
   const consulta = JSON.parse(readFileSync(join(DIR, "consulta.json"), "utf-8"));
   const n = LUNA_CUADRO.px;
+  const entorno = JSON.parse(readFileSync(join(DIR, "entorno.json"), "utf-8"));
   const sitios: SitioLuna[] = consulta.sitios.map((s: any) => {
     const b = readFileSync(join(DIR, s.id, "elevacion.bin"));
     const h = new Int16Array(b.buffer, b.byteOffset, b.length / 2);
@@ -36,6 +38,9 @@ export function curarLuna(): TerrenoLuna {
       for (let c = c0 - rc; c <= c0 + rc; c++)
         if (((c - c0) * dx) ** 2 + ((f - f0) * dy) ** 2 <= REGLAS.radioPendienteM ** 2) { suma += pend(c, f); cuenta++; }
     const pendiente = suma / cuenta;
+    const es = entorno.sitios.find((x: any) => x.id === s.id);
+    const ct = cieloTapadoDe(leerEntorno(DIR, s, { px: entorno.px, bbox: es.bbox }));
+    const fraccion = r2(ct.cieloTapado);
     return {
       id: s.id,
       nombreKey: `datos.terreno.sitio.${s.id}.nombre`,
@@ -49,7 +54,15 @@ export function curarLuna(): TerrenoLuna {
       elevacionM: at(c0, f0),
       pendienteGrados: r1(pendiente),
       relieveM: Math.max(...h) - Math.min(...h),
-      puntajes: { plano: r2(Math.min(1, Math.max(0, 1 - pendiente / REGLAS.pendienteMaxGrados))), luz: null, blindaje: null },
+      puntajes: { plano: r2(Math.min(1, Math.max(0, 1 - pendiente / REGLAS.pendienteMaxGrados))), luz: null, blindaje: fraccion },
+      cieloTapado: {
+        fraccion,
+        omegaSr: Math.round(ct.omegaSr * 1e4) / 1e4,
+        horizonteMaxGrados: r1(ct.horizonteMaxGrados),
+        direcciones: ENTORNO.direcciones,
+        radioKm: entorno.radioM / 1000,
+        dem: { archivo: `${s.id}/entorno.bin`, ancho: entorno.px, alto: entorno.px, metrosPorPixel: Math.round((2 * entorno.radioM) / entorno.px) },
+      },
     };
   });
   return TerrenoLunaSchema.parse({
@@ -64,7 +77,13 @@ export function curarLuna(): TerrenoLuna {
       consultadoEl: consulta.consultadoEl,
       estadoDato: "curado",
       derivadoKey: "datos.terreno.derivado",
-      pendientes: ["luz", "blindaje"],
+      pendientes: ["luz"],
+      blindajeFuente: {
+        metodo: "cieloTapado = 1 − Ω/2π; Ω = Σ (2π/72)(1 − sin h) con h = elevación máxima del horizonte (≥ 0) cada 5° hasta 40 km, DEM LOLA con curvatura lunar",
+        cita: "Definición como en NASA GSFC PGDA SKYV: Mazarico, E., et al. (2011), Icarus 211, 1066-1081, doi:10.1016/j.icarus.2010.10.030",
+        capa: "LRO_LOLA_DEM_Global_128ppd_v04 (Moon Trek)",
+        consultadoEl: entorno.consultadoEl,
+      },
     },
   });
 }
@@ -72,5 +91,5 @@ export function curarLuna(): TerrenoLuna {
 if (process.argv[1]?.endsWith("luna-curar.ts")) {
   const t = curarLuna();
   writeFileSync(join(DIR, "luna-visible.json"), JSON.stringify(t, null, 2) + "\n");
-  for (const s of t.sitios) console.log(`${s.id}: ${s.elevacionM} m, pendiente ${s.pendienteGrados}°, relieve ${s.relieveM} m, plano ${s.puntajes.plano}`);
+  for (const s of t.sitios) console.log(`${s.id}: ${s.elevacionM} m, pendiente ${s.pendienteGrados}°, relieve ${s.relieveM} m, plano ${s.puntajes.plano}, blindaje ${s.puntajes.blindaje}`);
 }

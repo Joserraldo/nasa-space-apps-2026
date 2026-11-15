@@ -43,4 +43,4 @@
 ## Notas / decisiones que afectan este rol
 - Humano: Daniel (`Daniverd15`). Revisión cruzada con infra.
 - FLR no funciona en api.nasa.gov (404): usar `ccmc.gsfc.nasa.gov/DONKI-API/get/FLR` [V].
-- Antes de usar una fuente que no esté en la lista oficial del reto (ej. Mars Trek), preguntarle a Daniel.
+- Fuentes fuera de la lista oficial del reto: **autorizadas por Daniel (14 nov 2026)** cuando los recursos oficiales no tienen el dato. Preferir NASA y otras agencias o artículos revisados; citar fuente y fecha; marcar medido/derivado; registrar cada una en `docs/science/fuentes.md` §0c.

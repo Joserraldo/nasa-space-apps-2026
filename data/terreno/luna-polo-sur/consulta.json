@@ -1,0 +1,128 @@
+{
+  "consultadoEl": "2026-11-14",
+  "dem": {
+    "capa": "LRO_LOLA_DEM_SPole75_30mp_v04",
+    "unidad": "m",
+    "tipo": "Int16LE",
+    "ancho": 128,
+    "alto": 128,
+    "metrosPorPixel": 120
+  },
+  "proyeccion": "PROJCS[\"Moon2000_spole\",GEOGCS[\"GCS_Moon\",DATUM[\"D_Moon_2000\",SPHEROID[\"Moon_2000_IAU_IAG\",1737400.0,0.0]],PRIMEM[\"Reference_Meridian\",0.0],UNIT[\"Degree\",0.0174532925199433]],PROJECTION[\"Stereographic_South_Pole\"],PARAMETER[\"false_easting\",0.0],PARAMETER[\"false_northing\",0.0],PARAMETER[\"central_meridian\",0.0],PARAMETER[\"standard_parallel_1\",-90.0],UNIT[\"Meter\",1.0]]",
+  "sitios": [
+    {
+      "id": "shackleton",
+      "nombreIau": "Shackleton",
+      "tipo": "Crater, craters",
+      "aprobacion": "Adopted by IAU",
+      "diametroKm": 21,
+      "lat": -89.625776,
+      "lon": 132.321845,
+      "x": 8390,
+      "y": -7640,
+      "bboxM": {
+        "xmin": 710,
+        "ymin": -15320,
+        "xmax": 16070,
+        "ymax": 40
+      },
+      "urlPos": "https://trek.nasa.gov/moon/trekarcgis/rest/services/CombinedNomenclature/MapServer/0/query?where=LABEL%3D'Shackleton'%20AND%20type%3D'Crater%2C%20craters'&outFields=LABEL,type,center_lat,center_lon,diameter,approval,origin&returnGeometry=false&f=json",
+      "urlDem": "https://trek.nasa.gov/moon/trekarcgis/rest/services/LRO_LOLA_DEM_SPole75_30mp_v04/ImageServer/exportImage?bbox=710,-15320,16070,40&size=128,128&format=bsq&pixelType=F32&interpolation=RSP_BilinearInterpolation&f=image"
+    },
+    {
+      "id": "haworth",
+      "nombreIau": "Haworth",
+      "tipo": "Crater, craters",
+      "aprobacion": "Adopted by IAU",
+      "diametroKm": 51.4231,
+      "lat": -87.202858,
+      "lon": -7.493656,
+      "x": -11064,
+      "y": 84111,
+      "bboxM": {
+        "xmin": -18744,
+        "ymin": 76431,
+        "xmax": -3384,
+        "ymax": 91791
+      },
+      "urlPos": "https://trek.nasa.gov/moon/trekarcgis/rest/services/CombinedNomenclature/MapServer/0/query?where=LABEL%3D'Haworth'%20AND%20type%3D'Crater%2C%20craters'&outFields=LABEL,type,center_lat,center_lon,diameter,approval,origin&returnGeometry=false&f=json",
+      "urlDem": "https://trek.nasa.gov/moon/trekarcgis/rest/services/LRO_LOLA_DEM_SPole75_30mp_v04/ImageServer/exportImage?bbox=-18744,76431,-3384,91791&size=128,128&format=bsq&pixelType=F32&interpolation=RSP_BilinearInterpolation&f=image"
+    },
+    {
+      "id": "faustini",
+      "nombreIau": "Faustini",
+      "tipo": "Crater, craters",
+      "aprobacion": "Adopted by IAU",
+      "diametroKm": 42.4846,
+      "lat": -87.177099,
+      "lon": 85.0241,
+      "x": 85294,
+      "y": 7426,
+      "bboxM": {
+        "xmin": 77614,
+        "ymin": -254,
+        "xmax": 92974,
+        "ymax": 15106
+      },
+      "urlPos": "https://trek.nasa.gov/moon/trekarcgis/rest/services/CombinedNomenclature/MapServer/0/query?where=LABEL%3D'Faustini'%20AND%20type%3D'Crater%2C%20craters'&outFields=LABEL,type,center_lat,center_lon,diameter,approval,origin&returnGeometry=false&f=json",
+      "urlDem": "https://trek.nasa.gov/moon/trekarcgis/rest/services/LRO_LOLA_DEM_SPole75_30mp_v04/ImageServer/exportImage?bbox=77614,-254,92974,15106&size=128,128&format=bsq&pixelType=F32&interpolation=RSP_BilinearInterpolation&f=image"
+    },
+    {
+      "id": "malapert",
+      "nombreIau": "Malapert",
+      "tipo": "Crater, craters",
+      "aprobacion": "Adopted by IAU",
+      "diametroKm": 70.4424,
+      "lat": -84.798043,
+      "lon": 12.305737,
+      "x": 33642,
+      "y": 154223,
+      "bboxM": {
+        "xmin": 25962,
+        "ymin": 146543,
+        "xmax": 41322,
+        "ymax": 161903
+      },
+      "urlPos": "https://trek.nasa.gov/moon/trekarcgis/rest/services/CombinedNomenclature/MapServer/0/query?where=LABEL%3D'Malapert'%20AND%20type%3D'Crater%2C%20craters'&outFields=LABEL,type,center_lat,center_lon,diameter,approval,origin&returnGeometry=false&f=json",
+      "urlDem": "https://trek.nasa.gov/moon/trekarcgis/rest/services/LRO_LOLA_DEM_SPole75_30mp_v04/ImageServer/exportImage?bbox=25962,146543,41322,161903&size=128,128&format=bsq&pixelType=F32&interpolation=RSP_BilinearInterpolation&f=image"
+    },
+    {
+      "id": "nobile",
+      "nombreIau": "Nobile",
+      "tipo": "Crater, craters",
+      "aprobacion": "Adopted by IAU",
+      "diametroKm": 73.5361,
+      "lat": -85.239498,
+      "lon": 53.647625,
+      "x": 116328,
+      "y": 85615,
+      "bboxM": {
+        "xmin": 108648,
+        "ymin": 77935,
+        "xmax": 124008,
+        "ymax": 93295
+      },
+      "urlPos": "https://trek.nasa.gov/moon/trekarcgis/rest/services/CombinedNomenclature/MapServer/0/query?where=LABEL%3D'Nobile'%20AND%20type%3D'Crater%2C%20craters'&outFields=LABEL,type,center_lat,center_lon,diameter,approval,origin&returnGeometry=false&f=json",
+      "urlDem": "https://trek.nasa.gov/moon/trekarcgis/rest/services/LRO_LOLA_DEM_SPole75_30mp_v04/ImageServer/exportImage?bbox=108648,77935,124008,93295&size=128,128&format=bsq&pixelType=F32&interpolation=RSP_BilinearInterpolation&f=image"
+    },
+    {
+      "id": "de-gerlache",
+      "nombreIau": "de Gerlache",
+      "tipo": "Crater, craters",
+      "aprobacion": "Adopted by IAU",
+      "diametroKm": 31.4131,
+      "lat": -88.448714,
+      "lon": -90.447515,
+      "x": -47042,
+      "y": -367,
+      "bboxM": {
+        "xmin": -54722,
+        "ymin": -8047,
+        "xmax": -39362,
+        "ymax": 7313
+      },
+      "urlPos": "https://trek.nasa.gov/moon/trekarcgis/rest/services/CombinedNomenclature/MapServer/0/query?where=LABEL%3D'de%20Gerlache'%20AND%20type%3D'Crater%2C%20craters'&outFields=LABEL,type,center_lat,center_lon,diameter,approval,origin&returnGeometry=false&f=json",
+      "urlDem": "https://trek.nasa.gov/moon/trekarcgis/rest/services/LRO_LOLA_DEM_SPole75_30mp_v04/ImageServer/exportImage?bbox=-54722,-8047,-39362,7313&size=128,128&format=bsq&pixelType=F32&interpolation=RSP_BilinearInterpolation&f=image"
+    }
+  ]
+}

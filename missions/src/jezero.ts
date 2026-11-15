@@ -4,12 +4,28 @@ import type { BaseAction, Difficulty, Equipment, Expert, MissionGoal, Resource, 
  * Misión de la ruta dorada: cráter Jezero, Marte. Solo datos; la lógica vive en engine/.
  * Es la partida de demo del issue #41: 8 pasos en unos 2 minutos.
  */
+export type MetaConocida =
+  | "satelite_suelto"
+  | "ruta_dibujada"
+  | "sitio_elegido"
+  | "modulos_colocados"
+  | "tormenta_llega"
+  | "consejo_opuesto"
+  | "telemetria_enviada"
+  | "fin";
+
+/** Meta de un paso: una de las 8 de Jezero o una propia de otra misión. */
+export type MetaPaso = MetaConocida | (string & {});
+
 export interface PasoMision {
   n: number;
   /** Clave i18n del título del paso. */
   tituloKey: string;
-  /** Qué debe pasar para avanzar. */
-  meta: "satelite_suelto" | "ruta_dibujada" | "sitio_elegido" | "modulos_colocados" | "tormenta_llega" | "consejo_opuesto" | "telemetria_enviada" | "fin";
+  /**
+   * Qué debe pasar para avanzar. Las 8 metas de Jezero dan autocompletado (`MetaConocida`);
+   * otra misión puede usar una meta propia (cualquier string), p. ej. un paso 2 que guarda una decisión.
+   */
+  meta: MetaPaso;
 }
 
 /** Efecto de una opción sobre los medidores: el costo llega ya, el beneficio con retraso. */
@@ -44,15 +60,29 @@ export interface AveriaIris {
   reparaCon: Expert;
 }
 
+/** Condición de victoria de una misión. */
+export type ExitoCuando = "telemetria_llega" | { tipo: "sobrevivir_hasta_tick"; tick: number };
+
 /** Cuándo termina la partida de demo. */
 export interface FinMision {
-  /** Gana cuando llega la telemetría a la Tierra (paso 7 → 8) sin ningún medidor en 0. */
-  exitoCuando: "telemetria_llega";
+  /**
+   * Gana cuando llega la telemetría a la Tierra (paso 7 → 8) sin ningún medidor en 0, o,
+   * con `{ tipo: "sobrevivir_hasta_tick", tick }`, al llegar a ese tick con todo por encima de 0 (p. ej. el amanecer lunar).
+   */
+  exitoCuando: ExitoCuando;
   /** Pierde si cualquier medidor llega a 0 (regla general del motor). */
   falloCuando: "recurso_en_cero";
   /** Red de seguridad: si en este tick no ha pasado nada, se muestra el paso 8 igual. */
   tickLimite: number;
 }
+
+/** Causa del evento de mala suerte. Las claves conocidas dan autocompletado; cualquier otra clave i18n también vale. */
+export type CausaMalaSuerte =
+  | "mala_suerte.tormenta_polvo"
+  | "mala_suerte.micrometeorito"
+  | "mala_suerte.fallo_panel"
+  | "mala_suerte.fuga_agua"
+  | (string & {});
 
 /**
  * Evento de mala suerte del paso 4b (propuesta #88, viene de la tarea "limpiar paneles" de ARES):
@@ -60,8 +90,11 @@ export interface FinMision {
  * No sale en la semilla dorada, para que el video sea estable.
  */
 export interface EventoPolvo {
-  /** Clave de la causa que ya existe en el motor y en los textos de diseño. */
-  descripcionKey: "mala_suerte.tormenta_polvo";
+  /**
+   * Clave de la causa de mala suerte (ya existe en el motor y en los textos de diseño).
+   * Por defecto la tormenta de polvo; otras misiones usan p. ej. `mala_suerte.micrometeorito`.
+   */
+  descripcionKey: CausaMalaSuerte;
   equipo: Extract<Equipment, "panel_solar">;
   /** Fracción de la energía del panel que llega mientras hay polvo (0,5 = la mitad, propuesta #88). Valor de juego. */
   rendimientoPanel: number;
@@ -109,6 +142,18 @@ export interface TarjetaCiencia {
   modulo?: Equipment;
   textoKey: string;
   fuenteKey: string | null;
+  /**
+   * Fuentes adicionales (misma regla que `fuenteKey`: claves que existen en data/i18n).
+   * Si hay varias, ui las muestra todas; `fuenteKey` sigue siendo la principal.
+   */
+  fuentesKeys?: string[];
+  /**
+   * Aviso "dato curado, no en vivo": true si el dato es una cifra fija revisada a mano
+   * y no una lectura en vivo. ui muestra la etiqueta `etiquetaKey` (o su texto genérico) junto a la tarjeta.
+   */
+  curado?: true;
+  /** Clave i18n de la etiqueta del aviso; si falta, ui usa su texto genérico de "dato curado". */
+  etiquetaKey?: string;
 }
 
 /** Pregunta del paso 8 (el quiz de ARES): 3 opciones, nunca bloquea y siempre explica. */
@@ -133,11 +178,15 @@ export interface Mision {
   /** Módulos que el jugador coloca en el paso 4 (elige 2 de estos). */
   modulosDisponibles: Equipment[];
   modulosAColocar: number;
+  /** Sobrescribe, solo en esta misión, el beneficio con retraso de un módulo (si no, el motor usa MODULOS de design/). */
+  modulos?: Partial<Record<Equipment, Partial<Record<Resource, number>>>>;
   /** Tick en el que la tormenta se activa (la pausa automática la hace ui). */
   tickTormenta: number;
+  /** Ticks que tarda la respuesta de la Tierra a la telemetría. Si falta, el motor usa RETRASO_COMUNICACIONES[sitio] de design/. */
+  retrasoComunicacionesTicks?: number;
   pasos: PasoMision[];
-  /** Carpeta en data/terreno/ con el mapa y los sitios candidatos. */
-  terrenoId: string;
+  /** Carpeta en data/terreno/ con el mapa y los sitios candidatos. Opcional: una misión sin mapa (p. ej. la nave del outpost) no la tiene. */
+  terrenoId?: string;
   /** Sitios del paso 3, en el orden en que ui los muestra. */
   sitiosCandidatos: SitioCandidato[];
   averiaIris: AveriaIris;

@@ -42,6 +42,16 @@ describe("tarjeta de fuente (ruta dorada, #41)", () => {
     }
   });
 
+  it("'qué datos usamos': título primero, 'no en vivo' al final, sin repetidos y en las dos lenguas", () => {
+    expect(DATOS_USADOS_KEYS[0]).toBe("datos.usados.titulo");
+    expect(DATOS_USADOS_KEYS[DATOS_USADOS_KEYS.length - 1]).toBe("datos.usados.noEnVivo");
+    expect(new Set(DATOS_USADOS_KEYS).size).toBe(DATOS_USADOS_KEYS.length);
+    const claves = (d: Record<string, string>) => Object.keys(d).filter((k) => k.startsWith("datos.usados.")).sort();
+    expect(claves(en)).toEqual(claves(es));
+    for (const k of claves(en)) expect(DATOS_USADOS_KEYS as readonly string[], k).toContain(k);
+    for (const k of DATOS_USADOS_KEYS.slice(1)) expect((en[k] as string).split(/(?<=[.!?])\s+/).length, k).toBeLessThanOrEqual(2);
+  });
+
   it("'qué datos usamos' existe en en y es, en orden", () => {
     for (const k of DATOS_USADOS_KEYS) {
       expect(en[k], k).toBeTruthy();

@@ -2,9 +2,9 @@ name: CI
 
 on:
   pull_request:
-    branches: [develop, main]
+    branches: [develop, main, feat/ui-escenarios]
   push:
-    branches: [develop, main]
+    branches: [develop, main, feat/ui-escenarios]
 
 concurrency:
   group: ci-${{ github.ref }}

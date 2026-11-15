@@ -1,0 +1,31 @@
+# Renders de revisión, cachés Python y fuentes pesadas sin comprimir (las 55 láminas curadas y optimizadas viven en referencias/).
+/revision-pdf-v7/
+/revision-pdf-v8/
+/revision-pdf-plan-jezero/
+__pycache__/
+
+# Láminas PNG crudas sin optimizar (~77 MB), entradas previas y scripts auxiliares.
+/ampliacion-v8/
+/estaciones/
+/individuales/
+/inicio/
+/laminas/
+/seleccion/
+
+# Laboratorio HTML aislado, copia local de Three.js y manifiestos temporales de generación.
+/vendor/
+/index.html
+/laboratorio.css
+/laboratorio.js
+/package.json
+/crear_atlas_v7.py
+/crear_atlas_v8.py
+/crear_plan_jezero.py
+/manifest.json
+/prompt-variantes.json
+/prompts-produccion.json
+/revision.json
+/revision-plan-jezero.json
+
+# Atlas y plan en PDF: su contenido vive en los .md y en referencias/ (no se versionan).
+/*.pdf

@@ -1,26 +1,24 @@
 # Rol 5: Frontend, voz, arte y accesibilidad
-**Humano responsable:** María Paula (`Paulasaah`)
+**Humano responsable:** María Paula (`Paulasaah`), también orquestadora del desarrollo 3D y de la pantalla (decisión de Santiago, 14 nov). La orquestación general del equipo y los merges siguen siendo de Santiago (`kcitas`).
 **Slug de ramas:** `ui` → `feat/ui-<tema>`
 **Etiqueta de issues:** `rol:ui`
 **Posees:** `/ui`, `/assets`
 **No toques:** todo lo demás (abre issue `bloquea:<rol>`).
-**Contratos que consumes:** `GameState`, `ClassifierOutput`, tarjetas de fuente
-**Contratos que produces:** Jugable con teclado y solo texto; es/en; sin errores en consola; captura en el PR.
-**Definición de "hecho":** - Moodboard y referencias de interfaces para niños; propuesta de estilo visual (D6).
-- Propuestas de nombre del juego, logo y tripulantes (D1, D7) con rol 1.
-- Checklist de accesibilidad (contraste, tamaño, lectura, daltonismo).
-- Entregable: `docs/ideas/marca.md`.
+**Contratos que consumes:** `GameState`, `ClassifierOutput`, tarjetas de fuente, `MISION_JEZERO`, funciones públicas de `engine/`, `agents/` y `data/`.
+**Contratos que produces:** la ruta dorada jugable en pantalla, con teclado y solo texto, EN/ES, sin errores en consola, con captura en cada PR.
 
-## Fase 0 (ahora, solo documentos — nada de código del juego)
-1. Esqueleto React + Vite + TS (PLAN §13; PixiJS solo para la escena animada) e i18n es/en desde el primer commit.
-2. HUD de los 3 recursos (energía, soporte vital, blindaje).
-3. Panel de tripulación: botones por experto + caja de texto (siempre funcionan).
-4. Voz con Web Speech API detrás de un interruptor (Chrome/Edge); sin guardar audio.
-5. Pantalla de "cadena de causas" y tarjeta de ciencia al final.
-6. Trabaja contra mocks de `/data/mock` y un `GameState` de ejemplo.
+## Antes de tocar `ui/` o `assets/`
+1. Leé [`docs/referenciapau/README.md`](../docs/referenciapau/README.md) y, de su tabla "Qué leer según la tarea", solo la fila de tu tarea.
+2. El frontend v8 se reparte entre el equipo con archivos exclusivos por persona y se trabaja en la rama `feat/ui-escenarios` ([`FLUJO.md`](../docs/referenciapau/FLUJO.md) §1–§2). Todo PR de `ui/` lo aprueba María Paula. Prompt de María Paula: [`docs/prompts/ui.md`](../docs/prompts/ui.md). Prioridades y niveles: [`NIVELES.md`](../docs/referenciapau/NIVELES.md).
+3. Estilo y render: [D6](../docs/decisiones/D6-estilo-visual.md) (Three.js procedural + DOM). Donde `PLAN.md`, `docs/ORQUESTACION.md` o `D3` digan PixiJS, manda D6.
 
-## Tareas de arranque (Fase 1, el día que empieza el hackathon)
+## Reglas duras
+- **La referencia manda:** fidelidad a las láminas, no reinterpretación.
+- **Todo con código:** Three.js `^0.160.0` procedural para el mundo, DOM/CSS para la UI. Sin GLB, Blender, WebGPU, Drei, Rapier ni otra librería.
+- **Marte real:** [`MARTE.md`](../docs/referenciapau/MARTE.md). Cero vegetación, ruinas o cielo azul afuera.
+- **El motor manda:** ninguna animación ni malla toca recursos ([`MECANICAS.md`](../docs/referenciapau/MECANICAS.md) §5).
+- **Cada PR visual** pasa la puerta de [`APLICACION.md`](../docs/referenciapau/APLICACION.md) §10.
+- Inglés primero, español después; ningún texto quemado.
 
-
-## Notas / decisiones que afectan este rol
-- _(vacío)_
+## Descartado (no usar aunque lo encuentres en el historial o en otra rama)
+Prototipo `docs/referencias/3d/`, atlas v2–v5 y v7, capibara, `polyfork.ts`, `ui/public/models/*.glb`, pipeline Blender → GLB, propuestas con Drei, Rapier o Higgsfield, tema oscuro del prototipo (`estilos.css` y `mision.css` actuales), `docs/ideas/marca.md` (la paleta vigente está en `DISEÑO.md`).
