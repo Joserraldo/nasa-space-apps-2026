@@ -170,5 +170,13 @@
   "fuente.svs": "NASA Scientific Visualization Studio (Moon phase and libration 2024)",
   "datos.luz.derivado": "The Sun's position on the Moon comes from NASA. The height of the Sun at each place and the sunrise times are calculated by the team, on flat ground with no mountains.",
   "datos.luz.noche": "When this storm arrived, it was night at this site: the Sun rose again on {fecha}.",
-  "datos.luz.dia": "When this storm arrived, it was daytime at this site: the Sun was {elevacion}° above the horizon."
+  "datos.luz.dia": "When this storm arrived, it was daytime at this site: the Sun was {elevacion}° above the horizon.",
+  "fuente.nssdcMoon": "NASA NSSDC (Moon fact sheet)",
+  "fuente.nasa.hieloLuna": "NASA Science (water and ice on the Moon)",
+  "fuente.nasa.orionRefugio": "NASA (Orion radiation shelter plan)",
+  "fuente.nasa.orionPaneles": "NASA (Orion service module solar arrays)",
+  "fuente.jpl.casqueteMarte": "NASA JPL (Mars north polar cap image)",
+  "fuente.jpl.spiritInclinacion": "NASA JPL (Spirit rover winter tilt)",
+  "fuente.nasa.phoenix": "NASA (Phoenix lander at Mars' north pole)",
+  "fuente.nasa.baterias": "NASA (Basics of Space Flight: spacecraft power)"
 }
