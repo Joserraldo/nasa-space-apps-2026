@@ -1,7 +1,6 @@
 /** Estaciones vistas por fuera (`exterior/03`): laboratorio, enfermería y comedor, solo volumen exterior. */
 import * as THREE from "three";
 import type { Materiales } from "../materiales";
-import { TERRENO } from "../mundo";
 import { caja, chaflan, grupo, parte, tronco } from "./piezasComunes";
 
 export type EstacionId = "laboratorio" | "enfermeria" | "comedor";
@@ -11,11 +10,11 @@ export type EstacionId = "laboratorio" | "enfermeria" | "comedor";
  * en `baseExterior`). Constantes propias: no son `LugarId` ni tocan `LUGARES`. Radio = huella. [E]
  */
 export const ESTACIONES: readonly { id: EstacionId; grados: number; radio: number }[] = [
-  { id: "laboratorio", grados: -60, radio: 3 },
-  { id: "enfermeria", grados: -82, radio: 3 },
-  { id: "comedor", grados: -104, radio: 3 },
+  { id: "laboratorio", grados: -58, radio: 2.8 },
+  { id: "enfermeria", grados: -80, radio: 2.8 },
+  { id: "comedor", grados: -102, radio: 2.8 },
 ];
-const D = TERRENO.limite + 1 + 3;
+const D = 31;
 export const POS_ESTACIONES = ESTACIONES.map((e) => ({
   id: e.id,
   radio: e.radio,
