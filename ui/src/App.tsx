@@ -19,6 +19,7 @@ import { PantallaFinal } from "./pantallas/PantallaFinal.js";
 import { PantallaOrbita } from "./pantallas/PantallaOrbita.js";
 import { PantallaBase } from "./pantallas/PantallaBase.js";
 import { Tormenta } from "./pantallas/Tormenta.js";
+import { PantallaTormenta } from "./pantallas/PantallaTormenta.js";
 import { PreguntaDeIris } from "./componentes/PreguntaDeIris.js";
 import { Portada } from "./componentes/Portada.js";
 import { Intro } from "./componentes/Intro.js";
@@ -146,7 +147,10 @@ function Pantalla({ idioma, setIdioma }: { idioma: Idioma; setIdioma: (i: Idioma
         )}
         {j.fase === "tormenta" && (
           <>
-            <Tormenta estado={j.estado} onDecidir={(previas, opcionId) => enviar({ tipo: "dilema", previas, opcionId })} onAccion={accion} />
+            {/* Panel a de E7 detrás de ?tormenta=nueva: la ruta dorada aún depende de Tormenta.tsx (paneles b a d pendientes). */}
+            {new URLSearchParams(window.location.search).get("tormenta") === "nueva"
+              ? <PantallaTormenta estado={j.estado} colocados={j.colocados} />
+              : <Tormenta estado={j.estado} onDecidir={(previas, opcionId) => enviar({ tipo: "dilema", previas, opcionId })} onAccion={accion} />}
           </>
         )}
         {enBase && (

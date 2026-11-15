@@ -266,5 +266,7 @@
   "ui.mapa.lugar.reciclador_agua": "Reciclador de agua",
   "ui.mapa.lugar.invernadero": "Invernadero",
   "ui.mapa.lugar.antena": "Antena",
-  "ui.mapa.lugar.banco": "Banco de experimentos"
+  "ui.mapa.lugar.banco": "Banco de experimentos",
+  "ui.tormenta.elegir": "Elige a tu experto",
+  "ui.tormenta.acceso": "{recurso} {valor}"
 }
