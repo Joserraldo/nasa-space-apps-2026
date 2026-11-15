@@ -58,6 +58,8 @@
   "ui.tripulacion.hacer": "Hacerlo",
   "ui.iris.titulo": "Iris, la IA de la base",
   "ui.iris.verificar": "Verificar con la Ingeniera",
+  "ui.iris.saltar": "Saltar",
+  "ui.quesi.boton": "¿Y si…? Pregúntale al Matemático",
   "ui.iris.estado.tutorial": "Iris te guía",
   "ui.iris.estado.pistas": "Iris da pistas",
   "ui.iris.estado.danada": "Iris está dañada por la radiación",
