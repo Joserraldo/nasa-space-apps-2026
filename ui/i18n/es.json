@@ -270,5 +270,10 @@
   "ui.tormenta.elegir": "Elige a tu experto",
   "ui.tormenta.comparar": "Compara tu plan",
   "ui.tormenta.otra": "Preguntar a otro experto",
+  "ui.tormenta.verificar": "Verifica la alerta",
+  "ui.tormenta.fuente": "Revisa la fuente",
+  "ui.tormenta.pregunta.proteger": "¿Qué necesita protección?",
+  "ui.tormenta.pregunta.sensor": "¿Qué muestra el sensor?",
+  "ui.tormenta.verFuente": "Ver fuente",
   "ui.tormenta.acceso": "{recurso} {valor}"
 }
