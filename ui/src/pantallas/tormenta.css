@@ -17,20 +17,33 @@
 .tormenta-pausa { display: flex; align-items: center; gap: var(--esp-2); padding: var(--esp-1) var(--esp-4); white-space: nowrap; font-weight: var(--tipo-peso-etiqueta); }
 
 .tormenta-expertos, .tormenta-accesos { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--esp-3); }
-.tormenta-accesos { gap: var(--esp-3); }
-.tormenta-accesos .fb-caja, .tormenta-accesos .fb { inline-size: 100%; }
 .tormenta-expertos .retrato-boton { inline-size: 100%; }
 .tormenta-preguntar { display: flex; gap: var(--esp-2); align-items: center; }
 .tormenta-preguntar input { flex: 1; min-inline-size: 0; min-block-size: var(--toque-minimo); background: var(--color-marfil); border-color: color-mix(in srgb, var(--color-ciruela) 40%, transparent); }
 .tormenta-respuesta { display: grid; gap: var(--esp-1); padding: var(--esp-2) var(--esp-3); background: var(--color-lila); }
 .tormenta-respuesta h3, .tormenta-respuesta p { margin: 0; }
 
-/* Pantalla baja (móvil horizontal): el panel no tapa toda la escena. */
-@media (max-block-size: 480px) {
+/* Accesos: 3 columnas iguales; el texto baja de línea en vez de desbordar. */
+.tormenta-accesos { gap: var(--esp-2); }
+.tormenta-accesos .fb-caja { display: block; min-inline-size: 0; }
+.tormenta-accesos .fb { inline-size: 100%; min-inline-size: 0; }
+.tormenta-accesos .fb-superficie { padding-inline: var(--esp-2); gap: var(--esp-1); justify-content: center; }
+.tormenta-accesos .fb-texto { white-space: normal; text-align: center; font-size: 15px; line-height: 1.1; text-wrap: balance; min-inline-size: 0; }
+
+/* Etiquetas de los expertos: mismo alto en las 3 fichas, centradas y sin desbordar (EN y ES). */
+.tormenta-expertos .retrato-ficha { min-width: 0; padding-inline: var(--esp-2); }
+.tormenta-expertos .retrato-nombre { display: grid; place-items: center; min-block-size: 2.4em; font-size: 15px; line-height: 1.15; text-align: center; text-wrap: balance; }
+.tormenta-expertos .retrato-especialidad { justify-content: center; font-size: 13px; line-height: 1.15; min-block-size: 2.4em; text-align: center; text-wrap: balance; }
+
+/* Pantalla baja (móvil horizontal): compacta para que el campo y Send queden a la vista. */
+@media (max-height: 480px) {
   .tormenta-e7 { min-block-size: calc(100dvh - 80px); padding-block: var(--esp-2); }
   .tormenta-panel { inline-size: min(100%, 560px); }
-  .tormenta-cara { gap: var(--esp-2); padding: var(--esp-2) var(--esp-3); max-block-size: calc(100dvh - 100px); overflow-y: auto; }
-  .tormenta-expertos .retrato-ficha { min-width: 0; padding: var(--esp-1); }
-  .tormenta-expertos .retrato-marco { width: 72px; height: 72px; }
-  .tormenta-expertos .retrato-marco svg { width: 64px; height: 64px; }
+  .tormenta-cara { gap: var(--esp-1); padding: var(--esp-2) var(--esp-3); max-block-size: calc(100dvh - 90px); overflow-y: auto; }
+  .tormenta-titulo { font-size: 18px; }
+  .tormenta-expertos { gap: var(--esp-2); }
+  .tormenta-expertos .retrato-ficha { padding-block: var(--esp-1); gap: 2px; }
+  .tormenta-expertos .retrato-marco { width: 56px; height: 56px; }
+  .tormenta-expertos .retrato-marco svg { width: 50px; height: 50px; }
+  .tormenta-expertos .retrato-nombre, .tormenta-expertos .retrato-especialidad { min-block-size: 0; font-size: 12px; }
 }
