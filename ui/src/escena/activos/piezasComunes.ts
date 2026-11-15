@@ -194,26 +194,27 @@ export function crearCaja(m: Materiales): THREE.Group {
 }
 
 /**
- * Lámina 04 (panel solar): base octogonal, poste con luz cian y placa inclinada 25° con rejilla
- * 3×3. Pivote en la base; el grupo hijo `Solar_Head` es el eje de cabeza (gira con el sol).
+ * Lámina 04 (panel solar): base octogonal ancha, poste corto con luz cian y placa grande 3×3 que se
+ * recuesta hacia atrás (eje x, mira hacia arriba y a +z) y sobresale del poste. Pivote en la base;
+ * el grupo hijo `Solar_Head` es el eje de cabeza.
  */
 export function crearPanelSolar(m: Materiales): THREE.Group {
   const cabeza = new THREE.Group();
   cabeza.name = "Solar_Head";
-  cabeza.position.set(0, 0.8, 0);
-  cabeza.rotation.z = THREE.MathUtils.degToRad(-25);
-  cabeza.add(parte(m, "SuitBase", chaflan(1.6, 1.2, 0.06, 0.1), [0, 0.45, 0], "Solar_Plate"));
-  const celda = geometriaBase("kit-celda", () => new THREE.PlaneGeometry(0.44, 0.33));
+  cabeza.position.set(0, 0.6, 0);
+  cabeza.rotation.x = THREE.MathUtils.degToRad(-35);
+  cabeza.add(parte(m, "SuitBase", chaflan(1.9, 1.4, 0.07, 0.08), [0, 0.5, 0], "Solar_Plate"));
+  const celda = geometriaBase("kit-celda-panel", () => new THREE.PlaneGeometry(0.54, 0.4));
   for (let f = 0; f < 3; f++) {
     for (let c = 0; c < 3; c++) {
-      cabeza.add(parte(m, "Boots", celda, [(c - 1) * 0.5, 0.45 + (1 - f) * 0.38, 0.031], `Solar_Cell${f}${c}`));
+      cabeza.add(parte(m, "Boots", celda, [(c - 1) * 0.58, 0.5 + (1 - f) * 0.44, 0.036], `Solar_Cell${f}${c}`));
     }
   }
   return grupo(
     "Kit_SolarPanel",
-    parte(m, "SuitBase", tronco(0.3, 0.5, 0.2, 8), [0, 0.1, 0], "Solar_Base"),
-    parte(m, "SuitBase", caja(0.2, 0.55, 0.2), [0, 0.475, 0], "Solar_Post"),
-    parte(m, "Emissive", tronco(0.04, 0.04, 0.02, 8), [0, 0.45, 0.11], "Solar_Light"),
+    parte(m, "SuitBase", tronco(0.34, 0.62, 0.2, 8), [0, 0.1, 0], "Solar_Base"),
+    parte(m, "SuitBase", caja(0.34, 0.38, 0.3), [0, 0.39, 0], "Solar_Post"),
+    parte(m, "Emissive", caja(0.09, 0.09, 0.02), [0, 0.4, 0.155], "Solar_Light"),
     cabeza,
   );
 }
