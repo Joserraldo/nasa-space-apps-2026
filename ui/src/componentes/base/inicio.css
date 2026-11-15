@@ -208,37 +208,76 @@
 }
 
 /* ---------- Carga (inicio/03) ---------- */
+/* Fondo ámbar cálido con el centro más claro, como inicio/03. La ilustración (módulos, órbita y niño)
+   es la capa 3D de base/inicio3d/carga3d.ts; logo, insignias y panel son DOM encima. */
 .carga {
-  position: relative; min-height: 100dvh; background: var(--color-ambar); color: var(--color-indigo-texto);
-  display: grid; grid-template-columns: 1fr; place-items: center; align-content: center; gap: var(--esp-5); padding: 120px var(--esp-4) var(--esp-5);
+  position: relative; min-height: 100dvh; color: var(--color-indigo-texto);
+  background: radial-gradient(ellipse 70% 60% at 50% 40%, color-mix(in srgb, var(--color-ambar) 72%, var(--color-marfil)), var(--color-ambar) 70%, color-mix(in srgb, var(--color-ambar) 85%, var(--color-regolito-claro)));
+  display: grid; grid-template-columns: 30% minmax(0, 1fr) 4%; grid-template-rows: 47dvh auto 1fr; padding: 0 0 var(--esp-3);
 }
-.carga-marca { position: absolute; top: var(--esp-4); left: var(--esp-4); padding: var(--esp-3) var(--esp-5); background: var(--color-espacio);
+.carga-fondo { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+.carga-marca { position: absolute; z-index: 1; top: var(--esp-4); left: var(--esp-4); padding: var(--esp-3) var(--esp-5); background: var(--color-espacio);
   clip-path: polygon(16px 0, 100% 0, 100% calc(100% - 16px), calc(100% - 16px) 100%, 0 100%, 0 16px); }
 .carga-logo { display: block; width: 180px; height: auto; }
-.carga-sonido { position: absolute; top: var(--esp-4); right: var(--esp-4); }
-.carga-iconos { display: flex; gap: var(--esp-6); }
-.carga-icono { display: grid; place-items: center; width: 64px; height: 64px; background: var(--color-marfil);
+.carga-sonido { position: absolute; z-index: 1; top: var(--esp-4); right: var(--esp-4); }
+/* Insignias sobre cada módulo: los centros son los de CAJAS_CARGA (carga3d.ts). */
+.carga-iconos { position: absolute; inset: 0; pointer-events: none; --i1: 36%; --i2: 57.5%; --i3: 83%; --iy: 15%; }
+.carga-icono { position: absolute; top: var(--iy); width: 56px; height: 56px; transform: translate(-50%, -50%); }
+.carga-icono:nth-child(1) { left: var(--i1); }
+.carga-icono:nth-child(2) { left: var(--i2); }
+.carga-icono:nth-child(3) { left: var(--i3); }
+.carga-placa { display: grid; place-items: center; width: 100%; height: 100%; background: var(--color-marfil);
   clip-path: polygon(14px 0, calc(100% - 14px) 0, 100% 14px, 100% calc(100% - 14px), calc(100% - 14px) 100%, 14px 100%, 0 calc(100% - 14px), 0 14px); }
-.carga-panel { width: min(100%, 640px); }
+/* Los destellos a cada lado de la insignia (tres trazos cortos), como en la lámina. */
+.carga-icono::before, .carga-icono::after { content: ""; position: absolute; top: 50%; width: 12px; height: 3px; background: var(--color-marfil);
+  box-shadow: 2px -11px 0 var(--color-marfil), 2px 11px 0 var(--color-marfil); }
+.carga-icono::before { right: calc(100% + 8px); }
+.carga-icono::after { left: calc(100% + 8px); box-shadow: -2px -11px 0 var(--color-marfil), -2px 11px 0 var(--color-marfil); }
+.carga-panel { position: relative; z-index: 1; grid-column: 2; grid-row: 2; width: 100%; }
+/* Respaldo sin WebGL: el retrato del niño a la izquierda. */
 .carga-nino { position: absolute; left: 3%; bottom: var(--esp-4); }
-.carga-nino svg { width: clamp(180px, 26vw, 280px); height: auto; }
-/* Pantalla ancha: el niño a la izquierda y el panel corrido a la derecha (inicio/03). */
-@media (min-width: 900px) { .carga-panel { justify-self: end; margin-right: 5%; width: min(60%, 640px); } }
-@media (max-width: 899px) { .carga-nino { position: static; order: -1; } .carga-nino svg { width: 120px; height: 120px; } }
+.carga-nino svg { width: clamp(120px, 24vw, 260px); height: auto; }
 .carga-cara { --fc-ch: var(--chaflan-grande); display: grid; justify-items: center; gap: var(--esp-3); padding: var(--esp-5) var(--esp-5) var(--esp-4); text-align: center; }
-.carga-cara h2 { margin: 0; font-size: var(--tipo-tam-titulo-grande); }
+/* El título es lo más grande de la pantalla en inicio/03. */
+.carga-cara h2 { margin: 0; font-size: clamp(28px, 4.4vw, 46px); font-weight: var(--tipo-peso-portada); line-height: 1.1; }
 .carga-puntos { display: inline-flex; gap: var(--esp-3); }
 .carga-puntos i { width: 22px; height: 22px; border-radius: 50%; background: var(--color-teal); animation: carga-punto 1.2s ease-in-out infinite; }
 .carga-puntos i:nth-child(2) { animation-delay: 0.2s; }
 .carga-puntos i:nth-child(3) { animation-delay: 0.4s; }
 @keyframes carga-punto { 0%, 100% { opacity: 0.45; } 50% { opacity: 1; } }
 .carga-estado { margin: 0; font-style: italic; }
-.carga-consejo { display: flex; align-items: center; gap: var(--esp-4); width: 100%; padding: var(--esp-3) var(--esp-4); background: var(--color-lila); text-align: left;
+.carga-consejo { display: flex; align-items: center; gap: var(--esp-4); width: 100%; padding: var(--esp-3) var(--esp-4); background: color-mix(in srgb, var(--color-cian) 22%, var(--color-marfil)); text-align: left;
   clip-path: polygon(12px 0, calc(100% - 12px) 0, 100% 50%, calc(100% - 12px) 100%, 12px 100%, 0 50%); }
-.carga-consejo p { margin: 0; font-weight: var(--tipo-peso-titulo); font-size: var(--tipo-tam-dialogo); }
+.carga-consejo p { margin: 0; font-weight: var(--tipo-peso-titulo); font-size: clamp(18px, 2.4vw, 24px); line-height: 1.2; }
 .carga-chip { flex: none; padding: 2px var(--esp-3); font-style: italic; font-weight: var(--tipo-peso-portada); letter-spacing: 0.06em; text-transform: uppercase; font-size: 15px; background: var(--color-cian);
   clip-path: polygon(8px 0, calc(100% - 8px) 0, 100% 50%, calc(100% - 8px) 100%, 8px 100%, 0 50%); }
-@media (max-width: 560px) { .carga-consejo { flex-direction: column; text-align: center; } .carga-iconos { gap: var(--esp-4); } }
+/* Vertical (ESCENAS §2.7): módulos arriba, el niño en el medio y el panel abajo. */
+@media (max-width: 899px) and (min-height: 501px) {
+  .carga { grid-template-columns: var(--esp-4) minmax(0, 1fr) var(--esp-4); grid-template-rows: 55dvh auto 1fr; }
+  .carga-logo { width: 110px; }
+  .carga-marca { padding: var(--esp-2) var(--esp-3); }
+  .carga-iconos { --i1: 17%; --i2: 50%; --i3: 82.5%; --iy: 14.5%; }
+  .carga-icono { width: 44px; height: 44px; }
+  .carga-icono::before, .carga-icono::after { display: none; }
+  .carga-nino { left: 50%; bottom: auto; top: 30%; transform: translateX(-50%); }
+}
+@media (max-width: 560px) { .carga-consejo { flex-direction: column; text-align: center; } }
+/* Celular horizontal: el niño a la izquierda más chico y el panel a la derecha, todo sin desplazar. */
+@media (max-height: 500px) {
+  .carga { grid-template-columns: 27% minmax(0, 1fr) 3%; grid-template-rows: 32dvh auto 1fr; padding-bottom: var(--esp-2); }
+  .carga-marca { padding: var(--esp-2) var(--esp-4); top: var(--esp-3); left: var(--esp-3); }
+  .carga-logo { width: 120px; }
+  .carga-sonido { top: var(--esp-3); right: var(--esp-3); }
+  .carga-iconos { --i1: 34%; --i2: 49.5%; --i3: 65%; --iy: 6%; }
+  .carga-icono { width: 36px; height: 36px; }
+  .carga-icono svg { width: 22px; height: 22px; }
+  .carga-icono::before, .carga-icono::after { display: none; }
+  .carga-cara { padding: var(--esp-3) var(--esp-4); gap: var(--esp-2); }
+  .carga-cara h2 { font-size: var(--tipo-tam-titulo); }
+  .carga-puntos i { width: 16px; height: 16px; }
+  .carga-consejo { padding: var(--esp-2) var(--esp-3); }
+  .carga-consejo p { font-size: var(--tipo-tam-cuerpo); }
+}
 
 @media (prefers-reduced-motion: reduce) { .intro-vineta, .carga-puntos i { animation: none; } .carga-puntos i { opacity: 0.8; } }
 /* En inicio/01 el planeta del fondo es violeta (no Marte): se recolorea solo aquí. */

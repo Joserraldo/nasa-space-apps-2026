@@ -1,4 +1,4 @@
-import { lazy, Suspense, useCallback, useState } from "react";
+import { lazy, Suspense, useCallback, useEffect, useState } from "react";
 import { hayGraficos3D } from "../escena/soporte.js";
 import type { Idioma } from "../i18n.js";
 import { useT } from "../i18n.js";
@@ -35,6 +35,12 @@ export function Portada({ idioma, onIdioma, sonido, onSonido, puedeContinuar, on
   const { t } = useT();
   const [con3D, setCon3D] = useState(hayGraficos3D);
   const sin3D = useCallback(() => setCon3D(false), []);
+  // La carga dura menos de 2 s: su módulo 3D se pide mientras el jugador está en la portada.
+  useEffect(() => {
+    if (!con3D) return;
+    const id = window.setTimeout(() => void import("./base/inicio3d/carga3d.js").catch(() => undefined), 1500);
+    return () => window.clearTimeout(id);
+  }, [con3D]);
   return (
     <section className="portada" aria-labelledby="portada-titulo">
       <h1 id="portada-titulo" className="oculto-visual">{t("ui.portada.logo")}</h1>
