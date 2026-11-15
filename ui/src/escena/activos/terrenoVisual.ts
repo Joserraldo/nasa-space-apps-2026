@@ -139,7 +139,11 @@ function geometriaRoca(): THREE.BufferGeometry {
 
 /** Piedrita maestra de la gravilla: octaedro desplazado y aplanado (8 caras). */
 function geometriaGravilla(): THREE.BufferGeometry {
-  return trozoFacetado(new THREE.OctahedronGeometry(1, 0), SEMILLA_FORMA_GRAVILLA, 0.75, 1.15, 0.3, 0.1);
+  const geo = trozoFacetado(new THREE.OctahedronGeometry(1, 0), SEMILLA_FORMA_GRAVILLA, 0.75, 1.15, 0.3, 0.1);
+  // Más oscura que el suelo (como en `mundo/01`): se lee como piedritas y no como manchas del terreno.
+  const color = geo.getAttribute("color");
+  for (let i = 0; i < color.count; i++) color.setXYZ(i, color.getX(i) * 0.6, color.getY(i) * 0.6, color.getZ(i) * 0.6);
+  return geo;
 }
 
 /**
@@ -171,7 +175,7 @@ export function crearGravilla(materiales: Materiales, terreno: Terreno3D, opcion
   const piedras = rocasBasalticas(o.semilla, o.n, terreno.rejilla, terreno.opciones, o);
   const malla = instanciar(geometriaBase("gravilla", geometriaGravilla), materiales, piedras, "Rocks_Gravel");
   malla.castShadow = false;
-  malla.receiveShadow = false;
+  malla.receiveShadow = true;
   return malla;
 }
 
