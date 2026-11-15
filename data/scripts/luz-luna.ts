@@ -22,9 +22,14 @@ export function leerTabla(texto: string): Fila[] {
     const m = l.match(/^(\d\d) (\w{3}) (\d{4}) (\d\d):(\d\d) UT\s+(.*)$/);
     if (!m) continue;
     const c = m[6]!.trim().split(/\s+/).map(Number);
+    const mes = MESES.indexOf(m[2]!);
+    // Una fila mal leída no se interpola en silencio: mejor fallar (revisión de Codex en #147).
+    if (mes < 0) throw new Error(`mes desconocido en la tabla SVS: ${m[2]}`);
+    if (!Number.isFinite(c[6]) || !Number.isFinite(c[7])) throw new Error(`Slon/Slat no numéricos en: ${l.slice(0, 40)}`);
     // columnas tras la hora: Phase Age Diam Dist RA Dec Slon Slat Elon Elat AxisA
-    filas.push({ t: Date.UTC(+m[3]!, MESES.indexOf(m[2]!), +m[1]!, +m[4]!, +m[5]!), lon: c[6]!, lat: c[7]! });
+    filas.push({ t: Date.UTC(+m[3]!, mes, +m[1]!, +m[4]!, +m[5]!), lon: c[6]!, lat: c[7]! });
   }
+  if (filas.length < 2) throw new Error("la tabla SVS no tiene filas legibles");
   return filas;
 }
 
