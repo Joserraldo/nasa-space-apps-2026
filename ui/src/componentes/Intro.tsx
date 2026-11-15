@@ -28,7 +28,7 @@ const VINETAS: readonly { ventana: Ventana; adelante: Persona[]; atras?: Persona
 ];
 export const TOTAL_VINETAS = VINETAS.length;
 /** Viñetas que ya tienen su escena 3D con los modelos del juego (`base/intro3d/`). */
-const CON_ESCENA = new Set([1]);
+const CON_ESCENA = new Set([1, 2, 3, 4]);
 
 function VistaVentana({ tipo }: { tipo: Ventana }) {
   return (
