@@ -177,5 +177,6 @@
   "fuente.nasa.orionPaneles": "NASA (Orion service module solar arrays)",
   "fuente.jpl.casqueteMarte": "NASA JPL (Mars north polar cap image)",
   "fuente.jpl.spiritInclinacion": "NASA JPL (Spirit rover winter tilt)",
-  "fuente.nasa.phoenix": "NASA (Phoenix lander at Mars' north pole)"
+  "fuente.nasa.phoenix": "NASA (Phoenix lander at Mars' north pole)",
+  "fuente.nasa.baterias": "NASA (Basics of Space Flight: spacecraft power)"
 }

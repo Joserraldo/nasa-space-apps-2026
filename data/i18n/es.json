@@ -177,5 +177,6 @@
   "fuente.nasa.orionPaneles": "NASA (paneles solares del módulo de servicio de Orion)",
   "fuente.jpl.casqueteMarte": "NASA JPL (imagen del casquete polar norte de Marte)",
   "fuente.jpl.spiritInclinacion": "NASA JPL (inclinación de invierno del róver Spirit)",
-  "fuente.nasa.phoenix": "NASA (la sonda Phoenix en el polo norte de Marte)"
+  "fuente.nasa.phoenix": "NASA (la sonda Phoenix en el polo norte de Marte)",
+  "fuente.nasa.baterias": "NASA (Basics of Space Flight: energía de las naves)"
 }

@@ -98,6 +98,15 @@ export const FUENTES_APROBADAS = {
     dueno: "NASA",
     estadoDato: "curado",
   },
+  /** Las baterías se cargan con los paneles al sol y dan energía cuando los paneles quedan en sombra. Tarjeta `bateria_guarda` (outpost). */
+  baterias: {
+    nombreKey: "fuente.nasa.baterias",
+    url: "https://science.nasa.gov/learn/basics-of-space-flight/chapter11-3/",
+    idFuente: "nasa-basics-space-flight-cap11-baterias",
+    consultadoEl: CONSULTADO,
+    dueno: "NASA (Basics of Space Flight)",
+    estadoDato: "curado",
+  },
 } as const satisfies Record<string, SourceCard>;
 
 export type IdFuenteAprobada = keyof typeof FUENTES_APROBADAS;
