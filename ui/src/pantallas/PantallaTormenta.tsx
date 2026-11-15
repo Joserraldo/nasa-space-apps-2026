@@ -13,6 +13,8 @@ import { Icono } from "../componentes/base/Iconos.js";
 import { CostRow, ICONO_RECURSO, RECURSOS } from "../componentes/base/Piezas.js";
 import { EscenaBase } from "../escena/EscenaBase.js";
 import { vistaEscena } from "../escena/vista.js";
+import { hayGraficos3D } from "../escena/soporte.js";
+import { DecisionRegistrada } from "./DecisionRegistrada.js";
 import "../componentes/base/facetas.css";
 import "./tormenta.css";
 
@@ -31,8 +33,10 @@ const NADA = () => undefined;
  * E7 Tormenta, panel 01 de ui/04 (ESCENAS §2.7): la escena en pausa detrás, el chip "Paused" y
  * "Choose your expert" con tres retratos, el campo "Ask your crew…" y un acceso por recurso con su
  * valor real. Las respuestas salen de `conversar()`, igual que en la base. Los paneles 02 a 04
- * (comparar, verificar, decisión registrada) llegan en PRs siguientes; mientras tanto la fase
- * tormenta sigue sirviéndola `Tormenta.tsx`.
+ * (comparar, verificar, decisión registrada) van en el mismo marco. Es la pantalla de la fase
+ * tormenta (reemplaza a la vieja `Tormenta.tsx`).
+ * Panel 04 "Decision recorded": con `registro` (el estado de antes de confirmar) muestra lo que
+ * cobró el motor; "Return to exploration" (`onSeguir`) reanuda el juego.
  * Panel 02 "Compare your plan": la experta elegida con su frase y la acción con los costos del
  * motor (`costoDe`, más el extra del invernadero que `elegirDilema` cobra). Confirmar manda el
  * mismo evento que la pantalla vieja (`onDecidir`); "Ask another expert" conserva la acción.
@@ -40,7 +44,7 @@ const NADA = () => undefined;
  * expertas que se contradicen (las del dilema: Ingeniera y Doctora), la tarjeta de la fuente NASA y
  * dos preguntas cuyas respuestas son líneas reales de `escenaTormenta`. "Back" vuelve al panel b.
  */
-export function PantallaTormenta({ estado, colocados, onDecidir }: { estado: GameState; colocados: readonly Equipment[]; onDecidir?: (previas: [], opcionId: string) => void }) {
+export function PantallaTormenta({ estado, colocados, registro, onSeguir, onDecidir }: { estado: GameState; colocados: readonly Equipment[]; registro?: GameState | null; onSeguir?: () => void; onDecidir?: (previas: [], opcionId: string) => void }) {
   const { t } = useT();
   const [dialogo, setDialogo] = useState<Dialogo | null>(null);
   const [elegido, setElegido] = useState<string | null>(null);
@@ -49,6 +53,7 @@ export function PantallaTormenta({ estado, colocados, onDecidir }: { estado: Gam
   const [plan, setPlan] = useState<{ experta: Experto; opcionId: string } | null>(null);
   const [conservada, setConservada] = useState<string | undefined>(undefined);
   const [verificando, setVerificando] = useState(false);
+  const [sinGl, setSinGl] = useState(() => !hayGraficos3D());
   const escena = useMemo(() => escenaTormenta(estado, OPCIONES), [estado.tormenta]);
   const vista = vistaEscena(estado, { fase: "tormenta", colocados });
 
@@ -70,18 +75,19 @@ export function PantallaTormenta({ estado, colocados, onDecidir }: { estado: Gam
   return (
     <section className="tormenta-e7" aria-labelledby="tormenta-titulo">
       <div className="tormenta-escena" aria-hidden="true">
-        <EscenaBase vista={vista} eventos={SIN_EVENTOS} calidad="baja" camara="tercera" movimientoReducido
-          onLugarCercano={NADA} onUsar={NADA} onCalidad={NADA} onWebGLPerdido={NADA} />
+        {!sinGl && <EscenaBase vista={vista} eventos={SIN_EVENTOS} calidad="baja" camara="tercera" movimientoReducido
+          onLugarCercano={NADA} onUsar={NADA} onCalidad={NADA} onWebGLPerdido={() => setSinGl(true)} />}
       </div>
 
       <div className="fc tormenta-panel">
         <div className={`fc-cara tormenta-cara${plan && verificando ? " tormenta-cara-verif" : ""}`}>
           <header className="tormenta-cabeza">
-            <h2 id="tormenta-titulo" className="tormenta-titulo">{t(plan ? (verificando ? "ui.tormenta.verificar" : "ui.tormenta.comparar") : "ui.tormenta.elegir")}</h2>
+            <h2 id="tormenta-titulo" className="tormenta-titulo">{t(registro ? "ui.decision.titulo" : plan ? (verificando ? "ui.tormenta.verificar" : "ui.tormenta.comparar") : "ui.tormenta.elegir")}</h2>
             <span className="fc"><span className="fc-cara fc-chico tormenta-pausa"><Icono nombre="reloj" tam={20} /><span>{t("ui.comun.pausado")}</span></span></span>
           </header>
 
-          {plan && verificando && escena ? <Verificar estado={estado} dialogos={escena.dialogos} onAtras={() => setVerificando(false)} />
+          {registro ? <DecisionRegistrada antes={registro} despues={estado} onContinuar={() => onSeguir?.()} />
+          : plan && verificando && escena ? <Verificar estado={estado} dialogos={escena.dialogos} onAtras={() => setVerificando(false)} />
           : plan ? <PlanComparado estado={estado} colocados={colocados} plan={plan} dialogo={escena?.dialogos.find((d) => d.experto === plan.experta)}
             onVerificar={() => setVerificando(true)} onOtra={() => { setConservada(plan.opcionId); setElegido(null); setPlan(null); }} onAtras={() => { setConservada(undefined); setElegido(null); setPlan(null); }} onDecidir={onDecidir} /> : <>
           <ul className="tormenta-expertos">
