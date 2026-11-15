@@ -46,7 +46,8 @@ async function main() {
     const metros = new Int16Array(px * px);
     for (let i = 0; i < metros.length; i++) {
       const v = crudo.readFloatLE(i * 4);
-      if (!Number.isFinite(v)) throw new Error(`DEM con huecos en ${s.id}`);
+      // Rango del DEM LOLA (−9126 a 10767 m): fuera de él es relleno o error, no elevación.
+      if (!Number.isFinite(v) || v < -9200 || v > 10800) throw new Error(`DEM con huecos o relleno en ${s.id}: ${v}`);
       metros[i] = Math.round(v);
     }
     writeFileSync(join(dir, s.id, "elevacion.bin"), Buffer.from(metros.buffer));

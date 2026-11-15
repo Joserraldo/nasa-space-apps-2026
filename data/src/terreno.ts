@@ -107,7 +107,7 @@ export const TerrenoLunaSchema = z.object({
     estadoDato: z.literal("curado"),
     derivadoKey: z.literal("datos.terreno.derivado"),
     /** Criterios sin fuente verificada: no se inventan valores. */
-    pendientes: z.array(z.enum(["luz", "blindaje"])),
+    pendientes: z.array(z.enum(["luz", "blindaje", "citaHielo"])),
     /** Fuente del cielo tapado (blindaje derivado). Opcional. */
     blindajeFuente: z.object({ metodo: z.string(), cita: z.string(), capa: z.string(), consultadoEl: z.string().regex(/^\d{4}-\d{2}-\d{2}$/) }).optional(),
   }),
@@ -216,3 +216,146 @@ export const TerrenoMarteNorteSchema = z.object({
   }),
 });
 export type TerrenoMarteNorte = z.infer<typeof TerrenoMarteNorteSchema>;
+
+/** Estereográfica polar sur de Moon Trek (esfera IAU, escala 1 en el polo): misma que LRO_LOLA_DEM_SPole75_30mp_v04. */
+export const WKT_POLAR_SUR =
+  'PROJCS["Moon2000_spole",GEOGCS["GCS_Moon",DATUM["D_Moon_2000",SPHEROID["Moon_2000_IAU_IAG",1737400.0,0.0]],PRIMEM["Reference_Meridian",0.0],UNIT["Degree",0.0174532925199433]],PROJECTION["Stereographic_South_Pole"],PARAMETER["false_easting",0.0],PARAMETER["false_northing",0.0],PARAMETER["central_meridian",0.0],PARAMETER["standard_parallel_1",-90.0],UNIT["Meter",1.0]]';
+/** Cuadro de 15,36 km alrededor de cada sitio del polo sur: 128 × 128 px de 120 m. */
+export const LUNA_SUR_CUADRO = { ladoM: 15_360, px: 128 } as const;
+
+/** (lat, lon) en grados → metros en la proyección polar sur: ρ = 2R·tan((90+lat)/2), x = ρ·sin(lon), y = ρ·cos(lon). */
+export function aPolarSur(lat: number, lon: number): { x: number; y: number } {
+  const rad = Math.PI / 180;
+  const rho = 2 * RADIO_LUNA_M * Math.tan(((90 + lat) * rad) / 2);
+  return { x: rho * Math.sin(lon * rad), y: rho * Math.cos(lon * rad) };
+}
+
+/** De dónde sale cada dato de hielo/sombra/temperatura: capa de Moon Trek, instrumento (si la capa lo declara) y fecha. */
+const CapaHieloSchema = z.object({
+  capa: z.string(),
+  /** null = el servicio no lo declara (no se inventa). */
+  instrumento: z.string().nullable(),
+  consultadoEl: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+  url: z.string().url(),
+  /** "derivado" = lo calculó el equipo a partir de la capa; "medido" = valor tal cual de la capa. */
+  origen: z.enum(["medido", "derivado"]),
+});
+export const HieloSombraSchema = z.object({
+  /** PSR_SP (dato secundario): puntos (centros) de regiones en sombra permanente dentro del recuadro; no son polígonos. */
+  sombraPermanente: CapaHieloSchema.extend({
+    regionesEnRecuadro: z.number().int().min(0),
+    ids: z.array(z.string()),
+    /** Área de la región entera (puede salirse del recuadro). */
+    areaRegionesKm2: z.number().min(0),
+    textoKey: z.string().nullable(),
+  }),
+  /** LOLA (LRO): fracción del recuadro en sombra permanente (mapa binario 240 m, Mazarico et al. 2011). Es la base del texto de sombra. */
+  sombraPermanenteLola: CapaHieloSchema.extend({
+    /** Parte del recuadro (0..1) en sombra permanente, leída de teselas WMTS (~667 m/px): aproximada. */
+    fraccion: z.number().min(0).max(1),
+    /** ¿El centro del cráter está en sombra permanente? */
+    centro: z.boolean(),
+    cita: z.string(),
+    /** Resolución de lectura (m/px en latitud): la capa nativa es de 240 m. */
+    resolucionLecturaM: z.number(),
+  }).optional(),
+  /** SP_IceLoc_280m: puntos con "señal de hielo" dentro del recuadro. La capa no documenta qué mide. */
+  senalHielo: CapaHieloSchema.extend({
+    puntosEnRecuadro: z.number().int().min(0),
+    /** true solo si la atribución de la capa a un artículo está verificada. false = el texto de hielo NO se asigna. */
+    citaVerificada: z.boolean().optional(),
+    /** "no verificada" = ni la capa ni el catálogo de Moon Trek declaran su artículo. */
+    atribucionCapa: z.enum(["declarada", "no verificada"]).optional(),
+    /** Artículo candidato, SOLO como contexto (no está verificado que la capa salga de él). */
+    cita: z.string().optional(),
+    /** Instrumento del artículo (la capa no lo declara). */
+    instrumentoArticulo: z.string().optional(),
+    /** Puntos que caen en sombra permanente (Sol = 0 en PGDA 240 m): comprobación de coherencia, no del artículo. */
+    puntosEnSombraPermanente: z.number().int().min(0).optional(),
+    textoKey: z.string().nullable(),
+  }),
+  /** DIVINER máximo estacional < 110 K (verano e invierno del sur). */
+  temperatura: CapaHieloSchema.extend({
+    capaInvierno: z.string(),
+    fraccionBajo110KVerano: z.number().min(0).max(1),
+    fraccionBajo110KInvierno: z.number().min(0).max(1),
+    /** El valor más bajo de la capa dentro del recuadro (K): medido. */
+    minimoMaxVeranoK: z.number().nullable(),
+    minimoMaxInviernoK: z.number().nullable(),
+    textoKey: z.string().nullable(),
+  }),
+});
+export type HieloSombra = z.infer<typeof HieloSombraSchema>;
+
+const MedidaLuzSchema = z.object({
+  /** Fracción del tiempo (0–1, pasos de 1 h durante ~18,6 años) con el Sol (o la Tierra) visible. 0 = nunca. */
+  centro: z.number().min(0).max(1),
+  media: z.number().min(0).max(1),
+  maximo: z.number().min(0).max(1),
+  minimo: z.number().min(0).max(1),
+});
+/** Iluminación solar y visibilidad de la Tierra (NASA GSFC PGDA, LOLA; Mazarico et al. 2011) en el recuadro de 15,36 km. */
+export const IluminacionSchema = z.object({
+  capaSol: z.string(),
+  capaTierra: z.string(),
+  /** Archivos PDS (.IMG; la etiqueta .LBL tiene el mismo nombre). */
+  urlSol: z.string().url(),
+  urlTierra: z.string().url(),
+  pagina: z.string().url(),
+  cita: z.string(),
+  consultadoEl: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+  /** El valor es el del producto PGDA, solo leído (nada recalculado salvo media/máx/mín del recuadro). */
+  origen: z.literal("medido"),
+  resolucionM: z.number(),
+  sol: MedidaLuzSchema,
+  tierra: MedidaLuzSchema,
+  /** Texto "el Sol brilla ~{pct} % del tiempo": solo si la media del recuadro ≥ 1 %. */
+  textoSolKey: z.string().nullable(),
+  /** Texto "se ve la Tierra ~{pct} % del tiempo": solo si la media del recuadro ≥ 5 %. */
+  textoTierraKey: z.string().nullable(),
+  /** Porcentajes redondeados de la media del recuadro, para los textos ({pct}). */
+  pctSol: z.number().int().min(0).max(100),
+  pctTierra: z.number().int().min(0).max(100),
+});
+export type Iluminacion = z.infer<typeof IluminacionSchema>;
+
+/** Visibilidad del cielo (PGDA SKYV_65S_240M, LOLA): ángulo sólido del cielo visible, en estereorradianes (2π = suelo llano, 4π = sin obstáculos). */
+export const CieloSchema = z.object({
+  capa: z.string(),
+  url: z.string().url(),
+  pagina: z.string().url(),
+  cita: z.string(),
+  consultadoEl: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+  /** Valor del producto (medido) y fracción tapada (derivada). */
+  origen: z.literal("derivado"),
+  resolucionM: z.number(),
+  /** Medido: ángulo sólido (sr) en el centro y media/mín/máx del recuadro. */
+  cieloVisibleSr: z.object({ centro: z.number().min(0).max(4 * Math.PI), media: z.number().min(0).max(4 * Math.PI), minimo: z.number().min(0), maximo: z.number().max(4 * Math.PI) }),
+  /** Derivado: 1 − min(Ω, 2π)/2π = parte del cielo de un suelo llano que tapa el relieve (0–1). */
+  cieloTapado: z.object({ centro: Puntaje, media: Puntaje }),
+  /** Texto "las paredes tapan parte del cielo": solo si la media tapada ≥ 0,2. */
+  textoKey: z.string().nullable(),
+});
+export type Cielo = z.infer<typeof CieloSchema>;
+
+export const SitioLunaSurSchema = SitioLunaSchema.omit({ mision: true, bbox: true, sombreado: true }).extend({
+  /** Nombre del accidente en el nomenclátor IAU (capa CombinedNomenclature de Moon Trek). */
+  nombreIau: z.string(),
+  /** Diámetro del accidente (km), del nomenclátor. */
+  diametroKm: z.number(),
+  /** Recuadro en metros de la proyección polar sur (ver WKT_POLAR_SUR). */
+  bboxM: z.object({ xmin: z.number(), ymin: z.number(), xmax: z.number(), ymax: z.number() }),
+  /** Hielo, sombra permanente y frío (opcional para no romper datos viejos). */
+  hieloSombra: HieloSombraSchema.optional(),
+  /** Luz del Sol y de la Tierra (PGDA). */
+  iluminacion: IluminacionSchema.optional(),
+  /** Cielo tapado por el relieve (proxy del blindaje natural). */
+  cielo: CieloSchema.optional(),
+});
+export type SitioLunaSur = z.infer<typeof SitioLunaSurSchema>;
+
+export const TerrenoLunaPoloSurSchema = TerrenoLunaSchema.omit({ id: true, sitios: true }).extend({
+  id: z.literal("luna-polo-sur"),
+  sitios: z.array(SitioLunaSurSchema).min(4).max(6),
+});
+export type TerrenoLunaPoloSur = z.infer<typeof TerrenoLunaPoloSurSchema>;
