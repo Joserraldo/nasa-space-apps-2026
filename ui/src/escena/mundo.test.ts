@@ -3,7 +3,7 @@ import { resolver } from "./fisica.js";
 import { puestoDeGuia } from "./guia.js";
 import {
   ANCLAJES_EXPERTAS, ANCLAJES_MODULOS, DOCK_IRIS, LUGARES,
-  TERRENO, lugar, lugarCercano, lugarDelModulo,
+  RADIO_EXPERTA, TERRENO, lugar, lugarCercano, lugarDelModulo,
 } from "./mundo.js";
 
 // ESCENAS §3.2 y mapa-base-jezero.svg: uso x/z y centro mx/mz.
@@ -49,11 +49,22 @@ describe("contrato de lugares v8", () => {
     for (const a of Object.values(ANCLAJES_EXPERTAS)) {
       const l = lugar(a.lugarId);
       expect(a.id).toBe(`experta:${l.experto}`);
-      expect(a).toMatchObject({ x: l.x, y: 0, z: l.z });
+      expect(a.y).toBe(0);
+      expect(Math.hypot(a.x - l.x, a.z - l.z)).toBeGreaterThan(0.38 + RADIO_EXPERTA);
+      const cuerpo = { x: a.x, z: a.z };
+      resolver(cuerpo, RADIO_EXPERTA, TERRENO);
+      expect(cuerpo.x).toBeCloseTo(a.x);
+      expect(cuerpo.z).toBeCloseTo(a.z);
+      // El niño conserva libre su punto de uso incluso con la experta como sólido.
+      const uso = { x: l.x, z: l.z };
+      resolver(uso, 0.38, TERRENO, [{ x: a.x, z: a.z, r: RADIO_EXPERTA }]);
+      expect(uso).toEqual({ x: l.x, z: l.z });
     }
     expect(ANCLAJES_EXPERTAS.ingeniera.lugarId).toBe("taller");
     expect(ANCLAJES_EXPERTAS.doctora.lugarId).toBe("habitat");
     expect(ANCLAJES_EXPERTAS.meteorologa.lugarId).toBe("sensor");
+    const ingeniera = ANCLAJES_EXPERTAS.ingeniera;
+    expect(Math.hypot(ingeniera.x - DOCK_IRIS.x, ingeniera.z - DOCK_IRIS.z)).toBeGreaterThan(RADIO_EXPERTA + 0.38);
     expect(DOCK_IRIS).toEqual({ id: "iris:dock", lugarId: "taller", y: 0, ...puestoDeGuia(lugar("taller")) });
     const p = { x: DOCK_IRIS.x, z: DOCK_IRIS.z };
     resolver(p, 0.38, TERRENO);

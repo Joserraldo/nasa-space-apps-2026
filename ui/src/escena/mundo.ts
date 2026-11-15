@@ -64,6 +64,10 @@ export type ModuloJezero = Extract<Equipment,
   "panel_solar" | "reciclador_agua" | "escudo" | "invernadero" | "antena">;
 export type ExpertaBase = Extract<Expert, "ingeniera" | "doctora" | "meteorologa">;
 
+/** Geometría reservada para el encuentro, en metros; no son números de balance. */
+export const DISTANCIA_USO_EXPERTA = 1;
+export const RADIO_EXPERTA = 0.4;
+
 /** Metros de juego; Y es el suelo, no la altura del marcador `my`. */
 export interface Anclaje {
   readonly id: string;
@@ -96,7 +100,11 @@ export const ANCLAJES_EXPERTAS: Readonly<Record<ExpertaBase, Anclaje>> = {
 
 function anclajeExperta(id: ExpertaBase, lugarId: LugarId): Anclaje {
   const l = lugar(lugarId);
-  return { id: `experta:${id}`, lugarId, x: l.x, y: 0, z: l.z };
+  // Usa el costado opuesto al puesto de Iris sin acercar el cuerpo al sólido del edificio.
+  const iris = puestoDeGuia(l);
+  const dx = iris.x - l.x, dz = iris.z - l.z;
+  const escala = DISTANCIA_USO_EXPERTA / Math.hypot(dx, dz);
+  return { id: `experta:${id}`, lugarId, x: l.x - dx * escala, y: 0, z: l.z - dz * escala };
 }
 
 /** Mismo puesto lateral que usa la guía de Paula; no añade coordenadas a mano. */
