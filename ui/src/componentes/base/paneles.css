@@ -1,0 +1,48 @@
+/*
+ * Paneles de la E7 (ui/04): tarjeta con cinta ciruela, chips de una línea, fuente compacta y tarjeta
+ * "Action confirmed". Solo tokens. Texto de 16 px o más en todos los tamaños.
+ */
+.pf { --fc-hex: polygon(14px 0, calc(100% - 14px) 0, 100% 50%, calc(100% - 14px) 100%, 14px 100%, 0 50%); }
+.pf-cara { --fc-ch: var(--chaflan-grande); background: color-mix(in srgb, var(--color-ciruela) 16%, var(--color-lila)); }
+.pf-cab { display: flex; align-items: flex-start; justify-content: space-between; gap: var(--esp-3); padding: var(--esp-2) var(--esp-3) 0; }
+.pf .pf-cinta { margin: 0; padding: var(--esp-1) var(--esp-6) var(--esp-1) var(--esp-4); background: var(--color-ciruela); color: var(--color-marfil);
+  font-size: 16px; font-weight: var(--tipo-peso-titulo); line-height: 1.2; letter-spacing: 0.04em; text-transform: uppercase; border: 0;
+  clip-path: polygon(0 0, 100% 0, calc(100% - 16px) 100%, 0 100%); min-block-size: 34px; display: flex; align-items: center; }
+.pf-acciones { display: flex; align-items: center; gap: var(--esp-2); padding-top: var(--esp-1); }
+.pf-cuerpo { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--esp-3); padding: var(--esp-3); }
+
+.chip-pausa { display: inline-flex; align-items: center; gap: var(--esp-2); padding: var(--esp-1) var(--esp-4); font-size: 16px; font-weight: var(--tipo-peso-etiqueta); white-space: nowrap; }
+
+.barra-seccion { display: block; }
+.barra-cara { --fc-ch: var(--chaflan-chico); display: flex; align-items: center; justify-content: center; gap: var(--esp-2); padding: var(--esp-1) var(--esp-4); min-block-size: 36px; font-size: var(--tipo-tam-dialogo); font-weight: var(--tipo-peso-titulo); text-align: center; }
+
+/* Chips hexagonales de una línea (acceso por recurso, preguntas). */
+.chip { --fc-forma: polygon(10px 0, calc(100% - 10px) 0, 100% 50%, calc(100% - 10px) 100%, 10px 100%, 0 50%);
+  display: flex; align-items: center; justify-content: center; gap: var(--esp-1); box-sizing: border-box; inline-size: 100%; min-block-size: var(--toque-minimo); padding: var(--esp-1) var(--esp-3);
+  font: inherit; font-size: 16px; font-weight: var(--tipo-peso-etiqueta); color: var(--color-indigo-texto); }
+.chip svg { flex: none; }
+.chip-nombre { line-height: 1.15; text-wrap: balance; }
+.chip:not(.chip-pregunta) .chip-nombre { min-inline-size: 0; text-align: center; }
+.chip-valor { flex: none; }
+.chip-valor { font-size: var(--tipo-tam-cuerpo); font-weight: var(--tipo-peso-titulo); font-variant-numeric: tabular-nums; }
+.chip-boton { border: 0; cursor: pointer; }
+.chip-pregunta { justify-content: flex-start; text-align: start; }
+.chip-sel { background: var(--color-cian); }
+.chip-boton:focus-visible { outline: none; }
+.fc:has(> .chip-boton:focus-visible) { filter: drop-shadow(0 0 0 var(--color-cian)) drop-shadow(0 0 3px var(--color-cian)) drop-shadow(0 0 2px var(--color-cian)); }
+@media (hover: hover) and (pointer: fine) { .chip-boton:hover { --fc-fondo: var(--color-lila); } }
+
+.fuente-compacta { display: flex; align-items: center; justify-content: center; gap: var(--esp-3); padding: var(--esp-2) var(--esp-3); }
+.fuente-compacta svg { flex: none; color: var(--color-indigo-texto); }
+.fuente-compacta-texto { margin: 0; display: grid; gap: 2px; font-size: 16px; }
+.fuente-compacta-texto strong { font-size: var(--tipo-tam-cuerpo); font-weight: var(--tipo-peso-etiqueta); }
+
+/* Tarjeta "Action confirmed". */
+.td-cara { display: grid; gap: var(--esp-2); padding: var(--esp-2) var(--esp-3); }
+.td-titulo .barra-cara { font-size: var(--tipo-tam-dialogo); background: color-mix(in srgb, var(--color-exito) 10%, var(--color-lila)); }
+.td-pendiente .barra-cara { justify-content: flex-start; padding-inline: var(--esp-4); font-size: var(--tipo-tam-cuerpo); font-weight: var(--tipo-peso-etiqueta); }
+.td-botones { display: grid; justify-items: stretch; gap: var(--esp-1); }
+.td-botones .fb-caja, .td-botones .fb { inline-size: 100%; }
+.td-botones .fb-texto { white-space: nowrap; text-align: center; font-size: 17px; line-height: 1.1; }
+.td-botones .fb-superficie { justify-content: center; gap: var(--esp-1); padding-inline: var(--esp-4); }
+@media (max-width: 340px) { .td-botones .fb-texto { white-space: normal; } }
