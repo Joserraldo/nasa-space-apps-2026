@@ -5,6 +5,7 @@ import { lugarDelModulo } from "../mundo";
 import type { EstadoModulo } from "../vista";
 import { FORMA_MODULO as FORMA, MODULOS_BASE, crearFormaModulo, partesVisibles, type ModuloBase } from "./modulos";
 import { instanciar, type TransformacionPieza } from "./instancias";
+import type { Huella } from "./piezasComunes";
 import { fusionar } from "./fusionar";
 
 // ---------------------------------------------------------------------------------------------
@@ -73,13 +74,28 @@ export function giroHacia(desde: { mx: number; mz: number }, hacia: { x: number;
   return Math.atan2(hacia.x - desde.mx, hacia.z - desde.mz);
 }
 
+/** Giro del módulo en su anclaje: el fijo de su forma o mirando al punto del jugador. */
+export function giroModulo(id: ModuloBase): number {
+  const l = lugarDelModulo(id)!;
+  return FORMA[id].giro ?? giroHacia(l, l);
+}
+
+/** Huella en planta de cada módulo construido en su anclaje (la misma caja que su placa y su andamio). */
+export function huellasModulos(): Huella[] {
+  return MODULOS_BASE.map((id) => {
+    const l = lugarDelModulo(id)!;
+    const [ancho, fondo] = FORMA[id].huella;
+    return { id: `modulo:${id}`, x: l.mx, z: l.mz, ancho, fondo, giro: giroModulo(id) };
+  });
+}
+
 export function armarModulo(m: Materiales, id: ModuloBase): ModuloArmado {
   const l = lugarDelModulo(id)!;
   const f = FORMA[id];
   const raiz = new THREE.Group();
   raiz.name = `Module_${id}`;
   raiz.position.set(l.mx, 0, l.mz);
-  raiz.rotation.y = f.giro ?? giroHacia(l, l);
+  raiz.rotation.y = giroModulo(id);
   const solido = crearSolido(m, id);
   const andamio = crearAndamio(m, f.huella[0], f.huella[1], f.alto);
   const vivos = malla(m, "Emissive", geometriaBase("armado-luz-estado", () => new THREE.IcosahedronGeometry(0.13, 0)), [0, f.alto + 0.2, 0], false);
@@ -105,7 +121,7 @@ export function armarAnclajes(m: Materiales): THREE.Group {
   const t: TransformacionPieza[] = MODULOS_BASE.map((id) => {
     const l = lugarDelModulo(id)!;
     const f = FORMA[id];
-    return { posicion: [l.mx, 0.03, l.mz], rotacion: [0, f.giro ?? giroHacia(l, l), 0], escala: [f.huella[0], 1, f.huella[1]] };
+    return { posicion: [l.mx, 0.03, l.mz], rotacion: [0, giroModulo(id), 0], escala: [f.huella[0], 1, f.huella[1]] };
   });
   const g = instanciar(() => {
     const p = malla(m, "SuitBase", placa, [0, 0, 0], false);
