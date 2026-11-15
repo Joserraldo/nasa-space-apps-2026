@@ -15,3 +15,19 @@ describe("TarjetaCiencia: varias fuentes", () => {
     for (const t of MISION_JEZERO.tarjetasCiencia) expect(t.fuentesKeys).toBeUndefined();
   });
 });
+
+describe("TarjetaCiencia: aviso de dato curado", () => {
+  it("acepta curado y etiquetaKey", () => {
+    const t: TarjetaCiencia = {
+      id: "prueba",
+      textoKey: "mision.jezero.ciencia.tormenta",
+      fuenteKey: "fuente.radlab",
+      curado: true,
+      etiquetaKey: "ui.dato_curado",
+    };
+    expect(t.curado).toBe(true);
+  });
+  it("las tarjetas de Jezero no llevan el aviso", () => {
+    for (const t of MISION_JEZERO.tarjetasCiencia) expect(t.curado).toBeUndefined();
+  });
+});
