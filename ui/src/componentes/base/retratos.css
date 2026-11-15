@@ -6,7 +6,9 @@
 .retrato-compacto .retrato-marco { width: 80px; height: 80px; }
 .retrato-marco svg { max-width: none; flex: none; }
 .retrato-nombre { font-weight: var(--tipo-peso-titulo); font-size: var(--tipo-tam-cuerpo); line-height: 1.15; }
-.retrato-especialidad { display: inline-flex; padding: 2px var(--esp-3); background: color-mix(in srgb, var(--color-lila) 55%, var(--color-marfil)); clip-path: polygon(6px 0, calc(100% - 6px) 0, 100% 50%, calc(100% - 6px) 100%, 6px 100%, 0 50%); align-items: center; gap: var(--esp-1); font-size: 15px; font-weight: var(--tipo-peso-etiqueta); }
+.retrato-especialidad { display: inline-flex; flex-wrap: nowrap; justify-content: center; align-items: center; gap: var(--esp-1); font-size: 14px; font-weight: var(--tipo-peso-etiqueta); color: var(--color-ciruela); white-space: nowrap; }
+.retrato-especialidad svg { flex: none; }
+@media (max-width: 560px) { .retrato-especialidad { flex-wrap: wrap; white-space: normal; text-align: center; font-size: 16px; } }
 .retrato-danada { display: inline-flex; align-items: center; gap: var(--esp-1); font-size: 14px; font-weight: var(--tipo-peso-etiqueta); color: var(--color-aviso-texto); }
 .retrato-check { position: absolute; top: var(--esp-2); right: var(--esp-2); display: grid; place-items: center; width: 30px; height: 30px; border-radius: 50%; background: var(--color-marfil); box-shadow: inset 0 0 0 2px var(--color-cian); z-index: 1; }
 .retrato-boton { border: 0; cursor: pointer; min-height: var(--toque-minimo); }
@@ -14,5 +16,5 @@
 .fc:has(> .retrato-boton:focus-visible) { filter: drop-shadow(0 0 0 var(--color-cian)) drop-shadow(0 0 3px var(--color-cian)) drop-shadow(0 0 2px var(--color-cian)); }
 .retrato-sel { --fc-fondo: var(--color-marfil); background: var(--color-cian); }
 .retrato-sel::before { inset: 3px; }
-.retrato-sel .retrato-especialidad { background: color-mix(in srgb, var(--color-cian) 22%, var(--color-marfil)); }
 @media (hover: hover) and (pointer: fine) { .retrato-boton:hover { --fc-fondo: var(--color-lila); } }
+@media (max-height: 480px) { .retrato-especialidad { font-size: 16px; } }

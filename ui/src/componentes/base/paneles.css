@@ -17,12 +17,13 @@
 .barra-cara { --fc-ch: var(--chaflan-chico); display: flex; align-items: center; justify-content: center; gap: var(--esp-2); padding: var(--esp-1) var(--esp-4); min-block-size: 36px; font-size: var(--tipo-tam-dialogo); font-weight: var(--tipo-peso-titulo); text-align: center; }
 
 /* Chips hexagonales de una línea (acceso por recurso, preguntas). */
-.chip { --fc-forma: polygon(14px 0, calc(100% - 14px) 0, 100% 50%, calc(100% - 14px) 100%, 14px 100%, 0 50%);
-  display: flex; align-items: center; justify-content: center; gap: var(--esp-1); box-sizing: border-box; inline-size: 100%; min-block-size: var(--toque-minimo); padding: var(--esp-1) var(--esp-4) var(--esp-1) var(--esp-3);
+.chip { --fc-forma: polygon(10px 0, calc(100% - 10px) 0, 100% 50%, calc(100% - 10px) 100%, 10px 100%, 0 50%);
+  display: flex; align-items: center; justify-content: center; gap: var(--esp-1); box-sizing: border-box; inline-size: 100%; min-block-size: var(--toque-minimo); padding: var(--esp-1) var(--esp-3);
   font: inherit; font-size: 16px; font-weight: var(--tipo-peso-etiqueta); color: var(--color-indigo-texto); }
 .chip svg { flex: none; }
 .chip-nombre { line-height: 1.15; text-wrap: balance; }
-.chip:not(.chip-pregunta) .chip-nombre { white-space: nowrap; }
+.chip:not(.chip-pregunta) .chip-nombre { min-inline-size: 0; text-align: center; }
+.chip-valor { flex: none; }
 .chip-valor { font-size: var(--tipo-tam-cuerpo); font-weight: var(--tipo-peso-titulo); font-variant-numeric: tabular-nums; }
 .chip-boton { border: 0; cursor: pointer; }
 .chip-pregunta { justify-content: flex-start; text-align: start; }
@@ -42,4 +43,6 @@
 .td-pendiente .barra-cara { justify-content: flex-start; padding-inline: var(--esp-4); font-size: var(--tipo-tam-cuerpo); font-weight: var(--tipo-peso-etiqueta); }
 .td-botones { display: grid; justify-items: stretch; gap: var(--esp-1); }
 .td-botones .fb-caja, .td-botones .fb { inline-size: 100%; }
-.td-botones .fb-texto { white-space: normal; text-align: center; font-size: var(--tipo-tam-cuerpo); line-height: 1.1; }
+.td-botones .fb-texto { white-space: nowrap; text-align: center; font-size: 17px; line-height: 1.1; }
+.td-botones .fb-superficie { justify-content: center; gap: var(--esp-1); padding-inline: var(--esp-4); }
+@media (max-width: 340px) { .td-botones .fb-texto { white-space: normal; } }

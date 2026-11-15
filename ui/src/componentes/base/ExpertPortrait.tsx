@@ -29,7 +29,7 @@ export function ExpertPortrait({ persona, expresion = "neutral", danada = false,
       <span className="retrato-nombre">{t(`ui.comun.retrato.${persona}.nombre`)}</span>
       {!compacto && (
         <span className="retrato-especialidad">
-          {icono && <Icono nombre={icono} tam={18} />}
+          {icono && <Icono nombre={icono} tam={20} />}
           {t(`ui.comun.retrato.${persona}.especialidad`)}
         </span>
       )}

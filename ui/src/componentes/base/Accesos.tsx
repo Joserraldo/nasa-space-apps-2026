@@ -19,7 +19,7 @@ export function AccesoRecurso({ recurso, valor, onClick }: {
   const { t } = useT();
   const cuerpo = (
     <>
-      <Icono nombre={ICONO_RECURSO[recurso]} tam={24} />
+      <Icono nombre={ICONO_RECURSO[recurso]} tam={22} />
       <span className="chip-nombre">{t(`ui.recurso.${recurso}`)}</span>
       <span className="chip-valor">{Math.round(valor)}</span>
     </>
