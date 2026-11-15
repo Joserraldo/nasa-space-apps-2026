@@ -15,7 +15,7 @@ import { HudBase } from "./componentes/HudBase.js";
 import { IdiomaContext, useT, type Idioma } from "./i18n.js";
 import { PantallaSitio } from "./pantallas/PantallaSitio.js";
 import { PantallaModulos } from "./pantallas/PantallaModulos.js";
-import { Final } from "./pantallas/Final.js";
+import { PantallaFinal } from "./pantallas/PantallaFinal.js";
 import { Satelite } from "./pantallas/Satelite.js";
 import { PantallaBase } from "./pantallas/PantallaBase.js";
 import { Tormenta } from "./pantallas/Tormenta.js";
@@ -152,7 +152,7 @@ function Pantalla({ idioma, setIdioma }: { idioma: Idioma; setIdioma: (i: Idioma
         {enBase && (
           <PantallaBase estado={j.estado} ultimas={j.ultimas} onAccion={accion} onReanudar={() => enviar({ tipo: "pausa", pausado: false })} />
         )}
-        {j.fase === "final" && <Final estado={j.estado} onOtra={() => enviar({ tipo: "nueva" })} />}
+        {j.fase === "final" && <PantallaFinal estado={j.estado} onOtra={() => enviar({ tipo: "nueva" })} />}
       </main>
       <footer>{t("ui.aviso.nasa")}</footer>
     </div>
