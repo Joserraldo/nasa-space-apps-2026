@@ -102,15 +102,17 @@ export function crearPuerta(m: Materiales): THREE.Group {
       [-1, 0], [-0.65, 0], [-0.65, 1.75], [-0.4, 2.1], [0.4, 2.1], [0.65, 1.75], [0.65, 0],
       [1, 0], [1, 1.9], [0.5, 2.4], [-0.5, 2.4], [-1, 1.9],
     ].map(([x, y]) => new THREE.Vector2(x, y));
-    const g = new THREE.ExtrudeGeometry(new THREE.Shape(p), { depth: 0.4, bevelEnabled: false });
-    g.translate(0, 0, -0.2);
+    const g = new THREE.ExtrudeGeometry(new THREE.Shape(p), {
+      depth: 0.3, bevelEnabled: true, bevelThickness: 0.05, bevelSize: 0.06, bevelOffset: -0.06, bevelSegments: 1,
+    });
+    g.translate(0, 0, -0.15); // bisel de 0,05 en los bordes: total 0,4 en z
     return g;
   });
   return grupo(
     "Kit_Door",
     parte(m, "SuitBase", arco, [0, 0.15, 0], "Door_Frame"),
-    parte(m, "SuitBase", tronco(0.3, 0.4, 0.3, 8), [-0.82, 0.15, 0], "Door_PlinthL"),
-    parte(m, "SuitBase", tronco(0.3, 0.4, 0.3, 8), [0.82, 0.15, 0], "Door_PlinthR"),
+    parte(m, "SuitBase", tronco(0.4, 0.46, 0.42, 8), [-0.825, 0.21, 0], "Door_PlinthL"),
+    parte(m, "SuitBase", tronco(0.4, 0.46, 0.42, 8), [0.825, 0.21, 0], "Door_PlinthR"),
     parte(m, "Emissive", caja(0.6, 0.12, 0.02), [0, 2.4, 0.21], "Door_StripTop"),
     parte(m, "Emissive", caja(0.1, 0.5, 0.02), [-0.82, 1.1, 0.21], "Door_StripL"),
     parte(m, "Emissive", caja(0.1, 0.5, 0.02), [0.82, 1.1, 0.21], "Door_StripR"),
