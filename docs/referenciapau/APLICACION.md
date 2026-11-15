@@ -1,6 +1,6 @@
 # APLICACION: cómo se construye en código
 
-**Qué es:** el encargo técnico para llevar [DISEÑO.md](DISEÑO.md), [MARTE.md](MARTE.md) y [ESCENAS.md](ESCENAS.md) a `ui/`. **Pila fija:** React 18 + TypeScript + Three.js `^0.160.0` (`WebGLRenderer`) + CSS / Web Animations API. Sin frameworks nuevos, sin GLB, sin WebGPU, sin librerías npm nuevas.
+**Qué es:** el encargo técnico para llevar [DISEÑO.md](DISEÑO.md), [MARTE.md](MARTE.md) y [ESCENAS.md](ESCENAS.md) a `ui/`. **Pila fija:** React 18 + TypeScript + Three.js `^0.160.0` (`WebGLRenderer`) + CSS / Web Animations API. `three` (y `@types/three`) es la única dependencia que se agrega ([D6](../decisiones/D6-estilo-visual.md)); llega a `develop` con #142. Sin otros frameworks, sin GLB, sin WebGPU.
 **Alcance de carpetas del rol ui:** solo `ui/` y `assets/`. Lo que haga falta de `engine/`, `design/`, `missions/`, `data/`, `agents/` o `contracts/` se pide con un issue `bloquea:<rol>`.
 
 ---

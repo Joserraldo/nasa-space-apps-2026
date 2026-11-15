@@ -213,7 +213,7 @@ El contenido de cada estación está en [ESCENAS.md](ESCENAS.md) §4. Reglas vis
 - El tema oscuro del prototipo descartado (`#0b1026`, `#1a2350`, `#323272`, `--hud: #141a2b`, `--life: #9be15d`), sus visores opacos y su velo oscuro.
 
 **En la construcción**
-- GLB, Blender, `GLTFLoader`, WebGPU, TSL o librerías npm nuevas.
+- GLB, Blender, `GLTFLoader`, WebGPU, TSL, Drei, Rapier o cualquier librería npm además de `three`.
 - Texto horneado en texturas o imágenes. Telemetría inventada en pantallas 3D.
 - Usar una lámina como textura o fondo del juego (salvo el logo oficial).
 - Escalar el adulto para hacer al niño. Recolorear un personaje para hacer otro.

@@ -45,7 +45,7 @@ Leé solo lo que tu tarea necesita. Cada documento es autónomo y enlaza sus lá
 ## 4. Diez reglas que no se negocian
 
 1. **La referencia manda.** Se replica con fidelidad la silueta, paleta, proporción y composición de la lámina. No se reinterpreta ni se "mejora" a gusto.
-2. **Todo se construye con código.** Three.js procedural para el mundo y DOM/CSS/SVG para la UI. Sin GLB, sin Blender, sin pegar las láminas como textura, sin WebGPU, sin librerías nuevas.
+2. **Todo se construye con código.** Three.js procedural para el mundo y DOM/CSS/SVG para la UI. Sin GLB, sin Blender, sin pegar las láminas como textura, sin WebGPU, sin otra librería además de `three` ([D6](../decisiones/D6-estilo-visual.md)).
 3. **Marte es Marte.** Afuera solo regolito, roca, polvo y equipo humano. Cero vegetación exterior, cero ruinas, estatuas, templos o arcos de piedra. Las plantas viven dentro del invernadero presurizado ([MARTE.md](MARTE.md)).
 4. **El motor manda.** Ninguna animación, malla o clic cobra, entrega o adelanta recursos. La escena dibuja lo que `GameState` ya decidió ([MECANICAS.md](MECANICAS.md) §5).
 5. **Tres medidores separados:** energía, soporte vital y blindaje. Nunca una barra de salud.
