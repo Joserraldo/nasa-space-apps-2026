@@ -63,6 +63,15 @@ describe("tokens v8: tokens.ts y tokens.css son la misma fuente (FLUJO §3)", ()
     expect(css).not.toMatch(/googleapis|gstatic/);
   });
 
+  it("los archivos de Nunito están en el repo: woff2 de verdad y con su licencia OFL", () => {
+    for (const nombre of ["nunito-latin.woff2", "nunito-italic-latin.woff2"]) {
+      const datos = readFileSync(new URL(`../../public/fuentes/${nombre}`, import.meta.url));
+      expect(datos.subarray(0, 4).toString("latin1"), nombre).toBe("wOF2");
+      expect(datos.length, nombre).toBeLessThan(120_000);
+    }
+    expect(readFileSync(new URL("../../public/fuentes/OFL.txt", import.meta.url), "utf8")).toContain("SIL OPEN FONT LICENSE Version 1.1");
+  });
+
   it("colorNum y conAlfa sirven al 3D y a las sombras sin hex sueltos", () => {
     expect(colorNum("marfil")).toBe(0xf3eee5);
     expect(conAlfa("ciruela", 0.3)).toBe("#53306D4D");
