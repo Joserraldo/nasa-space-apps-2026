@@ -282,28 +282,42 @@ export function crearDeposito(m: Materiales): THREE.Group {
 
 /** Lámina 08 (antena): base de 12 lados, columna oscura con luz cian, plato facetado y esfera de alimentación. */
 export function crearAntena(m: Materiales): THREE.Group {
-  const plato = geometriaBase("kit-plato", () => {
-    // Cuenco de 10 lados y 2 anillos; la cara interior (cóncava) mira a +z.
-    // Puntos del borde al centro: invierte el bobinado para que la cara interior sea la frontal.
-    const pts = [new THREE.Vector2(0.55, 0.2), new THREE.Vector2(0.28, 0.04), new THREE.Vector2(0, 0)];
-    const g = new THREE.LatheGeometry(pts, 10);
-    g.rotateX(Math.PI / 2); // eje del cuenco a z
-    return g;
-  });
-  const brazo = parte(m, "Boots", tronco(0.025, 0.025, 0.4, 6), [0, 0, 0.2], "Antenna_Arm");
+  // Cuenco de 12 lados y 2 anillos; la cara interior (cóncava) mira a +z.
+  // Puntos del borde al centro: invierte el bobinado para que la cara interior sea la frontal.
+  const cuenco = (clave: string, pts: THREE.Vector2[], interior: boolean) =>
+    geometriaBase(clave, () => {
+      const g = new THREE.LatheGeometry(pts, 12);
+      g.rotateX(Math.PI / 2); // eje del cuenco a z
+      if (!interior) return g;
+      // Interior lila de la lámina: color de vértice (lila → violeta de montaña) con Rock, como el camino.
+      const n = g.getAttribute("position").count;
+      const col = new Float32Array(n * 3);
+      const claro = colorToken("lila"), hondo = colorToken("montana-lejana");
+      for (let i = 0; i < n; i++) {
+        const c = claro.clone().lerp(hondo, 0.5 + 0.4 * (1 - g.getAttribute("position").getZ(i) / 0.25));
+        col.set([c.r, c.g, c.b], i * 3);
+      }
+      g.setAttribute("color", new THREE.BufferAttribute(col, 3));
+      return g;
+    });
+  const dentro = cuenco("kit-plato", [new THREE.Vector2(0.64, 0.24), new THREE.Vector2(0.33, 0.05), new THREE.Vector2(0, 0)], true);
+  // Casco rosa algo más ancho y hundido (cara a +z): asoma como el borde con grosor alrededor del interior.
+  const fuera = cuenco("kit-plato-casco", [new THREE.Vector2(0.75, 0.24), new THREE.Vector2(0.39, 0.03), new THREE.Vector2(0, -0.03)], false);
+  const brazo = parte(m, "Boots", tronco(0.035, 0.05, 0.4, 6), [0, 0, 0.2], "Antenna_Arm");
   brazo.rotation.x = Math.PI / 2; // el cilindro corre a lo largo de z
   const cabeza = new THREE.Group();
   cabeza.name = "Antenna_Head";
-  cabeza.position.set(0, 1.05, 0);
+  cabeza.position.set(0, 1.12, 0);
   cabeza.rotation.x = THREE.MathUtils.degToRad(-35);
   cabeza.add(
-    parte(m, "SuitBase", plato, [0, 0, 0], "Antenna_Dish"),
+    parte(m, "Rock", dentro, [0, 0, 0], "Antenna_Dish"),
+    parte(m, "SuitBase", fuera, [0, 0, 0], "Antenna_DishRim"),
     brazo,
-    parte(m, "SuitBase", geometriaBase("kit-alimentador", () => new THREE.IcosahedronGeometry(0.07, 0)), [0, 0, 0.42], "Antenna_Feed"),
+    parte(m, "SuitBase", geometriaBase("kit-alimentador", () => new THREE.IcosahedronGeometry(0.1, 1)), [0, 0, 0.45], "Antenna_Feed"),
   );
   return grupo(
     "Kit_Antenna",
-    parte(m, "SuitBase", tronco(0.4, 0.5, 0.2, 12), [0, 0.1, 0], "Antenna_Base"),
+    parte(m, "SuitBase", tronco(0.4, 0.5, 0.22, 12), [0, 0.11, 0], "Antenna_Base"),
     parte(m, "Boots", tronco(0.1, 0.2, 0.75, 4), [0, 0.575, 0], "Antenna_Column"),
     parte(m, "Emissive", tronco(0.035, 0.035, 0.02, 8), [0, 0.35, 0.16], "Antenna_Light"),
     cabeza,
