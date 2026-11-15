@@ -137,6 +137,14 @@ function geometriaRoca(): THREE.BufferGeometry {
   return trozoFacetado(new THREE.DodecahedronGeometry(1, 0), SEMILLA_FORMA_ROCA, 0.72, 1.12, 0.42, 0.22);
 }
 
+/**
+ * Roca alta de primer plano (`mundo/01`): dodecaedro más anguloso, de cima alta casi sin aplanar y
+ * base poco hundida, para que se lea entera en las esquinas. 36 caras, geometría propia.
+ */
+function geometriaRocaAlta(): THREE.BufferGeometry {
+  return trozoFacetado(new THREE.DodecahedronGeometry(1, 0), SEMILLA_FORMA_ROCA + 7, 0.62, 1.2, 1.25, 0.12);
+}
+
 /** Piedrita maestra de la gravilla: octaedro desplazado y aplanado (8 caras). */
 function geometriaGravilla(): THREE.BufferGeometry {
   const geo = trozoFacetado(new THREE.OctahedronGeometry(1, 0), SEMILLA_FORMA_GRAVILLA, 0.75, 1.15, 0.3, 0.1);
@@ -163,6 +171,11 @@ export function crearRocas(
 /** Rocas ya colocadas en UN `InstancedMesh` con la roca maestra de la caché (1 draw call + sombra). */
 export function instanciarRocas(materiales: Materiales, rocas: readonly TransformacionRoca[], nombre = "Rocks_Basalt"): THREE.InstancedMesh {
   return instanciar(geometriaBase("roca-basalto",geometriaRoca), materiales, rocas, nombre);
+}
+
+/** Rocas altas y angulosas de primer plano en UN `InstancedMesh` (ver `geometriaRocaAlta`). */
+export function instanciarRocasAltas(materiales: Materiales, rocas: readonly TransformacionRoca[], nombre = "Rocks_Basalt_Tall"): THREE.InstancedMesh {
+  return instanciar(geometriaBase("roca-basalto-alta", geometriaRocaAlta), materiales, rocas, nombre);
 }
 
 /**

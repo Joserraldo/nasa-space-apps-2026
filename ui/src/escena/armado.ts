@@ -33,6 +33,7 @@ import {
   crearRocas,
   crearTerreno,
   instanciarRocas,
+  instanciarRocasAltas,
   leerDem,
   rocasBasalticas,
   submuestrear,
@@ -125,10 +126,10 @@ const rocasGrandesPorRejilla = new WeakMap<Rejilla, TransformacionRoca[]>();
  * círculos de colisión en `TERRENO` (mundo.ts) con `radioRocaPrimerPlano`. [E]
  */
 export const ROCAS_PRIMER_PLANO: readonly TransformacionRoca[] = [
-  { posicion: [-3.1, 0, 2.6], escala: [1.4, 0.6, 0.85], rotacion: [0.04, 0.6, -0.03] }, // grande, abajo a la izquierda
-  { posicion: [2.2, 0, 3.6], escala: [1.4, 0.6, 0.85], rotacion: [-0.03, 2.1, 0.04] }, // grande, abajo a la derecha
-  { posicion: [-5.6, 0, 1.6], escala: [0.5, 0.6, 0.48], rotacion: [0.05, 0.3, 0] },
-  { posicion: [7.2, 0, 3.4], escala: [0.5, 0.55, 0.5], rotacion: [0, 1.4, 0.03] },
+  { posicion: [-6.5, 0, 1.5], escala: [0.75, 1.5, 0.7], rotacion: [0.02, 0.6, -0.03] }, // grande y alta, esquina inferior izquierda
+  { posicion: [2.4, 0, 3.1], escala: [0.75, 1.7, 0.72], rotacion: [-0.02, 2.1, 0.03] }, // grande y alta, esquina inferior derecha
+  { posicion: [-4.2, 0, 2.1], escala: [0.5, 0.7, 0.48], rotacion: [0.05, 0.3, 0] },
+  { posicion: [7.2, 0, 3.4], escala: [0.5, 0.6, 0.5], rotacion: [0, 1.4, 0.03] },
 ];
 
 /** Huella en planta de una roca de primer plano. */
@@ -190,7 +191,7 @@ export function armarEscena(
   base.name = "Base";
   const modulos = Object.fromEntries(MODULOS_BASE.map((id) => [id, armarModulo(materiales, id)])) as Record<ModuloBase, ModuloArmado>;
   // Las rocas de primer plano están dentro del claro llano (y = 0): no esperan al DEM.
-  const primerPlano = instanciarRocas(materiales, ROCAS_PRIMER_PLANO, "Rocks_Basalt_Foreground");
+  const primerPlano = instanciarRocasAltas(materiales, ROCAS_PRIMER_PLANO, "Rocks_Basalt_Foreground");
   base.add(armarAnclajes(materiales), armarKit(materiales), armarEdificios(materiales), primerPlano, ...MODULOS_BASE.map((id) => modulos[id].raiz));
   escena.add(terreno, base, crearMontanas(materiales));
 
