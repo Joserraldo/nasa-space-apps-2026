@@ -11,6 +11,10 @@
 ## Elegida
 **Atlas v8:** low-poly facetado marfil, lila, ciruela y cian sobre un Marte real (Jezero), construido con Three.js procedural (`WebGLRenderer`) y la interfaz en DOM/CSS. Fuente única: [`docs/referenciapau/README.md`](../referenciapau/README.md).
 
+**Personajes (decidido por ui según las láminas):** el niño, la tripulación e Iris existen en 3D dentro del mundo (`mundo/01`, `inicio/02`); Iris es un rover de 4 ruedas. En las tarjetas de diálogo se muestra un retrato de la misma identidad (`ui/01`, `personajes/07`). Esto actualiza la decisión del 13 nov "retratos 2D animados sobre la escena 3D" de `docs/ORQUESTACION.md`.
+
+**Láminas:** 55 curadas y comprimidas en `docs/referenciapau/referencias/`; el PDF del atlas queda fuera de git.
+
 ## Por qué
 - Es una sola dependencia (`three ^0.160.0` y `@types/three`), ya agregada en la rama `feat/ui-escena-3d` (llega a `develop` con #142), y `WebGLRenderer` corre en equipos viejos.
 - La dirección visual (55 láminas) ya está curada y documentada.

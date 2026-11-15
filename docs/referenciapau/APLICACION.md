@@ -188,9 +188,9 @@ Las fases y pistas que ejecutan estos bloques están en [FLUJO.md](FLUJO.md) §4
 | --- | --- | --- | --- |
 | **0** | Subir el trabajo local; ruta dorada conectada al motor con lo visual existente: `aterrizar()`, `elegirDilema()`, telemetría con retraso visible, `estado.resultado` + causas + tarjetas con fuente, cuenta / invitado | sáb 14, 22:00 (P2) | Los 8 pasos se juegan de punta a punta en `develop` y el e2e de la ruta dorada pasa. |
 | **1** | `materiales.ts`, `liberar.ts`, `cielo.ts` (luz y cielo de Marte), niño astronauta, portada v8 (sin HUD en `inicio`), presupuesto medido y degradación | dom 15, 09:00 | Portada y niño fieles a `inicio/01` y `personajes/08`; medidos en celular y PC viejo. |
-| **2** | Terreno de Jezero, kit común (§4), base compacta sobre `LUGARES`, los 5 módulos con presencia correcta | dom 15, 11:00 (P3: se decide 3D o 2D) | Captura de juego comparable con `mundo/01`; solo los 2 módulos construidos se ven construidos. |
+| **2** | Terreno de Jezero, kit común (§4), base compacta sobre `LUGARES`, los 5 módulos con presencia correcta, **Iris rover 3D** y **la Ingeniera en 3D** (los dos están en `mundo/01`) | dom 15, 11:00 (P3: se decide 3D o 2D) | Captura de juego comparable con `mundo/01`; solo los 2 módulos construidos se ven construidos. |
 | **4** | HUD y CSS v8 completos (tokens, `FacetButton`, `ResourcePlaque`, consulta, comparación, tormenta, final), verificación final | dom 15, 13:00 (congelamiento) | Puerta de aceptación (§10) completa. |
-| **3** | 8 estaciones, Iris rover en 3D, cuerpos 3D de las expertas (así lo fija `docs/ORQUESTACION.md`; Santiago decide si Iris entra antes) | Después del congelamiento, solo si sobra tiempo | Cada ampliación aporta una función y no rompe el recorrido. |
+| **3** | 8 estaciones interiores; Doctora y Meteoróloga 3D si no entraron en el bloque 2 | Después del congelamiento, solo si sobra tiempo | Cada ampliación aporta una función y no rompe el recorrido. |
 
 Primer lote de piezas (bloque 2): suelo con rocas, caminos, casco del hábitat, marco y puerta, consola maestra y panel solar. Con eso se comprueba escala, recorrido y familia de materiales. **No empezar por ocho interiores.**
 

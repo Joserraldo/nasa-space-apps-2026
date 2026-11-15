@@ -29,9 +29,11 @@ PENDIENTES EN ORDEN (uno por iteración, un PR atómico por pieza):
 7. Kit común (APLICACION §4): puerta, consola, caja, panel solar, depósito, antena, baliza.
 8. Base compacta sobre LUGARES de mundo.ts, como mundo/01.
 9. Los 5 módulos detrás de crearModulo: solo los 2 construidos se ven construidos.
-Después de P4 (bloque 3 de ORQUESTACION), si sobra tiempo: Iris rover en 3D con sus cuatro
-niveles visibles (NIVELES.md §5), estaciones (ESCENAS §4) y expertas en 3D. Antes de eso,
-Iris se ve con el modelo que ya existe en la escena y su retrato 2D.
+10. Iris rover 3D (mundo/01, inicio/02, personajes/07): 4 ruedas con pivote, panel en el
+    techo, pantalla con ojos en canvas y sus cuatro niveles visibles (NIVELES.md §5).
+11. La Ingeniera en 3D junto a su lugar (taller), con la familia de traje del niño. Doctora y
+    Meteoróloga solo si el presupuesto medido alcanza; si no, después de P4.
+Después de P4, si sobra tiempo: las 8 estaciones interiores (ESCENAS §4).
 La gravedad de fisica.ts solo se usa con su fuente verificada (#141).
 
 CÓMO TRABAJÁS CADA PIEZA: FLUJO.md §5 (lámina, bloqueo, medidas, maestra, material, estados,
@@ -44,7 +46,7 @@ Haiku para búsquedas. Nunca dos escritores en el mismo archivo.
 CADA PR: puerta de APLICACION.md §10 con captura desde la misma cámara que la lámina, al lado
 de la lámina, y draw calls y triángulos medidos.
 
-META PARA PARAR EL LOOP: base de Jezero con terreno, kit y los 5 módulos fusionada,
+META PARA PARAR EL LOOP: base de Jezero con terreno, kit, los 5 módulos, Iris rover y la Ingeniera fusionada,
 fiel a mundo/01 con el cielo de Marte, dentro del presupuesto, o P3 decidió recortar a 2D.
 Después de P4 solo arreglos.
 

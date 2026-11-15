@@ -10,7 +10,7 @@ Un archivo por decisión: `D<n>-<tema>.md`, a partir de [_plantilla.md](_plantil
 | D4 | Modelo del clasificador | Rol 3 | pendiente |
 | D5 | Hosting y serverless | Rol 6 | pendiente |
 | D6 | Estilo visual y render de la escena | Rol 5 | propuesta: [D6-estilo-visual.md](D6-estilo-visual.md) |
-| D7 | Tripulantes | Roles 1 y 5 | pendiente |
+| D7 | Tripulantes | Roles 1 y 5 | propuesta: [D7-tripulantes.md](D7-tripulantes.md) |
 | D8 | Catálogo de tormentas | Rol 4 | pendiente |
 | D9 | Duración de partida | Rol 1 | pendiente |
 | D10 | Presupuesto de API | Todos | pendiente |

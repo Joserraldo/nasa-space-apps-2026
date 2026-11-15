@@ -65,14 +65,14 @@ Ningún asset es una imagen de las láminas, salvo el logo. Todo se reconstruye.
 | Base compacta, kit, módulos | E | `mundo/01`, `piezas/01–10`, `exterior/03` | Fábricas procedurales | `ui/src/escena/activos/` |
 | Estaciones (ampliación) | E | `estaciones/00–08` | Composición del kit | `ui/src/escena/activos/estaciones.ts` |
 | Niño 3D | E | `personajes/08–10`, `inicio/capas/astronauta` | Grupos con pivotes | `ui/src/escena/activos/astronautas.ts` |
-| Expertas 3D (después de P4) | E | `personajes/01, 03, 05` | Misma familia de traje | idem |
-| Iris rover (bloque 3, después de P4) | E | `mundo/01`, `inicio/02` | Grupos con pivotes y canvas de ojos. Hasta entonces, Iris se ve en el retrato 2D y con el modelo que ya existe en la escena. | `ui/src/escena/activos/iris.ts` |
+| Ingeniera 3D (bloque 2); Doctora y Meteoróloga 3D (bloque 2 si alcanza el presupuesto, si no después de P4) | E | `personajes/01, 03, 05`, `mundo/01` | Misma familia de traje que el niño: cambian cabeza, cabello, acento y accesorios | idem |
+| Iris rover 3D (bloque 2) | E | `mundo/01`, `inicio/02`, `personajes/07` | Grupos con pivotes (4 ruedas), panel en el techo y pantalla con ojos en canvas; sus 4 niveles visibles (NIVELES §5) | `ui/src/escena/activos/iris.ts` |
 | Portada: fondo, nave, planeta, asteroide, niño flotando | E | `inicio/01`, `inicio/capas/*` | Three.js en el mismo renderer | `ui/src/escena/` |
 | Portada: logo, menú, preferencias | I | `inicio/01`, `ui/00`, `ui/02` | DOM, SVG; logo como imagen | `ui/src/componentes/` |
 | Intro (4 viñetas) | I | `inicio/02` | Tarjetas DOM sobre el fondo de la portada, con iconos SVG y el texto de cada viñeta. Ilustración completa solo si sobra tiempo. | `ui/src/componentes/` |
 | Carga | I | `inicio/03` | DOM + indicador indeterminado | `ui/src/componentes/` |
 | HUD, diálogo, comparación, fuente, final | I (piezas) y M (montaje) | `ui/01–04`, `personajes/07`, `mundo/01` | DOM/CSS con tokens | `ui/src/componentes/`, `ui/src/pantallas/` |
-| Retratos 2D (niño, 3 expertas, Iris) | I | `personajes/02, 04, 06, 09` | SVG facetado con las 8 expresiones | `ui/src/componentes/` |
+| Retratos de diálogo (niño, 3 expertas, Iris) | I | `personajes/02, 04, 06, 09`, `ui/01`, `personajes/07` | Misma identidad que el modelo 3D. Primera versión en SVG facetado con las 8 expresiones; si E entrega un render del modelo, se usa ese. Solo para las tarjetas de diálogo, nunca en lugar del personaje en el mundo. | `ui/src/componentes/` |
 | Iconos (recursos, mensajes, acciones) | I | `ui/03` | SVG | `ui/src/componentes/Iconos.tsx` |
 | Mapa (panel `Map`) | I (vista) y M (datos) | [ESCENAS.md](ESCENAS.md) §3.4 | SVG desde `LUGARES` | `ui/src/componentes/` |
 | Música, efectos, voz | A | [AUDIO.md](AUDIO.md) | Web Audio, archivos con licencia, Web Speech API | `ui/src/audio/`, `assets/audio/` |
@@ -86,10 +86,10 @@ Cada fase termina en una **puerta**. No se abre la siguiente hasta pasarla.
 | **Prioridad 1. Definir todos los niveles** | Orquestadora con diseño, motor y datos | [NIVELES.md](NIVELES.md) completo: las 5 misiones, dificultad y niveles de Iris; decisiones 1 a 6 de NIVELES §7 aprobadas por Camilo y Santiago. No bloquea la fase 0: corre en paralelo porque no toca `ui/`. | Santiago aprueba NIVELES §7. | lo antes posible |
 | **0. Subir y conectar** | M | Subir el trabajo local (#142) en PRs atómicos; ruta dorada jugable con lo visual que ya existe; absorber #151; #118 y #137. E, I y A **no** empiezan a escribir. | Los 8 pasos se juegan en el preview de `develop` y el e2e pasa. | P2 (sáb 22:00) |
 | **1. Contratos internos** | M, I | PR de `VistaEscena`, props de `EscenaBase` y eventos de feedback (M); tokens CSS y props de componentes (I). | Contratos fusionados; typecheck en verde. | dom temprano |
-| **2. Paralelo** | E, I, M | E: bloque 1 (cielo, materiales, niño, portada 3D) y bloque 2 (terreno, kit, base, módulos). I: átomos, compuestos, retratos, portada DOM, intro. M: pantallas, flujo de fases, i18n, respaldo 2D. | Cada PR pasa la puerta de [APLICACION.md](APLICACION.md) §10. En P3 se decide 3D o 2D. | P3 (dom 11:00) |
+| **2. Paralelo** | E, I, M | E: bloque 1 (cielo, materiales, niño, portada 3D) y bloque 2 (terreno, kit, base, módulos, Iris rover e Ingeniera en 3D). I: átomos, compuestos, retratos, portada DOM, intro. M: pantallas, flujo de fases, i18n, respaldo 2D. | Cada PR pasa la puerta de [APLICACION.md](APLICACION.md) §10. En P3 se decide 3D o 2D. | P3 (dom 11:00) |
 | **3. Integración** | M | Monta los componentes de I en todas las pantallas y la escena de E en `Base3D`; borra el tema oscuro; un solo camino de confirmación. | Recorrido completo de la ruta dorada en EN y ES con teclado, móvil, movimiento reducido y respaldo 2D; aprobado por la orquestadora. | antes de P4 |
 | **4. Audio y voz** | A | Ajustes de sonido, efectos ligados a eventos, música, lectura en voz alta y entrada de voz. | El juego sigue completo en silencio; sin errores en consola; licencias registradas. | P4 (dom 13:00), si no entra, se entrega sin música |
-| **5. Congelamiento** | todas | Solo arreglos pedidos por el revisor o la orquestadora. Bloque 3 (estaciones, Iris rover 3D, expertas 3D) solo después de la entrega. | — | P5 (dom 20:00) |
+| **5. Congelamiento** | todas | Solo arreglos pedidos por el revisor o la orquestadora. Bloque 3 (las 8 estaciones interiores; Doctora y Meteoróloga 3D si no entraron antes) solo después de la entrega. | — | P5 (dom 20:00) |
 
 Las otras 4 misiones no entran en estas fases: M arma el selector de misiones y E sus escenarios **solo** cuando el motor lea varias misiones (#152), diseño las apruebe y exista lámina aprobada ([NIVELES.md](NIVELES.md) §8).
 

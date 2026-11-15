@@ -22,7 +22,8 @@ PENDIENTES EN ORDEN (uno por iteración, un PR atómico por pieza):
 2. FacetButton con todos sus estados (ui/02 y ui/03): normal, hover, pressed, focus fuera del
    recorte, disabled con motivo, selected, busy.
 3. ResourcePlaque (tres separados, valor real, capa de delta y causa).
-4. ExpertPortrait y retratos 2D en SVG facetado del niño, las 3 expertas e Iris con las 8
+4. ExpertPortrait y retratos de diálogo (misma identidad que el modelo 3D) en SVG facetado del
+   niño, las 3 expertas e Iris con las 8
    expresiones (personajes/02, 04, 06, 09).
 5. CostRow, PendingEffect, ConfirmarAccion, mensajes y TarjetaFuente (ui/01, ui/04,
    personajes/07).
