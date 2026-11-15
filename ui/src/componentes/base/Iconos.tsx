@@ -8,7 +8,7 @@
 export type NombreIcono =
   | "tripulacion" | "mapa" | "check" | "check_exito" | "microfono" | "energia" | "vida" | "escudo"
   | "aviso" | "error" | "reloj" | "enlace" | "atras"
-  | "jugar" | "candado" | "engranaje" | "sonido_off" | "sonido_on" | "planeta" | "satelite";
+  | "jugar" | "candado" | "engranaje" | "sonido_off" | "sonido_on" | "planeta" | "satelite" | "llave" | "sol";
 
 const C = "currentColor";
 
@@ -106,6 +106,16 @@ const DIBUJOS: Record<NombreIcono, JSX.Element> = {
       <polygon fill="var(--color-icono-escudo)" points="1,9 7,9 7,15 1,15" />
       <polygon fill="var(--color-icono-escudo)" points="17,9 23,9 23,15 17,15" />
       <polygon fill={C} points="11.2,2.5 12.8,2.5 12.8,8.5 11.2,8.5" />
+    </g>
+  ),
+  llave: <polygon fill="var(--color-teal)" points="4,18 13,9 12,6 15,3 19,3 17,6 18,8 21,7 21,11 18,13 15,12 6,21" />,
+  sol: (
+    <g fill="var(--color-ambar)">
+      <polygon points="9.5,7 14.5,7 17,9.5 17,14.5 14.5,17 9.5,17 7,14.5 7,9.5" />
+      <polygon points="11,1 13,1 13,5 11,5" /><polygon points="11,19 13,19 13,23 11,23" />
+      <polygon points="1,11 5,11 5,13 1,13" /><polygon points="19,11 23,11 23,13 19,13" />
+      <polygon points="3.6,5 5,3.6 7.8,6.4 6.4,7.8" /><polygon points="16.2,17.6 17.6,16.2 20.4,19 19,20.4" />
+      <polygon points="19,3.6 20.4,5 17.6,7.8 16.2,6.4" /><polygon points="5,20.4 3.6,19 6.4,16.2 7.8,17.6" />
     </g>
   ),
   atras: <polygon fill={C} points="10,4 12,6 7.4,10.6 21,10.6 21,13.4 7.4,13.4 12,18 10,20 2,12" />,

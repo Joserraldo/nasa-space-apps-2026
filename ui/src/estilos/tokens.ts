@@ -45,6 +45,22 @@ export const TRAJES = {
 } as const;
 
 /**
+ * Piel y cabello de cada personaje, para los retratos de diálogo y el 3D (misma identidad, DISEÑO §4.4).
+ * DISEÑO §2.2 todavía no los lista: se muestrearon el 15 nov de la viñeta neutral de cada lámina de
+ * rostros (personajes/02, 04, 06 y 09), promedio de 7x7 píxeles, y se calibran como los de trajes.
+ */
+export const PERSONAJES = {
+  "piel-nino": "#D97B54",
+  "cabello-nino": "#6E4250",
+  "piel-ingeniera": "#E38853",
+  "cabello-ingeniera": "#823B35",
+  "piel-doctora": "#C87654",
+  "cabello-doctora": "#533848",
+  "piel-meteorologa": "#D1835A",
+  "cabello-meteorologa": "#C8B5BD",
+} as const;
+
+/**
  * Entorno marciano (DISEÑO §2.3, muestreado de `mundo/01`, calibrar). `sombra-suelo` es el extremo
  * cálido: las sombras van de ahí a lila, nunca negras. El cielo de día NO está aquí: es el de MARTE.md §4.
  */
@@ -58,7 +74,7 @@ export const ENTORNO = {
 } as const;
 
 /** Todos los colores en un solo objeto, por nombre de token. */
-export const COLORES = { ...UI, ...ESTADO, ...TRAJES, ...ENTORNO } as const;
+export const COLORES = { ...UI, ...ESTADO, ...TRAJES, ...PERSONAJES, ...ENTORNO } as const;
 export type TokenColor = keyof typeof COLORES;
 
 /** Número 0xRRGGBB para `THREE.Color` y materiales: `new THREE.Color(colorNum("regolito-claro"))`. */

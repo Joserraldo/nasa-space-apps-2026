@@ -5,6 +5,8 @@ import { partidaDorada } from "@solar-shield/engine";
 import { ConfirmarAccion } from "./ConfirmarAccion.js";
 import { FacetButton } from "./FacetButton.js";
 import { Mensaje, ResourcePlaque } from "./Piezas.js";
+import { ExpertPortrait } from "./ExpertPortrait.js";
+import { EXPRESIONES, PERSONAS, Retrato } from "./Retrato.js";
 import { Carga } from "../Carga.js";
 import { DatosUsados } from "../DatosUsados.js";
 import { Glosario, Termino } from "../Glosario.js";
@@ -20,6 +22,30 @@ import "./muestrario.css";
  * la captura de la ficha de fidelidad al lado de la lámina. Los estados hover, pressed y focus se
  * fuerzan con una clase solo aquí; en el juego los da el navegador.
  */
+/** ?vista=retratos: las 8 expresiones de cada personaje, como las láminas personajes/02, 04, 06 y 09, y las fichas de ui/04. */
+function Retratos() {
+  const { t } = useT();
+  const [elegida, setElegida] = useState<string>("ingeniera");
+  return (
+    <main className="muestrario">
+      <h1>{t("ui.comun.muestrario.retratos")}</h1>
+      <div className="mu-retratos">
+        <span />
+        {EXPRESIONES.map((e) => <span key={e} className="mu-expresion">{t(`ui.comun.muestrario.expresion.${e}`)}</span>)}
+        {PERSONAS.map((p) => [
+          <span key={p} className="mu-expresion">{t(`ui.comun.retrato.${p}.nombre`)}</span>,
+          ...EXPRESIONES.map((e) => <span key={p + e} className="mu-celda"><Retrato persona={p} expresion={e} tam={104} /></span>),
+        ])}
+      </div>
+      <div className="mu-fila">
+        {(["ingeniera", "doctora", "meteorologa"] as const).map((p) => <ExpertPortrait key={p} persona={p} seleccionado={elegida === p} onElegir={() => setElegida(p)} />)}
+        <ExpertPortrait persona="nino" expresion="feliz" />
+        <ExpertPortrait persona="ia_base" danada expresion="preocupada" />
+      </div>
+    </main>
+  );
+}
+
 function Muestrario() {
   const { t } = useT();
   const [sel, setSel] = useState(false);
@@ -112,6 +138,7 @@ function Raiz() {
         {vista === "portada" && <Portada idioma={idioma} onIdioma={setIdioma} sonido={sonido} onSonido={() => setSonido(!sonido)} puedeContinuar={params.has("guardado")} onEmpezar={nada} onContinuar={nada} onAjustes={nada} onCreditos={nada} />}
         {vista === "intro" && <Intro inicial={n} onTerminar={nada} />}
         {vista === "carga" && <Carga consejo={n} sonido={sonido} onSonido={() => setSonido(!sonido)} />}
+        {vista === "retratos" && <Retratos />}
       </IdiomaContext.Provider>
     );
   }

@@ -15,3 +15,6 @@
 .mu-forzar-foco .fb::before, .mu-forzar-foco .fb::after { opacity: 1; }
 .mu-columna { display: grid; gap: var(--esp-2); max-width: 820px; margin-bottom: var(--esp-4); }
 .mu-fila > .fc { min-width: 150px; }
+.mu-retratos { display: grid; grid-template-columns: 110px repeat(8, 1fr); gap: var(--esp-2); align-items: center; margin-bottom: var(--esp-5); }
+.mu-expresion { font-size: 14px; font-weight: var(--tipo-peso-etiqueta); text-align: center; }
+.mu-celda { display: grid; place-items: center; background: color-mix(in srgb, var(--color-lila) 60%, var(--color-marfil)); }
