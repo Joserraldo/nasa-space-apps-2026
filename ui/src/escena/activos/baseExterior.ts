@@ -85,11 +85,11 @@ const ESCALA_CUPULA2 = 1.25;
 const RADIO_CUPULA = 3.8 * ESCALA_CUPULA;
 const RADIO_CUPULA2 = 3.8 * ESCALA_CUPULA2;
 /** Fila de cuatro paneles solares inclinados, a la izquierda detrás, junto a la torre. */
-const FILA_PANELES = { x: -22.5, z: -15.5, n: 4, paso: 2.8, escala: 2.1, giro: 0.8 } as const;
+const FILA_PANELES = { x: -20.8, z: -16.8, n: 4, paso: 2.0, escala: 1.35, giro: 1.35 } as const;
 /** Loma de la antena parabólica (`mundo/01`, a la izquierda al fondo). */
-const LOMA_ANTENA: Loma = { x: -25, z: -27.5, radio: 5, alto: 1.6, semilla: 11 };
+const LOMA_ANTENA: Loma = { x: -26, z: -28.5, radio: 6.5, alto: 4, semilla: 11, tono: 0.9 };
 /** Loma grande de la base de montaña (`mundo/01`, al fondo a la derecha) con un edificio semienterrado. */
-const LOMA_BASE: Loma = { x: 26, z: -40, radio: 10, alto: 6, semilla: 23 };
+const LOMA_BASE: Loma = { x: 27, z: -44, radio: 14, alto: 9, semilla: 23, tono: 0.55 };
 
 /**
  * Ángulo de la torre: el mínimo (en grados, hacia la izquierda) con el que su silueta se separa del
@@ -121,7 +121,7 @@ function decorados(): readonly Decorado[] {
   const [ux, uz] = tangenteTorre();
   const capsula = TAMBOR_TORRE + LARGO_CORREDOR + 2.4;
   const banco = lugar("banco");
-  const [nx, nz] = enAnillo(82, FUERA + 3.6);
+  const [nx, nz] = enAnillo(72, FUERA + 3.6);
   const [rx, rz] = haciaFuera(banco.mx, banco.mz, FUERA + 2.8);
   const [cx, cz] = enAnillo(-22, FUERA + RADIO_CUPULA + 1.5);
   // La cúpula chica va a la derecha de la grande, en la tangente del anillo, con 0,3 m de aire.
@@ -132,7 +132,7 @@ function decorados(): readonly Decorado[] {
     { id: "capsula", x: tx + ux * capsula, z: tz + uz * capsula, radio: RADIO_CAPSULA },
     { id: "parabolica", x: LOMA_ANTENA.x, z: LOMA_ANTENA.z, radio: LOMA_ANTENA.radio },
     { id: "plataforma_nave", x: nx, z: nz, radio: 3.6 },
-    { id: "energia", x: FILA_PANELES.x, z: FILA_PANELES.z, radio: 5.4 },
+    { id: "energia", x: FILA_PANELES.x, z: FILA_PANELES.z, radio: 3.0 },
     { id: "refugio", x: rx, z: rz, radio: 2.8 },
     { id: "cupula", x: cx, z: cz, radio: RADIO_CUPULA },
     { id: "cupula2", x: c2x, z: c2z, radio: RADIO_CUPULA2 },
@@ -267,10 +267,10 @@ export function armarEdificios(m: Materiales): THREE.Group {
     en("torre", crearTorreControl(m)),
     colocar(crearCorredor(m, LARGO_CORREDOR), [c.x, 0, c.z], [0, c.giro, 0]),
     en("capsula", crearCapsula(m)),
-    colocar(crearFormaModulo(m, "antena"), [LOMA_ANTENA.x, LOMA_ANTENA.alto - 0.1, LOMA_ANTENA.z], [0, alCentro(LOMA_ANTENA.x, LOMA_ANTENA.z), 0], ESCALA_PARABOLICA),
+    colocar(crearFormaModulo(m, "antena"), [LOMA_ANTENA.x, LOMA_ANTENA.alto - 0.15, LOMA_ANTENA.z], [0, alCentro(LOMA_ANTENA.x, LOMA_ANTENA.z), 0], ESCALA_PARABOLICA),
     en("plataforma_nave", crearPlataformaNave(m)),
     colocar(grupoEnergia(m), [decorado("energia").x, 0, decorado("energia").z]),
-    colocar(edificioMontana(m), [LOMA_BASE.x - 1, 0.9, LOMA_BASE.z + 7], [0, alCentro(LOMA_BASE.x, LOMA_BASE.z), 0]),
+    colocar(edificioMontana(m), [LOMA_BASE.x - 1.5, 1.2, LOMA_BASE.z + 11.5], [0, alCentro(LOMA_BASE.x, LOMA_BASE.z), 0], 1.5),
     en("refugio", crearRefugio(m)),
     en("cupula", crearFormaModulo(m, "invernadero"), ESCALA_CUPULA),
     en("cupula2", crearFormaModulo(m, "invernadero"), ESCALA_CUPULA2),

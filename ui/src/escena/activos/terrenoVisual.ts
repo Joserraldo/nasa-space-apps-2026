@@ -360,6 +360,8 @@ export interface Loma {
   readonly radio: number;
   readonly alto: number;
   readonly semilla: number;
+  /** Mezcla hacia `regolito-claro` (0 a 1): más claro se lee mejor contra el suelo. */
+  readonly tono?: number;
 }
 
 /** Lados de cada anillo de una loma. */
@@ -374,7 +376,10 @@ const PIE_LOMA = -4;
 export function crearLomas(materiales: Materiales, lomas: readonly Loma[]): THREE.Mesh {
   const pos: number[] = [];
   const claro = colorToken("regolito-claro");
+  const pálido = colorToken("regolito-claro").lerp(colorToken("marfil"), 0.55);
+  const tramos: [number, number, number][] = []; // [primer vértice, último, tono]
   for (const l of lomas) {
+    const desde = pos.length / 3;
     const azar = aleatorio(l.semilla);
     // [radio relativo, altura relativa] de cada anillo, del pie a la cima.
     const perfil: [number, number][] = [[1.12, PIE_LOMA / l.alto], [1, 0], [0.62, 0.62], [0.3, 1]];
@@ -398,11 +403,19 @@ export function crearLomas(materiales: Materiales, lomas: readonly Loma[]): THRE
     const cima = anillos[anillos.length - 1]!;
     const centro = [l.x, l.alto, l.z];
     for (let i = 0; i < LADOS_LOMA; i++) tri(centro, cima[i]!, cima[(i + 1) % LADOS_LOMA]!);
+    tramos.push([desde, pos.length / 3, l.tono ?? 0]);
   }
   const geo = new THREE.BufferGeometry();
   geo.setAttribute("position", new THREE.Float32BufferAttribute(pos, 3));
   geo.computeVertexNormals();
   pintarPorNormal(geo, colorToken("regolito-medio").lerp(claro, 0.5), colorToken("roca-basalto").lerp(claro, 0.35), colorToken("roca-basalto"), 77, 0.25);
+  const color = geo.getAttribute("color");
+  const c = new THREE.Color();
+  for (const [a, b, t] of tramos)
+    for (let v = a; v < b; v++) {
+      c.setRGB(color.getX(v), color.getY(v), color.getZ(v)).lerp(pálido, t);
+      color.setXYZ(v, c.r, c.g, c.b);
+    }
   geo.computeBoundingSphere();
   const malla = new THREE.Mesh(geo, materiales.Rock);
   malla.name = "Mounds";
