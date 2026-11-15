@@ -198,7 +198,7 @@ Lo decide María Paula. El orden general de recorte del juego sigue siendo el de
 
 ## 8. Coordinación
 
-- `ui/ESTADO.md` tiene **una sección por persona** (`## Personajes (María Paula)`, `## Escenario (Daniel)`, `## Ubicación (Camilo)`, `## Integración (José)`, `## Interfaz (Jaime)`), máximo 5 líneas cada una. Nadie edita la sección de otro. Las secciones las crea María Paula en el último PR de su subida (fase 0). `ui/ESTADO.md` vive en `feat/ui-escenarios`: se edita dentro del PR de frontend de cada uno. El estado del rol de cada persona (motor, datos, diseño, agentes) sigue en el `ESTADO.md` de su carpeta, en `develop`.
+- `ui/ESTADO.md` tiene **una sección por persona** (`## Personajes (María Paula)`, `## Escenario (Daniel)`, `## Ubicación (Camilo)`, `## Integración (José)`, `## Interfaz (Jaime)`), máximo 5 líneas cada una. Nadie edita la sección de otro. Las secciones y el tablero ya existen desde el 15 nov, antes de la ola 1. `ui/ESTADO.md` vive en `feat/ui-escenarios`: se edita dentro del PR de frontend de cada uno. El estado del rol de cada persona (motor, datos, diseño, agentes) sigue en el `ESTADO.md` de su carpeta, en `develop`.
 - **Tablero de fidelidad:** sección `## Fidelidad` de `ui/ESTADO.md`, una línea por pieza: `pieza | lámina | sin empezar / en PR #n / aprobada`. La orquestación lo propone y la sesión principal de María Paula lo escribe al aprobar cada PR. Sirve también para elegir capturas para el video.
 - La orquestación del frontend revisa los semáforos cada 30 minutos ([`orquestadora.md`](../prompts/orquestadora.md)).
 - Un cambio de contrato (§3) se avisa en el PR de quien lo consume antes de fusionarlo.
