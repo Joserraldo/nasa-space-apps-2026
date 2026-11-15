@@ -2,6 +2,8 @@
 
 **Orquestador del equipo:** Santiago (`kcitas`). **Orquestadora del desarrollo 3D y de la pantalla:** María Paula (`Paulasaah`) (decisión de Santiago, 14 nov). **Revisión de PRs y tablero de pendientes:** sesión revisora de Claude ([revisor.md](revisor.md)). **Fusiona:** Santiago (`kcitas`), solo con squash, cuando pasa la CI.
 
+**Para arrancar: [ARRANQUE.md](ARRANQUE.md)** (quién inicia, cómo se abre cada sesión, la lista de tareas por persona, el flujo y el calendario).
+
 Cada persona abre su sesión, pega **su** prompt y después lanza el loop que el prompt indica. Si un prompt choca con un `CLAUDE.md` de carpeta o con un prompt viejo del historial, manda este.
 
 ## Roles y tareas en esta implementación (desde el sáb 14 nov, noche)
@@ -57,34 +59,30 @@ Cómo se reparte el trabajo de ui y cómo se integra: [FLUJO.md](../referenciapa
 
 ### Modelos y esfuerzo
 
-Verificado el 14 nov en este equipo: `claude` acepta `--model` (`fable`, `opus`, `sonnet`, `haiku`) y `--effort` (`low`, `medium`, `high`, `xhigh`, `max`); los subagentes de Claude Code reciben `model` y `effort` al lanzarlos; OpenCode lista `opencode/deepseek-v4.1-flash-free` y `openai/gpt-6.1-sol`; Codex fija el esfuerzo con `model_reasoning_effort`; Daniel usa Codex con GPT-6.1 (dicho por María Paula).
+Verificado el 14 nov en este equipo: `claude` acepta `--model` (`fable`, `opus`, `sonnet`, `haiku`) y `--effort` (`low`, `medium`, `high`, `xhigh`, `max`); los subagentes de Claude Code reciben `model` y `effort` al lanzarlos (incluido `fable`); OpenCode lista `opencode/deepseek-v4.1-flash-free`; Codex fija el esfuerzo con `model_reasoning_effort`.
 
-| Sesión o tarea | Modelo | Esfuerzo | Cómo se abre |
-| --- | --- | --- | --- |
-| Santiago: supervisión, decisiones y fusión | Fable 5.2 | `medium` (`high` solo para decidir un recorte) | `claude --model fable --effort medium` |
-| Orquestadora: semáforo cada 30 min | Sonnet 5.5 | `medium` | `claude --model sonnet --effort medium` |
-| Orquestadora: decisión de prioridad o recorte | Fable 5.2 | `high` | Sesión corta solo para esa decisión |
-| Revisor de PRs | Opus 5.5 | `medium`; `high` si el PR toca `contracts/`, `engine/` o la integración de ui | `claude --model opus --effort medium` |
-| María Paula: personajes y aprobación | Opus 5.5 | `high` | `claude --model opus --effort high` |
-| Daniel: escenario 3D (geometría maestra y rendimiento) | Opus 5.5 | `high` | `claude --model opus --effort high` |
-| Replicar una familia de piezas o personajes ya aprobada | Sonnet 5.5 (subagente) | `medium` | `model: sonnet, effort: medium` |
-| Jaime: componentes de la interfaz | Sonnet 5.5 (subagente, uno por componente) | `medium` | `model: sonnet, effort: medium` |
-| Motor (Jaime) | Opus 5.5 | `high` | `claude --model opus --effort high` |
-| Diseño (Camilo) | Opus 5.5 | `medium` | `claude --model opus --effort medium` |
-| Agentes e infra (José) | Opus 5.5 | `medium` | `claude --model opus --effort medium` |
-| Datos (Daniel), cuando no está en el escenario | Opus 5.5 | `medium` | `claude --model opus --effort medium` |
-| Datos (Daniel): verificación y scripts | Codex con GPT-6.1 | `medium` | `codex -c model_reasoning_effort="medium"` (GPT-6.1 como modelo de su Codex) |
-| Componentes, tests unitarios, bugs claros | Sonnet 5.5 (subagente) | `medium` | `model: sonnet, effort: medium` |
-| Buscar en el repo, i18n EN/ES, JSON, documentación | Haiku 5.5 (subagente) | `low` | `model: haiku, effort: low` |
-| Lote mecánico sobre archivos que nadie más toca | DeepSeek V4.1 Flash en OpenCode | (sin ajuste) | `opencode -m opencode/deepseek-v4.1-flash-free` |
-| Segunda opinión puntual (quien tenga cuenta de OpenAI) | GPT-6.1 Sol en OpenCode | (por defecto) | `opencode -m openai/gpt-6.1-sol` |
+**Quién tiene qué** (dicho por María Paula, 14 nov): todos usan Claude Code con Fable, Opus, Sonnet y Haiku. **Solo Camilo tiene OpenCode** (DeepSeek V4.1 Flash). **Daniel tiene además Codex** con GPT-6.1.
+
+**Criterio:** en el 3D, **Fable dirige y Opus escribe**: la sesión principal en Fable con esfuerzo `medium` decide, revisa contra la lámina y lanza subagentes Opus con esfuerzo `high` para las piezas maestras. En lo demás, Opus es la sesión principal y Fable se usa como subagente solo para lo más difícil.
+
+| Persona | Sesión principal | Fable | Subagentes | Extra |
+| --- | --- | --- | --- | --- |
+| **Daniel** (escenario 3D y datos) | `claude --model fable --effort medium` | Es la sesión principal: dirige el 3D y revisa contra `mundo/01` | Opus `high` para terreno, cielo, kit y rendimiento; Sonnet `medium` para replicar familias aprobadas; Haiku `low` para búsquedas | Codex con GPT-6.1, `model_reasoning_effort="medium"`, para verificar geometría, rendimiento y cifras |
+| **María Paula** (personajes 3D y aprobación) | `claude --model fable --effort medium` | Es la sesión principal: dirige y aprueba la fidelidad | Opus `high` para niño, Iris e Ingeniera; Sonnet `medium` para variantes; Haiku `low` | — |
+| **María Paula** (seguimiento cada 30 min) | `claude --model sonnet --effort medium` | Fable `high` en una sesión corta solo para decidir un recorte o la puerta de P3 | Haiku `low` | — |
+| **Jaime** (motor e interfaz) | `claude --model opus --effort high` | Subagente Fable `medium` para lo que define el sistema: tokens, `FacetButton` y `ResourcePlaque`, y el diseño del motor multi-misión (#152) | Sonnet `medium`, uno por componente; Haiku `low` | — |
+| **José** (integración, agentes, infra, pitch) | `claude --model opus --effort medium` | Subagente Fable `high` solo para los contratos (FLUJO §3), el montaje final y depurar el e2e | Sonnet `medium` para CI y e2e; Haiku `low` para textos | — |
+| **Camilo** (diseño, ubicación, pruebas) | `claude --model opus --effort medium` | — | Sonnet `medium` para navegación y mapa; Haiku `low` | **OpenCode** con DeepSeek V4.1 Flash (`opencode -m opencode/deepseek-v4.1-flash-free`) para lotes mecánicos sobre archivos que nadie más toca |
+| **Santiago** (orquestación y fusión) | `claude --model fable --effort medium` | `high` solo para decidir un recorte | Haiku `low` para leer | — |
+| **Revisor** (Claude) | `claude --model opus --effort medium` (`high` para `contracts/`, `engine/` o la integración) | — | Haiku `low` para la primera pasada de diffs grandes | — |
 
 Reglas de uso:
 - **Primero se sube el esfuerzo, después el modelo:** `medium` → `high` → `xhigh`; recién entonces Sonnet → Opus → Fable. Si un modelo falla dos veces en lo mismo, se sube un escalón; al terminar la tarea difícil, se baja.
+- **Fable rinde con esfuerzo `medium`**: subirlo a `high` solo para la decisión o la pieza más difícil del día.
 - **`max` nunca** sin el OK del orquestador (Santiago) o, en lo de ui y 3D, de la orquestadora del 3D.
 - Máximo 2–3 subagentes a la vez, con **archivos disjuntos**. Decí cuántos y para qué antes de lanzarlos. Un subagente no lanza otros subagentes ni corre `/loop`.
 - En `ESTADO.md`, una línea `Tokens: verde | amarillo | rojo` (equivale a los círculos de `docs/COMO-TRABAJAMOS.md`, sin emojis). En amarillo: solo tareas chicas y modelos livianos. En rojo: parar, dejar el traspaso escrito y avisar en `#bloqueos`.
-- `docs/modelos.md` (de Santiago) tiene la escalera general; esta tabla la concreta para estos prompts. Si chocan, se avisa a Santiago.
+- `docs/modelos.md` (de Santiago) tiene la escalera general; esta tabla la concreta para estos prompts. Si chocan, manda esta tabla y se avisa a Santiago.
 
 ### Git y PRs
 - Rama `feat/<slug>-<tema>` o `fix/<slug>-<tema>` desde `develop`. `git fetch origin && git rebase origin/develop` antes de cada tarea.

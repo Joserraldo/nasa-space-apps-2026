@@ -13,7 +13,7 @@ Leé solo lo que tu tarea necesita. Cada documento es autónomo y enlaza sus lá
 | Si vas a... | Leé primero | Después |
 | --- | --- | --- |
 | Comprobar que algo cumple el reto de NASA | [RETO.md](RETO.md) | [NIVELES.md](NIVELES.md) |
-| **Saber qué se construye primero y quién lo hace** | [FLUJO.md](FLUJO.md) | [NIVELES.md](NIVELES.md) §8 |
+| **Saber qué se construye primero y quién lo hace** | [FLUJO.md](FLUJO.md) | [`docs/prompts/ARRANQUE.md`](../prompts/ARRANQUE.md) |
 | Entender el juego en 5 minutos | [HISTORIA.md](HISTORIA.md) (premisa, personajes, dónde empieza, conexiones) | Este README (secciones 3 y 4) |
 | Construir cualquier cosa visual (3D o UI) | [DISEÑO.md](DISEÑO.md) | [APLICACION.md](APLICACION.md) |
 | Construir terreno, cielo, luz o rocas | [MARTE.md](MARTE.md) | [DISEÑO.md](DISEÑO.md) §2–3 |
