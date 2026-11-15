@@ -1,5 +1,5 @@
 # Estado — datos
-**Actualizado:** 2026-11-14 · **Rama:** feat/datos-estado-codex · **PR:** por abrir
+**Actualizado:** 2026-11-14 · **Rama:** feat/datos-estado-codex · **PR:** #189
 
 ## Hecho
 - Revisé la cola del rol contra `origin/develop`, los issues y los PR abiertos.
@@ -15,3 +15,4 @@
 ## Bloqueos
 - #178 requiere aprobación de contrato. La capa `SP_IceLoc_280m` carece de procedencia científica verificable.
 Tokens: 🟢
+
