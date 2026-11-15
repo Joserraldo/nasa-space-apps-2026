@@ -87,33 +87,33 @@ test("ruta dorada: de la órbita al resumen, en inglés", async ({ page }) => {
   await page.locator("details summary").click();
   await expect(page.getByText(/Landing at the chosen site/).first()).toBeVisible();
 
-  // Paso 5: llega la tormenta real del 20 may 2024, con pausa y tarjeta de fuente.
-  const tormenta = page.getByRole("heading", { name: /Space weather alert/ });
+  // Paso 5: llega la tormenta real del 20 may 2024, con la escena en pausa (E7, panel "Choose your expert").
+  const tormenta = page.getByRole("heading", { name: "Choose your expert" });
   await avanzarHasta(page, () => tormenta.isVisible());
   await expect(tormenta).toBeVisible();
-  // Tarjeta de fuente (hay varias en pantalla: la de la tormenta y la de cada consejo).
-  await expect(page.getByText("Where does this data come from?").first()).toBeVisible();
-  await expect(page.getByRole("link", { name: "See the source" }).first()).toHaveAttribute("href", /ccmc\.gsfc\.nasa\.gov/);
-  await expect(page.getByText("Real curated data, not live").first()).toBeVisible();
+  await expect(page.getByText("Paused", { exact: true })).toBeVisible();
 
-  // Paso 6: la Doctora (refugio) y la Ingeniera (escudo nivel 2) se contradicen; salidas de MISION_JEZERO.dilemaPaso6.
-  await expect(page.getByRole("heading", { name: "Your crew disagrees" })).toBeVisible();
+  // Paso 6: la Ingeniera propone subir el escudo; "Compare your plan" muestra la acción y su costo del motor.
+  await page.getByRole("button", { name: /Engineer/ }).click();
+  await expect(page.getByRole("heading", { name: "Compare your plan" })).toBeVisible();
+  await expect(page.getByText("Costs now").first()).toBeVisible();
+
+  // "Check the source": la Doctora (refugio) y la Ingeniera (escudo nivel 2) se contradicen y la fuente NASA es real, no en vivo.
+  await page.getByRole("button", { name: "Check the source" }).click();
+  await expect(page.getByRole("heading", { name: "Verify the warning" })).toBeVisible();
   await expect(page.getByText("Everyone to the shelter, now!")).toBeVisible();
   await expect(page.getByText(/put energy into the shield and keep working/)).toBeVisible();
-  const refugio = page.getByRole("button", { name: "Go to the shelter" });
-  const escudo = page.getByRole("button", { name: "Raise the shield" });
-  await expect(page.getByRole("button", { name: "Wait a turn" })).toBeVisible();
-  await expect(refugio).toBeVisible();
-  await expect(escudo).toBeVisible();
+  await expect(page.getByText("Where does this data come from?").first()).toBeVisible();
+  await expect(page.getByText("Real curated data, not live").first()).toBeVisible();
+  await expect(page.getByRole("link", { name: /View source/ })).toHaveAttribute("href", /ccmc\.gsfc\.nasa\.gov/);
+  await page.getByRole("button", { name: "Back" }).click();
 
-  // Iris, dañada, dice "todo perfecto" aunque el escudo no lo está: el jugador verifica con la Ingeniera.
-  await expect(page.getByText("Everything is perfect, commander!")).toBeVisible();
-  await page.getByRole("button", { name: "Check with the Engineer" }).click();
-  await expect(page.getByRole("button", { name: "Check with the Engineer" })).toHaveCount(0);
-
-  await escudo.click();
-  await expect(escudo).toHaveAttribute("aria-pressed", "true");
-  await page.getByRole("button", { name: "Continue" }).click();
+  // Confirm manda la decisión al motor y aparece "Decision recorded" con lo que cobró; "Return to exploration" reanuda.
+  await expect(page.getByRole("heading", { name: "Compare your plan" })).toBeVisible();
+  await page.getByRole("button", { name: "Confirm" }).click();
+  await expect(page.getByRole("heading", { name: "Decision recorded" })).toBeVisible();
+  await expect(page.getByText("Action confirmed")).toBeVisible();
+  await page.getByRole("button", { name: "Return to exploration" }).click();
 
   // Paso 7: la telemetría se envía y tarda en llegar.
   const enviar = page.getByRole("button", { name: /Send telemetry to Earth/ });
