@@ -1,12 +1,10 @@
-# Estado — datos
-**Actualizado:** 2026-11-14 · **Rama:** feat/datos-tarjetas-mision1 · **PR:** este (#93) · #55 fusionado · abiertos #65, #69, #95, #97–#100
-## Hecho
-- #55 fusionado: tarjeta de fuente del 20 may 2024 y "qué datos usamos" (en/es).
-- #93: fuente de cada tarjeta de ciencia de Jezero. 3 listas (tormenta, terreno, mensajes), 2 piden cambiar el texto (plantas → OSD-772, escudo → RAD viaje/superficie) y 3 pendientes de aprobar la fuente (polvo, agua, chips).
-- #95: Luna con CRaTER y constantes de ARES. #97–#100: propuestas de las 4 misiones nuevas, revisadas.
-## Qué sigue
-- Si Daniel aprueba las fuentes de NASA fuera de la lista: crear las `fuente.*` y cerrar #91 y #93.
-- Actualizar #65 (conflicto) y #69 con develop.
-## Bloqueos / no verificado
-- Esperando a Daniel: fuentes fuera de la lista (JPL InSight, agua ISS, bit flips, Moon Trek, SVS).
-Tokens: 🟡
+# ESTADO — datos (14 nov)
+**Actualizado:** 2026-11-14 22:20 · fase frontend: escenario 3D en feat/ui-escenario-base (cielo, terreno y tests sin Three; #180 espera el permiso de three)
+
+- Fusionados: #55, #65, #69, #95, #104, #116, #122, #123, #125, #133, #136, #158, #162 y #169 (motor multi-misión).
+- Abiertos de datos (rebasados sobre develop): #126, #147, #148, #159 y #160.
+- #152 (asignado por Santiago): #170–#173 (tipo Mision), #175–#177 (motor), issue contrato #178 y revisión de diseño de #153–#156 hecha.
+- Issues para otros roles: #137 (ui) y #161 (pitch, ya aplicado en #165).
+- Pendiente: la cita de la capa de hielo (texto apagado) y el efecto del sitio sobre los módulos (#178).
+- Bloqueos: ninguno.
+Tokens: amarillo

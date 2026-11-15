@@ -29,7 +29,7 @@ Los documentos del equipo, los commits y los PRs siguen en español.
 
 ## 3. Tu sesión: Opus dirige, los subagentes ejecutan
 
-Todos tienen OpenCode; Daniel tiene además Codex.
+Todos usan Claude Code; solo Camilo tiene OpenCode y Daniel tiene además Codex (actualizado por María Paula el 14 nov; tabla de modelos y esfuerzo en [prompts/README.md](prompts/README.md#modelos-y-esfuerzo)).
 
 - **Una sola sesión principal por persona, con Opus.** Tú le hablas a Opus y a nadie más.
 - **Opus es quien lanza los subagentes**, no tú. Así una sola cabeza lleva la cuenta de qué está corriendo y cuánto se ha gastado. No abras sesiones paralelas por tu cuenta para el mismo rol.

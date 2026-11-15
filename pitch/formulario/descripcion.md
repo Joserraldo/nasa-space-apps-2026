@@ -22,7 +22,7 @@ Solar Shield is a browser game where kids 7 to 12 build and defend a Mars base a
 ## Long description (about 300 words)
 Solar Shield puts a child in charge of an outpost at Jezero crater on Mars. There are only three resources: power, life support (air, water, food) and shielding. Every action helps one meter and costs another, so no choice is free.
 
-The star of the game is a real solar storm. The child chooses a landing site on a real map of Jezero, places modules, and then a storm arrives with its true NASA ID and date. The game pauses and shows a source card: which dataset, which event, when it was downloaded. The golden-path storm is the one of 20 May 2024, which the RAD instrument on the Curiosity rover measured on the Martian surface: about 19 times the usual radiation that day.
+The star of the game is a real solar storm. The child chooses a landing site on a real map of Jezero, places modules, and then a storm arrives with its true NASA ID and date. The game pauses and shows a source card: which dataset, which event, when it was downloaded. The golden-path storm is the one of 20 May 2024, which the RAD instrument on the Curiosity rover measured on the Martian surface: that day, its daily average was about 19 times higher than on a normal day (4.1 → 79.7 µGy/h).
 
 The child talks, by voice or text (or with buttons), to a crew of original expert characters: an Engineer, a Radiation Doctor and a Space Weather expert. They sometimes disagree, and that disagreement is the trade-off: following one piece of advice costs something, and so does ignoring it. The experts are ordinary code that reads the game state and NASA data and answers with prepared sentences; they never make numbers up.
 
@@ -46,13 +46,13 @@ The game runs in the browser with no download and no account, in English and Spa
 - **OSDR RadLab (RAD, Curiosity; HERA, Artemis I):** radiation actually measured on Mars and inside Orion, in µGy/h (detector units, never converted to the mSv used for people).
 - **Mars Trek:** real elevation, shaded relief and imagery of Jezero for the map; slope, sunlight and shielding scores are derived by us and labeled so.
 - **Reference doses for people (mSv/day)** for Mars (NASA, Reitz 2016), and for the Moon and the ISS (Zhang 2020, China's Chang'e-4, not NASA).
-- **OSDR studies** (food, bones, radiation) as end-of-game science cards; **NSSDC Mars fact sheet** for gravity and axis tilt.
+- **OSDR studies** (food, bones, radiation; OSD-546 selected by ESA; OSD-360 is a ground study partly funded by NASA) as end-of-game science cards; **NSSDC Mars fact sheet** for gravity and axis tilt.
 - All data are curated and static (downloaded 2026-11-13); each card names the source and date. Details: `datos-nasa.md`.
 
 ## Tools and technology
 TypeScript across the project; Zod to validate data and the classifier output; Vitest for tests; React and Vite for the interface; Cloudflare Workers for the site and API, with D1 for optional accounts (**POR VERIFICAR:** confirm the final stack and versions in `atribuciones.md`); the browser's Web Speech API for optional voice; a small language model only as an optional phrase classifier. Built with AI coding agents (Claude Code, OpenCode, Codex) under human review; see `ia-uso.md`.
 
-## Future work
+## Future work (not in this version)
 - Add the Moon (south pole) and more Mars sites.
 - Add the Mission Control expert, with a real communication delay.
 - A teacher view: class codes so a whole class plays the same seed (teachers, never children, would have accounts).
@@ -81,7 +81,7 @@ Solar Shield es un juego web donde niños de 7 a 12 años construyen y defienden
 ## Descripción larga
 Solar Shield pone a un niño al mando de un puesto avanzado en el cráter Jezero, en Marte. Solo hay tres recursos: energía, soporte vital (aire, agua y comida) y blindaje. Cada acción ayuda a un medidor y le cuesta a otro, así que ninguna decisión es gratis.
 
-La estrella del juego es una tormenta solar real. El niño elige dónde aterrizar sobre un mapa real de Jezero, coloca módulos y llega una tormenta con su ID y fecha verdaderos de NASA. El juego se pausa y muestra una tarjeta de fuente: qué conjunto de datos, qué evento y cuándo se descargó. La tormenta de la ruta de demostración es la del 20 de mayo de 2024, que el instrumento RAD del rover Curiosity midió en la superficie de Marte: unas 19 veces la radiación normal ese día.
+La estrella del juego es una tormenta solar real. El niño elige dónde aterrizar sobre un mapa real de Jezero, coloca módulos y llega una tormenta con su ID y fecha verdaderos de NASA. El juego se pausa y muestra una tarjeta de fuente: qué conjunto de datos, qué evento y cuándo se descargó. La tormenta de la ruta de demostración es la del 20 de mayo de 2024, que el instrumento RAD del rover Curiosity midió en la superficie de Marte: ese día, su media diaria fue unas 19 veces mayor que en un día normal (de 4,1 a 79,7 µGy/h).
 
 El niño habla, por voz o texto (o con botones), con una tripulación de personajes expertos originales: una Ingeniera, una Doctora de radiación y una Meteoróloga solar. A veces no están de acuerdo, y ese desacuerdo es el trade-off: seguir un consejo cuesta algo y no seguirlo también. Los expertos son código que lee el estado del juego y los datos de NASA y responde con frases preparadas; nunca inventan números.
 
@@ -105,13 +105,13 @@ El juego corre en el navegador, sin descarga ni cuenta, en inglés y español. U
 - **OSDR RadLab (RAD de Curiosity; HERA de Artemis I):** radiación realmente medida en Marte y dentro de Orión, en µGy/h (unidades del detector, nunca convertidas a los mSv que se usan para personas).
 - **Mars Trek:** altura, relieve sombreado e imagen reales de Jezero para el mapa; pendiente, luz y blindaje los derivamos nosotros y se marcan como derivados.
 - **Dosis de referencia para personas (mSv/día):** Marte (NASA, Reitz 2016), Luna e ISS (Zhang 2020, misión Chang'e-4 de China, no NASA).
-- **Estudios OSDR** (comida, huesos, radiación) como tarjetas de ciencia; **ficha de Marte de NSSDC** para gravedad e inclinación del eje.
+- **Estudios OSDR** (comida, huesos, radiación; OSD-546 seleccionado por la ESA; OSD-360 es un estudio en tierra financiado en parte por NASA) como tarjetas de ciencia; **ficha de Marte de NSSDC** para gravedad e inclinación del eje.
 - Todo es curado y estático (descargado el 2026-11-13); cada tarjeta nombra la fuente y la fecha. Detalle: `datos-nasa.md`.
 
 ## Herramientas y tecnología
 TypeScript en todo el proyecto; Zod para validar datos y la salida del clasificador; Vitest para pruebas; React y Vite para la interfaz; Cloudflare Workers para el sitio y la API, con D1 para cuentas opcionales (**POR VERIFICAR:** confirmar la pila final y versiones en `atribuciones.md`); Web Speech API del navegador para voz opcional; un modelo de lenguaje pequeño solo como clasificador opcional de frases. Hecho con agentes de código (Claude Code, OpenCode, Codex) bajo revisión humana; ver `ia-uso.md`.
 
-## Trabajo futuro
+## Trabajo futuro (no está en esta versión)
 - Añadir la Luna (polo sur) y más sitios de Marte.
 - Añadir al experto Control de Misión, con retraso real de comunicaciones.
 - Vista para docentes: códigos de salón para que toda una clase juegue la misma semilla (cuentas solo de docentes, nunca de niños).

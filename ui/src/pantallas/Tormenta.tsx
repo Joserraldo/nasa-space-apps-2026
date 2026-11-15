@@ -1,20 +1,25 @@
 import { useMemo, useState } from "react";
 import { escenaTormenta, irisDanada, verificarIris, type Falla } from "@solar-shield/agents";
 import type { Action, GameState } from "@solar-shield/contracts";
+import { MISION_JEZERO } from "@solar-shield/missions";
 import { useT } from "../i18n.js";
 import { Burbuja, describirAccion } from "../componentes/Dialogos.js";
 import { TarjetaFuente } from "../componentes/TarjetaFuente.js";
+import { PreguntaDeIris } from "../componentes/PreguntaDeIris.js";
+import { QueSi } from "../componentes/QueSi.js";
 
 /**
  * Pasos 5 y 6: la tormenta real llega (pausa + tarjeta de fuente); dos expertos se contradicen;
  * Iris dañada da un número que no coincide con el medidor; el jugador verifica y decide.
  */
-export function Tormenta({ estado, onDecidir }: { estado: GameState; onDecidir: (acciones: Action[]) => void }) {
+export function Tormenta({ estado, onDecidir, onAccion }: { estado: GameState; onDecidir: (previas: Action[], opcionId: string) => void; onAccion?: (a: Action) => void }) {
   const { t } = useT();
-  const escena = useMemo(() => escenaTormenta(estado), [estado.tormenta]);
+  // Las salidas del dilema vienen de la misión; el motor las aplica con elegirDilema().
+  const opciones = MISION_JEZERO.dilemaPaso6.opciones;
+  const escena = useMemo(() => escenaTormenta(estado, opciones), [estado.tormenta]);
   const iris = useMemo(() => (estado.iaBase === "danada" ? irisDanada(estado, 0) : null), [estado.iaBase, estado.rngEstado]);
   const [verificada, setVerificada] = useState<Falla | null>(null);
-  const [elegida, setElegida] = useState<Action | null>(null);
+  const [elegida, setElegida] = useState<string | null>(null);
   const t0 = estado.tormenta!;
   if (!escena) return null;
   const verificacion = verificada ? verificarIris(verificada, estado) : null;
@@ -27,6 +32,7 @@ export function Tormenta({ estado, onDecidir }: { estado: GameState; onDecidir: 
 
       <h2>{t("ui.paso.6.titulo")}</h2>
       {escena.dialogos.map((d, i) => <Burbuja key={i} d={d} />)}
+      <PreguntaDeIris tema="tormenta" nivel={estado.iaBase} />
 
       {iris && (
         <>
@@ -38,14 +44,15 @@ export function Tormenta({ estado, onDecidir }: { estado: GameState; onDecidir: 
 
       <p><strong>{t("agentes.escena6.elige")}</strong></p>
       <div className="fila">
-        {escena.opciones.map((a, i) => (
-          <button key={i} className={elegida === a ? "" : "secundario"} onClick={() => setElegida(a)} aria-pressed={elegida === a}>
-            {describirAccion(a, t)}
+        {opciones.map((o) => (
+          <button key={o.id} className={elegida === o.id ? "" : "secundario"} onClick={() => setElegida(o.id)} aria-pressed={elegida === o.id}>
+            {describirAccion(o.accion, t)}
           </button>
         ))}
       </div>
+      <QueSi estado={estado} opciones={escena.opciones} onSimular={onAccion} />
       <div>
-        <button disabled={!elegida} onClick={() => onDecidir([...(verificacion?.accion && verificada ? [verificacion.accion] : []), elegida!])}>
+        <button disabled={!elegida} onClick={() => onDecidir(verificacion?.accion && verificada ? [verificacion.accion] : [], elegida!)}>
           {t("ui.continuar")}
         </button>
       </div>

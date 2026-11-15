@@ -1,44 +1,33 @@
 import { useState } from "react";
-import { clasificarConAtajos, responder, type Dialogo, type VistaAgente } from "@solar-shield/agents";
-import type { Action, ClassifierOutput, Expert, GameState } from "@solar-shield/contracts";
+import { conversar, type Dialogo, type Entrada } from "@solar-shield/agents";
+import type { Action, GameState } from "@solar-shield/contracts";
 import { referenciaDosis } from "@solar-shield/data";
+import { tormentaActiva } from "@solar-shield/engine";
 import { useT } from "../i18n.js";
 import { Burbuja, NombreExperto } from "./Dialogos.js";
 
-const PREGUNTA_POR_EXPERTO: Record<Expert, ClassifierOutput["accion"]> = {
-  ingeniera: "estado_energia",
-  doctora: "estado_salud",
-  meteorologa: "pronostico",
-  matematico: "que_pasa_si",
-  control_mision: "ayuda",
-};
-
 /**
  * Panel de tripulación: botones por experto y caja de texto. Todo funciona sin modelo:
- * la caja pasa por `clasificarConAtajos` (regex en/es); si no entiende, lo dice y ofrece los botones.
+ * `conversar` (agentes) resuelve atajos/regex, esconde la tormenta antes del paso 5,
+ * aclara si no entiende e Iris dañada responde con su falla.
  */
 export function Tripulacion({ estado, onAccion }: { estado: GameState; onAccion: (a: Action) => void }) {
   const { t } = useT();
   const [texto, setTexto] = useState("");
   const [charla, setCharla] = useState<Dialogo[]>([]);
-  const vista: VistaAgente = estado;
-  const ctx = { dosisMarte: referenciaDosis("marte-superficie") };
+  const [fallasIris, setFallasIris] = useState(0);
 
-  function hablar(salida: ClassifierOutput) {
-    const d = responder(salida, vista, ctx);
+  function hablar(entrada: Entrada) {
+    const d = conversar(entrada, estado, { tormentaActiva: tormentaActiva(estado), dosisMarte: referenciaDosis("marte-superficie"), vecesFallaIris: fallasIris });
+    if ("falla" in d) setFallasIris((n) => n + 1);
     setCharla((c) => [d, ...c].slice(0, 4));
   }
-  function preguntar(e: Expert) {
-    hablar({ version: "0", experto: e, accion: PREGUNTA_POR_EXPERTO[e], parametros: {}, confianza: 1, fuente: "boton" });
+  function preguntar(e: GameState["tripulacion"][number]["id"]) {
+    hablar({ experto: e });
   }
   function enviar(ev: React.FormEvent) {
     ev.preventDefault();
-    const salida = clasificarConAtajos(texto);
-    if (salida) hablar(salida);
-    else {
-      const noEntendi: Dialogo = { experto: "ia_base", prioridad: "charla", lineas: [{ clave: "ui.tripulacion.noEntendi" }] };
-      setCharla((c) => [noEntendi, ...c].slice(0, 4));
-    }
+    hablar({ texto });
     setTexto("");
   }
 

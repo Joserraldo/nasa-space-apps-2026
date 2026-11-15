@@ -27,9 +27,24 @@ describe("terreno Luna lado visible", () => {
     }
   });
 
-  it("luz y blindaje quedan pendientes (null), no inventados", () => {
-    expect(t.fuente.pendientes).toEqual(["luz", "blindaje"]);
-    for (const s of t.sitios) expect([s.puntajes.luz, s.puntajes.blindaje]).toEqual([null, null]);
+  it("la luz queda pendiente (null), no inventada; el blindaje es derivado del cielo tapado", () => {
+    expect(t.fuente.pendientes).toEqual(["luz"]);
+    for (const s of t.sitios) {
+      expect(s.puntajes.luz).toBeNull();
+      expect(s.cieloTapado, s.id).toBeDefined();
+      expect(s.puntajes.blindaje, s.id).toBe(s.cieloTapado!.fraccion);
+      expect(s.cieloTapado!.fraccion, s.id).toBeGreaterThanOrEqual(0);
+      expect(s.cieloTapado!.fraccion, s.id).toBeLessThanOrEqual(1);
+      expect(s.cieloTapado!.omegaSr, s.id).toBeCloseTo(2 * Math.PI * (1 - s.cieloTapado!.fraccion), 1);
+      expect(statSync(join(dir, s.cieloTapado!.dem.archivo)).size, s.id).toBeLessThan(300_000);
+    }
+    expect(t.fuente.blindajeFuente?.cita).toContain("Mazarico");
+  });
+
+  it("coherencia geográfica: Hadley (Apeninos) más tapado que Descartes, y este más que la llanura de Tranquilidad", () => {
+    const b = (id: string) => t.sitios.find((s) => s.id === id)!.puntajes.blindaje!;
+    expect(b("borde-rima-hadley")).toBeGreaterThan(b("tierras-altas-descartes"));
+    expect(b("tierras-altas-descartes")).toBeGreaterThan(b("llanura-tranquilidad"));
   });
 
   it("fuente y fecha presentes, y consulta.json guarda las URLs", () => {

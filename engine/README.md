@@ -55,3 +55,23 @@ s = elegirDilema(s, opcion.id);            // paso 6: acción + extra del invern
 - `motivo`: `"partida_terminada" | "sin_simulaciones" | "modulo_no_permitido" | "recursos_insuficientes"` (con `recurso` = el medidor que falta).
 - El fin llega solo en `s.resultado` (`"exito"` cuando llega la telemetría con todo > 0; `"fallo"` si algo llega a 0).
 - La tormenta solo hace daño en los ticks 3, 4 y 5 (`tormentaEnCurso(s)`).
+
+## Varias misiones (#152)
+
+`GameState` no guarda qué misión se juega (el contrato no cambia): quien integra pasa la misión en cada llamada. Todas estas funciones aceptan un último parámetro opcional `mision: Mision = MISION_JEZERO`, así que el código que no lo pasa sigue jugando Jezero: `aplicarAccion`, `puedeAplicar`, `puedeColocar`, `aterrizar`, `elegirDilema`, `avanzarTick`, `queEsSi`, `paso`, `tormentaActiva`, `tormentaEnCurso`, `novedades`, `conPausaAutomatica`.
+
+```ts
+import { partidaDeMision, aterrizar, paso, elegirDilema, tormentaActiva } from "@solar-shield/engine";
+
+const mision = MISIONES_POR_ID[elegida];                 // cualquier `Mision` de @solar-shield/missions
+let s = partidaDeMision(mision, "mi-semilla");           // sitio, dificultad, avería, objetivo y tormenta de la misión
+s = aterrizar(s, mision.sitiosCandidatos[0].id, mision);
+s = paso(s, { tipo: "colocar_modulo", modulo: mision.modulosDisponibles[0] }, mision);
+tormentaActiva(s, mision);
+```
+
+`partidaDeMision` busca `mision.tormentaId` en el catálogo curado de `data/` y lanza error si no existe. `partidaDorada()` es `partidaDeMision(MISION_JEZERO)`.
+
+- `Mision.fin.exitoCuando`: `"telemetria_llega"` (Jezero) o `{ tipo: "sobrevivir_hasta_tick", tick }` (gana al llegar a ese tick con todo > 0; el fallo por medidor en 0 se evalúa primero).
+- `Mision.retrasoComunicacionesTicks?` (opcional): ticks que tarda la respuesta de la Tierra a `enviar_telemetria`; si falta, se usa `RETRASO_COMUNICACIONES[sitio]` de `design/`.
+- `Mision.modulos?` (opcional): `{ [módulo]: { [recurso]: delta } }` que sustituye la entrada de `MODULOS` de `design/` solo en esa misión. `costoDe(accion, mision?)` lo respeta.
