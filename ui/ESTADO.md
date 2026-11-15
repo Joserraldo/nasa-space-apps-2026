@@ -17,10 +17,9 @@ Una sección por persona, máximo 5 líneas, y nadie edita la de otro (FLUJO §8
 - Bloqueo: ninguno.
 
 ## Escenario (Daniel)
-**Rama:** feat/ui-escena-caminos · **PR:** #206 y división #223–230 · **Tokens:** 🟢
-- Hecho: extraídos materiales, cielo, terreno, kit, edificios y módulos en PRs pequeños; caminos verificados con 535 pruebas, tipos y build.
-- Sigue: armado exterior, integración de tokens ya disponibles y correcciones de composición contra mundo/01.
-- Bloqueo: medición física en celular y PC viejo pendiente.
+**Rama:** feat/ui-escena-consolidada · **PR:** consolida #206, #223–#232 y #235 · **Tokens:** 🟢
+- Hecho: pila #223–#232 + base (#206: EscenaBase, escena3d, armado, baseExterior, pavimento, capturas) + materiales con tokens (#235) en una sola rama.
+- Consolidado por el agente de José mientras Daniel no tiene tokens; Daniel revisa al volver.
 
 ## Ubicación (Camilo)
 **Rama:** feat/ui-ubicacion-lugares · **PR:** #205 · **Tokens:** verde

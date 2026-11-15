@@ -97,6 +97,14 @@ export function crearPuerta(m: Materiales): THREE.Group {
 
 /** Lámina 02 (consola): pantalla alta chaflanada, encimera, 6 teclas, pantalla táctil y 2 tiras cian. */
 export function crearConsola(m: Materiales): THREE.Group {
+  const pantalla = geometriaBase("kit-pantalla-petroleo", () => {
+    const g = chaflan(1.35, 0.6, 0.02, 0.12).clone();
+    const c = colorToken("teal").multiplyScalar(0.22);
+    const colores = new Float32Array(g.getAttribute("position").count * 3);
+    for (let i = 0; i < colores.length; i += 3) colores.set([c.r, c.g, c.b], i);
+    g.setAttribute("color", new THREE.BufferAttribute(colores, 3));
+    return g;
+  });
   const teclas: THREE.Mesh[] = [];
   for (const sx of [-1, 1]) {
     for (const [dx, dz] of [[0, 0], [0.22, 0], [0.11, 0.14]] as const) {
@@ -107,14 +115,16 @@ export function crearConsola(m: Materiales): THREE.Group {
     "Kit_Console",
     parte(m, "SuitBase", chaflan(1.7, 0.95, 0.18, 0.22), [0, 1.4, -0.2], "Console_ScreenFrame"),
     // Pantalla oscura, malla propia (la pantalla dibuja datos reales; sin texto horneado).
-    parte(m, "Boots", caja(1.35, 0.6, 0.02), [0, 1.42, -0.1], "Console_Screen"),
+    parte(m, "Rock", pantalla, [0, 1.42, -0.095], "Console_Screen"),
     parte(m, "SuitBase", chaflan(1.9, 0.28, 0.6, 0.1), [0, 0.78, 0], "Console_Desk"),
     parte(m, "SuitBase", caja(0.3, 0.64, 0.5), [-0.8, 0.32, 0], "Console_LegL"),
     parte(m, "SuitBase", caja(0.3, 0.64, 0.5), [0.8, 0.32, 0], "Console_LegR"),
-    parte(m, "Boots", caja(1.0, 0.5, 0.06), [0, 0.35, -0.12], "Console_BackPanel"),
+    parte(m, "SuitBase", caja(1.0, 0.5, 0.06), [0, 0.35, -0.12], "Console_BackPanel"),
     parte(m, "Emissive", caja(0.4, 0.03, 0.2), [0, 0.93, 0.02], "Console_Touch"),
     parte(m, "Emissive", caja(0.03, 0.05, 0.4), [-0.96, 0.7, 0.05], "Console_StripL"),
     parte(m, "Emissive", caja(0.03, 0.05, 0.4), [0.96, 0.7, 0.05], "Console_StripR"),
+    // Símbolo de señal del equipo, sin cifras ni texto de telemetría inventados.
+    ...[0.12, 0.22, 0.32].map((h, i) => parte(m, "Emissive", caja(0.08, h, 0.012), [-0.18 + i * 0.18, 1.25 + h / 2, -0.076], `Console_Signal${i}`)),
     ...teclas,
   );
 }

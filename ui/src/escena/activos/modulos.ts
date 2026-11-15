@@ -71,12 +71,15 @@ export interface FormaModulo {
   giro?: number;
 }
 
+const ESCALA_RECICLADOR = 0.8;
+const ESCALA_INVERNADERO = 0.72;
+
 /** Huellas a partir de los círculos de colisión de `TERRENO` (mundo.ts). [E] */
 export const FORMA_MODULO: Readonly<Record<ModuloBase, FormaModulo>> = {
-  panel_solar: { huella: [6.8, 4.2], alto: 2.1, giro: 0 },
+  panel_solar: { huella: [6.8, 2.4], alto: 2.1, giro: 0 },
   escudo: { huella: [2.2, 4.0], alto: 2.4, giro: 0 },
-  reciclador_agua: { huella: [2.9, 1.9], alto: 2.5 },
-  invernadero: { huella: [7.8, 7.8], alto: 4.0, giro: 0 },
+  reciclador_agua: { huella: [2.9 * ESCALA_RECICLADOR, 1.9 * ESCALA_RECICLADOR], alto: 2.5 * ESCALA_RECICLADOR, giro: -Math.PI / 2 },
+  invernadero: { huella: [7.8 * ESCALA_INVERNADERO, 7.8 * ESCALA_INVERNADERO], alto: 4 * ESCALA_INVERNADERO, giro: 0 },
   antena: { huella: [2.2, 2.2], alto: 3.6 },
 };
 
@@ -98,12 +101,12 @@ export function colocar<T extends THREE.Object3D>(o: T, pos: V3, rot: V3 = [0, 0
   return o;
 }
 
-/** Plataforma solar: losa chaflanada, dos filas de 2 paneles juntos sobre su base y controlador. */
+/** Plataforma solar: losa chaflanada, una fila de 2 paneles separados sobre su base y controlador. */
 function panelSolar(m: Materiales): THREE.Group {
   const x = grupo("Shape_SolarPanel");
-  x.add(colocar(parte(m, "SuitBase", chaflan(6.8, 4.2, 0.22, 0.6), [0, 0, 0], "Solar_Slab"), [0, 0.11, 0], [-Math.PI / 2, 0, 0]));
+  x.add(colocar(parte(m, "SuitBase", chaflan(6.8, 2.4, 0.22, 0.6), [0, 0, 0], "Solar_Slab"), [0, 0.11, 0], [-Math.PI / 2, 0, 0]));
   const celda = geometriaBase("mod-celda", () => new THREE.PlaneGeometry(0.56, 0.62));
-  for (const dz of [-0.95, 0.95]) {
+  for (const dz of [0]) {
     x.add(parte(m, "SuitBase", chaflan(5.8, 0.3, 0.8, 0.1), [0, 0.37, dz], "Solar_Rail"));
     for (const dx of [-1.38, 1.38]) {
       x.add(parte(m, "SuitBase", caja(0.24, 0.7, 0.24), [dx, 0.85, dz], "Solar_Post"));
@@ -115,8 +118,8 @@ function panelSolar(m: Materiales): THREE.Group {
     }
   }
   // Controlador al frente (la pantalla se dibuja aparte cuando haya datos reales).
-  x.add(parte(m, "SuitBase", chaflan(0.7, 0.9, 0.45, 0.1), [2.9, 0.67, 1.75], "Solar_Controller"));
-  x.add(parte(m, "Emissive", caja(0.4, 0.22, 0.02), [2.9, 0.85, 1.98], "Solar_ControllerLight"));
+  x.add(parte(m, "SuitBase", chaflan(0.7, 0.9, 0.45, 0.1), [-2.9, 0.67, 0.75], "Solar_Controller"));
+  x.add(parte(m, "Emissive", caja(0.4, 0.22, 0.02), [-2.9, 0.85, 0.98], "Solar_ControllerLight"));
   return x;
 }
 
@@ -274,9 +277,9 @@ export function crearFormaModulo(m: Materiales, id: ModuloBase): THREE.Group {
     case "escudo":
       return escudo(m);
     case "reciclador_agua":
-      return reciclador(m);
+      return grupo("Recycler_Compact", colocar(reciclador(m), [0, 0, 0], [0, 0, 0], ESCALA_RECICLADOR));
     case "invernadero":
-      return invernadero(m);
+      return grupo("Greenhouse_Compact", colocar(invernadero(m), [0, 0, 0], [0, 0, 0], ESCALA_INVERNADERO));
     case "antena":
       return antena(m);
   }

@@ -46,8 +46,7 @@ export function crearTorreControl(m: Materiales): THREE.Group {
   return grupo(
     "Building_Control",
     parte(m, "SuitBase", tronco(4.2, 4.5, 0.5, 10), [0, 0.25, 0], "Control_Plinth"),
-    parte(m, "SuitBase", tronco(2.4, 2.6, 3.4, 8), [-1.6, 2.2, 0.3], "Control_LegL"),
-    parte(m, "SuitBase", tronco(2.4, 2.6, 3.4, 8), [1.6, 2.2, 0.3], "Control_LegR"),
+    parte(m, "SuitBase", tronco(2.6, 3.0, 3.4, 8), [0, 2.2, 0], "Control_Drum"),
     parte(m, "SuitBase", tronco(4.3, 3.6, 0.7, 12), [0, 4.2, 0], "Control_FlangeLow"),
     parte(m, "SuitBase", tronco(3.85, 3.85, 1.5, 12), [0, 5.3, 0], "Control_Core"),
     parte(m, "Glass", tronco(4.05, 4.05, 1.5, 12), [0, 5.3, 0], "Control_Windows"),

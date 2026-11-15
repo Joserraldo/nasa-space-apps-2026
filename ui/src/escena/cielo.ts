@@ -133,7 +133,7 @@ export const NIEBLA = { cerca: 60, lejos: 420 } as const;
 /** Radio angular (rad) del halo de día; se multiplica por `TAMANO_HALO`. [E] */
 export const RADIO_HALO = 0.2;
 /** Intensidades de partida (luces físicas de Three r160). [E] */
-export const INTENSIDAD = { sol: 2.2, hemisferica: 1.2 } as const;
+export const INTENSIDAD = { sol: 2.8, hemisferica: 0.9 } as const;
 /** Media caja de la cámara de sombras alrededor de la base. [E] */
 const CAJA_SOMBRA = 40;
 
@@ -173,7 +173,7 @@ function crearDomo(ambiente: Ambiente): THREE.Mesh {
     for (let c = 0; c < 3; c++) colores[i * 3 + c] = (1 - w) * base[c]! + w * halo[c]!;
   }
   geo.setAttribute("color", new THREE.BufferAttribute(colores, 3));
-  const mat = new THREE.MeshBasicMaterial({ vertexColors: true, side: THREE.BackSide, fog: false, depthWrite: false });
+  const mat = new THREE.MeshBasicMaterial({ vertexColors: true, side: THREE.BackSide, fog: false, depthWrite: false, toneMapped: false });
   const domo = new THREE.Mesh(geo, mat);
   domo.name = "Sky_Dome";
   domo.renderOrder = -1;
