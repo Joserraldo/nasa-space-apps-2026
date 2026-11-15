@@ -2,8 +2,8 @@
 **Actualizado:** 2026-11-14 · **Rama:** feat/datos-estado-codex · **PR:** #189
 
 ## Hecho
-- Revisé la cola del rol contra `origin/develop`, los issues y los PR abiertos.
-- #95, #126, #147, #148, #159, #160 y la parte implementada de #152 ya están en `develop`.
+- Corregí `docs/science/datos-usados.md` en es/en: las fuentes lunares y de Marte norte ya están integradas y el hielo no se presenta sin cita.
+- Actualicé los comentarios de exportación de los terrenos lunares; 130 pruebas de datos y typecheck en verde.
 - La gravedad de Marte y la Luna está en el PR #187, con CI verde y sin conflictos; cierra #141 al fusionarse.
 - #61 y D8 (#8) ya tienen entregables fusionados; esperan cierre o visto bueno del equipo.
 - La capa de hielo de Moon Trek sigue sin atribución verificable. Su texto permanece apagado; ver `docs/science/terreno.md`.
