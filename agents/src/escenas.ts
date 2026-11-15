@@ -31,6 +31,8 @@ export interface MedicionCitada {
   /** `gale_lejos`: RAD (Curiosity) midió en el cráter Gale, lejos de la base (misión del polo norte). */
   lugar: "superficie_marte" | "gale_lejos" | "orbita_luna";
   fuente: SourceCard;
+  /** `fondoTranquilo` de datos (CRaTER, #95). false = el fondo ya estaba inflado y el factor no vale: no se dice cifra. */
+  fondoTranquilo?: boolean;
 }
 
 const CLAVE_MEDIDA: Record<MedicionCitada["lugar"], string> = {
@@ -76,7 +78,9 @@ export function escenaTormenta(v: VistaAgente, dilema?: readonly OpcionDilemaVis
     accion: refugio,
     lineas: [
       medida
-        ? { clave: CLAVE_MEDIDA[medida.lugar], vars: { factor: Math.round(medida.factor) } }
+        ? medida.lugar === "orbita_luna" && medida.fondoTranquilo === false
+          ? { clave: "agentes.escena6.doctora.medidaOrbitaLunaSinFactor" }
+          : { clave: CLAVE_MEDIDA[medida.lugar], vars: { factor: Math.round(medida.factor) } }
         : { clave: "agentes.escena6.doctora.sinMedida" },
       // Dilema del refugio (idea de ARES): con invernadero sano, refugiarse lo deja sin cuidar.
       { clave: v.equipos.invernadero === "ok" ? "agentes.escena6.doctora.costoInvernadero" : "agentes.escena6.doctora.costo" },

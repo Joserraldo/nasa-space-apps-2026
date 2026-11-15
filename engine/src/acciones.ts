@@ -130,6 +130,37 @@ export function aplicarAccion(estado: GameState, accionCruda: unknown): GameStat
   return s;
 }
 
+/** Encola efectos con el retraso de la dificultad (mismo mecanismo que las acciones). */
+export function encolarRetrasado(
+  estado: GameState,
+  deltas: Partial<Record<Resource, number>>,
+  descripcionKey: string,
+  idBase: string,
+): GameState {
+  const retraso = RETRASO_POR_DIFICULTAD[estado.dificultad];
+  let rng = estado.rngEstado;
+  const nuevos: PendingEffect[] = [];
+  for (const r of RECURSOS) {
+    const d = deltas[r];
+    if (!d) continue;
+    const p = enteroEntre(rng, retraso.min, retraso.max);
+    rng = p.estado;
+    nuevos.push({ id: `${estado.tick}-${idBase}-${r}`, aplicaEnTick: estado.tick + p.entero, recurso: r, delta: d, origen: "decision", descripcionKey, oculto: retraso.ocultos });
+  }
+  return { ...estado, rngEstado: rng, efectosPendientes: [...estado.efectosPendientes, ...nuevos] };
+}
+
+/** Aplica un efecto inmediato + retrasado registrado como decisión (aterrizaje, extras del dilema…). */
+export function aplicarEfecto(
+  estado: GameState,
+  efecto: { inmediato: Partial<Record<Resource, number>>; retrasado: Partial<Record<Resource, number>> },
+  descripcionKey: string,
+  idBase: string,
+): GameState {
+  const s = aplicarDeltas(estado, efecto.inmediato, "decision", descripcionKey);
+  return encolarRetrasado(s, efecto.retrasado, descripcionKey, idBase);
+}
+
 /** Módulos que el jugador ya construyó en esta partida (según la cadena de causas). */
 export function modulosColocados(estado: GameState): string[] {
   const m = new Set<string>();
@@ -209,17 +240,7 @@ export function aterrizar(estado: GameState, sitioId: string): GameState {
   if (!s.causas.some((c) => c.descripcionKey === "causa.aterrizaje")) {
     s = { ...s, causas: [...s.causas, { tick: s.tick, origen: "decision", descripcionKey: "causa.aterrizaje" }] };
   }
-  const retraso = RETRASO_POR_DIFICULTAD[s.dificultad];
-  let rng = s.rngEstado;
-  const nuevos: PendingEffect[] = [];
-  for (const r of RECURSOS) {
-    const d = sitio.aterrizaje.retrasado[r];
-    if (!d) continue;
-    const p = enteroEntre(rng, retraso.min, retraso.max);
-    rng = p.estado;
-    nuevos.push({ id: `${s.tick}-aterrizaje-${r}`, aplicaEnTick: s.tick + p.entero, recurso: r, delta: d, origen: "decision", descripcionKey: "causa.aterrizaje", oculto: retraso.ocultos });
-  }
-  return { ...s, rngEstado: rng, efectosPendientes: [...s.efectosPendientes, ...nuevos] };
+  return encolarRetrasado(s, sitio.aterrizaje.retrasado, "causa.aterrizaje", "aterrizaje");
 }
 
 /** Simula una acción sin tocar el estado real: devuelve el estado hipotético tras avanzar hasta que sus efectos entren. */

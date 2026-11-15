@@ -6,7 +6,7 @@ Estándar del equipo desde el 13 nov en la tarde, decidido por Santiago. Aplica 
 
 | Rol | Personas | Carpetas |
 |---|---|---|
-| `diseno` (diseño de juego y misiones) | Santiago y Camilo | `design/`, `missions/` |
+| `diseno` (diseño de juego y misiones) | Camilo (Santiago supervisa y aprueba los números) | `design/`, `missions/` |
 | `motor` (motor y simulación) | Jaime | `engine/` |
 | `ui` (pantallas, voz, arte, accesibilidad) | María Paula | `ui/`, `assets/` |
 | `agentes` (tripulación de expertos, Iris, clasificador) | José | `agents/` |
@@ -17,7 +17,7 @@ Santiago es además el orquestador: coordina, desbloquea y mantiene los document
 
 **Estos roles son definitivos.** No se vuelven a cambiar.
 
-**Diseño y motor trabajan en pareja.** El motor (Jaime) lee las tablas y misiones que escriben Santiago y Camilo en `design/` y `missions/`; ningún número del juego vive en `engine/`. Lo que diseño necesite del motor se pide con un issue `bloquea:motor`, y al revés con `bloquea:diseño`.
+**Diseño y motor trabajan en pareja.** El motor (Jaime) lee las tablas y misiones que escribe Camilo en `design/` y `missions/`; ningún número del juego vive en `engine/`. Lo que diseño necesite del motor se pide con un issue `bloquea:motor`, y al revés con `bloquea:diseño`.
 
 **José lleva dos roles.** Si `agentes` se atrasa, lo primero que se reparte es `infra` (pitch y pruebas), no los expertos.
 
@@ -53,11 +53,12 @@ Nadie empuja directo a `develop` ni a `main`. **Los PRs los fusiona Santiago** (
 
 ## 5. Cloudflare y claves
 
-**Nadie entra a la cuenta de Cloudflare de Santiago y nadie comparte contraseñas.** No hace falta:
+Ya funciona (14 nov). **Nadie entra a la cuenta de Cloudflare de Santiago y nadie comparte claves.**
 
-- **El despliegue sale de GitHub.** Cada cambio que entra a `develop` se publica solo en un link de prueba; lo que entra a `main` es producción. Tú "subes" tu trabajo fusionando tu PR.
-- **El juego no llama a la API de NASA mientras se juega.** Los datos ya están curados en `data/curated/`. Solo el pipeline de `datos` usa la API, con la clave personal de cada quien en su `.env.local`.
-- **La única clave de producción es la del modelo del clasificador.** Ya está guardada como secreto cifrado del repo con el nombre `BAI_API_KEY` (13 nov). Ningún flujo la usa todavía: el flujo de despliegue la leerá con ese nombre y la pasará a Cloudflare. El navegador nunca la ve.
-- **Para probar en tu máquina** usa tus propias claves en `.env.local`. Nunca en el chat, en issues ni en commits.
-
-Pendiente de montar (lo hace José, que lleva `infra` y es el administrador del repo): el flujo de despliegue en GitHub Actions. Necesita dos secretos del repo (token y ID de la cuenta de Cloudflare). Santiago crea la cuenta y le pasa esos dos valores a José por un canal privado, nunca por el chat del equipo.
+- **Despliegue automático** (`.github/workflows/deploy.yml`): cada merge a `develop` publica la preview; cada merge a `main` publica producción. Solo publica si pasan tipos y pruebas. Tú "subes" tu trabajo cuando Santiago fusiona tu PR.
+  - Preview: https://nasa-space-apps-2026-preview.santiago031541.workers.dev
+  - Producción: https://nasa-space-apps-2026.santiago031541.workers.dev
+- **Un solo Worker** (`infra/worker/`) sirve la pantalla (`ui/dist`) y la API (`/api/health`, `/api/clasificar`, login y progreso). Detalle en `infra/worker/README.md`.
+- **El juego no llama a la API de NASA mientras se juega:** los datos están curados en `data/`.
+- **Claves:** `BAI_API_KEY`, `CLOUDFLARE_API_TOKEN` y `CLOUDFLARE_ACCOUNT_ID` son secretos del repo; el despliegue sube la del modelo al Worker. El navegador nunca ve una clave. Para probar en tu máquina, usa las tuyas en `.env.local` o `infra/worker/.dev.vars` (ignorados por git). Nunca en el chat, en issues ni en commits.
+- **Login opcional sin correo** y modo invitado: el progreso del que entra se guarda en D1; el del invitado no.

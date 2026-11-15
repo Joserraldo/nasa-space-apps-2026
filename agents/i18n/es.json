@@ -175,5 +175,21 @@
   "agentes.iris.pregunta.noche_polar.a": "Del hielo",
   "agentes.iris.pregunta.noche_polar.b": "De la batería que cargamos antes",
   "agentes.iris.pregunta.noche_polar.c": "De la tormenta",
-  "agentes.iris.pregunta.noche_polar.porque": "Los paneles solo funcionan con luz del Sol. Lo que guardamos antes de la noche mantiene la base."
+  "agentes.iris.pregunta.noche_polar.porque": "Los paneles solo funcionan con luz del Sol. Lo que guardamos antes de la noche mantiene la base.",
+  "agentes.escena6.doctora.medidaOrbitaLunaSinFactor": "Cerca de la Luna, en órbita, un instrumento también midió esta tormenta. La Luna no tiene aire que nos proteja. ¡Al refugio, ya!",
+  "agentes.luna_sur.tormenta.doctora": "Cerca de la Luna, en órbita, un instrumento midió uno de los valores más altos de nuestros datos. ¡No fue en la base, pero sí cerca!",
+  "agentes.luna_sur.tormenta.sinAire": "La Luna no tiene aire que frene la radiación. ¡Adentro, ya!",
+  "agentes.luna_sur.tormenta.nube": "¡El Sol acaba de lanzar una nube rapidísima!",
+  "agentes.luna_sur.tormenta.marte": "La misma tormenta también se midió en Marte. Allá la radiación subió unas {factor} veces.",
+  "agentes.luna_sur.dilema.ingeniera": "¡Espera! Si vuelven con las manos vacías, mañana nos quedamos sin agua.",
+  "agentes.luna_sur.micrometeorito.alerta": "¡Una piedrita del espacio golpeó un panel solar! Ahora da la mitad de energía. Tenemos {energia}%.",
+  "agentes.luna_sur.micrometeorito.reparar": "Puedo arreglarlo, pero gasta energía y alguien tiene que salir.",
+  "agentes.luna_sur.micrometeorito.suerte": "Esto fue mala suerte, no tu decisión.",
+  "agentes.luna_sur.control.cerca": "La Tierra está cerca: nuestro mensaje llega en más o menos un segundo.",
+  "agentes.luna_sur.control.costo": "Llamar es rápido, pero igual gasta energía.",
+  "agentes.iris.pregunta.mensaje_luna.texto": "¡Pregunta rápida! ¿Cuánto tarda un mensaje de la Luna a la Tierra?",
+  "agentes.iris.pregunta.mensaje_luna.a": "Más o menos 1 segundo",
+  "agentes.iris.pregunta.mensaje_luna.b": "Más o menos 1 hora",
+  "agentes.iris.pregunta.mensaje_luna.c": "Más o menos 1 día",
+  "agentes.iris.pregunta.mensaje_luna.porque": "Los mensajes viajan a la velocidad de la luz. La Luna está cerca, así que tardan más o menos un segundo."
 }
