@@ -29,18 +29,26 @@ Una sección por persona, máximo 5 líneas, y nadie edita la de otro (FLUJO §8
 - Hecho: contratos `VistaEscena` (#181), eventos de feedback (#182) y ajustes del jugador (#186) fusionados; CI corre en `feat/ui-escenarios`.
 
 ## Interfaz (Jaime)
-**Rama:** — · **PR:** ninguno · **Tokens:** —
-- Sin registrar todavía. Primera tarea: `tokens.ts`, `tokens.css` y Nunito (DISEÑO §2 y §2.4, contrato de FLUJO §3).
+**Rama:** feat/ui-interfaz-tokens · **PR:** #208, #209, #213, #214, #217, #219, #220 · **Tokens:** verde
+- Hecho: `tokens.ts` (fuente única de DISEÑO §2, forma, sombra, tipo y movimiento), `tokens.css` generado con test y Nunito en `ui/public/fuentes/`.
+- Hecho también: `estilos.css` borrado y reemplazado por `estilos/base.css` solo con tokens (PR #209, depende de #208).
+- Hecho también: `FacetButton` con todos los estados de `ui/02` y `ui/03`, iconos facetados propios y muestrario en `componentes/base/muestrario.html`.
+- Hecho también: `ResourcePlaque`, `CostRow`, `EfectoPendiente`, `Mensaje` y `ConfirmarAccion` (costos y permiso del motor).
+- Hecho también: portada DOM (logo oficial sin fondo, menú, idioma y sonido), intro de 4 viñetas y carga con indicador indeterminado.
+- Hecho también: `TarjetaFuente` rehecha desde la lámina (misma API), `DatosUsados` y `Glosario` con términos en contexto.
+- Hecho también: retratos SVG del niño, las 3 expertas e Iris con las 8 expresiones, y `ExpertPortrait`.
+- Sigue: audio y voz si sobra tiempo; mientras, revisar el uso del motor en los PRs de pantalla.
+- Bloqueo: ninguno.
 
 ## Fidelidad
 Una línea por pieza (FLUJO §4 y §8). Estados: `sin empezar`, `en PR #n`, `aprobada`. Solo María Paula marca `aprobada`, después de comparar la captura con la lámina.
 
 | Pieza | Lámina | Dueño | Estado |
 | --- | --- | --- | --- |
-| Tokens, Nunito, botones y placas | `ui/02`, `ui/03` | Jaime | sin empezar |
-| Retratos de diálogo | `personajes/02, 04, 06, 09`, `ui/01` | Jaime | sin empezar |
-| Portada DOM, intro y carga | `inicio/01–03`, `ui/00` | Jaime | sin empezar |
-| Tarjeta de fuente, datos usados, glosario | `ui/04` | Jaime | sin empezar |
+| Tokens, Nunito, botones y placas | `ui/02`, `ui/03` | Jaime | en PR #208 (tokens y Nunito); botones y placas sin empezar |
+| Retratos de diálogo | `personajes/02, 04, 06, 09`, `ui/01` | Jaime | en PR #220 |
+| Portada DOM, intro y carga | `inicio/01–03`, `ui/00` | Jaime | en PR #217 |
+| Tarjeta de fuente, datos usados, glosario | `ui/04` | Jaime | en PR #219 |
 | Cielo, luz y niebla de Marte | MARTE.md §4–§5 (no el azul de `mundo/01`) | Daniel | sin empezar |
 | Terreno de Jezero y rocas | `mundo/01`, `exterior/02` | Daniel | sin empezar |
 | Kit de piezas | `piezas/01–10` | Daniel | sin empezar |
