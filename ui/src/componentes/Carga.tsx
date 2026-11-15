@@ -12,7 +12,13 @@ import "./base/inicio.css";
  */
 export const TOTAL_CONSEJOS = 4;
 
-export function Carga({ consejo = 0, sonido, onSonido }: { consejo?: number; sonido?: boolean | undefined; onSonido?: (() => void) | undefined }) {
+export function Carga({ consejo = 0, sonido, onSonido, onSaltar }: {
+  consejo?: number;
+  sonido?: boolean | undefined;
+  onSonido?: (() => void) | undefined;
+  /** Si existe, muestra "Skip" para pasar sin esperar (FLUJO §7.2: la carga se puede saltar). */
+  onSaltar?: (() => void) | undefined;
+}) {
   const { t } = useT();
   const n = (((Math.round(consejo) % TOTAL_CONSEJOS) + TOTAL_CONSEJOS) % TOTAL_CONSEJOS) + 1;
   return (
@@ -37,6 +43,7 @@ export function Carga({ consejo = 0, sonido, onSonido }: { consejo?: number; son
             <span className="carga-chip">{t("ui.carga.consejo")}</span>
             <p>{t(`ui.carga.consejos.${n}`)}</p>
           </div>
+          {onSaltar && <FacetButton labelKey="ui.carga.saltar" onClick={onSaltar} />}
         </div>
       </div>
     </section>
