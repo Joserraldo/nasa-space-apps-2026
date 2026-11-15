@@ -1,11 +1,20 @@
 # Misión Luna polo sur (`luna_polo_sur`): hielo en la sombra, luz en las crestas
 
-**Rol que propone:** datos (Daniel) · **Dueños de la misión:** diseño (Santiago y Camilo) · **Estado:** propuesta · **Fecha:** 2026-11-14
+**Rol que propone:** datos (Daniel) · **Dueños de la misión:** diseño (Santiago y Camilo) · **Estado:** propuesta, implementada como datos (ver "Estado de implementación") · **Fecha:** 2026-11-14
 **Destino:** `missions/src/luna-polo-sur.ts` + `design/src/recursos.ts` (ya trae `luna_polo_sur`: ⚡65 🫁75 🛡️55, consumo ⚡-3 🫁-2 🛡️-2, retraso de comunicaciones 1 tick). Este documento no toca esas carpetas: allí lo implementa diseño.
 **Modelo:** misma estructura que la misión 1 (`docs/ideas/mision-1-ares-mejorada.md`, PR #88). Tormenta y medición: PR #95 (`data/ciencia/luna.json`).
 
 > Convención de cifras: **[V]** = verificado, con la URL en la tabla final (§12). **NO VERIFICADO** = no se usa en pantalla. **Valor de juego** = número de balance (0-100) que no es dato de NASA y nunca se presenta como tal. **Fuera de lista** = fuente de NASA que no está en la pestaña Resources del reto: requiere aprobación de Daniel antes de entrar a la UI.
 > Ninguna cifra de este documento está "en vivo": todo es **datos reales curados, no en vivo**.
+
+
+## Estado de implementación (14 nov, 22:45)
+
+- **Implementada como datos:** `missions/src/luna-polo-sur.ts` (#154, en develop), sobre el motor para varias misiones (#169–#177). Voces de la misión en #128.
+- **Fuentes:** `panel_sol` y `bateria_noche` usan `fuente.nssdcMoon` (no `fuente.nssdc`, que es la ficha de Marte); `hielo_sombra` usa `fuente.nasa.hieloLuna` (#159).
+- **Terreno real:** 6 cráteres con LOLA (Moon Trek) y NASA PGDA, más luz, Tierra visible y cielo tapado, en #126.
+- **Hielo por sitio NO VERIFICADO:** la capa de hielo de Moon Trek no declara su origen; los textos de Shackleton y Malapert ya no afirman dónde hay hielo.
+- **Pendiente (diseño):** el efecto por sitio sobre el panel y el reciclador, para que la luz de cada cráter cuente (Malapert ≈ 13 % de sol, Faustini 0 %).
 
 ## 1. Por qué esta misión enseña algo distinto a Jezero
 
