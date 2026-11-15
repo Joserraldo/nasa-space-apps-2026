@@ -1,15 +1,18 @@
 /* Ficha de retrato (ui/04 "Choose your expert", personajes/07). Solo tokens. */
 .retrato-ficha { position: relative; display: grid; justify-items: center; gap: var(--esp-1); padding: var(--esp-3) var(--esp-3) var(--esp-2); min-width: 150px; font: inherit; color: var(--color-indigo-texto); text-align: center; }
-.retrato-marco { display: grid; place-items: center; width: 124px; height: 124px; background: var(--color-lila);
-  clip-path: polygon(30% 0, 70% 0, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0 70%, 0 30%); }
+/* Círculo lila como en ui/04: el retrato se recorta por el borde del círculo. */
+.retrato-marco { display: grid; place-items: end center; width: 124px; height: 124px; overflow: hidden; border-radius: 50%;
+  background: color-mix(in srgb, var(--color-ciruela) 14%, var(--color-lila)); box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--color-ciruela) 16%, var(--color-lila)); }
 .retrato-compacto .retrato-marco { width: 80px; height: 80px; }
-.retrato-nombre { font-weight: var(--tipo-peso-titulo); font-size: var(--tipo-tam-cuerpo); padding: 0 var(--esp-3); background: var(--color-lila);
-  clip-path: polygon(8px 0, calc(100% - 8px) 0, 100% 50%, calc(100% - 8px) 100%, 8px 100%, 0 50%); }
-.retrato-especialidad { display: inline-flex; align-items: center; gap: var(--esp-1); font-size: 15px; font-weight: var(--tipo-peso-etiqueta); }
+.retrato-marco svg { max-width: none; flex: none; }
+.retrato-nombre { font-weight: var(--tipo-peso-titulo); font-size: var(--tipo-tam-cuerpo); line-height: 1.15; }
+.retrato-especialidad { display: inline-flex; padding: 2px var(--esp-3); background: color-mix(in srgb, var(--color-lila) 55%, var(--color-marfil)); clip-path: polygon(6px 0, calc(100% - 6px) 0, 100% 50%, calc(100% - 6px) 100%, 6px 100%, 0 50%); align-items: center; gap: var(--esp-1); font-size: 15px; font-weight: var(--tipo-peso-etiqueta); }
 .retrato-danada { display: inline-flex; align-items: center; gap: var(--esp-1); font-size: 14px; font-weight: var(--tipo-peso-etiqueta); color: var(--color-aviso-texto); }
-.retrato-check { position: absolute; top: var(--esp-2); right: var(--esp-2); }
+.retrato-check { position: absolute; top: var(--esp-2); right: var(--esp-2); display: grid; place-items: center; width: 30px; height: 30px; border-radius: 50%; background: var(--color-marfil); box-shadow: inset 0 0 0 2px var(--color-cian); z-index: 1; }
 .retrato-boton { border: 0; cursor: pointer; min-height: var(--toque-minimo); }
 .retrato-boton:focus-visible { box-shadow: none; outline: none; }
 .fc:has(> .retrato-boton:focus-visible) { filter: drop-shadow(0 0 0 var(--color-cian)) drop-shadow(0 0 3px var(--color-cian)) drop-shadow(0 0 2px var(--color-cian)); }
-.retrato-sel { --fc-fondo: var(--color-lila); background: var(--color-cian); }
+.retrato-sel { --fc-fondo: var(--color-marfil); background: var(--color-cian); }
+.retrato-sel::before { inset: 3px; }
+.retrato-sel .retrato-especialidad { background: color-mix(in srgb, var(--color-cian) 22%, var(--color-marfil)); }
 @media (hover: hover) and (pointer: fine) { .retrato-boton:hover { --fc-fondo: var(--color-lila); } }

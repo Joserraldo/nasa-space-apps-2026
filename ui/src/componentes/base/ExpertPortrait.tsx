@@ -25,7 +25,7 @@ export function ExpertPortrait({ persona, expresion = "neutral", danada = false,
   const contenido = (
     <>
       {seleccionado && <span className="retrato-check"><Icono nombre="check" tam={22} /></span>}
-      <span className="retrato-marco"><Retrato persona={persona} expresion={expresion} danada={danada} tam={compacto ? 72 : 112} parpadear /></span>
+      <span className="retrato-marco"><Retrato persona={persona} expresion={expresion} danada={danada} tam={compacto ? 84 : 132} parpadear /></span>
       <span className="retrato-nombre">{t(`ui.comun.retrato.${persona}.nombre`)}</span>
       {!compacto && (
         <span className="retrato-especialidad">
