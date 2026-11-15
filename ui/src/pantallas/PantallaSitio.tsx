@@ -38,8 +38,12 @@ export function PantallaSitio({ estado, onElegir }: { estado: GameState; onElegi
   /** Desde el mapa: marca el sitio y trae su tarjeta a la vista (en el carrusel, al centro). */
   function verTarjeta(id: string) {
     setElegido(id);
-    const li = lista.current?.querySelector<HTMLElement>(`[data-sitio="${id}"]`);
-    li?.scrollIntoView({ block: "nearest", inline: "center" });
+    const ul = lista.current;
+    const li = ul?.querySelector<HTMLElement>(`[data-sitio="${id}"]`);
+    // Solo el carrusel se mueve, y solo en horizontal: scrollIntoView arrastraría también el documento.
+    if (ul && li && ul.scrollWidth > ul.clientWidth + 1) {
+      ul.scrollTo({ left: li.offsetLeft + li.offsetWidth / 2 - ul.clientWidth / 2, behavior: "auto" });
+    }
   }
 
   /** En el carrusel (celular horizontal), la tarjeta que queda al centro es la elegida y el mapa la sigue. */

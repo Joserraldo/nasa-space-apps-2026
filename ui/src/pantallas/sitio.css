@@ -94,7 +94,8 @@
 
 /* ---- Celular horizontal (844 x 390): mapa a pantalla completa y carrusel abajo ---- */
 @media (max-height: 500px) and (orientation: landscape) {
-  .sitio { display: block; position: relative; block-size: 100dvh; min-block-size: 0; padding: 0; overflow: hidden; }
+  /* 26px = pie de la app (aviso NASA): con 100dvh pelado el documento rebasa la ventana y se desplaza. */
+  .sitio { display: block; position: relative; block-size: calc(100dvh - var(--alto-barra, 26px)); min-block-size: 0; padding: 0; overflow: clip; }
   .sitio-mapa { position: absolute; inset: 0; clip-path: none; }
   /* El mapa sigue al sitio elegido: queda en la franja libre de arriba, sin dejar bordes vacíos. */
   .sitio-lienzo {
@@ -110,7 +111,7 @@
   .sitio-credito { inset-block-start: max(var(--esp-2), env(safe-area-inset-top)); inset-inline-end: max(var(--esp-3), env(safe-area-inset-right)); max-inline-size: 40%; }
   .sitio-lista {
     position: absolute; z-index: 1; inset-inline: 0; inset-block-end: 0; block-size: 48%;
-    flex-direction: row; overflow-x: auto; overflow-y: hidden; scroll-snap-type: x mandatory;
+    flex-direction: row; overflow-x: auto; overflow-y: hidden; overscroll-behavior: contain; scroll-snap-type: x mandatory;
     padding: 0 max(var(--esp-3), env(safe-area-inset-right)) max(var(--esp-2), env(safe-area-inset-bottom)) max(var(--esp-3), env(safe-area-inset-left));
     scroll-padding-inline: max(var(--esp-3), env(safe-area-inset-left));
   }
