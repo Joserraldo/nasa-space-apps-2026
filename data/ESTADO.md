@@ -1,5 +1,5 @@
 # Estado — datos
-**Actualizado:** 2026-11-14 · **Rama:** feat/datos-estado-codex · **PR:** #189
+**Actualizado:** 2026-11-14 · **Rama:** feat/datos-inventario-fuentes · **PR:** #191
 
 ## Hecho
 - Corregí `docs/science/datos-usados.md` en es/en: las fuentes lunares y de Marte norte ya están integradas y el hielo no se presenta sin cita.
@@ -15,4 +15,5 @@
 ## Bloqueos
 - #178 requiere aprobación de contrato. La capa `SP_IceLoc_280m` carece de procedencia científica verificable.
 Tokens: 🟢
+
 
