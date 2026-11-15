@@ -21,8 +21,10 @@ Una sección por persona, máximo 5 líneas, y nadie edita la de otro (FLUJO §8
 - Sin registrar todavía.
 
 ## Ubicación (Camilo)
-**Rama:** — · **PR:** ninguno · **Tokens:** —
-- Sin registrar todavía.
+**Rama:** feat/ui-ubicacion-lugares · **PR:** por abrir · **Tokens:** verde
+- Hecho: contrato de diez lugares y anclajes de cinco módulos, expertas y dock; medidas de ESCENAS §3.2 conservadas.
+- Sigue: colisiones, cámaras, circuitos, mapa y controles; revisión del contrato por Daniel y María Paula.
+- Bloqueo: montaje y capturas 3D dependen de la escena de Daniel; no se afirma recorrido integrado.
 
 ## Integración (José)
 **Rama:** — · **PR:** ninguno · **Tokens:** —
