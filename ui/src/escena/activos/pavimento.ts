@@ -10,7 +10,7 @@ type Poligono = readonly PuntoPavimento[];
 type Arista = { a: PuntoPavimento; b: PuntoPavimento };
 type Intervalo = { izquierda: Arista; derecha: Arista };
 /** Banda horizontal entre dos cortes: dentro, cada borde es lineal y no se cruza con otro. */
-export type Franja = { z0: number; z1: number; intervalos: Intervalo[] };
+export type Franja = { z0: number; z1: number; intervalos: Intervalo[]; /** z0 es un corte de guía: no se funde con la franja de abajo. */ corte?: boolean };
 const EPS = 1e-8;
 
 function xEn(e: Arista, z: number): number {
@@ -72,13 +72,18 @@ function restar(llenos: Intervalo[], huecos: Intervalo[], z: number): Intervalo[
 /**
  * Barre `llenos − huecos` en franjas entre vértices e intersecciones. Las huellas deben ser
  * convexas y simples; el sentido de sus vértices puede ser cualquiera. Las franjas son contiguas
- * (también las vacías), así `paredes` encuentra los bordes horizontales del contorno.
+ * (también las vacías), así `paredes` encuentra los bordes horizontales del contorno. `guias` son
+ * polígonos que no rellenan nada pero añaden sus cortes: así dos barridos que comparten una arista
+ * (centro y marco de la plaza) la parten en los mismos vértices y no dejan grietas en T.
  */
-export function barrer(llenos: readonly Poligono[], huecos: readonly Poligono[] = []): Franja[] {
+export function barrer(llenos: readonly Poligono[], huecos: readonly Poligono[] = [], guias: readonly Poligono[] = []): Franja[] {
   const cortes: number[] = [];
   const todas: Arista[] = [];
   const gl = aristas(llenos, cortes, todas);
   const gh = aristas(huecos, cortes, todas);
+  const forzados: number[] = [];
+  aristas(guias, forzados, todas); // solo aportan cortes: dos barridos con las mismas guías comparten vértices
+  cortes.push(...forzados);
   // Un cambio de borde exterior puede suceder entre vértices: también corta en cada cruce.
   for (let i = 0; i < todas.length; i++) {
     const a = todas[i]!;
@@ -99,9 +104,19 @@ export function barrer(llenos: readonly Poligono[], huecos: readonly Poligono[] 
   for (let i = 0; i < niveles.length - 1; i++) {
     const z0 = niveles[i]!, z1 = niveles[i + 1]!, medio = (z0 + z1) / 2;
     const u = unir(gl, medio);
-    franjas.push({ z0, z1, intervalos: gh.length ? restar(u, unir(gh, medio), medio) : u });
+    const intervalos = gh.length ? restar(u, unir(gh, medio), medio) : u;
+    franjas.push(forzados.some(c => Math.abs(c - z0) <= EPS) ? { z0, z1, intervalos, corte: true } : { z0, z1, intervalos });
   }
   return franjas;
+}
+
+/** (x, z) cae dentro de la región barrida (con `tolerancia` en x, en metros). */
+export function dentroDe(franjas: readonly Franja[], x: number, z: number, tolerancia = 1e-4): boolean {
+  const f = franjas.find(g => z >= g.z0 - EPS && z <= g.z1 + EPS);
+  return !!f && f.intervalos.some(iv => {
+    const zz = Math.min(f.z1, Math.max(f.z0, z));
+    return x >= xEn(iv.izquierda, zz) - tolerancia && x <= xEn(iv.derecha, zz) + tolerancia;
+  });
 }
 
 /**
@@ -114,7 +129,7 @@ function trapecios(franjas: readonly Franja[]): { i: Arista; d: Arista; z0: numb
   for (const f of franjas) {
     const siguen: typeof salida = [];
     for (const iv of f.intervalos) {
-      const previo = abiertos.find(t => t.i === iv.izquierda && t.d === iv.derecha && Math.abs(t.z1 - f.z0) <= EPS);
+      const previo = f.corte ? undefined : abiertos.find(t => t.i === iv.izquierda && t.d === iv.derecha && Math.abs(t.z1 - f.z0) <= EPS);
       if (previo) previo.z1 = f.z1;
       else salida.push({ i: iv.izquierda, d: iv.derecha, z0: f.z0, z1: f.z1 });
       siguen.push(previo ?? salida[salida.length - 1]!);
