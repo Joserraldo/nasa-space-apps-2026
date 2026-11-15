@@ -99,13 +99,17 @@ describe("base compacta sobre LUGARES (exterior/03, mapa-base-jezero.svg)", () =
       }
   });
 
-  it("los sectores siguen el plano: torre detrás del hábitat, nave arriba-izquierda, energía a la izquierda, refugio abajo-izquierda, invernadero arriba-derecha", () => {
+  it("los sectores siguen el plano: torre detrás y a la izquierda del hábitat, nave arriba-izquierda, energía a la izquierda, refugio abajo-izquierda, invernadero y segunda cúpula arriba-derecha", () => {
     const h = lugar("habitat"), sol = lugar("panel_solar"), inv = ANCLAJES_MODULOS.invernadero;
     const t = decorado("torre"), nave = decorado("plataforma_nave"), e = decorado("energia"), r = decorado("refugio");
-    expect(t.x).toBe(h.mx);
+    expect(t.x).toBeLessThan(h.mx);
     expect(t.z).toBeLessThan(h.mz);
-    expect(decorado("capsula_oeste").z).toBe(t.z);
-    expect(decorado("capsula_este").x - t.x).toBeCloseTo(t.x - decorado("capsula_oeste").x);
+    // La cápsula queda al otro lado de la torre, hacia el hábitat; la parabólica, detrás del panel solar.
+    expect(decorado("capsula").x).toBeGreaterThan(t.x);
+    const p = decorado("parabolica");
+    expect(p.x < sol.mx && p.z < sol.mz).toBe(true);
+    const c = decorado("cupula");
+    expect(c.x > 0 && c.z < inv.z).toBe(true);
     expect(nave.x < 0 && nave.z < 0).toBe(true);
     expect(e.x).toBeLessThan(sol.mx);
     expect(r.x < 0 && r.z > 0).toBe(true);
