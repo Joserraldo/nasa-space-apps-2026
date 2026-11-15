@@ -1,7 +1,7 @@
 import * as THREE from "three";
 import { describe, expect, it } from "vitest";
 import { BANCO, LUGARES, TERRENO } from "../mundo";
-import { CAMINO, CAMINOS, PLAZA, geometriaCaminos, huellasDe } from "./caminos";
+import { CAMINO, CAMINOS, PLAZA, TRONCAL, distanciaTramo, geometriaCaminos, huellasDe, posicionesBalizas, sobreCamino } from "./caminos";
 
 type Tri = { a: THREE.Vector3; b: THREE.Vector3; c: THREE.Vector3; n: THREE.Vector3 };
 
@@ -162,5 +162,36 @@ describe("caminos de losas", () => {
     expect(mesa.mx - 1.2).toBeGreaterThan(PLAZA.x0);
     expect(mesa.mz).toBeGreaterThan(PLAZA.z0 + 0.6);
     expect(mesa.z).toBeLessThan(PLAZA.z1);
+  });
+  it("el camino ancho sale del primer plano y llega a la plataforma de la consola, más ancho que el resto", () => {
+    expect(CAMINO.anchoTroncal).toBeGreaterThan(CAMINO.ancho * 1.4);
+    const t = TRONCAL[0]!;
+    expect(t[0]![1]).toBeGreaterThan(8);
+    const fin = t[t.length - 1]!;
+    expect(fin[1]).toBeGreaterThan(PLAZA.z1);
+    expect(fin[1] - PLAZA.z1).toBeLessThan(0.5);
+    expect(fin[0]).toBeGreaterThan(PLAZA.x0);
+    expect(fin[0]).toBeLessThan(PLAZA.x1);
+  });
+
+  it("la red es una sola cinta: todo tramo se une a otro o acaba en un lugar o en la plataforma", () => {
+    const toca = (p: readonly [number, number], o: readonly (readonly [number, number])[]) => o.some((q, k) => k > 0 && distanciaTramo(p[0], p[1], o[k - 1]!, q) < 1e-6);
+    for (const tramo of CAMINOS)
+      for (const p of [tramo[0]!, tramo[tramo.length - 1]!]) {
+        const enLugar = LUGARES.some(l => Math.hypot(l.x - p[0], l.z - p[1]) < 0.6);
+        const enPlaza = Math.abs(p[1] - (PLAZA.z1 + 0.2)) < 0.3 || p[0] < PLAZA.x0 + 0.01 || p[0] > PLAZA.x1 - 0.01 || p[1] < PLAZA.z0 + 0.01 || Math.hypot(p[0] - PLAZA.x, p[1] - PLAZA.z) < 4.5;
+        const enOtro = CAMINOS.some(o => o !== tramo && toca(p, o));
+        const entrada = tramo === TRONCAL[0] && p === tramo[0];
+        expect(enLugar || enPlaza || enOtro || entrada, `extremo ${p}`).toBe(true);
+      }
+  });
+
+  it("las balizas van a los bordes de los caminos, separadas y fuera de la losa", () => {
+    const b = posicionesBalizas();
+    expect(b.length).toBeGreaterThanOrEqual(6);
+    for (const [x, z] of b) {
+      expect(sobreCamino(x, z, 0)).toBe(false);
+      expect(sobreCamino(x, z, 0.6)).toBe(true);
+    }
   });
 });

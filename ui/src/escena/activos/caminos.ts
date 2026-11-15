@@ -21,6 +21,8 @@ export const distanciaPlaza = (x: number, z: number) => Math.hypot(Math.max(PLAZ
  */
 export const CAMINO = {
   ancho: 0.95,
+  /** Camino ancho del jugador (primer plano a consola), `mundo/01`: losa de borde a borde. */
+  anchoTroncal: 1.5,
   bordillo: 0.08,
   juntas: 1.0,
   altoLosa: 0.05,
@@ -39,6 +41,19 @@ function plazaHacia(id: LugarId): P2 {
   const k = salida + 0.2 / d;
   return [PLAZA.x + dx * k, PLAZA.z + dz * k];
 }
+
+/**
+ * Camino ancho (`mundo/01`): desde el primer plano, entre las dos rocas grandes de abajo, hasta la
+ * plataforma de la consola de la mesa, de donde salen los anillos A y B. Una sola cinta continua;
+ * el ramal del banco se une a ella en su codo (-1,6; 6,5).
+ */
+/** Camino ancho (`mundo/01`): del primer plano a la plataforma de la consola de la mesa, de donde salen los anillos A y B. */
+export const TRONCAL: readonly (readonly P2[])[] = [
+  [[-2.5, 9.6], [-1.6, 6.5], [-0.45, 3.9], [-0.45, PLAZA.z1 + 0.2]],
+];
+/** Semiancho extra del camino ancho respecto de los demás. */
+const EXTRA_TRONCAL = (CAMINO.anchoTroncal - CAMINO.ancho) / 2;
+const semianchoDe = (tramo: readonly P2[]) => CAMINO.ancho / 2 + (TRONCAL.includes(tramo) ? EXTRA_TRONCAL : 0);
 
 /**
  * Red de caminos de `mapa-base-jezero.svg` (ESCENAS §3.2), con extremos en los puestos de `LUGARES`:
@@ -61,7 +76,7 @@ export const CAMINOS: readonly (readonly P2[])[] = [
   [en("invernadero"), [10.6, 2.0], en("antena")],
   [en("antena"), [8.4, 1.8], plazaHacia("antena")],
   [en("banco"), [-1.6, 6.5]],
-  [[-0.5, 3.0], [-1.6, 6.5], [-2.4, 10]],
+  ...TRONCAL,
 ];
 
 /** Distancia de un punto al eje de un segmento. */
@@ -73,8 +88,10 @@ export function distanciaTramo(x: number, z: number, a: P2, b: P2): number {
 
 /** (x, z) cae sobre la losa o el bordillo de algún camino, ampliado `margen`. */
 export function sobreCamino(x: number, z: number, margen = 0): boolean {
-  const r = CAMINO.ancho / 2 + CAMINO.bordillo + margen;
-  return CAMINOS.some(tramo => tramo.some((a, i) => i > 0 && distanciaTramo(x, z, tramo[i - 1]!, a) < r));
+  return CAMINOS.some(tramo => {
+    const r = semianchoDe(tramo) + CAMINO.bordillo + margen;
+    return tramo.some((a, i) => i > 0 && distanciaTramo(x, z, tramo[i - 1]!, a) < r);
+  });
 }
 
 // ---------------------------------------------------------------------------------------------
@@ -108,9 +125,10 @@ function huellas(w: number): P2[][] {
 }
 
 /** `huellas` de una red cualquiera (así se prueba con codos sintéticos). */
-export function huellasDe(red: readonly (readonly P2[])[], w: number): P2[][] {
+export function huellasDe(red: readonly (readonly P2[])[], base: number): P2[][] {
   const salida: P2[][] = [];
   for (const tramo of red) {
+    const w = base + (TRONCAL.includes(tramo) ? EXTRA_TRONCAL : 0);
     for (let i = 0; i < tramo.length; i++) {
       const v = tramo[i]!;
       const u = i > 0 ? unitario(tramo[i - 1]!, v) : unitario(v, tramo[1]!);
@@ -119,6 +137,8 @@ export function huellasDe(red: readonly (readonly P2[])[], w: number): P2[][] {
         salida.push([[a[0] - u[1] * w, a[1] + u[0] * w], [v[0] - u[1] * w, v[1] + u[0] * w], [v[0] + u[1] * w, v[1] - u[0] * w], [a[0] + u[1] * w, a[1] - u[0] * w]]);
       }
       if (i === 0 || i === tramo.length - 1 || esLugar(v)) {
+        // Un extremo que cae sobre otro tramo (ramal que se une a un camino) no lleva rellano: ya está dentro de su cinta.
+        if (!esLugar(v) && red.some(o => o !== tramo && o.some((p, k) => k > 0 && distanciaTramo(v[0], v[1], o[k - 1]!, p) < 1e-6))) continue;
         salida.push(octogono(v, w, u));
         continue;
       }
@@ -146,14 +166,14 @@ export function huellasDe(red: readonly (readonly P2[])[], w: number): P2[][] {
 }
 
 /** Tramos rectos sin repetir (dos anillos pueden compartir uno). */
-function segmentos(): [P2, P2][] {
+function segmentos(): [P2, P2, number][] {
   const vistos = new Set<string>();
-  const salida: [P2, P2][] = [];
+  const salida: [P2, P2, number][] = [];
   for (const tramo of CAMINOS)
     for (let i = 1; i < tramo.length; i++) {
       const a = tramo[i - 1]!, b = tramo[i]!;
       const clave = [a.join(","), b.join(",")].sort().join("|");
-      if (!vistos.has(clave)) salida.push([a, b]);
+      if (!vistos.has(clave)) salida.push([a, b, semianchoDe(tramo)]);
       vistos.add(clave);
     }
   return salida;
@@ -168,13 +188,13 @@ const plaza = (m = 0): P2[] => [[PLAZA.x0 - m, PLAZA.z0 - m], [PLAZA.x1 + m, PLA
  * esquinas dentro de la losa (`losas`), para que ninguna quede encima de otra ni asome fuera.
  */
 function juntas(m: MallaPavimento, color: THREE.Color, losas: readonly Franja[]): void {
-  const r = CAMINO.ancho / 2, ancho = 0.04, y = CAMINO.altoLosa + 0.004;
+  const ancho = 0.04, y = CAMINO.altoLosa + 0.004;
   const arriba = new THREE.Vector3(0, 1, 0);
   const segs = segmentos();
   const libre = (x: number, z: number, propio: number) =>
     distanciaPlaza(x, z) > 0.1
-    && segs.every(([a, b], k) => k === propio || distanciaTramo(x, z, a, b) > r + CAMINO.bordillo + 0.05);
-  segs.forEach(([a, b], k) => {
+    && segs.every(([a, b, rr], k) => k === propio || distanciaTramo(x, z, a, b) > rr + CAMINO.bordillo + 0.05);
+  segs.forEach(([a, b, r], k) => {
     const largo = Math.hypot(b[0] - a[0], b[1] - a[1]);
     const u = unitario(a, b), n: P2 = [-u[1] * r, u[0] * r];
     const pasos = Math.floor(largo / CAMINO.juntas);
@@ -242,7 +262,7 @@ export function geometriaCaminos(): THREE.BufferGeometry {
 // ---------------------------------------------------------------------------------------------
 
 /** Separación entre balizas a lo largo del camino y distancia al eje. [E] */
-export const BALIZAS = { cada: 5, aparte: 1.1 } as const;
+export const BALIZAS = { cada: 3.4, aparte: 0.86 } as const;
 
 /** Choca con un sólido de `TERRENO`, el banco o la plaza (con `margen`). */
 export function chocaConBase(x: number, z: number, margen: number): boolean {
@@ -267,7 +287,7 @@ export function posicionesBalizas(): P2[] {
         const t = siguiente - recorrido;
         lado = -lado;
         const x = x0 + ux * t - uz * BALIZAS.aparte * lado, z = z0 + uz * t + ux * BALIZAS.aparte * lado;
-        if (chocaConBase(x, z, 0.6) || sobreCamino(x, z, 0.25) || salida.some(([bx, bz]) => Math.hypot(bx - x, bz - z) < 2.0)) continue;
+        if (chocaConBase(x, z, 0.6) || sobreCamino(x, z, 0.25) || salida.some(([bx, bz]) => Math.hypot(bx - x, bz - z) < 1.8)) continue;
         salida.push([x, z]);
       }
       recorrido += largo;
