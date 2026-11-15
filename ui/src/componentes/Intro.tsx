@@ -84,16 +84,14 @@ export function Intro({ onTerminar, inicial = 0 }: { onTerminar(): void; inicial
             {v.adelante.map((p) => <Retrato key={p} persona={p} expresion="feliz" tam={190} parpadear />)}
           </div>
           <p className="intro-texto">{t(`ui.intro.${n}.texto`)}</p>
-          {!ultima && <div className="intro-saltar"><FacetButton labelKey="ui.intro.saltar" onClick={onTerminar} /></div>}
-        </div>
-        <div className="intro-pie">
-          <span className="intro-puntos" aria-hidden="true">
-            {VINETAS.map((_, k) => <i key={k} className={k === i ? "actual" : k < i ? "hecho" : ""} />)}
-          </span>
-          {i > 0 && <FacetButton labelKey="ui.comun.atras" icon="atras" onClick={() => setI(i - 1)} />}
-          {ultima
-            ? <FacetButton variant="primary" labelKey="ui.intro.continuar" onClick={onTerminar} />
-            : <FacetButton variant="primary" labelKey="ui.intro.siguiente" onClick={() => setI(i + 1)} />}
+          {/* Abajo a la derecha, dentro de la viñeta, como inicio/02: avanzar y Skip intro. En la última, Continue ya termina: Skip no se repite. */}
+          <div className="intro-acciones">
+            {i > 0 && <FacetButton labelKey="ui.comun.atras" icon="atras" onClick={() => setI(i - 1)} />}
+            {ultima
+              ? <FacetButton variant="primary" labelKey="ui.intro.continuar" onClick={onTerminar} />
+              : <FacetButton variant="primary" labelKey="ui.intro.siguiente" onClick={() => setI(i + 1)} />}
+            {!ultima && <span className="intro-saltar"><FacetButton labelKey="ui.intro.saltar" onClick={onTerminar} /></span>}
+          </div>
         </div>
       </div>
     </section>

@@ -89,21 +89,21 @@
 /* ---------- Intro (inicio/02) ----------
  * Cada viñeta es una escena dentro de la nave: paredes lila, ventana facetada con lo que se ve afuera,
  * personajes adelante. Etiqueta arriba a la izquierda, texto en franja abajo, Skip abajo a la derecha. */
-.intro { min-height: 100dvh; display: grid; place-items: center; padding: var(--esp-4); background: var(--color-espacio); }
-.intro-vineta { width: min(100%, 960px, calc((100dvh - 110px) * 1.5)); display: grid; gap: var(--esp-3); animation: intro-entra var(--dur-aparecer) var(--curva-entrada) both; }
+/* La viñeta ocupa toda la pantalla, como cada cuadro de inicio/02: sin marco ni fondo de espacio alrededor. */
+.intro { min-height: 100dvh; display: grid; background: var(--color-lila); }
+.intro-vineta { display: grid; min-height: 100dvh; animation: intro-entra var(--dur-aparecer) var(--curva-entrada) both; }
 @keyframes intro-entra { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
 .intro-escena {
-  position: relative; aspect-ratio: 3 / 2; overflow: hidden;
+  position: relative; min-height: 100dvh; overflow: hidden;
   background:
     linear-gradient(180deg, color-mix(in srgb, var(--color-lila) 82%, var(--color-ciruela)) 0 12%, transparent 12%),
     linear-gradient(0deg, color-mix(in srgb, var(--color-lila) 70%, var(--color-ciruela)) 0 22%, transparent 22%),
     var(--color-lila);
-  clip-path: polygon(var(--chaflan-grande) 0, calc(100% - var(--chaflan-grande)) 0, 100% var(--chaflan-grande), 100% calc(100% - var(--chaflan-grande)), calc(100% - var(--chaflan-grande)) 100%, var(--chaflan-grande) 100%, 0 calc(100% - var(--chaflan-grande)), 0 var(--chaflan-grande));
-  border: 0;
+  box-shadow: inset 0 0 0 3px var(--color-ciruela);
 }
 .intro-etiqueta {
-  position: absolute; z-index: 3; top: 4%; left: 3%; margin: 0; padding: var(--esp-1) var(--esp-6) var(--esp-1) var(--esp-4);
-  font-size: var(--tipo-tam-subtitulo); letter-spacing: 0.06em; text-transform: uppercase;
+  position: absolute; z-index: 3; top: 3%; left: 2.5%; margin: 0; padding: var(--esp-2) var(--esp-7) var(--esp-2) var(--esp-5);
+  font-size: clamp(22px, 3.4vw, 34px); letter-spacing: 0.06em; text-transform: uppercase;
   color: var(--color-marfil); background: var(--color-ciruela);
   clip-path: polygon(0 0, calc(100% - 16px) 0, 100% 50%, calc(100% - 16px) 100%, 0 100%);
   outline: none;
@@ -140,7 +140,8 @@
 
 /* Personajes: el niño adelante a la izquierda; la tripulación detrás de la mesa en la viñeta 3. */
 .intro-protagonista { position: absolute; z-index: 2; left: 2%; bottom: 14%; }
-.intro-protagonista svg { width: clamp(120px, 24vw, 230px); height: auto; }
+/* El niño es la figura grande de la izquierda en las cuatro viñetas de inicio/02. */
+.intro-protagonista svg { width: clamp(140px, min(32vw, 48dvh), 340px); height: auto; }
 .intro-mesa { position: absolute; z-index: 1; left: 26%; right: 4%; bottom: 20%; display: flex; justify-content: space-around; align-items: flex-end; }
 .intro-mesa svg { width: clamp(70px, 13vw, 128px); height: auto; }
 .intro-mesa-tapa { position: absolute; left: 4%; right: 18%; bottom: -6%; height: 22%; background: var(--color-traje-marfil);
@@ -153,35 +154,32 @@
 
 /* Texto abajo a la izquierda y Skip abajo a la derecha, como la lámina. */
 .intro-texto {
-  position: absolute; z-index: 3; left: 3%; bottom: 4%; margin: 0; max-width: 62%; padding: var(--esp-2) var(--esp-5);
-  font-size: var(--tipo-tam-titulo); font-weight: var(--tipo-peso-titulo); background: var(--color-marfil);
+  position: absolute; z-index: 3; left: 4%; bottom: 3.5%; margin: 0; max-width: 56%; padding: var(--esp-3) var(--esp-6);
+  font-size: clamp(20px, 3vw, 32px); font-weight: var(--tipo-peso-titulo);
+  background: color-mix(in srgb, var(--color-lila) 88%, var(--color-marfil));
   clip-path: polygon(12px 0, calc(100% - 12px) 0, 100% 50%, calc(100% - 12px) 100%, 12px 100%, 0 50%);
 }
-.intro-saltar { position: absolute; z-index: 3; right: 3%; bottom: 4%; }
-.intro-pie { display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: flex-end; gap: var(--esp-3); }
-.intro-puntos { display: inline-flex; gap: var(--esp-1); margin-right: auto; align-self: center; }
-.intro-puntos i { width: 26px; height: 8px; background: color-mix(in srgb, var(--color-lila) 30%, transparent); }
-.intro-puntos i.hecho { background: color-mix(in srgb, var(--color-lila) 65%, transparent); }
-.intro-puntos i.actual { background: var(--color-cian); }
+.intro-acciones { position: absolute; z-index: 3; right: 2.5%; bottom: 3.5%; display: flex; align-items: center; gap: var(--esp-2); }
+/* Skip intro es la acción chica de la lámina: menos alto y texto de etiqueta. */
+.intro-saltar .fb { --fb-alto: 44px; font-size: 16px; }
 
 /* Celular vertical (ESCENAS §2.7): una viñeta por pantalla, la escena más alta y el texto debajo. */
 @media (max-width: 600px) {
-  .intro-escena { aspect-ratio: 3 / 4; }
+  .intro-acciones { left: 3%; justify-content: flex-end; flex-wrap: wrap; bottom: 2%; }
   .intro-ventana { left: 4%; top: 16%; height: 36%; }
   .intro-mesa { left: 4%; bottom: 34%; }
   .intro-consola { right: 4%; bottom: 36%; }
   .intro-protagonista { bottom: 20%; }
-  .intro-texto { max-width: none; right: 3%; font-size: var(--tipo-tam-subtitulo); bottom: 14%; }
+  .intro-texto { max-width: none; right: 3%; font-size: var(--tipo-tam-subtitulo); bottom: calc(2% + 64px); }
   /* En vertical la mesa de la tripulación ocupa el ancho: el niño (de espaldas en la lámina) no se dibuja. */
   .intro-escena-3 .intro-protagonista { display: none; }
   .intro-mesa { bottom: 36%; }
-  .intro-saltar { bottom: 2%; }
 }
 /* Celular horizontal: la escena no puede pasar del alto de la pantalla. */
 @media (max-height: 500px) {
-  .intro { padding: var(--esp-2); }
-  .intro-vineta { width: min(100%, calc((100dvh - 80px) * 1.5)); }
-  .intro-texto { font-size: var(--tipo-tam-cuerpo); }
+  .intro-texto { font-size: var(--tipo-tam-cuerpo); max-width: 44%; padding: var(--esp-2) var(--esp-4); }
+  .intro-etiqueta { font-size: var(--tipo-tam-subtitulo); }
+  .intro-protagonista svg { width: clamp(110px, 18vw, 170px); }
 }
 
 /* ---------- Carga (inicio/03) ---------- */
