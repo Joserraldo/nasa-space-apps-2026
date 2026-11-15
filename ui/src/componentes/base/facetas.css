@@ -18,12 +18,19 @@
 .fc-lila { --fc-fondo: var(--color-lila); }
 .fc-chico { --fc-ch: var(--chaflan-chico); }
 
-/* ---- Placa de recurso (ui/03 "Exploration", HUD de mundo/01) ---- */
-.placa { display: grid; grid-template-columns: auto 1fr; align-items: center; column-gap: var(--esp-2); padding: var(--esp-2) var(--esp-4); min-height: 56px; }
-.placa-nombre { font-weight: var(--tipo-peso-etiqueta); font-size: 16px; line-height: 1.1; }
-.placa-valor { font-weight: var(--tipo-peso-titulo); font-size: var(--tipo-tam-placa); font-variant-numeric: tabular-nums; line-height: 1; }
-.placa-texto { display: flex; flex-direction: column; align-items: center; }
-.placa-capa { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: var(--esp-1) var(--esp-3); font-size: 15px; font-weight: var(--tipo-peso-etiqueta); }
+/* ---- Píldora facetada (mundo/01) y placa de recurso: una línea, extremos en punta, 36 px a 1024 x 683 ---- */
+.pildora {
+  --fc-forma: polygon(12px 0, calc(100% - 12px) 0, 100% 50%, calc(100% - 12px) 100%, 12px 100%, 0 50%);
+  --fc-fondo: var(--color-marfil);
+  display: inline-flex; align-items: center; gap: 6px; box-sizing: border-box; min-height: 36px;
+  padding: 0 14px; white-space: nowrap; font-size: 17px; font-weight: var(--tipo-peso-etiqueta); line-height: 1;
+}
+.pildora > * { position: relative; flex: none; }
+.placa-conj { display: grid; justify-items: center; align-content: start; gap: var(--esp-1); }
+.placa-valor { font-variant-numeric: tabular-nums; }
+.placa-baja { background: var(--color-ambar); }
+.placa-baja .placa-valor { color: var(--color-aviso-texto); }
+.placa-capa { display: flex; flex-wrap: wrap; justify-content: center; gap: 0 var(--esp-3); font-size: 15px; font-weight: var(--tipo-peso-etiqueta); }
 .placa-capa:empty { display: none; }
 .placa-bajo { color: var(--color-aviso-texto); display: inline-flex; align-items: center; gap: var(--esp-1); }
 .placa-delta { animation: placa-sube var(--dur-delta) var(--curva-entrada) both; }
@@ -33,15 +40,13 @@
 .delta-menos { color: var(--color-error); }
 .delta-mas { color: var(--color-exito); }
 
-/* ---- Costo ahora / después (ui/03 "Conversation & decision", ui/01) ---- */
-.costos { display: grid; grid-template-columns: 1fr 1fr; gap: var(--esp-4); }
-.costos-bloque h4 { display: inline-block; margin: 0 0 var(--esp-2); padding: 2px var(--esp-3); font-size: 15px; font-weight: var(--tipo-peso-etiqueta); background: var(--color-lila); clip-path: polygon(6px 0, calc(100% - 6px) 0, 100% 50%, calc(100% - 6px) 100%, 6px 100%, 0 50%); }
+/* ---- Costo ahora / después (ui/04): filas limpias, sin barras; "Later" como pastilla ---- */
+.costos { display: grid; gap: var(--esp-2); }
+.costos-bloque h4 { display: inline-block; margin: 0 0 var(--esp-1); padding: 0 var(--esp-3); font-size: 16px; line-height: 1.5; font-weight: var(--tipo-peso-etiqueta); background: var(--color-lila); clip-path: polygon(6px 0, calc(100% - 6px) 0, 100% 50%, calc(100% - 6px) 100%, 6px 100%, 0 50%); }
 .costos-bloque ul { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--esp-1); }
-/* Cada fila en su franja lila, como la tarjeta "Solar panel" de ui/01. */
-.costos-bloque li { display: grid; grid-template-columns: 24px 1fr auto; align-items: center; gap: var(--esp-2); padding: var(--esp-1) var(--esp-3); background: var(--color-lila);
-  clip-path: polygon(6px 0, calc(100% - 6px) 0, 100% 6px, 100% calc(100% - 6px), calc(100% - 6px) 100%, 6px 100%, 0 calc(100% - 6px), 0 6px); }
-.costos-bloque + .costos-bloque { border-left: var(--borde-fino) solid color-mix(in srgb, var(--color-ciruela) 30%, transparent); padding-left: var(--esp-4); }
-@media (max-width: 480px) { .costos { grid-template-columns: 1fr; } .costos-bloque + .costos-bloque { border-left: 0; padding-left: 0; } }
+.costos-bloque li { display: grid; grid-template-columns: 24px 1fr auto; align-items: center; gap: var(--esp-3); padding: 0 var(--esp-2); min-height: 28px; font-size: var(--tipo-tam-cuerpo); font-weight: var(--tipo-peso-etiqueta); }
+.costos-bloque li .delta { font-size: var(--tipo-tam-dialogo); }
+.costos-bloque + .costos-bloque { border-top: var(--borde-fino) solid color-mix(in srgb, var(--color-ciruela) 30%, transparent); padding-top: var(--esp-2); }
 
 /* ---- Efecto pendiente y mensajes (ui/03 "Messages") ---- */
 .mensaje { display: grid; grid-template-columns: 32px auto 1fr auto; align-items: center; gap: var(--esp-3); padding: var(--esp-2) var(--esp-5); min-height: 44px; }
@@ -60,8 +65,6 @@
 .confirmar-cab h3 { margin: 0; font-size: var(--tipo-tam-titulo); }
 .confirmar-pausa { font-size: 14px; font-weight: var(--tipo-peso-etiqueta); background: var(--color-lila); padding: 2px var(--esp-2); }
 .confirmar-botones { display: flex; flex-direction: column; align-items: center; gap: var(--esp-2); }
-.confirmar .costos { grid-template-columns: 1fr; }
-.confirmar .costos-bloque + .costos-bloque { border-left: 0; padding-left: 0; border-top: var(--borde-fino) solid color-mix(in srgb, var(--color-ciruela) 30%, transparent); padding-top: var(--esp-2); }
 .confirmar-entrada { animation: confirmar-abre var(--dur-aparecer) var(--curva-entrada) both; }
 @keyframes confirmar-abre { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
 
@@ -70,3 +73,5 @@
 /* En ui/01 la acción principal del panel ocupa todo el ancho de la tarjeta; "Back" queda chico debajo. */
 .confirmar-botones > .fb-caja:first-child { width: 100%; }
 .confirmar-botones > .fb-caja:first-child .fb { width: 100%; }
+.costos-bloque + .costos-bloque { display: grid; grid-template-columns: auto 1fr; align-items: center; column-gap: var(--esp-2); }
+.costos-bloque + .costos-bloque h4 { margin: 0; }

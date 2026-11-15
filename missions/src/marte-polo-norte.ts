@@ -24,7 +24,7 @@ import type { Mision } from "./jezero.js";
  *    no hay campo. Plan B de la propuesta §11: evento guionado aquí o tabla en design/. Texto ya listo: mision.polo_norte.noche.
  * 4. Ajustes de módulos del polo (invernadero ⚡ −4, reciclador +4 🫁 junto al casquete, batería sin +2 🛡️ y que
  *    guarde energía): viven en design/MODULOS, que hoy es uno solo para todos los sitios.
- * 5. EventoPolvo.descripcionKey es el literal "mala_suerte.tormenta_polvo": la escarcha usa esa causa del motor
+ * 5. La escarcha todavía usa la causa "mala_suerte.tormenta_polvo" del motor
  *    y su propio textoKey. Si la cadena de causas debe decir "escarcha", hace falta otra clave en el tipo.
  */
 export const ZONA_DE_SITIO = {
@@ -33,11 +33,11 @@ export const ZONA_DE_SITIO = {
   "canon-chasma-boreale": "junto-al-casquete",
 } as const;
 
-export const MISION_MARTE_POLO_NORTE: Mision = {
+export const MISION_MARTE_POLO_NORTE = {
   id: "marte-polo-norte",
   nombreKey: "mision.polo_norte.nombre",
   sitio: "marte_polo_norte",
-  // POR DECIDIR (diseño): la propuesta no fija objetivo ni dificultad; se copian de Jezero.
+  // Provisional, aprobado en #196 (issuecomment-6889442656): explorar + media. Se ajusta si el orquestador lo cambia.
   objetivo: "explorar",
   dificultad: "media",
   // La misma tormenta que Jezero (propuesta §6): el niño ve el mismo evento desde otra base.
@@ -94,7 +94,7 @@ export const MISION_MARTE_POLO_NORTE: Mision = {
   fin: {
     exitoCuando: "telemetria_llega",
     falloCuando: "recurso_en_cero",
-    tickLimite: 10, // copiado de Jezero
+    tickLimite: 10, // Provisional, aprobado en #196: 10 ticks para Marte norte.
   },
   // Paso 4b (propuesta §5): escarcha en los paneles. Que la escarcha tape paneles es escenario de juego, no dato.
   eventoPolvo: {
@@ -121,7 +121,8 @@ export const MISION_MARTE_POLO_NORTE: Mision = {
       {
         id: "escudo_con_bateria",
         accion: { tipo: "subir_escudo", nivel: 1 },
-        defiende: "doctora",
+        // Opción neutral (#196): nadie la recomienda; el niño decide sin respaldo de la tripulación.
+        defiende: null,
         textoKey: "mision.polo_norte.dilema.escudo",
       },
       {
@@ -160,4 +161,4 @@ export const MISION_MARTE_POLO_NORTE: Mision = {
     // POR VERIFICAR: la explicación es causa y efecto del juego; la propuesta no le asigna fuente.
     fuenteKey: null,
   },
-};
+} satisfies Mision;

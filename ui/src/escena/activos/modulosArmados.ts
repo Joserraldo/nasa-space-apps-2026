@@ -98,7 +98,10 @@ export function armarModulo(m: Materiales, id: ModuloBase): ModuloArmado {
   raiz.rotation.y = giroModulo(id);
   const solido = crearSolido(m, id);
   const andamio = crearAndamio(m, f.huella[0], f.huella[1], f.alto);
-  const vivos = malla(m, "Emissive", geometriaBase("armado-luz-estado", () => new THREE.IcosahedronGeometry(0.13, 0)), [0, f.alto + 0.2, 0], false);
+  const vivos = malla(m, "Emissive", geometriaBase("armado-luz-estado", () => new THREE.IcosahedronGeometry(0.13, 0)), [0, 0, 0], false);
+  // Apoyada en el techo del sólido (no flotando a la altura nominal): la luz de estado es parte de la pieza.
+  solido.updateMatrixWorld(true);
+  vivos.position.y = new THREE.Box3().setFromObject(solido).max.y - 0.02;
   vivos.name = `Module_${id}_Live`;
   raiz.add(solido, andamio, vivos);
   const modulo: ModuloArmado = { raiz, solido, andamio, vivos, estado: "ausente", inicio: 0, pulso: -Infinity };

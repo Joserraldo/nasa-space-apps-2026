@@ -33,6 +33,7 @@ import {
   crearRocas,
   crearTerreno,
   instanciarRocas,
+  instanciarRocasAltas,
   leerDem,
   rocasBasalticas,
   submuestrear,
@@ -78,13 +79,19 @@ export function radioRoca(r: TransformacionRoca): number {
 /** Radio en planta máximo de una roca grande (escala máxima con su variación de ±20 %). */
 const RADIO_MAX_ROCA_GRANDE = ROCAS_GRANDES.escalaMax * 1.2 * 1.2;
 
+/** Huellas de módulos y base: fijas, se calculan una sola vez (cada intento de roca las consulta). */
+let huellasCacheadas: Huella[] | null = null;
+function huellasFijasDeBase(): Huella[] {
+  return (huellasCacheadas ??= [...huellasModulos(), ...huellasBase()]);
+}
+
 /**
  * Las rocas grandes no caen sobre la torre, las cápsulas, sus corredores, el resto del decorado,
  * los módulos ni las piezas del kit (con el radio máximo de una roca grande de margen).
  */
 export function rocaGrandeLibre(x: number, z: number): boolean {
   if (DECORADO.some((d) => Math.hypot(x - d.x, z - d.z) < d.radio + 2)) return false;
-  if ([...huellasModulos(), ...huellasBase()].some((h) => distanciaAHuella(h, x, z) < RADIO_MAX_ROCA_GRANDE)) return false;
+  if (huellasFijasDeBase().some((h) => distanciaAHuella(h, x, z) < RADIO_MAX_ROCA_GRANDE)) return false;
   return !(z < -10 && Math.abs(x) < 20) && Math.hypot(x, z - 9) > 5;
 }
 
@@ -93,6 +100,8 @@ export function rocaGrandeLibre(x: number, z: number): boolean {
  * semilla). Se descarta la que pisaría a otra ya puesta (con 0,3 m de aire).
  */
 export function rocasGrandes(claro: Rejilla): TransformacionRoca[] {
+  const hecha = rocasGrandesPorRejilla.get(claro);
+  if (hecha) return hecha;
   const g = ROCAS_GRANDES;
   const todas = rocasBasalticas(g.semilla, g.n, claro, MALLA_JEZERO, {
     radioMin: g.radioMin, radio: g.radio, escalaMin: g.escalaMin, escalaMax: g.escalaMax,
@@ -103,8 +112,11 @@ export function rocasGrandes(claro: Rejilla): TransformacionRoca[] {
     const [x, , z] = r.posicion;
     if (puestas.every((p) => Math.hypot(x - p.posicion[0], z - p.posicion[2]) > radioRoca(r) + radioRoca(p) + 0.3)) puestas.push(r);
   }
+  rocasGrandesPorRejilla.set(claro, puestas);
   return puestas;
 }
+/** `rocasGrandes` por rejilla: la escena y `huellasRocas` piden las mismas y no se recalculan. */
+const rocasGrandesPorRejilla = new WeakMap<Rejilla, TransformacionRoca[]>();
 
 /**
  * Rocas basálticas grandes de primer plano (`mundo/01`: abajo a la izquierda y a la derecha del
@@ -114,10 +126,10 @@ export function rocasGrandes(claro: Rejilla): TransformacionRoca[] {
  * círculos de colisión en `TERRENO` (mundo.ts) con `radioRocaPrimerPlano`. [E]
  */
 export const ROCAS_PRIMER_PLANO: readonly TransformacionRoca[] = [
-  { posicion: [7.6, 0, 2.4], escala: [0.8, 1.6, 0.76], rotacion: [0.05, 0.6, -0.04] },
-  { posicion: [12, 0, 3.4], escala: [0.8, 0.8, 0.8], rotacion: [0, 2.1, 0.06] },
-  { posicion: [-11, 0, 3.5], escala: [1.5, 1.3, 1.4], rotacion: [-0.04, 1.4, 0.03] },
-  { posicion: [-11.8, 0, 0.4], escala: [0.8, 0.75, 0.75], rotacion: [0.05, 0.3, 0] },
+  { posicion: [-6.5, 0, 1.5], escala: [0.75, 1.5, 0.7], rotacion: [0.02, 0.6, -0.03] }, // grande y alta, esquina inferior izquierda
+  { posicion: [2.4, 0, 3.1], escala: [0.75, 1.7, 0.72], rotacion: [-0.02, 2.1, 0.03] }, // grande y alta, esquina inferior derecha
+  { posicion: [-4.2, 0, 2.1], escala: [0.5, 0.7, 0.48], rotacion: [0.05, 0.3, 0] },
+  { posicion: [7.2, 0, 3.4], escala: [0.5, 0.6, 0.5], rotacion: [0, 1.4, 0.03] },
 ];
 
 /** Huella en planta de una roca de primer plano. */
@@ -133,7 +145,7 @@ export function huellasRocas(claro: Rejilla): Huella[] {
 /** La roca de radio `radio` en (x, z) no pisa caminos, plaza, banco, sólidos, lugares ni decorado. */
 export function rocaPrimerPlanoLibre(x: number, z: number, radio: number): boolean {
   if (chocaConBase(x, z, radio) || sobreCamino(x, z, radio)) return false;
-  if (LUGARES.some((l) => Math.hypot(x - l.x, z - l.z) < l.radio + radio * 0.5)) return false;
+  if (LUGARES.some((l) => Math.hypot(x - l.x, z - l.z) < l.radio)) return false;
   if (DECORADO.some((d) => Math.hypot(x - d.x, z - d.z) < d.radio + radio)) return false;
   return !posicionesBalizas().some(([bx, bz]) => Math.hypot(x - bx, z - bz) < radio + 0.3);
 }
@@ -179,7 +191,7 @@ export function armarEscena(
   base.name = "Base";
   const modulos = Object.fromEntries(MODULOS_BASE.map((id) => [id, armarModulo(materiales, id)])) as Record<ModuloBase, ModuloArmado>;
   // Las rocas de primer plano están dentro del claro llano (y = 0): no esperan al DEM.
-  const primerPlano = instanciarRocas(materiales, ROCAS_PRIMER_PLANO, "Rocks_Basalt_Foreground");
+  const primerPlano = instanciarRocasAltas(materiales, ROCAS_PRIMER_PLANO, "Rocks_Basalt_Foreground");
   base.add(armarAnclajes(materiales), armarKit(materiales), armarEdificios(materiales), primerPlano, ...MODULOS_BASE.map((id) => modulos[id].raiz));
   escena.add(terreno, base, crearMontanas(materiales));
 
@@ -200,7 +212,7 @@ export function armarEscena(
       const t = crearTerreno(materiales, { rejilla: claro.rejilla, malla: MALLA_JEZERO });
       const rocas = crearRocas(materiales, t, ROCAS.n, ROCAS.semilla, { radioMin: ROCAS.radioMin, radio: ROCAS.radio });
       const grandes = instanciarRocas(materiales, rocasGrandes(claro.rejilla), "Rocks_Basalt_Large");
-      const ocupado = [...huellasBase(), ...huellasModulos()];
+      const ocupado = [...huellasFijasDeBase(), ...huellasRocas(claro.rejilla)];
       const gravilla = crearGravilla(materiales, t, {
         excluir: (x, z) => chocaConBase(x, z, 0.3) || sobreCamino(x, z, 0.2) || ocupado.some((h) => distanciaAHuella(h, x, z) < 0.3),
       });

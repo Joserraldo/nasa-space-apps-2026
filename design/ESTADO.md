@@ -1,14 +1,15 @@
-# Estado — diseño de juego y misiones
-Actualizado: 14 nov 2026 · Camilo · Rama: `feat/diseno-duracion-tormenta` · PR #135.
-Tokens: 🟢
-
+# Estado — Diseño y misiones
+Actualizado: 15 nov 2026 · Rama feat/diseno-mecanicas-misiones · PR #267.
+Tokens: 🟡
 ## Hecho
-- #134 ya incorporó la constante única de tres ticks y las pruebas integradas en `engine/src/ganable.test.ts`.
-- #135 conserva esa declaración de develop y actualiza documentación, sin copiar pruebas a `missions/test/`.
-- #138 (tarjetas científicas) integrado intacto; no se modifican sus archivos de misiones.
-- Validación local: typecheck OK; suite 307/307 (incluye ganable); dorada + missions 28/28; diff limpio. CI/E2E se revisan aparte.
-
-## Qué sigue / decisiones abiertas
-- #139 incorpora `puedeAplicar`, pero no `elegirDilema`; #140 se cerró afirmando que lo sustituía. Coordinar con motor.
-- Definir cierre por `tickLimite: 10` y confirmar umbral de rechazo de acciones; aquí no se cambian números.
-- Copia de pruebas a misiones solo si se acuerda; DD-08 y DD-09 siguen pendientes. Sin loops.
+- Datos y dilemas provisionales de #196 conservados, sin cambiar balance.
+- Origin/develop incorporado por merge en esta rama, según Santiago; sin reescribir historial.
+- MISION_JEZERO conserva tipo público amplio y eventoPolvo requerido: resuelve TS2677/TS18047.
+- PantallaFinal y los demás archivos del frontend no se editan; validación de cierre en build/cierre-267.
+## Siguiente / bloqueos
+- Revisión y fusión por Santiago; #268 sigue esperando aprobación de Jaime y del plazo.
+- No se integran nuevas mecánicas ni perfiles experimentales como reglas oficiales.
+- Laboratorio y tablero de cinco misiones preservados en playtest-mecanicas, commit local 3761f58.
+- Ubicación continúa según cierre-fidelidad: primero dependencias de Daniel y #254.
+- Capturas y propuestas anteriores intactas; sin force push ni merge a develop/main.
+- Simulaciones y limitaciones: PRUEBAS-MECANICAS.md y tablero del laboratorio.

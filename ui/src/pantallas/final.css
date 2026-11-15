@@ -1,0 +1,130 @@
+/*
+ * E8 Final (ESCENAS §2.6 y §2.7). Familia de paneles de ui/04 y personajes/07: pestaña ciruela con
+ * texto marfil, cara marfil facetada, tarjetas lilas dentro. Solo tokens; sombras ciruela, nunca negras.
+ * 1024x683: paneles en columnas · 844x390: dos columnas · 390x844: una columna con desplazamiento.
+ */
+.final {
+  box-sizing: border-box;
+  min-block-size: calc(100dvh - var(--alto-barra, 0px));
+  padding: max(var(--esp-5), env(safe-area-inset-top)) max(var(--esp-5), env(safe-area-inset-right))
+    max(var(--esp-5), env(safe-area-inset-bottom)) max(var(--esp-5), env(safe-area-inset-left));
+  display: grid;
+  gap: var(--esp-4);
+  align-content: start;
+  background: var(--color-lila);
+  color: var(--color-indigo-texto);
+}
+
+.final-rejilla {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--esp-4);
+  align-items: start;
+}
+.final-datos-usados, .final-ciencia, .final-pregunta { grid-column: 1 / -1; }
+
+/* ---- Panel con pestaña (ui/04 "04 / YOUR DECISION COUNTS") ---- */
+.final-panel { min-inline-size: 0; }
+.final-cara { display: grid; gap: var(--esp-3); padding: var(--esp-3) var(--esp-4) var(--esp-4); }
+.final-pestana {
+  justify-self: start; margin: 0; padding: var(--esp-1) var(--esp-5) var(--esp-1) var(--esp-4);
+  background: var(--color-ciruela); color: var(--color-marfil);
+  font-size: var(--tipo-tam-cuerpo); font-weight: var(--tipo-peso-titulo); letter-spacing: 0.04em; text-transform: uppercase; line-height: 1.3;
+  clip-path: polygon(0 0, calc(100% - 14px) 0, 100% 50%, calc(100% - 14px) 100%, 0 100%);
+}
+.final-cuerpo { display: grid; gap: var(--esp-3); min-inline-size: 0; }
+.final-cuerpo p { margin: 0; max-width: none; }
+.final-sub { font-weight: var(--tipo-peso-etiqueta); color: var(--color-ciruela); }
+
+/* ---- 01 Resultado: el niño y Iris, como el panel 04 de ui/04 ---- */
+.final-resultado .final-cuerpo { grid-template-columns: auto minmax(0, 1fr); align-items: center; gap: var(--esp-4); }
+.final-equipo { display: flex; align-items: end; gap: var(--esp-2); }
+.final-equipo figure { margin: 0; display: grid; justify-items: center; gap: var(--esp-1); }
+.final-equipo figcaption {
+  font-size: 14px; font-weight: var(--tipo-peso-etiqueta); padding: 0 var(--esp-2); background: var(--color-lila);
+  clip-path: polygon(6px 0, calc(100% - 6px) 0, 100% 50%, calc(100% - 6px) 100%, 6px 100%, 0 50%);
+}
+.final-veredicto { display: grid; gap: var(--esp-3); min-inline-size: 0; }
+.final-mensaje {
+  display: flex; align-items: center; gap: var(--esp-2); margin: 0; padding: var(--esp-2) var(--esp-3);
+  font-size: var(--tipo-tam-subtitulo); font-weight: var(--tipo-peso-titulo); line-height: 1.2;
+  clip-path: polygon(8px 0, calc(100% - 8px) 0, 100% 8px, 100% calc(100% - 8px), calc(100% - 8px) 100%, 8px 100%, 0 calc(100% - 8px), 0 8px);
+}
+.final-mensaje svg { flex: none; }
+.final-exito { background: var(--color-exito-fondo); color: var(--color-exito); }
+.final-fallo { background: var(--color-aviso-fondo); color: var(--color-aviso-texto); }
+.final-casi { background: var(--color-info-fondo); color: var(--color-ciruela); font-size: var(--tipo-tam-cuerpo); }
+.final-datos { display: flex; flex-wrap: wrap; gap: var(--esp-2) var(--esp-5); margin: 0; }
+.final-datos dt { font-size: 15px; font-weight: var(--tipo-peso-etiqueta); color: var(--color-ciruela); }
+.final-datos dd { margin: 0; font-size: var(--tipo-tam-placa); font-weight: var(--tipo-peso-titulo); font-variant-numeric: tabular-nums; }
+.final-rango { font-size: 15px; padding: 0 var(--esp-2); background: var(--color-lila); vertical-align: middle; }
+.final-insignias ul { list-style: none; margin: var(--esp-1) 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: var(--esp-2); }
+.final-insignias li {
+  display: inline-flex; align-items: center; gap: var(--esp-1); padding: 2px var(--esp-3); font-size: 15px; font-weight: var(--tipo-peso-etiqueta);
+  background: var(--color-lila); color: var(--color-ciruela);
+  clip-path: polygon(6px 0, calc(100% - 6px) 0, 100% 50%, calc(100% - 6px) 100%, 6px 100%, 0 50%);
+}
+
+/* ---- 02 Cadena de causas: decisión y mala suerte en bloques separados ---- */
+.final-origenes { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--esp-4); }
+.final-origen { display: grid; gap: var(--esp-2); align-content: start; min-inline-size: 0; }
+.final-origen + .final-origen { border-left: var(--borde-fino) solid color-mix(in srgb, var(--color-ciruela) 30%, transparent); padding-left: var(--esp-4); }
+.final-origen h3 { display: flex; align-items: center; gap: var(--esp-2); margin: 0; font-size: var(--tipo-tam-cuerpo); color: var(--color-ciruela); }
+.final-sistema { border-top: var(--borde-fino) solid color-mix(in srgb, var(--color-ciruela) 30%, transparent); padding-top: var(--esp-2); }
+.final-barra { display: grid; gap: var(--esp-1); }
+.final-barra-txt { font-size: 15px; font-weight: var(--tipo-peso-etiqueta); font-variant-numeric: tabular-nums; }
+.final-pista { display: block; block-size: 10px; background: var(--color-deshabilitado); clip-path: polygon(4px 0, 100% 0, calc(100% - 4px) 100%, 0 100%); }
+.final-pista > span { display: block; block-size: 100%; background: var(--color-ciruela); }
+.final-mala_suerte .final-pista > span { background: var(--color-cian); }
+.final-lista { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--esp-1); }
+.final-lista li {
+  display: grid; grid-template-columns: 20px minmax(0, 1fr) auto; align-items: center; gap: var(--esp-2);
+  padding: var(--esp-1) var(--esp-3); background: var(--color-lila); font-size: 16px;
+  clip-path: polygon(6px 0, calc(100% - 6px) 0, 100% 6px, 100% calc(100% - 6px), calc(100% - 6px) 100%, 6px 100%, 0 calc(100% - 6px), 0 6px);
+}
+.final-tick { font-size: 14px; color: var(--color-deshabilitado-texto); white-space: nowrap; }
+.final-vacio { font-size: 16px; color: var(--color-deshabilitado-texto); }
+
+/* ---- 03 Tarjetas de ciencia con fuente ---- */
+/* Escritorio: las tarjetas en columnas (ESCENAS §2.7). */
+.final-tarjetas { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: var(--esp-3); align-items: start; }
+.final-tarjeta { --fc-fondo: var(--color-marfil); display: grid; gap: var(--esp-2); padding: var(--esp-3) var(--esp-4); }
+.final-tarjeta p { margin: 0; }
+.final-cifra { font-weight: var(--tipo-peso-etiqueta); color: var(--color-ciruela); }
+
+/* ---- 04 Pregunta final ---- */
+.final-pregunta-txt { font-size: var(--tipo-tam-dialogo); font-weight: var(--tipo-peso-etiqueta); }
+.final-opciones { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: var(--esp-2); justify-items: stretch; }
+.final-opciones .fb-caja, .final-opciones .fb { inline-size: 100%; }
+/* Las respuestas son frases: el botón crece en alto para que el español no se corte (DISEÑO §5.3). */
+.final-opciones .fb { --fb-alto: auto; block-size: auto; min-block-size: 56px; }
+.final-opciones .fb-superficie { white-space: normal; padding-block: var(--esp-2); line-height: 1.25; }
+.final-explica { display: grid; gap: var(--esp-2); }
+
+/* ---- Acciones: repetir ---- */
+.final-acciones { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: var(--esp-3); }
+.final-semilla { margin: 0; font-size: 15px; color: var(--color-deshabilitado-texto); font-weight: var(--tipo-peso-etiqueta); }
+.final .fb { min-block-size: var(--toque-minimo); }
+
+/* Celular horizontal (844 x 390): dos columnas, todo más compacto. */
+@media (max-height: 500px) and (orientation: landscape) {
+  .final { padding-block: max(var(--esp-3), env(safe-area-inset-top)) max(var(--esp-3), env(safe-area-inset-bottom)); gap: var(--esp-3); }
+  .final-rejilla { gap: var(--esp-3); }
+  .final-cara { padding: var(--esp-2) var(--esp-3) var(--esp-3); gap: var(--esp-2); }
+  .final-origenes { grid-template-columns: 1fr; }
+  .final-origen + .final-origen { border-left: 0; padding-left: 0; border-top: var(--borde-fino) solid color-mix(in srgb, var(--color-ciruela) 30%, transparent); padding-top: var(--esp-2); }
+  .final-equipo svg:first-child { inline-size: 72px; block-size: 72px; }
+}
+
+/* Celular vertical (390 x 844) y pantallas angostas: una columna con desplazamiento. */
+@media (max-width: 700px) {
+  .final { padding-inline: max(var(--esp-3), env(safe-area-inset-left)) max(var(--esp-3), env(safe-area-inset-right)); }
+  .final-rejilla { grid-template-columns: 1fr; }
+  .final-origenes { grid-template-columns: 1fr; }
+  .final-origen + .final-origen { border-left: 0; padding-left: 0; border-top: var(--borde-fino) solid color-mix(in srgb, var(--color-ciruela) 30%, transparent); padding-top: var(--esp-2); }
+  .final-resultado .final-cuerpo { grid-template-columns: 1fr; justify-items: center; }
+  .final-veredicto { justify-items: stretch; inline-size: 100%; }
+  .final-acciones { flex-direction: column; align-items: stretch; }
+  .final-acciones .fb-caja, .final-acciones .fb { inline-size: 100%; }
+  .final-semilla { text-align: center; }
+}

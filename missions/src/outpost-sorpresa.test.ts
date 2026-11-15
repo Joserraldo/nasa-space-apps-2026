@@ -1,12 +1,15 @@
 import { existsSync, readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
-import type { EfectoOpcion } from "./jezero.js";
+import type { EfectoOpcion, OpcionDilema, SitioCandidato } from "./jezero.js";
 import { MISION_OUTPOST_SORPRESA as M } from "./outpost-sorpresa.js";
 import { TEXTOS_OUTPOST_SORPRESA as T } from "./textos.js";
 
 const RECURSOS = ["energia", "soporte_vital", "blindaje"] as const;
 const raiz = (ruta: string) => fileURLToPath(new URL(`../../${ruta}`, import.meta.url));
+// Vista ancha del tipo: `satisfies` deja la constante estrecha y aquí se indexa por recurso.
+const sitios: SitioCandidato[] = M.sitiosCandidatos;
+const opciones: OpcionDilema[] = M.dilemaPaso6.opciones;
 
 /** Efecto neto de una opción por medidor (inmediato + retrasado). */
 function neto(e: EfectoOpcion): Record<(typeof RECURSOS)[number], number> {
@@ -22,13 +25,14 @@ describe("misión outpost sorpresa", () => {
     expect(existsSync(raiz(`data/curated/${M.tormentaId}.json`))).toBe(true);
   });
 
-  it("las zonas de la nave son las 3 de la propuesta y no hay terreno (hueco documentado)", () => {
-    expect(M.sitiosCandidatos.map((s) => s.id)).toEqual(["cabina", "centro", "fondo"]);
-    expect(existsSync(raiz(`data/terreno/${M.terrenoId}`))).toBe(false);
+  it("las zonas de la nave son las 3 de la propuesta y la misión no tiene terreno", () => {
+    expect(sitios.map((s) => s.id)).toEqual(["cabina", "centro", "fondo"]);
+    // La nave no tiene mapa: no debe quedar un terrenoId que apunte a un data/terreno/ inexistente.
+    expect("terrenoId" in M).toBe(false);
   });
 
   it("ninguna zona es gratis: mueve ≥ 2 medidores y algo baja ya", () => {
-    for (const s of M.sitiosCandidatos) {
+    for (const s of sitios) {
       const movidos = RECURSOS.filter((r) => (s.aterrizaje.inmediato[r] ?? 0) !== 0 || (s.aterrizaje.retrasado[r] ?? 0) !== 0);
       expect(movidos.length, s.id).toBeGreaterThanOrEqual(2);
       expect(Object.values(s.aterrizaje.inmediato).some((v) => v < 0), s.id).toBe(true);
@@ -36,7 +40,7 @@ describe("misión outpost sorpresa", () => {
   });
 
   it("ninguna zona domina a otra en todos los medidores", () => {
-    const zonas = M.sitiosCandidatos.map((s) => ({ id: s.id, n: neto(s.aterrizaje) }));
+    const zonas = sitios.map((s) => ({ id: s.id, n: neto(s.aterrizaje) }));
     for (const a of zonas)
       for (const b of zonas) {
         if (a.id === b.id) continue;
@@ -69,6 +73,10 @@ describe("outpost: micrometeorito y dilema del refugio", () => {
     expect(ActionSchema.safeParse(p.limpiar).success).toBe(true);
   });
 
+  it("la causa del evento es micrometeorito, no tormenta de polvo", () => {
+    expect(M.eventoPolvo.descripcionKey).toBe("mala_suerte.micrometeorito");
+  });
+
   it("el dilema tiene 3 salidas válidas y distintas, con Doctora e Ingeniera en lados opuestos", async () => {
     const { ActionSchema } = await import("@solar-shield/contracts");
     const ops = M.dilemaPaso6.opciones;
@@ -77,10 +85,12 @@ describe("outpost: micrometeorito y dilema del refugio", () => {
     for (const o of ops) expect(ActionSchema.safeParse(o.accion).success, o.id).toBe(true);
     expect(ops.find((o) => o.accion.tipo === "refugiarse")?.defiende).toBe("doctora");
     expect(ops.find((o) => o.accion.tipo === "subir_escudo")?.defiende).toBe("ingeniera");
+    // "Aguantar" es la salida neutral: nadie la recomienda (#196).
+    expect(ops.find((o) => o.accion.tipo === "esperar")?.defiende).toBeNull();
   });
 
   it("un efecto extra del dilema, si existe, solo resta", () => {
-    for (const o of M.dilemaPaso6.opciones) {
+    for (const o of opciones) {
       if (!o.extra) continue;
       expect(Object.values(neto(o.extra)).every((v) => v <= 0), o.id).toBe(true);
     }

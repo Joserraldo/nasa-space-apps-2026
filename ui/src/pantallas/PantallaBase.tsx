@@ -14,6 +14,7 @@ import { Icono, type NombreIcono } from "../componentes/base/Iconos.js";
 import { Mensaje } from "../componentes/base/Piezas.js";
 import type { Persona } from "../componentes/base/Retrato.js";
 import "../componentes/base/facetas.css";
+import { DecisionRegistrada } from "./DecisionRegistrada.js";
 import type { CalidadGrafica } from "../juego/ajustes.js";
 import { eventosDeTick } from "../juego/eventos.js";
 import { vistaEscena, type LugarObjetivo } from "../escena/vista.js";
@@ -61,8 +62,11 @@ export function PantallaBase({ estado, colocados = [], ultimas, onAccion, onRean
   const [preguntada, setPreguntada] = useState<string | null>(null);
   const [texto, setTexto] = useState("");
   const [fallasIris, setFallasIris] = useState(0);
+  // Panel 04 "Decision recorded": `antes` es el estado al confirmar; `despues` se toma en el render que ya trae la acción aplicada.
+  const [registro, setRegistro] = useState<{ antes: GameState; despues: GameState | null } | null>(null);
   const origen = useRef<HTMLElement | null>(null);
   const tripulacion = useRef<HTMLElement>(null);
+  const panel = useRef<HTMLElement>(null);
   const tele = telemetriaPendiente(estado);
   const [calidad, setCalidad] = useState<CalidadGrafica>("media");
   const [sin3d, setSin3d] = useState(false);
@@ -83,6 +87,9 @@ export function PantallaBase({ estado, colocados = [], ultimas, onAccion, onRean
   }
   function cerrarPlan() {
     setPlan(null);
+    devolverFoco();
+  }
+  function devolverFoco() {
     const o = origen.current;
     // La lista de acciones se desmonta mientras está el panel: se busca de nuevo el mismo botón por su acción.
     const clave = o?.closest("li")?.dataset.accion;
@@ -100,10 +107,19 @@ export function PantallaBase({ estado, colocados = [], ultimas, onAccion, onRean
     // TODO(José): el resto de lugares (taller, banco, antena…) no tienen acción en la pantalla todavía.
   }
   function confirmar(a: BaseAction) {
+    setRegistro({ antes: estado, despues: null });
     onAccion(a);
     if (dialogo?.accion === a) setDialogo(null);
-    cerrarPlan();
+    setPlan(null);
   }
+  // El reloj de la base sigue como estaba (no se pausa ni se reanuda): solo se cierra la tarjeta.
+  function continuar() {
+    setRegistro(null);
+    devolverFoco();
+  }
+  useEffect(() => {
+    if (registro && !registro.despues && estado !== registro.antes) { setRegistro({ antes: registro.antes, despues: estado }); panel.current?.scrollTo({ top: 0 }); }
+  }, [estado, registro]);
 
   function hablar(entrada: Entrada) {
     const d = conversar(entrada, estado, { tormentaActiva: tormentaActiva(estado), dosisMarte: referenciaDosis("marte-superficie"), vecesFallaIris: fallasIris });
@@ -174,8 +190,15 @@ export function PantallaBase({ estado, colocados = [], ultimas, onAccion, onRean
         )}
       </div>
 
-      <aside className="base-panel" aria-label={t("ui.acciones.titulo")}>
-        {plan ? (
+      <aside className="base-panel" ref={panel} aria-label={t("ui.acciones.titulo")}>
+        {registro ? (
+          registro.despues && (
+            <section className="fc" aria-labelledby="base-decision-titulo"><div className="fc-cara base-bloque">
+              <h2 id="base-decision-titulo">{t("ui.decision.titulo")}</h2>
+              <DecisionRegistrada antes={registro.antes} despues={registro.despues} onContinuar={continuar} />
+            </div></section>
+          )
+        ) : plan ? (
           <ConfirmarAccion estado={estado} accion={plan} onCancelar={cerrarPlan} onConfirmar={confirmar} />
         ) : (
           <section className="fc"><div className="fc-cara base-bloque">
