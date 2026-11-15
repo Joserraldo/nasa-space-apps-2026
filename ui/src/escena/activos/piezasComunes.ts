@@ -97,23 +97,25 @@ export const PLANTA_KIT = {
 /** Lámina 01 (puerta y marco): arco octogonal con 3 tiras cian y dos zócalos. Hueco de 1,3 m. */
 export function crearPuerta(m: Materiales): THREE.Group {
   const arco = geometriaBase("kit-puerta-arco", () => {
-    // Perfil en U (exterior con hombros a 45°, interior abierto), extruido 0,4 en z.
+    // Perfil en U (hueco de 1,3 m; jambas de 0,55 y dintel de 0,5, casi el doble que antes), 0,6 en z.
     const p = [
-      [-1, 0], [-0.65, 0], [-0.65, 1.75], [-0.4, 2.1], [0.4, 2.1], [0.65, 1.75], [0.65, 0],
-      [1, 0], [1, 1.9], [0.5, 2.4], [-0.5, 2.4], [-1, 1.9],
+      [-1.2, 0], [-0.65, 0], [-0.65, 1.2], [-0.35, 1.55], [0.35, 1.55], [0.65, 1.2], [0.65, 0],
+      [1.2, 0], [1.2, 1.4], [0.62, 2.05], [-0.62, 2.05], [-1.2, 1.4],
     ].map(([x, y]) => new THREE.Vector2(x, y));
-    const g = new THREE.ExtrudeGeometry(new THREE.Shape(p), { depth: 0.4, bevelEnabled: false });
-    g.translate(0, 0, -0.2);
+    const g = new THREE.ExtrudeGeometry(new THREE.Shape(p), {
+      depth: 0.48, bevelEnabled: true, bevelThickness: 0.06, bevelSize: 0.08, bevelOffset: -0.08, bevelSegments: 1,
+    });
+    g.translate(0, 0, -0.24); // bisel en los bordes: total 0,6 en z
     return g;
   });
   return grupo(
     "Kit_Door",
-    parte(m, "SuitBase", arco, [0, 0.15, 0], "Door_Frame"),
-    parte(m, "SuitBase", tronco(0.3, 0.4, 0.3, 8), [-0.82, 0.15, 0], "Door_PlinthL"),
-    parte(m, "SuitBase", tronco(0.3, 0.4, 0.3, 8), [0.82, 0.15, 0], "Door_PlinthR"),
-    parte(m, "Emissive", caja(0.6, 0.12, 0.02), [0, 2.4, 0.21], "Door_StripTop"),
-    parte(m, "Emissive", caja(0.1, 0.5, 0.02), [-0.82, 1.1, 0.21], "Door_StripL"),
-    parte(m, "Emissive", caja(0.1, 0.5, 0.02), [0.82, 1.1, 0.21], "Door_StripR"),
+    parte(m, "SuitBase", arco, [0, 0.5, 0], "Door_Frame"),
+    parte(m, "SuitBase", tronco(0.34, 0.38, 0.5, 8), [-1.0, 0.25, 0], "Door_PlinthL"),
+    parte(m, "SuitBase", tronco(0.34, 0.38, 0.5, 8), [1.0, 0.25, 0], "Door_PlinthR"),
+    parte(m, "Emissive", caja(0.85, 0.17, 0.02), [0, 2.3, 0.31], "Door_StripTop"),
+    parte(m, "Emissive", caja(0.14, 0.7, 0.02), [-0.925, 1.1, 0.31], "Door_StripL"),
+    parte(m, "Emissive", caja(0.14, 0.7, 0.02), [0.925, 1.1, 0.31], "Door_StripR"),
   );
 }
 
@@ -142,7 +144,7 @@ export function crearConsola(m: Materiales): THREE.Group {
     parte(m, "SuitBase", chaflan(1.7, 0.95, 0.18, 0.22), [0, 1.4, -0.2], "Console_ScreenFrame"),
     // Pantalla clara, malla propia (la pantalla dibuja datos reales; sin texto horneado).
     parte(m, "Rock", pantalla, [0, 1.42, -0.095], "Console_Screen"),
-    parte(m, "SuitBase", chaflan(PLANTA_KIT.consola.ancho, 0.28, PLANTA_KIT.consola.fondo, 0.1), [0, 0.78, 0], "Console_Desk"),
+    parte(m, "SuitBase", mostradorCurvo(), [0, 0.78, 0], "Console_Desk"),
     parte(m, "SuitBase", caja(0.3, 0.64, 0.5), [-0.8, 0.32, 0], "Console_LegL"),
     parte(m, "SuitBase", caja(0.3, 0.64, 0.5), [0.8, 0.32, 0], "Console_LegR"),
     parte(m, "SuitBase", caja(1.0, 0.5, 0.06), [0, 0.35, -0.12], "Console_BackPanel"),
@@ -154,6 +156,17 @@ export function crearConsola(m: Materiales): THREE.Group {
     ...[0.12, 0.22, 0.32].map((h, i) => parte(m, "Emissive", caja(0.08, h, 0.012), [0.08 + i * 0.15, 1.24 + h / 2, -0.076], `Console_Signal${i}`)),
     ...teclas,
   );
+}
+
+/** Encimera de la lámina 02: planta con esquinas anguladas y frente cóncavo (ancho 1,9, fondo 0,6), alto 0,28. */
+function mostradorCurvo(): THREE.BufferGeometry {
+  return geometriaBase("kit-mostrador-concavo", () => {
+    const p: [number, number][] = [[-0.95, -0.3], [0.95, -0.3], [0.95, 0.2], [0.75, 0.3], [0.4, 0.2], [0, 0.16], [-0.4, 0.2], [-0.75, 0.3], [-0.95, 0.2]];
+    const g = new THREE.ExtrudeGeometry(new THREE.Shape(p.map(([x, z]) => new THREE.Vector2(x, -z))), { depth: 0.28, bevelEnabled: false });
+    g.rotateX(-Math.PI / 2);
+    g.translate(0, -0.14, 0);
+    return g;
+  });
 }
 
 /** Cuánto se acerca la pantalla de `cian` a `ciruela`: azul claro legible bajo la luz del día. [E] */
@@ -179,41 +192,60 @@ function iconoSol(m: Materiales, x: number, y: number, z: number): THREE.Mesh[] 
   return [parte(m, "Emissive", sol, [x, y, z], "Console_Sun")];
 }
 
-/** Lámina 03 (caja): cuerpo chaflanado, tapa más ancha y banda teal que cruza tapa y laterales. */
+/** Prisma con bisel arriba y abajo y esquinas verticales recortadas: caja `w`×`h`×`d`, centrada. */
+const prismaBiselado = (w: number, h: number, d: number, bisel: number, c: number) =>
+  geometriaBase(`kit-biselado-${w}-${h}-${d}-${bisel}-${c}`, () => {
+    const x = w / 2 - bisel, y = d / 2 - bisel, v = (a: number, b: number) => new THREE.Vector2(a, b);
+    const forma = new THREE.Shape([v(-x + c, -y), v(x - c, -y), v(x, -y + c), v(x, y - c), v(x - c, y), v(-x + c, y), v(-x, y - c), v(-x, -y + c)]);
+    const g = new THREE.ExtrudeGeometry(forma, { depth: h - 2 * bisel, bevelEnabled: true, bevelThickness: bisel, bevelSize: bisel, bevelSegments: 1 });
+    g.rotateX(-Math.PI / 2);
+    g.translate(0, -(h - 2 * bisel) / 2, 0);
+    return g;
+  });
+
+/** Lámina 03 (caja): cuerpo y tapa chaflanados (la tapa apenas más ancha), banda teal y asas en ranura. */
 export function crearCaja(m: Materiales): THREE.Group {
+  // Ranura: marfil algo más oscuro (color de vértice sobre el material Rock, que ya está en la escena).
+  const ranura = geometriaBase("kit-caja-ranura", () => {
+    const g = new THREE.BoxGeometry(0.2, 0.04, 0.004);
+    const c = colorToken("traje-marfil").multiplyScalar(0.78);
+    g.setAttribute("color", new THREE.BufferAttribute(new Float32Array(Array.from({ length: g.getAttribute("position").count }, () => [c.r, c.g, c.b]).flat()), 3));
+    return g;
+  });
   return grupo(
     "Kit_Crate",
-    parte(m, "SuitBase", chaflan(1, 0.5, 0.75, 0.08), [0, 0.25, 0], "Crate_Body"),
-    parte(m, "SuitBase", chaflan(PLANTA_KIT.caja.ancho, 0.22, 0.85, 0.07), [0, 0.61, 0], "Crate_Lid"),
-    parte(m, "Accent", caja(0.2, 0.02, 0.87), [0, 0.73, 0], "Crate_BandTop"),
-    parte(m, "Accent", caja(0.2, 0.7, 0.02), [0, 0.36, 0.43], "Crate_BandFront"),
-    parte(m, "Accent", caja(0.2, 0.7, 0.02), [0, 0.36, -0.43], "Crate_BandBack"),
-    parte(m, "Boots", caja(0.2, 0.05, 0.02), [-0.3, 0.38, 0.385], "Crate_HandleL"),
-    parte(m, "Boots", caja(0.2, 0.05, 0.02), [0.3, 0.38, 0.385], "Crate_HandleR"),
+    parte(m, "SuitBase", prismaBiselado(1, 0.5, 0.75, 0.05, 0.07), [0, 0.25, 0], "Crate_Body"),
+    parte(m, "SuitBase", prismaBiselado(1.08, 0.22, 0.83, 0.05, 0.08), [0, 0.6, 0], "Crate_Lid"),
+    parte(m, "Accent", caja(0.2, 0.02, 0.86), [0, 0.71, 0], "Crate_BandTop"),
+    parte(m, "Accent", caja(0.2, 0.7, 0.05), [0, 0.36, 0.4], "Crate_BandFront"),
+    parte(m, "Accent", caja(0.2, 0.7, 0.05), [0, 0.36, -0.4], "Crate_BandBack"),
+    parte(m, "Rock", ranura, [-0.3, 0.32, 0.375], "Crate_HandleL"),
+    parte(m, "Rock", ranura, [0.3, 0.32, 0.375], "Crate_HandleR"),
   );
 }
 
 /**
- * Lámina 04 (panel solar): base octogonal, poste con luz cian y placa inclinada 25° con rejilla
- * 3×3. Pivote en la base; el grupo hijo `Solar_Head` es el eje de cabeza (gira con el sol).
+ * Lámina 04 (panel solar): base octogonal ancha, poste corto con luz cian y placa grande 3×3 que se
+ * recuesta hacia atrás (eje x, mira hacia arriba y a +z) y sobresale del poste. Pivote en la base;
+ * el grupo hijo `Solar_Head` es el eje de cabeza.
  */
 export function crearPanelSolar(m: Materiales): THREE.Group {
   const cabeza = new THREE.Group();
   cabeza.name = "Solar_Head";
-  cabeza.position.set(0, 0.8, 0);
-  cabeza.rotation.z = THREE.MathUtils.degToRad(-25);
-  cabeza.add(parte(m, "SuitBase", chaflan(1.6, 1.2, 0.06, 0.1), [0, 0.45, 0], "Solar_Plate"));
-  const celda = geometriaBase("kit-celda", () => new THREE.PlaneGeometry(0.44, 0.33));
+  cabeza.position.set(0, 0.6, 0);
+  cabeza.rotation.x = THREE.MathUtils.degToRad(-35);
+  cabeza.add(parte(m, "SuitBase", chaflan(1.9, 1.4, 0.07, 0.08), [0, 0.5, 0], "Solar_Plate"));
+  const celda = geometriaBase("kit-celda-panel", () => new THREE.PlaneGeometry(0.54, 0.4));
   for (let f = 0; f < 3; f++) {
     for (let c = 0; c < 3; c++) {
-      cabeza.add(parte(m, "Boots", celda, [(c - 1) * 0.5, 0.45 + (1 - f) * 0.38, 0.031], `Solar_Cell${f}${c}`));
+      cabeza.add(parte(m, "Boots", celda, [(c - 1) * 0.58, 0.5 + (1 - f) * 0.44, 0.036], `Solar_Cell${f}${c}`));
     }
   }
   return grupo(
     "Kit_SolarPanel",
-    parte(m, "SuitBase", tronco(0.3, 0.5, 0.2, 8), [0, 0.1, 0], "Solar_Base"),
-    parte(m, "SuitBase", caja(0.2, 0.55, 0.2), [0, 0.475, 0], "Solar_Post"),
-    parte(m, "Emissive", tronco(0.04, 0.04, 0.02, 8), [0, 0.45, 0.11], "Solar_Light"),
+    parte(m, "SuitBase", tronco(0.34, 0.62, 0.2, 8), [0, 0.1, 0], "Solar_Base"),
+    parte(m, "SuitBase", caja(0.34, 0.38, 0.3), [0, 0.39, 0], "Solar_Post"),
+    parte(m, "Emissive", caja(0.09, 0.09, 0.02), [0, 0.4, 0.155], "Solar_Light"),
     cabeza,
   );
 }
@@ -248,50 +280,70 @@ export function crearPanelSolarInclinado(m: Materiales, ancho = 1.15, alto = 0.9
 export function crearDeposito(m: Materiales): THREE.Group {
   const gota = geometriaBase("kit-gota", () => {
     const f = new THREE.Shape();
-    f.moveTo(0, 0.14);
-    f.lineTo(0.08, 0.02);
-    f.lineTo(0.08, -0.04);
-    f.lineTo(0.03, -0.09);
-    f.lineTo(-0.03, -0.09);
-    f.lineTo(-0.08, -0.04);
-    f.lineTo(-0.08, 0.02);
+    const k = 1.8;
+    const p: [number, number][] = [[0, 0.14], [0.08, 0.02], [0.08, -0.04], [0.03, -0.09], [-0.03, -0.09], [-0.08, -0.04], [-0.08, 0.02]];
+    p.forEach(([x, y], i) => (i ? f.lineTo(x * k, y * k) : f.moveTo(x * k, y * k)));
     return new THREE.ShapeGeometry(f);
+  });
+  // Fluido teal claro: color de vértice sobre Rock (el slot Accent sale demasiado oscuro con la luz).
+  const fluido = geometriaBase("kit-fluido", () => {
+    const g = tronco(0.5, 0.5, 1.23, 10).clone();
+    const c = colorToken("teal").multiplyScalar(1.35);
+    g.setAttribute("color", new THREE.BufferAttribute(new Float32Array(Array.from({ length: g.getAttribute("position").count }, () => [c.r, c.g, c.b]).flat()), 3));
+    return g;
   });
   return grupo(
     "Kit_Tank",
     parte(m, "SuitBase", tronco(0.5, 0.6, 0.3, 10), [0, 0.15, 0], "Tank_Base"),
-    parte(m, "Accent", tronco(0.46, 0.46, 1.0, 10), [0, 0.8, 0], "Tank_Fluid"),
+    parte(m, "Rock", fluido, [0, 0.935, 0], "Tank_Fluid"),
     parte(m, "Glass", tronco(0.52, 0.52, 1.4, 10), [0, 1.0, 0], "Tank_Glass"),
     parte(m, "SuitBase", tronco(0.6, 0.5, 0.3, 10), [0, 1.85, 0], "Tank_Cap"),
     parte(m, "SuitBase", tronco(0.2, 0.22, 0.2, 8), [0, 2.1, 0], "Tank_Nozzle"),
-    parte(m, "Emissive", gota, [0, 1.0, 0.54], "Tank_Drop"),
+    parte(m, "Emissive", tronco(0.5, 0.5, 0.015, 10), [0, 1.555, 0], "Tank_Surface"),
+    parte(m, "Emissive", caja(0.03, 1.1, 0.006), [-0.165, 0.93, 0.497], "Tank_ShineA"),
+    parte(m, "Emissive", caja(0.02, 1.1, 0.006), [0.165, 0.93, 0.497], "Tank_ShineB"),
+    parte(m, "Emissive", gota, [0, 0.95, 0.54], "Tank_Drop"),
   );
 }
 
 /** Lámina 08 (antena): base de 12 lados, columna oscura con luz cian, plato facetado y esfera de alimentación. */
 export function crearAntena(m: Materiales): THREE.Group {
-  const plato = geometriaBase("kit-plato", () => {
-    // Cuenco de 10 lados y 2 anillos; la cara interior (cóncava) mira a +z.
-    // Puntos del borde al centro: invierte el bobinado para que la cara interior sea la frontal.
-    const pts = [new THREE.Vector2(0.55, 0.2), new THREE.Vector2(0.28, 0.04), new THREE.Vector2(0, 0)];
-    const g = new THREE.LatheGeometry(pts, 10);
-    g.rotateX(Math.PI / 2); // eje del cuenco a z
-    return g;
-  });
-  const brazo = parte(m, "Boots", tronco(0.025, 0.025, 0.4, 6), [0, 0, 0.2], "Antenna_Arm");
+  // Cuenco de 12 lados y 2 anillos; la cara interior (cóncava) mira a +z.
+  // Puntos del borde al centro: invierte el bobinado para que la cara interior sea la frontal.
+  const cuenco = (clave: string, pts: THREE.Vector2[], interior: boolean) =>
+    geometriaBase(clave, () => {
+      const g = new THREE.LatheGeometry(pts, 12);
+      g.rotateX(Math.PI / 2); // eje del cuenco a z
+      if (!interior) return g;
+      // Interior lila de la lámina: color de vértice (lila → violeta de montaña) con Rock, como el camino.
+      const n = g.getAttribute("position").count;
+      const col = new Float32Array(n * 3);
+      const claro = colorToken("lila"), hondo = colorToken("montana-lejana");
+      for (let i = 0; i < n; i++) {
+        const c = claro.clone().lerp(hondo, 0.5 + 0.4 * (1 - g.getAttribute("position").getZ(i) / 0.25));
+        col.set([c.r, c.g, c.b], i * 3);
+      }
+      g.setAttribute("color", new THREE.BufferAttribute(col, 3));
+      return g;
+    });
+  const dentro = cuenco("kit-plato", [new THREE.Vector2(0.64, 0.24), new THREE.Vector2(0.33, 0.05), new THREE.Vector2(0, 0)], true);
+  // Casco rosa algo más ancho y hundido (cara a +z): asoma como el borde con grosor alrededor del interior.
+  const fuera = cuenco("kit-plato-casco", [new THREE.Vector2(0.75, 0.24), new THREE.Vector2(0.39, 0.03), new THREE.Vector2(0, -0.03)], false);
+  const brazo = parte(m, "Boots", tronco(0.035, 0.05, 0.4, 6), [0, 0, 0.2], "Antenna_Arm");
   brazo.rotation.x = Math.PI / 2; // el cilindro corre a lo largo de z
   const cabeza = new THREE.Group();
   cabeza.name = "Antenna_Head";
-  cabeza.position.set(0, 1.05, 0);
+  cabeza.position.set(0, 1.12, 0);
   cabeza.rotation.x = THREE.MathUtils.degToRad(-35);
   cabeza.add(
-    parte(m, "SuitBase", plato, [0, 0, 0], "Antenna_Dish"),
+    parte(m, "Rock", dentro, [0, 0, 0], "Antenna_Dish"),
+    parte(m, "SuitBase", fuera, [0, 0, 0], "Antenna_DishRim"),
     brazo,
-    parte(m, "SuitBase", geometriaBase("kit-alimentador", () => new THREE.IcosahedronGeometry(0.07, 0)), [0, 0, 0.42], "Antenna_Feed"),
+    parte(m, "SuitBase", geometriaBase("kit-alimentador", () => new THREE.IcosahedronGeometry(0.1, 1)), [0, 0, 0.45], "Antenna_Feed"),
   );
   return grupo(
     "Kit_Antenna",
-    parte(m, "SuitBase", tronco(0.4, 0.5, 0.2, 12), [0, 0.1, 0], "Antenna_Base"),
+    parte(m, "SuitBase", tronco(0.4, 0.5, 0.22, 12), [0, 0.11, 0], "Antenna_Base"),
     parte(m, "Boots", tronco(0.1, 0.2, 0.75, 4), [0, 0.575, 0], "Antenna_Column"),
     parte(m, "Emissive", tronco(0.035, 0.035, 0.02, 8), [0, 0.35, 0.16], "Antenna_Light"),
     cabeza,
@@ -306,8 +358,8 @@ export function crearBaliza(m: Materiales): THREE.Group {
   return grupo(
     "Kit_Beacon",
     parte(m, "SuitBase", tronco(0.2, PLANTA_KIT.baliza, 0.08, 8), [0, 0.04, 0], "Beacon_Foot"),
-    parte(m, "SuitBase", tronco(0.12, 0.15, 0.6, 8), [0, 0.38, 0], "Beacon_Post"),
-    parte(m, "Emissive", tronco(0.1, 0.1, 0.12, 8), [0, 0.74, 0], "Beacon_Light"),
+    parte(m, "SuitBase", tronco(0.15, 0.18, 0.6, 8), [0, 0.38, 0], "Beacon_Post"),
+    parte(m, "Emissive", tronco(0.15, 0.15, 0.12, 8), [0, 0.74, 0], "Beacon_Light"),
   );
 }
 
