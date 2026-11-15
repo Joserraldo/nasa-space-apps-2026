@@ -41,7 +41,7 @@ export function DecisionRegistrada({ antes, despues, onContinuar }: { antes: Gam
       <div className="decision-detalle">
         <Mensaje tipo="exito" tituloKey="ui.decision.confirmada" />
         <CostRow inmediato={ahora} retrasado={despuesDe} />
-        {turnos !== null && <Mensaje tipo="pendiente" tituloKey="ui.comun.pendiente.titulo" detalleKey="ui.comun.pendiente.turnos" vars={{ n: turnos }} />}
+        {turnos !== null && <Mensaje tipo="pendiente" tituloKey="ui.comun.pendiente.titulo" detalleKey={turnos === 1 ? "ui.comun.pendiente.turno" : "ui.comun.pendiente.turnos"} vars={{ n: turnos }} />}
         <FacetButton variant="primary" icon="jugar" labelKey="ui.decision.volver" onClick={onContinuar} />
       </div>
     </div>
