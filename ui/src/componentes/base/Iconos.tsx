@@ -6,7 +6,7 @@
  */
 
 export type NombreIcono =
-  | "tripulacion" | "mapa" | "check" | "check_exito" | "microfono" | "energia" | "vida" | "escudo"
+  | "tripulacion" | "mapa" | "check" | "check_exito" | "microfono" | "energia" | "vida" | "pulmones" | "escudo"
   | "aviso" | "error" | "reloj" | "enlace" | "atras"
   | "jugar" | "candado" | "engranaje" | "sonido_off" | "sonido_on" | "planeta" | "satelite" | "llave" | "sol";
 
@@ -41,6 +41,14 @@ const DIBUJOS: Record<NombreIcono, JSX.Element> = {
       <polygon points="11,22 11,13 13,13 13,22" />
       <polygon points="12,13.5 6.5,13 3,9.5 3,5 8,5.5 11.5,9" />
       <polygon points="12.5,12 13,7.5 16.5,3.5 21,3 21,7.5 17,11.5" />
+    </g>
+  ),
+  // Pulmones de mundo/01 (soporte vital): dos lóbulos y la tráquea, en teal como el rayo y el escudo.
+  pulmones: (
+    <g fill="var(--color-teal)">
+      <polygon points="10.2,8 10.2,19 8,20.6 4,20.6 2.2,18.4 2.6,12.6 5.6,8.2 8.4,6.6" />
+      <polygon points="13.8,8 13.8,19 16,20.6 20,20.6 21.8,18.4 21.4,12.6 18.4,8.2 15.6,6.6" />
+      <polygon points="11,2 13,2 13,7 14.8,9 13.2,9.8 12,8.6 10.8,9.8 9.2,9 11,7" />
     </g>
   ),
   escudo: (

@@ -3,8 +3,8 @@
  * izquierda. Solo tokens; sombras ciruela, nunca negras. Cian solo para foco y selección.
  */
 .tormenta-e7 {
-  position: relative; box-sizing: border-box; min-block-size: calc(100dvh - 120px);
-  padding: var(--esp-4) max(var(--esp-4), env(safe-area-inset-right)) var(--esp-4) max(var(--esp-4), env(safe-area-inset-left));
+  position: relative; box-sizing: border-box; min-block-size: calc(100dvh - 40px);
+  padding: max(var(--esp-4), var(--hud-reserva-izq, 0px)) max(var(--esp-4), env(safe-area-inset-right)) var(--esp-4) max(var(--esp-4), env(safe-area-inset-left));
   background: var(--color-lila); color: var(--color-indigo-texto);
 }
 .tormenta-escena { position: absolute; inset: 0; overflow: hidden; }
@@ -37,7 +37,7 @@
 
 /* Pantalla baja (móvil horizontal): compacta para que el campo y Send queden a la vista. */
 @media (max-height: 480px) {
-  .tormenta-e7 { min-block-size: calc(100dvh - 80px); padding-block: var(--esp-2); }
+  .tormenta-e7 { min-block-size: calc(100dvh - 40px); padding-block-end: var(--esp-2); }
   .tormenta-panel { inline-size: min(100%, 560px); }
   .tormenta-cara { gap: var(--esp-1); padding: var(--esp-2) var(--esp-3); max-block-size: calc(100dvh - 90px); overflow-y: auto; }
   .tormenta-titulo { font-size: 18px; }
@@ -107,4 +107,8 @@
   .tormenta-preguntas { grid-template-columns: 1fr 1fr; gap: var(--esp-1); }
   .tormenta-preguntas .fb-texto { font-size: 13px; }
   .tormenta-respuesta-fuente { font-size: 12px; padding: var(--esp-1) var(--esp-2); }
+}
+
+@media (orientation: portrait) and (max-width: 700px) {
+  .tormenta-e7 { padding-block-start: max(var(--esp-4), var(--hud-reserva, 0px)); }
 }
