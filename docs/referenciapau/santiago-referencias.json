@@ -1,0 +1,32 @@
+[
+  {
+    "santiago": "04_Jugabilidad/02_Celular/01_apaisado_vertical_y_decision.png",
+    "repo": "referencias/mundo/03-celular-apaisado-vertical-decision.png",
+    "original_sha256": "2c4a24b928b513d49e59697b0267acbd5a807c7ae8ef2d875cbebfa16ae806c8",
+    "repo_sha256": "cb12e770efb601026a499d9ac954a97190bc92d74f9d53e4c27c35916413f490",
+    "size": [
+      683,
+      1024
+    ]
+  },
+  {
+    "santiago": "04_Jugabilidad/03_Tableta/01_exploracion_y_decision.png",
+    "repo": "referencias/mundo/04-tableta-exploracion-decision.png",
+    "original_sha256": "3a6f1a5246b54fbabf51975d5008d4c50f6370ac9f3da1ef99401cedcff17a1f",
+    "repo_sha256": "9f800d2d4a8f4b420f575a87998027a0bae9111ace903c7fb38042bdc2f79e32",
+    "size": [
+      1024,
+      576
+    ]
+  },
+  {
+    "santiago": "05_UI/01_Referencias/01_ui_completa.png",
+    "repo": "referencias/ui/05-ui-completa.png",
+    "original_sha256": "dae72c1cd0d30157ed55f3425653dcbba819aded9f92b2fa8643c0397c1b65eb",
+    "repo_sha256": "1ab5cf65493af13b60847b0516fab79ef4486dbfe121f93fc251bb3581c897cb",
+    "size": [
+      1024,
+      683
+    ]
+  }
+]

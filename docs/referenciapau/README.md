@@ -1,6 +1,6 @@
 # Solar Shield: índice maestro de dirección visual (v8)
 
-**Dueña:** María Paula (`Paulasaah`, rol ui) · **Vigente desde:** 14 nov 2026 · **Motor gráfico:** Three.js `^0.160.0` (`WebGLRenderer`) + React 18 · **Láminas:** 55 PNG curados en [`referencias/`](referencias/) (1024 px, paleta de 256 colores).
+**Dueña:** María Paula (`Paulasaah`, rol ui) · **Vigente desde:** 14 nov 2026 · **Motor gráfico:** Three.js `^0.160.0` (`WebGLRenderer`) + React 18 · **Láminas:** 58 PNG curados en [`referencias/`](referencias/) (1024 px, paleta de 256 colores).
 
 Esta carpeta es la **única fuente visual** del juego. Las láminas son **referencia para reconstruir en código** (geometría procedural en Three.js, CSS y DOM). Ninguna imagen se pone tal cual en el juego, salvo el logo oficial.
 
@@ -30,6 +30,7 @@ Leé solo lo que tu tarea necesita. Cada documento es autónomo y enlaza sus lá
 
 | Documento | Responde a |
 | --- | --- |
+| [PLAN-INTEGRACION-SANTIAGO-PAULA.md](PLAN-INTEGRACION-SANTIAGO-PAULA.md) | Integración sobre `develop` para dos personas: Haiku lee, Opus implementa y Fable audita; frentes paralelos, cola de PRs y diferencias con `santiago`. |
 | [FLUJO.md](FLUJO.md) | **Quién programa qué y en qué orden.** Reparto del frontend por persona con sus archivos (personajes, escenario, ubicación, integración, interfaz, audio), rama `feat/ui-escenarios`, contratos, división de assets, fases y validación. |
 | [NIVELES.md](NIVELES.md) | **Todos los niveles.** Las 5 misiones con su ficha, el orden de la campaña, la dificultad, los niveles de Iris y lo que falta decidir. Prioridad 1. |
 | [HISTORIA.md](HISTORIA.md) | **Qué se cuenta.** Lore canónico, personajes y su personalidad, dónde empieza el juego, la misión de Jezero como historia, mapa de conexiones y resumen de la campaña. |
@@ -40,7 +41,7 @@ Leé solo lo que tu tarea necesita. Cada documento es autónomo y enlaza sus lá
 | [APLICACION.md](APLICACION.md) | **Cómo se construye en código.** Arquitectura de `ui/src/escena/`, contrato procedural, kit de piezas, animaciones, rendimiento, bloques de entrega y puerta de aceptación. |
 | [RETO.md](RETO.md) | **Qué pide NASA.** El enunciado oficial frente a lo que hace el juego, estado de cada requisito, mejoras asignadas, criterios de juicio y contraste con el resumen de Camilo. |
 | [AUDIO.md](AUDIO.md) | **Cómo suena.** Música, efectos, lectura en voz alta y entrada de voz. Última fase. |
-| [REFERENCIAS.md](REFERENCIAS.md) | **Catálogo de las 55 láminas.** Qué tomar, qué ignorar y dónde se usa cada una. |
+| [REFERENCIAS.md](REFERENCIAS.md) | **Catálogo de las 58 láminas.** Qué tomar, qué ignorar y dónde se usa cada una. |
 | [`mapa-base-jezero.svg`](mapa-base-jezero.svg) | Plano cenital de la base dibujado con las coordenadas de `ui/src/escena/mundo.ts`. |
 | [`catalogo-assets.json`](catalogo-assets.json) | Inventario de piezas maestras legible por máquina (fábrica, pivote, reutilización). |
 | [`piezas-procedurales.js`](piezas-procedurales.js) | Esqueleto de medidas (`1 u = 1 m`). **No es arte aprobado**: sus siluetas son bloques. |

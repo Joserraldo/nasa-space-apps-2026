@@ -1,0 +1,43 @@
+{
+  "ciclos": [
+    {
+      "dibujado": {
+        "calls": 50,
+        "triangles": 52519,
+        "geometries": 49,
+        "textures": 4
+      },
+      "despues": {
+        "geometries": 0,
+        "textures": 0
+      }
+    },
+    {
+      "dibujado": {
+        "calls": 50,
+        "triangles": 52519,
+        "geometries": 49,
+        "textures": 4
+      },
+      "despues": {
+        "geometries": 0,
+        "textures": 0
+      }
+    }
+  ],
+  "camaras": {
+    "tercera": {
+      "drawCalls": 29,
+      "triangulos": 50049
+    },
+    "primera": {
+      "drawCalls": 27,
+      "triangulos": 48027
+    },
+    "regreso": {
+      "drawCalls": 29,
+      "triangulos": 50049
+    }
+  },
+  "physicalDevice": false
+}

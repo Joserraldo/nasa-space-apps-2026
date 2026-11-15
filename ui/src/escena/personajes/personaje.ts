@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import { retenerMateriales } from "./recursos";
 import {
   CABEZA_ADULTA,
   CABEZA_METEOROLOGA,
@@ -293,6 +294,7 @@ export function crearPersonaje(id: IdPersonaje): Personaje {
   rostro.grupo.scale.setScalar(u);
   rostro.grupo.position.set(0, d.craneo.y - articulacion.cabeza[1], -articulacion.cabeza[2]);
   huesos.cabeza.add(rostro.grupo);
+  const soltarMateriales = retenerMateriales(grupo);
 
   return {
     id,
@@ -307,6 +309,7 @@ export function crearPersonaje(id: IdPersonaje): Personaje {
     liberar() {
       if (liberado) return;
       liberado = true;
+      soltarMateriales();
       esqueleto.dispose();
       geometria.dispose();
       gCasco.dispose();
