@@ -250,6 +250,15 @@ describe("encuadre de tercera persona (mundo/01)", () => {
     return new THREE.Vector3(x, y, z).project(camara);
   };
 
+  it("al menos 2 rocas de primer plano caen en el tercio inferior del cuadro (1024x683)", () => {
+    const abajo = ROCAS_PRIMER_PLANO.filter((r) => {
+      const p = punto(r.posicion[0], r.escala[1] * 0.6, r.posicion[2], 1024, 683);
+      return p.y < -1 / 3 && p.y > -1 && Math.abs(p.x) < 1;
+    });
+    expect(abajo.length).toBeGreaterThanOrEqual(2);
+    expect(ROCAS_PRIMER_PLANO.length).toBeLessThanOrEqual(4);
+  });
+
   it("la consola queda en la mitad inferior y el horizonte en el tercio superior (1024x683)", () => {
     const m = lugar("mesa");
     expect(punto(m.mx, 1, m.mz, 1024, 683).y).toBeLessThan(0);
