@@ -1,0 +1,100 @@
+/*
+ * E6 Base (ESCENAS §2.7, fila "E5 a E7"): mundo a la izquierda con el diálogo en franja inferior
+ * (ui/01 arriba) y panel de decisión a la derecha al 40 % con desplazamiento interno (ui/01 abajo,
+ * ui/04, personajes/07). Solo tokens; sombras ciruela, nunca negras. Cian solo para lo que se usa.
+ */
+
+/* La fase base ocupa justo la pantalla: HUD arriba, mundo y panel en el resto; el panel se desplaza por dentro. */
+.app-base { display: flex; flex-direction: column; block-size: 100dvh; overflow: hidden; }
+.app-base > main { flex: 1; min-block-size: 0; }
+.app-base > footer { flex: none; }
+
+.base-e6 {
+  box-sizing: border-box;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(300px, 40%);
+  gap: var(--esp-4);
+  padding: 0 max(var(--esp-4), env(safe-area-inset-right)) var(--esp-2) max(var(--esp-4), env(safe-area-inset-left));
+  block-size: 100%;
+  color: var(--color-indigo-texto);
+}
+
+/* ---- Mundo: hueco de la escena 3D, novedades arriba y diálogo abajo ---- */
+.base-mundo { position: relative; display: flex; flex-direction: column; gap: var(--esp-3); min-inline-size: 0; min-block-size: 0; overflow-y: auto; }
+.base-escena {
+  position: absolute; inset: 0;
+  background: var(--color-lila);
+  clip-path: polygon(var(--chaflan-grande) 0, calc(100% - var(--chaflan-grande)) 0, 100% var(--chaflan-grande), 100% calc(100% - var(--chaflan-grande)), calc(100% - var(--chaflan-grande)) 100%, var(--chaflan-grande) 100%, 0 calc(100% - var(--chaflan-grande)), 0 var(--chaflan-grande));
+}
+.base-mundo > :not(.base-escena) { position: relative; margin-inline: var(--esp-3); }
+.base-mundo > :last-child { margin-block-end: var(--esp-3); }
+.base-mundo > .dialogo-experto { margin-block-start: auto; }
+.base-novedades { display: grid; gap: var(--esp-2); justify-items: start; margin-block-start: var(--esp-3); }
+.base-polvo { padding: var(--esp-3) var(--esp-4); }
+
+/* Diálogo de ui/01: retrato octogonal, separador, nombre y línea; botones debajo a la derecha. */
+.dialogo-experto-cara {
+  display: grid; grid-template-columns: auto minmax(0, 1fr); grid-template-areas: "retrato texto" "retrato botones";
+  align-items: center; gap: var(--esp-3) var(--esp-4); padding: var(--esp-3) var(--esp-5);
+}
+.dialogo-experto-alerta { --fc-fondo: var(--color-aviso-fondo); }
+.dialogo-experto-retrato {
+  grid-area: retrato; display: grid; place-items: center; inline-size: 84px; block-size: 84px; background: var(--color-marfil);
+  clip-path: polygon(30% 0, 70% 0, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0 70%, 0 30%);
+}
+.dialogo-experto-texto { grid-area: texto; display: grid; gap: var(--esp-1); padding-inline-start: var(--esp-4);
+  border-inline-start: var(--borde) solid color-mix(in srgb, var(--color-ciruela) 30%, transparent); }
+.dialogo-experto-texto h3 { margin: 0; font-size: var(--tipo-tam-subtitulo); }
+.dialogo-experto-texto p { margin: 0; font-size: var(--tipo-tam-dialogo); max-width: none; }
+.dialogo-experto-botones { grid-area: botones; display: flex; flex-wrap: wrap; justify-content: flex-end; gap: var(--esp-2); }
+
+/* ---- Panel de decisión (40 %, desplazamiento interno) ---- */
+.base-panel {
+  display: flex; flex-direction: column; gap: var(--esp-3); min-inline-size: 0; min-block-size: 0;
+  max-block-size: 100%; overflow-y: auto; overscroll-behavior: contain;
+  padding: var(--esp-1) var(--esp-2) var(--esp-2);
+}
+.base-panel > * { flex: none; }
+.base-panel > .confirmar-entrada .confirmar { max-width: none; }
+.base-bloque { display: grid; gap: var(--esp-2); padding: var(--esp-3) var(--esp-4); }
+.base-bloque h2 { margin: 0; font-size: var(--tipo-tam-subtitulo); }
+.base-bloque p { margin: 0; }
+.base-iris { display: inline-flex; align-items: center; gap: var(--esp-2); justify-self: start; padding: 2px var(--esp-3);
+  background: var(--color-lila); font-size: 16px; font-weight: var(--tipo-peso-etiqueta); }
+.base-ayuda { font-size: 16px; }
+.base-acciones { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: var(--esp-2); }
+.base-acciones .fb-caja, .base-acciones .fb { inline-size: 100%; }
+
+.base-expertos { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--esp-2); }
+.base-expertos .retrato-ficha { inline-size: 100%; min-width: 0; padding-inline: var(--esp-2); }
+.base-preguntar { display: flex; gap: var(--esp-2); align-items: center; }
+.base-preguntar input { flex: 1; min-inline-size: 0; min-block-size: var(--toque-minimo); background: var(--color-marfil); border-color: color-mix(in srgb, var(--color-ciruela) 40%, transparent); }
+
+.base-registro > summary { list-style: none; cursor: pointer; padding: var(--esp-2) var(--esp-4); min-block-size: var(--toque-minimo); display: flex; align-items: center; gap: var(--esp-2); font-weight: var(--tipo-peso-etiqueta); }
+.base-registro > summary::-webkit-details-marker { display: none; }
+.base-registro > summary::after { content: ""; inline-size: 10px; block-size: 10px; margin-inline-start: auto; background: currentColor;
+  clip-path: polygon(0 20%, 100% 20%, 50% 90%); }
+.base-registro[open] > summary::after { clip-path: polygon(0 80%, 100% 80%, 50% 10%); }
+.base-registro ul { list-style: none; margin: var(--esp-2) 0 0; padding: var(--esp-2) var(--esp-3); display: grid; gap: var(--esp-1); background: var(--color-marfil); font-size: 16px; }
+.base-registro li { display: grid; grid-template-columns: auto 1fr auto; gap: var(--esp-2); align-items: baseline; }
+.base-registro-turno { font-weight: var(--tipo-peso-etiqueta); color: var(--color-ciruela); }
+
+/* ---- Celular horizontal (844 x 390): panel al 40 %, diálogo en franja inferior ---- */
+@media (max-height: 500px) and (orientation: landscape) {
+  .base-e6 { grid-template-columns: minmax(0, 1fr) 40%; gap: var(--esp-2); }
+  .dialogo-experto-cara { grid-template-areas: "retrato texto" "botones botones"; padding: var(--esp-2) var(--esp-3); gap: var(--esp-2); }
+  .dialogo-experto-retrato { inline-size: 56px; block-size: 56px; }
+  .dialogo-experto-retrato svg { inline-size: 48px; block-size: 48px; }
+  .dialogo-experto-texto p { font-size: 16px; }
+  .base-bloque { padding: var(--esp-2) var(--esp-3); }
+  .base-acciones { grid-template-columns: 1fr; }
+}
+
+/* ---- Celular vertical (390 x 844): lo tapa el aviso de girar; si no, una columna ---- */
+@media (orientation: portrait) and (max-width: 700px) {
+  .app-base { block-size: auto; overflow: visible; }
+  .base-e6 { grid-template-columns: minmax(0, 1fr); block-size: auto; }
+  .base-mundo { min-block-size: 240px; }
+  .base-panel { max-block-size: none; }
+  .dialogo-experto-cara { grid-template-areas: "retrato texto" "botones botones"; }
+}

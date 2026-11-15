@@ -8,22 +8,17 @@ import {
   novedades,
   partidaDorada,
   pausar,
-  telemetriaPendiente,
-  tormentaActiva,
   type Novedades,
   type PuntajeSitio,
 } from "@solar-shield/engine";
 import { HudBase } from "./componentes/HudBase.js";
-import { Icono } from "./componentes/base/Iconos.js";
-import { Tripulacion } from "./componentes/Tripulacion.js";
-import { describirAccion } from "./componentes/Dialogos.js";
 import { IdiomaContext, useT, type Idioma } from "./i18n.js";
-import { ColocarModulos } from "./pantallas/ColocarModulos.js";
 import { PantallaSitio } from "./pantallas/PantallaSitio.js";
+import { PantallaModulos } from "./pantallas/PantallaModulos.js";
 import { Final } from "./pantallas/Final.js";
 import { Satelite } from "./pantallas/Satelite.js";
+import { PantallaBase } from "./pantallas/PantallaBase.js";
 import { Tormenta } from "./pantallas/Tormenta.js";
-import { Polvo } from "./componentes/Polvo.js";
 import { PreguntaDeIris } from "./componentes/PreguntaDeIris.js";
 import { Portada } from "./componentes/Portada.js";
 import { Intro } from "./componentes/Intro.js";
@@ -124,17 +119,16 @@ function Pantalla({ idioma, setIdioma }: { idioma: Idioma; setIdioma: (i: Idioma
 
   useEffect(() => { document.documentElement.lang = idioma; }, [idioma]);
 
-  const tele = telemetriaPendiente(j.estado);
   const accion = (a: Action) => enviar({ tipo: "accion", accion: a });
 
   return (
-    <div className="app">
+    <div className={enBase ? "app app-base" : "app"}>
       {(j.fase === "modulos" || enBase || j.fase === "tormenta") && (
         <HudBase estado={j.estado} ultimas={enBase ? j.ultimas : null}
           reloj={enBase ? { velocidad, onPausa: () => enviar({ tipo: "pausa", pausado: !j.estado.pausado }), onVelocidad: setVelocidad } : undefined} />
       )}
 
-      <main className={enBase ? "juego" : ""}>
+      <main>
         {j.fase === "inicio" && inicio === "portada" && (
           <Portada idioma={idioma} onIdioma={setIdioma} sonido={sonido} onSonido={() => setSonido((x) => !x)}
             puedeContinuar={false} onEmpezar={() => setInicio("intro")} onContinuar={empezarMision} onCreditos={() => setCreditos(true)} />
@@ -146,7 +140,7 @@ function Pantalla({ idioma, setIdioma }: { idioma: Idioma; setIdioma: (i: Idioma
         {j.fase === "sitio" && <PantallaSitio estado={j.estado} onElegir={(s) => enviar({ tipo: "sitio", sitio: s })} />}
         {j.fase === "modulos" && (
           <>
-            <ColocarModulos colocados={j.colocados} onColocar={(m) => enviar({ tipo: "modulo", modulo: m })} onListo={() => enviar({ tipo: "fase", fase: "base" })} />
+            <PantallaModulos estado={j.estado} colocados={j.colocados} onColocar={(m) => enviar({ tipo: "modulo", modulo: m })} onListo={() => enviar({ tipo: "fase", fase: "base" })} />
             {TEMAS_IRIS.find((m) => m === j.colocados.at(-1)) && <PreguntaDeIris key={j.colocados.length} tema={j.colocados.at(-1) as TemaPregunta} nivel={j.estado.iaBase} />}
           </>
         )}
@@ -156,41 +150,7 @@ function Pantalla({ idioma, setIdioma }: { idioma: Idioma; setIdioma: (i: Idioma
           </>
         )}
         {enBase && (
-          <>
-            <div className="columna">
-                <section className="tarjeta columna" aria-label={t("ui.acciones.titulo")}>
-                <h2>{t("ui.acciones.titulo")}</h2>
-                <p><span className="etiqueta">{t(`ui.iris.estado.${j.estado.iaBase}`)}</span></p>
-                <div className="fila">
-                  <button className="secundario" onClick={() => accion({ tipo: "esperar" })}>{t("ui.accion.esperar")}</button>
-                  <button className="secundario" onClick={() => accion({ tipo: "refugiarse" })}>{t("ui.accion.refugiarse")}</button>
-                  <button className="secundario" onClick={() => accion({ tipo: "subir_escudo", nivel: 1 })}>{t("ui.accion.subir_escudo")}</button>
-                  <button className="secundario" onClick={() => accion({ tipo: "salida_exterior", objetivo: "panel_solar" })}>{t("ui.accion.salida_exterior")}</button>
-                  {j.estado.iaBase === "danada" && <button className="peligro" onClick={() => accion({ tipo: "reparar", equipo: "ia_base" })}>{t("ui.accion.reparar_ia")}</button>}
-                  {tormentaActiva(j.estado) && !tele && <button className="solar" onClick={() => accion({ tipo: "enviar_telemetria" })}><Icono nombre="satelite" tam={20} /> {t("ui.paso.7.telemetria")}</button>}
-                </div>
-                {tele && <p><Icono nombre="satelite" tam={20} /> {t("ui.paso.7.llegando", { ticks: tele.ticksRestantes })}</p>}
-                {j.estado.pausado && j.ultimas && (
-                  <div className="tarjeta alerta" role="status">
-                    {j.ultimas.malaSuerte.map((c, i) => <p key={`m${i}`}><Icono nombre="aviso" tam={20} /> {t("ui.novedad.mala_suerte")}: {t(c.descripcionKey)} <span className="delta menos">{c.delta}</span></p>)}
-                    {j.ultimas.iaCambio && <p><Icono nombre="aviso" tam={20} /> {t(`ui.iris.estado.${j.ultimas.iaCambio.a}`)}</p>}
-                    {j.ultimas.efectosLlegaron.map((c, i) => <p key={`e${i}`}><Icono nombre="check_exito" tam={20} /> {t("ui.novedad.efecto")}: {t(c.descripcionKey)} <span className="delta mas">+{c.delta}</span></p>)}
-                    {j.ultimas.malaSuerte.some((c) => c.descripcionKey === "mala_suerte.tormenta_polvo") && <Polvo estado={j.estado} onAccion={accion} onElegir={(a) => { accion(a); enviar({ tipo: "pausa", pausado: false }); }} />}
-                    <button onClick={() => enviar({ tipo: "pausa", pausado: false })}><Icono nombre="jugar" tam={20} /> {t("ui.reanudar")}</button>
-                  </div>
-                )}
-                <details>
-                  <summary>{t("ui.paso.8.titulo")}</summary>
-                  <ul className="registro">
-                    {[...j.estado.causas].reverse().slice(0, 30).map((c, i) => (
-                      <li key={i}>{t("ui.tick", { tick: c.tick })} · {t(c.descripcionKey)}{c.accion && c.descripcionKey.startsWith("causa.") ? ` (${describirAccion(c.accion, t)})` : ""} {c.delta !== undefined && <span className={`delta ${c.delta > 0 ? "mas" : "menos"}`}>{c.delta > 0 ? "+" : ""}{c.delta}</span>}</li>
-                    ))}
-                  </ul>
-                </details>
-              </section>
-            </div>
-            <Tripulacion estado={j.estado} onAccion={accion} />
-          </>
+          <PantallaBase estado={j.estado} ultimas={j.ultimas} onAccion={accion} onReanudar={() => enviar({ tipo: "pausa", pausado: false })} />
         )}
         {j.fase === "final" && <Final estado={j.estado} onOtra={() => enviar({ tipo: "nueva" })} />}
       </main>
