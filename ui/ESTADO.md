@@ -17,9 +17,10 @@ Una sección por persona, máximo 5 líneas, y nadie edita la de otro (FLUJO §8
 - Bloqueo: ninguno.
 
 ## Escenario (Daniel)
-**Rama:** feat/ui-escena-consolidada · **PR:** consolida #206, #223–#232 y #235 · **Tokens:** 🟢
-- Hecho: pila #223–#232 + base (#206: EscenaBase, escena3d, armado, baseExterior, pavimento, capturas) + materiales con tokens (#235) en una sola rama.
-- Consolidado por el agente de José mientras Daniel no tiene tokens; Daniel revisa al volver.
+**Rama:** feat/ui-escena-r6-camara · **PR:** #253 (sobre #252) · **Tokens:** 🟡
+- Hecho: cámara adaptable, losas y plataforma, rocas y módulos sin solapes; montaje en #247; arranque sin WebGL notifica a la pantalla sin excepción React.
+- Verificado: 694 pruebas, tipos, build y E2E; 2 regresiones en navegador (StrictMode/desmontaje y fallo de creación WebGL).
+- Sigue: revisar #253 y consolidar cuando entre #237 aprobado; no añadir capas. Celular y PC viejo pendientes (medición Intel local no los sustituye).
 
 ## Ubicación (Camilo)
 **Rama:** feat/ui-ubicacion-lugares · **PR:** #205 · **Tokens:** verde
