@@ -49,6 +49,7 @@ Una línea por pieza (FLUJO §4 y §8). Estados: `sin empezar`, `en PR #n`, `apr
 | Lugares, anclajes y caminos | `exterior/03`, `mapa-base-jezero.svg` | Camilo | sin empezar |
 | Cámaras de 3.ª y 1.ª persona | `mundo/01`, `mundo/02` | Camilo | sin empezar |
 | Panel `Map` y respaldo 2D | ESCENAS §3.4, FLUJO §9 | Camilo | sin empezar |
+| Controles táctiles (joystick, cámara, acción) | Familia de `ui/03`, ESCENAS §3.5 | Camilo | sin empezar |
 | Niño 3D | `personajes/08–10` | María Paula | sin empezar |
 | Iris rover | `mundo/01`, `inicio/02`, `personajes/07` | María Paula | sin empezar |
 | Ingeniera 3D | `personajes/01`, `mundo/01` | María Paula | sin empezar |
