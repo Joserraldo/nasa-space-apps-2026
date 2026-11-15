@@ -128,7 +128,8 @@ function Pantalla({ idioma, setIdioma }: { idioma: Idioma; setIdioma: (i: Idioma
 
   return (
     <div className="app">
-      {j.fase !== "inicio" && <header className="barra">
+      {/* La barra vieja se borra en la tarea 0; las pantallas nuevas ocupan toda la ventana sin ella. */}
+      {j.fase !== "inicio" && j.fase !== "final" && <header className="barra">
         <span className="titulo">🛡️ {t("ui.titulo")}</span>
         {enBase && (
           <>
