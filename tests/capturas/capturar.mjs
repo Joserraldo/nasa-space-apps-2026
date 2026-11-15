@@ -46,6 +46,16 @@ async function medir(page) {
       canvas: caja(canvas),
       hud: caja(document.querySelector(".app > header, .hud, .hud-base")),
       panel: caja(document.querySelector(".base-panel, .tormenta-panel, .modulos-panel")),
+      // Botones que se salen por un costado de la ventana (cortados): debe ser 0.
+      botonesCortados: [...document.querySelectorAll("button")].filter((b) => {
+        const r = b.getBoundingClientRect();
+        return r.width > 0 && (r.left < -1 || r.right > innerWidth + 1);
+      }).map((b) => b.getAttribute("aria-label") || b.textContent.trim()).slice(0, 10),
+      // Medidores de recursos a la vista: deben ser 3 (sin repetir en los paneles).
+      medidores: document.querySelectorAll('[role="meter"]').length,
+      // El mismo canvas de E5 sigue montado (mundo compartido): lo marca `marcarCanvas` al entrar a E5.
+      canvasMismo: !!document.querySelector('canvas[data-captura="e5"]'),
+      pie: !!document.querySelector(".app > footer"),
     };
   });
 }
@@ -96,6 +106,7 @@ for (const t of TAMANOS) {
     await foto("e4-sitio", 600);
     await boton("Land here").first().click();
     await page.waitForSelector("canvas");
+    await page.evaluate(() => document.querySelector("canvas")?.setAttribute("data-captura", "e5"));
     await foto("e5-modulos", 2500);
     await boton("Place", { exact: true }).first().click();
     await boton("Place", { exact: true }).first().click();
@@ -103,9 +114,16 @@ for (const t of TAMANOS) {
     await boton("Base ready. Start the clock!").click();
     await page.waitForSelector("canvas");
     await foto("e6-base", 2500);
+    // Crew abre el panel con las acciones y la tripulación; Map, el plano de la base.
+    await boton("Crew", { exact: true }).click();
+    await foto("e6-base-tripulacion", 500);
     await boton("Raise the shield").click();
     await foto("e6-base-confirmar", 500);
     await boton("Back").click();
+    await boton("Close", { exact: true }).click();
+    await boton("Map", { exact: true }).click();
+    await foto("e6-base-mapa", 500);
+    await page.keyboard.press("Escape");
 
     const tormenta = page.getByRole("heading", { name: "Choose your expert" });
     await avanzarHasta(() => tormenta.isVisible());
@@ -120,6 +138,7 @@ for (const t of TAMANOS) {
     await boton("Return to exploration").click();
     await foto("e6-base-tras-tormenta", 2000);
 
+    await boton("Crew", { exact: true }).click();
     await boton(/Send telemetry to Earth/).click();
     await page.getByRole("dialog").getByRole("button", { name: "Confirm" }).click();
     await boton("Return to exploration").click();

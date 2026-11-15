@@ -19,6 +19,12 @@ async function llegarALaBase(page: Page) {
   await colocar.first().click();
   await colocar.first().click();
   await page.getByRole("button", { name: "Base ready. Start the clock!" }).click();
+  await expect(page.getByRole("button", { name: "Crew", exact: true })).toBeVisible();
+}
+
+/** Crew abre el panel de decisión con las acciones, la tripulación y el registro. */
+async function abrirTripulacion(page: Page) {
+  await page.getByRole("button", { name: "Crew", exact: true }).click();
   await expect(page.getByRole("heading", { name: "Actions" })).toBeVisible();
 }
 
@@ -76,7 +82,7 @@ test("sin enviar la telemetría la base se pierde, y \"Play again\" empieza una 
   await page.getByRole("button", { name: "Place", exact: true }).first().click();
   await page.getByRole("button", { name: "Place", exact: true }).first().click();
   await page.getByRole("button", { name: "Base ready. Start the clock!" }).click();
-  await expect(page.getByRole("heading", { name: "Actions" })).toBeVisible();
+  await abrirTripulacion(page);
   expect(await energia(page)).toBe(energiaInicial);
 
   expect(errores, `errores de consola: ${errores.join(" | ")}`).toEqual([]);
@@ -97,7 +103,7 @@ test("\"Continue\" recupera la partida guardada después de recargar la página"
   await continuar.click();
 
   // Vuelve a la base con los mismos recursos y la historia de la partida (el aterrizaje ya cobrado).
-  await expect(page.getByRole("heading", { name: "Actions" })).toBeVisible();
+  await abrirTripulacion(page);
   expect(await energia(page)).toBe(energiaAntes);
   await page.locator("details summary").click();
   await expect(page.getByText(/Landing at the chosen site/).first()).toBeVisible();
