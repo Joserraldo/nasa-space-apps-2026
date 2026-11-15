@@ -34,11 +34,13 @@ export function crearHabitat(m: Materiales, largo = LARGO_HABITAT): THREE.Group 
     parte(m, "Boots", caja(1.2, 1.9, 0.05), [0, 1.05, 2.27], "Habitat_DoorLeaf"),
     parte(m, "Emissive", caja(1.0, 0.1, 0.03), [0, 2.35, 2.27], "Habitat_DoorLight"),
     parte(m, "SuitBase", caja(2.4, 0.14, 0.7), [0, 0.07, 2.55], "Habitat_Step"),
+    parte(m, "SuitBase", caja(2.0, 0.14, 0.4), [0, 0.21, 2.45], "Habitat_Step2"),
+    parte(m, "SuitBase", caja(0.05, 1.9, 0.03), [0, 1.05, 2.31], "Habitat_DoorSeam"),
     parte(m, "SuitBase", chaflan(2.2, 0.5, 1.4, 0.15), [-1.6, 3.15, -0.2], "Habitat_RoofBox"),
     parte(m, "Accent", caja(largo, 0.12, 0.04), [0, 0.55, 1.81], "Habitat_Band"),
   ];
-  for (const dx of [-2.6, -1.7, 1.7, 2.6]) {
-    partes.push(parte(m, "Emissive", chaflan(0.6, 0.42, 0.04, 0.1), [dx, 1.85, 1.8], "Habitat_Window"));
+  for (const dx of [-3.2, -2.55, -1.9, 1.9, 2.55, 3.2]) {
+    partes.push(parte(m, "Emissive", chaflan(0.46, 0.42, 0.04, 0.1), [dx, 1.85, 1.8], "Habitat_Window"));
   }
   // Paneles solares en el techo, a la derecha de la caja de servicio.
   partes.push(...panelTecho(m, [1.4, 3.0, -0.2], 1.3, 1.0), ...panelTecho(m, [2.9, 3.0, -0.2], 1.3, 1.0));
@@ -61,20 +63,25 @@ export function crearTorreControl(m: Materiales): THREE.Group {
   return grupo(
     "Building_Control",
     parte(m, "SuitBase", tronco(4.2, 4.5, 0.5, 10), [0, 0.25, 0], "Control_Plinth"),
-    parte(m, "SuitBase", tronco(2.6, 3.0, 3.4, 8), [0, 2.2, 0], "Control_Drum"),
+    parte(m, "SuitBase", tronco(2.1, 2.5, 3.4, 8), [0, 2.2, 0], "Control_Drum"),
+    // Dos tambores delanteros, como en la lámina.
+    parte(m, "SuitBase", tronco(1.35, 1.5, 2.7, 8), [-1.9, 1.55, 1.2], "Control_DrumL"),
+    parte(m, "SuitBase", tronco(1.35, 1.5, 2.7, 8), [1.9, 1.55, 1.2], "Control_DrumR"),
+    parte(m, "Accent", tronco(1.5, 1.5, 0.12, 8), [-1.9, 2.95, 1.2], "Control_CapL"),
+    parte(m, "Accent", tronco(1.5, 1.5, 0.12, 8), [1.9, 2.95, 1.2], "Control_CapR"),
     parte(m, "SuitBase", tronco(4.3, 3.6, 0.7, 12), [0, 4.2, 0], "Control_FlangeLow"),
     parte(m, "SuitBase", tronco(3.85, 3.85, 1.5, 12), [0, 5.3, 0], "Control_Core"),
     parte(m, "Glass", tronco(4.05, 4.05, 1.5, 12), [0, 5.3, 0], "Control_Windows"),
     ...ventanasAnillo(m, 3.9, 5.3, 12),
     parte(m, "SuitBase", tronco(3.9, 4.4, 0.6, 12), [0, 6.35, 0], "Control_FlangeHigh"),
-    parte(m, "SuitBase", tronco(1.6, 3.6, 1.2, 12), [0, 7.25, 0], "Control_Roof"),
-    parte(m, "SuitBase", tronco(0.08, 0.1, 1.6, 6), [0.6, 8.6, 0], "Control_Mast"),
-    parte(m, "SuitBase", geometriaBase("kit-esfera-mastil", () => new THREE.IcosahedronGeometry(0.2, 0)), [0.6, 9.45, 0], "Control_MastBall"),
+    parte(m, "SuitBase", tronco(1.4, 3.7, 0.9, 12), [0, 7.1, 0], "Control_Roof"),
+    parte(m, "SuitBase", tronco(0.08, 0.1, 1.9, 6), [0.6, 8.5, 0], "Control_Mast"),
+    parte(m, "SuitBase", geometriaBase("kit-esfera-mastil", () => new THREE.IcosahedronGeometry(0.2, 0)), [0.6, 9.55, 0], "Control_MastBall"),
     parte(m, "SuitBase", chaflan(2.2, 2.6, 1.4, 0.5), [0, 1.3, 3.1], "Control_Porch"),
     parte(m, "Boots", caja(1.2, 1.8, 0.05), [0, 1.0, 3.82], "Control_DoorLeaf"),
     parte(m, "Emissive", caja(1.0, 0.1, 0.03), [0, 2.2, 3.82], "Control_DoorLight"),
-    parte(m, "Emissive", caja(0.12, 0.5, 0.03), [-2.2, 2.3, 2.75], "Control_LightL"),
-    parte(m, "Emissive", caja(0.12, 0.5, 0.03), [2.2, 2.3, 2.75], "Control_LightR"),
+    parte(m, "Emissive", caja(0.12, 0.5, 0.03), [-1.9, 2.0, 2.58], "Control_LightL"),
+    parte(m, "Emissive", caja(0.12, 0.5, 0.03), [1.9, 2.0, 2.58], "Control_LightR"),
   );
 }
 /** Cápsula de servicio: módulo octogonal bajo con cubierta facetada, puerta y luz cian. */
