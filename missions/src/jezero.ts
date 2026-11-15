@@ -120,6 +120,18 @@ export interface TarjetaCiencia {
   modulo?: Equipment;
   textoKey: string;
   fuenteKey: string | null;
+  /**
+   * Fuentes adicionales (misma regla que `fuenteKey`: claves que existen en data/i18n).
+   * Si hay varias, ui las muestra todas; `fuenteKey` sigue siendo la principal.
+   */
+  fuentesKeys?: string[];
+  /**
+   * Aviso "dato curado, no en vivo": true si el dato es una cifra fija revisada a mano
+   * y no una lectura en vivo. ui muestra la etiqueta `etiquetaKey` (o su texto genérico) junto a la tarjeta.
+   */
+  curado?: true;
+  /** Clave i18n de la etiqueta del aviso; si falta, ui usa su texto genérico de "dato curado". */
+  etiquetaKey?: string;
 }
 
 /** Pregunta del paso 8 (el quiz de ARES): 3 opciones, nunca bloquea y siempre explica. */
