@@ -25,8 +25,10 @@ Una sección por persona, máximo 5 líneas, y nadie edita la de otro (FLUJO §8
 - Sin registrar todavía.
 
 ## Integración (José)
-**Rama:** — · **PR:** ninguno · **Tokens:** —
-- Hecho: contratos `VistaEscena` (#181), eventos de feedback (#182) y ajustes del jugador (#186) fusionados; CI corre en `feat/ui-escenarios`.
+**Rama:** feat/ui-integracion-tema-viejo · **PR:** E3 Órbita hacia feat/ui-escenarios · **Tokens:** verde
+- Hecho: contratos (#181, #182, #186, #190). E3 Órbita nueva (`PantallaOrbita.tsx`), `Satelite.tsx` borrada. Aviso de girar en #215; develop en la rama en #218.
+- Sigue: E4 Sitio nueva; después App.tsx sin la barra vieja ni emojis.
+- Bloqueo: E3 y E4 no tienen lámina; las valida María Paula.
 
 ## Interfaz (Jaime)
 **Rama:** feat/ui-interfaz-tokens · **PR:** #208, #209, #213, #214, #217, #219, #220 · **Tokens:** verde

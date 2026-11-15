@@ -1,0 +1,81 @@
+/*
+ * E3 Órbita (ESCENAS §2.4 y §2.7). Solo tokens: fondo espacial de la portada, Marte facetado y
+ * la familia de tarjetas y placas de DISEÑO §5. Sombras teñidas de ciruela, nunca negras (§3.4).
+ */
+.orbita {
+  min-height: 100dvh;
+  box-sizing: border-box;
+  padding: max(var(--esp-5), env(safe-area-inset-top)) max(var(--esp-5), env(safe-area-inset-right))
+    max(var(--esp-5), env(safe-area-inset-bottom)) max(var(--esp-5), env(safe-area-inset-left));
+  display: grid;
+  grid-template-columns: 1fr minmax(320px, 42%);
+  gap: var(--esp-5);
+  align-items: center;
+  background-color: var(--color-espacio);
+  background-image:
+    radial-gradient(1.5px 1.5px at 22% 18%, color-mix(in srgb, var(--color-marfil) 70%, transparent) 50%, transparent 51%),
+    radial-gradient(1px 1px at 63% 9%, color-mix(in srgb, var(--color-marfil) 55%, transparent) 50%, transparent 51%),
+    radial-gradient(1.5px 1.5px at 84% 41%, color-mix(in srgb, var(--color-marfil) 60%, transparent) 50%, transparent 51%),
+    radial-gradient(1px 1px at 47% 77%, color-mix(in srgb, var(--color-marfil) 50%, transparent) 50%, transparent 51%),
+    radial-gradient(1px 1px at 8% 92%, color-mix(in srgb, var(--color-marfil) 45%, transparent) 50%, transparent 51%);
+}
+
+.orbita-cielo { display: grid; place-items: center; min-height: 0; }
+.orbita-marte { inline-size: min(100%, 72vh); block-size: auto; overflow: visible; }
+
+.orbita-planeta polygon { stroke: var(--color-roca-basalto); stroke-width: 1; stroke-linejoin: round; }
+.f-claro { fill: var(--color-regolito-claro); }
+.f-medio { fill: var(--color-regolito-medio); }
+.f-roca { fill: var(--color-roca-basalto); }
+.f-sombra { fill: var(--color-montana-lejana); }
+.f-jezero { fill: var(--color-sombra-suelo); stroke: var(--color-cian) !important; stroke-width: 2 !important; }
+.orbita-ruta { fill: none; stroke: color-mix(in srgb, var(--color-lila) 60%, transparent); stroke-width: 2; stroke-dasharray: 6 8; }
+.f-satelite { fill: var(--color-marfil); stroke: var(--color-ciruela); stroke-width: 2; }
+.f-panel { fill: var(--color-cian); stroke: var(--color-ciruela); stroke-width: 2; }
+
+/* El panel cabe en la pantalla: los consejos se desplazan por dentro y el botón queda siempre a la vista. */
+.orbita-panel {
+  display: grid; grid-template-rows: auto auto minmax(0, 1fr) auto; gap: var(--esp-3); min-width: 0;
+  max-block-size: calc(100dvh - 2 * var(--esp-5) - var(--alto-barra, 0px)); align-self: center;
+}
+.orbita-tarjeta { padding: var(--esp-4) var(--esp-5); }
+.orbita-tarjeta p { margin: 0; }
+.orbita-placas { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--esp-2); }
+.orbita-placas .placa { grid-template-columns: auto 1fr; padding-block-end: var(--esp-3); }
+
+.orbita-pista {
+  grid-column: 1 / -1; display: block; block-size: 8px; margin-block-start: var(--esp-2);
+  background: var(--color-deshabilitado);
+  clip-path: polygon(4px 0, 100% 0, calc(100% - 4px) 100%, 0 100%);
+}
+.orbita-pista > span { display: block; block-size: 100%; background: var(--color-cian); transition: inline-size var(--dur-relleno) var(--curva-entrada, ease-out); }
+
+.orbita-consejos { list-style: none; margin: 0; padding: 0 0 var(--esp-1); overflow-y: auto; overscroll-behavior: contain; display: flex; flex-direction: column; gap: var(--esp-2); }
+.orbita-linea { --fc-fondo: var(--color-lila); display: grid; grid-template-columns: auto 1fr; gap: var(--esp-3); align-items: start; padding: var(--esp-3) var(--esp-4); }
+.orbita-linea p { margin: 0; }
+.orbita-nombre { font-weight: var(--tipo-peso-titulo); color: var(--color-ciruela); display: inline-flex; gap: var(--esp-1); align-items: center; }
+.orbita-alerta { --fc-fondo: var(--color-aviso-fondo); }
+.orbita-alerta .orbita-nombre { color: var(--color-aviso-texto); }
+
+/* Celular horizontal (844 x 390): planeta chico a la izquierda, columna lateral con desplazamiento. */
+@media (max-height: 500px) and (orientation: landscape) {
+  .orbita { grid-template-columns: 38% 1fr; gap: var(--esp-3); padding-block: max(var(--esp-3), env(safe-area-inset-top)) max(var(--esp-3), env(safe-area-inset-bottom)); align-items: stretch; }
+  .orbita-panel { max-block-size: calc(100dvh - 2 * var(--esp-3)); }
+  .orbita-marte { inline-size: min(100%, 80dvh); }
+  .orbita-tarjeta { padding: var(--esp-3) var(--esp-4); }
+  .orbita-tarjeta h2 { font-size: var(--tipo-tam-subtitulo); margin-block-end: var(--esp-1); }
+  .orbita-placas .placa { min-height: 0; padding-block: var(--esp-1) var(--esp-2); }
+  .orbita-linea .retrato, .orbita-linea svg:first-child { inline-size: 44px; block-size: 44px; }
+}
+
+/* Vertical: el aviso de girar el teléfono tapa esta fase (juego/orientacion.ts); esto es el respaldo. */
+@media (orientation: portrait) and (max-width: 700px) {
+  .orbita { grid-template-columns: 1fr; align-items: start; }
+  .orbita-marte { inline-size: min(70%, 260px); }
+  .orbita-placas { grid-template-columns: 1fr; }
+  .orbita-panel { max-block-size: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .orbita-pista > span { transition: none; }
+}

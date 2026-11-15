@@ -20,7 +20,7 @@ import { IdiomaContext, useT, type Idioma } from "./i18n.js";
 import { ColocarModulos } from "./pantallas/ColocarModulos.js";
 import { ElegirSitio } from "./pantallas/ElegirSitio.js";
 import { Final } from "./pantallas/Final.js";
-import { Satelite } from "./pantallas/Satelite.js";
+import { PantallaOrbita } from "./pantallas/PantallaOrbita.js";
 import { Tormenta } from "./pantallas/Tormenta.js";
 import { Polvo } from "./componentes/Polvo.js";
 import { PreguntaDeIris } from "./componentes/PreguntaDeIris.js";
@@ -112,7 +112,8 @@ function Pantalla({ idioma, setIdioma }: { idioma: Idioma; setIdioma: (i: Idioma
 
   return (
     <div className="app">
-      <header className="barra">
+      {/* La barra vieja se borra en la tarea 0; las pantallas nuevas ocupan toda la ventana sin ella. */}
+      {j.fase !== "satelite" && <header className="barra">
         <span className="titulo">🛡️ {t("ui.titulo")}</span>
         {enBase && (
           <>
@@ -124,7 +125,7 @@ function Pantalla({ idioma, setIdioma }: { idioma: Idioma; setIdioma: (i: Idioma
           </>
         )}
         <label>{t("ui.idioma")} <select value={idioma} onChange={(e) => setIdioma(e.target.value as Idioma)}><option value="en">English</option><option value="es">Español</option></select></label>
-      </header>
+      </header>}
 
       <main className={enBase ? "juego" : ""}>
         {j.fase === "inicio" && (
@@ -134,7 +135,7 @@ function Pantalla({ idioma, setIdioma }: { idioma: Idioma; setIdioma: (i: Idioma
             <div><button onClick={() => enviar({ tipo: "fase", fase: "satelite" })}>{t("ui.empezar")}</button></div>
           </section>
         )}
-        {j.fase === "satelite" && <Satelite estado={j.estado} onContinuar={() => enviar({ tipo: "fase", fase: "sitio" })} />}
+        {j.fase === "satelite" && <PantallaOrbita estado={j.estado} onContinuar={() => enviar({ tipo: "fase", fase: "sitio" })} />}
         {j.fase === "sitio" && <ElegirSitio estado={j.estado} onElegir={(s) => enviar({ tipo: "sitio", sitio: s })} />}
         {j.fase === "modulos" && (
           <>
