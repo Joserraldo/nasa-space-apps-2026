@@ -4,8 +4,13 @@ import { IdiomaContext, useT, type Idioma } from "../../i18n.js";
 import { partidaDorada } from "@solar-shield/engine";
 import { ConfirmarAccion } from "./ConfirmarAccion.js";
 import { FacetButton } from "./FacetButton.js";
-import { Mensaje, ResourcePlaque } from "./Piezas.js";
+import { CostRow, Mensaje, ResourcePlaque } from "./Piezas.js";
 import { ExpertPortrait } from "./ExpertPortrait.js";
+import { AccesoRecurso, ChipPregunta } from "./Accesos.js";
+import { TarjetaFuenteCompacta } from "./FuenteCompacta.js";
+import { BarraSeccion, ChipPausa, PanelFacetado } from "./PanelFacetado.js";
+import { TarjetaDecision } from "./TarjetaDecision.js";
+
 import { EXPRESIONES, PERSONAS, Retrato } from "./Retrato.js";
 import { Carga } from "../Carga.js";
 import { DatosUsados } from "../DatosUsados.js";
@@ -43,6 +48,59 @@ function Retratos() {
         <ExpertPortrait persona="ia_base" danada expresion="preocupada" />
       </div>
     </main>
+  );
+}
+
+/** ?vista=paneles: los cuatro paneles de ui/04 armados solo con las piezas, para la captura al lado de la lámina. */
+function PanelesE7() {
+  const { t } = useT();
+  const [sel, setSel] = useState<string | null>("ingeniera");
+  const nada = () => {};
+  return (
+    <div className="mu-paneles">
+      <PanelFacetado numero={1} tituloKey="ui.tormenta.elegir" acciones={<ChipPausa />}>
+        <div className="mu-tres">
+          {(["ingeniera", "doctora", "meteorologa"] as const).map((p) => <ExpertPortrait key={p} persona={p} seleccionado={sel === p} onElegir={() => setSel(p)} />)}
+        </div>
+        <div className="mu-fila-chips">
+          <input className="mu-campo" placeholder={t("ui.base.tripulacion.campo")} aria-label={t("ui.base.tripulacion.campo")} />
+          <FacetButton icon="avion_papel" labelKey="ui.comun.enviar" onClick={nada} />
+        </div>
+        <div className="mu-tres mu-accesos">
+          <AccesoRecurso recurso="energia" valor={70} onClick={nada} />
+          <AccesoRecurso recurso="soporte_vital" valor={80} onClick={nada} />
+          <AccesoRecurso recurso="blindaje" valor={60} onClick={nada} />
+        </div>
+      </PanelFacetado>
+      <PanelFacetado numero={2} tituloKey="ui.tormenta.comparar">
+        <div className="mu-dos">
+          <div className="mu-centro"><ExpertPortrait persona="ingeniera" compacto /><FacetButton icon="tripulacion" labelKey="ui.tormenta.otra" onClick={nada} /></div>
+          <div className="mu-columna-chica">
+            <BarraSeccion tituloKey="ui.comun.muestrario.colocar_panel" />
+            <CostRow inmediato={{ energia: -6, soporte_vital: -3 }} retrasado={{ energia: 14 }} />
+            <FacetButton variant="primary" icon="check" labelKey="ui.comun.confirmar" onClick={nada} />
+          </div>
+        </div>
+      </PanelFacetado>
+      <PanelFacetado numero={3} tituloKey="ui.tormenta.verificar">
+        <div className="mu-dos mu-dos-fuente">
+          <div className="mu-centro"><ExpertPortrait persona="doctora" compacto /><ExpertPortrait persona="meteorologa" compacto /></div>
+          <div className="mu-columna-chica">
+            <BarraSeccion icono="libro" tituloKey="ui.tormenta.fuente" />
+            <TarjetaFuenteCompacta dueno="NASA" id="2024-05-20T05:36:00-CME-001" fecha="2026-11-13" />
+            <ChipPregunta icono="escudo" labelKey="ui.tormenta.pregunta.proteger" onClick={nada} />
+            <ChipPregunta icono="pulso" labelKey="ui.tormenta.pregunta.sensor" onClick={nada} />
+            <FacetButton variant="primary" icon="enlace" labelKey="ui.tormenta.verFuente" onClick={nada} />
+          </div>
+        </div>
+      </PanelFacetado>
+      <PanelFacetado numero={4} tituloKey="ui.comun.decision.titulo">
+        <div className="mu-dos mu-dos-fuente">
+          <div className="mu-centro"><ExpertPortrait persona="nino" expresion="feliz" compacto /><ExpertPortrait persona="ia_base" compacto /></div>
+          <TarjetaDecision aplicado={{ energia: -6, soporte_vital: -3 }} retrasado={{ energia: 14 }} onVolver={nada} onVerRegistro={nada} />
+        </div>
+      </PanelFacetado>
+    </div>
   );
 }
 
@@ -102,6 +160,11 @@ function Muestrario() {
       </section>
 
       <section>
+        <h2>{t("ui.comun.muestrario.paneles")}</h2>
+        <PanelesE7 />
+      </section>
+
+      <section>
         <h2>{t("ui.comun.muestrario.mensajes")}</h2>
         <div className="mu-columna">
           <Mensaje tipo="exito" tituloKey="ui.comun.muestrario.panel_instalado" detalleKey="ui.comun.muestrario.beneficio_pendiente" />
@@ -139,6 +202,7 @@ function Raiz() {
         {vista === "intro" && <Intro inicial={n} onTerminar={nada} />}
         {vista === "carga" && <Carga consejo={n} sonido={sonido} onSonido={() => setSonido(!sonido)} />}
         {vista === "retratos" && <Retratos />}
+        {vista === "paneles" && <main className="muestrario"><PanelesE7 /></main>}
       </IdiomaContext.Provider>
     );
   }
