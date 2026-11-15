@@ -113,4 +113,10 @@ describe("Iris compañera v8: textos", () => {
       expect(texto(es, k), k).not.toMatch(/\d/);
     }
   });
+
+  it("es: el lugar nunca va tras 'a' o 'de' (evita 'a el taller', 'de el hábitat')", () => {
+    for (const [k, t] of Object.entries(es)) {
+      if (k.startsWith("agentes.iris.acompana.")) expect(t, k).not.toMatch(/(a|de) \{lugarKey\}/i);
+    }
+  });
 });

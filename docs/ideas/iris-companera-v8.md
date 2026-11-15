@@ -14,13 +14,13 @@ En las láminas v8, Iris es un **rover solar de cuatro ruedas** que acompaña al
 | M1 | **Sígueme** | Camina detrás de Iris o usa la lista de lugares | Elige un **destino** (`LugarId`) y una línea corta que dice por qué ir allí | Iris **nunca** ejecuta una `Action`; llegar al lugar no da recursos ni protección |
 | M2 | **Destino por paso** | Avanza por los 8 pasos de Jezero | El destino sale del paso actual (tabla abajo) | Es una sugerencia: caminar sigue libre y ningún lugar se bloquea |
 | M3 | **Urgencia manda** | Ve un medidor bajo (< 30) | Si hay un recurso en peligro fuera de la tormenta, Iris cambia el destino al lugar de la experta que lo resuelve | Mismo umbral y orden que `areaUrgente` (tormenta > energía > blindaje > soporte) |
-| M4 | **Andamio que se retira** | Juega mejor | `tutorial`: nombra lugar y experta y traza ruta. `pistas`: solo mira hacia el área, sin nombre ni ruta. `offline`: se queda cargando en su dock del `taller` | El nivel lo decide el motor (`iaBase`); agentes solo lo lee |
+| M4 | **Andamio que se retira** | Juega mejor | `tutorial`: nombra lugar y experta y traza ruta. `pistas`: solo mira hacia el área, sin nombre ni ruta. `offline`: se queda en su dock (Pau lo pone en la estación de Ingeniería, que agentes asume que es el `taller`) | El nivel lo decide el motor (`iaBase`); agentes solo lo lee |
 | M5 | **Iris se equivoca (guionado)** | En el paso 6 compara lo que dice Iris con el medidor | La falla sigue siendo la de `iris.ts` (`numero_falso` primero). Cuando se revela, el destino pasa a `taller` para repararla con la Ingeniera | La falla la decide el código con la semilla, nunca el modelo |
 | M6 | **Bienvenida (briefing)** | Paso 1, al entrar a la base | 3 líneas que se pueden saltar: objetivo, tres medidores y "pregúntale a una experta" | Sin cifras; se puede omitir y llevar al mismo punto |
 
 ### M2: destino por paso de Jezero
 
-| Paso (`meta`) | Destino | Experta | Por qué ahí (según Pau v8) |
+| Paso (`meta`) | Destino | Experta | Por qué ahí (lo deduce agentes del plan de Pau, §2: propósito de cada `LugarId`) |
 |---|---|---|---|
 | 1 `satelite_suelto` | `mesa` | — | La mesa agrupa órbita, ruta y sitio |
 | 2 `ruta_dibujada` | `mesa` | — | Mismo centro de planificación |
@@ -28,7 +28,7 @@ En las láminas v8, Iris es un **rover solar de cuatro ruedas** que acompaña al
 | 4 `modulos_colocados` | `taller` | Ingeniera | Energía y costo de cada módulo antes de confirmar |
 | 5 `tormenta_llega` | `sensor` | Meteoróloga | Lectura del evento y fuente histórica |
 | 6 `consejo_opuesto` | `habitat` | Doctora | Comparar refugio, escudo nivel 2 o aguantar |
-| 7 `telemetria_enviada` | `mesa` | — | La consola de enlace base, **no** el módulo `antena` (precaución 2 de Pau: no exigir que la antena se haya construido) |
+| 7 `telemetria_enviada` | `mesa` | — | La consola de enlace base, **no** el módulo `antena` ("Dos precauciones de integración", punto 2, en `PLAN-IMPLEMENTACION-JEZERO.md`: no exigir que la antena se haya construido) |
 | 8 `fin` | `mesa` | — | Cierre y cadena de causas |
 
 **Orden de prioridad:** Iris averiada y ya revelada → `taller` · urgencia (M3) → lugar de la experta · paso (M2).
@@ -60,3 +60,13 @@ function briefingIris(): { dialogo: Dialogo; gesto: "explicar"; cara: "normal" }
 ## Cómo se prueba
 
 `npx vitest run agents`: un caso por cada paso, la urgencia gana al paso, la avería gana a todo, `pistas` sin ruta ni nombre de lugar, `offline` → `null`, claves en `en` y `es` y frases cortas.
+
+## Preguntas abiertas para María Paula (ui)
+
+Las referencias v8 no lo dicen y agentes no lo decide:
+
+1. **Dock:** ¿el dock de Iris en Ingeniería es el `LugarId` `taller`, o es otro punto?
+2. **Movimiento:** ¿Iris va delante del niño, a su lado o lo espera en el destino? ¿A qué distancia?
+3. **Gestos:** agentes entrega `senalar`, `mirar`, `pedir_reparacion` y `explicar`. ¿Faltan "inspeccionar", "confirmar" o "recuperación" de tu lista de gestos para Iris?
+4. **Rostro:** agentes entrega `cara: "normal" | "error"`. ¿Quieres también "verificada" y "reparada" (fila P0 "Iris y punto de reparación")? Para eso, ui pasaría el estado de verificación en vez de `averiaRevelada`.
+5. **Intro:** ¿el briefing de 3 líneas va en el paso 2 de tu recorrido (Briefing) o al entrar a la base?
