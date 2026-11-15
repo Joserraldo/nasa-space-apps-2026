@@ -1,5 +1,5 @@
 # D6 — Estilo visual y render de la escena
-**Dueño:** ui (María Paula, `Paulasaah`) · **Fecha:** 14 nov 2026 · **Estado:** propuesta (la confirma Santiago al fusionar)
+**Dueño:** ui (María Paula, `Paulasaah`) · **Fecha:** 14 nov 2026 · **Estado:** aprobada por Santiago (14 nov)
 
 ## Opciones
 | Opción | A favor | En contra |

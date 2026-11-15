@@ -1,12 +1,12 @@
 # Prompts de arranque por rol (14 nov 2026, noche)
 
-**Orquestadora:** María Paula (`Paulasaah`). **Revisión de PRs y tablero de pendientes:** sesión revisora de Claude ([revisor.md](revisor.md)). **Fusiona:** Santiago (`kcitas`), solo con squash, cuando pasa la CI.
+**Orquestador del equipo:** Santiago (`kcitas`). **Orquestadora del desarrollo 3D y de la pantalla:** María Paula (`Paulasaah`) (decisión de Santiago, 14 nov). **Revisión de PRs y tablero de pendientes:** sesión revisora de Claude ([revisor.md](revisor.md)). **Fusiona:** Santiago (`kcitas`), solo con squash, cuando pasa la CI.
 
 Cada persona abre su sesión, pega **su** prompt y después lanza el loop que el prompt indica. Si un prompt choca con un `CLAUDE.md` de carpeta o con un prompt viejo del historial, manda este.
 
 | Persona | Rol | Prompt | Herramientas |
 | --- | --- | --- | --- |
-| María Paula | orquestadora | [orquestadora.md](orquestadora.md) | Claude Code + subagentes Sonnet/Haiku + OpenCode (DeepSeek V4.1 Flash) |
+| María Paula | orquestadora del 3D y la pantalla | [orquestadora.md](orquestadora.md) | Claude Code + subagentes Sonnet/Haiku + OpenCode (DeepSeek V4.1 Flash) |
 | María Paula | ui, en 4 pistas: integración (M), escenario (E), interfaz (I), audio (A) | [ui.md](ui.md) | Claude Code + subagentes Sonnet/Haiku + OpenCode (DeepSeek V4.1 Flash) |
 | Jaime (`JaimeMrF`) | motor | [motor.md](motor.md) | Claude Code + subagentes Sonnet/Haiku + OpenCode (DeepSeek V4.1 Flash) |
 | Camilo (`CamiloM21`) | diseño y misiones | [diseno.md](diseno.md) | Claude Code + subagentes Sonnet/Haiku + OpenCode (DeepSeek V4.1 Flash) |
@@ -76,7 +76,7 @@ Verificado el 14 nov en este equipo: `claude` acepta `--model` (`fable`, `opus`,
 
 Reglas de uso:
 - **Primero se sube el esfuerzo, después el modelo:** `medium` → `high` → `xhigh`; recién entonces Sonnet → Opus → Fable. Si un modelo falla dos veces en lo mismo, se sube un escalón; al terminar la tarea difícil, se baja.
-- **`max` nunca** sin el OK de la orquestadora.
+- **`max` nunca** sin el OK del orquestador (Santiago) o, en lo de ui y 3D, de la orquestadora del 3D.
 - Máximo 2–3 subagentes a la vez, con **archivos disjuntos**. Decí cuántos y para qué antes de lanzarlos. Un subagente no lanza otros subagentes ni corre `/loop`.
 - En `ESTADO.md`, una línea `Tokens: verde | amarillo | rojo` (equivale a los círculos de `docs/COMO-TRABAJAMOS.md`, sin emojis). En amarillo: solo tareas chicas y modelos livianos. En rojo: parar, dejar el traspaso escrito y avisar en `#bloqueos`.
 - `docs/modelos.md` (de Santiago) tiene la escalera general; esta tabla la concreta para estos prompts. Si chocan, se avisa a Santiago.

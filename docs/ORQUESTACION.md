@@ -49,13 +49,14 @@ Regla de corte si P2 no se cumple: Luna → Atlas → desbloqueos → 3D complet
 | 1 | Materiales y cachés, iluminación v8, niño astronauta, inicio nuevo; prueba en un celular y un PC viejo | dom 09:00 |
 | 2 | Terreno de Jezero, kit común, los 5 módulos según el motor | dom 11:00 (P3: decisión 3D o 2D) |
 | 4 | HUD y CSS v8, verificación final (teclado, móvil, reduce-motion, respaldo 2D) | dom 13:00 (congelamiento) |
-| 3 | 8 estaciones interiores (Iris rover y la Ingeniera 3D pasan al bloque 2; ver actualización abajo) | después de P4, solo si sobra tiempo |
+| 3 | 8 estaciones interiores (Iris rover y la Ingeniera 3D pasan al bloque 2, aprobado por Santiago) | después de P4, solo si sobra tiempo |
 
 Guía de arte: la "Guía maestra de construcción 3D procedural (Atlas v8)" de María Paula. Presupuesto por vista: < 80 draw calls, < 80 000 triángulos, DPR máx 1,5 (calidad baja 1, sin sombras). Invariantes: doble clic nunca cobra dos veces; cambiar cámara o perder WebGL no toca el GameState; abrir paneles conserva pausa y foco.
 
 **Decisiones pendientes de Santiago:** ¿Iris pasa a ser un rover (hoy es la IA de la base, D2)? ¿Expertas en 3D o retratos 2D? ¿Se recorta el bloque 3? ¿Las ~70 láminas y el PDF de referencia entran al repo o solo las comprimidas que se usen?
 
-**Actualización 14 nov, noche: dirección visual v8 (María Paula, PR #157; se confirma al fusionarlo):**
+**Actualización 14 nov, noche: dirección visual v8 (María Paula, PR #157), aprobada por Santiago el 14 nov:**
+- **María Paula orquesta el desarrollo 3D y de la pantalla** (sus pistas de ui y lo que ui pide a otros roles). Santiago sigue orquestando el equipo y fusionando.
 - **Guía de arte:** ahora es [`docs/referenciapau/README.md`](referenciapau/README.md) (la "Guía maestra" se fusionó ahí). Estilo y render: [D6](decisiones/D6-estilo-visual.md), Three.js procedural + UI en DOM; reemplaza las menciones a PixiJS de este documento, de `PLAN.md` §13 y de D3.
 - **Iris:** rover 3D en el mundo, como en las láminas, desde el bloque 2. Sigue siendo la IA de la base (D2 y `iaBase` no cambian).
 - **Tripulación:** personas 3D en el mundo y retrato de la misma identidad en las tarjetas de diálogo (actualiza "retratos 2D animados" de la tabla de decisiones). La Ingeniera entra en el bloque 2; la Doctora y la Meteoróloga si alcanza el presupuesto, si no después de P4. Nombres: por su rol ([D7](decisiones/D7-tripulantes.md)).

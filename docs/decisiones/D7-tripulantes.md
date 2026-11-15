@@ -1,5 +1,5 @@
 # D7 — Nombres y diseño de los tripulantes
-**Dueño:** diseño (Camilo) y ui (María Paula) · **Fecha:** 14 nov 2026 · **Estado:** propuesta (la confirma Santiago al fusionar)
+**Dueño:** diseño (Camilo) y ui (María Paula) · **Fecha:** 14 nov 2026 · **Estado:** aprobada por Santiago (14 nov)
 
 ## Opciones
 | Opción | A favor | En contra |
