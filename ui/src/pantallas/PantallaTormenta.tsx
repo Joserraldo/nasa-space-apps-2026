@@ -141,7 +141,7 @@ function PlanComparado({ estado, colocados, plan, dialogo, onOtra, onAtras, onDe
       <div className="tormenta-plan-experta">
         <ExpertPortrait persona={plan.experta} compacto />
         {linea && <p className="tormenta-frase">{t(linea.clave, linea.vars)}</p>}
-        <FacetButton icon="check" labelKey="ui.tormenta.otra" onClick={onOtra} className="tormenta-otra" />
+        <FacetButton icon="tripulacion" labelKey="ui.tormenta.otra" onClick={onOtra} className="tormenta-otra" />
       </div>
       <div className="tormenta-plan-accion">
         <span className="fc"><span className="fc-cara fc-chico tormenta-pieza"><span>{o.accion.tipo === "redistribuir_energia" ? t("ui.accion.redistribuir") : describirAccion(o.accion, t)}</span></span></span>
