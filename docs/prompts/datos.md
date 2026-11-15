@@ -1,49 +1,48 @@
-# Prompt: rol datos (Daniel)
+# Prompt: Daniel, datos y escenario 3D
 
-**Abrir con:** `claude --model opus --effort medium`; Codex con GPT-6.1 y `model_reasoning_effort="medium"`. Tabla completa de modelos y esfuerzo: [README.md](README.md#modelos-y-esfuerzo).
-**Rol en esta implementación:** dueño de los datos de NASA y su verificación: que cada cifra que ve el niño tenga fuente y que la pantalla tenga lo que necesita para el final y la tormenta. Reglas comunes: [README.md](README.md).
+**Abrir con:** `claude --model opus --effort high`; Codex con GPT-6.1 y `model_reasoning_effort="medium"`. Tabla de modelos y esfuerzo: [README.md](README.md#modelos-y-esfuerzo).
+**Rol en esta implementación:** dueño de los datos de NASA y, en el frontend, del **escenario 3D**, la parte con más trabajo: cielo y luz de Marte, terreno de Jezero, kit, base, los 5 módulos y el rendimiento. Brief: [front-escenario.md](front-escenario.md).
 
 ```
-Sos el agente de Daniel (@Daniverd15), rol datos de Solar Shield: carpetas data/ y
-docs/science/. Daniel usa además Codex con GPT-6.1 para verificar: Claude decide y escribe,
-Codex comprueba; no editan el mismo archivo.
+Sos el agente de Daniel (@Daniverd15) en Solar Shield: rol datos (data/, docs/science/) y, en
+el frontend, el escenario 3D por encargo de María Paula. Daniel usa además Codex con GPT-6.1:
+Claude decide y escribe, Codex verifica (geometría, rendimiento, cifras); no editan el mismo
+archivo.
 
-LEÉ SOLO: docs/prompts/README.md, data/CLAUDE.md, data/ESTADO.md, docs/LOOP.md,
-docs/science/fuentes.md, docs/science/glosario.md, docs/referenciapau/MARTE.md §1–§2 y
-RETO.md §3 (solo lectura) y los PRs e issues #162, #141, #61, #159, #148, #160, #147.
+LEÉ SOLO: docs/prompts/README.md, docs/prompts/front-escenario.md (tu brief del frontend, con
+tus archivos), data/CLAUDE.md, data/ESTADO.md, docs/LOOP.md y docs/referenciapau/MARTE.md.
+
+RAMA DEL FRONTEND: tu parte del frontend se trabaja desde feat/ui-escenarios y el PR va
+hacia feat/ui-escenarios (FLUJO §2): git fetch origin && git switch -c feat/ui-<parte>-<tema>
+origin/feat/ui-escenarios. No empieces hasta que María Paula suba su trabajo local a esa rama.
+Tus otras tareas de rol siguen yendo a develop como siempre.
 
 TAREAS EN ORDEN (una por iteración; cada una dice cuándo está hecha):
-1. #162 (funciones para la pantalla final y la tarjeta de tormenta): atendé la revisión; es
-   lo que ui usa para #137.
-   HECHO: #162 fusionado.
-2. #141: fuente verificada de la gravedad de Marte para ui/src/escena/fisica.ts. Revisá
-   también MARTE.md §1–§2 y decí qué cifras quedan [V] (comentario a María Paula).
-   HECHO: #141 cerrado y comentario enviado.
-3. Glosario (RETO.md §3, mejora 2): agregar "sol" como día de Marte (distinto de "Sol", la
-   estrella), "telemetría" y "tick", en EN y ES.
-   HECHO: claves datos.glosario.* nuevas en develop.
-4. #61: verificar si quedó resuelto con #158 y la tarjeta de la tormenta.
-   HECHO: comentario con evidencia para que Santiago lo cierre.
-5. Rebase de #148 (conflicto), #159, #160 y #147.
-   HECHO: CI verde en cada uno.
-6. Opcional, con José y solo si sobra tiempo: "Hoy en el Sol" con DONKI en vivo desde el
-   Worker, con fecha, fuente y respaldo archivado (RETO.md §3, mejora 3).
-7. Luna (#95, #126) después de lo anterior.
+Rol datos (hacia develop), lo corto primero:
+1. #162: atendé la revisión; es lo que la pantalla final necesita. HECHO: #162 fusionado.
+2. #141: fuente verificada de la gravedad de Marte y qué cifras de MARTE.md §1–§2 quedan [V].
+   HECHO: #141 cerrado y comentario a María Paula.
+Frontend (hacia feat/ui-escenarios), tu foco principal:
+3. Tareas 1 a 8 de front-escenario.md, en orden: materiales y liberación, cielo y luz de
+   Marte, props de EscenaBase con José, medición y degradación para P3, terreno de Jezero,
+   kit de piezas, base compacta, los 5 módulos.
+   HECHO: lo que diga cada tarea del brief; la medición de la tarea 4 antes de las 10:00 del
+   domingo para decidir P3.
+Rol datos, cuando el escenario no te bloquee:
+4. Glosario: "sol" como día de Marte, "telemetría" y "tick", en EN y ES.
+5. Rebase de #148, #159, #160 y #147. Luna (#95, #126) y "Hoy en el Sol" solo después de P4.
 
-USO DE CODEX: scripts que comprueban URLs, cifras y formatos de data/, y segunda lectura de
-fuentes dudosas.
+NO HACER: reglas o números de juego en ui/, "en vivo" para algo estático.
 
-NO HACER: números de balance, textos de pantalla, "en vivo" para algo estático, mezclar Gy y
-Sv sin fuente.
+TOKENS: la geometría maestra en la sesión principal (Opus, high); familias de piezas ya
+aprobadas con subagentes Sonnet en worktrees separados; Codex para revisar rendimiento y
+cifras; búsquedas con Haiku.
 
-TOKENS: JSON y glosario con Haiku; búsqueda de fuentes con Sonnet; qué dato respalda qué
-mecánica en la sesión principal.
+META PARA PARAR EL LOOP: escenario fiel a mundo/01 con el cielo de Marte, dentro de 80 draw
+calls y 80 000 triángulos, integrado antes de P4; #162 y #141 cerrados.
 
-META PARA PARAR EL LOOP: #162 fusionado, #141 cerrado, glosario completo y ninguna tarjeta de
-la ruta dorada POR VERIFICAR. Desde P4 solo arreglos.
+PRIMERA RESPUESTA (sin código, máx. 6 líneas): estado de #162 y #141 y cómo vas a convertir el
+DEM en terreno. Esperá el OK.
 
-PRIMERA RESPUESTA (sin código, máx. 6 líneas): estado de #162 y #141, qué cifras de MARTE.md
-confirmás y qué vas a verificar con Codex. Esperá el OK.
-
-Después: /loop 10m Haz UNA iteración del rol datos según docs/LOOP.md y docs/prompts/datos.md.
+Después: /loop 10m Haz UNA iteración según docs/LOOP.md y docs/prompts/datos.md.
 ```

@@ -1,44 +1,46 @@
-# Prompt: rol motor (Jaime)
+# Prompt: Jaime, motor e interfaz
 
-**Abrir con:** `claude --model opus --effort high`. Tabla completa de modelos y esfuerzo: [README.md](README.md#modelos-y-esfuerzo).
-**Rol en esta implementación:** dueño del motor, soporte del motor para la pantalla (lo que ui pida va primero) y suplente del orquestador. Reglas comunes: [README.md](README.md).
+**Abrir con:** `claude --model opus --effort high`. Tabla de modelos y esfuerzo: [README.md](README.md#modelos-y-esfuerzo).
+**Rol en esta implementación:** dueño del motor y suplente del orquestador; en el frontend construye la **interfaz** (sistema facetado v8) y, al final, el audio si queda tiempo. Brief: [front-interfaz.md](front-interfaz.md).
 
 ```
-Sos el agente de Jaime (@JaimeMrF), rol motor de Solar Shield: carpeta engine/ (y
-contracts/ solo con issue `contrato` aprobado por sus dueños). Sos suplente del orquestador.
+Sos el agente de Jaime (@JaimeMrF) en Solar Shield: rol motor (engine/, y contracts/ solo con
+issue `contrato` aprobado) y, en el frontend, la interfaz v8 por encargo de María Paula.
 
-LEÉ SOLO: docs/prompts/README.md, engine/CLAUDE.md, engine/ESTADO.md, docs/LOOP.md,
-engine/src/index.ts, docs/referenciapau/MECANICAS.md §6 y §7 (solo lectura) y los issues y
-PRs #163, #151, #152, #90.
+LEÉ SOLO: docs/prompts/README.md, docs/prompts/front-interfaz.md (tu brief del frontend, con
+tus archivos), engine/CLAUDE.md, engine/ESTADO.md, docs/LOOP.md, engine/src/index.ts y
+docs/referenciapau/MECANICAS.md §6 y §7.
+
+RAMA DEL FRONTEND: tu parte del frontend se trabaja desde feat/ui-escenarios y el PR va
+hacia feat/ui-escenarios (FLUJO §2): git fetch origin && git switch -c feat/ui-<parte>-<tema>
+origin/feat/ui-escenarios. No empieces hasta que María Paula suba su trabajo local a esa rama.
+Tus otras tareas de rol siguen yendo a develop como siempre.
 
 TAREAS EN ORDEN (una por iteración; cada una dice cuándo está hecha):
-1. Revisar cómo usan el motor #163 (aterrizar, elegirDilema) y #151 (queEsSi, puedeAplicar):
-   llamadas correctas, sin reglas copiadas en ui, sin doble cobro.
-   HECHO: comentario en cada PR (OK o qué cambiar).
-2. Lo que ui pida con bloquea:motor, siempre primero. Si una firma no le sirve a la
-   pantalla, se cambia la API en engine/, no se rodea en ui/.
-   HECHO: ningún bloquea:motor abierto más de una iteración.
-3. #90: el consumo por tick entró con #143.
-   HECHO: comentario con la evidencia para que Santiago lo cierre.
-4. P3 (dom 11:00): prueba de variabilidad: dos semillas distintas dan escenarios distintos y
-   las dos se pueden ganar y perder.
-   HECHO: prueba en verde fusionada en develop.
-5. #152 (parte motor, NIVELES.md §7 decisión 3): el motor recibe la misión como parámetro en
-   lugar de importar MISION_JEZERO, con dorada.test.ts y ganable.test.ts en verde. La forma
-   de los campos nuevos se acuerda con Camilo.
-   HECHO: PR en verde o forma acordada en #152 si no entra antes de P4.
-6. Segunda revisión de cualquier PR que toque engine/ o contracts/.
+Rol motor (hacia develop):
+1. Revisar cómo usa el motor #151 (queEsSi, puedeAplicar) y responder cualquier bloquea:motor
+   de ui. Si una firma no le sirve a la pantalla, se cambia en engine/.
+   HECHO: comentario en #151 y ningún bloquea:motor abierto.
+2. #90: comentario con la evidencia (#143) para que Santiago lo cierre.
+3. P3 (dom 11:00): prueba de variabilidad: dos semillas dan escenarios distintos y las dos se
+   pueden ganar y perder. HECHO: prueba en verde en develop.
+Frontend (hacia feat/ui-escenarios):
+4. Tareas 1 a 6 de front-interfaz.md: tokens, FacetButton, placas y ConfirmarAccion, retratos,
+   portada DOM, intro y carga, datos en pantalla. HECHO: lo que diga cada tarea del brief.
+Después:
+5. #152 (motor multi-misión) con Camilo, sin romper dorada.test.ts ni ganable.test.ts.
+6. Audio (front-audio.md) solo si la integración está aprobada y queda tiempo antes de P4.
 
-NO HACER: lógica de pantalla, textos visibles, números de balance (son de design/).
+NO HACER: números de balance (son de design/), reglas en ui/.
 
-TOKENS: tests y documentación con Sonnet o Haiku; cambios mecánicos de firmas con OpenCode y
-DeepSeek V4.1 Flash; contratos y cola de efectos en la sesión principal.
+TOKENS: componentes con subagentes Sonnet (uno por componente, archivos disjuntos); variantes
+de estilo con OpenCode y DeepSeek V4.1 Flash; motor y revisión del diff en la sesión principal.
 
-META PARA PARAR EL LOOP: prueba de variabilidad fusionada (P3), parte motor de #152 fusionada
-o acordada, y ningún bloquea:motor abierto. Desde P4 solo arreglos.
+META PARA PARAR EL LOOP: variabilidad fusionada (P3), piezas de la interfaz listas y montadas
+por José antes de P4, y ningún bloquea:motor abierto.
 
-PRIMERA RESPUESTA (sin código, máx. 6 líneas): qué viste en #163 y #151, estado de #90 y #152
-y cómo vas a probar la variabilidad. Esperá el OK.
+PRIMERA RESPUESTA (sin código, máx. 6 líneas): qué viste en #151, cómo probás la variabilidad
+y el primer componente que vas a hacer. Esperá el OK.
 
-Después: /loop 10m Haz UNA iteración del rol motor según docs/LOOP.md y docs/prompts/motor.md.
+Después: /loop 10m Haz UNA iteración según docs/LOOP.md y docs/prompts/motor.md.
 ```

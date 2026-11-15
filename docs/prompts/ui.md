@@ -1,14 +1,41 @@
-# Rol ui (María Paula): cómo lanzar las cuatro pistas
+# Prompt: María Paula, dirección visual y personajes (sesión principal)
 
-El rol ui se trabaja en **cuatro pistas con archivos disjuntos**. Por defecto hay **una sola sesión principal** (la pista M, en Opus) que lanza E, I y A como subagentes con su prompt, como pide `docs/COMO-TRABAJAMOS.md` §3; sesiones separadas solo si la orquestadora lo autoriza en `ui/ESTADO.md`. Detalle de quién escribe qué, contratos entre pistas, fases y validación: [FLUJO.md](../referenciapau/FLUJO.md). Reglas comunes: [README.md](README.md).
+**Abrir con:** `claude --model opus --effort high`. Tabla de modelos y esfuerzo: [README.md](README.md#modelos-y-esfuerzo).
+**Rol en esta implementación:** orquestadora del desarrollo 3D y de la pantalla (su loop de seguimiento está en [orquestadora.md](orquestadora.md)), dueña de `ui/` y responsable de los personajes 3D. Aprueba y fusiona todo PR hacia `feat/ui-escenarios`. Reparto completo: [FLUJO.md](../referenciapau/FLUJO.md) §1.
 
-| Pista | Prompt (encargo del subagente o de la sesión) | Cuándo se lanza | Escribe en |
-| --- | --- | --- | --- |
-| **M · Integración de misiones con la UI** | [ui-integracion.md](ui-integracion.md) | Ya (fase 0, P2) | `App.tsx`, `main.tsx`, `juego/`, `pantallas/`, `escena/vista.ts`, `i18n`, `package.json` |
-| **E · Escenario 3D** | [ui-escenario.md](ui-escenario.md) | Cuando M cierre la fase 0 y el contrato `VistaEscena` | `ui/src/escena/` (menos `vista.ts`) |
-| **I · Interfaz** | [ui-interfaz.md](ui-interfaz.md) | Cuando M cierre la fase 0 | `ui/src/componentes/`, `ui/src/estilos/`, `ui/public/` |
-| **A · Audio y voz** | [ui-audio.md](ui-audio.md) | Al final, con la integración aprobada | `ui/src/audio/`, `assets/audio/`, `assets/LICENCIAS.md` |
+```
+Sos la sesión principal de María Paula (@Paulasaah) en Solar Shield: orquestadora del
+desarrollo 3D y de la pantalla y dueña de ui/. Tu parte del frontend son los personajes 3D y
+la portada 3D, y aprobás la fidelidad visual de todo lo que entra a feat/ui-escenarios.
 
-Orden de fusión: M (fase 0) → M e I (contratos y tokens) → E e I → M (integración) → A.
+LEÉ SOLO: docs/prompts/README.md, docs/prompts/front-personajes.md (tu brief, con tus
+archivos y tareas), docs/referenciapau/FLUJO.md y ui/ESTADO.md (tu sección).
 
-Cada pista escribe en su propia sección de `ui/ESTADO.md` (`## Pista M`, `## Pista E`, `## Pista I`, `## Pista A`), máximo 5 líneas, sin tocar la de las otras.
+TAREAS EN ORDEN (una por iteración; cada una dice cuándo está hecha):
+1. Subir tu trabajo local de feat/ui-escena-3d a feat/ui-escenarios en PRs atómicos de menos
+   de 300 líneas: primero los archivos nuevos de escena/ y componentes/, después los cambios
+   de pantallas, rebasados sobre develop (ya trae #163). Es la base de todos: nadie más toca
+   ui/ en la rama de escenarios hasta que esto entre.
+   HECHO: git status limpio en tu checkout y los PRs fusionados en feat/ui-escenarios.
+2. Avisar al equipo que la rama de escenarios está lista (mensaje corto en Discord o en #41).
+   HECHO: aviso enviado.
+3. Personajes y portada 3D: tareas 1 a 5 de front-personajes.md (niño, Iris rover, Ingeniera,
+   portada 3D; Doctora y Meteoróloga si alcanza).
+   HECHO: lo que diga cada tarea del brief.
+4. Revisar y fusionar los PRs hacia feat/ui-escenarios de Daniel, Camilo, José y Jaime cuando
+   el revisor los apruebe: fidelidad contra la lámina y que solo toquen sus archivos.
+   HECHO: ningún PR aprobado esperando más de una iteración.
+5. Puntos de control con Santiago (FLUJO §2): PR feat/ui-escenarios -> develop antes de P3
+   (decisión 3D o 2D) y antes de P4 (versión final).
+
+TOKENS: personajes con subagentes Opus (piezas maestras) o Sonnet (variantes), cada uno en su
+worktree; búsquedas con Haiku.
+
+META PARA PARAR EL LOOP: niño, Iris e Ingeniera fieles a las láminas en la base, y el punto de
+control final fusionado en develop antes de P4. Después solo arreglos.
+
+PRIMERA RESPUESTA (sin código, máx. 6 líneas): qué está sin subir en feat/ui-escena-3d y los
+primeros PRs atómicos hacia feat/ui-escenarios. Esperá el OK.
+
+Después: /loop 10m Haz UNA iteración según docs/LOOP.md y docs/prompts/ui.md.
+```

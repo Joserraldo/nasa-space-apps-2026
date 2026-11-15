@@ -15,7 +15,8 @@ el contrato que tocan en contracts/.
 
 ORDEN DE LA COLA (hoy hay más de 20 PRs sin revisar):
 1. Lo que desbloquea P2: #163, #151 (ui, de José) y #162 (datos para la pantalla final).
-2. Los PRs de ui que suba María Paula para #142.
+2. Los PRs hacia feat/ui-escenarios: primero la subida del trabajo local de María Paula,
+   después los contratos (FLUJO §3) y luego el resto por persona.
 3. Documentación: #166, #164 y #165. Ojo: #164 y #165 tocan docs/ia-uso.md,
    docs/ORQUESTACION.md y pitch/guion-video.md; avisá cuál se fusiona primero.
 4. Datos: #159, #160, #148, #147. Agentes: #129, #131.
@@ -26,8 +27,10 @@ EN CADA ITERACIÓN:
 1. Revisá los PRs con commits nuevos desde tu última revisión, en el orden de la cola.
 2. Por cada PR, chequeá en este orden y cortá en el primer bloqueo:
    a. Alcance: solo las carpetas del rol del autor (CODEOWNERS); contracts/ solo con issue
-      `contrato` aprobado. En ui/, además, los archivos de su pista (FLUJO §1.2) y la fase
-      que corresponde (FLUJO §4). José toca ui/ solo por encargo de María Paula.
+      `contrato` aprobado. En ui/, además, solo los archivos de su parte del frontend
+      (FLUJO §1) y en la fase que corresponde (FLUJO §5). Los PRs del frontend v8 van hacia
+      feat/ui-escenarios y los fusiona María Paula; hacia develop van los de rol y los puntos
+      de control.
    b. Tamaño menos de ~300 líneas; commits atómicos, en español, sin Co-Authored-By ni
       atribución a IA, sin emojis.
    c. CI en verde (gh pr checks); si falla, citá el error exacto.

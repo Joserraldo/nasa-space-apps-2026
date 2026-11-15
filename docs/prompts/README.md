@@ -6,18 +6,19 @@ Cada persona abre su sesión, pega **su** prompt y después lanza el loop que el
 
 ## Roles y tareas en esta implementación (desde el sáb 14 nov, noche)
 
-| Persona | Rol en esta implementación | Tareas principales (en orden) | Prompt | Loop | Meta para parar |
-| --- | --- | --- | --- | --- | --- |
-| **Santiago** | Orquestador del equipo; único que fusiona | Fusionar lo de P2 (#163, #151, #162, subida de #142); ordenar #164, #165 y #166; decidir P3 con María Paula; aprobar NIVELES §7; cerrar issues resueltos; enviar el formulario | [supervisor.md](supervisor.md) | 20 min | Formulario enviado (P5) |
-| **María Paula** | Orquestadora del desarrollo 3D y de la pantalla | Seguir las 4 pistas de ui y lo que ui necesita de otros roles; preparar la decisión de P3 | [orquestadora.md](orquestadora.md) | 30 min | Formulario enviado (P5) |
-| **María Paula** | Dueña de la pantalla (pista M) | OK a #163 y #151; subir el trabajo local (#142); pasos 7 y 8 y "qué datos usamos"; cuenta o invitado; contratos; pistas E e I como subagentes; integración | [ui-integracion.md](ui-integracion.md) | 10 min | Ruta dorada completa en el preview, puerta §10 aprobada |
-| **Jaime** | Motor y soporte del motor para la pantalla; suplente del orquestador | Revisar el uso del motor en #163 y #151; responder bloquea:motor; prueba de variabilidad (P3); motor multi-misión (#152) | [motor.md](motor.md) | 10 min | Variabilidad fusionada y sin bloquea:motor |
-| **Camilo** | Diseño y misiones; probador de la ruta dorada | Proponer NIVELES §7 (1, 4 y 5); revisar #153–#156; cerrar #114 y #56; jugar la ruta dorada y reportar bugs; huecos de #152 | [diseno.md](diseno.md) | 10 min | NIVELES aprobado y prueba reportada |
-| **José** | Agentes, CI, despliegue, video y formulario; ui solo por encargo | Atender #163 y #151; e2e verde con lo nuevo; rebases; video y formulario | [agentes-infra.md](agentes-infra.md) | 10 min | Video y formulario listos antes de P5 |
-| **Daniel** | Datos de NASA y verificación (Codex con GPT-6.1) | #162 para la pantalla final; fuente de la gravedad (#141); glosario (sol, telemetría, tick); rebases; "Hoy en el Sol" opcional | [datos.md](datos.md) | 10 min | Ninguna tarjeta de la ruta dorada sin fuente |
-| **Claude (revisor)** | Revisa todo PR y mantiene el tablero | Cola en orden: P2 primero (#163, #151, #162), después ui, docs, datos, agentes, misiones | [revisor.md](revisor.md) | 15 min | P4 sin PRs pendientes |
+Todo el frontend v8 se construye en la rama **`feat/ui-escenarios`** y vuelve a `develop` en dos puntos de control ([FLUJO.md](../referenciapau/FLUJO.md) §2). Cada persona tiene **un solo prompt** (una sesión principal, como pide `docs/COMO-TRABAJAMOS.md` §3) con las tareas de su rol y su parte del frontend; el brief de su parte dice qué archivos son suyos.
 
-Las pistas E (escenario 3D), I (interfaz) y A (audio) de ui no son personas: son subagentes que lanza la sesión de María Paula ([ui.md](ui.md)).
+| Persona | Rol de equipo | Parte del frontend (brief) | Prompt | Loop | Meta para parar |
+| --- | --- | --- | --- | --- | --- |
+| **Santiago** | Orquestador del equipo; fusiona en `develop` | — | [supervisor.md](supervisor.md) | 20 min | Formulario enviado (P5) |
+| **María Paula** | Orquestadora del desarrollo 3D y de la pantalla; dueña de `ui/`; fusiona en `feat/ui-escenarios` | **Dirección visual y personajes**: niño, Iris rover, Ingeniera, portada 3D ([front-personajes.md](front-personajes.md)) | [ui.md](ui.md) y su loop de seguimiento [orquestadora.md](orquestadora.md) | 10 min y 30 min | Personajes fieles en la base y punto de control final en `develop` |
+| **Daniel** | Datos de NASA (con Codex GPT-6.1) | **Escenario 3D**, la parte con más trabajo: cielo y luz de Marte, terreno de Jezero, kit, base, 5 módulos, rendimiento ([front-escenario.md](front-escenario.md)) | [datos.md](datos.md) | 10 min | Escenario fiel a `mundo/01` dentro del presupuesto |
+| **Jaime** | Motor; suplente del orquestador | **Interfaz** (sistema facetado): tokens, botones, placas, retratos, portada DOM, intro, carga, datos en pantalla; audio al final si queda tiempo ([front-interfaz.md](front-interfaz.md)) | [motor.md](motor.md) | 10 min | Variabilidad (P3) e interfaz montada antes de P4 |
+| **Camilo** | Diseño y misiones; probador | **Ubicación y recorrido**: lugares, colisiones, cámaras, circuitos, mapa ([front-ubicacion.md](front-ubicacion.md)) | [diseno.md](diseno.md) | 10 min | NIVELES aprobado, base recorrible y prueba reportada |
+| **José** | Agentes, CI, despliegue, video y formulario | **Integración y pantallas**: fases, motor, agentes y datos, montaje de todo ([front-integracion.md](front-integracion.md)) | [agentes-infra.md](agentes-infra.md) | 10 min | Ruta completa en escenarios fusionada en `develop` antes de P4 |
+| **Claude (revisor)** | Revisa todo PR y mantiene el tablero | — | [revisor.md](revisor.md) | 15 min | P4 sin PRs pendientes |
+
+**Antes de que nadie toque `ui/` en la rama de escenarios, María Paula sube su trabajo local** (tarea 1 de [ui.md](ui.md)).
 
 ## Prioridades del equipo
 
@@ -64,14 +65,14 @@ Verificado el 14 nov en este equipo: `claude` acepta `--model` (`fable`, `opus`,
 | Orquestadora: semáforo cada 30 min | Sonnet 5.5 | `medium` | `claude --model sonnet --effort medium` |
 | Orquestadora: decisión de prioridad o recorte | Fable 5.2 | `high` | Sesión corta solo para esa decisión |
 | Revisor de PRs | Opus 5.5 | `medium`; `high` si el PR toca `contracts/`, `engine/` o la integración de ui | `claude --model opus --effort medium` |
-| ui, pista M (sesión principal de María Paula) | Opus 5.5 | `high` | `claude --model opus --effort high` |
-| ui, pista E: pieza maestra o primera versión de una escena | Opus 5.5 (subagente) | `medium` | `model: opus, effort: medium` |
-| ui, pista E: replicar una familia ya aprobada | Sonnet 5.5 (subagente) | `medium` | `model: sonnet, effort: medium` |
-| ui, pistas I y A | Sonnet 5.5 (subagente) | `medium` | `model: sonnet, effort: medium` |
+| María Paula: personajes y aprobación | Opus 5.5 | `high` | `claude --model opus --effort high` |
+| Daniel: escenario 3D (geometría maestra y rendimiento) | Opus 5.5 | `high` | `claude --model opus --effort high` |
+| Replicar una familia de piezas o personajes ya aprobada | Sonnet 5.5 (subagente) | `medium` | `model: sonnet, effort: medium` |
+| Jaime: componentes de la interfaz | Sonnet 5.5 (subagente, uno por componente) | `medium` | `model: sonnet, effort: medium` |
 | Motor (Jaime) | Opus 5.5 | `high` | `claude --model opus --effort high` |
 | Diseño (Camilo) | Opus 5.5 | `medium` | `claude --model opus --effort medium` |
 | Agentes e infra (José) | Opus 5.5 | `medium` | `claude --model opus --effort medium` |
-| Datos (Daniel) | Opus 5.5 | `medium` | `claude --model opus --effort medium` |
+| Datos (Daniel), cuando no está en el escenario | Opus 5.5 | `medium` | `claude --model opus --effort medium` |
 | Datos (Daniel): verificación y scripts | Codex con GPT-6.1 | `medium` | `codex -c model_reasoning_effort="medium"` (GPT-6.1 como modelo de su Codex) |
 | Componentes, tests unitarios, bugs claros | Sonnet 5.5 (subagente) | `medium` | `model: sonnet, effort: medium` |
 | Buscar en el repo, i18n EN/ES, JSON, documentación | Haiku 5.5 (subagente) | `low` | `model: haiku, effort: low` |

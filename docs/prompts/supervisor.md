@@ -19,9 +19,10 @@ TAREAS EN ORDEN (una por iteración; cada una dice cuándo está hecha):
    docs/ORQUESTACION.md y pitch/guion-video.md; fusioná uno y pedí rebase del otro. Después
    #166 (prompts e Iris compañera).
    HECHO: los tres fusionados sin perder cambios.
-3. P3 (dom 11:00): decidir con María Paula si la escena sigue en 3D o se recorta al respaldo
-   2D, con draw calls y triángulos medidos en celular y PC viejo, y la ruta completa.
-   HECHO: decisión escrita en ORQUESTACION.
+3. Puntos de control del frontend (FLUJO §2): fusionar el PR feat/ui-escenarios -> develop
+   antes de P3 (dom ~10:00) y antes de P4 (dom ~12:30), solo con e2e y la puerta §10 en verde.
+   En P3, decidir con María Paula 3D o respaldo 2D con los números medidos por Daniel.
+   HECHO: decisión escrita en ORQUESTACION y punto de control final fusionado.
 4. NIVELES §7: aprobar o ajustar la propuesta de Camilo (decisiones 1, 4 y 5) y la forma de
    #152 que acuerden Camilo y Jaime.
    HECHO: respuesta en el issue de Camilo.
