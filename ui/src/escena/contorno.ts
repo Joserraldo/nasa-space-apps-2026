@@ -14,8 +14,8 @@ import { lugar, type LugarId } from "./mundo";
 
 /** Partes de la consola que forman la silueta (sin teclas ni iconos: no cambian el contorno). */
 const PARTES_SILUETA = ["Console_ScreenFrame", "Console_Desk", "Console_LegL", "Console_LegR", "Console_BackPanel"];
-/** Cuánto crece el casco respecto de la consola (grosor de la línea, ~15 cm). */
-const ESCALA_CASCO = 1.16;
+/** Cuánto crece el casco respecto de la consola (grosor de la línea, ~20 cm). */
+const ESCALA_CASCO = 1.22;
 
 export interface Contorno {
   malla: THREE.Mesh;
@@ -49,7 +49,7 @@ export function geometriaCascoConsola(materiales: Materiales): THREE.BufferGeome
 export function crearContorno(materiales: Materiales): Contorno {
   const geometria = geometriaCascoConsola(materiales);
   const centro = new THREE.Vector3(...(geometria.userData.centro as [number, number, number]));
-  const material = new THREE.MeshBasicMaterial({ color: colorToken("cian").multiplyScalar(1.25), side: THREE.BackSide, toneMapped: false });
+  const material = new THREE.MeshBasicMaterial({ color: colorToken("cian").multiplyScalar(1.5), side: THREE.BackSide, toneMapped: false });
   material.name = "Outline_Cyan";
   const malla = new THREE.Mesh(geometria, material);
   malla.name = "Outline_Interactive";

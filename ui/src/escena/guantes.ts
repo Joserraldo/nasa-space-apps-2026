@@ -38,20 +38,20 @@ function pieza(g: THREE.BufferGeometry, color: THREE.Color, m: THREE.Matrix4): T
 function guante(lado: -1 | 1): THREE.BufferGeometry[] {
   const cian = colorToken("cian");
   const marfil = colorToken("traje-marfil");
-  const partes = [
-    pieza(new THREE.CylinderGeometry(0.066, 0.074, 0.07, 8), marfil, mat(0, 0.035, 0)),
-    pieza(new THREE.BoxGeometry(0.12, 0.085, 0.07), cian, mat(0, 0.11, 0)),
-  ];
-  // Cuatro dedos de dos falanges, curvados hacia la palma (−Z hacia delante, el guante mira al centro).
+  // Puño marfil corto y palma redondeada (esfera achatada), dedos gruesos de cápsula curvados.
+  const palma = new THREE.IcosahedronGeometry(0.068, 1);
+  palma.scale(1.05, 1.0, 0.8);
+  const partes = [pieza(new THREE.CylinderGeometry(0.066, 0.074, 0.05, 8), marfil, mat(0, 0.025, 0)), pieza(palma, cian, mat(0, 0.1, 0))];
+  // Cuatro dedos de dos falanges redondeadas, curvados hacia la palma (−Z hacia delante).
   for (let i = 0; i < 4; i++) {
-    const x = (i - 1.5) * 0.031;
-    const largo = i === 0 || i === 3 ? 0.05 : 0.06;
-    partes.push(pieza(new THREE.BoxGeometry(0.029, largo, 0.034), cian, mat(x, 0.15 + largo / 2, -0.004, -0.3)));
-    partes.push(pieza(new THREE.BoxGeometry(0.027, 0.04, 0.032), cian, mat(x, 0.15 + largo + 0.012, -0.03, -1.0)));
+    const x = (i - 1.5) * 0.034;
+    const largo = i === 0 || i === 3 ? 0.03 : 0.042;
+    partes.push(pieza(new THREE.CapsuleGeometry(0.019, largo, 1, 6), cian, mat(x, 0.15 + largo / 2, -0.004, -0.3)));
+    partes.push(pieza(new THREE.CapsuleGeometry(0.017, 0.022, 1, 6), cian, mat(x, 0.15 + largo + 0.025, -0.032, -1.0)));
   }
-  // Pulgar separado, hacia el centro de la pantalla.
-  partes.push(pieza(new THREE.BoxGeometry(0.034, 0.055, 0.038), cian, mat(-lado * 0.08, 0.12, 0.01, 0, lado * 0.9)));
-  partes.push(pieza(new THREE.BoxGeometry(0.03, 0.04, 0.034), cian, mat(-lado * 0.105, 0.165, 0.0, 0, lado * 0.5)));
+  // Pulgar grueso y separado, hacia el centro de la pantalla.
+  partes.push(pieza(new THREE.CapsuleGeometry(0.021, 0.03, 1, 6), cian, mat(-lado * 0.08, 0.12, 0.01, 0, lado * 0.9)));
+  partes.push(pieza(new THREE.CapsuleGeometry(0.018, 0.02, 1, 6), cian, mat(-lado * 0.105, 0.165, 0.0, 0, lado * 0.5)));
   return partes;
 }
 
