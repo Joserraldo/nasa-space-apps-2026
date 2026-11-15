@@ -4,18 +4,36 @@
  * solo marca lo que se usa: la ficha elegida y el foco. El foco va en el botón, fuera del recorte.
  */
 .modulos-e5 {
+  position: relative;
   box-sizing: border-box;
   padding: max(var(--esp-4), env(safe-area-inset-top)) max(var(--esp-5), env(safe-area-inset-right))
     max(var(--esp-4), env(safe-area-inset-bottom)) max(var(--esp-5), env(safe-area-inset-left));
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(300px, 40%);
-  align-items: start;
+  align-items: stretch;
   gap: var(--esp-5);
+  min-block-size: calc(100dvh - 72px);
   background: var(--color-marfil);
   color: var(--color-indigo-texto);
 }
 
-.modulos-izq { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--esp-4); min-inline-size: 0; }
+.modulos-izq {
+  display: grid; grid-template-columns: minmax(0, 1fr); grid-template-rows: auto 1fr auto auto;
+  gap: var(--esp-4); min-inline-size: 0;
+}
+.modulos-base { display: flex; }
+
+/* ---- Mundo: la escena detrás de la lista (mundo/01); sin WebGL, respaldo 2D ---- */
+.modulos-mundo {
+  position: absolute; inset: 0; z-index: 0; overflow: hidden; background: var(--color-lila);
+}
+.modulos-e5 > :not(.modulos-mundo) { position: relative; z-index: 1; }
+.modulos-mundo canvas { position: absolute; inset: 0; }
+.modulos-mundo-2d { position: absolute; inset: 0; display: grid; place-items: center; }
+.modulos-ancla {
+  display: grid; place-items: center; inline-size: 120px; block-size: 120px; background: var(--color-cian);
+  clip-path: polygon(30% 0, 70% 0, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0 70%, 0 30%);
+}
 .modulos-cabeza { padding: var(--esp-4) var(--esp-5); display: grid; gap: var(--esp-2); }
 .modulos-cabeza h2, .modulos-cabeza p { margin: 0; }
 .modulos-progreso { display: flex; align-items: center; gap: var(--esp-2); font-weight: var(--tipo-peso-etiqueta); }
@@ -76,7 +94,8 @@
 
 /* ---- Celular horizontal (844 x 390): panel al 40 % con desplazamiento interno ---- */
 @media (max-height: 500px) and (orientation: landscape) {
-  .modulos-e5 { grid-template-columns: minmax(0, 1fr) 40%; gap: var(--esp-3); padding-block: var(--esp-2); }
+  .modulos-e5 { grid-template-columns: minmax(0, 1fr) 40%; gap: var(--esp-3); padding-block: var(--esp-2); min-block-size: calc(100dvh - 56px); }
+  .modulos-ancla { inline-size: 80px; block-size: 80px; }
   .modulos-cabeza { padding: var(--esp-2) var(--esp-4); gap: var(--esp-1); }
   .modulos-cabeza h2 { font-size: var(--tipo-tam-subtitulo); }
   .modulos-cabeza p { font-size: 16px; line-height: 1.25; }
@@ -92,6 +111,7 @@
   .modulos-e5 { grid-template-columns: minmax(0, 1fr); gap: var(--esp-3);
     padding-inline: max(var(--esp-4), env(safe-area-inset-left)) max(var(--esp-4), env(safe-area-inset-right)); }
   .modulos-lista { grid-template-columns: 1fr 1fr; }
+  .modulos-izq { grid-template-rows: auto auto auto auto; }
   .modulos-listo { justify-self: stretch; }
   .modulos-listo .fb { inline-size: 100%; font-size: var(--tipo-tam-cuerpo); }
   .modulos-panel { position: static; }

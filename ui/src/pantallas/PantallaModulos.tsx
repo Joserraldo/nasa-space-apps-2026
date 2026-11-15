@@ -1,8 +1,13 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import type { Equipment, GameState, Resource } from "@solar-shield/contracts";
 import { costoDe, puedeAplicar } from "@solar-shield/engine";
 import { MISION_JEZERO } from "@solar-shield/missions";
 import { useT } from "../i18n.js";
+import { EscenaBase } from "../escena/EscenaBase.js";
+import { hayGraficos3D, prefiereMenosMovimiento } from "../escena/soporte.js";
+import { vistaEscena } from "../escena/vista.js";
+import { cargarAjustes } from "../juego/ajustes.js";
+import type { EventoFeedback } from "../juego/eventos.js";
 import { FacetButton } from "../componentes/base/FacetButton.js";
 import { Icono } from "../componentes/base/Iconos.js";
 import { CostRow, ICONO_RECURSO, Mensaje, RECURSOS } from "../componentes/base/Piezas.js";
@@ -10,14 +15,18 @@ import "../componentes/base/facetas.css";
 import "./modulos.css";
 
 /**
- * E5, paso 4 (ESCENAS §2.7, fila "E5 a E7"; MECANICAS §3.2). Lista de módulos con la familia de
- * `ui/03` y, a la derecha, el panel de decisión de `ui/01`: nombre, `Costs now` / `Later` y la
+ * E5, paso 4 (ESCENAS §2.7, fila "E5 a E7"; MECANICAS §3.2). La base de Jezero (`EscenaBase`) va
+ * detrás, como la consola de `mundo/01`; sin WebGL queda un respaldo 2D con el módulo elegido en
+ * cian. Encima, la lista de módulos con la familia de `ui/03` y, a la derecha, el panel de decisión
+ * (panel 02 de `ui/04`): nombre, `Costs now` / `Later` y la
  * acción principal. Costo y beneficio salen de `costoDe` (motor + misión); si el motor no deja
  * colocar, `puedeAplicar` da el motivo escrito. El reductor vuelve a comprobar antes de marcar
  * un módulo como colocado. Reemplaza a `ColocarModulos.tsx` (FLUJO §2.3).
  */
 
 const mision = MISION_JEZERO;
+const SIN_EVENTOS: readonly EventoFeedback[] = [];
+const sinEfecto = () => undefined;
 const accionDe = (modulo: Equipment) => ({ tipo: "colocar_modulo", modulo }) as const;
 
 /** Icono del recurso que más sube el módulo, leído de su beneficio (sin dibujos inventados). */
@@ -40,7 +49,14 @@ export function PantallaModulos({ estado, colocados, onColocar, onListo }: {
   const [elegido, setElegido] = useState<Equipment>(mision.modulosDisponibles[0]!);
   const [ultimo, setUltimo] = useState<Equipment | null>(null);
 
+  const [sinGl, setSinGl] = useState(() => !hayGraficos3D());
+  const [ajustes] = useState(() => cargarAjustes(typeof localStorage === "undefined" ? undefined : localStorage,
+    { prefiereMovimientoReducido: prefiereMenosMovimiento() }));
   const puesto = colocados.includes(elegido);
+  // La escena no tiene prop de resaltado (issue para Daniel): el módulo elegido y aún sin colocar
+  // se ve como "instalando" (andamio teal) en su anclaje; cuando exista la prop, se reemplaza.
+  const vista = useMemo(() => vistaEscena(estado, { fase: "modulos", colocados, instalando: puesto ? null : elegido }),
+    [estado, colocados, elegido, puesto]);
   const { inmediato, retrasado } = costoDe(accionDe(elegido), mision);
   const permiso = puedeAplicar(estado, accionDe(elegido), mision);
   const motivoKey = permiso.ok ? undefined
@@ -58,6 +74,15 @@ export function PantallaModulos({ estado, colocados, onColocar, onListo }: {
 
   return (
     <section className="modulos-e5" aria-labelledby="modulos-titulo">
+      <div className="modulos-mundo" data-escena="modulos" aria-hidden="true">
+        {sinGl ? (
+          <span className="modulos-mundo-2d"><span className="modulos-ancla"><Icono nombre={iconoDe(elegido)} tam={56} /></span></span>
+        ) : (
+          <EscenaBase vista={vista} eventos={SIN_EVENTOS} calidad={ajustes.calidad} camara="tercera"
+            movimientoReducido={ajustes.movimientoReducido} onLugarCercano={sinEfecto} onUsar={sinEfecto}
+            onCalidad={sinEfecto} onWebGLPerdido={() => setSinGl(true)} />
+        )}
+      </div>
       <div className="modulos-izq">
         <div className="fc">
           <div className="fc-cara modulos-cabeza">
@@ -93,8 +118,10 @@ export function PantallaModulos({ estado, colocados, onColocar, onListo }: {
           })}
         </ul>
 
-        <FacetButton variant="primary" icon="jugar" labelKey="ui.paso.4.listo" className="modulos-listo"
-          disabled={faltan > 0} disabledReasonKey="ui.paso.4.motivo.faltan" onClick={onListo} />
+        <div className="modulos-base">
+          <FacetButton variant="primary" icon="jugar" labelKey="ui.paso.4.listo" className="modulos-listo"
+            disabled={faltan > 0} disabledReasonKey="ui.paso.4.motivo.faltan" onClick={onListo} />
+        </div>
       </div>
 
       <aside className="fc modulos-panel" aria-labelledby="modulos-panel-titulo">
