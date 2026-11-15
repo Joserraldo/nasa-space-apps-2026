@@ -49,6 +49,24 @@ develop  (demo estable; la fusiona Santiago)
 - Mientras tanto, `develop` sigue recibiendo arreglos chicos de la ruta dorada (por ejemplo #151). Quien trabaja en escenarios trae `develop` con `git merge origin/develop` dentro de `feat/ui-escenarios` cuando María Paula lo indica.
 - Para medir en un celular sin despliegue: `npm run dev -w ui -- --host` y abrir la IP del equipo desde el celular en la misma red.
 
+### 2.1 Qué se puede empezar ya y qué espera
+
+- **Ya, sin esperar:** archivos **nuevos** de cada parte, en su rama desde `feat/ui-escenarios`. Daniel: `materiales.ts`, `liberar.ts`, `cielo.ts`, `activos/terreno.ts`, `activos/piezasComunes.ts`, `activos/instancias.ts`, `activos/modulos.ts`. Jaime: `componentes/base/`, `estilos/`, `Portada.tsx`, `Intro.tsx`, `Carga.tsx`, `Glosario.tsx`, `DatosUsados.tsx`. Camilo: `componentes/Mapa.tsx`. María Paula: `activos/astronautas.ts`, `activos/iris.ts`, `activos/portada.ts`.
+- **Espera la subida de María Paula:** los archivos que **ya existen** en su trabajo local: {EXISTENTES}. Tocarlos antes pisa su trabajo.
+
+### 2.2 Borrar el diseño anterior (fase 0b)
+
+El diseño que había antes del atlas v8 **se borra**, no se adapta. Lo borra cada dueño en sus archivos, en un PR atómico, apenas entra la subida de María Paula:
+
+| Quién | Qué borra |
+| --- | --- |
+| **Jaime** | `ui/src/estilos.css` y `ui/src/mision.css` completos (tema oscuro, `#0b1026`, `#1a2350`, `--hud: #141a2b`, `--life: #9be15d`). Los reemplaza por `ui/src/estilos/` con los tokens v8 para que la app siga compilando. |
+| **José** | En `App.tsx` y `pantallas/`: la bienvenida oscura de `Base3D.tsx` (`.vineta-mundo`, `.bienvenida-mision`, `.boton-despegar` verde, `.comunicador-iris`), el `<Hud />` en la fase `inicio` y toda clase o import del tema viejo. |
+| **Daniel** | En `escena3d.ts`, `modelos.ts` y `EscenaBase.tsx`: el cielo `#323272`, los paneles oscuros, los visores opacos y cualquier geometría o material del prototipo. Quedan las firmas que consume la escena (APLICACION §1). |
+| **María Paula** | Revisa que no quede nada y lo aprueba. |
+
+Lo único que se conserva es la lógica: conexión con el motor, i18n, reductor, firmas de la escena y respaldo 2D.
+
 ## 3. Contratos entre partes
 
 Se fijan **antes** de trabajar en paralelo, en PRs cortos. Después no se cambian sin avisar a quien los consume.
@@ -92,7 +110,8 @@ Ningún asset es una imagen de las láminas, salvo el logo. Todo se reconstruye.
 
 | Fase | Quién | Qué | Puerta para avanzar | Hasta |
 | --- | --- | --- | --- | --- |
-| **0. Base de escenarios** | María Paula | Subir su trabajo local de `feat/ui-escena-3d` a `feat/ui-escenarios` en PRs atómicos (ya incluye `mundo.ts`, `navegacion.ts`, `fisica.ts`, `escena3d.ts`, `modelos.ts` y componentes). **Nadie más toca `ui/` en la rama de escenarios hasta que esto entre.** | Trabajo local fusionado en `feat/ui-escenarios`. | sáb noche |
+| **0. Base de escenarios** | María Paula | Subir su trabajo local de `feat/ui-escena-3d` a `feat/ui-escenarios` en PRs atómicos. **Mientras tanto, los demás ya trabajan en archivos nuevos** (§2.1); los archivos que ya existen en ese trabajo esperan. | Trabajo local fusionado en `feat/ui-escenarios`. | sáb noche |
+| **0b. Borrar el diseño anterior** | Cada dueño en sus archivos | Apenas entra la subida, se borra todo lo visual de antes (§2.2). Desde ahí la única guía visual son las láminas del atlas v8. | Ningún rastro del tema oscuro ni de la geometría del prototipo en `feat/ui-escenarios`. | sáb noche |
 | **0b. P2 en develop** | Santiago, José | La ruta dorada sigue jugable en `develop` (#163 ya está; #151 rebasado sobre #163). | e2e verde en `develop`. | P2 (sáb 22:00) |
 | **1. Contratos** | José, Daniel, Camilo, Jaime | `VistaEscena` y eventos (José), props de `EscenaBase` (Daniel y José), `LUGARES` (Camilo), tokens y props de componentes (Jaime). José agrega `feat/ui-escenarios` a la CI. | Contratos fusionados en `feat/ui-escenarios`. | dom temprano |
 | **2. En paralelo** | Todos | Daniel: cielo, terreno, kit, base, módulos. María Paula: niño, Ingeniera, Iris, portada 3D. Camilo: lugares, colisiones, cámaras, mapa. Jaime: sistema facetado, portada DOM, intro, carga, datos. José: pantallas y flujo con las piezas que llegan. | Cada PR pasa la puerta de [APLICACION.md](APLICACION.md) §10. | dom ~10:00 |

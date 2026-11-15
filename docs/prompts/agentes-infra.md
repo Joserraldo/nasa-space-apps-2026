@@ -13,7 +13,9 @@ docs/LOOP.md, agents/README.md y pitch/guion-video.md.
 
 RAMA DEL FRONTEND: tu parte del frontend se trabaja desde feat/ui-escenarios y el PR va
 hacia feat/ui-escenarios (FLUJO §2): git fetch origin && git switch -c feat/ui-<parte>-<tema>
-origin/feat/ui-escenarios. No empieces hasta que María Paula suba su trabajo local a esa rama.
+origin/feat/ui-escenarios. Los archivos NUEVOS de tu parte se empiezan ya; los que ya existen
+en el trabajo local de María Paula esperan a que ella lo suba (FLUJO §2.1). El diseño anterior
+se borra (FLUJO §2.2): la única guía visual son las láminas del atlas v8.
 Tus otras tareas de rol siguen yendo a develop como siempre.
 
 CÓMO TRABAJAMOS TODOS:
@@ -27,11 +29,11 @@ CÓMO TRABAJAMOS TODOS:
 - Consumo de tokens: leé solo lo de LEÉ SOLO; no releas lo que ya está en tu ESTADO.md;
   anotá "Tokens: verde | amarillo | rojo" al cerrar cada iteración. En amarillo, solo tareas
   chicas y modelos livianos; en rojo, parás y dejás el traspaso escrito.
-- Herramientas: Claude Code (sesión principal) + subagentes Sonnet (componentes,
-  tests, bugs claros) y Haiku (búsquedas, textos EN/ES, JSON) + OpenCode con DeepSeek V4.1
-  Flash (opencode -m opencode/deepseek-v4.1-flash-free) para trabajo mecánico en lote sobre
-  archivos que nadie más toca. Máximo 2–3 subagentes a la vez, con archivos disjuntos; decí
-  cuántos y para qué antes de lanzarlos.
+- Herramientas: sesión principal en Opus (--effort medium); subagente Fable (effort high)
+  solo para los contratos (FLUJO §3), el montaje final y depurar el e2e; subagentes Sonnet
+  (medium) para CI y e2e y Haiku (low) para textos.
+  Máximo 2–3 subagentes a la vez, con archivos disjuntos; decí cuántos y para qué antes de
+  lanzarlos. Sin OpenCode (solo lo tiene Camilo).
 
 TAREAS EN ORDEN (una por iteración; cada una dice cuándo está hecha):
 P2 y CI (hacia develop):
@@ -40,7 +42,8 @@ P2 y CI (hacia develop):
 2. CI para la rama de escenarios: agregar feat/ui-escenarios a pull_request en
    .github/workflows/ci.yml. HECHO: los PRs hacia feat/ui-escenarios corren CI.
 Frontend (hacia feat/ui-escenarios):
-3. Tareas 2 a 6 de front-integracion.md: contratos, ruta dorada completa, Iris compañera,
+3. Apenas entre la subida de María Paula, la tarea 0 de front-integracion.md: borrar la
+   bienvenida oscura y el tema viejo de App.tsx y pantallas/. Después, tareas 2 a 6: contratos, ruta dorada completa, Iris compañera,
    montaje de las piezas de los demás, respaldo 2D. HECHO: lo que diga cada tarea del brief.
 Infra y pitch:
 4. e2e verde en develop y en feat/ui-escenarios después de cada fusión; preview desplegado.
@@ -51,8 +54,9 @@ Infra y pitch:
 
 NO HACER: números de juego; archivos de ui/ de otra persona (FLUJO §1).
 
-TOKENS: frases y evals con Haiku u OpenCode y DeepSeek V4.1 Flash; CI y e2e con Sonnet;
-integración y revisión del diff en la sesión principal.
+TOKENS: frases y evals con Haiku; CI y e2e con Sonnet; contratos y montaje final con un
+subagente Fable high; integración diaria y revisión del diff en la sesión principal (Opus
+medium).
 
 META PARA PARAR EL LOOP: ruta dorada completa en feat/ui-escenarios con todo montado y fusionada
 en develop antes de P4; video y formulario listos antes de P5.

@@ -49,7 +49,7 @@ LÍMITES: no fusiones, no cierres PRs ajenos, no hagas push a ramas ajenas, no p
 Discord.
 
 TOKENS: leé el diff (gh pr diff), no el repo. Diffs grandes o de pura traducción: primera
-pasada con Haiku u OpenCode y DeepSeek V4.1 Flash, y vos confirmás. Nunca más de un
+pasada con Haiku, y vos confirmás. Nunca más de un
 subagente por PR.
 
 META PARA PARAR EL LOOP: congelamiento (P4, dom 13:00) sin PRs pendientes de revisión.

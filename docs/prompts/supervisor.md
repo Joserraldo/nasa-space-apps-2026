@@ -1,6 +1,6 @@
 # Prompt: orquestación del equipo y fusión (Santiago)
 
-**Abrir con:** `claude --model fable --effort medium`. Tabla completa de modelos y esfuerzo: [README.md](README.md#modelos-y-esfuerzo).
+**Abrir con:** `claude --model fable --effort medium` (`high` solo para decidir un recorte). Tabla completa de modelos y esfuerzo: [README.md](README.md#modelos-y-esfuerzo).
 **Rol en esta implementación:** orquestador del equipo y único que fusiona (squash, con CI en verde). Decide recortes y, con María Paula, la puerta de P3 (3D o 2D). Reglas comunes: [README.md](README.md).
 
 ```
@@ -22,11 +22,10 @@ CÓMO TRABAJAMOS TODOS:
 - Consumo de tokens: leé solo lo de LEÉ SOLO; no releas lo que ya está en tu ESTADO.md;
   anotá "Tokens: verde | amarillo | rojo" al cerrar cada iteración. En amarillo, solo tareas
   chicas y modelos livianos; en rojo, parás y dejás el traspaso escrito.
-- Herramientas: Claude Code (sesión principal) + subagentes Sonnet (componentes,
-  tests, bugs claros) y Haiku (búsquedas, textos EN/ES, JSON) + OpenCode con DeepSeek V4.1
-  Flash (opencode -m opencode/deepseek-v4.1-flash-free) para trabajo mecánico en lote sobre
-  archivos que nadie más toca. Máximo 2–3 subagentes a la vez, con archivos disjuntos; decí
-  cuántos y para qué antes de lanzarlos.
+- Herramientas: sesión principal en Fable (--effort medium; high solo para decidir un
+  recorte) y subagentes Haiku (low) para leer.
+  Máximo 2–3 subagentes a la vez, con archivos disjuntos; decí cuántos y para qué antes de
+  lanzarlos. Sin OpenCode (solo lo tiene Camilo).
 
 TAREAS EN ORDEN (una por iteración; cada una dice cuándo está hecha):
 1. P2 (sáb 22:00): fusionar #163 y #151 cuando María Paula dé su OK, y #162 de Daniel.

@@ -3,8 +3,8 @@
 **Cuándo:** solo cuando la integración esté aprobada por María Paula y quede tiempo antes de P4. Si no, se entrega sin sonido.
 **Tus archivos:** `ui/src/audio/**`, `assets/audio/**`, `assets/LICENCIAS.md`.
 **Leé:** [AUDIO.md](../referenciapau/AUDIO.md) completo y [FLUJO.md](../referenciapau/FLUJO.md) §3 (eventos de feedback y ajustes del jugador).
-**Rama:** desde `feat/ui-escenarios`, PR hacia `feat/ui-escenarios` ([FLUJO.md](../referenciapau/FLUJO.md) §2). **No empezar** hasta que María Paula suba su trabajo local a esa rama (FLUJO §5, fase 0).
-**Fuente visual única:** las láminas de `docs/referenciapau/referencias/` y [DISEÑO.md](../referenciapau/DISEÑO.md). Del prototipo descartado y del esqueleto actual de ui (`estilos.css`, `mision.css`, tema oscuro, formas de hoy) no se toma nada visual.
+**Rama:** desde `feat/ui-escenarios`, PR hacia `feat/ui-escenarios` ([FLUJO.md](../referenciapau/FLUJO.md) §2). **Cuándo empezar:** al final, como dice arriba.
+**Fuente visual única:** las láminas de `docs/referenciapau/referencias/` y [DISEÑO.md](../referenciapau/DISEÑO.md). El diseño anterior (prototipo, `estilos.css`, `mision.css`, tema oscuro, formas de hoy) **se borra** (FLUJO §2.2): no se toma nada de él.
 **Cada PR:** solo tus archivos; menos de ~300 líneas; captura al lado de la lámina; salida de `npm run typecheck`, `npm test`, `npm run build` y `npm run e2e` (hasta que la CI cubra la rama); puerta de [APLICACION.md](../referenciapau/APLICACION.md) §10. Lo aprueba y fusiona María Paula.
 
 ## Tareas (en orden)

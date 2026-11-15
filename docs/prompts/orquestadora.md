@@ -23,11 +23,10 @@ CÓMO TRABAJAMOS TODOS:
 - Consumo de tokens: leé solo lo de LEÉ SOLO; no releas lo que ya está en tu ESTADO.md;
   anotá "Tokens: verde | amarillo | rojo" al cerrar cada iteración. En amarillo, solo tareas
   chicas y modelos livianos; en rojo, parás y dejás el traspaso escrito.
-- Herramientas: Claude Code (sesión principal) + subagentes Sonnet (componentes,
-  tests, bugs claros) y Haiku (búsquedas, textos EN/ES, JSON) + OpenCode con DeepSeek V4.1
-  Flash (opencode -m opencode/deepseek-v4.1-flash-free) para trabajo mecánico en lote sobre
-  archivos que nadie más toca. Máximo 2–3 subagentes a la vez, con archivos disjuntos; decí
-  cuántos y para qué antes de lanzarlos.
+- Herramientas: sesión en Sonnet (--effort medium) para el seguimiento; Fable (effort high)
+  en una sesión corta solo para decidir un recorte o la puerta de P3; Haiku (low) para buscar.
+  Máximo 2–3 subagentes a la vez, con archivos disjuntos; decí cuántos y para qué antes de
+  lanzarlos. Sin OpenCode (solo lo tiene Camilo).
 
 EN CADA ITERACIÓN:
 1. Frontend: en qué tarea de su brief va cada persona (María Paula personajes, Daniel

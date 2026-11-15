@@ -13,7 +13,9 @@ docs/referenciapau/MECANICAS.md §6 y §7.
 
 RAMA DEL FRONTEND: tu parte del frontend se trabaja desde feat/ui-escenarios y el PR va
 hacia feat/ui-escenarios (FLUJO §2): git fetch origin && git switch -c feat/ui-<parte>-<tema>
-origin/feat/ui-escenarios. No empieces hasta que María Paula suba su trabajo local a esa rama.
+origin/feat/ui-escenarios. Los archivos NUEVOS de tu parte se empiezan ya; los que ya existen
+en el trabajo local de María Paula esperan a que ella lo suba (FLUJO §2.1). El diseño anterior
+se borra (FLUJO §2.2): la única guía visual son las láminas del atlas v8.
 Tus otras tareas de rol siguen yendo a develop como siempre.
 
 CÓMO TRABAJAMOS TODOS:
@@ -27,11 +29,11 @@ CÓMO TRABAJAMOS TODOS:
 - Consumo de tokens: leé solo lo de LEÉ SOLO; no releas lo que ya está en tu ESTADO.md;
   anotá "Tokens: verde | amarillo | rojo" al cerrar cada iteración. En amarillo, solo tareas
   chicas y modelos livianos; en rojo, parás y dejás el traspaso escrito.
-- Herramientas: Claude Code (sesión principal) + subagentes Sonnet (componentes,
-  tests, bugs claros) y Haiku (búsquedas, textos EN/ES, JSON) + OpenCode con DeepSeek V4.1
-  Flash (opencode -m opencode/deepseek-v4.1-flash-free) para trabajo mecánico en lote sobre
-  archivos que nadie más toca. Máximo 2–3 subagentes a la vez, con archivos disjuntos; decí
-  cuántos y para qué antes de lanzarlos.
+- Herramientas: sesión principal en Opus (--effort high); subagente Fable (effort medium)
+  para lo que define el sistema (tokens, FacetButton, ResourcePlaque) y el diseño de #152;
+  subagentes Sonnet (medium), uno por componente, y Haiku (low) para búsquedas.
+  Máximo 2–3 subagentes a la vez, con archivos disjuntos; decí cuántos y para qué antes de
+  lanzarlos. Sin OpenCode (solo lo tiene Camilo).
 
 TAREAS EN ORDEN (una por iteración; cada una dice cuándo está hecha):
 Rol motor (hacia develop):
@@ -42,7 +44,8 @@ Rol motor (hacia develop):
 3. P3 (dom 11:00): prueba de variabilidad: dos semillas dan escenarios distintos y las dos se
    pueden ganar y perder. HECHO: prueba en verde en develop.
 Frontend (hacia feat/ui-escenarios):
-4. Tareas 1 a 6 de front-interfaz.md: la interfaz de las láminas v8 (ui/00–04, inicio/01–03,
+4. Archivos nuevos ya (tokens, componentes base); apenas entre la subida de María Paula, la
+   tarea 0 de front-interfaz.md: borrar estilos.css y mision.css. Después, tareas 1 a 6: la interfaz de las láminas v8 (ui/00–04, inicio/01–03,
    personajes/07, HUD de mundo/01), desde cero. Del esqueleto actual de ui, de estilos.css y de
    mision.css no se toma nada visual. Cada pieza con captura al lado de su lámina.
    HECHO: lo que diga cada tarea del brief y aprobada por María Paula.
@@ -52,8 +55,9 @@ Después:
 
 NO HACER: números de balance (son de design/), reglas en ui/.
 
-TOKENS: componentes con subagentes Sonnet (uno por componente, archivos disjuntos); variantes
-de estilo con OpenCode y DeepSeek V4.1 Flash; motor y revisión del diff en la sesión principal.
+TOKENS: tokens y piezas base con un subagente Fable medium; el resto de componentes con
+Sonnet (uno por componente, archivos disjuntos); motor y revisión del diff en la sesión
+principal (Opus high).
 
 META PARA PARAR EL LOOP: variabilidad fusionada (P3), piezas de la interfaz listas y montadas
 por José antes de P4, y ningún bloquea:motor abierto.
