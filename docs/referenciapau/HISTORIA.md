@@ -86,27 +86,9 @@ Escenas (E0–E9): [ESCENAS.md](ESCENAS.md) §1. Funciones: [MECANICAS.md](MECAN
 
 ## 6. Las cinco ubicaciones (campaña)
 
-**Solo Jezero es jugable.** Las otras cuatro están contempladas en las tablas de recursos y tienen propuestas, voces de expertos y datos en distintos estados, pero **el motor todavía lee solo Jezero** (issue #152). Regla para la UI: **ninguna misión aparece como jugable hasta que su código y el motor estén integrados y diseño la apruebe.** En la demo no se muestra un selector de misiones.
+La campaña tiene 5 niveles: **1 Marte, Jezero** · **2 Marte, polo norte** · **3 Luna, polo sur** · **4 Luna, lado visible** · **5 Outpost sorpresa** (tu "base" es una nave rumbo a la Luna). **Solo el nivel 1 es jugable.** La ficha de cada uno (historia, sitios, módulos, tormenta, dilema, estado real y qué falta decidir) está en [NIVELES.md](NIVELES.md).
 
-Estado verificado el 14 nov 2026 en GitHub (`gh pr view` / `gh issue view`):
-
-| Misión | Historia en una frase | Qué aprende el niño | Estado real |
-| --- | --- | --- | --- |
-| **1. Marte, cráter Jezero** | Montás una base, llega una tormenta real e Iris falla. | Decidir con recursos limitados y verificar antes de confiar. | **Jugable.** Datos en `missions/`; se puede ganar por telemetría (#113 cerrado el 14 nov). Abierto: #114. |
-| **2. Marte, polo norte** | La luz cambia con las estaciones y llega una noche polar larga. | Administrar energía cuando los paneles dejan de producir. | Propuesta #97 abierta; voces #127 fusionadas; datos de misión #153 abiertos; terreno #148 abierto. |
-| **3. Luna, polo sur** | Base cerca del polo sur: explorar zonas con posible hielo o priorizar la seguridad. | Elegir entre explorar, protegerse y abastecerse. | Propuesta #98 abierta; voces #128 fusionadas; datos de misión #154 abiertos; terreno #126 abierto. |
-| **4. Luna, lado visible** | Una noche lunar muy larga: guardar energía para la calefacción y protegerse de la tormenta. | Almacenar energía importa tanto como producirla. | Propuesta #100 abierta; voces #131 abiertas; datos de misión #156 abiertos; luz #147 y blindaje #160 abiertos. |
-| **5. Outpost sorpresa** | Tu puesto no está en un planeta: estás dentro de una nave rumbo a la Luna. | Cómo se protege a los astronautas durante el viaje. | Propuesta #99 abierta; voces #129 abiertas; datos de misión #155 abiertos. |
-
-### 6.1 Escenarios de las misiones futuras (sin láminas todavía)
-
-No hay láminas v8 para la Luna ni para el interior de la nave del outpost. **No se construyen hasta tener lámina aprobada por María Paula.** Cuando se hagan, mantienen la familia v8 (formas, paleta de UI, personajes) y respetan la física real del lugar, igual que [MARTE.md](MARTE.md) hace con Marte:
-
-| Lugar | Datos físicos ([NSSDC Moon Fact Sheet](https://nssdc.gsfc.nasa.gov/planetary/factsheet/moonfact.html), verificado 14 nov) | Consecuencia visual |
-| --- | --- | --- |
-| Luna (polo sur y lado visible) | Gravedad 1,62 m/s²; prácticamente sin atmósfera (3 x 10⁻¹⁵ bar); día solar de 29,53 días terrestres; de 95 K a 390 K en el ecuador | Cielo **negro** también de día, sombras duras y negras sin luz de cielo, regolito gris, la Tierra visible desde el lado visible, sin polvo flotando. |
-| Outpost (interior de nave) | Sin terreno | Solo interiores: cabina, centro y fondo de la nave, con la familia de corredores y módulos v8. |
-| Marte polo norte | Mismas leyes que [MARTE.md](MARTE.md), con luz más baja y escarcha estacional | Pendiente de lámina. |
+Regla para la UI: ningún nivel aparece como jugable hasta que su código y el motor estén integrados y diseño lo apruebe. En la demo no se muestra un selector de niveles.
 
 ## 7. Lo que no es canon
 

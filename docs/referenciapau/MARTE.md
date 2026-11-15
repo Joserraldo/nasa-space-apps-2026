@@ -86,7 +86,7 @@ Notas:
 
 ## 7. Otros lugares
 
-La Luna y el interior de la nave del outpost no tienen láminas todavía. Sus datos físicos básicos y su consecuencia visual están en [HISTORIA.md](HISTORIA.md) §6.1.
+La Luna y el interior de la nave del outpost no tienen láminas todavía. Sus datos físicos básicos y su consecuencia visual están en [NIVELES.md](NIVELES.md) §6.
 
 ## 8. Lo que no se afirma
 

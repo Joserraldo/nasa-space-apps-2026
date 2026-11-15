@@ -8,7 +8,7 @@ Fuentes leídas en `origin/develop` (`c8c7247`, 14 nov 2026): `contracts/src/`, 
 
 ## 1. El juego en un párrafo
 
-La historia completa (premisa, personajes, dónde empieza y cómo se conecta cada paso) está en [HISTORIA.md](HISTORIA.md). En resumen de reglas: el niño administra **tres recursos** que compiten, consulta a la tripulación y a Iris, y cada decisión **cuesta ahora y rinde después**. Gana si la telemetría llega a la Tierra con la base viva; pierde si un recurso llega a cero. **Solo la misión de Jezero es jugable** (las otras cuatro: [HISTORIA.md](HISTORIA.md) §6).
+La historia completa (premisa, personajes, dónde empieza y cómo se conecta cada paso) está en [HISTORIA.md](HISTORIA.md). En resumen de reglas: el niño administra **tres recursos** que compiten, consulta a la tripulación y a Iris, y cada decisión **cuesta ahora y rinde después**. Gana si la telemetría llega a la Tierra con la base viva; pierde si un recurso llega a cero. **Solo la misión de Jezero es jugable** (las otras cuatro: [NIVELES.md](NIVELES.md)).
 
 ## 2. Recursos
 
@@ -148,7 +148,7 @@ Detalle de qué pantalla llama qué: guía del rol agentes (PR #119 en `develop`
 
 ## 8. Otras misiones
 
-`@solar-shield/missions` exporta solo `MISION_JEZERO` y el motor la importa directamente. Las misiones de Marte polo norte, Luna polo sur, Luna lado visible y outpost sorpresa existen como propuestas y PRs de datos abiertos, con huecos del tipo `Mision` listados en #152. Hasta que motor y diseño cierren #152, la UI no construye selector de misiones ni pantallas propias para ellas. Estado y resumen: [HISTORIA.md](HISTORIA.md) §6.
+`@solar-shield/missions` exporta solo `MISION_JEZERO` y el motor la importa directamente. Las misiones de Marte polo norte, Luna polo sur, Luna lado visible y outpost sorpresa existen como propuestas y PRs de datos abiertos, con huecos del tipo `Mision` listados en #152. Hasta que motor y diseño cierren #152, la UI no construye selector de misiones ni pantallas propias para ellas. Especificación de todos los niveles, dificultad y niveles de Iris: [NIVELES.md](NIVELES.md).
 
 ## 9. Ciencia que la UI debe respetar
 
