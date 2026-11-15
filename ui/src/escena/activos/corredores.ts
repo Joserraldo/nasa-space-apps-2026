@@ -15,17 +15,23 @@ export function crearCorredor(m: Materiales, largo: number): THREE.Group {
   const partes: THREE.Object3D[] = [
     rot(parte(m, "SuitBase", tronco(0.98, 0.98, largo, 8), [0, 1.1, 0], "Corridor_Tube")),
     rot(parte(m, "Glass", tronco(1.02, 1.02, largo - 0.3, 8), [0, 1.1, 0], "Corridor_Glass")),
-    parte(m, "Accent", caja(0.2, 0.06, largo - 0.2), [0, 2.1, 0], "Corridor_Roof"),
+    parte(m, "Emissive", caja(0.34, 0.06, largo - 0.2), [0, 2.12, 0], "Corridor_Roof"),
     parte(m, "SuitBase", caja(1.5, 0.12, largo), [0, 0.06, 0], "Corridor_Floor"),
   ];
+  // Zócalo rosa a cada lado (lámina 01: faldón bajo con ranuras) y junta ancha con cada edificio (lámina 03).
+  for (const s of [-1, 1]) {
+    partes.push(parte(m, "SuitBase", caja(0.3, 0.5, largo - 0.1), [s * 0.95, 0.35, 0], "Corridor_Skirt"));
+    partes.push(parte(m, "Accent", caja(0.05, 0.08, largo - 0.4), [s * 1.12, 0.45, 0], "Corridor_SkirtBand"));
+    partes.push(rot(parte(m, "SuitBase", tronco(1.38, 1.38, 0.34, 8), [0, 1.1, s * (largo / 2 - 0.05)], "Corridor_Joint")));
+  }
   const n = Math.max(1, Math.round(largo / 1.2));
   for (let i = 0; i <= n; i++) {
     const z = -largo / 2 + (i * largo) / n;
-    partes.push(rot(parte(m, "SuitBase", tronco(1.2, 1.2, 0.2, 8), [0, 1.1, z], "Corridor_Frame")));
+    partes.push(rot(parte(m, "SuitBase", tronco(1.16, 1.16, 0.22, 8), [0, 1.1, z], "Corridor_Frame")));
     if (i < n) {
       const zc = z + largo / n / 2, w = largo / n - 0.45;
       for (const s of [-1, 1]) {
-        partes.push(parte(m, "Emissive", caja(0.04, 0.6, w), [s * 1.0, 1.3, zc], "Corridor_Window"));
+        partes.push(parte(m, "Emissive", caja(0.04, 0.7, w), [s * 1.0, 1.35, zc], "Corridor_Window"));
       }
     }
   }
