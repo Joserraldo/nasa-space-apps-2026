@@ -52,7 +52,16 @@ La tarjeta debe decir (clave `datos.terreno.derivado`): la altura es una medida 
 | Rima Hadley (Apolo 15) | −1927 m | 0,9° | 1497 m |
 
 Los relieves coinciden con los de la propuesta #100; las pendientes difieren de las de la propuesta (1,1° / 3,7° / 5,1°); el método de la propuesta no tenía script, así que no se pudo reproducir.
-- **NO VERIFICADO:** luz como criterio de puntaje (horizonte con montañas) y blindaje (regla de juego sin fuente). `puntajes.luz` y `blindaje` siguen en `null` y en `fuente.pendientes`. Tampoco se afirma dosis de radiación en la Luna.
+- **Blindaje natural (derivado, 2026-11-14):** `cieloTapado = 1 − Ω/2π`, misma definición que el polo sur (PGDA SKYV, Mazarico et al. 2011 [V, ver sección del polo sur]); aquí lo calculamos nosotros con el DEM LOLA de Moon Trek (`LRO_LOLA_DEM_Global_128ppd_v04`, mismo servicio [V]) en un recorte mayor: ±40 km, 160×160 px (~500 m/px, 51 KB por sitio, `<sitio>/entorno.bin`, `npm run luna:blindaje-descargar`). Horizonte en 72 direcciones (cada 5°): elevación máxima del terreno en pasos de 250 m, con la curvatura lunar exacta (R = 1 737 400 m; el suelo cae ≈ d²/2R). `Ω = Σ (2π/72)(1 − sin h)`, h < 0 cuenta 0. `puntajes.blindaje` = cieloTapado a 2 decimales. No es dosis: ninguna afirmación en mSv; el suelo mismo tapa la otra mitad del cielo y no se cuenta.
+
+| Sitio | Cielo tapado = blindaje | Horizonte máx. |
+|---|---|---|
+| Tranquilidad | 0,01 | 1,0° |
+| Descartes | 0,03 | 5,1° |
+| Rima Hadley | 0,09 | 14,6° (Apeninos) |
+
+  **Verificación independiente:** (1) mismas 3 cifras con 36 direcciones (72 → 36 direcciones: 0,0060 → 0,0060; 0,0301 → 0,0301; 0,0888 → 0,0890; diferencia ≤ 0,0002); (2) un DEM descargado aparte, 240 px y ±30 km (125 m/px), da 0,0071 / 0,0313 / 0,0901 (diferencia ≤ 0,0013, redondean a 0,01 / 0,03 / 0,09); (3) con radio 20 km Hadley baja a 0,084: las montañas lejanas aportan, por eso el recorte grande. Orden esperado por la geografía (Hadley > Descartes > Tranquilidad) se cumple. **NO VERIFICADO:** que estas cifras coincidan con SKYV (no existe SKYV para estas latitudes en lo revisado; el producto de 65°S–90°S no cubre estos sitios), que el DEM a 500 m/px capte relieve menor de ~1 km cerca del módulo, y que cielo tapado se traduzca en menos dosis. Los tres valores son bajos (<0,1): son sitios abiertos; la diferencia es de Hadley frente a los otros.
+- **NO VERIFICADO:** luz como criterio de puntaje (horizonte con montañas); `puntajes.luz` sigue en `null` y en `fuente.pendientes` (ver "Luz en 2024" abajo). Tampoco se afirma dosis de radiación en la Luna.
 
 ### Luz en 2024 (NASA SVS 5187) — `data/terreno/luna-visible/luz-2024.json`, export `luzLunaVisible`
 **Fuente [V]:** NASA Scientific Visualization Studio, "Moon Phase and Libration, 2024" (aprobado por Daniel), https://svs.gsfc.nasa.gov/5187/ , tabla `https://svs.gsfc.nasa.gov/vis/a000000/a005100/a005187/mooninfo_2024.txt` (8785 filas horarias, 2024-01-01 00:00 a 2025-01-01 00:00 UT; 1 MB, copiada en `data/raw/svs-5187/`). Consultado el 2026-11-14. Columnas usadas: `Slon` y `Slat` (longitud y latitud selenográficas del punto subsolar, este positivo). `npm run luna:luz --workspace data` (o `tsx scripts/luz-luna.ts`), sin red.
