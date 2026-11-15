@@ -6,21 +6,14 @@ import { caja, chaflan, grupo, parte, tronco } from "./piezasComunes";
 export type EstacionId = "laboratorio" | "enfermeria" | "comedor";
 
 /**
- * Posición de las estaciones: anillo exterior, a la derecha (ángulo 0 = −z, positivo hacia −x, como
- * en `baseExterior`). Constantes propias: no son `LugarId` ni tocan `LUGARES`. Radio = huella. [E]
+ * Posición de las estaciones: racimo detrás del hábitat (a ~16 m del centro), entre la torre y las cúpulas
+ * (`exterior/03`). Constantes propias: no son `LugarId` ni tocan `LUGARES`. Radio = huella. [E]
  */
-export const ESTACIONES: readonly { id: EstacionId; grados: number; radio: number }[] = [
-  { id: "laboratorio", grados: -58, radio: 2.8 },
-  { id: "enfermeria", grados: -80, radio: 2.8 },
-  { id: "comedor", grados: -102, radio: 2.8 },
+export const POS_ESTACIONES: readonly { id: EstacionId; x: number; z: number; radio: number }[] = [
+  { id: "comedor", x: -6.5, z: -15.5, radio: 2.8 },
+  { id: "enfermeria", x: 0, z: -16.5, radio: 2.8 },
+  { id: "laboratorio", x: 6.5, z: -15.5, radio: 2.8 },
 ];
-const D = 31;
-export const POS_ESTACIONES = ESTACIONES.map((e) => ({
-  id: e.id,
-  radio: e.radio,
-  x: -Math.sin((e.grados * Math.PI) / 180) * D,
-  z: -Math.cos((e.grados * Math.PI) / 180) * D,
-}));
 
 /** Panel solar plano de techo: marco y cuatro celdas, a la altura `y` del techo. */
 export function panelTecho(m: Materiales, pos: [number, number, number], w = 1.1, d = 0.8): THREE.Object3D[] {
