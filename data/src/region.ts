@@ -9,6 +9,15 @@ import { z } from "zod";
 export const INCLINACION_EJE_MARTE_GRADOS = 25.19;
 export const FUENTE_INCLINACION = "https://nssdc.gsfc.nasa.gov/planetary/factsheet/marsfact.html";
 
+/**
+ * Gravedad superficial media de Marte [V] NASA NSSDC, ficha de Marte ("Surface gravity (mean) 3.73 m/s2", consultada el
+ * 2026-11-14). Para la física de la escena 3D: ui la importa en vez de escribir el número (#141).
+ */
+export const GRAVEDAD_MARTE_MS2 = 3.73;
+/** Gravedad superficial de la Luna [V] NASA NSSDC, ficha de la Luna (1.62 m/s2). Para las misiones lunares. */
+export const GRAVEDAD_LUNA_MS2 = 1.62;
+export const FUENTE_GRAVEDAD_LUNA = "https://nssdc.gsfc.nasa.gov/planetary/factsheet/moonfact.html";
+
 /** Altura máxima del Sol a mediodía en pleno verano (grados): 90 − latitud + inclinación. */
 export const solMaxVerano = (lat: number) => Math.min(90, 90 - Math.abs(lat) + INCLINACION_EJE_MARTE_GRADOS);
 /** Hay noche polar (días sin Sol) a partir de esta latitud: 90 − inclinación. */
