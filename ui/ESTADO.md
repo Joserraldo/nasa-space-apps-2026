@@ -11,9 +11,10 @@ Una sección por persona, máximo 5 líneas, y nadie edita la de otro (FLUJO §8
 ```
 
 ## Personajes (María Paula)
-**Rama:** feat/ui-personajes-subida-escena · **PR:** #197 · **Tokens:** verde
-- Hecho: subida 1/6 (#184, reductor y cuenta) fusionada; 2/6 (#197, lógica de escena) abierta con la puerta en verde.
-- Sigue: subida 3/6, render adaptado al contrato `VistaEscena` de José (`tormenta.anunciada`, `iris.averiada`); después 4 a 6.
+**Rama:** feat/ui-personajes-b · **PR:** #316 (hacia develop; reemplaza #271) · **Tokens:** amarillo
+- Hecho: tripulación completa (`nino`, `doctora`, `meteorologa`, `ingeniera`) e Iris en variante B (malla cerrada con pesos mezclados, 8 expresiones proyectadas sobre piel, 14 gestos, herramientas por gesto y paneles plegables en Iris).
+- Verificado: 37/37 pruebas de personajes, `tsc --noEmit` sin errores, liberación idempotente de esqueleto y `userData.compartido = true` en materiales.
+- Sigue: módulo `ui/src/escena/personajes` listo para consumir en el montaje de la escena.
 - Bloqueo: ninguno.
 
 ## Escenario (Daniel)
@@ -58,8 +59,8 @@ Una línea por pieza (FLUJO §4 y §8). Estados: `sin empezar`, `en PR #n`, `apr
 | Cámaras de 3.ª y 1.ª persona | `mundo/01`, `mundo/02` | Camilo | sin empezar |
 | Panel `Map` y respaldo 2D | ESCENAS §3.4, FLUJO §9 | Camilo | sin empezar |
 | Controles táctiles (joystick, cámara, acción) | Familia de `ui/03`, ESCENAS §3.5 | Camilo | sin empezar |
-| Niño 3D | `personajes/08–10` | María Paula | sin empezar |
-| Iris rover | `mundo/01`, `inicio/02`, `personajes/07` | María Paula | sin empezar |
-| Ingeniera 3D | `personajes/01`, `mundo/01` | María Paula | sin empezar |
+| Niño 3D | `personajes/08–10` | María Paula | en PR #316 (variante B aprobada) |
+| Iris rover | `mundo/01`, `inicio/02`, `personajes/07` | María Paula | en PR #316 (variante B aprobada) |
+| Ingeniera 3D | `personajes/01`, `mundo/01` | María Paula | en PR #316 (variante B aprobada) |
 | Portada 3D | `inicio/01`, `inicio/capas/` | María Paula | sin empezar |
 | HUD, diálogo, comparación, tormenta y final (montaje) | `ui/01`, `ui/04`, `personajes/07`, `mundo/01` | José | E3–E5, E7 y E8 fusionadas; E6 en PR #269; piezas de ui/04 en PR #303; HUD en PR #304 |
