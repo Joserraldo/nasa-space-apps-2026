@@ -88,7 +88,7 @@ Los relieves coinciden con los de la propuesta #100; las pendientes difieren de 
 
 **Verificación independiente (`identify`, 2026-11-14):** polar vs JSON: −2639,5 / −3145,5 / −2711,5 / −1673 / 760 / −1878 m (diferencias ≤ 10 m); DEM global 128 ppd en la misma lat/lon: −2650 / −3106 / −2717 / −1683 / 756,5 / −1858,5 m (≤ 41 m).
 - Son el **centro del cráter según el nomenclátor**, no un punto de aterrizaje: no son los nombres "cresta soleada / macizo alto…" de la propuesta #98 (esos eran descriptivos, sin coordenadas). Asignarlos a los 4 sitios del juego lo decide diseño.
-- **NO VERIFICADO:** luz (Moon Trek no ofrece capa de iluminación media: se buscaron en los 279 servicios nombres con "illum/sun/light/avg/flux" sin resultado) y blindaje. Hielo, sombra y frío: ver la sección siguiente. Quedan `null` y en `fuente.pendientes`. El ClrShade global reproyectado al polo salió negro, por eso no hay sombreado.
+- **NO VERIFICADO:** blindaje. La luz no está en Moon Trek (279 servicios revisados sin capa de iluminación media): sale de NASA GSFC PGDA, ver "Luz del Sol y visibilidad de la Tierra" más abajo. Hielo, sombra y frío: ver la sección siguiente. El blindaje queda `null` y en `fuente.pendientes`. El ClrShade global reproyectado al polo salió negro, por eso no hay sombreado.
 
 ### Hielo, sombra permanente y frío en los 6 cráteres (Moon Trek, 2026-11-14)
 `npm run luna-sur:hielo` (sin clave, 1 petición/2 s) guarda `data/terreno/luna-polo-sur/hielo.json` (crudo + URLs); `luna-sur:curar` lo pasa a `hieloSombra` de cada sitio. Todo se consulta en el recuadro de 15,36 km ya usado.
@@ -119,3 +119,23 @@ Los relieves coinciden con los de la propuesta #100; las pendientes difieren de 
 **Verificación independiente de la sombra LOLA (2026-11-14):** Shackleton 88,6 % (EQ) vs 88,6 % con la tesela polar nivel 3 (otra proyección, ~1070 m/px); Malapert 0,9 % vs 0,5 % (la fracción es diminuta y sensible a la resolución: está justo bajo el umbral del 1 %). Sentido físico OK (Shackleton y Faustini casi todo en sombra, Malapert casi nada). Límite: lectura de teselas ~667 m/px, no el ráster de 240 m.
 
 **Verificación independiente (`returnCountOnly` y `identify`):** hielo 36 / 0 / 7 y PSR 1 / 0 / 1 coinciden para Shackleton / Malapert / de Gerlache; `identify` en el centro de Shackleton = 94,45 K (dentro de 81,3–110); malla 3×3 en de Gerlache: 6 de 9 con valor (87,2 … 63,8 K, todos ≥ 51 K) frente a 77 % del ráster (malla gruesa).
+
+### Luz del Sol y visibilidad de la Tierra en los 6 cráteres (NASA GSFC PGDA, 2026-11-14)
+**Fuente (aprobada por Daniel el 2026-11-14):** NASA GSFC PGDA, "Lunar Polar Illumination" (https://pgda.gsfc.nasa.gov/products/69), datos LOLA/LRO. **Cita:** Mazarico, E., et al. (2011), *Illumination conditions of the lunar polar regions using LOLA topography*, Icarus 211, 1066-1081, doi:10.1016/j.icarus.2010.10.030. Clave i18n `fuente.pgda`. Estático, no "en vivo".
+- **Archivos [V]:** `http://imbrium.mit.edu/EXTRAS/ILLUMINATION/IMG/AVGVISIB_75S_120M_201608.IMG` (Sol) y `..._EARTH.IMG` (Tierra), etiquetas `.LBL` con el mismo nombre. PDS3, int16 little-endian sin cabecera, 7624×7624, 120 m/px, estereográfica polar sur, esfera de 1737,4 km, 75°–90° S. Valor = DN × 0,00004 (DN 25 000 = 1): fracción de los pasos de 1 h (~18,6 años) en que el disco solar (o terrestre) es visible en algún grado; 0 = sombra permanente (la etiqueta lo dice así). Pie de la etiqueta del Sol: máximo del producto = 0,896.
+- **Lectura [V]:** peticiones HTTP `Range` (el servidor responde 206) solo de las 128 filas del recuadro de cada cráter (~2 MB), sin bajar el archivo (≈116 MB). `npm run luna-sur:luz` → `data/terreno/luna-polo-sur/luz.json`. Píxel 0-based de (x, y) m: columna = ⌊x/120 + 3812⌋, fila = ⌊3812 − y/120⌋ (coincide con `LINE/SAMPLE_PROJECTION_OFFSET` = 3811,5 de la etiqueta y con la proyección de `aPolarSur`; el mapa de 120 m cubre ±457 km). Se toma el vecino más cercano en los 128×128 centros del recuadro (el recuadro es de 120 m/px: 1 a 1).
+- **Medido vs derivado:** el valor de cada píxel es **medido (producto PGDA)**; media, máximo y mínimo del recuadro y el centro (píxel que contiene el centro del cráter del nomenclátor) los calcula el equipo.
+- **Puntaje `luz` (derivado, 0–1):** iluminación solar media del recuadro (fracción del tiempo con Sol, redondeada a 2 decimales). Es una media sobre 15 km: no mide el punto de aterrizaje ni cuánta energía solar se genera.
+
+| Cráter | Sol: centro / media / máx del recuadro | Tierra: centro / media | Verif. 240 m: Sol / Tierra (centro) | `luz` |
+|---|---|---|---|---|
+| shackleton | 0,0 / 1,3 / 74,1 % | 0,0 / 7,5 % | 0,0 / 0,0 % | 0.01 |
+| haworth | 0,0 / 0,1 / 3,6 % | 0,0 / 1,8 % | 0,0 / 0,0 % | 0 |
+| faustini | 0,0 / 0,0 / 0,0 % | 10,6 / 10,9 % | 0,0 / 11,1 % | 0 |
+| malapert | 12,3 / 13,4 / 26,4 % | 46,1 / 44,3 % | 12,5 / 46,5 % | 0.13 |
+| nobile | 35,1 / 22,0 / 36,1 % | 28,3 / 22,6 % | 35,2 / 28,4 % | 0.22 |
+| de-gerlache | 0,0 / 0,8 / 19,1 % | 0,0 / 2,5 % | 0,0 / 0,0 % | 0.01 |
+
+**Textos (en/es, `datos.terreno.luna.sol` y `.tierra`, con `{pct}` = media del recuadro redondeada):** "Here the Sun shines about {pct}% of the time." solo si la media ≥ 1 %; "From here you can see Earth about {pct}% of the time, so messages can go straight home." solo si la media ≥ 5 % (umbrales fijados antes de ver los resultados). Nunca se dice "siempre hay luz" ni "tiempo seguro con Tierra" (la media no es el centro).
+**Verificación independiente (2026-11-14):** mismos valores leídos de `AVGVISIB_65S_240M_201608[_EARTH].IMG` (6420×6420, 240 m/px, otra resolución y otra rejilla): el centro coincide con el de 120 m con diferencias ≤ 0,005 en todos los cráteres (p. ej. Malapert Sol 12,3 % vs 12,5 %; Nobile 35,1 % vs 35,2 %; Faustini Tierra 10,6 % vs 11,1 %); la media del recuadro, ≤ 0,01. Sentido físico OK (Malapert y Nobile con luz; el fondo de Shackleton, Haworth, Faustini y de Gerlache casi sin Sol; Faustini 0 % en todo el recuadro). **NO VERIFICADO:** cómo cambian estos valores con la inclinación de la nave/altura de la antena (los productos usan el suelo, no una torre) y la comparación con otra herramienta.
+

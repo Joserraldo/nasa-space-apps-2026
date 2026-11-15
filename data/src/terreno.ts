@@ -263,6 +263,38 @@ export const HieloSombraSchema = z.object({
 });
 export type HieloSombra = z.infer<typeof HieloSombraSchema>;
 
+const MedidaLuzSchema = z.object({
+  /** Fracción del tiempo (0–1, pasos de 1 h durante ~18,6 años) con el Sol (o la Tierra) visible. 0 = nunca. */
+  centro: z.number().min(0).max(1),
+  media: z.number().min(0).max(1),
+  maximo: z.number().min(0).max(1),
+  minimo: z.number().min(0).max(1),
+});
+/** Iluminación solar y visibilidad de la Tierra (NASA GSFC PGDA, LOLA; Mazarico et al. 2011) en el recuadro de 15,36 km. */
+export const IluminacionSchema = z.object({
+  capaSol: z.string(),
+  capaTierra: z.string(),
+  /** Archivos PDS (.IMG; la etiqueta .LBL tiene el mismo nombre). */
+  urlSol: z.string().url(),
+  urlTierra: z.string().url(),
+  pagina: z.string().url(),
+  cita: z.string(),
+  consultadoEl: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+  /** El valor es el del producto PGDA, solo leído (nada recalculado salvo media/máx/mín del recuadro). */
+  origen: z.literal("medido"),
+  resolucionM: z.number(),
+  sol: MedidaLuzSchema,
+  tierra: MedidaLuzSchema,
+  /** Texto "el Sol brilla ~{pct} % del tiempo": solo si la media del recuadro ≥ 1 %. */
+  textoSolKey: z.string().nullable(),
+  /** Texto "se ve la Tierra ~{pct} % del tiempo": solo si la media del recuadro ≥ 5 %. */
+  textoTierraKey: z.string().nullable(),
+  /** Porcentajes redondeados de la media del recuadro, para los textos ({pct}). */
+  pctSol: z.number().int().min(0).max(100),
+  pctTierra: z.number().int().min(0).max(100),
+});
+export type Iluminacion = z.infer<typeof IluminacionSchema>;
+
 export const SitioLunaSurSchema = SitioLunaSchema.omit({ mision: true, bbox: true, sombreado: true }).extend({
   /** Nombre del accidente en el nomenclátor IAU (capa CombinedNomenclature de Moon Trek). */
   nombreIau: z.string(),
@@ -272,6 +304,8 @@ export const SitioLunaSurSchema = SitioLunaSchema.omit({ mision: true, bbox: tru
   bboxM: z.object({ xmin: z.number(), ymin: z.number(), xmax: z.number(), ymax: z.number() }),
   /** Hielo, sombra permanente y frío (opcional para no romper datos viejos). */
   hieloSombra: HieloSombraSchema.optional(),
+  /** Luz del Sol y de la Tierra (PGDA). */
+  iluminacion: IluminacionSchema.optional(),
 });
 export type SitioLunaSur = z.infer<typeof SitioLunaSurSchema>;
 

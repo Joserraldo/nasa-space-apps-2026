@@ -76,6 +76,7 @@ Daniel (rol datos) las aprobó el 2026-11-14. Cada una respalda solo la afirmaci
 | NASA, Phoenix Twilight (nasa.gov/image-article/phoenix-twilight/) [V] | "Mars' far northern latitudes experience no sunlight in winter."; la sonda ya no podrá "charge the batteries on the solar panels that power it" | `fuente.nasa.phoenix` |
 | Moon Trek (`trek.nasa.gov/moon`, JPL), NASA SVS 5187, nomenclátor de USGS y science.nasa.gov | Aprobadas para las misiones lunares y de Marte propuestas (#97–#100). Sus `fuente.*` se crean cuando diseño apruebe esas misiones; cada cifra se sigue verificando antes de usarla | (por crear) |
 | NASA Basics of Space Flight, cap. 11 (energía) — https://science.nasa.gov/learn/basics-of-space-flight/chapter11-3/ | Las baterías se cargan con los paneles al sol y dan energía cuando quedan en sombra [V 2026-11-14] | `fuente.nasa.baterias` |
+| NASA GSFC PGDA, Lunar Polar Illumination (https://pgda.gsfc.nasa.gov/products/69; Mazarico et al. 2011, doi:10.1016/j.icarus.2010.10.030) | aprobada por Daniel el 2026-11-14 | iluminación media y visibilidad de la Tierra del polo sur | `fuente.pgda` |
 
 ## 1. DONKI (Database Of Notifications, Knowledge, Information)
 

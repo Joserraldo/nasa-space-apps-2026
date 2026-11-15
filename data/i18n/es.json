@@ -203,5 +203,8 @@
   "datos.terreno.sitio.de-gerlache.descripcion": "Un cráter de unos 31 km de ancho, muy cerca del polo sur, con el suelo muy inclinado.",
   "datos.terreno.luna.sombra": "Partes de este cráter nunca ven el Sol.",
   "datos.terreno.luna.hielo": "Algunos mapas de la NASA marcan lugares aquí donde podría haber hielo. Los científicos todavía tienen que comprobarlo.",
-  "datos.terreno.luna.frio": "Partes del suelo aquí se mantienen a menos de -163 °C, incluso en verano."
+  "datos.terreno.luna.frio": "Partes del suelo aquí se mantienen a menos de -163 °C, incluso en verano.",
+  "datos.terreno.luna.sol": "Aquí el Sol brilla cerca del {pct}% del tiempo.",
+  "datos.terreno.luna.tierra": "Desde aquí se ve la Tierra cerca del {pct}% del tiempo, así que los mensajes pueden ir directo a casa.",
+  "fuente.pgda": "NASA Goddard PGDA (iluminación de los polos lunares, Mazarico et al. 2011)"
 }

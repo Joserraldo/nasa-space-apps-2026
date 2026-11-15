@@ -19,6 +19,7 @@
     "luna-sur:curar": "tsx scripts/luna-sur-curar.ts",
     "luna-sur:hielo": "tsx scripts/luna-sur-hielo.ts",
     "luna-sur:psr": "tsx scripts/luna-sur-psr.ts",
+    "luna-sur:luz": "tsx scripts/luna-sur-luz.ts",
     "artemis": "tsx scripts/artemis.ts",
     "luna": "tsx scripts/luna.ts"
   },

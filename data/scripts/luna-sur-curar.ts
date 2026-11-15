@@ -54,6 +54,24 @@ function curarHielo(h: any) {
 }
 
 const DIR = join(RAIZ, "terreno", "luna-polo-sur");
+
+/** Luz del Sol y de la Tierra desde luz.json (luna-sur-luz.ts). Textos solo si el dato los respalda (umbrales fijados antes de ver los datos). */
+/** Puntaje de luz 0–1 = iluminación solar media del recuadro (fracción del tiempo con Sol). */
+const luzMedia = (l: any, id: string) => r2(l.sitios.find((x: any) => x.id === id).sol.media);
+function curarLuz(l: any, id: string) {
+  const s = l.sitios.find((x: any) => x.id === id);
+  if (!s) throw new Error("falta " + id + " en luz.json (npm run luna-sur:luz)");
+  const med = (m: any) => ({ centro: m.centro, media: m.media, maximo: m.maximo, minimo: m.minimo });
+  const pctSol = Math.round(s.sol.media * 100), pctTierra = Math.round(s.tierra.media * 100);
+  return {
+    capaSol: l.capaSol.archivo, capaTierra: l.capaTierra.archivo, urlSol: l.capaSol.url, urlTierra: l.capaTierra.url,
+    pagina: l.pagina, cita: l.cita, consultadoEl: l.consultadoEl, origen: "medido" as const, resolucionM: l.resolucionM,
+    sol: med(s.sol), tierra: med(s.tierra),
+    textoSolKey: s.sol.media >= 0.01 ? "datos.terreno.luna.sol" : null,
+    textoTierraKey: s.tierra.media >= 0.05 ? "datos.terreno.luna.tierra" : null,
+    pctSol, pctTierra,
+  };
+}
 const r1 = (x: number) => Math.round(x * 10) / 10;
 const r2 = (x: number) => Math.round(x * 100) / 100;
 
@@ -63,6 +81,7 @@ export function curarLunaSur(): TerrenoLunaPoloSur {
   const paso = LUNA_SUR_CUADRO.ladoM / n; // m por píxel (plano en la proyección; escala 1 en el polo, error < 0,1 % a < 3° del polo)
   const hielo = JSON.parse(readFileSync(join(DIR, "hielo.json"), "utf-8"));
   if (hielo.sitios.length !== consulta.sitios.length) throw new Error("hielo.json no coincide con consulta.json");
+  const luz = JSON.parse(readFileSync(join(DIR, "luz.json"), "utf-8"));
   const sitios: SitioLunaSur[] = consulta.sitios.map((s: any) => {
     const b = readFileSync(join(DIR, s.id, "elevacion.bin"));
     const h = new Int16Array(b.buffer, b.byteOffset, b.length / 2);
@@ -93,7 +112,8 @@ export function curarLunaSur(): TerrenoLunaPoloSur {
       pendienteGrados: r1(pendiente),
       relieveM: Math.max(...h) - Math.min(...h),
       hieloSombra: curarHielo({ consultadoEl: hielo.consultadoEl, capaPsrLola: hielo.sombraPermanenteLola, ...hielo.sitios.find((x: any) => x.id === s.id) }),
-      puntajes: { plano: r2(Math.min(1, Math.max(0, 1 - pendiente / REGLAS.pendienteMaxGrados))), luz: null, blindaje: null },
+      iluminacion: curarLuz(luz, s.id),
+      puntajes: { plano: r2(Math.min(1, Math.max(0, 1 - pendiente / REGLAS.pendienteMaxGrados))), luz: luzMedia(luz, s.id), blindaje: null },
     };
   });
   return TerrenoLunaPoloSurSchema.parse({
@@ -108,7 +128,7 @@ export function curarLunaSur(): TerrenoLunaPoloSur {
       consultadoEl: consulta.consultadoEl,
       estadoDato: "curado",
       derivadoKey: "datos.terreno.derivado",
-      pendientes: ["luz", "blindaje", "citaHielo"],
+      pendientes: ["blindaje", "citaHielo"],
     },
   });
 }

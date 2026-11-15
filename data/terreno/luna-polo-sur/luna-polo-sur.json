@@ -11,7 +11,6 @@
     "estadoDato": "curado",
     "derivadoKey": "datos.terreno.derivado",
     "pendientes": [
-      "luz",
       "blindaje",
       "citaHielo"
     ]
@@ -35,7 +34,7 @@
       "relieveM": 4173,
       "puntajes": {
         "plano": 0.09,
-        "luz": null,
+        "luz": 0.01,
         "blindaje": null
       },
       "nombreIau": "Shackleton",
@@ -94,6 +93,33 @@
           "minimoMaxInviernoK": 53.5,
           "textoKey": "datos.terreno.luna.frio"
         }
+      },
+      "iluminacion": {
+        "capaSol": "AVGVISIB_75S_120M_201608",
+        "capaTierra": "AVGVISIB_75S_120M_201608_EARTH",
+        "urlSol": "http://imbrium.mit.edu/EXTRAS/ILLUMINATION/IMG/AVGVISIB_75S_120M_201608.IMG",
+        "urlTierra": "http://imbrium.mit.edu/EXTRAS/ILLUMINATION/IMG/AVGVISIB_75S_120M_201608_EARTH.IMG",
+        "pagina": "https://pgda.gsfc.nasa.gov/products/69",
+        "cita": "Mazarico, E., et al. (2011), Illumination conditions of the lunar polar regions using LOLA topography, Icarus 211, 1066-1081, doi:10.1016/j.icarus.2010.10.030",
+        "consultadoEl": "2026-11-15",
+        "origen": "medido",
+        "resolucionM": 120,
+        "sol": {
+          "centro": 0,
+          "media": 0.0133,
+          "maximo": 0.7411,
+          "minimo": 0
+        },
+        "tierra": {
+          "centro": 0,
+          "media": 0.0753,
+          "maximo": 0.5769,
+          "minimo": 0
+        },
+        "textoSolKey": "datos.terreno.luna.sol",
+        "textoTierraKey": "datos.terreno.luna.tierra",
+        "pctSol": 1,
+        "pctTierra": 8
       }
     },
     {
@@ -113,7 +139,7 @@
       "relieveM": 2992,
       "puntajes": {
         "plano": 0.08,
-        "luz": null,
+        "luz": 0,
         "blindaje": null
       },
       "nombreIau": "Haworth",
@@ -170,6 +196,33 @@
           "minimoMaxInviernoK": 36.4,
           "textoKey": "datos.terreno.luna.frio"
         }
+      },
+      "iluminacion": {
+        "capaSol": "AVGVISIB_75S_120M_201608",
+        "capaTierra": "AVGVISIB_75S_120M_201608_EARTH",
+        "urlSol": "http://imbrium.mit.edu/EXTRAS/ILLUMINATION/IMG/AVGVISIB_75S_120M_201608.IMG",
+        "urlTierra": "http://imbrium.mit.edu/EXTRAS/ILLUMINATION/IMG/AVGVISIB_75S_120M_201608_EARTH.IMG",
+        "pagina": "https://pgda.gsfc.nasa.gov/products/69",
+        "cita": "Mazarico, E., et al. (2011), Illumination conditions of the lunar polar regions using LOLA topography, Icarus 211, 1066-1081, doi:10.1016/j.icarus.2010.10.030",
+        "consultadoEl": "2026-11-15",
+        "origen": "medido",
+        "resolucionM": 120,
+        "sol": {
+          "centro": 0,
+          "media": 0.0013,
+          "maximo": 0.036,
+          "minimo": 0
+        },
+        "tierra": {
+          "centro": 0,
+          "media": 0.0179,
+          "maximo": 0.2116,
+          "minimo": 0
+        },
+        "textoSolKey": null,
+        "textoTierraKey": null,
+        "pctSol": 0,
+        "pctTierra": 2
       }
     },
     {
@@ -189,7 +242,7 @@
       "relieveM": 1095,
       "puntajes": {
         "plano": 0.35,
-        "luz": null,
+        "luz": 0,
         "blindaje": null
       },
       "nombreIau": "Faustini",
@@ -248,6 +301,33 @@
           "minimoMaxInviernoK": 43.5,
           "textoKey": "datos.terreno.luna.frio"
         }
+      },
+      "iluminacion": {
+        "capaSol": "AVGVISIB_75S_120M_201608",
+        "capaTierra": "AVGVISIB_75S_120M_201608_EARTH",
+        "urlSol": "http://imbrium.mit.edu/EXTRAS/ILLUMINATION/IMG/AVGVISIB_75S_120M_201608.IMG",
+        "urlTierra": "http://imbrium.mit.edu/EXTRAS/ILLUMINATION/IMG/AVGVISIB_75S_120M_201608_EARTH.IMG",
+        "pagina": "https://pgda.gsfc.nasa.gov/products/69",
+        "cita": "Mazarico, E., et al. (2011), Illumination conditions of the lunar polar regions using LOLA topography, Icarus 211, 1066-1081, doi:10.1016/j.icarus.2010.10.030",
+        "consultadoEl": "2026-11-15",
+        "origen": "medido",
+        "resolucionM": 120,
+        "sol": {
+          "centro": 0,
+          "media": 0,
+          "maximo": 0,
+          "minimo": 0
+        },
+        "tierra": {
+          "centro": 0.1064,
+          "media": 0.1094,
+          "maximo": 0.3501,
+          "minimo": 0
+        },
+        "textoSolKey": null,
+        "textoTierraKey": "datos.terreno.luna.tierra",
+        "pctSol": 0,
+        "pctTierra": 11
       }
     },
     {
@@ -267,7 +347,7 @@
       "relieveM": 3153,
       "puntajes": {
         "plano": 0,
-        "luz": null,
+        "luz": 0.13,
         "blindaje": null
       },
       "nombreIau": "Malapert",
@@ -324,6 +404,33 @@
           "minimoMaxInviernoK": 89.5,
           "textoKey": null
         }
+      },
+      "iluminacion": {
+        "capaSol": "AVGVISIB_75S_120M_201608",
+        "capaTierra": "AVGVISIB_75S_120M_201608_EARTH",
+        "urlSol": "http://imbrium.mit.edu/EXTRAS/ILLUMINATION/IMG/AVGVISIB_75S_120M_201608.IMG",
+        "urlTierra": "http://imbrium.mit.edu/EXTRAS/ILLUMINATION/IMG/AVGVISIB_75S_120M_201608_EARTH.IMG",
+        "pagina": "https://pgda.gsfc.nasa.gov/products/69",
+        "cita": "Mazarico, E., et al. (2011), Illumination conditions of the lunar polar regions using LOLA topography, Icarus 211, 1066-1081, doi:10.1016/j.icarus.2010.10.030",
+        "consultadoEl": "2026-11-15",
+        "origen": "medido",
+        "resolucionM": 120,
+        "sol": {
+          "centro": 0.1228,
+          "media": 0.1339,
+          "maximo": 0.2636,
+          "minimo": 0
+        },
+        "tierra": {
+          "centro": 0.4606,
+          "media": 0.4434,
+          "maximo": 0.6005,
+          "minimo": 0
+        },
+        "textoSolKey": "datos.terreno.luna.sol",
+        "textoTierraKey": "datos.terreno.luna.tierra",
+        "pctSol": 13,
+        "pctTierra": 44
       }
     },
     {
@@ -343,7 +450,7 @@
       "relieveM": 1527,
       "puntajes": {
         "plano": 0.1,
-        "luz": null,
+        "luz": 0.22,
         "blindaje": null
       },
       "nombreIau": "Nobile",
@@ -400,6 +507,33 @@
           "minimoMaxInviernoK": 73.1,
           "textoKey": null
         }
+      },
+      "iluminacion": {
+        "capaSol": "AVGVISIB_75S_120M_201608",
+        "capaTierra": "AVGVISIB_75S_120M_201608_EARTH",
+        "urlSol": "http://imbrium.mit.edu/EXTRAS/ILLUMINATION/IMG/AVGVISIB_75S_120M_201608.IMG",
+        "urlTierra": "http://imbrium.mit.edu/EXTRAS/ILLUMINATION/IMG/AVGVISIB_75S_120M_201608_EARTH.IMG",
+        "pagina": "https://pgda.gsfc.nasa.gov/products/69",
+        "cita": "Mazarico, E., et al. (2011), Illumination conditions of the lunar polar regions using LOLA topography, Icarus 211, 1066-1081, doi:10.1016/j.icarus.2010.10.030",
+        "consultadoEl": "2026-11-15",
+        "origen": "medido",
+        "resolucionM": 120,
+        "sol": {
+          "centro": 0.3514,
+          "media": 0.2204,
+          "maximo": 0.3608,
+          "minimo": 0
+        },
+        "tierra": {
+          "centro": 0.2826,
+          "media": 0.226,
+          "maximo": 0.3428,
+          "minimo": 0
+        },
+        "textoSolKey": "datos.terreno.luna.sol",
+        "textoTierraKey": "datos.terreno.luna.tierra",
+        "pctSol": 22,
+        "pctTierra": 23
       }
     },
     {
@@ -419,7 +553,7 @@
       "relieveM": 2028,
       "puntajes": {
         "plano": 0,
-        "luz": null,
+        "luz": 0.01,
         "blindaje": null
       },
       "nombreIau": "de Gerlache",
@@ -478,6 +612,33 @@
           "minimoMaxInviernoK": 47.2,
           "textoKey": "datos.terreno.luna.frio"
         }
+      },
+      "iluminacion": {
+        "capaSol": "AVGVISIB_75S_120M_201608",
+        "capaTierra": "AVGVISIB_75S_120M_201608_EARTH",
+        "urlSol": "http://imbrium.mit.edu/EXTRAS/ILLUMINATION/IMG/AVGVISIB_75S_120M_201608.IMG",
+        "urlTierra": "http://imbrium.mit.edu/EXTRAS/ILLUMINATION/IMG/AVGVISIB_75S_120M_201608_EARTH.IMG",
+        "pagina": "https://pgda.gsfc.nasa.gov/products/69",
+        "cita": "Mazarico, E., et al. (2011), Illumination conditions of the lunar polar regions using LOLA topography, Icarus 211, 1066-1081, doi:10.1016/j.icarus.2010.10.030",
+        "consultadoEl": "2026-11-15",
+        "origen": "medido",
+        "resolucionM": 120,
+        "sol": {
+          "centro": 0,
+          "media": 0.0079,
+          "maximo": 0.191,
+          "minimo": 0
+        },
+        "tierra": {
+          "centro": 0,
+          "media": 0.0255,
+          "maximo": 0.272,
+          "minimo": 0
+        },
+        "textoSolKey": null,
+        "textoTierraKey": null,
+        "pctSol": 1,
+        "pctTierra": 3
       }
     }
   ]
