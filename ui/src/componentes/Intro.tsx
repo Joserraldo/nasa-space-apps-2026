@@ -22,7 +22,7 @@ const VINETAS: readonly { ventana: Ventana; adelante: Persona[]; atras?: Persona
   // 3: la tripulación en la mesa redonda, Iris al lado.
   { ventana: "marte_lejos", adelante: ["nino"], atras: ["ingeniera", "doctora", "meteorologa", "ia_base"] },
   // 4: la base que podría construir y los tres medidores.
-  { ventana: "base", adelante: ["nino"], iconos: ["energia", "vida", "escudo"] },
+  { ventana: "base", adelante: ["nino"], iconos: ["energia", "pulmones", "escudo"] },
 ];
 export const TOTAL_VINETAS = VINETAS.length;
 
