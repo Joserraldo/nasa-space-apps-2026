@@ -15,7 +15,7 @@ Una sección por persona, máximo 5 líneas, y nadie edita la de otro (FLUJO §8
 - Única base vigente: nueva implementación de Claude en `escena/personajes/`, cuatro tripulantes e Iris; versiones anteriores retiradas por pedido de María Paula.
 - Continuación: equipo por gesto, reparar/observar/alertar/verificar, quieto en marcha/ruedas y liberación idempotente del esqueleto. Fábricas y preview; escena exclusiva de José, fuera de nuestra entrega.
 - Verificado: typecheck, 690 pruebas (22 de personajes), build y e2e ruta dorada 1/1; capturas nuevas sin errores JS. Humanos 3 calls, Iris 2.
-- Sigue: revisión visual y coordinación de integración con #261/#263; ver `assets/personajes/README.md`. Fidelidad no marcada aprobada.
+- Sigue: revisión visual de la variante B (rama `feat/ui-personajes-b`, apilada sobre #271: cuatro tripulantes e Iris en malla cerrada, `crearPersonajeB`/`crearIrisB`; A intacta) y coordinación con #261/#263. Fidelidad no marcada aprobada.
 
 ## Escenario (Daniel)
 **Rama:** feat/ui-escena-consolidada · **PR:** consolida #206, #223–#232 y #235 · **Tokens:** 🟢
