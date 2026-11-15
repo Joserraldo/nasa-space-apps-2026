@@ -13,7 +13,7 @@ import {
 } from "@solar-shield/engine";
 import { HudBase } from "./componentes/HudBase.js";
 import { IdiomaContext, useT, type Idioma } from "./i18n.js";
-import { ColocarModulos } from "./pantallas/ColocarModulos.js";
+import { PantallaModulos } from "./pantallas/PantallaModulos.js";
 import { ElegirSitio } from "./pantallas/ElegirSitio.js";
 import { Final } from "./pantallas/Final.js";
 import { Satelite } from "./pantallas/Satelite.js";
@@ -140,7 +140,7 @@ function Pantalla({ idioma, setIdioma }: { idioma: Idioma; setIdioma: (i: Idioma
         {j.fase === "sitio" && <ElegirSitio estado={j.estado} onElegir={(s) => enviar({ tipo: "sitio", sitio: s })} />}
         {j.fase === "modulos" && (
           <>
-            <ColocarModulos colocados={j.colocados} onColocar={(m) => enviar({ tipo: "modulo", modulo: m })} onListo={() => enviar({ tipo: "fase", fase: "base" })} />
+            <PantallaModulos estado={j.estado} colocados={j.colocados} onColocar={(m) => enviar({ tipo: "modulo", modulo: m })} onListo={() => enviar({ tipo: "fase", fase: "base" })} />
             {TEMAS_IRIS.find((m) => m === j.colocados.at(-1)) && <PreguntaDeIris key={j.colocados.length} tema={j.colocados.at(-1) as TemaPregunta} nivel={j.estado.iaBase} />}
           </>
         )}
