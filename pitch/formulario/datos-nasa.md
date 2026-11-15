@@ -1,8 +1,8 @@
 # NASA data used and why · Datos de NASA usados y por qué
 
-> **Borrador — un segundo humano lo revisa antes de enviar.**
+> **Borrador actualizado el 15 nov (mañana) por un agente de apoyo a pedido de Santiago — un segundo humano lo revisa antes de enviar.** Fuente única para las fuentes y fechas: `docs/science/datos-usados.md` y `fuentes.md`.
 
-Everything below comes from files inside this repository (`data/`, `docs/science/`). Nothing is live: all data was downloaded on **2026-11-13**, curated by code (`npm run curar`) and bundled in the game. The in-game label says "Real curated data, not live". Unofficial project, not endorsed by NASA.
+Everything below comes from files inside this repository (`data/`, `docs/science/`). Nothing is live: the NASA data was downloaded on **2026-11-13** (the files for the extra missions, section 9, on 13-15 November; each file records its own date), curated by code (`npm run curar`) and bundled in the game. **Playable today: the Jezero mission only (sections 2 to 8).** Section 9 describes data curated for four other missions that exist as data but are not playable. The in-game label says "Real curated data, not live". Unofficial project, not endorsed by NASA.
 
 "POR VERIFICAR" = the repo does not give that detail; a human must confirm it before sending.
 
@@ -91,25 +91,44 @@ Source: NASA OSDR, `https://osdr.nasa.gov/bio/repo/data/studies/<ID>`. Study rec
 | OSD-772 | food | PH-04 Chile Peppers in Space | NASA (Kennedy Space Center); data in NASA OSDR |
 | OSD-546 | bones | SCD – Stem Cell Differentiation Toward Osteoblast Onboard the International Space Station | Experiment selected by ESA; data in NASA OSDR |
 | OSD-360 | radiation | Effects of low dose space radiation exposures on the splenic metabolome | Ground study partly NASA-funded (grant NNX15AD65G); data in NASA OSDR |
+| OSD-269 | food | (see `data/ciencia/osdr.json`) | NASA (Kennedy Space Center); data in NASA OSDR |
+| OSD-314 | food | (see `data/ciencia/osdr.json`) | Experiment in ESA's EMCS, funded by Spain's State Research Agency; data in NASA OSDR |
+| OSD-326 | muscle | (see `data/ciencia/osdr.json`) | Mice in flight (Rodent Habitat, SpaceX-10), funded by NIH and the U.S. Department of Defense; data in NASA OSDR |
+| OSD-289 | immune system | (see `data/ciencia/osdr.json`) | JAXA (Japan) experiment with mice on the ISS; data in NASA OSDR |
+
+The first three rows were checked against the stored OSDR records; **POR VERIFICAR:** copy the exact titles of the last four from `data/ciencia/osdr.json` / `data/samples/osdr-search.json` before sending.
 
 Used only as end-of-game science cards, with no claim beyond what each study says. The kids' text is in `data/i18n` (`datos.ciencia.*`).
 
-## 9. Checked and NOT used
+## 9. Curated for other missions (data only, NOT playable in this version)
+
+These data files exist in the repo for four missions that have data and texts but no playable screen (Moon near side, Moon south pole, Mars north pole, surprise outpost). They are **not** part of the playable demo and are not presented as such. Source of truth: `docs/science/datos-usados.md`.
+
+| Data | Source | Note |
+|---|---|---|
+| Elevation of 3 Moon sites near Apollo 11, 16 and 15 (LOLA DEM, shaded relief), queried 2026-11-14 | NASA Moon Trek (JPL), LRO LOLA (NASA); positions from Moon Trek | Height measured; slope, relief, terrain shielding derived; site sunlight score not available |
+| Six craters at the lunar south pole (terrain, shadow, sunlight, Earth visibility, sky occlusion) | NASA Moon Trek, LOLA; NASA GSFC PGDA, Mazarico et al. 2011 | Scores derived; the possible-ice layer has no verified attribution and generates no game text |
+| Mars north pole elevation (4 sites), queried 2026-11-15 | NASA Mars Trek, MOLA polar DEM; IAU nomenclature | Slope and relief derived; sunlight and shielding not shown |
+| Radiation in lunar orbit (CRaTER) | NASA OSDR RadLab, CRaTER on LRO | Orbit, never presented as a Moon-surface measurement |
+| Sun position at Apollo sites on the 2024 storm dates | NASA SVS 5187 | Computed for a flat horizon |
+| Food cards (meals on the Space Station, CANGrow space farm) | **Canadian Space Agency (a challenge partner, not NASA)**, © Canadian Space Agency, terms https://www.asc-csa.gc.ca/eng/terms.asp#copyright | Credited as CSA, never as NASA |
+
+## 10. Checked and NOT used
 
 - NASA Mars Rover Photos API: returned 404 on 2026-11-13. Not used.
 - APOD: not used.
-- Mars north-pole DEM: Trek `exportImage` errored (HTTP 400). Not used.
 - Mock storms (IDs `MOCK-`): invented, for tests only; labeled "Made-up test data (not real)".
 
-## 10. POR VERIFICAR
+## 11. POR VERIFICAR
 
 - **POR VERIFICAR:** that every source above appears in the official Resources list and Submission Guide of the challenge (the Guide is not in the repo; `docs/reglas.md` says it is unconfirmed).
 - **Resolved:** OSDR science cards are cited as "study records as returned by the OSDR search API on 2026-11-13" (section 8).
 - **Resolved:** SOHO / STEREO. The game shows **no images** from SOHO or STEREO, only the instrument names that DONKI lists in each event, so no image credit is needed. The only images are from Mars Trek (CTX and shaded relief), attributed in section 5.
-- **POR VERIFICAR:** public URL of the deployed game and of the in-game "NASA data we used and why" page (no deployment exists in the repo yet).
+- **POR VERIFICAR:** that the in-game "NASA data we used and why" page (`DatosUsados`, reached from the credits screen on `feat/ui-escenarios`) is in the submitted build, and its exact URL. Deployed games today: preview (develop) https://nasa-space-apps-2026-preview.santiago031541.workers.dev, scenarios branch https://nasa-space-apps-2026-escenarios.santiago031541.workers.dev, production (main) https://nasa-space-apps-2026.santiago031541.workers.dev.
+- **POR VERIFICAR:** that the query date of the Jezero map (section 5, 2026-11-13) still matches `data/terreno/jezero/consulta.json` before sending.
 
 ---
 
 ## Resumen en español
 
-Todo viene de archivos del repo y es **real, curado y no en vivo** (descargado el 2026-11-13). Fuentes: **NASA CCMC DONKI** (8 tormentas con ID, tabla arriba; el Kp lo aporta NOAA y solo vale para la Tierra; las llegadas a Marte de WSA-ENLIL son un cálculo del modelo), **NASA OSDR RadLab** con el instrumento **RAD** del rover Curiosity (el 20 may 2024 la media diaria subió de 4,1 a 79,7 µGy/h, unas 19 veces; es dosis absorbida de un detector y nunca se convierte a mSv) y con **HERA** de Artemis I, **NASA Mars Trek** (mapa de Jezero; pendiente, luz y blindaje los deriva el equipo), dosis de referencia en mSv/día (Marte: NASA, Reitz 2016; Luna e ISS: Zhang 2020, **CNSA, no NASA**), la ficha de Marte de **NASA NSSDC** y 3 estudios de **NASA OSDR** (OSD-772, OSD-546, OSD-360; registros guardados en `data/samples/osdr-search.json`). El retraso Marte–Tierra del paso 7 (unos 3 a 22 min en un sentido) lo calcula el código con las distancias de NSSDC y la velocidad de la luz. El juego no muestra imágenes de SOHO ni STEREO. No usados: Mars Rover Photos (404) y APOD. Los puntos "POR VERIFICAR" están en la sección 10.
+Todo viene de archivos del repo y es **real, curado y no en vivo** (descargado el 2026-11-13). Fuentes: **NASA CCMC DONKI** (8 tormentas con ID, tabla arriba; el Kp lo aporta NOAA y solo vale para la Tierra; las llegadas a Marte de WSA-ENLIL son un cálculo del modelo), **NASA OSDR RadLab** con el instrumento **RAD** del rover Curiosity (el 20 may 2024 la media diaria subió de 4,1 a 79,7 µGy/h, unas 19 veces; es dosis absorbida de un detector y nunca se convierte a mSv) y con **HERA** de Artemis I, **NASA Mars Trek** (mapa de Jezero; pendiente, luz y blindaje los deriva el equipo), dosis de referencia en mSv/día (Marte: NASA, Reitz 2016; Luna e ISS: Zhang 2020, **CNSA, no NASA**), la ficha de Marte de **NASA NSSDC** y 7 estudios de **NASA OSDR** (OSD-772, 546, 360, 269, 314, 326 y 289; registros guardados en `data/samples/osdr-search.json`). Solo se puede jugar la misión de Jezero; los datos de la Luna (Moon Trek, LRO, PGDA), del polo norte de Marte (Mars Trek) y las tarjetas de comida de la **Agencia Espacial Canadiense (socia del reto, no NASA)** son de misiones que existen solo como datos (sección 9). El retraso Marte–Tierra del paso 7 (unos 3 a 22 min en un sentido) lo calcula el código con las distancias de NSSDC y la velocidad de la luz. El juego no muestra imágenes de SOHO ni STEREO. No usados: Mars Rover Photos (404) y APOD. Los puntos "POR VERIFICAR" están en la sección 11.
