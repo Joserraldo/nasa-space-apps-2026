@@ -1,7 +1,8 @@
 /**
  * Vista previa SOLO para desarrollo (`/escena.html` con `npm run dev -w ui`): monta la escena 3D a
  * pantalla completa con una `VistaEscena` de ejemplo, sin pasar por la app. No entra en el build
- * (Vite solo empaqueta `index.html`). Parámetros: `?camara=primera`, `?calidad=baja|media|alta`.
+ * (Vite solo empaqueta `index.html`). Parámetros: `?camara=primera`, `?calidad=baja|media|alta`,
+ * `?modulos=todos` (los cinco módulos funcionando, para revisar formas y presupuesto).
  */
 import type { CalidadGrafica } from "../juego/ajustes";
 import { crearEscena3D } from "./escena3d";
@@ -26,6 +27,9 @@ const VISTA_EJEMPLO: VistaEscena = {
 };
 
 const parametros = new URLSearchParams(location.search);
+if (parametros.get("modulos") === "todos") {
+  for (const id of ["panel_solar", "antena", "reciclador_agua", "escudo", "invernadero"] as const) VISTA_EJEMPLO.modulos[id] = "funcionando";
+}
 const calidad = (["alta", "media", "baja"] as const).find((c) => c === parametros.get("calidad")) ?? "alta";
 const canvas = document.getElementById("escena") as HTMLCanvasElement;
 const escena = crearEscena3D(canvas, {
