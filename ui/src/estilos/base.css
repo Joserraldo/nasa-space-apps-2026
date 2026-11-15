@@ -5,6 +5,7 @@
  * Aquí va solo: caja, tipografía, texto, foco, movimiento reducido y dos utilidades de disposición.
  */
 
+:root { color-scheme: light; }
 *, *::before, *::after { box-sizing: border-box; }
 html, body, #root { height: 100%; margin: 0; }
 
@@ -28,8 +29,17 @@ a { color: var(--color-ciruela); text-underline-offset: 3px; }
 
 /* Controles: heredan la tipografía; el aspecto facetado lo da FacetButton, no una regla global. */
 button, input, select, textarea { font: inherit; color: inherit; }
+/* Legibles mientras tanto: lila con borde ciruela (índigo sobre lila pasa AA). No es el botón facetado. */
+button, select, input, textarea {
+  background: var(--color-lila);
+  border: var(--borde) solid var(--color-ciruela);
+  border-radius: 0;
+  padding: var(--esp-2) var(--esp-4);
+}
 button { font-weight: var(--tipo-peso-etiqueta); min-height: var(--toque-minimo); cursor: pointer; }
+button:disabled { background: var(--color-deshabilitado); color: var(--color-deshabilitado-texto); border-color: var(--color-deshabilitado-texto); }
 button:disabled { cursor: not-allowed; }
+select { min-height: var(--toque-minimo); }
 
 /* Foco: anillo exterior cian con trazo oscuro, nunca recortado (DISEÑO §5.3). */
 :focus-visible {
