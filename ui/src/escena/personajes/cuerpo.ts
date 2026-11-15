@@ -1,16 +1,36 @@
 import type { Paleta } from "./fichas.js";
 import { puntoAnillo, puntosAnillo, type V3 } from "./malla.js";
-import { HUESOS, type NombreHueso } from "./personaje.js";
 import type { Pesos, Superficie } from "./superficie.js";
 
 /**
- * Propuesta B: el traje es UNA superficie cerrada. El tronco son anillos de 12 puntos; los brazos
- * salen de un hueco de seis vértices abierto en el costado y las piernas de partir el anillo de la
- * pelvis con un vértice de entrepierna. Codos y rodillas llevan tres anillos (antes, en, después)
- * con pesos 1 / 0,5 / 1, como en la guía de malla.
+ * Traje en superficie cerrada: el tronco son anillos de 12 puntos; los brazos salen de un hueco de
+ * seis vértices abierto en el costado y las piernas de partir el anillo de la pelvis con un vértice
+ * de entrepierna. Codos y rodillas llevan tres anillos (antes, en, después) con pesos 1 / 0,5 / 1.
  *
  * Unidades: fracción de la altura total (suelo a tope del casco). +Z frente, +X izquierda del personaje.
  */
+
+export const HUESOS = [
+  "pelvis",
+  "torso",
+  "cabeza",
+  "brazoI",
+  "antebrazoI",
+  "manoI",
+  "brazoD",
+  "antebrazoD",
+  "manoD",
+  "musloI",
+  "espinillaI",
+  "pieI",
+  "musloD",
+  "espinillaD",
+  "pieD",
+  "tableta",
+  "llave",
+  "catalejo",
+] as const;
+export type NombreHueso = (typeof HUESOS)[number];
 
 export const H = Object.fromEntries(HUESOS.map((n, i) => [n, i])) as Record<NombreHueso, number>;
 

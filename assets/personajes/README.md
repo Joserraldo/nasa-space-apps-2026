@@ -72,12 +72,12 @@ Nueve PNG, 3302753 bytes (3.15 MiB). Están fuera del PR de código; el manifies
 
 La implementación elegida por María Paula es esta. #261 y #263 son alternativas solapadas: no deben fusionarse junto con esta versión. Este PR no modifica ni cierra esas ramas ajenas.
 
-## Variante B (en revisión)
+## Construcción en superficie cerrada (variante B en uso, variante A retirada)
 
-Segunda construcción de los mismos personajes, con la misma interfaz que la A (`Personaje`, `Iris`), así que `animar` y los gestos funcionan sin cambios. La A no se modifica.
+Los cuatro tripulantes e Iris usan únicamente la construcción de superficies cerradas (`superficie.ts`); la versión inicial de triángulos sueltos y las hojas A/B temporales se retiraron tras la aprobación visual en #316.
 
-- `crearPersonajeB(id)` en `ui/src/escena/personajes/personajeB.ts`: traje y cabeza son superficies cerradas de vértices compartidos (`superficie.ts`), con pesos mezclados en codos y rodillas. Rostro en `rostroB.ts`: ocho expresiones comunes y ajustes por personaje (`gestos`, `irisEscala`, `parpado`, `cejaGrosor`).
-- `crearIrisB()` en `irisB.ts`: chasis en una superficie cerrada, mismas seis caras y animación, más paneles laterales plegables (`animar(t, { paneles: 0..1 })`).
-- Hojas de revisión: `/personajes-ab.html?p=nino|doctora|meteorologa|ingeniera` (`&encuadre=cabeza`, `&modo=caras|gestos`, `&acabado=malla`, `&casco=1`) y `/personajes-iris.html` (`?modo=caras|estados`, `?acabado=malla`).
+- `crearPersonaje(id)` en `ui/src/escena/personajes/personaje.ts`: traje (`cuerpo.ts`) y cabeza (`cabeza.ts`) son superficies cerradas de vértices compartidos (`superficie.ts`), con pesos mezclados en codos y rodillas. Rostro en `rostro.ts`: ocho expresiones proyectadas sobre la piel y ajustes por personaje (`gestos`, `irisEscala`, `parpado`, `cejaGrosor`).
+- `crearIris()` en `ui/src/escena/personajes/iris.ts`: chasis en una superficie cerrada, seis caras de pantalla, ruedas por velocidad, señal de avería y paneles laterales plegables (`animar(t, { paneles: 0..1 })`).
+- Hoja de revisión única: `/personajes.html` (`?p=nino|doctora|meteorologa|ingeniera|iris`, `&modo=caras|gestos`, `&vivo=1`).
 - Capturas en `assets/personajes/capturas/<personaje>-b/`, hechas con `herramientas/capturar.mjs`.
-- Coste medido en la hoja: humanos 3 llamadas y 3446 a 3791 triángulos (A: 2399 a 2788); Iris 2 llamadas y 1448 (A: 956).
+- Coste medido en la hoja: humanos 3 llamadas y 3446 a 3791 triángulos; Iris 2 llamadas y 1448 triángulos.
