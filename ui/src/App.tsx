@@ -13,7 +13,8 @@ import {
   type Novedades,
   type PuntajeSitio,
 } from "@solar-shield/engine";
-import { Hud } from "./componentes/Hud.js";
+import { HudBase } from "./componentes/HudBase.js";
+import { Icono } from "./componentes/base/Iconos.js";
 import { Tripulacion } from "./componentes/Tripulacion.js";
 import { describirAccion } from "./componentes/Dialogos.js";
 import { IdiomaContext, useT, type Idioma } from "./i18n.js";
@@ -128,20 +129,10 @@ function Pantalla({ idioma, setIdioma }: { idioma: Idioma; setIdioma: (i: Idioma
 
   return (
     <div className="app">
-      {/* La barra vieja se borra en la tarea 0; las pantallas nuevas ocupan toda la ventana sin ella. */}
-      {j.fase !== "inicio" && j.fase !== "final" && <header className="barra">
-        <span className="titulo">🛡️ {t("ui.titulo")}</span>
-        {enBase && (
-          <>
-            <span>{t("ui.dia", { dia: j.estado.dia })} · {t("ui.tick", { tick: j.estado.tick })}</span>
-            <button className="secundario" onClick={() => enviar({ tipo: "pausa", pausado: !j.estado.pausado })} aria-pressed={j.estado.pausado}>
-              {j.estado.pausado ? `▶ ${t("ui.reanudar")}` : `⏸ ${t("ui.pausa")}`}
-            </button>
-            <label>{t("ui.velocidad")} <select value={velocidad} onChange={(e) => setVelocidad(Number(e.target.value))}><option value={0.5}>0.5x</option><option value={1}>1x</option><option value={2}>2x</option></select></label>
-          </>
-        )}
-        <label>{t("ui.idioma")} <select value={idioma} onChange={(e) => setIdioma(e.target.value as Idioma)}><option value="en">English</option><option value="es">Español</option></select></label>
-      </header>}
+      {(j.fase === "modulos" || enBase || j.fase === "tormenta") && (
+        <HudBase estado={j.estado} ultimas={enBase ? j.ultimas : null}
+          reloj={enBase ? { velocidad, onPausa: () => enviar({ tipo: "pausa", pausado: !j.estado.pausado }), onVelocidad: setVelocidad } : undefined} />
+      )}
 
       <main className={enBase ? "juego" : ""}>
         {j.fase === "inicio" && inicio === "portada" && (
@@ -155,22 +146,19 @@ function Pantalla({ idioma, setIdioma }: { idioma: Idioma; setIdioma: (i: Idioma
         {j.fase === "sitio" && <ElegirSitio estado={j.estado} onElegir={(s) => enviar({ tipo: "sitio", sitio: s })} />}
         {j.fase === "modulos" && (
           <>
-            <Hud estado={j.estado} />
             <ColocarModulos colocados={j.colocados} onColocar={(m) => enviar({ tipo: "modulo", modulo: m })} onListo={() => enviar({ tipo: "fase", fase: "base" })} />
             {TEMAS_IRIS.find((m) => m === j.colocados.at(-1)) && <PreguntaDeIris key={j.colocados.length} tema={j.colocados.at(-1) as TemaPregunta} nivel={j.estado.iaBase} />}
           </>
         )}
         {j.fase === "tormenta" && (
           <>
-            <Hud estado={j.estado} />
             <Tormenta estado={j.estado} onDecidir={(previas, opcionId) => enviar({ tipo: "dilema", previas, opcionId })} onAccion={accion} />
           </>
         )}
         {enBase && (
           <>
             <div className="columna">
-              <Hud estado={j.estado} />
-              <section className="tarjeta columna" aria-label={t("ui.acciones.titulo")}>
+                <section className="tarjeta columna" aria-label={t("ui.acciones.titulo")}>
                 <h2>{t("ui.acciones.titulo")}</h2>
                 <p><span className="etiqueta">{t(`ui.iris.estado.${j.estado.iaBase}`)}</span></p>
                 <div className="fila">
@@ -179,16 +167,16 @@ function Pantalla({ idioma, setIdioma }: { idioma: Idioma; setIdioma: (i: Idioma
                   <button className="secundario" onClick={() => accion({ tipo: "subir_escudo", nivel: 1 })}>{t("ui.accion.subir_escudo")}</button>
                   <button className="secundario" onClick={() => accion({ tipo: "salida_exterior", objetivo: "panel_solar" })}>{t("ui.accion.salida_exterior")}</button>
                   {j.estado.iaBase === "danada" && <button className="peligro" onClick={() => accion({ tipo: "reparar", equipo: "ia_base" })}>{t("ui.accion.reparar_ia")}</button>}
-                  {tormentaActiva(j.estado) && !tele && <button className="solar" onClick={() => accion({ tipo: "enviar_telemetria" })}>📡 {t("ui.paso.7.telemetria")}</button>}
+                  {tormentaActiva(j.estado) && !tele && <button className="solar" onClick={() => accion({ tipo: "enviar_telemetria" })}><Icono nombre="satelite" tam={20} /> {t("ui.paso.7.telemetria")}</button>}
                 </div>
-                {tele && <p>📡 {t("ui.paso.7.llegando", { ticks: tele.ticksRestantes })}</p>}
+                {tele && <p><Icono nombre="satelite" tam={20} /> {t("ui.paso.7.llegando", { ticks: tele.ticksRestantes })}</p>}
                 {j.estado.pausado && j.ultimas && (
                   <div className="tarjeta alerta" role="status">
-                    {j.ultimas.malaSuerte.map((c, i) => <p key={`m${i}`}>⚠ {t("ui.novedad.mala_suerte")}: {t(c.descripcionKey)} <span className="delta menos">{c.delta}</span></p>)}
-                    {j.ultimas.iaCambio && <p>◉ {t(`ui.iris.estado.${j.ultimas.iaCambio.a}`)}</p>}
-                    {j.ultimas.efectosLlegaron.map((c, i) => <p key={`e${i}`}>✓ {t("ui.novedad.efecto")}: {t(c.descripcionKey)} <span className="delta mas">+{c.delta}</span></p>)}
+                    {j.ultimas.malaSuerte.map((c, i) => <p key={`m${i}`}><Icono nombre="aviso" tam={20} /> {t("ui.novedad.mala_suerte")}: {t(c.descripcionKey)} <span className="delta menos">{c.delta}</span></p>)}
+                    {j.ultimas.iaCambio && <p><Icono nombre="aviso" tam={20} /> {t(`ui.iris.estado.${j.ultimas.iaCambio.a}`)}</p>}
+                    {j.ultimas.efectosLlegaron.map((c, i) => <p key={`e${i}`}><Icono nombre="check_exito" tam={20} /> {t("ui.novedad.efecto")}: {t(c.descripcionKey)} <span className="delta mas">+{c.delta}</span></p>)}
                     {j.ultimas.malaSuerte.some((c) => c.descripcionKey === "mala_suerte.tormenta_polvo") && <Polvo estado={j.estado} onAccion={accion} onElegir={(a) => { accion(a); enviar({ tipo: "pausa", pausado: false }); }} />}
-                    <button onClick={() => enviar({ tipo: "pausa", pausado: false })}>▶ {t("ui.reanudar")}</button>
+                    <button onClick={() => enviar({ tipo: "pausa", pausado: false })}><Icono nombre="jugar" tam={20} /> {t("ui.reanudar")}</button>
                   </div>
                 )}
                 <details>
