@@ -17,8 +17,10 @@ Una sección por persona, máximo 5 líneas, y nadie edita la de otro (FLUJO §8
 - Bloqueo: ninguno.
 
 ## Escenario (Daniel)
-**Rama:** — · **PR:** ninguno · **Tokens:** —
-- Sin registrar todavía.
+**Rama:** feat/ui-escena-caminos · **PR:** #206 y división #223–230 · **Tokens:** 🟢
+- Hecho: extraídos materiales, cielo, terreno, kit, edificios y módulos en PRs pequeños; caminos verificados con 535 pruebas, tipos y build.
+- Sigue: armado exterior, integración de tokens ya disponibles y correcciones de composición contra mundo/01.
+- Bloqueo: medición física en celular y PC viejo pendiente.
 
 ## Ubicación (Camilo)
 **Rama:** — · **PR:** ninguno · **Tokens:** —
