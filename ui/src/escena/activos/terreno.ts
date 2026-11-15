@@ -191,6 +191,35 @@ export function alturaEnMundo(
   return fu + fv <= 1 ? a + fu * (b - a) + fv * (d - a) : e + (1 - fu) * (d - e) + (1 - fv) * (b - e);
 }
 
+export interface Claro {
+  /** Rejilla con el disco central aplanado (metros, como la original). */
+  rejilla: Rejilla;
+  /** Altura de mundo del claro: baja el terreno esta cantidad para que el claro quede en y = 0. */
+  altura: number;
+}
+
+/**
+ * Aplana un disco de `radio` (unidades de mundo) alrededor del origen a la altura que tenía su
+ * centro, y suaviza el borde hasta `borde` (smoothstep), para apoyar la base en y = 0 con el
+ * relieve de Jezero alrededor. No modifica la rejilla de entrada.
+ */
+export function aplanarClaro(r: Rejilla, opciones: OpcionesMalla, radio: number, borde: number): Claro {
+  const m = marco(r, opciones);
+  const centroM = m.hCentro + alturaEnMundo(r, opciones, 0, 0, m) / m.escalaY;
+  const alturas = new Float32Array(r.alturas.length);
+  for (let f = 0; f < r.alto; f++) {
+    for (let c = 0; c < r.ancho; c++) {
+      const i = f * r.ancho + c;
+      const d = Math.hypot(m.x0 + c * m.paso, m.z0 + f * m.paso);
+      const t = Math.min(1, Math.max(0, (d - radio) / Math.max(1e-6, borde - radio)));
+      const w = t * t * (3 - 2 * t);
+      alturas[i] = centroM + ((r.alturas[i] ?? centroM) - centroM) * w;
+    }
+  }
+  const rejilla: Rejilla = { alturas, ancho: r.ancho, alto: r.alto };
+  return { rejilla, altura: alturaEnMundo(rejilla, opciones, 0, 0) };
+}
+
 export interface TransformacionRoca {
   posicion: [number, number, number];
   escala: [number, number, number];
@@ -201,6 +230,8 @@ export interface TransformacionRoca {
 export interface OpcionesRocas {
   /** Radio (unidades de mundo) alrededor del origen donde caen las rocas. Por defecto 0,45·lado. */
   radio?: number;
+  /** Radio libre de rocas alrededor del origen (el claro de la base). Por defecto 0. */
+  radioMin?: number;
   escalaMin?: number;
   escalaMax?: number;
 }
@@ -231,13 +262,14 @@ export function rocasBasalticas(
 ): TransformacionRoca[] {
   const azar = aleatorio(semilla);
   const radio = opciones.radio ?? opcionesMalla.tamañoMundo * 0.45;
+  const radioMin = Math.min(radio, Math.max(0, opciones.radioMin ?? 0));
   const eMin = opciones.escalaMin ?? 0.4;
   const eMax = opciones.escalaMax ?? 1.6;
   const rocas: TransformacionRoca[] = [];
   const m = marco(terreno, opcionesMalla); // una vez, no por roca
   for (let i = 0; i < n; i++) {
     const ang = azar() * Math.PI * 2;
-    const dist = Math.sqrt(azar()) * radio;
+    const dist = radioMin > 0 ? Math.sqrt(radioMin * radioMin + azar() * (radio * radio - radioMin * radioMin)) : Math.sqrt(azar()) * radio;
     const x = Math.cos(ang) * dist;
     const z = Math.sin(ang) * dist;
     const e = eMin + azar() * (eMax - eMin);
@@ -342,9 +374,15 @@ function geometriaRoca(): THREE.BufferGeometry {
  * `n` rocas basálticas en UN `InstancedMesh` (1 draw call + su sombra) sobre `terreno`.
  * Geometría maestra compartida de la caché; cara superior `regolito-medio`, lados `roca-basalto`.
  */
-export function crearRocas(materiales: Materiales, terreno: Terreno3D, n: number, semilla: number): THREE.InstancedMesh {
+export function crearRocas(
+  materiales: Materiales,
+  terreno: Terreno3D,
+  n: number,
+  semilla: number,
+  opciones: OpcionesRocas = {},
+): THREE.InstancedMesh {
   const geo = geometriaBase("roca-basalto", geometriaRoca);
-  const rocas = rocasBasalticas(semilla, n, terreno.rejilla, terreno.opciones);
+  const rocas = rocasBasalticas(semilla, n, terreno.rejilla, terreno.opciones, opciones);
   const malla = new THREE.InstancedMesh(geo, materiales.Rock, rocas.length);
   malla.name = "Rocks_Basalt";
   const m = new THREE.Matrix4();
