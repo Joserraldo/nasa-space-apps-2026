@@ -206,5 +206,7 @@
   "datos.terreno.luna.frio": "Parts of the ground here stay colder than -163 °C, even in summer.",
   "datos.terreno.luna.sol": "Here the Sun shines about {pct}% of the time.",
   "datos.terreno.luna.tierra": "From here you can see Earth about {pct}% of the time, so messages can go straight home.",
-  "fuente.pgda": "NASA Goddard PGDA (lunar polar illumination, Mazarico et al. 2011)"
+  "datos.terreno.luna.cielo": "The crater walls hide part of the sky, so less space radiation reaches here.",
+  "fuente.pgda": "NASA Goddard PGDA (lunar polar illumination, Mazarico et al. 2011)",
+  "fuente.li2018": "Li et al. 2018, PNAS (M3 instrument, NASA, on India's Chandrayaan-1)"
 }

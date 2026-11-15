@@ -35,10 +35,10 @@ describe("terreno Luna polo sur", () => {
   });
 
 
-  it("blindaje queda pendiente (null), no inventado; luz = iluminación solar media del recuadro (PGDA)", () => {
-    expect(t.fuente.pendientes).toEqual(["blindaje", "citaHielo"]);
+  it("citaHielo sigue pendiente; luz = iluminación solar media del recuadro (PGDA); blindaje = cielo tapado medio (derivado)", () => {
+    expect(t.fuente.pendientes).toEqual(["citaHielo"]);
     for (const s of t.sitios) {
-      expect(s.puntajes.blindaje).toBeNull();
+      expect(s.puntajes.blindaje).toBe(Math.round(s.cielo!.cieloTapado.media * 100) / 100);
       expect(s.puntajes.luz).toBe(Math.round(s.iluminacion!.sol.media * 100) / 100);
     }
   });
@@ -113,8 +113,10 @@ describe("hielo, sombra permanente y frío (Moon Trek)", () => {
     for (const s of t.sitios) {
       const h = s.hieloSombra!;
       expect(h.sombraPermanente.textoKey !== null, s.id + " sombra").toBe(h.sombraPermanenteLola!.fraccion > 0.01);
-      // SP_IceLoc_280m no tiene cita verificada: el texto de hielo no se asigna a ningún sitio
+      // SP_IceLoc_280m: atribución a Li et al. 2018 NO verificada (solo contexto): el texto de hielo no se asigna a ningún sitio
       expect(h.senalHielo.citaVerificada, s.id).toBe(false);
+      expect(h.senalHielo.atribucionCapa, s.id).toBe("no verificada");
+      expect(h.senalHielo.cita, s.id).toContain("10.1073/pnas.1802345115");
       expect(h.senalHielo.textoKey, s.id + " hielo").toBeNull();
       expect(h.temperatura.textoKey !== null, s.id + " frío").toBe(h.temperatura.fraccionBajo110KVerano >= 0.01);
       for (const k of [h.sombraPermanente.textoKey, h.senalHielo.textoKey, h.temperatura.textoKey].filter((x): x is string => !!x)) {
@@ -131,6 +133,35 @@ describe("hielo, sombra permanente y frío (Moon Trek)", () => {
       expect(T.fraccionBajo110KInvierno, s.id).toBeGreaterThanOrEqual(0);
       if (T.fraccionBajo110KVerano > 0) expect(T.minimoMaxVeranoK, s.id).not.toBeNull();
     }
+  });
+});
+
+describe("cielo tapado por el relieve (PGDA SKYV_65S_240M, proxy del blindaje natural)", () => {
+  const por = Object.fromEntries(t.sitios.map((s) => [s.id, s.cielo!]));
+  it("ángulo sólido en 0–4π sr, fracción tapada en 0–1 y coherente con 1 − min(Ω,2π)/2π", () => {
+    for (const s of t.sitios) {
+      const c = s.cielo!;
+      expect(c.capa).toBe("SKYV_65S_240M");
+      expect(c.origen).toBe("derivado");
+      expect(c.cita).toContain("Mazarico");
+      expect(c.cieloVisibleSr.centro).toBeGreaterThan(0);
+      expect(c.cieloVisibleSr.maximo).toBeLessThanOrEqual(4 * Math.PI);
+      expect(c.cieloTapado.centro).toBeCloseTo(1 - Math.min(c.cieloVisibleSr.centro, 2 * Math.PI) / (2 * Math.PI), 3);
+      expect(c.cieloTapado.media).toBeGreaterThanOrEqual(0);
+      expect(c.cieloTapado.media).toBeLessThanOrEqual(1);
+    }
+  });
+  it("sentido físico: el fondo de Shackleton ve menos cielo que Nobile", () => {
+    expect(por["shackleton"]!.cieloTapado.centro).toBeGreaterThan(por["nobile"]!.cieloTapado.centro);
+    expect(por["shackleton"]!.cieloTapado.media).toBeGreaterThan(por["malapert"]!.cieloTapado.media);
+  });
+  it("el texto solo aparece si la media tapada ≥ 0,2, existe en es/en y no promete dosis", () => {
+    for (const s of t.sitios) {
+      const c = s.cielo!;
+      expect(c.textoKey !== null, s.id).toBe(c.cieloTapado.media >= 0.2);
+      if (c.textoKey) { expect(es[c.textoKey]).toBeTruthy(); expect(en[c.textoKey]).toBeTruthy(); expect(en[c.textoKey]).not.toMatch(/mSv|safe|drink/i); }
+    }
+    expect(por["shackleton"]!.textoKey).toBe("datos.terreno.luna.cielo");
   });
 });
 

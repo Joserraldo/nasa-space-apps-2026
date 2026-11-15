@@ -1,7 +1,7 @@
 /**
  * data/terreno/luna-polo-sur (Moon Trek) → luna-polo-sur.json. Sin red.
  * Elevación = medida (LOLA polar 30 m). Pendiente (radio 1,5 km, igual que Jezero y luna-visible), relieve y
- * puntaje "plano" = DERIVADOS. Luz: Moon Trek no tiene capa de iluminación media → null. Blindaje: sin fuente → null.
+ * puntaje "plano" = DERIVADOS. Luz: Moon Trek no tiene capa de iluminación media → null. Blindaje = DERIVADO de PGDA SKYV (fracción del cielo tapada por el relieve; cielo.json).
  */
 import { readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
@@ -38,8 +38,13 @@ function curarHielo(h: any) {
     senalHielo: {
       capa: "SP_IceLoc_280m", instrumento: null, consultadoEl: el, url: `${ARCGIS}/SP_IceLoc_280m/MapServer/0`, origen: "derivado" as const,
       puntosEnRecuadro: h.hielo.puntos.length,
-      // sin cita verificada de la capa: no se asigna el texto de hielo a ningún sitio (pendiente)
+      // Ni la capa ni el catálogo de Moon Trek declaran su artículo. Li et al. 2018 es el candidato (contexto), NO verificado:
+      // el texto de hielo sigue apagado y "citaHielo" sigue pendiente hasta verificar la atribución.
+      atribucionCapa: "no verificada" as const,
       citaVerificada: false,
+      cita: "Li, S., et al. (2018), Direct evidence of surface exposed water ice in the lunar polar regions, PNAS 115(36), 8907-8912, doi:10.1073/pnas.1802345115 (solo contexto, atribución de la capa no verificada)",
+      instrumentoArticulo: "M3 (NASA) en Chandrayaan-1 (ISRO)",
+      puntosEnSombraPermanente: (h.hielo.puntosEnSombra as number | undefined) ?? 0,
       textoKey: null,
     },
     temperatura: {
@@ -72,6 +77,17 @@ function curarLuz(l: any, id: string) {
     pctSol, pctTierra,
   };
 }
+/** Cielo tapado por el relieve desde cielo.json (luna-sur-cielo.ts). Texto solo si la media tapada ≥ 0,2 (umbral fijado antes de ver los datos). */
+function curarCielo(c: any, id: string) {
+  const s = c.sitios.find((x: any) => x.id === id);
+  if (!s) throw new Error("falta " + id + " en cielo.json (npm run luna-sur:cielo)");
+  return {
+    capa: c.capa.archivo, url: c.capa.url, pagina: c.pagina, cita: c.cita, consultadoEl: c.consultadoEl,
+    origen: "derivado" as const, resolucionM: c.resolucionM,
+    cieloVisibleSr: s.cieloVisibleSr, cieloTapado: s.cieloTapado,
+    textoKey: s.cieloTapado.media >= 0.2 ? "datos.terreno.luna.cielo" : null,
+  };
+}
 const r1 = (x: number) => Math.round(x * 10) / 10;
 const r2 = (x: number) => Math.round(x * 100) / 100;
 
@@ -82,6 +98,7 @@ export function curarLunaSur(): TerrenoLunaPoloSur {
   const hielo = JSON.parse(readFileSync(join(DIR, "hielo.json"), "utf-8"));
   if (hielo.sitios.length !== consulta.sitios.length) throw new Error("hielo.json no coincide con consulta.json");
   const luz = JSON.parse(readFileSync(join(DIR, "luz.json"), "utf-8"));
+  const cielo = JSON.parse(readFileSync(join(DIR, "cielo.json"), "utf-8"));
   const sitios: SitioLunaSur[] = consulta.sitios.map((s: any) => {
     const b = readFileSync(join(DIR, s.id, "elevacion.bin"));
     const h = new Int16Array(b.buffer, b.byteOffset, b.length / 2);
@@ -113,7 +130,8 @@ export function curarLunaSur(): TerrenoLunaPoloSur {
       relieveM: Math.max(...h) - Math.min(...h),
       hieloSombra: curarHielo({ consultadoEl: hielo.consultadoEl, capaPsrLola: hielo.sombraPermanenteLola, ...hielo.sitios.find((x: any) => x.id === s.id) }),
       iluminacion: curarLuz(luz, s.id),
-      puntajes: { plano: r2(Math.min(1, Math.max(0, 1 - pendiente / REGLAS.pendienteMaxGrados))), luz: luzMedia(luz, s.id), blindaje: null },
+      cielo: curarCielo(cielo, s.id),
+      puntajes: { plano: r2(Math.min(1, Math.max(0, 1 - pendiente / REGLAS.pendienteMaxGrados))), luz: luzMedia(luz, s.id), blindaje: r2(cielo.sitios.find((x: any) => x.id === s.id).cieloTapado.media) },
     };
   });
   return TerrenoLunaPoloSurSchema.parse({
@@ -128,7 +146,7 @@ export function curarLunaSur(): TerrenoLunaPoloSur {
       consultadoEl: consulta.consultadoEl,
       estadoDato: "curado",
       derivadoKey: "datos.terreno.derivado",
-      pendientes: ["blindaje", "citaHielo"],
+      pendientes: ["citaHielo"],
     },
   });
 }

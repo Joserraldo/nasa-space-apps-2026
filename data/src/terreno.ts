@@ -246,8 +246,16 @@ export const HieloSombraSchema = z.object({
   /** SP_IceLoc_280m: puntos con "señal de hielo" dentro del recuadro. La capa no documenta qué mide. */
   senalHielo: CapaHieloSchema.extend({
     puntosEnRecuadro: z.number().int().min(0),
-    /** false = la capa no tiene cita verificada: el texto de hielo NO se asigna hasta que la haya. */
+    /** true solo si la atribución de la capa a un artículo está verificada. false = el texto de hielo NO se asigna. */
     citaVerificada: z.boolean().optional(),
+    /** "no verificada" = ni la capa ni el catálogo de Moon Trek declaran su artículo. */
+    atribucionCapa: z.enum(["declarada", "no verificada"]).optional(),
+    /** Artículo candidato, SOLO como contexto (no está verificado que la capa salga de él). */
+    cita: z.string().optional(),
+    /** Instrumento del artículo (la capa no lo declara). */
+    instrumentoArticulo: z.string().optional(),
+    /** Puntos que caen en sombra permanente (Sol = 0 en PGDA 240 m): comprobación de coherencia, no del artículo. */
+    puntosEnSombraPermanente: z.number().int().min(0).optional(),
     textoKey: z.string().nullable(),
   }),
   /** DIVINER máximo estacional < 110 K (verano e invierno del sur). */
@@ -295,6 +303,25 @@ export const IluminacionSchema = z.object({
 });
 export type Iluminacion = z.infer<typeof IluminacionSchema>;
 
+/** Visibilidad del cielo (PGDA SKYV_65S_240M, LOLA): ángulo sólido del cielo visible, en estereorradianes (2π = suelo llano, 4π = sin obstáculos). */
+export const CieloSchema = z.object({
+  capa: z.string(),
+  url: z.string().url(),
+  pagina: z.string().url(),
+  cita: z.string(),
+  consultadoEl: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+  /** Valor del producto (medido) y fracción tapada (derivada). */
+  origen: z.literal("derivado"),
+  resolucionM: z.number(),
+  /** Medido: ángulo sólido (sr) en el centro y media/mín/máx del recuadro. */
+  cieloVisibleSr: z.object({ centro: z.number().min(0).max(4 * Math.PI), media: z.number().min(0).max(4 * Math.PI), minimo: z.number().min(0), maximo: z.number().max(4 * Math.PI) }),
+  /** Derivado: 1 − min(Ω, 2π)/2π = parte del cielo de un suelo llano que tapa el relieve (0–1). */
+  cieloTapado: z.object({ centro: Puntaje, media: Puntaje }),
+  /** Texto "las paredes tapan parte del cielo": solo si la media tapada ≥ 0,2. */
+  textoKey: z.string().nullable(),
+});
+export type Cielo = z.infer<typeof CieloSchema>;
+
 export const SitioLunaSurSchema = SitioLunaSchema.omit({ mision: true, bbox: true, sombreado: true }).extend({
   /** Nombre del accidente en el nomenclátor IAU (capa CombinedNomenclature de Moon Trek). */
   nombreIau: z.string(),
@@ -306,6 +333,8 @@ export const SitioLunaSurSchema = SitioLunaSchema.omit({ mision: true, bbox: tru
   hieloSombra: HieloSombraSchema.optional(),
   /** Luz del Sol y de la Tierra (PGDA). */
   iluminacion: IluminacionSchema.optional(),
+  /** Cielo tapado por el relieve (proxy del blindaje natural). */
+  cielo: CieloSchema.optional(),
 });
 export type SitioLunaSur = z.infer<typeof SitioLunaSurSchema>;
 

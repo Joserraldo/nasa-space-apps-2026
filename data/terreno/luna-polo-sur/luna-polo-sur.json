@@ -11,7 +11,6 @@
     "estadoDato": "curado",
     "derivadoKey": "datos.terreno.derivado",
     "pendientes": [
-      "blindaje",
       "citaHielo"
     ]
   },
@@ -35,7 +34,7 @@
       "puntajes": {
         "plano": 0.09,
         "luz": 0.01,
-        "blindaje": null
+        "blindaje": 0.29
       },
       "nombreIau": "Shackleton",
       "diametroKm": 21,
@@ -78,6 +77,10 @@
           "origen": "derivado",
           "puntosEnRecuadro": 36,
           "citaVerificada": false,
+          "atribucionCapa": "no verificada",
+          "cita": "Li, S., et al. (2018), Direct evidence of surface exposed water ice in the lunar polar regions, PNAS 115(36), 8907-8912, doi:10.1073/pnas.1802345115 (solo contexto, atribución de la capa no verificada)",
+          "instrumentoArticulo": "M3 (NASA) en Chandrayaan-1 (ISRO)",
+          "puntosEnSombraPermanente": 33,
           "textoKey": null
         },
         "temperatura": {
@@ -120,6 +123,26 @@
         "textoTierraKey": "datos.terreno.luna.tierra",
         "pctSol": 1,
         "pctTierra": 8
+      },
+      "cielo": {
+        "capa": "SKYV_65S_240M",
+        "url": "http://imbrium.mit.edu/EXTRAS/ILLUMINATION/IMG/SKYV_65S_240M.IMG",
+        "pagina": "https://pgda.gsfc.nasa.gov/products/69",
+        "cita": "Mazarico, E., et al. (2011), Illumination conditions of the lunar polar regions using LOLA topography, Icarus 211, 1066-1081, doi:10.1016/j.icarus.2010.10.030",
+        "consultadoEl": "2026-11-15",
+        "origen": "derivado",
+        "resolucionM": 240,
+        "cieloVisibleSr": {
+          "centro": 4.0586,
+          "media": 4.4367,
+          "minimo": 3.8624,
+          "maximo": 6.3674
+        },
+        "cieloTapado": {
+          "centro": 0.3541,
+          "media": 0.2939
+        },
+        "textoKey": "datos.terreno.luna.cielo"
       }
     },
     {
@@ -140,7 +163,7 @@
       "puntajes": {
         "plano": 0.08,
         "luz": 0,
-        "blindaje": null
+        "blindaje": 0.14
       },
       "nombreIau": "Haworth",
       "diametroKm": 51.4231,
@@ -181,6 +204,10 @@
           "origen": "derivado",
           "puntosEnRecuadro": 20,
           "citaVerificada": false,
+          "atribucionCapa": "no verificada",
+          "cita": "Li, S., et al. (2018), Direct evidence of surface exposed water ice in the lunar polar regions, PNAS 115(36), 8907-8912, doi:10.1073/pnas.1802345115 (solo contexto, atribución de la capa no verificada)",
+          "instrumentoArticulo": "M3 (NASA) en Chandrayaan-1 (ISRO)",
+          "puntosEnSombraPermanente": 20,
           "textoKey": null
         },
         "temperatura": {
@@ -223,6 +250,26 @@
         "textoTierraKey": null,
         "pctSol": 0,
         "pctTierra": 2
+      },
+      "cielo": {
+        "capa": "SKYV_65S_240M",
+        "url": "http://imbrium.mit.edu/EXTRAS/ILLUMINATION/IMG/SKYV_65S_240M.IMG",
+        "pagina": "https://pgda.gsfc.nasa.gov/products/69",
+        "cita": "Mazarico, E., et al. (2011), Illumination conditions of the lunar polar regions using LOLA topography, Icarus 211, 1066-1081, doi:10.1016/j.icarus.2010.10.030",
+        "consultadoEl": "2026-11-15",
+        "origen": "derivado",
+        "resolucionM": 240,
+        "cieloVisibleSr": {
+          "centro": 5.3834,
+          "media": 5.431,
+          "minimo": 4.5972,
+          "maximo": 5.6026
+        },
+        "cieloTapado": {
+          "centro": 0.1432,
+          "media": 0.1356
+        },
+        "textoKey": null
       }
     },
     {
@@ -243,7 +290,7 @@
       "puntajes": {
         "plano": 0.35,
         "luz": 0,
-        "blindaje": null
+        "blindaje": 0.14
       },
       "nombreIau": "Faustini",
       "diametroKm": 42.4846,
@@ -286,6 +333,10 @@
           "origen": "derivado",
           "puntosEnRecuadro": 9,
           "citaVerificada": false,
+          "atribucionCapa": "no verificada",
+          "cita": "Li, S., et al. (2018), Direct evidence of surface exposed water ice in the lunar polar regions, PNAS 115(36), 8907-8912, doi:10.1073/pnas.1802345115 (solo contexto, atribución de la capa no verificada)",
+          "instrumentoArticulo": "M3 (NASA) en Chandrayaan-1 (ISRO)",
+          "puntosEnSombraPermanente": 9,
           "textoKey": null
         },
         "temperatura": {
@@ -328,6 +379,26 @@
         "textoTierraKey": "datos.terreno.luna.tierra",
         "pctSol": 0,
         "pctTierra": 11
+      },
+      "cielo": {
+        "capa": "SKYV_65S_240M",
+        "url": "http://imbrium.mit.edu/EXTRAS/ILLUMINATION/IMG/SKYV_65S_240M.IMG",
+        "pagina": "https://pgda.gsfc.nasa.gov/products/69",
+        "cita": "Mazarico, E., et al. (2011), Illumination conditions of the lunar polar regions using LOLA topography, Icarus 211, 1066-1081, doi:10.1016/j.icarus.2010.10.030",
+        "consultadoEl": "2026-11-15",
+        "origen": "derivado",
+        "resolucionM": 240,
+        "cieloVisibleSr": {
+          "centro": 5.4446,
+          "media": 5.3743,
+          "minimo": 4.8328,
+          "maximo": 5.482
+        },
+        "cieloTapado": {
+          "centro": 0.1335,
+          "media": 0.1447
+        },
+        "textoKey": null
       }
     },
     {
@@ -348,7 +419,7 @@
       "puntajes": {
         "plano": 0,
         "luz": 0.13,
-        "blindaje": null
+        "blindaje": 0.14
       },
       "nombreIau": "Malapert",
       "diametroKm": 70.4424,
@@ -389,6 +460,10 @@
           "origen": "derivado",
           "puntosEnRecuadro": 0,
           "citaVerificada": false,
+          "atribucionCapa": "no verificada",
+          "cita": "Li, S., et al. (2018), Direct evidence of surface exposed water ice in the lunar polar regions, PNAS 115(36), 8907-8912, doi:10.1073/pnas.1802345115 (solo contexto, atribución de la capa no verificada)",
+          "instrumentoArticulo": "M3 (NASA) en Chandrayaan-1 (ISRO)",
+          "puntosEnSombraPermanente": 0,
           "textoKey": null
         },
         "temperatura": {
@@ -431,6 +506,26 @@
         "textoTierraKey": "datos.terreno.luna.tierra",
         "pctSol": 13,
         "pctTierra": 44
+      },
+      "cielo": {
+        "capa": "SKYV_65S_240M",
+        "url": "http://imbrium.mit.edu/EXTRAS/ILLUMINATION/IMG/SKYV_65S_240M.IMG",
+        "pagina": "https://pgda.gsfc.nasa.gov/products/69",
+        "cita": "Mazarico, E., et al. (2011), Illumination conditions of the lunar polar regions using LOLA topography, Icarus 211, 1066-1081, doi:10.1016/j.icarus.2010.10.030",
+        "consultadoEl": "2026-11-15",
+        "origen": "derivado",
+        "resolucionM": 240,
+        "cieloVisibleSr": {
+          "centro": 5.3994,
+          "media": 5.3796,
+          "minimo": 4.6498,
+          "maximo": 5.5244
+        },
+        "cieloTapado": {
+          "centro": 0.1407,
+          "media": 0.1438
+        },
+        "textoKey": null
       }
     },
     {
@@ -451,7 +546,7 @@
       "puntajes": {
         "plano": 0.1,
         "luz": 0.22,
-        "blindaje": null
+        "blindaje": 0.09
       },
       "nombreIau": "Nobile",
       "diametroKm": 73.5361,
@@ -492,6 +587,10 @@
           "origen": "derivado",
           "puntosEnRecuadro": 0,
           "citaVerificada": false,
+          "atribucionCapa": "no verificada",
+          "cita": "Li, S., et al. (2018), Direct evidence of surface exposed water ice in the lunar polar regions, PNAS 115(36), 8907-8912, doi:10.1073/pnas.1802345115 (solo contexto, atribución de la capa no verificada)",
+          "instrumentoArticulo": "M3 (NASA) en Chandrayaan-1 (ISRO)",
+          "puntosEnSombraPermanente": 0,
           "textoKey": null
         },
         "temperatura": {
@@ -534,6 +633,26 @@
         "textoTierraKey": "datos.terreno.luna.tierra",
         "pctSol": 22,
         "pctTierra": 23
+      },
+      "cielo": {
+        "capa": "SKYV_65S_240M",
+        "url": "http://imbrium.mit.edu/EXTRAS/ILLUMINATION/IMG/SKYV_65S_240M.IMG",
+        "pagina": "https://pgda.gsfc.nasa.gov/products/69",
+        "cita": "Mazarico, E., et al. (2011), Illumination conditions of the lunar polar regions using LOLA topography, Icarus 211, 1066-1081, doi:10.1016/j.icarus.2010.10.030",
+        "consultadoEl": "2026-11-15",
+        "origen": "derivado",
+        "resolucionM": 240,
+        "cieloVisibleSr": {
+          "centro": 5.8742,
+          "media": 5.7223,
+          "minimo": 4.5878,
+          "maximo": 6.0378
+        },
+        "cieloTapado": {
+          "centro": 0.0651,
+          "media": 0.0893
+        },
+        "textoKey": null
       }
     },
     {
@@ -554,7 +673,7 @@
       "puntajes": {
         "plano": 0,
         "luz": 0.01,
-        "blindaje": null
+        "blindaje": 0.16
       },
       "nombreIau": "de Gerlache",
       "diametroKm": 31.4131,
@@ -597,6 +716,10 @@
           "origen": "derivado",
           "puntosEnRecuadro": 7,
           "citaVerificada": false,
+          "atribucionCapa": "no verificada",
+          "cita": "Li, S., et al. (2018), Direct evidence of surface exposed water ice in the lunar polar regions, PNAS 115(36), 8907-8912, doi:10.1073/pnas.1802345115 (solo contexto, atribución de la capa no verificada)",
+          "instrumentoArticulo": "M3 (NASA) en Chandrayaan-1 (ISRO)",
+          "puntosEnSombraPermanente": 2,
           "textoKey": null
         },
         "temperatura": {
@@ -639,6 +762,26 @@
         "textoTierraKey": null,
         "pctSol": 1,
         "pctTierra": 3
+      },
+      "cielo": {
+        "capa": "SKYV_65S_240M",
+        "url": "http://imbrium.mit.edu/EXTRAS/ILLUMINATION/IMG/SKYV_65S_240M.IMG",
+        "pagina": "https://pgda.gsfc.nasa.gov/products/69",
+        "cita": "Mazarico, E., et al. (2011), Illumination conditions of the lunar polar regions using LOLA topography, Icarus 211, 1066-1081, doi:10.1016/j.icarus.2010.10.030",
+        "consultadoEl": "2026-11-15",
+        "origen": "derivado",
+        "resolucionM": 240,
+        "cieloVisibleSr": {
+          "centro": 5.0546,
+          "media": 5.265,
+          "minimo": 4.6438,
+          "maximo": 5.6928
+        },
+        "cieloTapado": {
+          "centro": 0.1955,
+          "media": 0.162
+        },
+        "textoKey": null
       }
     }
   ]

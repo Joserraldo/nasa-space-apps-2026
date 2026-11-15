@@ -77,6 +77,9 @@ Daniel (rol datos) las aprobó el 2026-11-14. Cada una respalda solo la afirmaci
 | Moon Trek (`trek.nasa.gov/moon`, JPL), NASA SVS 5187, nomenclátor de USGS y science.nasa.gov | Aprobadas para las misiones lunares y de Marte propuestas (#97–#100). Sus `fuente.*` se crean cuando diseño apruebe esas misiones; cada cifra se sigue verificando antes de usarla | (por crear) |
 | NASA Basics of Space Flight, cap. 11 (energía) — https://science.nasa.gov/learn/basics-of-space-flight/chapter11-3/ | Las baterías se cargan con los paneles al sol y dan energía cuando quedan en sombra [V 2026-11-14] | `fuente.nasa.baterias` |
 | NASA GSFC PGDA, Lunar Polar Illumination (https://pgda.gsfc.nasa.gov/products/69; Mazarico et al. 2011, doi:10.1016/j.icarus.2010.10.030) | aprobada por Daniel el 2026-11-14 | iluminación media y visibilidad de la Tierra del polo sur | `fuente.pgda` |
+| NASA GSFC PGDA, Lunar Polar Illumination (https://pgda.gsfc.nasa.gov/products/69; Mazarico et al. 2011, doi:10.1016/j.icarus.2010.10.030) | Iluminación media y visibilidad de la Tierra del polo sur (aprobada por Daniel el 2026-11-14) | `fuente.pgda` |
+| PGDA **SKYV_65S_240M** (http://imbrium.mit.edu/EXTRAS/ILLUMINATION/IMG/SKYV_65S_240M.LBL, misma página y cita que la fila anterior) | Ángulo sólido del cielo visible en sr (0 a 4π; 2π = suelo llano) en el polo sur. Base del `blindaje` derivado (cielo tapado); no afirma dosis. Registrada 2026-11-14 por el rol datos | `fuente.pgda` |
+| Li, S., et al. (2018), PNAS 115(36), 8907-8912, doi:10.1073/pnas.1802345115 (Crossref confirma que existe) | **Solo contexto, atribución de `SP_IceLoc_280m` NO verificada.** No respalda ningún texto del juego hasta verificarla. Registrada 2026-11-14 | `fuente.li2018` (sin uso) |
 
 ## 1. DONKI (Database Of Notifications, Knowledge, Information)
 

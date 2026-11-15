@@ -200,7 +200,8 @@
             "lon": 104.995079129,
             "lat": -89.4613361915
           }
-        ]
+        ],
+        "puntosEnSombra": 33
       },
       "diviner": {
         "verano": {
@@ -334,7 +335,8 @@
             "lon": -3.5246350617,
             "lat": -87.4311110818
           }
-        ]
+        ],
+        "puntosEnSombra": 20
       },
       "diviner": {
         "verano": {
@@ -423,7 +425,8 @@
             "lon": 84.3070798353,
             "lat": -87.0033220807
           }
-        ]
+        ],
+        "puntosEnSombra": 9
       },
       "diviner": {
         "verano": {
@@ -456,7 +459,8 @@
       },
       "hielo": {
         "url": "https://trek.nasa.gov/moon/trekarcgis/rest/services/SP_IceLoc_280m/MapServer/0/query?geometry=25962,146543,41322,161903&geometryType=esriGeometryEnvelope&spatialRel=esriSpatialRelIntersects&returnGeometry=false&f=json&outFields=FID,x,y",
-        "puntos": []
+        "puntos": [],
+        "puntosEnSombra": 0
       },
       "diviner": {
         "verano": {
@@ -489,7 +493,8 @@
       },
       "hielo": {
         "url": "https://trek.nasa.gov/moon/trekarcgis/rest/services/SP_IceLoc_280m/MapServer/0/query?geometry=108648,77935,124008,93295&geometryType=esriGeometryEnvelope&spatialRel=esriSpatialRelIntersects&returnGeometry=false&f=json&outFields=FID,x,y",
-        "puntos": []
+        "puntos": [],
+        "puntosEnSombra": 0
       },
       "diviner": {
         "verano": {
@@ -568,7 +573,8 @@
             "lon": -100.124671655,
             "lat": -88.6786685968
           }
-        ]
+        ],
+        "puntosEnSombra": 2
       },
       "diviner": {
         "verano": {
