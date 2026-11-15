@@ -1,17 +1,14 @@
 /**
  * Portada en 3D (inicio/01, capas de DISEÑO §6): el niño real del juego flotando y saludando, la nave
- * del juego abajo a la derecha recortada por el borde, el cable de la mochila al conector de la
- * nave, el planeta con anillo y los asteroides. Las cajas son las de DISEÑO §6 en % del lienzo.
+ * orbital de la lámina (naveOrbital.ts) abajo a la derecha recortada por el borde, el cable de la
+ * mochila a su puerto, el planeta con anillo y los asteroides. Cajas de DISEÑO §6 en % del lienzo.
  */
 import * as THREE from "three";
-import { fusionar } from "../../../escena/activos/fusionar.js";
-import { crearNave } from "../../../escena/activos/nave.js";
-import { liberarMateriales } from "../../../escena/liberar.js";
-import { crearMateriales } from "../../../escena/materiales.js";
 import { animar, crearPersonaje, type Personaje } from "../../../escena/personajes/index.js";
 import { createElement } from "react";
 import { Ilustracion3D } from "./Ilustracion3D.js";
 import { mate, mezcla, modoInicio, type Caja, type Ilustracion, type Modo } from "./lienzo.js";
+import { crearNaveOrbital } from "./naveOrbital.js";
 import { crearAsteroide, crearPlaneta, tubo } from "./piezas.js";
 
 type Cajas = Record<"nino" | "nave" | "planeta" | "asteroide" | "asteroide2" | "asteroide3", Caja | null>;
@@ -20,7 +17,7 @@ type Cajas = Record<"nino" | "nave" | "planeta" | "asteroide" | "asteroide2" | "
 export const CAJAS_PORTADA: Record<Modo, Cajas> = {
   ancho: {
     nino: { x: 49, y: 18, w: 31, h: 57 },
-    nave: { x: 76, y: 60, w: 44, h: 56 },
+    nave: { x: 77, y: 61, w: 31, h: 46 },
     planeta: { x: 79, y: 15, w: 16, h: 14 },
     asteroide: { x: 39, y: 7, w: 10, h: 13 },
     asteroide2: { x: 41, y: 80, w: 9, h: 14 },
@@ -28,7 +25,7 @@ export const CAJAS_PORTADA: Record<Modo, Cajas> = {
   },
   horizontal: {
     nino: { x: 66, y: 14, w: 24, h: 72 },
-    nave: { x: 84, y: 64, w: 34, h: 56 },
+    nave: { x: 82, y: 64, w: 26, h: 42 },
     planeta: { x: 88, y: 24, w: 10, h: 18 },
     asteroide: { x: 58, y: 80, w: 6, h: 13 },
     asteroide2: null,
@@ -81,19 +78,9 @@ export function crearPortada3D(): Ilustracion {
   nino.add(pj.grupo);
   pj.grupo.rotation.set(0.1, -0.35, 0.45);
 
-  // La nave del juego vista de frente y desde arriba, con la cabina; el conector octogonal cian va en la proa.
-  const m = crearMateriales();
-  const casco = crearNave(m);
-  const conector = new THREE.Group();
-  const aro = new THREE.Mesh(new THREE.TorusGeometry(0.26, 0.08, 3, 8), mate(mezcla("cian", "teal", 0.25)));
-  const boca = new THREE.Mesh(new THREE.CircleGeometry(0.2, 8), mate("espacio"));
-  conector.add(aro, boca);
-  conector.scale.setScalar(1.3);
-  conector.position.set(-0.45, -0.15, 1.47);
-  const nave = new THREE.Group();
-  const fusionada = fusionar(casco, "Portada_Ship");
-  nave.add(fusionada, conector);
-  nave.rotation.set(0.35, -0.4, 0.1);
+  // Nave orbital de la lámina (capas/nave.png), con el puerto del cable en la proa.
+  const { grupo: nave, puerto: conector } = crearNaveOrbital();
+  nave.rotation.set(0.1, 0.25, 0.2);
 
   const asteroides = [crearAsteroide(1, 2), crearAsteroide(3, 2), crearAsteroide(5, 1)];
   asteroides[1]!.rotation.set(0.5, 1.2, 0);
@@ -137,7 +124,6 @@ export function crearPortada3D(): Ilustracion {
     },
     liberar() {
       pj.liberar();
-      liberarMateriales(Object.values(m));
       cable.geometry.dispose();
       (cable.material as THREE.Material).dispose();
     },

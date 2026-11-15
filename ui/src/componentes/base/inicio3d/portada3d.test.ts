@@ -18,7 +18,7 @@ describe("portada 3D (inicio/01)", () => {
     const nombres: string[] = [];
     for (const p of il.piezas) p.objeto.traverse((o) => nombres.push(o.name));
     expect(nombres).toContain("personaje-nino");
-    expect(nombres.some((n) => n.startsWith("Portada_Ship"))).toBe(true);
+    expect(nombres.some((n) => n.startsWith("Portada_NaveOrbital"))).toBe(true);
     // Solo el niño flota (6 px en 6 s, giro de 1° como máximo).
     const nino = il.piezas.find((p) => p.capa === 4)!;
     for (const t of [0, 1.5, 3, 4.5]) {
