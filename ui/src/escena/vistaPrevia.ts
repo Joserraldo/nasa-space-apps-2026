@@ -39,6 +39,7 @@ const idioma: Idioma = parametros.get("idioma") === "es" ? "es" : "en";
 const t = (clave: string, vars?: Vars) => traducir(idioma, clave, vars);
 const canvas = document.getElementById("escena") as HTMLCanvasElement;
 const escena = crearEscena3D(canvas, {
+  medir: parametros.get("medir") === "1",
   calidad,
   movimientoReducido: prefiereMenosMovimiento(),
   alExceso: (nivel: CalidadGrafica) => console.warn("[vista previa] la escena propone calidad", nivel),
@@ -59,15 +60,6 @@ void escena.listo.then(() => console.info("[vista previa] presupuesto (cota alta
 
 // Modo `?medir=1`: recuadro con fps (ventana de 5 s), draw calls, triángulos, calidad y lienzo.
 if (parametros.get("medir") === "1") {
-  const VENTANA_MS = 5000;
-  const marcas: number[] = [];
-  const fotogramaMedido = (ahora: number) => {
-    marcas.push(ahora);
-    while (marcas.length > 0 && ahora - (marcas[0] ?? ahora) > VENTANA_MS) marcas.shift();
-    requestAnimationFrame(fotogramaMedido);
-  };
-  requestAnimationFrame(fotogramaMedido);
-
   const recuadro = document.createElement("div");
   recuadro.setAttribute("role", "status");
   recuadro.style.cssText = [
@@ -85,23 +77,16 @@ if (parametros.get("medir") === "1") {
   document.body.appendChild(recuadro);
 
   const filas = (): string => {
-    let promedio = "—";
-    let minimo = "—";
-    if (marcas.length > 1) {
-      const duracion = (marcas.at(-1) ?? 0) - (marcas[0] ?? 0);
-      promedio = String(Math.round(((marcas.length - 1) * 1000) / duracion));
-      let mayorHueco = 0;
-      for (let i = 1; i < marcas.length; i++) mayorHueco = Math.max(mayorHueco, (marcas[i] ?? 0) - (marcas[i - 1] ?? 0));
-      minimo = String(Math.round(1000 / mayorHueco));
-    }
-    const cuenta = escena.contar();
+    const cuenta = escena.medicion();
+    const promedio = cuenta?.fpsPromedio == null ? "—" : String(Math.round(cuenta.fpsPromedio));
+    const minimo = cuenta?.fpsMinimo == null ? "—" : String(Math.round(cuenta.fpsMinimo));
     const lienzo = `${canvas.width}×${canvas.height}`;
     return [
       `${t("ui.medir.fps_prom")}: ${promedio}`,
       `${t("ui.medir.fps_min")}: ${minimo}`,
-      `${t("ui.medir.draw_calls")}: ${cuenta.drawCalls} ${t("ui.medir.cota")}`,
-      `${t("ui.medir.triangulos")}: ${cuenta.triangulos} ${t("ui.medir.cota")}`,
-      `${t("ui.medir.calidad")}: ${t(`ui.medir.calidad.${calidad}`)}`,
+      `${t("ui.medir.draw_calls")}: ${cuenta?.drawCalls ?? 0}`,
+      `${t("ui.medir.triangulos")}: ${cuenta?.triangulos ?? 0}`,
+      `${t("ui.medir.calidad")}: ${t(`ui.medir.calidad.${cuenta?.calidad ?? calidad}`)}`,
       `${t("ui.medir.lienzo")}: ${lienzo}`,
     ].join("<br>");
   };

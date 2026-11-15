@@ -5,6 +5,8 @@ import { partidaDorada } from "@solar-shield/engine";
 import { ConfirmarAccion } from "./ConfirmarAccion.js";
 import { FacetButton } from "./FacetButton.js";
 import { CostRow, Mensaje, ResourcePlaque } from "./Piezas.js";
+import { PildoraBoton, PildoraObjetivo } from "./Pildoras.js";
+import { HudBase } from "../HudBase.js";
 import { ExpertPortrait } from "./ExpertPortrait.js";
 import { AccesoRecurso, ChipPregunta } from "./Accesos.js";
 import { TarjetaFuenteCompacta } from "./FuenteCompacta.js";
@@ -148,6 +150,15 @@ function Muestrario() {
           <ResourcePlaque recurso="soporte_vital" value={80} />
           <ResourcePlaque recurso="blindaje" value={60} />
           <ResourcePlaque recurso="blindaje" value={12} feedback={[{ id: "1", delta: -10, causaKey: "ui.causa.tormenta" }]} />
+          <ResourcePlaque recurso="energia" value={55} pending={[{ id: "p", aplicaEnTick: 3, recurso: "energia", delta: 13, origen: "decision", descripcionKey: "causa.colocar_modulo", oculto: false }]} />
+        </div>
+        <h3>{t("ui.comun.muestrario.pildoras")}</h3>
+        <div className="mu-fila">
+          <PildoraObjetivo labelKey="ui.comun.muestrario.objetivo" />
+          <PildoraBoton labelKey="ui.comun.tripulacion" icon="tripulacion" onClick={nada} />
+          <PildoraBoton labelKey="ui.comun.mapa" icon="mapa" onClick={nada} />
+          <PildoraBoton labelKey="ui.comun.muestrario.inspeccionar" tecla={{ letra: "E", tono: "accion" }} onClick={nada} />
+          <PildoraBoton labelKey="ui.comun.hud.primera" tecla={{ letra: "V", tono: "camara" }} onClick={nada} />
         </div>
       </section>
 
@@ -187,6 +198,19 @@ function Muestrario() {
   );
 }
 
+/** ?vista=hud: el HUD completo de mundo/01 sobre un fondo marciano de tokens, para la captura al lado de la lámina. */
+function HudEscena() {
+  const { t } = useT();
+  const nada = () => {};
+  const estado = { ...partidaDorada(), recursos: { energia: 70, soporte_vital: 80, blindaje: 60 }, efectosPendientes: [] };
+  return (
+    <div className="mu-escena" role="img" aria-label={t("ui.comun.muestrario.hud_escena")}>
+      <HudBase estado={estado} objetivo={{ labelKey: "ui.comun.muestrario.objetivo" }}
+        mundo={{ onTripulacion: nada, onMapa: nada, camara: "tercera", onCamara: nada, interaccion: { labelKey: "ui.comun.muestrario.inspeccionar", onUsar: nada } }} />
+    </div>
+  );
+}
+
 /** ?vista=portada | intro | carga muestra esa pantalla a pantalla completa (para las capturas a 1024x683, 844x390 y 390x844). */
 function Raiz() {
   const params = new URLSearchParams(location.search);
@@ -203,6 +227,7 @@ function Raiz() {
         {vista === "carga" && <Carga consejo={n} sonido={sonido} onSonido={() => setSonido(!sonido)} />}
         {vista === "retratos" && <Retratos />}
         {vista === "paneles" && <main className="muestrario"><PanelesE7 /></main>}
+        {vista === "hud" && <HudEscena />}
       </IdiomaContext.Provider>
     );
   }
