@@ -1,0 +1,165 @@
+{
+  "version": "0.1.0",
+  "id": "marte-polo-norte",
+  "nombreKey": "datos.terreno.marteNorte.nombre",
+  "sitios": [
+    {
+      "id": "crater-louth",
+      "nombreKey": "datos.terreno.sitio.crater-louth.nombre",
+      "descripcionKey": "datos.terreno.sitio.crater-louth.descripcion",
+      "nomenclatura": {
+        "nombre": "Louth",
+        "tipo": "Crater, craters",
+        "diametroKm": 36.3
+      },
+      "lon": 103.236,
+      "lat": 70.188,
+      "centroM": {
+        "x": 1154668,
+        "y": 271592
+      },
+      "bboxM": {
+        "xmin": 1142668,
+        "ymin": 259592,
+        "xmax": 1166668,
+        "ymax": 283592
+      },
+      "dem": {
+        "archivo": "crater-louth/elevacion.bin",
+        "ancho": 160,
+        "alto": 160,
+        "metrosPorPixel": 150
+      },
+      "elevacionM": -4838,
+      "pendienteGrados": 3,
+      "relieveM": 1463,
+      "puntajes": {
+        "plano": 0.7,
+        "luz": null,
+        "blindaje": null
+      }
+    },
+    {
+      "id": "crater-escorial",
+      "nombreKey": "datos.terreno.sitio.crater-escorial.nombre",
+      "descripcionKey": "datos.terreno.sitio.crater-escorial.descripcion",
+      "nomenclatura": {
+        "nombre": "Escorial",
+        "tipo": "Crater, craters",
+        "diametroKm": 22.2
+      },
+      "lon": 304.96,
+      "lat": 76.894,
+      "centroM": {
+        "x": -639461,
+        "y": -447099
+      },
+      "bboxM": {
+        "xmin": -651461,
+        "ymin": -459099,
+        "xmax": -627461,
+        "ymax": -435099
+      },
+      "dem": {
+        "archivo": "crater-escorial/elevacion.bin",
+        "ancho": 160,
+        "alto": 160,
+        "metrosPorPixel": 150
+      },
+      "elevacionM": -5515,
+      "pendienteGrados": 3.5,
+      "relieveM": 1143,
+      "puntajes": {
+        "plano": 0.65,
+        "luz": null,
+        "blindaje": null
+      }
+    },
+    {
+      "id": "dunas-olympia-undae",
+      "nombreKey": "datos.terreno.sitio.dunas-olympia-undae.nombre",
+      "descripcionKey": "datos.terreno.sitio.dunas-olympia-undae.descripcion",
+      "nomenclatura": {
+        "nombre": "Olympia Undae",
+        "tipo": "Unda, undae",
+        "diametroKm": 1508
+      },
+      "lon": 178.483,
+      "lat": 81.164,
+      "centroM": {
+        "x": 13893,
+        "y": 524611
+      },
+      "bboxM": {
+        "xmin": 1893,
+        "ymin": 512611,
+        "xmax": 25893,
+        "ymax": 536611
+      },
+      "dem": {
+        "archivo": "dunas-olympia-undae/elevacion.bin",
+        "ancho": 160,
+        "alto": 160,
+        "metrosPorPixel": 150
+      },
+      "elevacionM": -4334,
+      "pendienteGrados": 1.8,
+      "relieveM": 105,
+      "puntajes": {
+        "plano": 0.82,
+        "luz": null,
+        "blindaje": null
+      }
+    },
+    {
+      "id": "canon-chasma-boreale",
+      "nombreKey": "datos.terreno.sitio.canon-chasma-boreale.nombre",
+      "descripcionKey": "datos.terreno.sitio.canon-chasma-boreale.descripcion",
+      "nomenclatura": {
+        "nombre": "Chasma Boreale",
+        "tipo": "Chasma, chasmata",
+        "diametroKm": 459.9
+      },
+      "lon": 312.36,
+      "lat": 82.541,
+      "centroM": {
+        "x": -327155,
+        "y": -298311
+      },
+      "bboxM": {
+        "xmin": -339155,
+        "ymin": -310311,
+        "xmax": -315155,
+        "ymax": -286311
+      },
+      "dem": {
+        "archivo": "canon-chasma-boreale/elevacion.bin",
+        "ancho": 160,
+        "alto": 160,
+        "metrosPorPixel": 150
+      },
+      "elevacionM": -4916,
+      "pendienteGrados": 0.6,
+      "relieveM": 193,
+      "puntajes": {
+        "plano": 0.94,
+        "luz": null,
+        "blindaje": null
+      }
+    }
+  ],
+  "fuente": {
+    "nombreKey": "fuente.marsTrek",
+    "dueno": "NASA Mars Trek (JPL); DEM MOLA (NASA); names and positions: IAU nomenclature, Mars Trek combinedNom_np layer",
+    "urls": [
+      "https://trek.nasa.gov/mars/"
+    ],
+    "consultadoEl": "2026-11-15",
+    "estadoDato": "curado",
+    "derivadoKey": "datos.terreno.derivado",
+    "pendientes": [
+      "luz",
+      "blindaje"
+    ]
+  }
+}

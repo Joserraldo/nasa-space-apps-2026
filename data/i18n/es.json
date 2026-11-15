@@ -178,5 +178,14 @@
   "fuente.jpl.casqueteMarte": "NASA JPL (imagen del casquete polar norte de Marte)",
   "fuente.jpl.spiritInclinacion": "NASA JPL (inclinación de invierno del róver Spirit)",
   "fuente.nasa.phoenix": "NASA (la sonda Phoenix en el polo norte de Marte)",
-  "fuente.nasa.baterias": "NASA (Basics of Space Flight: energía de las naves)"
+  "fuente.nasa.baterias": "NASA (Basics of Space Flight: energía de las naves)",
+  "datos.terreno.marteNorte.nombre": "Marte, polo norte",
+  "datos.terreno.sitio.crater-louth.nombre": "Cráter Louth",
+  "datos.terreno.sitio.crater-louth.descripcion": "Un cráter de unos 36 km de ancho, el más al sur de nuestros cuatro lugares (70° N).",
+  "datos.terreno.sitio.crater-escorial.nombre": "Cráter Escorial",
+  "datos.terreno.sitio.crater-escorial.descripcion": "Un cráter pequeño de unos 22 km de ancho, en la franja del medio (77° N).",
+  "datos.terreno.sitio.dunas-olympia-undae.nombre": "Dunas de Olympia Undae",
+  "datos.terreno.sitio.dunas-olympia-undae.descripcion": "Un campo enorme de dunas (\"undae\" quiere decir dunas), muy cerca del polo (81° N).",
+  "datos.terreno.sitio.canon-chasma-boreale.nombre": "Cañón Chasma Boreale",
+  "datos.terreno.sitio.canon-chasma-boreale.descripcion": "Un cañón gigante, de unos 460 km de ancho, el lugar más cercano al polo de los cuatro (83° N)."
 }

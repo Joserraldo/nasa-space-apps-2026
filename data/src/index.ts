@@ -18,6 +18,7 @@ import indiceCurado from "../curated/index.json";
 import jezeroJson from "../terreno/jezero/jezero.json";
 import lunaVisibleJson from "../terreno/luna-visible/luna-visible.json";
 import luzLunaJson from "../terreno/luna-visible/luz-2024.json";
+import marteNorteJson from "../terreno/marte-norte/marte-norte.json";
 import radiacionJson from "../ciencia/radiacion.json";
 import osdrJson from "../ciencia/osdr.json";
 import artemisJson from "../ciencia/artemis.json";
@@ -26,7 +27,7 @@ import lunaJson from "../ciencia/luna.json";
 import { ArtemisSchema, CsaSchema, FUENTE_DOSIS, OsdrSchema, RadiacionSchema, type Artemis, type Csa, type Osdr, type Radiacion } from "./ciencia";
 import type { SourceCard } from "./contrato";
 import { LunaSchema, type Luna, type MedicionLuna } from "./luna";
-import { LuzLunaSchema, TerrenoLunaSchema, TerrenoSchema, type Terreno, type TerrenoLuna, type LuzLuna } from "./terreno";
+import { LuzLunaSchema, TerrenoLunaSchema, TerrenoMarteNorteSchema, TerrenoSchema, type Terreno, type TerrenoLuna, type TerrenoMarteNorte, type LuzLuna } from "./terreno";
 import { aConvenio } from "./convenio";
 import { TormentaSchema, type Tormenta } from "./tormenta";
 
@@ -117,3 +118,9 @@ export const medicionLuna = (id: string): MedicionLuna | undefined => luna.medic
  * elevación del Sol en la hora de cada tormenta curada de 2024 y próximo amanecer. Horizonte plano.
  */
 export const luzLunaVisible: LuzLuna = LuzLunaSchema.parse(luzLunaJson);
+
+/**
+ * Marte, polo norte (Mars Trek, DEM MOLA polar): 4 sitios del nomenclátor de la UAI. Las rutas son relativas a
+ * data/terreno/marte-norte/. Elevación = medida; pendiente, relieve y plano = derivados; luz y blindaje = null.
+ */
+export const terrenoMarteNorte: TerrenoMarteNorte = TerrenoMarteNorteSchema.parse(marteNorteJson);

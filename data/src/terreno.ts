@@ -149,3 +149,54 @@ export const LuzLunaSchema = z.object({
   }),
 });
 export type LuzLuna = z.infer<typeof LuzLunaSchema>;
+
+/** Proyección estereográfica polar norte de Mars Trek (esfera Mars 2000, meridiano central 0, metros). */
+export function proyectarPolarNorte(lonEsteGrados: number, latGrados: number): { x: number; y: number } {
+  const rad = Math.PI / 180;
+  const rho = 2 * RADIO_MARTE_M * Math.tan(((90 - latGrados) * rad) / 2);
+  return { x: rho * Math.sin(lonEsteGrados * rad), y: -rho * Math.cos(lonEsteGrados * rad) };
+}
+
+/** Cuadro de 24 km × 24 km alrededor de cada sitio del polo norte (160 × 160 px, 150 m/px; el DEM nativo es de ~39 m/px). */
+export const MARTE_NORTE_CUADRO = { medioM: 12_000, px: 160 } as const;
+
+export const SitioMarteNorteSchema = z.object({
+  id: z.string().regex(/^[a-z0-9-]+$/),
+  nombreKey: z.string(),
+  descripcionKey: z.string(),
+  /** Nombre y tipo en el nomenclátor de la UAI (capa combinedNom_np de Mars Trek). */
+  nomenclatura: z.object({ nombre: z.string(), tipo: z.string(), diametroKm: z.number() }),
+  lon: z.number(),
+  lat: z.number(),
+  /** Centro en la proyección polar (metros), calculado con `proyectarPolarNorte`. */
+  centroM: z.object({ x: z.number(), y: z.number() }),
+  /** Recuadro en la proyección polar (metros). La fila 0 del DEM es el borde de y máxima. */
+  bboxM: z.object({ xmin: z.number(), ymin: z.number(), xmax: z.number(), ymax: z.number() }),
+  dem: z.object({ archivo: z.string(), ancho: z.number().int(), alto: z.number().int(), metrosPorPixel: z.number() }),
+  /** Medido (DEM MOLA vía Mars Trek). */
+  elevacionM: z.number(),
+  /** Derivado: pendiente media (grados) en un radio de 1,5 km, igual que Jezero. */
+  pendienteGrados: z.number().min(0),
+  /** Derivado: máximo − mínimo del DEM en el cuadro de 24 km. */
+  relieveM: z.number().min(0),
+  puntajes: z.object({ plano: Puntaje, luz: Puntaje.nullable(), blindaje: Puntaje.nullable() }),
+});
+export type SitioMarteNorte = z.infer<typeof SitioMarteNorteSchema>;
+
+export const TerrenoMarteNorteSchema = z.object({
+  version: z.literal("0.1.0"),
+  id: z.literal("marte-polo-norte"),
+  nombreKey: z.string(),
+  sitios: z.array(SitioMarteNorteSchema).min(3).max(4),
+  fuente: z.object({
+    nombreKey: z.literal("fuente.marsTrek"),
+    dueno: z.string(),
+    urls: z.array(z.string().url()).min(1),
+    consultadoEl: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+    estadoDato: z.literal("curado"),
+    derivadoKey: z.literal("datos.terreno.derivado"),
+    /** Criterios sin fuente verificada: no se inventan valores. */
+    pendientes: z.array(z.enum(["luz", "blindaje"])),
+  }),
+});
+export type TerrenoMarteNorte = z.infer<typeof TerrenoMarteNorteSchema>;
