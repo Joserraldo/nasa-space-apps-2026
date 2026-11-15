@@ -171,7 +171,7 @@ export function crearGravilla(materiales: Materiales, terreno: Terreno3D, opcion
   const piedras = rocasBasalticas(o.semilla, o.n, terreno.rejilla, terreno.opciones, o);
   const malla = instanciar(geometriaBase("gravilla", geometriaGravilla), materiales, piedras, "Rocks_Gravel");
   malla.castShadow = false;
-  malla.receiveShadow = false;
+  malla.receiveShadow = true;
   return malla;
 }
 
