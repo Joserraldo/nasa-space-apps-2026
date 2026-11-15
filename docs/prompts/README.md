@@ -117,6 +117,7 @@ Se invocan con el comando de skills de Claude Code. Las del proyecto viven en `.
 ### Producto
 - Niños de 7 a 12 años: frases cortas, nada inapropiado, personajes originales.
 - Inglés primero, español segundo, ningún texto quemado.
+- **El español del juego es neutro y con tuteo**, como el `ui/i18n/es.json` actual ("Elige", "Toca"). Estos prompts están en voseo, pero eso no pasa a los textos del juego: nada de "Elegí" ni "Tocá".
 - Todo dato NASA con fuente; nada "en vivo" si es estático. Nada de claves en el código.
 - El modelo de IA clasifica en JSON estricto y el código responde. Nunca inventa números.
 

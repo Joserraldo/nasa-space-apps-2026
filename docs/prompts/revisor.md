@@ -32,7 +32,9 @@ EN CADA ITERACIÓN:
       (FLUJO §1) y en la fase que corresponde (FLUJO §5). Los PRs del frontend v8 van hacia
       feat/ui-escenarios y los fusiona María Paula; hacia develop van los de rol y los puntos
       de control.
-   b. Tamaño menos de ~300 líneas; commits atómicos, en español, sin Co-Authored-By ni
+   b. Tamaño menos de ~300 líneas (excepción: los PRs de la subida de María Paula, fase 0,
+      que dicen "Subida única" en la descripción; ahí se revisa que solo traigan lógica y
+      que no rompan nada, no el tamaño); commits atómicos, en español, sin Co-Authored-By ni
       atribución a IA, sin emojis.
    c. CI en verde (gh pr checks); si falla, citá el error exacto.
    d. Reglas: ningún número de juego fuera de design/, ningún texto quemado, ninguna regla en
@@ -40,7 +42,12 @@ EN CADA ITERACIÓN:
    e. ui/: ficha de fidelidad de FLUJO §7.1 (sin ficha, o con una lámina distinta de la de
       FLUJO §4, o con colores fuera de los tokens de DISEÑO §2: --request-changes), puerta de
       APLICACION.md §10 y prohibidos de DISEÑO.md §8. Abrí la captura y la lámina y
-      compará silueta y layout: si no coinciden, pedí cambios aunque el resto esté bien.
+      compará silueta y layout: si no coinciden, pedí cambios aunque el resto esté bien. El
+      repo es público: bajá las imágenes del cuerpo del PR (gh pr view N --json body, después
+      curl -L a /tmp) y abrilas con la herramienta de lectura de archivos; la lámina está en
+      docs/referenciapau/referencias/.
+   e2. e2e: si el PR cambia un texto en inglés o un paso del recorrido que usa
+      tests/e2e/ruta-dorada.spec.ts y no actualiza ese archivo, --request-changes (FLUJO §7.2).
    f. Duplicados o choques entre PRs abiertos: nombrá a ambos autores.
 3. Una revisión por PR con gh pr review: --approve, --request-changes con lista numerada
    (archivo:línea y qué cambiar) o --comment.

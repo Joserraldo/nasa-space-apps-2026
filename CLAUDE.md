@@ -17,6 +17,7 @@
 
 ## Git
 - Trabaja en ramas `feat/<slug>-<tema>` o `fix/<slug>-<tema>` creadas desde `develop`.
+- **Excepción, frontend v8** (tareas de los briefs `docs/prompts/front-*.md`): la rama sale de `feat/ui-escenarios`, el rebase es sobre `origin/feat/ui-escenarios` y el PR va hacia `feat/ui-escenarios`. Detalle en `docs/referenciapau/FLUJO.md` §2.
 - Commits pequeños y descriptivos en español. Sin líneas `Co-Authored-By` ni atribución a IA.
 - Antes de empezar cada loop: `git fetch origin && git rebase origin/develop` (si hay conflicto fuera de tu carpeta, para y avisa a tu humano).
 - PRs pequeños (< ~300 líneas) hacia `develop`, usando la plantilla. **Nunca hagas merge, nunca empujes a `main` ni a `develop`.** El merge lo hace un humano.
