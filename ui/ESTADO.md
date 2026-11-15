@@ -35,7 +35,8 @@ Una sección por persona, máximo 5 líneas, y nadie edita la de otro (FLUJO §8
 - Hecho también: `FacetButton` con todos los estados de `ui/02` y `ui/03`, iconos facetados propios y muestrario en `componentes/base/muestrario.html`.
 - Hecho también: `ResourcePlaque`, `CostRow`, `EfectoPendiente`, `Mensaje` y `ConfirmarAccion` (costos y permiso del motor).
 - Hecho también: portada DOM (logo oficial sin fondo, menú, idioma y sonido), intro de 4 viñetas y carga con indicador indeterminado.
-- Sigue: tarjeta de fuente, datos usados y glosario; después los retratos de diálogo.
+- Hecho también: `TarjetaFuente` rehecha desde la lámina (misma API), `DatosUsados` y `Glosario` con términos en contexto.
+- Sigue: retratos de diálogo del niño, las 3 expertas e Iris.
 - Bloqueo: ninguno.
 
 ## Fidelidad
@@ -46,7 +47,7 @@ Una línea por pieza (FLUJO §4 y §8). Estados: `sin empezar`, `en PR #n`, `apr
 | Tokens, Nunito, botones y placas | `ui/02`, `ui/03` | Jaime | en PR #208 (tokens y Nunito); botones y placas sin empezar |
 | Retratos de diálogo | `personajes/02, 04, 06, 09`, `ui/01` | Jaime | sin empezar |
 | Portada DOM, intro y carga | `inicio/01–03`, `ui/00` | Jaime | en PR #217 |
-| Tarjeta de fuente, datos usados, glosario | `ui/04` | Jaime | sin empezar |
+| Tarjeta de fuente, datos usados, glosario | `ui/04` | Jaime | en PR (datos) |
 | Cielo, luz y niebla de Marte | MARTE.md §4–§5 (no el azul de `mundo/01`) | Daniel | sin empezar |
 | Terreno de Jezero y rocas | `mundo/01`, `exterior/02` | Daniel | sin empezar |
 | Kit de piezas | `piezas/01–10` | Daniel | sin empezar |

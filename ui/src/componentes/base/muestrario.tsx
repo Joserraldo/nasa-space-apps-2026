@@ -6,6 +6,9 @@ import { ConfirmarAccion } from "./ConfirmarAccion.js";
 import { FacetButton } from "./FacetButton.js";
 import { Mensaje, ResourcePlaque } from "./Piezas.js";
 import { Carga } from "../Carga.js";
+import { DatosUsados } from "../DatosUsados.js";
+import { Glosario, Termino } from "../Glosario.js";
+import { TarjetaFuente } from "../TarjetaFuente.js";
 import { Intro } from "../Intro.js";
 import { Portada } from "../Portada.js";
 import "../../estilos/tokens.css";
@@ -79,6 +82,16 @@ function Muestrario() {
           <Mensaje tipo="aviso" tituloKey="ui.comun.muestrario.energia_baja" detalleKey="ui.comun.muestrario.revisa_plan" />
           <Mensaje tipo="error" tituloKey="ui.comun.motivo.recursos_insuficientes.energia" detalleKey="ui.comun.muestrario.otra_opcion" />
           <Mensaje tipo="pendiente" tituloKey="ui.comun.muestrario.respuesta_pendiente" detalleKey="ui.comun.muestrario.sigue_explorando" />
+        </div>
+      </section>
+
+      <section>
+        <h2>{t("ui.comun.muestrario.fuentes")}</h2>
+        <div className="mu-columna">
+          {estado.tormenta && <TarjetaFuente fuente={estado.tormenta.fuente} />}
+          <p><Termino id="dosis" /> · <Termino id="radiacion" /> · <Termino id="telemetria" /></p>
+          <DatosUsados />
+          <Glosario />
         </div>
       </section>
     </main>

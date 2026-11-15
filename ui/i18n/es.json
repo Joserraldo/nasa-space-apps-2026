@@ -191,5 +191,8 @@
   "ui.carga.consejos.1": "Los paneles juntan luz del Sol. Las baterías guardan energía.",
   "ui.carga.consejos.2": "Cada decisión mueve al menos dos medidores. Revisa los dos antes de decidir.",
   "ui.carga.consejos.3": "El blindaje protege a la tripulación y a los aparatos de las tormentas solares.",
-  "ui.carga.consejos.4": "Los mensajes a la Tierra tardan en llegar. Envíalos con tiempo."
+  "ui.carga.consejos.4": "Los mensajes a la Tierra tardan en llegar. Envíalos con tiempo.",
+  "ui.datos.ventana_nueva": "(se abre en una ventana nueva)",
+  "ui.glosario.titulo": "Palabras del espacio",
+  "ui.comun.muestrario.fuentes": "Entradas y fuentes"
 }
