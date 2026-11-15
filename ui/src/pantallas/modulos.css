@@ -1,0 +1,103 @@
+/*
+ * E5 Módulos (ESCENAS §2.7, fila "E5 a E7"). Lista de fichas de la familia de `ui/03` y panel de
+ * decisión de `ui/01` a la derecha (40 %). Solo tokens; sombras ciruela, nunca negras. El cian
+ * solo marca lo que se usa: la ficha elegida y el foco. El foco va en el botón, fuera del recorte.
+ */
+.modulos-e5 {
+  box-sizing: border-box;
+  padding: max(var(--esp-4), env(safe-area-inset-top)) max(var(--esp-5), env(safe-area-inset-right))
+    max(var(--esp-4), env(safe-area-inset-bottom)) max(var(--esp-5), env(safe-area-inset-left));
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(300px, 40%);
+  align-items: start;
+  gap: var(--esp-5);
+  background: var(--color-marfil);
+  color: var(--color-indigo-texto);
+}
+
+.modulos-izq { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--esp-4); min-inline-size: 0; }
+.modulos-cabeza { padding: var(--esp-4) var(--esp-5); display: grid; gap: var(--esp-2); }
+.modulos-cabeza h2, .modulos-cabeza p { margin: 0; }
+.modulos-progreso { display: flex; align-items: center; gap: var(--esp-2); font-weight: var(--tipo-peso-etiqueta); }
+.modulos-hueco {
+  inline-size: 22px; block-size: 22px; background: var(--color-deshabilitado);
+  clip-path: polygon(30% 0, 70% 0, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0 70%, 0 30%);
+}
+.modulos-hueco-lleno { background: var(--color-exito); }
+
+/* ---- Fichas ---- */
+.modulos-lista {
+  list-style: none; margin: 0; padding: 0;
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: var(--esp-3);
+}
+.modulos-ficha {
+  inline-size: 100%; min-block-size: 48px; padding: 0; border: 0; background: none; cursor: pointer;
+  font: inherit; color: inherit; text-align: start;
+}
+.modulos-ficha:focus-visible { outline: 3px solid var(--color-cian); outline-offset: 3px; }
+.modulos-ficha > .fc { display: block; }
+.modulos-ficha-cara {
+  display: grid; grid-template-columns: auto 1fr; align-items: center; gap: var(--esp-1) var(--esp-3);
+  padding: var(--esp-3) var(--esp-4); min-block-size: 64px;
+  transition: translate var(--dur-seleccion) var(--curva-entrada);
+}
+.modulos-ficha:hover .modulos-ficha-cara { --fc-fondo: var(--color-lila); }
+.modulos-ficha-sel .modulos-ficha-cara { --fc-fondo: var(--color-cian); }
+.modulos-ficha:active .modulos-ficha-cara { translate: 0 2px; }
+.modulos-ficha-nombre { font-weight: var(--tipo-peso-titulo); font-size: var(--tipo-tam-cuerpo); }
+.modulos-ficha-estado {
+  grid-column: 1 / -1; display: inline-flex; align-items: center; gap: var(--esp-1);
+  font-size: 15px; font-weight: var(--tipo-peso-etiqueta); color: var(--color-exito);
+}
+.modulos-ficha-sel .modulos-ficha-estado { color: var(--color-indigo-texto); }
+
+.modulos-listo { justify-self: start; }
+
+/* ---- Panel de decisión (ui/01) ---- */
+.modulos-panel { position: sticky; inset-block-start: var(--esp-3); min-inline-size: 0; }
+.modulos-panel-cara {
+  display: grid; gap: var(--esp-3); padding: var(--esp-4) var(--esp-5);
+  max-block-size: calc(100dvh - 2 * var(--esp-3)); overflow-y: auto; overscroll-behavior: contain;
+}
+.modulos-panel-cab { display: flex; align-items: center; gap: var(--esp-3); }
+.modulos-panel-cab h3 { margin: 0; font-size: var(--tipo-tam-titulo); }
+.modulos-panel-icono {
+  flex: none; display: grid; place-items: center; inline-size: 64px; block-size: 64px; background: var(--color-lila);
+  clip-path: polygon(30% 0, 70% 0, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0 70%, 0 30%);
+}
+.modulos-panel-desc { margin: 0; font-size: 16px; }
+.modulos-panel .costos { grid-template-columns: 1fr; gap: var(--esp-2); }
+.modulos-panel .costos-bloque + .costos-bloque {
+  border-left: 0; padding-left: 0; padding-top: var(--esp-2);
+  border-top: var(--borde-fino) solid color-mix(in srgb, var(--color-ciruela) 30%, transparent);
+}
+.modulos-colocar { justify-self: stretch; }
+.modulos-colocar .fb { inline-size: 100%; }
+
+/* ---- Celular horizontal (844 x 390): panel al 40 % con desplazamiento interno ---- */
+@media (max-height: 500px) and (orientation: landscape) {
+  .modulos-e5 { grid-template-columns: minmax(0, 1fr) 40%; gap: var(--esp-3); padding-block: var(--esp-2); }
+  .modulos-cabeza { padding: var(--esp-2) var(--esp-4); gap: var(--esp-1); }
+  .modulos-cabeza h2 { font-size: var(--tipo-tam-subtitulo); }
+  .modulos-cabeza p { font-size: 16px; line-height: 1.25; }
+  .modulos-lista { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: var(--esp-2); }
+  .modulos-ficha-cara { padding: var(--esp-2) var(--esp-3); min-block-size: 48px; }
+  .modulos-panel-cara { padding: var(--esp-3) var(--esp-4); gap: var(--esp-2); max-block-size: calc(100dvh - 2 * var(--esp-2)); }
+  .modulos-panel-icono { inline-size: 44px; block-size: 44px; }
+  .modulos-panel-cab h3 { font-size: var(--tipo-tam-subtitulo); }
+}
+
+/* ---- Celular vertical (390 x 844): lo tapa el aviso de girar; si no, una columna ---- */
+@media (orientation: portrait) and (max-width: 700px) {
+  .modulos-e5 { grid-template-columns: minmax(0, 1fr); gap: var(--esp-3);
+    padding-inline: max(var(--esp-4), env(safe-area-inset-left)) max(var(--esp-4), env(safe-area-inset-right)); }
+  .modulos-lista { grid-template-columns: 1fr 1fr; }
+  .modulos-listo { justify-self: stretch; }
+  .modulos-listo .fb { inline-size: 100%; font-size: var(--tipo-tam-cuerpo); }
+  .modulos-panel { position: static; }
+  .modulos-panel-cara { max-block-size: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .modulos-ficha-cara { transition: none; }
+}

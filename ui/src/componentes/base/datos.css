@@ -1,0 +1,45 @@
+/* Tarjeta de fuente, datos usados y glosario (ui/03 "Inputs & sources", ui/04 "Check the source"). Solo tokens. */
+
+.fuente-cara { display: grid; gap: var(--esp-1); padding: var(--esp-3) var(--esp-5); font-size: 16px; }
+.fuente-cara p { margin: 0; max-width: none; }
+.fuente-titulo { font-size: var(--tipo-tam-cuerpo); }
+.fuente-meta { display: flex; flex-wrap: wrap; gap: var(--esp-1) var(--esp-4); color: var(--color-deshabilitado-texto); font-weight: var(--tipo-peso-etiqueta); }
+.fuente-etiqueta {
+  display: inline-block; margin-left: var(--esp-1); padding: 0 var(--esp-2); font-size: 14px; font-weight: var(--tipo-peso-etiqueta);
+  background: var(--color-marfil); border: var(--borde-fino) solid var(--color-ciruela);
+}
+.fuente-enlace {
+  justify-self: end; display: inline-flex; align-items: center; gap: var(--esp-1); min-height: var(--toque-minimo);
+  font-weight: var(--tipo-peso-etiqueta); color: var(--color-ciruela); text-decoration: underline; text-underline-offset: 3px;
+}
+
+.datos-cara { display: grid; gap: var(--esp-3); padding: var(--esp-4) var(--esp-5); }
+.datos-cara h2 { margin: 0; font-size: var(--tipo-tam-titulo); }
+.datos-lista { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--esp-2); }
+.datos-lista li { display: grid; grid-template-columns: 22px 1fr; gap: var(--esp-2); align-items: start; }
+.datos-vineta { margin-top: 3px; color: var(--color-ciruela); }
+.datos-general { margin: 0; max-width: none; padding: var(--esp-2) var(--esp-3); background: var(--color-lila); font-weight: var(--tipo-peso-etiqueta); }
+
+.glosario-lista { margin: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: var(--esp-3) var(--esp-5); }
+.glosario-lista dt { font-weight: var(--tipo-peso-titulo); }
+.glosario-lista dd { margin: 0; }
+
+/* Término en contexto: subrayado punteado; al tocarlo abre la definición al lado. */
+.termino { display: inline; }
+.termino-boton {
+  display: inline; min-height: 0; padding: 0; border: 0; background: none; font: inherit; color: inherit;
+  text-decoration: underline dotted var(--color-ciruela); text-decoration-thickness: 2px; text-underline-offset: 4px; cursor: help;
+}
+.termino-def {
+  display: block; margin: var(--esp-1) 0; padding: var(--esp-2) var(--esp-3); max-width: 46ch;
+  background: var(--color-lila); border-left: var(--borde) solid var(--color-ciruela); font-size: 16px;
+  animation: termino-abre var(--dur-fundido) var(--curva-entrada) both;
+}
+@keyframes termino-abre { from { opacity: 0; } to { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .termino-def { animation: none; } }
+
+/* Diálogo de fuentes y créditos sobre la portada. */
+.creditos-fondo { position: fixed; inset: 0; z-index: 20; display: grid; place-items: center; padding: var(--esp-4);
+  background: color-mix(in srgb, var(--color-espacio) 70%, transparent); }
+.creditos { width: min(100%, 760px); max-height: calc(100dvh - 2 * var(--esp-4)); overflow: auto; display: grid; gap: var(--esp-2); }
+.creditos-cerrar { justify-self: end; }
