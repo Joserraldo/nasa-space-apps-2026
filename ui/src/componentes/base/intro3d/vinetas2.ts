@@ -83,11 +83,11 @@ export const vineta2: ArmarVineta = (m) => {
   pantalla.rotation.x = -0.75;
   const consola = grupo("Intro_LowConsole", parte(m, "SuitBase", chaflan(1.7, 0.85, 0.8, 0.16), [0, 0.43, 0], "Low_Body"), pantalla);
   // La consola queda delante y a la derecha del niño, mirándolo: el guante derecho llega a la pantalla.
-  const [kx, kz, giro] = [-0.95, 1.2, 1.85];
+  const [kx, kz, giro] = [-0.8, 1.2, 1.75];
   const [fx, fz, dx, dz] = [Math.sin(giro), Math.cos(giro), -Math.cos(giro), Math.sin(giro)];
-  consola.position.set(kx + 0.42 * fx + 0.1 * dx, 0.38, kz + 0.42 * fz + 0.1 * dz);
-  consola.scale.setScalar(0.68);
-  consola.rotation.y = giro + Math.PI;
+  consola.position.set(kx + 0.5 * fx + 0.12 * dx, 0.08, kz + 0.42 * fz + 0.1 * dz);
+  consola.scale.setScalar(0.88);
+  consola.rotation.y = giro + Math.PI + 0.55;
   g.add(
     piso(26, 10),
     fondo,
@@ -101,12 +101,12 @@ export const vineta2: ArmarVineta = (m) => {
   );
   // Tarima del puesto (la consola y el niño quedan a la altura de la lámina).
   g.add(parte(m, "SuitBase", chaflan(2.6, 1.8, 0.45, 0.3).clone().rotateX(-Math.PI / 2).translate(0, 0.225, 0), [kx + 0.3, 0, kz], "Station_Step"));
-  // El niño de espaldas, con el guante derecho apoyado en la pantalla.
+  // El niño de espaldas en tres cuartos, con el perfil y el casco a la vista y el guante derecho sobre la pantalla.
   const nino = actor("nino", [kx, 0.45, kz], giro, "reposo", (pj) => {
-    pj.huesos.brazoD.rotation.set(-1.25, 0, -0.3);
-    pj.huesos.antebrazoD.rotation.x = -0.1;
-    pj.huesos.cabeza.rotation.y = -0.2;
-  });
+    pj.huesos.brazoD.rotation.set(-1.3, 0, -0.15);
+    pj.huesos.antebrazoD.rotation.x = -0.35;
+    pj.huesos.cabeza.rotation.y = -0.45;
+  }, "hablaAbierta");
   return conActores(g, { desde: [-0.75, 1.3, 3.3], hacia: [0.4, 1.25, 0], fov: 46 }, [nino]);
 };
 
