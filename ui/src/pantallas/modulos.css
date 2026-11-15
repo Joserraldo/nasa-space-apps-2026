@@ -88,17 +88,35 @@
 }
 .modulos-acciones { display: flex; flex-wrap: wrap; gap: var(--esp-2); }
 .modulos-colocar { flex: 1 1 auto; }
+.modulos-panel-cuerpo { display: contents; }
+.modulos-experta { display: none; }
 .modulos-colocar .fb { inline-size: 100%; }
 
 /* ---- Celular horizontal (844 x 390): panel al 40 % con desplazamiento interno ---- */
 @media (max-height: 500px) and (orientation: landscape) {
   .modulos-e5 { grid-template-columns: minmax(0, 1fr) 40%; gap: var(--esp-3); padding-block: var(--esp-2); min-block-size: calc(100dvh - 56px); }
   .modulos-ancla { display: none; }
-  .modulos-acciones { position: sticky; inset-block-end: 0; padding-block: var(--esp-1); background: var(--fc-fondo, var(--color-marfil)); }
-  .modulos-cabeza { padding: var(--esp-2) var(--esp-4); gap: var(--esp-1); }
+  .modulos-e5 { align-items: start; min-block-size: 0; }
+  .modulos-izq { grid-template-rows: auto auto auto; gap: var(--esp-2); }
+  .modulos-cabeza { padding: var(--esp-1) var(--esp-4); gap: 0; }
   .modulos-cabeza h2 { font-size: var(--tipo-tam-subtitulo); }
-  .modulos-cabeza p { font-size: 16px; line-height: 1.25; }
-  .modulos-lista { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: var(--esp-2); }
+  .modulos-cabeza p:not(.modulos-progreso) { display: none; }
+  .modulos-lista { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--esp-2); }
+  .modulos-ficha-cara { grid-template-columns: auto minmax(0, 1fr); gap: 0 var(--esp-2); }
+  .modulos-ficha-nombre { font-size: 15px; line-height: 1.15; }
+  .modulos-panel-cara { display: flex; flex-direction: column; overflow: hidden; }
+  .modulos-panel-cuerpo { min-block-size: 0; overflow-y: auto; overscroll-behavior: contain; display: grid; gap: var(--esp-2); }
+  .modulos-panel-desc { display: none; }
+  .modulos-acciones { flex: none; flex-wrap: nowrap; background: var(--fc-fondo, var(--color-marfil)); }
+  .modulos-panel-cab .retrato-marco, .modulos-panel-cab .retrato-compacto .retrato-marco { width: 40px; height: 40px; }
+  .modulos-panel-cab .retrato-marco svg { inline-size: 40px; block-size: 40px; }
+  .modulos-panel-cab .retrato-nombre { display: none; }
+  .modulos-panel-cab { display: grid; grid-template-columns: auto minmax(0, 1fr); column-gap: var(--esp-2); row-gap: 0; align-items: center; }
+  .modulos-panel-cab .fc { grid-row: 1 / span 2; }
+  .modulos-panel-cab h3 { grid-column: 2; align-self: end; }
+  .modulos-experta { grid-column: 2; align-self: start; }
+  .modulos-panel-cab .retrato-ficha { padding: 0; min-width: 0; inline-size: 44px; }
+  .modulos-experta { display: block; font-size: 14px; font-weight: var(--tipo-peso-etiqueta); }
   .modulos-ficha-cara { padding: var(--esp-2) var(--esp-3); min-block-size: 48px; }
   .modulos-panel-cara { padding: var(--esp-3) var(--esp-4); gap: var(--esp-2); max-block-size: calc(100dvh - 88px); }
   .modulos-panel-cab h3 { font-size: var(--tipo-tam-subtitulo); }

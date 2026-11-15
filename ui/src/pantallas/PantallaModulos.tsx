@@ -142,9 +142,16 @@ export function PantallaModulos({ estado, colocados, onColocar, onListo }: {
           <header className="modulos-panel-cab">
             <ExpertPortrait persona={expertaDe(elegido)} compacto />
             <h3 id="modulos-panel-titulo">{t(`ui.paso.4.modulo.${elegido}`)}</h3>
+            <span className="modulos-experta">{t(`ui.comun.retrato.${expertaDe(elegido)}.nombre`)}</span>
           </header>
+          <div className="modulos-panel-cuerpo">
           <p className="modulos-panel-desc">{t(`agentes.iris.sistema.${elegido}`)}</p>
           <CostRow inmediato={inmediato} retrasado={retrasado} />
+          {ultimo && colocados.includes(ultimo) && (
+            <Mensaje tipo="exito" tituloKey="ui.paso.4.puesto" detalleKey="ui.comun.pendiente.titulo"
+              vars={{ moduloKey: `ui.paso.4.modulo.${ultimo}` }} />
+          )}
+          </div>
           <div className="modulos-acciones">
             <FacetButton variant="primary" icon="check" className="modulos-colocar"
               labelKey={puesto ? "ui.paso.4.colocado" : "ui.paso.4.colocar"} selected={puesto || undefined}
@@ -154,10 +161,6 @@ export function PantallaModulos({ estado, colocados, onColocar, onListo }: {
           </div>
           </>)}
           {/* "Ask another expert" (ui/04) queda pendiente: no hay flujo para cambiar de experta en esta fase. */}
-          {ultimo && colocados.includes(ultimo) && (
-            <Mensaje tipo="exito" tituloKey="ui.paso.4.puesto" detalleKey="ui.comun.pendiente.titulo"
-              vars={{ moduloKey: `ui.paso.4.modulo.${ultimo}` }} />
-          )}
         </div>
       </aside>
     </section>
