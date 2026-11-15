@@ -268,5 +268,15 @@
   "ui.mapa.lugar.antena": "Antena",
   "ui.mapa.lugar.banco": "Banco de experimentos",
   "ui.tormenta.elegir": "Elige a tu experto",
-  "ui.tormenta.acceso": "{recurso} {valor}"
+  "ui.tormenta.acceso": "{recurso} {valor}",
+  "ui.medir.fps_prom": "FPS prom. (5 s)",
+  "ui.medir.fps_min": "FPS mín.",
+  "ui.medir.draw_calls": "Draw calls",
+  "ui.medir.triangulos": "Triángulos",
+  "ui.medir.cota": "(cota alta)",
+  "ui.medir.calidad": "Calidad",
+  "ui.medir.calidad.alta": "alta",
+  "ui.medir.calidad.media": "media",
+  "ui.medir.calidad.baja": "baja",
+  "ui.medir.lienzo": "Lienzo"
 }
