@@ -88,7 +88,7 @@ describe("misión Marte polo norte", () => {
     // La tormenta se cita siempre (y dice que se midió en Gale).
     expect(M.tarjetasCiencia.find((t) => t.id === "tormenta_en_gale")!.fuenteKey).toBe("fuente.radlab");
     const ocultas = M.tarjetasCiencia.filter((t) => t.fuenteKey === null).map((t) => t.id).sort();
-    expect(ocultas).toEqual(["guardar_energia", "hielo_de_agua", "sol_bajo"]);
+    expect(ocultas).toEqual([]);
   });
 
   it("ningún texto dice que la tormenta se midió en el polo", () => {

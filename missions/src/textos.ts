@@ -124,14 +124,14 @@ export const TEXTOS_MARTE_POLO_NORTE: Record<Idioma, Record<string, string>> = {
     "mision.polo_norte.ciencia.eje": "Mars is tilted, like Earth. That's why near the pole there are days with no Sun at all.",
     "mision.polo_norte.ciencia.terreno":
       "The height of the ground comes from real maps of Mars. How steep each place is was calculated by our team from those heights.",
-    "mision.polo_norte.ciencia.panel": "When the Sun is low in the sky, solar panels make less electricity.",
-    "mision.polo_norte.ciencia.bateria": "Solar energy must be saved while the Sun shines.",
+    "mision.polo_norte.ciencia.panel": "In winter the Sun sits low and panels make less electricity. Tilting them toward the Sun helps, as NASA's Spirit rover did.",
+    "mision.polo_norte.ciencia.bateria": "A lander's solar panels charge its batteries while the Sun shines. In the polar winter there is no Sun to charge them.",
     "mision.polo_norte.ciencia.reciclador": "Astronauts recycle water again and again. Water doesn't appear out of nowhere.",
     "mision.polo_norte.ciencia.escudo":
       "On the way to Mars, the RAD instrument on the Curiosity rover measured almost 3 times more radiation than later on the surface of Mars.",
     "mision.polo_norte.ciencia.invernadero":
       "Plants can grow in space, but it is hard: they need a special closed chamber. On the Space Station, chile peppers grew for 137 days and gave 26 peppers.",
-    "mision.polo_norte.ciencia.hielo": "The ice cap at Mars' north pole is mostly water ice.",
+    "mision.polo_norte.ciencia.hielo": "The ice cap that stays all year at Mars' north pole is mostly water ice.",
     "mision.polo_norte.pregunta": "No Sun at the pole: where does the energy come from?",
     "mision.polo_norte.pregunta.a": "From the ice",
     "mision.polo_norte.pregunta.b": "From the battery we charged before",
@@ -165,14 +165,14 @@ export const TEXTOS_MARTE_POLO_NORTE: Record<Idioma, Record<string, string>> = {
     "mision.polo_norte.ciencia.eje": "Marte está inclinado, como la Tierra. Por eso cerca del polo hay días sin nada de Sol.",
     "mision.polo_norte.ciencia.terreno":
       "La altura del suelo sale de mapas reales de Marte. Qué tan inclinado es cada lugar lo calculó nuestro equipo a partir de esas alturas.",
-    "mision.polo_norte.ciencia.panel": "Cuando el Sol está bajito en el cielo, los paneles solares dan menos electricidad.",
-    "mision.polo_norte.ciencia.bateria": "La energía del Sol hay que guardarla mientras brilla.",
+    "mision.polo_norte.ciencia.panel": "En invierno el Sol queda bajo y los paneles dan menos electricidad. Inclinarlos hacia el Sol ayuda, como hizo el róver Spirit de la NASA.",
+    "mision.polo_norte.ciencia.bateria": "Los paneles de una sonda cargan sus baterías mientras brilla el Sol. En el invierno polar no hay Sol para cargarlas.",
     "mision.polo_norte.ciencia.reciclador": "Los astronautas reciclan el agua una y otra vez. El agua no aparece de la nada.",
     "mision.polo_norte.ciencia.escudo":
       "En el viaje a Marte, el instrumento RAD del rover Curiosity midió casi 3 veces más radiación que después en la superficie de Marte.",
     "mision.polo_norte.ciencia.invernadero":
       "Las plantas pueden crecer en el espacio, pero es difícil: necesitan una cámara cerrada especial. En la Estación Espacial crecieron chiles durante 137 días y dieron 26.",
-    "mision.polo_norte.ciencia.hielo": "El casquete del polo norte de Marte es sobre todo hielo de agua.",
+    "mision.polo_norte.ciencia.hielo": "El casquete que dura todo el año en el polo norte de Marte es sobre todo hielo de agua.",
     "mision.polo_norte.pregunta": "Sin Sol en el polo: ¿de dónde sale la energía?",
     "mision.polo_norte.pregunta.a": "Del hielo",
     "mision.polo_norte.pregunta.b": "De la batería que cargamos antes",

@@ -141,16 +141,16 @@ export const MISION_MARTE_POLO_NORTE: Mision = {
     { id: "tiempo_comprimido", textoKey: "mision.polo_norte.tiempo", fuenteKey: "fuente.nssdc" },
     // Terreno MOLA polar (PR #148).
     { id: "sitio_terreno", textoKey: "mision.polo_norte.ciencia.terreno", fuenteKey: "fuente.marsTrek" },
-    // POR VERIFICAR: el panel rinde menos con el Sol bajo es cálculo del equipo (seno), sin fuente NASA aún.
-    { id: "sol_bajo", modulo: "panel_solar", textoKey: "mision.polo_norte.ciencia.panel", fuenteKey: null },
-    // POR VERIFICAR: principio de la misión, la propuesta no le da fuente.
-    { id: "guardar_energia", modulo: "bateria", textoKey: "mision.polo_norte.ciencia.bateria", fuenteKey: null },
+    // [V] NASA JPL, Spirit inclinado al norte en invierno (#159, docs/science/tarjetas-misiones.md).
+    { id: "sol_bajo", modulo: "panel_solar", textoKey: "mision.polo_norte.ciencia.panel", fuenteKey: "fuente.jpl.spiritInclinacion" },
+    // [V] NASA, Phoenix en el polo norte: sin Sol en invierno no carga las baterías (#159).
+    { id: "guardar_energia", modulo: "bateria", textoKey: "mision.polo_norte.ciencia.bateria", fuenteKey: "fuente.nasa.phoenix" },
     // Mismas afirmaciones ya verificadas para Jezero (docs/science/tarjetas-mision1.md).
     { id: "agua_reciclada", modulo: "reciclador_agua", textoKey: "mision.polo_norte.ciencia.reciclador", fuenteKey: "fuente.nasa.agua" },
     { id: "escudo_regolito", modulo: "escudo", textoKey: "mision.polo_norte.ciencia.escudo", fuenteKey: "fuente.dosis.marte" },
     { id: "plantas", modulo: "invernadero", textoKey: "mision.polo_norte.ciencia.invernadero", fuenteKey: "fuente.osdr" },
-    // POR VERIFICAR (F1, fuera de la lista oficial): oculta hasta que datos (Daniel) apruebe NASA Photojournal PIA06858.
-    { id: "hielo_de_agua", textoKey: "mision.polo_norte.ciencia.hielo", fuenteKey: null },
+    // [V] NASA JPL: el casquete residual del norte es sobre todo hielo de agua (#159; el estacional tiene CO₂).
+    { id: "hielo_de_agua", textoKey: "mision.polo_norte.ciencia.hielo", fuenteKey: "fuente.jpl.casqueteMarte" },
   ],
   preguntaFinal: {
     preguntaKey: "mision.polo_norte.pregunta",
