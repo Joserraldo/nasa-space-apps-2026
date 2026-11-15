@@ -37,11 +37,10 @@ Una sección por persona, máximo 5 líneas, y nadie edita la de otro (FLUJO §8
 - Bloqueo: #269 (E6 con escena y HUD de mundo/01) espera la pila de Daniel (#247 en conflicto); resaltado del anclaje en E5 espera a Daniel (#279); Map no mueve al niño (Camilo).
 
 ## Interfaz (Jaime)
-**Rama:** docs/fichas-fidelidad-220 y fix/ui-* · **PR:** #317 (fichas de #220), #318, #319 y #320 hacia develop · **Tokens:** verde
-- Hecho: repaso de fidelidad de lo fusionado en #220 (cierre-fidelidad, tarea 4): captura al lado de la lámina de cada pieza en `pr-fichas-220/`, con su ficha en el PR.
-- Hecho: arreglos de las 3 piezas que más se alejaban: intro (#318), carga (#319) y portada en 844x390 (#320).
-- Sigue: tarjeta de fuente de una línea como `ui/03` (cuarta en la lista); ConfirmarAccion con la imagen de la pieza.
-- Bloqueo: esperan a María Paula (#220) color de costos, interruptor Voice, tokens PERSONAJES y estilo de los retratos.
+**Rama:** `feat/ui-inicio3d-kit` → `fix/ui-portada-celular-horizontal` → `fix/ui-carga-panel-visible` · **PR:** #326 → #320 → #319 (fusionar en ese orden), #318 · **Tokens:** verde
+- Hecho: repaso de fidelidad de lo fusionado en #220 (#317, fichas con captura al lado de la lámina). Kit 3D `base/inicio3d` (#326) con portada (#320) y carga (#319) que montan el niño, la nave orbital y los módulos del juego; intro en #318.
+- Sigue: rebasar #320 y #319 cuando entre el anterior; tarjeta de fuente de una línea como `ui/03`; ConfirmarAccion con la imagen de la pieza.
+- Bloqueo: Settings no aparece hasta que haya pantalla de ajustes. Esperan a María Paula (#220) color de costos, interruptor Voice, tokens PERSONAJES y estilo de los retratos.
 
 ## Fidelidad
 Una línea por pieza (FLUJO §4 y §8). Estados: `sin empezar`, `en PR #n`, `aprobada`. Solo María Paula marca `aprobada`, después de comparar la captura con la lámina.
@@ -50,7 +49,7 @@ Una línea por pieza (FLUJO §4 y §8). Estados: `sin empezar`, `en PR #n`, `apr
 | --- | --- | --- | --- |
 | Tokens, Nunito, botones y placas | `ui/02`, `ui/03` | Jaime | fusionada en #220, revisión de fidelidad pendiente |
 | Retratos de diálogo | `personajes/02, 04, 06, 09`, `ui/01` | Jaime | fusionada en #220, revisión de fidelidad pendiente |
-| Portada DOM, intro y carga | `inicio/01–03`, `ui/00` | Jaime | fusionada en #220, revisión de fidelidad pendiente |
+| Portada DOM, intro y carga | `inicio/01–03`, `ui/00` | Jaime | portada en PR #320, carga en PR #319 (sobre el kit #326) |
 | Tarjeta de fuente, datos usados, glosario | `ui/04` | Jaime | fusionada en #220, revisión de fidelidad pendiente |
 | Cielo, luz y niebla de Marte | MARTE.md §4–§5 (no el azul de `mundo/01`) | Daniel | sin empezar |
 | Terreno de Jezero y rocas | `mundo/01`, `exterior/02` | Daniel | sin empezar |
