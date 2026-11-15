@@ -11,17 +11,18 @@ Una sección por persona, máximo 5 líneas, y nadie edita la de otro (FLUJO §8
 ```
 
 ## Personajes (María Paula)
-**Rama:** feat/ui-personajes-subida-escena · **PR:** #197 · **Tokens:** verde
-- Hecho: subida 1/6 (#184, reductor y cuenta) fusionada; 2/6 (#197, lógica de escena) abierta con la puerta en verde.
-- Sigue: subida 3/6, render adaptado al contrato `VistaEscena` de José (`tormenta.anunciada`, `iris.averiada`); después 4 a 6.
+**Rama:** feat/ui-personajes-solo-b · **PR:** tras #316 fusionado · **Tokens:** amarillo
+- Hecho: #316 fusionado en `develop`; variante B consolidada como única implementación en `personaje.ts`, `cabeza.ts`, `cuerpo.ts`, `rostro.ts` e `iris.ts`, retirando la variante A y las hojas A/B temporales.
+- Verificado: 25/25 pruebas unificadas de personajes, `tsc --noEmit` sin errores, liberación idempotente de esqueleto y `userData.compartido = true` en materiales.
+- Sigue: módulo `ui/src/escena/personajes` listo para consumir en el montaje de la escena.
 - Bloqueo: ninguno.
 
 ## Escenario (Daniel)
-**Rama:** feat/ui-escena-v* · **PR:** cadena #282 → #285 → #286 → #288 → #289 → … → #295 → #300 hacia develop · **Tokens:** 🟡
-- Hecho: pila del escenario pasada a develop (reemplaza #248–#266); entraron #282, #285, #286 y #288. Fidelidad nueva: rocas de esquina, balizas del camino ancho, torre y hábitat.
-- Medido (15 nov, Chrome real, Intel Graphics 0x7D67 integrada, sin vsync, 15 s): PC 1920×1080 alta 258 fps (p95 0,8 ms), baja 777 fps; 1366×768 alta 383 fps. Tirones sueltos de 0,2–0,5 s (¿shaders?).
-- Celular emulado (412×915, dpr 2,6, CPU ÷4): alta 290 fps, baja 480 fps. Es emulación, no reemplaza el celular real.
-- Sigue: fusionar la cadena en orden; medir en un celular y un PC viejo reales.
+**Rama:** feat/ui-escena-v* · **PR:** #311–#315 abiertos hacia develop (la pila #282–#310 ya entró) · **Tokens:** 🟡
+- Hecho: pila del escenario en develop (composición, suelo, caminos, cámara, medición, contorno y guantes, planta, anillo, vista, rocas, balizas, torre, kit: panel, consola, antena) y medición sobre el render real (#306).
+- Abiertos: torre con anillo de vidrio (#311), corredores de vidrio (#312), caja y depósito (#313), primera persona (#314), puerta (#315, después de #313).
+- Medido en PC real (Intel integrada, Chrome): 1920×1080 alta ~258 fps, baja ~777 fps; tirones sueltos de 0,2–0,5 s. Celular solo emulado.
+- Sigue: medir en celular y PC viejo reales. Torre al centro y refugio dentro del anillo dependen de `mundo.ts` (issue #254, Camilo). Fila de 4 paneles: el primero sale cortado (decisión de Daniel).
 
 ## Ubicación (Camilo)
 **Rama:** feat/ui-ubicacion-colisiones · **PR:** hacia develop · **Tokens:** amarillo
@@ -30,16 +31,17 @@ Una sección por persona, máximo 5 líneas, y nadie edita la de otro (FLUJO §8
 - Bloqueo: mundo/alturas dependen de Daniel; movimiento/cámara/mapa requieren montaje de José/Daniel. Sin prueba en celular físico.
 
 ## Integración (José)
-**Rama:** feat/ui-integracion-orientacion · **PR:** hacia feat/ui-escenarios · **Tokens:** verde
-- Hecho: contratos `VistaEscena` (#181), eventos (#182), ajustes (#186) y props de `EscenaBase` (#190, cerrado). Lógica del aviso de girar el teléfono (`juego/orientacion.ts`).
-- Sigue: pantallas nuevas desde las láminas cuando entren #208, #209 y #213 de Jaime; preview de esta rama en #207 (hacia develop).
-- Bloqueo: tokens y componentes de Jaime.
+**Rama:** feat/ui-* hacia develop · **PR:** #269, #303, #304, #305 y el montaje de piezas en E7 · **Tokens:** verde
+- Hecho: en develop E3 (#276), E4 (#274), E5 sobre la escena (#280), E7 completa (#278, #283, #296 y #299: Tormenta.tsx borrado, e2e nuevo y respaldo 2D arreglado) y E8; encuadre de escena (#275). Con permiso de Santiago, piezas de Jaime: #303 (paneles de ui/04) y #304 (HUD en píldoras de mundo/01); #268 revisado.
+- Sigue: montar #303 y #304 en la tormenta cuando entren (PR listo encima); #305 (Decision recorded en E6); al final, ruta dorada en el preview en EN, ES y sin WebGL.
+- Bloqueo: #269 (E6 con escena y HUD de mundo/01) espera la pila de Daniel (#247 en conflicto); resaltado del anclaje en E5 espera a Daniel (#279); Map no mueve al niño (Camilo).
 
 ## Interfaz (Jaime)
-**Rama:** — · **PR:** #220 (fusionado, trae toda la pila: #208, #209, #213, #214, #217, #219) · **Tokens:** verde
-- Hecho: tokens v8 y Nunito; `estilos.css` borrado y reemplazado por `estilos/base.css`; `FacetButton` e iconos; placas, costos, mensajes, efecto pendiente y `ConfirmarAccion`; portada, intro y carga; tarjeta de fuente, datos usados y glosario; retratos con 8 expresiones. Muestrario en `componentes/base/muestrario.html`.
-- Sigue: arreglos de fidelidad que pida María Paula (las fichas están en cada PR cerrado); audio y voz si sobra tiempo.
-- Bloqueo: ninguno. Falta la revisión de fidelidad de María Paula (las piezas entraron juntas con #220).
+**Rama:** docs/fichas-fidelidad-220 y fix/ui-* · **PR:** #317 (fichas de #220), #318, #319 y #320 hacia develop · **Tokens:** verde
+- Hecho: repaso de fidelidad de lo fusionado en #220 (cierre-fidelidad, tarea 4): captura al lado de la lámina de cada pieza en `pr-fichas-220/`, con su ficha en el PR.
+- Hecho: arreglos de las 3 piezas que más se alejaban: intro (#318), carga (#319) y portada en 844x390 (#320).
+- Sigue: tarjeta de fuente de una línea como `ui/03` (cuarta en la lista); ConfirmarAccion con la imagen de la pieza.
+- Bloqueo: esperan a María Paula (#220) color de costos, interruptor Voice, tokens PERSONAJES y estilo de los retratos.
 
 ## Fidelidad
 Una línea por pieza (FLUJO §4 y §8). Estados: `sin empezar`, `en PR #n`, `aprobada`. Solo María Paula marca `aprobada`, después de comparar la captura con la lámina.
@@ -59,8 +61,8 @@ Una línea por pieza (FLUJO §4 y §8). Estados: `sin empezar`, `en PR #n`, `apr
 | Cámaras de 3.ª y 1.ª persona | `mundo/01`, `mundo/02` | Camilo | sin empezar |
 | Panel `Map` y respaldo 2D | ESCENAS §3.4, FLUJO §9 | Camilo | sin empezar |
 | Controles táctiles (joystick, cámara, acción) | Familia de `ui/03`, ESCENAS §3.5 | Camilo | sin empezar |
-| Niño 3D | `personajes/08–10` | María Paula | sin empezar |
-| Iris rover | `mundo/01`, `inicio/02`, `personajes/07` | María Paula | sin empezar |
-| Ingeniera 3D | `personajes/01`, `mundo/01` | María Paula | sin empezar |
+| Niño 3D | `personajes/08–10` | María Paula | fusionado (#316); variante B única |
+| Iris rover | `mundo/01`, `inicio/02`, `personajes/07` | María Paula | fusionado (#316); variante B única |
+| Ingeniera 3D | `personajes/01`, `mundo/01` | María Paula | fusionado (#316); variante B única |
 | Portada 3D | `inicio/01`, `inicio/capas/` | María Paula | sin empezar |
-| HUD, diálogo, comparación, tormenta y final (montaje) | `ui/01`, `ui/04`, `personajes/07`, `mundo/01` | José | sin empezar |
+| HUD, diálogo, comparación, tormenta y final (montaje) | `ui/01`, `ui/04`, `personajes/07`, `mundo/01` | José | E3–E5, E7 y E8 fusionadas; E6 en PR #269; piezas de ui/04 en PR #303; HUD en PR #304 |

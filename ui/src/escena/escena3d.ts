@@ -20,9 +20,13 @@ import type { VistaEscena } from "./vista";
 import { MODULOS_BASE, type ModuloBase } from "./activos/modulos";
 import { PRESUPUESTO, contarRender, type CuentaRender } from "./activos/terreno";
 
+import { crearMedidorRender, type MedicionRender } from "./medicion";
+
 export type CamaraEscena = "tercera" | "primera";
 
 export interface OpcionesEscena3D {
+  /** Activa muestras del render para diagnóstico; desactivado en el juego por defecto. */
+  medir?: boolean;
   calidad: CalidadGrafica;
   movimientoReducido: boolean;
   /** El navegador perdió el contexto WebGL: la pantalla pasa al respaldo 2D. */
@@ -39,6 +43,8 @@ export interface Escena3D {
   redimensionar(ancho: number, alto: number): void;
   /** Cota alta de draw calls y triángulos de la vista (recorrido, sin WebGL). */
   contar(): CuentaRender;
+  /** Contadores del renderer y FPS dibujados; null si no se activó la medición. */
+  medicion(): (MedicionRender & { calidad: CalidadGrafica }) | null;
   /**
    * Lugar al alcance del foco de la cámara. PROVISIONAL: el jugador está fijo en la mesa hasta que
    * Camilo integre navegación y joystick; entonces el foco será la posición del jugador.
@@ -99,6 +105,7 @@ export function crearEscena3D(canvas: HTMLCanvasElement, opciones: OpcionesEscen
   let calidad = opciones.calidad;
   let reducido = opciones.movimientoReducido;
   let liberada = false;
+  const medidor = opciones.medir ? crearMedidorRender() : null;
 
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: AJUSTE_CALIDAD[calidad].antialias, powerPreference: "high-performance" });
   const materiales: Materiales = crearMateriales();
@@ -166,6 +173,7 @@ export function crearEscena3D(canvas: HTMLCanvasElement, opciones: OpcionesEscen
     renderer.render(armada.escena, camara);
 
     const info = renderer.info.render;
+    medidor?.registrar(ahora, { drawCalls: info.calls, triangulos: info.triangles });
     if (info.calls > PRESUPUESTO.drawCalls || info.triangles > PRESUPUESTO.triangulos) proponer(MAS_BAJA[calidad]);
     if (ultimo >= 0 && ahora - arranque > 2000) {
       acumulado += ahora - ultimo;
@@ -183,7 +191,10 @@ export function crearEscena3D(canvas: HTMLCanvasElement, opciones: OpcionesEscen
     ultimo = -1;
     renderer.setAnimationLoop(fotograma);
   };
-  const parar = () => renderer.setAnimationLoop(null);
+  const parar = () => {
+    renderer.setAnimationLoop(null);
+    medidor?.reiniciar();
+  };
   const alVisibilidad = () => (document.hidden ? parar() : arrancar());
   const alPerder = (e: Event) => {
     e.preventDefault();
@@ -235,6 +246,7 @@ export function crearEscena3D(canvas: HTMLCanvasElement, opciones: OpcionesEscen
     },
     fijarCalidad(nivel) {
       calidad = nivel;
+      medidor?.reiniciar();
       aplicarCalidad(nivel);
     },
     fijarMovimientoReducido(r) {
@@ -247,6 +259,9 @@ export function crearEscena3D(canvas: HTMLCanvasElement, opciones: OpcionesEscen
       camara.fov = fovParaAspecto(camaraActual, camara.aspect);
       camara.updateProjectionMatrix();
       guantes.anclar(camara.aspect, 70);
+    },
+    medicion() {
+      return medidor ? { ...medidor.leer(), calidad } : null;
     },
     contar() {
       return contarRender(armada.escena);
