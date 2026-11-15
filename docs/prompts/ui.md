@@ -53,8 +53,9 @@ cada uno en su worktree; búsquedas con Haiku. Fable sube a high solo para la pi
 META PARA PARAR EL LOOP: niño, Iris e Ingeniera fieles a las láminas en la base, y el punto de
 control final fusionado en develop antes de P4. Después solo arreglos.
 
-PRIMERA RESPUESTA (sin código, máx. 6 líneas): qué está sin subir en feat/ui-escena-3d y los
-primeros PRs atómicos hacia feat/ui-escenarios. Esperá el OK.
+PRIMERA RESPUESTA (sin código, máx. 6 líneas): estado de feat/ui-escenarios (PRs abiertos y
+fusionados), el mensaje de la ola 2 que vas a mandar y la primera pieza de personajes que
+arrancás. Esperá el OK.
 
 Después: /loop 10m Haz UNA iteración según docs/LOOP.md y docs/prompts/ui.md.
 ```
