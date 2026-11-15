@@ -1,9 +1,18 @@
 # Misión Luna, lado visible: la tormenta llega al final de la noche larga
 
-**Rol que propone:** datos (Daniel) · **Dueños de la misión:** diseño (Santiago y Camilo) · **Estado:** propuesta · **Fecha:** 2026-11-14
+**Rol que propone:** datos (Daniel) · **Dueños de la misión:** diseño (Santiago y Camilo) · **Estado:** propuesta, implementada como datos (ver "Estado de implementación") · **Fecha:** 2026-11-14
 **Sitio del contrato:** `luna_lado_visible` (`contracts/src/seed.ts`). Recursos de partida ya en `design/src/recursos.ts`: ⚡75 🫁75 🛡️50, consumo −2/−2/−2, retraso de comunicaciones 1 tick.
 **Destino:** un `missions/src/luna-visible.ts` con la misma forma que `jezero.ts` (`Mision`). Este documento no toca esa carpeta: allí lo implementa diseño.
 **Convención:** [V] = comprobado en la fuente que se cita (tabla §10). **NO VERIFICADO** = no se puede mostrar al niño. "Valor de juego" = número de diseño, no de NASA. Todo dato es **dato real curado, no en vivo**.
+
+
+## Estado de implementación (14 nov, 22:45)
+
+- **Como datos:** `missions/src/luna-lado-visible.ts` en #156 (abierto, entra después de #155). Voces de la misión en #131.
+- **Fuentes:** `noche_larga`, `luz_del_sol` y `mensajes_rapidos` usan `fuente.nssdcMoon` (#159).
+- **Datos listos para usar:** luz por tormenta y amanecer (#147, NASA SVS 5187; fue de noche en los 3 sitios durante Gannon), blindaje por sitio (#160: Hadley 0,09 > Descartes 0,03 > Tranquilidad 0,01) y terreno.
+- **La tormenta es Gannon (9–10 may 2024):** con la del 20 may 2024 la escena nocturna no funcionaría, porque llegó de día.
+- **Pendiente (diseño):** la victoria al amanecer ya se puede expresar con `fin.exitoCuando: { tipo: "sobrevivir_hasta_tick", tick }` (#176), pero falta decidir el tick; también falta la noche sin recarga (efecto por sitio).
 
 ## 1. Por qué esta misión enseña algo distinto
 
