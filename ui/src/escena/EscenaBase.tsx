@@ -2,6 +2,7 @@ import { useEffect, useRef } from "react";
 import type { CalidadGrafica } from "../juego/ajustes";
 import type { EventoFeedback } from "../juego/eventos";
 import { crearEscena3D, type CamaraEscena, type Escena3D } from "./escena3d";
+import type { EntradaTactil } from "./entradaTactil";
 import type { LugarObjetivo, VistaEscena } from "./vista";
 
 export type { CamaraEscena } from "./escena3d";
@@ -29,7 +30,35 @@ export interface EscenaBaseProps {
   onCalidad: (nivel: CalidadGrafica) => void;
   /** Se perdió el contexto WebGL: la pantalla pasa al respaldo 2D. */
   onWebGLPerdido: () => void;
+
+  // --- Frontera A/B del plan de integración (§4): props aditivas, todas opcionales. ---
+  // La pantalla (A) las pasa; el mundo (B) las implementa. Sin ellas la escena se comporta como antes.
+  /**
+   * Destino elegido en el mapa. La escena planea la ruta (`planearRuta`) y camina hasta el punto de
+   * uso del lugar. `null` o ausente: sin destino. Moverse con el teclado o el joystick lo cancela.
+   */
+  destino?: LugarObjetivo | null | undefined;
+  /** La ruta terminó: llegó, la canceló una entrada manual, o no hay camino hasta allí. */
+  onDestino?: ((evento: EventoDestino) => void) | undefined;
+  /**
+   * Hay un diálogo, un panel de confirmación o un campo de texto abierto: el mundo no se mueve ni se
+   * "usa". Al activarse se sueltan las teclas y se cancela el joystick; la animación sigue.
+   */
+  bloqueado?: boolean | undefined;
+  /** Posición del jugador en metros de juego, para el mapa: al moverse (como mucho 5 veces por segundo) y al detenerse. */
+  onPosicion?: ((posicion: PosicionJugador) => void) | undefined;
+  /** El jugador pidió cambiar de cámara con la tecla V. La pantalla es dueña de `camara`. */
+  onCambiarCamara?: (() => void) | undefined;
+  /**
+   * La escena es dueña de los gestos táctiles (conoce la cámara y sus límites). Al montar entrega su
+   * `EntradaTactil` y al desmontar entrega `null`; la capa táctil de la pantalla le pasa los punteros
+   * (`iniciar`, `mover`, `terminar`, `cancelar`) y lee `estado` para dibujar el joystick.
+   */
+  onEntradaTactil?: ((entrada: EntradaTactil | null) => void) | undefined;
 }
+
+export type PosicionJugador = Readonly<{ x: number; z: number }>;
+export type EventoDestino = Readonly<{ tipo: "llego" | "cancelado" | "sin_ruta"; lugar: LugarObjetivo }>;
 
 /**
  * Monta la escena 3D en un <canvas> que ocupa su contenedor.
