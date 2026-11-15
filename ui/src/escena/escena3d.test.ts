@@ -4,10 +4,12 @@ import { fileURLToPath } from "node:url";
 import * as THREE from "three";
 import { afterEach, describe, expect, it } from "vitest";
 import type { Equipment } from "@solar-shield/contracts";
-import { ANILLO, CLARO, DEM_JEZERO, MALLA_JEZERO, ROCAS, armarEscena, rejillaJezero } from "./armado";
+import {
+  CAMINOS, CLARO, DEM_JEZERO, MALLA_JEZERO, ROCAS, ROCAS_GRANDES, armarEscena, posicionesBalizas, rejillaJezero, rocaGrandeLibre,
+} from "./armado";
 import { cacheGeometrias, crearMateriales } from "./materiales";
 import { liberarCache, liberarEscena } from "./liberar";
-import { LUGARES } from "./mundo";
+import { LUGARES, TERRENO } from "./mundo";
 import type { EstadoModulo, VistaEscena } from "./vista";
 import { MODULOS_BASE } from "./activos/modulos";
 import { PRESUPUESTO, aplanarClaro, alturaEnMundo, contarRender } from "./activos/terreno";
@@ -54,10 +56,7 @@ describe("datos del terreno de la escena", () => {
     const claro = aplanarClaro(rejilla, MALLA_JEZERO, CLARO.radio, CLARO.borde);
     const y = (x: number, z: number) => alturaEnMundo(claro.rejilla, MALLA_JEZERO, x, z) - claro.altura;
     for (const l of LUGARES) expect(Math.abs(y(l.mx, l.mz)), l.id).toBeLessThan(1e-3);
-    for (let a = 0; a < 8; a++) {
-      const r = ANILLO.radioBalizas;
-      expect(Math.abs(y(Math.cos(a) * r, Math.sin(a) * r))).toBeLessThan(1e-3);
-    }
+    for (const [x, z] of [...posicionesBalizas(), ...CAMINOS.flat()]) expect(Math.abs(y(x, z))).toBeLessThan(1e-3);
     let relieve = 0;
     for (let a = 0; a < 16; a++) relieve = Math.max(relieve, Math.abs(y(Math.cos(a) * 120, Math.sin(a) * 120)));
     expect(relieve).toBeGreaterThan(1);
@@ -79,6 +78,8 @@ describe("armarEscena", () => {
     const a = armarEscena(crearMateriales(), vista(Object.fromEntries(MODULOS_BASE.map((id) => [id, "funcionando"]))), rejilla);
     const c = contarRender(a.escena);
     console.info(`escena completa (5 módulos): ${c.drawCalls} draw calls, ${c.triangulos} triángulos`);
+    for (const id of MODULOS_BASE) expect(a.modulos[id].solido.visible, id).toBe(true);
+    for (const nombre of ["Base_Buildings", "Kit_Paths", "Mountains_Far", "Rocks_Basalt_Large"]) expect(a.escena.getObjectByName(nombre), nombre).toBeDefined();
     expect(c.drawCalls).toBeLessThanOrEqual(PRESUPUESTO.drawCalls);
     expect(c.triangulos).toBeLessThanOrEqual(PRESUPUESTO.triangulos);
     a.liberar();
@@ -116,7 +117,61 @@ describe("armarEscena", () => {
       if (o instanceof THREE.InstancedMesh) balizas.push(o);
     });
     expect(balizas.length).toBeGreaterThan(0);
-    for (const b of balizas) expect(b.count).toBe(ANILLO.balizas);
+    for (const b of balizas) expect(b.count).toBe(posicionesBalizas().length);
+    a.liberar();
+  });
+
+  it("hay rocas grandes en el borde del claro, instanciadas y lejos de los edificios", () => {
+    const a = armarEscena(crearMateriales(), EJEMPLO, rejilla);
+    const grandes = a.escena.getObjectByName("Rocks_Basalt_Large") as THREE.InstancedMesh;
+    expect(grandes).toBeInstanceOf(THREE.InstancedMesh);
+    expect(grandes.count).toBeGreaterThanOrEqual(8);
+    expect(grandes.count).toBeLessThanOrEqual(ROCAS_GRANDES.n);
+    const mt = new THREE.Matrix4();
+    const p = new THREE.Vector3();
+    for (let i = 0; i < grandes.count; i++) {
+      grandes.getMatrixAt(i, mt);
+      p.setFromMatrixPosition(mt);
+      expect(Math.hypot(p.x, p.z)).toBeGreaterThanOrEqual(ROCAS_GRANDES.radioMin - 1e-6);
+      expect(rocaGrandeLibre(p.x, p.z)).toBe(true);
+    }
+    a.liberar();
+  });
+
+  it("los caminos unen los lugares de los circuitos A y B y las balizas no caen sobre módulos", () => {
+    const extremos = CAMINOS.flat();
+    for (const id of ["taller", "panel_solar", "escudo", "habitat", "sensor", "reciclador_agua", "invernadero", "antena", "banco"] as const) {
+      const l = LUGARES.find((x) => x.id === id)!;
+      expect(extremos.some(([x, z]) => Math.hypot(x - l.x, z - l.z) < 0.6), id).toBe(true);
+    }
+    const balizas = posicionesBalizas();
+    expect(balizas.length).toBeGreaterThanOrEqual(8);
+    for (const [x, z] of balizas) for (const c of TERRENO.circulos) expect(Math.hypot(x - c.x, z - c.z)).toBeGreaterThan(c.r);
+    const a = armarEscena(crearMateriales(), EJEMPLO, rejilla);
+    const caminos = a.escena.getObjectByName("Kit_Paths") as THREE.Mesh;
+    expect(caminos.geometry.getAttribute("color")).toBeDefined();
+    expect(caminos.castShadow).toBe(false);
+    a.liberar();
+  });
+
+  it("la cordillera lejana es una sola malla lila, sin sombra y sin azul dominante", () => {
+    const a = armarEscena(crearMateriales(), EJEMPLO, null);
+    const m = a.escena.getObjectByName("Mountains_Far") as THREE.Mesh;
+    expect(m).toBeInstanceOf(THREE.Mesh);
+    expect(m.castShadow).toBe(false);
+    const col = m.geometry.getAttribute("color");
+    const pos = m.geometry.getAttribute("position");
+    let r = 0, b = 0, haciaDentro = 0, caras = 0;
+    for (let i = 0; i < col.count; i++) { r += col.getX(i); b += col.getZ(i); }
+    expect(r / b).toBeGreaterThan(0.45); // lila (rojo y azul juntos), no un azul puro
+    const n = m.geometry.getAttribute("normal");
+    for (let i = 0; i < pos.count; i += 3) {
+      if (Math.abs(n.getY(i)) > 0.95) continue;
+      caras++;
+      if (n.getX(i) * pos.getX(i) + n.getZ(i) * pos.getZ(i) < 0) haciaDentro++;
+    }
+    expect(haciaDentro / caras).toBeGreaterThan(0.6); // las caras miran a la base
+    expect(contarRender(m).triangulos).toBeLessThan(1000);
     a.liberar();
   });
 
