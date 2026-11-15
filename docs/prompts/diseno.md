@@ -1,5 +1,7 @@
 # Prompt: rol diseño y misiones (Camilo; Santiago supervisa)
 
+**Abrir con:** `claude --model opus --effort medium`. Tabla completa de modelos y esfuerzo: [README.md](README.md#modelos-y-esfuerzo).
+
 Pegá esto en la sesión de diseño. Reglas comunes, herramientas y tokens: [README.md](README.md).
 
 ```
@@ -30,7 +32,7 @@ PENDIENTES EN ORDEN (uno por iteración):
 NO HACER: tocar engine/, contracts/ ni ui/. Inventar datos científicos (todo dato lleva
 fuente [V] de Daniel). Cambiar la ruta dorada de Jezero sin correr ganable.test.ts.
 
-TOKENS: tablas y textos EN/ES con subagente Haiku u OpenCode con DeepSeek 4.1 Flash;
+TOKENS: tablas y textos EN/ES con subagente Haiku u OpenCode con DeepSeek V4.1 Flash;
 simulaciones por semilla con Sonnet; balance y decisiones en la sesión principal.
 
 META PARA PARAR EL LOOP: #152 tiene la forma de todos los huecos acordada con Jaime y

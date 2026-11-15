@@ -1,5 +1,7 @@
 # Prompt: roles agentes, infra y pitch (José)
 
+**Abrir con:** `claude --model opus --effort medium`. Tabla completa de modelos y esfuerzo: [README.md](README.md#modelos-y-esfuerzo).
+
 Pegá esto en la sesión de José. Reglas comunes, herramientas y tokens: [README.md](README.md).
 
 ```
@@ -29,7 +31,7 @@ PENDIENTES EN ORDEN (uno por iteración):
 
 NO HACER: editar ui/ (es de María Paula) ni números de juego.
 
-TOKENS: frases, plantillas y evals con subagente Haiku u OpenCode con DeepSeek 4.1 Flash;
+TOKENS: frases, plantillas y evals con subagente Haiku u OpenCode con DeepSeek V4.1 Flash;
 flujos de CI y e2e con Sonnet; lógica de expertos e Iris en la sesión principal.
 
 META PARA PARAR EL LOOP: tus PRs fusionados o en verde, #59 y #60 cerrados, e2e de la ruta

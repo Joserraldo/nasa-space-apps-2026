@@ -1,5 +1,7 @@
 # Prompt: ui, pista M · Integración de misiones con la UI
 
+**Abrir con:** `claude --model opus --effort high`. Tabla completa de modelos y esfuerzo: [README.md](README.md#modelos-y-esfuerzo).
+
 Sesión principal de María Paula. Reglas comunes: [README.md](README.md). Quién escribe qué: [FLUJO.md](../referenciapau/FLUJO.md).
 
 ```
@@ -10,8 +12,8 @@ ui/src/App.tsx, ui/src/main.tsx, ui/src/juego/**, ui/src/pantallas/**,
 ui/src/escena/vista.ts, ui/src/i18n.ts, ui/i18n/** y ui/package.json.
 Rama feat/ui-integracion-<tema>.
 
-LEÉ SOLO: docs/prompts/README.md, docs/referenciapau/FLUJO.md, MECANICAS.md, NIVELES.md
-§3 (nivel 1), HISTORIA.md §3–§5, ui/ESTADO.md (tu sección "Pista M"), agents/README.md
+LEÉ SOLO: docs/prompts/README.md, docs/referenciapau/FLUJO.md, RETO.md, MECANICAS.md,
+NIVELES.md §3 (nivel 1), HISTORIA.md §3–§5, ui/ESTADO.md (tu sección "Pista M"), agents/README.md
 ("Qué llama cada pantalla de ui") y los issues #142, #58, #41, #118, #137, #109. El #132 está
 obsoleto (D6).
 
@@ -22,7 +24,11 @@ Fase 0 (P2, nadie más escribe en ui/ hasta cerrarla):
 2. Los 8 pasos jugables: aterrizar() (3), colocar_modulo (4), tormenta (5), elegirDilema()
    con las 3 opciones canónicas de MISION_JEZERO (6), telemetría con retraso visible (7),
    estado.resultado + resumenPartida + tarjetas con fuente + pregunta final (8). Verificá que
-   el reductor compruebe que el motor aceptó la acción antes de marcar algo colocado.
+   el reductor compruebe que el motor aceptó la acción antes de marcar algo colocado. Las dos
+   partidas de engine/src/ganable.test.ts (una gana, otra pierde) se tienen que poder jugar
+   igual en pantalla. Primera decisión con costo antes de los 60 s (RETO.md §5).
+   Mejoras P0 del reto (RETO.md §3): comida visible en toda partida (1), retraso de
+   comunicaciones explicado (4), "qué datos de NASA usamos" al final (5).
 3. #118: integrar el PR #151 de José (no rehacerlo); conversar, escenaTormenta, escenaPolvo,
    compararOpciones, preguntaIris, consejosAterrizaje.
 4. #137: DATOS_USADOS_KEYS, tarjetaTormenta, tarjetas OSDR y CSA con su crédito, retraso de
@@ -34,9 +40,14 @@ Fase 2 y 3:
 6. Pantallas con respaldo 2D equivalente; claves i18n que pidan E, I y A.
 7. Integración: montar los componentes de la pista I en todas las pantallas y la escena de la
    pista E en Base3D; borrar el tema oscuro; un solo camino de confirmación (ConfirmarAccion).
+CÓMO LANZÁS LAS OTRAS PISTAS (desde la fase 2): como subagentes, pasándoles como encargo el
+bloque de docs/prompts/ui-escenario.md, ui-interfaz.md o ui-audio.md más UNA tarea concreta,
+con el modelo y esfuerzo de la tabla de docs/prompts/README.md. Cada una en su worktree
+(FLUJO §1.2), máximo 2–3 a la vez. Vos revisás su diff contra la lámina, hacés el commit y
+abrís el PR.
 Otros niveles: no construyas selector de niveles hasta que se cierre #152 (NIVELES.md §8).
 
-TOKENS: textos EN/ES con subagente Haiku u OpenCode y DeepSeek 4.1 Flash; pruebas del
+TOKENS: textos EN/ES con subagente Haiku u OpenCode y DeepSeek V4.1 Flash; pruebas del
 reductor con Sonnet; conexión con el motor y revisión del diff en la sesión principal.
 
 CADA PR: npm run typecheck, npm test, npm run build y el e2e de la ruta dorada; captura.

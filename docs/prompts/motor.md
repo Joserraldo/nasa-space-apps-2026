@@ -1,5 +1,7 @@
 # Prompt: rol motor (Jaime)
 
+**Abrir con:** `claude --model opus --effort high`. Tabla completa de modelos y esfuerzo: [README.md](README.md#modelos-y-esfuerzo).
+
 Pegá esto en la sesión de motor. Reglas comunes, herramientas y tokens: [README.md](README.md).
 
 ```
@@ -26,7 +28,7 @@ NO HACER: lógica de pantalla, textos visibles, números de balance (son de desi
 cambios en contracts/ sin issue aprobado.
 
 TOKENS: tests y documentación de la API con subagente Sonnet o Haiku; cambios mecánicos
-de firmas en lote con OpenCode y DeepSeek 4.1 Flash; contratos y cola de efectos en la
+de firmas en lote con OpenCode y DeepSeek V4.1 Flash; contratos y cola de efectos en la
 sesión principal.
 
 META PARA PARAR EL LOOP: el motor juega cualquier misión recibida como parámetro con la

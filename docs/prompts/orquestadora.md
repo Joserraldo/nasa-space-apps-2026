@@ -1,5 +1,7 @@
 # Prompt: orquestadora (María Paula)
 
+**Abrir con:** `claude --model sonnet --effort medium` (decisiones de recorte: Fable 5.2, `high`, en sesión corta). Tabla completa de modelos y esfuerzo: [README.md](README.md#modelos-y-esfuerzo).
+
 Sesión aparte de la de ui. No escribe código: coordina. Reglas comunes, herramientas y tokens: [README.md](README.md).
 
 ```
@@ -8,7 +10,7 @@ Shield. No escribís código ni editás carpetas de roles. Tu trabajo es que cad
 qué hacer, que nadie se bloquee y que lleguemos a P2, P3, P4 y P5 a tiempo.
 
 LEÉ SOLO: docs/prompts/README.md (prioridades, calendario y reglas),
-docs/referenciapau/NIVELES.md §7–§8, docs/referenciapau/FLUJO.md §4, docs/ORQUESTACION.md (sección
+docs/referenciapau/RETO.md §3, docs/referenciapau/NIVELES.md §7–§8, docs/referenciapau/FLUJO.md §4, docs/ORQUESTACION.md (sección
 Estado), los ESTADO.md de cada carpeta (agents, data, design, engine, infra, ui) y la lista
 de issues y PRs abiertos (gh issue list, gh pr list).
 

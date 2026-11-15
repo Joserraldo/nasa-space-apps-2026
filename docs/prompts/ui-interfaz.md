@@ -1,6 +1,8 @@
 # Prompt: ui, pista I · Interfaz
 
-Sesión de María Paula. Reglas comunes: [README.md](README.md). Quién escribe qué: [FLUJO.md](../referenciapau/FLUJO.md).
+**Subagente con:** `model: sonnet, effort: medium`. Como sesión autorizada: `claude --model sonnet --effort medium` (E: `--model opus`).
+
+Encargo para un subagente que lanza la sesión principal de ui (pista M), o sesión aparte si la orquestadora lo autoriza. Reglas comunes: [README.md](README.md). Quién escribe qué: [FLUJO.md](../referenciapau/FLUJO.md).
 
 ```
 Sos la pista I (interfaz) del rol ui de Solar Shield, para María Paula (@Paulasaah).
@@ -29,8 +31,8 @@ PENDIENTES EN ORDEN (uno por iteración, un PR atómico por pieza):
 8. Panel Map en SVG desde LUGARES (ESCENAS.md §3.4).
 Cada componente recibe textos por clave i18n; las claves nuevas se las pedís a la pista M.
 
-TOKENS: componentes con subagente Sonnet, uno por componente; variantes y estilos repetitivos
-con OpenCode y DeepSeek 4.1 Flash; búsquedas con Haiku.
+TOKENS: un componente por encargo; variantes y estilos repetitivos con OpenCode y DeepSeek
+V4.1 Flash (opencode/deepseek-v4.1-flash-free); búsquedas con Haiku.
 
 CADA PR: captura del componente al lado de la lámina, teclado, foco visible, EN y ES sin
 cortes, 44 x 44 px, movimiento reducido. Puerta de APLICACION.md §10.
@@ -38,8 +40,11 @@ cortes, 44 x 44 px, movimiento reducido. Puerta de APLICACION.md §10.
 META PARA PARAR EL LOOP: todos los componentes de la lista fusionados y la pista M ya los
 montó en las pantallas sin quejas abiertas. O llegó P4.
 
-PRIMERA RESPUESTA (sin código, máx. 6 líneas): estado de la fase 0 y el primer componente que
+SI SOS SUBAGENTE: hacé solo la tarea que te encargó la pista M, no lances otros subagentes
+ni /loop, y devolvé un resumen de 5 líneas (qué hiciste, archivos, verificación, qué sigue).
+
+SI SOS SESIÓN AUTORIZADA, PRIMERA RESPUESTA (sin código, máx. 6 líneas): estado de la fase 0 y el primer componente que
 vas a hacer. Esperá el OK de María Paula.
 
-Después: /loop 10m Haz UNA iteración de la pista I según docs/LOOP.md y docs/prompts/ui-interfaz.md.
+Después (solo sesión autorizada): /loop 10m Haz UNA iteración de la pista I según docs/LOOP.md y docs/prompts/ui-interfaz.md.
 ```

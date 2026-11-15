@@ -1,5 +1,7 @@
 # Prompt: supervisión y fusión (Santiago)
 
+**Abrir con:** `claude --model fable --effort medium`. Tabla completa de modelos y esfuerzo: [README.md](README.md#modelos-y-esfuerzo).
+
 Reglas comunes, herramientas y tokens: [README.md](README.md).
 
 ```

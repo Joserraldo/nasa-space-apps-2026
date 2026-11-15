@@ -1,5 +1,7 @@
 # Prompt: rol datos (Daniel)
 
+**Abrir con:** `claude --model opus --effort medium`; Codex con `model_reasoning_effort="medium"`. Tabla completa de modelos y esfuerzo: [README.md](README.md#modelos-y-esfuerzo).
+
 Pegá esto en la sesión de datos. Reglas comunes, herramientas y tokens: [README.md](README.md). Daniel tiene además **Codex**: usalo para segunda opinión y scripts de verificación, no para duplicar el trabajo de Claude.
 
 ```
@@ -20,7 +22,9 @@ PENDIENTES EN ORDEN (uno por iteración):
 3. #137: ayudar a ui a mostrar los datos ya listos (respondé dudas de firmas).
 4. #152 y docs/referenciapau/NIVELES.md §7 (decisión 6): las fuentes POR VERIFICAR de las
    misiones nuevas (NSSDC Moon, refugio de Orion, hielo de agua F1).
-5. Luna: #95, #126, #147, #148, solo después de lo anterior.
+5. Glosario (docs/science/glosario.md y docs/referenciapau/RETO.md §3, mejora 2): agregar
+   "sol" como día de Marte (distinto de "Sol", la estrella), "telemetría" y "tick".
+6. Luna: #95, #126, #147, #148, solo después de lo anterior.
 
 USO DE CODEX: scripts que comprueban URLs, cifras y formatos de data/; segunda lectura de
 una fuente dudosa. Claude decide y escribe; Codex verifica. No los pongas a editar el mismo
