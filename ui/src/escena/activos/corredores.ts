@@ -1,7 +1,25 @@
 /** Corredores de vidrio entre edificios vecinos (`exterior/01`, `exterior/03`). */
 import * as THREE from "three";
 import type { Materiales } from "../materiales";
+import { colorToken } from "../materiales";
 import { caja, grupo, parte, tronco } from "./piezasComunes";
+
+/** Vidrio teal-cian translúcido (lámina `exterior/03`): clon del slot `Glass` con el token `cian`, uno por juego de materiales. */
+const vidrios = new WeakMap<Materiales, THREE.Material>();
+function vidrioTeal(m: Materiales): THREE.Material {
+  let v = vidrios.get(m);
+  if (!v) {
+    const c = m.Glass.clone();
+    c.color = colorToken("cian").lerp(colorToken("teal"), 0.4);
+    c.emissive = c.color.clone();
+    c.emissiveIntensity = 0.45;
+    c.opacity = 0.55;
+    c.name = "Corridor_Glass";
+    vidrios.set(m, c);
+    v = c;
+  }
+  return v;
+}
 
 /**
  * Corredor de `largo` m a lo largo de z: tubo octogonal bajo con marcos cada ~1,2 m, vidrio, tira
@@ -13,8 +31,7 @@ export function crearCorredor(m: Materiales, largo: number): THREE.Group {
     return o;
   };
   const partes: THREE.Object3D[] = [
-    rot(parte(m, "SuitBase", tronco(0.98, 0.98, largo, 8), [0, 1.1, 0], "Corridor_Tube")),
-    rot(parte(m, "Glass", tronco(1.02, 1.02, largo - 0.3, 8), [0, 1.1, 0], "Corridor_Glass")),
+    rot(parte(m, "Glass", tronco(1.0, 1.0, largo - 0.2, 8), [0, 1.1, 0], "Corridor_Glass")),
     parte(m, "Emissive", caja(0.34, 0.06, largo - 0.2), [0, 2.12, 0], "Corridor_Roof"),
     parte(m, "SuitBase", caja(1.5, 0.12, largo), [0, 0.06, 0], "Corridor_Floor"),
   ];
@@ -28,13 +45,9 @@ export function crearCorredor(m: Materiales, largo: number): THREE.Group {
   for (let i = 0; i <= n; i++) {
     const z = -largo / 2 + (i * largo) / n;
     partes.push(rot(parte(m, "SuitBase", tronco(1.16, 1.16, 0.22, 8), [0, 1.1, z], "Corridor_Frame")));
-    if (i < n) {
-      const zc = z + largo / n / 2, w = largo / n - 0.45;
-      for (const s of [-1, 1]) {
-        partes.push(parte(m, "Emissive", caja(0.04, 0.7, w), [s * 1.0, 1.35, zc], "Corridor_Window"));
-      }
-    }
   }
+  const vidrio = vidrioTeal(m);
+  for (const o of partes) if (o.name === "Corridor_Glass") (o as THREE.Mesh).material = vidrio;
   return grupo("Building_Corridor", ...partes);
 }
 
