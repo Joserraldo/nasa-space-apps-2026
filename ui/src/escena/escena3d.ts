@@ -67,9 +67,27 @@ const FOCO = { x: lugar("mesa").x, z: lugar("mesa").z } as const;
  * jugador con este mismo desfase respecto del foco.
  */
 export const CAMARAS: Readonly<Record<CamaraEscena, { pos: [number, number, number]; mira: [number, number, number] }>> = {
-  tercera: { pos: [FOCO.x + 1.0, 6.2, FOCO.z + 8.2], mira: [FOCO.x + 0.3, 0.6, FOCO.z - 9] },
+  tercera: { pos: [FOCO.x - 2.2, 5.4, FOCO.z + 6.6], mira: [FOCO.x - 1.1, 1.0, FOCO.z - 10.6] },
   primera: { pos: [FOCO.x, 1.1, FOCO.z + 3.4], mira: [FOCO.x, 1.2, FOCO.z - 8] },
 };
+/** Campo visual vertical base (grados) de la tercera persona, válido hasta `ASPECTO_BASE`. */
+const FOV_TERCERA = 60;
+const ASPECTO_BASE = 1.5;
+const FOV_MAXIMO = 90;
+
+/**
+ * Campo visual vertical según el aspecto del cuadro (ESCENAS §2.7): en apaisado se queda en el base;
+ * en cuadros más altos que 3:2 se abre (con tope) para que el hábitat y la consola sigan dentro.
+ * En primera persona no se adapta (70°).
+ */
+export function fovParaAspecto(camara: CamaraEscena, aspecto: number): number {
+  if (camara === "primera") return 70;
+  if (!(aspecto > 0)) return FOV_TERCERA;
+  const k = Math.max(1, ASPECTO_BASE / aspecto) ** 0.6;
+  const fov = 2 * Math.atan(Math.tan((FOV_TERCERA * Math.PI) / 360) * k) * (180 / Math.PI);
+  return Math.min(FOV_MAXIMO, fov);
+}
+
 /** Interpolación de cámara (APLICACION §7): 300 ms; con movimiento reducido, corte directo. */
 const MS_CAMARA = 300;
 /** Fotograma lento sostenido: por encima de esto (≈ 28 fps) se propone bajar la calidad. */
@@ -85,7 +103,7 @@ export function crearEscena3D(canvas: HTMLCanvasElement, opciones: OpcionesEscen
   const armada: EscenaArmada = armarEscena(materiales, null, null, calidad === "alta" ? "alta" : "baja");
   armada.cielo.aplicarRenderer(renderer);
 
-  const camara = new THREE.PerspectiveCamera(55, 1, 0.1, 600);
+  const camara = new THREE.PerspectiveCamera(FOV_TERCERA, 1, 0.1, 600);
   const posDesde = new THREE.Vector3();
   const miraDesde = new THREE.Vector3();
   const posHacia = new THREE.Vector3(...CAMARAS.tercera.pos);
@@ -94,6 +112,7 @@ export function crearEscena3D(canvas: HTMLCanvasElement, opciones: OpcionesEscen
   camara.position.copy(posHacia);
   camara.lookAt(mira);
   let inicioCamara = -Infinity;
+  let camaraActual: CamaraEscena = "tercera";
 
   const vistos = new Set<string>();
   const avisados = new Set<CalidadGrafica>();
@@ -196,7 +215,8 @@ export function crearEscena3D(canvas: HTMLCanvasElement, opciones: OpcionesEscen
       }
     },
     fijarCamara(c) {
-      camara.fov = c === "primera" ? 70 : 55;
+      camaraActual = c;
+      camara.fov = fovParaAspecto(c, camara.aspect);
       camara.updateProjectionMatrix();
       posDesde.copy(camara.position);
       miraDesde.copy(mira);
@@ -215,6 +235,7 @@ export function crearEscena3D(canvas: HTMLCanvasElement, opciones: OpcionesEscen
       if (ancho <= 0 || alto <= 0) return;
       renderer.setSize(ancho, alto, false);
       camara.aspect = ancho / alto;
+      camara.fov = fovParaAspecto(camaraActual, camara.aspect);
       camara.updateProjectionMatrix();
     },
     contar() {
