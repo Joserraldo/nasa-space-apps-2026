@@ -78,3 +78,33 @@
   .tormenta-plan-experta .retrato-marco { width: 56px; height: 56px; }
   .tormenta-plan-experta .retrato-marco svg { width: 50px; height: 50px; }
 }
+
+/* Panel 03 "Verify the warning": las dos expertas que se contradicen, la fuente y dos preguntas. */
+.tormenta-verif-expertas { display: grid; gap: var(--esp-3); min-inline-size: 0; }
+.tormenta-verif-expertas .retrato-ficha { min-width: 0; }
+.tormenta-verif .fuente-enlace { display: none; }
+.tormenta-verif .fuente-cara { padding: var(--esp-2) var(--esp-3); font-size: 15px; }
+.tormenta-preguntas { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--esp-2); }
+.tormenta-preguntas .fb-caja { display: block; min-inline-size: 0; }
+.tormenta-preguntas .fb { inline-size: 100%; min-inline-size: 0; }
+.tormenta-preguntas .fb-texto { white-space: normal; text-align: start; font-size: 15px; line-height: 1.1; }
+.tormenta-respuesta-fuente { margin: 0; padding: var(--esp-2) var(--esp-3); background: var(--color-lila); font-size: 15px; line-height: 1.2; }
+.tormenta-plan-botones a.fb { display: block; text-decoration: none; color: inherit; }
+.tormenta-plan-botones a.fb .fb-texto { white-space: nowrap; font-size: 18px; }
+.tormenta-plan-botones a.fb .fb-superficie { padding-inline: var(--esp-2); gap: var(--esp-1); }
+.tormenta-verif .tormenta-plan-botones { grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); gap: var(--esp-2); }
+@media (max-width: 560px) { .tormenta-verif .tormenta-plan-botones { grid-template-columns: 1fr; } }
+@media (max-height: 480px) and (orientation: landscape) {
+  .tormenta-panel:has(.tormenta-cara-verif) { inline-size: min(100%, 780px); }
+  .tormenta-cara-verif .tormenta-plan { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); }
+  .tormenta-cara-verif .tormenta-pieza, .tormenta-cara-verif .fuente-titulo { display: none; }
+  .tormenta-verif-expertas { grid-template-columns: 1fr 1fr; gap: var(--esp-1); }
+  .tormenta-verif-expertas .tormenta-frase { font-size: 12px; }
+  .tormenta-verif { gap: var(--esp-1); }
+  .tormenta-verif .tormenta-plan-botones { grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); gap: var(--esp-2); }
+  .tormenta-verif .tormenta-plan-botones a.fb .fb-icono { display: block; }
+  .tormenta-verif .fuente-cara { padding: var(--esp-1) var(--esp-2); font-size: 12px; }
+  .tormenta-preguntas { grid-template-columns: 1fr 1fr; gap: var(--esp-1); }
+  .tormenta-preguntas .fb-texto { font-size: 13px; }
+  .tormenta-respuesta-fuente { font-size: 12px; padding: var(--esp-1) var(--esp-2); }
+}
