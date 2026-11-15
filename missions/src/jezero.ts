@@ -109,6 +109,11 @@ export interface TarjetaCiencia {
   modulo?: Equipment;
   textoKey: string;
   fuenteKey: string | null;
+  /**
+   * Fuentes adicionales (misma regla que `fuenteKey`: claves que existen en data/i18n).
+   * Si hay varias, ui las muestra todas; `fuenteKey` sigue siendo la principal.
+   */
+  fuentesKeys?: string[];
 }
 
 /** Pregunta del paso 8 (el quiz de ARES): 3 opciones, nunca bloquea y siempre explica. */
