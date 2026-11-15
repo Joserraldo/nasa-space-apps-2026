@@ -1,0 +1,51 @@
+{
+  "sourceCommit": "f607df9e463517fb42ce5e406073409c50cc03b3",
+  "files": [
+    {
+      "file": "comparativa-caras-08.png",
+      "bytes": 1780911,
+      "sha256": "433eab8d7376236b4f8640a6d293f43291bd9799fef2e3d055c52b4ee8472b51"
+    },
+    {
+      "file": "gestos-ingeniera-08.png",
+      "bytes": 185257,
+      "sha256": "3486c8e984ddde6b8bf06c90c42237def6457788a1a3c05b41c9e7183107d5a3"
+    },
+    {
+      "file": "gestos-ingeniera-pr.png",
+      "bytes": 137036,
+      "sha256": "19157ade7208e353bd7279e10defe6aaf0074be148e555242e6c272c086c7a67"
+    },
+    {
+      "file": "gestos-meteorologa-pr.png",
+      "bytes": 137774,
+      "sha256": "d9d4e31f08f823c4681be1651ed862497ff0bc5a546456658b6a1a391e1ef923"
+    },
+    {
+      "file": "gestos-nino-doctora-08.png",
+      "bytes": 433614,
+      "sha256": "afceec38cae52b22fa15912b920f1ddb86da3eb0f7fbdfce793fb7f2119997c6"
+    },
+    {
+      "file": "gestos-nino-pr.png",
+      "bytes": 189065,
+      "sha256": "2be40852258ce0c89e0a445359d87b741dcac6e7c8fb0b206909de34b15a9296"
+    },
+    {
+      "file": "iris-08.png",
+      "bytes": 92277,
+      "sha256": "83cecc9c364ddeb9f0e9724b4c33472c39039d1f0fdefdc152f9566d74189fbe"
+    },
+    {
+      "file": "iris-pr.png",
+      "bytes": 81098,
+      "sha256": "ef99c6101834a1caa2851e495298ad98f10010016c2e3fabbe9408ecf5f85315"
+    },
+    {
+      "file": "todos-08.png",
+      "bytes": 265721,
+      "sha256": "6f1253f55cee7409137c446b4218f77fc9b6449e7fafa6d8aedbe5f6e49c31aa"
+    }
+  ],
+  "totalBytes": 3302753
+}
