@@ -11,7 +11,7 @@
 
 Empezá **ya** por los archivos nuevos (1 a 5); los que existen en el trabajo de María Paula (6 y 7) van cuando ella lo suba.
 
-1. **Base técnica** (nuevos): `materiales.ts` (caché de geometrías y slots `SuitBase`, `Accent`, `Boots`, `Skin`, `Hair`, `Glass`, `Emissive`, `Rock`, `Plant`) y `liberar.ts`. HECHO: tests en verde y sin fugas al desmontar.
+1. **Base técnica** (nuevos): `materiales.ts` (caché de geometrías y slots `SuitBase`, `Accent`, `Boots`, `Skin`, `Hair`, `Glass`, `Emissive`, `Rock`, `Plant`, con los colores tomados de `ui/src/estilos/tokens.ts`; mientras Jaime no lo fusiona, usás constantes locales con el nombre del token de DISEÑO §2 y las cambiás por el import cuando entre) y `liberar.ts`. HECHO: tests en verde y sin fugas al desmontar.
 2. **Cielo y luz de Marte** (`cielo.ts`, MARTE.md §4–§5): cielo salmón y caramelo de día, halo junto al Sol, sombras lilas, niebla del color del horizonte. **Nunca el cielo azul de las láminas.** HECHO: captura comparada con `mundo/01` con el cielo corregido.
 3. **Terreno de Jezero** (`activos/terreno.ts`) desde `data/terreno/jezero/elevacion.bin`, con rocas basálticas facetadas de cara superior más clara. HECHO: captura del terreno.
 4. **Modelos del kit** (`activos/piezasComunes.ts`, `instancias.ts`, APLICACION §4): puerta, consola, caja, panel solar, depósito, antena, baliza, camino; una pieza maestra por familia, instanciada. HECHO: captura de cada pieza al lado de `piezas/01–08`.

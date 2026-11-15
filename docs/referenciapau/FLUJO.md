@@ -86,6 +86,7 @@ Se fijan **antes** de trabajar en paralelo, en PRs cortos. Después no se cambia
 | `LUGARES` y anclajes (en `mundo.ts`) | Camilo | Daniel, María Paula, José | Posición de cada lugar, radio de interacción, anclajes de módulos y de personajes. |
 | Fábricas de personajes (`crearAstronauta`, `crearExpertos`, `crearIris`) | María Paula | Daniel | Firmas que ya consume `escena3d.ts` (`ModeloAstronauta`, `ModeloExperto`, `ModeloIris`, `GestoIris`). |
 | Materiales y slots (`materiales.ts`) | Daniel | María Paula | `SuitBase`, `Accent`, `Boots`, `Skin`, `Hair`, `Glass`, `Emissive`, `Rock`, `Plant`. |
+| Paleta (`ui/src/estilos/tokens.ts` y `tokens.css`) | Jaime | Daniel, María Paula, Camilo, José | Todos los hex de DISEÑO §2, con nombre de token. Es la única fuente de color de CSS, SVG y materiales 3D; un test compara `tokens.ts` con `tokens.css`. Va en el primer PR de Jaime. |
 | Props de componentes | Jaime | José | Formas de [APLICACION.md](APLICACION.md) §5 (`FacetButtonProps`, `ResourcePlaqueProps`, `ConfirmarAccionProps`). Textos por clave i18n. |
 | Eventos de feedback | José | Jaime, Daniel, María Paula | Cambios por tick desde `novedades(antes, despues)` con id estable. Única fuente para animar, sonar o mostrar deltas. |
 | Ajustes del jugador | José | Jaime | Idioma, sonido, movimiento reducido, calidad gráfica, en `localStorage`. |
@@ -201,3 +202,16 @@ Lo decide María Paula. El orden general de recorte del juego sigue siendo el de
 - **Tablero de fidelidad:** sección `## Fidelidad` de `ui/ESTADO.md`, una línea por pieza: `pieza | lámina | sin empezar / en PR #n / aprobada`. La orquestación lo propone y la sesión principal de María Paula lo escribe al aprobar cada PR. Sirve también para elegir capturas para el video.
 - La orquestación del frontend revisa los semáforos cada 30 minutos ([`orquestadora.md`](../prompts/orquestadora.md)).
 - Un cambio de contrato (§3) se avisa en el PR de quien lo consume antes de fusionarlo.
+
+## 9. Decisiones por defecto
+
+Valen desde el 15 nov para no frenar a nadie. María Paula (frente visual) o Santiago (P3 y recortes) pueden cambiarlas; el cambio se escribe acá.
+
+| Tema | Decisión por defecto | Quién la aplica |
+| --- | --- | --- |
+| **Criterio de P3 (3D o 2D)** | Medir 60 s en la base con 2 módulos y la tormenta, con `renderer.info` y el tiempo por fotograma (skill `solar-shield-pr-visual`), en el celular más viejo del equipo y el PC más viejo (modelo anotado en el PR). **3D completo:** al menos 30 fps promedio en el celular y 45 en el PC, dentro de 80 draw calls y 80 000 triángulos. **3D liviano:** de 24 a 30 fps en el celular. **Respaldo 2D:** menos de 24 fps en el celular, o cualquier error de WebGL. | Daniel mide; deciden María Paula y Santiago |
+| **Encuadre de comparación** | Las capturas se toman a 1024 x 683, el tamaño de `mundo/01` y `ui/01`. En 16:9 el HUD conserva las esquinas de `mundo/01` y escala con `min(ancho/1024, alto/683)`; el mundo se ve más ancho, no estirado. | Todos (captura), Jaime (HUD) |
+| **Celular** | La base 3D se juega en horizontal. En vertical se muestra un aviso para girar el teléfono, por clave i18n. Portada, intro, carga y menús funcionan en las dos orientaciones. | José (aviso), Jaime (portada) |
+| **Cámara** | Tercera persona: campo de visión vertical 50°, 6 m detrás y 4 m arriba del niño, mirando a 1 m sobre su cabeza (picada de unos 30°). Primera persona: 70°, a 1,1 m del suelo (altura de ojos del niño), guantes en las esquinas como `mundo/02`. Son valores de partida: se calibran con la captura contra `mundo/01` y `mundo/02`, y el número final queda en `navegacion.ts` y en esta tabla. | Camilo, con Daniel |
+| **Respaldo 2D** | La vista principal es el plano cenital del panel `Map` (ESCENAS §3.4) a pantalla completa: lugares como placas facetadas, caminos, el niño y el objetivo en cian. Encima, la misma UI que en 3D (HUD, diálogo, tarjetas). Iris aparece como retrato. | Camilo (plano), José (montaje) |
+| **Módulo `averiado`** (contrato `VistaEscena`) | No hay lámina. Se dibuja el módulo construido con su luz `Emissive` apagada, sin formas ni colores nuevos. El aviso lo da la UI con su mensaje e icono. | Daniel |
