@@ -124,7 +124,7 @@ function panelSolar(m: Materiales): THREE.Group {
 }
 
 /** Montículo de regolito facetado (color de vértice, slot Rock): bóveda del refugio. */
-function geometriaMonticulo(): THREE.BufferGeometry {
+export function geometriaMonticulo(): THREE.BufferGeometry {
   const s = new THREE.SphereGeometry(1, 8, 4, 0, Math.PI * 2, 0, Math.PI / 2).toNonIndexed();
   const p = s.getAttribute("position");
   for (let i = 0; i < p.count; i++) {

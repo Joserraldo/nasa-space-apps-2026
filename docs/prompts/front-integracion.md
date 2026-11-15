@@ -19,3 +19,16 @@
 
 **Además, tu rol de agentes, infra y pitch:** e2e y despliegue, #151 en `develop`, video y formulario (prompt [agentes-infra.md](agentes-infra.md)).
 **Meta:** la ruta dorada completa en `feat/ui-escenarios` con todas las piezas montadas, lista para el punto de control antes de P4.
+
+## Cierre del escenario (15 nov, pedido de Santiago)
+
+El escenario 3D entra por #237 y su pila. Para que se vea en el juego como en `mundo/01`:
+
+1. **Rebasá #245 y #246 (HUD y Base) sobre `feat/ui-escenarios`** cuando entren #233 y #243. Las dos ramas chocan en `ui/src/App.tsx`.
+2. **Atendé los cambios pedidos en #240 (Sitio) y #241 (Final).**
+3. **Montá la escena en E6.** #247, de Daniel, monta `EscenaBase` detrás del HUD. Sacalo de borrador después del rebase. HECHO: captura del juego en la fase base al lado de `mundo/01` y de `mundo/02`, en 1024×683 y 844×390, con:
+   - las tres placas arriba a la derecha y el objetivo ("Inspect the solar controller") debajo;
+   - `Crew` y `Map` abajo a la izquierda;
+   - la acción cercana con su tecla (`E Inspect controller`) abajo al centro;
+   - el cambio de cámara (`V`) abajo a la derecha.
+4. **La ruta dorada sigue verde** en el e2e con la escena montada, y el respaldo 2D (tarea 6) se juega sin WebGL.

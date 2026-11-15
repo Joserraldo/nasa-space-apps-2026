@@ -20,7 +20,7 @@ Este archivo debe bastar para que otra sesión (u otro humano) retome la coordin
 |---|---|---|
 | P1 Contratos + esqueleto | Sáb 14, 12:00 | Todos compilan contra `/contracts`; link vivo en Cloudflare; mocks disponibles |
 | P2 Rebanada vertical | Sáb 14, 22:00 | Misión completa en Marte, 3 expertos, Iris 1–3, 1 tormenta real, cadena de causas; e2e de la semilla dorada en CI y desplegado |
-| P3 Variabilidad | Dom 15, 11:00 | Dos semillas dan escenarios distintos; 3D con respaldo 2D probado, o recortado a 2D |
+| P3 Variabilidad | Dom 15, 11:00 | Dos semillas dan escenarios distintos. El juego va en 3D (decisión de Santiago del 15 nov en #237): P3 ya no decide entre 3D y 2D |
 | P4 Congelamiento | Dom 15, 13:00 | Solo arreglos |
 | P5 Entrega | Dom 15, 20:00 | Formulario enviado (cierra 23:59) |
 
@@ -51,9 +51,11 @@ Regla de corte si P2 no se cumple: Luna → Atlas → desbloqueos → 3D complet
 |---|---|---|
 | 0 | Subir lo local y conectar la ruta dorada al motor con lo visual que ya existe: `aterrizar()` (paso 3), `elegirDilema()` (paso 6, #144), telemetría con retraso visible (7), `estado.resultado` + cadena de causas + tarjetas con fuente (8), login/invitado | sáb 22:00 (P2) |
 | 1 | Materiales y cachés, iluminación v8, niño astronauta, inicio nuevo; prueba en un celular y un PC viejo | dom 09:00 |
-| 2 | Terreno de Jezero, kit común, los 5 módulos según el motor | dom 11:00 (P3: decisión 3D o 2D) |
+| 2 | Terreno de Jezero, kit común, los 5 módulos según el motor | dom 11:00 (P3; el juego va en 3D, #237) |
 | 4 | HUD y CSS v8, verificación final (teclado, móvil, reduce-motion, respaldo 2D) | dom 13:00 (congelamiento) |
 | 3 | 8 estaciones interiores (Iris rover y la Ingeniera 3D pasan al bloque 2, aprobado por Santiago) | después de P4, solo si sobra tiempo |
+
+**Decisión 15 nov, 02:35 (Santiago, en #237):** el escenario 3D de Daniel entra como una sola entrega por #237, como excepción de subida única, y la cobertura del agente de José sobre esos archivos queda aceptada. El juego va siempre en 3D y P3 ya no decide entre 3D y 2D.
 
 Guía de arte: la "Guía maestra de construcción 3D procedural (Atlas v8)" de María Paula. Presupuesto por vista: < 80 draw calls, < 80 000 triángulos, DPR máx 1,5 (calidad baja 1, sin sombras). Invariantes: doble clic nunca cobra dos veces; cambiar cámara o perder WebGL no toca el GameState; abrir paneles conserva pausa y foco.
 
