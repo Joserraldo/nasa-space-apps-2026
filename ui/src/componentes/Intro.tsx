@@ -3,7 +3,9 @@ import { useT } from "../i18n.js";
 import { FacetButton } from "./base/FacetButton.js";
 import { Icono, type NombreIcono } from "./base/Iconos.js";
 import { Retrato, type Persona } from "./base/Retrato.js";
+import { Vineta3D } from "./base/intro3d/Vineta3D.js";
 import "./base/inicio.css";
+import "./base/intro3d/intro3d.css";
 
 /**
  * Intro en 4 viñetas (inicio/02, HISTORIA §3, DISEÑO §6, ESCENAS §2.2 y §2.7). Cada viñeta es una
@@ -25,6 +27,8 @@ const VINETAS: readonly { ventana: Ventana; adelante: Persona[]; atras?: Persona
   { ventana: "base", adelante: ["nino"], iconos: ["energia", "pulmones", "escudo"] },
 ];
 export const TOTAL_VINETAS = VINETAS.length;
+/** Viñetas que ya tienen su escena 3D con los modelos del juego (`base/intro3d/`). */
+const CON_ESCENA = new Set([1]);
 
 function VistaVentana({ tipo }: { tipo: Ventana }) {
   return (
@@ -47,6 +51,8 @@ export function Intro({ onTerminar, inicial = 0 }: { onTerminar(): void; inicial
   const [i, setI] = useState(Math.max(0, Math.min(TOTAL_VINETAS - 1, inicial)));
   const titulo = useRef<HTMLHeadingElement>(null);
   const ultima = i === TOTAL_VINETAS - 1;
+  // Sin WebGL (o si falla) la viñeta vuelve a la tarjeta DOM para el resto de la intro.
+  const [sin3D, setSin3D] = useState(false);
 
   // Al cambiar de viñeta el foco va al título, para que el lector la anuncie.
   useEffect(() => { titulo.current?.focus(); }, [i]);
@@ -61,6 +67,7 @@ export function Intro({ onTerminar, inicial = 0 }: { onTerminar(): void; inicial
 
   const n = i + 1;
   const v = VINETAS[i]!;
+  const en3D = !sin3D && CON_ESCENA.has(n);
   return (
     <section className="intro" aria-roledescription={t("ui.intro.descripcion")} aria-label={t("ui.intro.paso", { n, total: TOTAL_VINETAS })}>
       <div className="intro-vineta" key={i}>
@@ -68,21 +75,24 @@ export function Intro({ onTerminar, inicial = 0 }: { onTerminar(): void; inicial
           <h2 ref={titulo} tabIndex={-1} className="intro-etiqueta">
             {String(n).padStart(2, "0")} / {t(`ui.intro.${n}.titulo`)}
           </h2>
-          <VistaVentana tipo={v.ventana} />
-          {v.atras && (
+          {en3D && <Vineta3D n={n} onFallo={() => setSin3D(true)} />}
+          {!en3D && <VistaVentana tipo={v.ventana} />}
+          {!en3D && v.atras && (
             <div className="intro-mesa" aria-hidden="true">
               {v.atras.map((p) => <Retrato key={p} persona={p} expresion="feliz" tam={128} parpadear />)}
               <span className="intro-mesa-tapa" />
             </div>
           )}
-          {v.iconos && (
+          {!en3D && v.iconos && (
             <div className="intro-consola" aria-hidden="true">
               {v.iconos.map((ic) => <span key={ic} className="intro-icono"><Icono nombre={ic} tam={48} /></span>)}
             </div>
           )}
-          <div className="intro-protagonista" aria-hidden="true">
-            {v.adelante.map((p) => <Retrato key={p} persona={p} expresion="feliz" tam={190} parpadear />)}
-          </div>
+          {!en3D && (
+            <div className="intro-protagonista" aria-hidden="true">
+              {v.adelante.map((p) => <Retrato key={p} persona={p} expresion="feliz" tam={190} parpadear />)}
+            </div>
+          )}
           <p className="intro-texto">{t(`ui.intro.${n}.texto`)}</p>
           {/* Abajo a la derecha, dentro de la viñeta, como inicio/02: avanzar y Skip intro. En la última, Continue ya termina: Skip no se repite. */}
           <div className="intro-acciones">
