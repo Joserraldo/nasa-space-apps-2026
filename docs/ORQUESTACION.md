@@ -2,7 +2,7 @@
 
 Este archivo debe bastar para que otra sesión (u otro humano) retome la coordinación sin el chat original. Lo mantiene el orquestador (Santiago Cabeza, que desde el 13 nov en la noche solo supervisa y fusiona). **Suplente del orquestador:** Jaime (`JaimeMrF`).
 
-**Actualizado:** 14 nov 2026, 18:30.
+**Actualizado:** 14 nov 2026, 20:50.
 
 ## Resumen
 
@@ -26,20 +26,21 @@ Este archivo debe bastar para que otra sesión (u otro humano) retome la coordin
 
 Regla de corte si P2 no se cumple: Luna → Atlas → desbloqueos → 3D completo → dibujo de ruta en 3D → niveles adaptativos extra. El orquestador propone el momento y Santiago confirma.
 
-## Estado (sáb 14 nov, 18:30 — hechos)
+## Estado (sáb 14 nov, 20:50 — hechos)
 
-- **develop:** compila, 307 pruebas en verde, semilla dorada y partidas ganadora/perdedora en verde (`engine/src/ganable.test.ts`).
+- **develop:** compila, 344 pruebas en verde, semilla dorada y partidas ganadora/perdedora en verde (16/16 en `dorada` y `ganable`), build de ui en verde.
 - **Links (despliegue automático con cada merge):** preview https://nasa-space-apps-2026-preview.santiago031541.workers.dev (develop) · producción https://nasa-space-apps-2026.santiago031541.workers.dev (main, versión de las 11:40). Ambos con IA (b.ai) y base de datos D1 propia.
-- **P1 cumplida.** **P2 (22:00):** motor, diseño, datos y agentes listos; falta la pantalla conectada al motor (trabajo local de María Paula, #142).
+- **P1 cumplida.** **P2 (22:00):** motor, diseño, datos y agentes listos. La pantalla conectada a `aterrizar()` y `elegirDilema()` está en **#163** (José, CI verde, espera el OK de María Paula); #151 conecta conversar, ¿Y si…?, pregunta de Iris y polvo (choca poco con #163; se rebasa el segundo). Falta resultado + cadena de causas en pantalla y login/invitado.
+- **Cola de revisión:** 20 PRs abiertos sin revisión; más de 60 min: #157, #156–#153, #151, #148, #147, #131, #129, #126, #95 y los borradores #97–#100.
 
 | Rol | Hecho y en develop | Abierto |
 |---|---|---|
-| motor (Jaime) | Ventana de tormenta 3–5, victoria al llegar la telemetría, `aterrizar()`, módulos validados, `puedeAplicar()` (rechazo con motivo), consumo por tick de los módulos | #144 (`elegirDilema`: el dilema con el extra del invernadero) |
-| diseño (Camilo; Santiago supervisa) | Misión 1 de Jezero como datos, `DURACION_TORMENTA_TICKS = 3` (aprobada, #114), 7 tarjetas de ciencia y pregunta final con fuente verificada | #135 (quitar la duración repetida) |
-| ui (María Paula) | Esqueleto de Jaime (#68) | **Subir el trabajo local (#142)**, ruta dorada en pantalla (#58), login/invitado (#109), 3D según la guía v8 |
-| agentes (José) | Tripulación, Iris 1–3, Matemático, voces de la misión 1, clasificador, guía de qué llama cada pantalla | #128, #129, #131 (rebase) |
+| motor (Jaime) | Ventana de tormenta 3–5, victoria al llegar la telemetría, `aterrizar()`, módulos validados, `puedeAplicar()`, consumo por tick, `elegirDilema()` (#144) | #152 (motor multimisión, bloquea diseño) |
+| diseño (Camilo; Santiago supervisa) | Misión 1 de Jezero como datos, `DURACION_TORMENTA_TICKS = 3` (#135), 7 tarjetas de ciencia y pregunta final con fuente verificada | Revisar las 4 misiones propuestas como datos (#153–#156) |
+| ui (María Paula; orquesta el 3D y la pantalla) | Esqueleto de Jaime (#68) | #157 (dirección v8, decisiones aprobadas), OK a #163 y #151, resultado en pantalla, login/invitado (#109), 3D según la guía v8. `ui/ESTADO.md` sin actualizar desde el 13 nov |
+| agentes (José) | Tripulación, Iris 1–3, Matemático, voces de la misión 1 y de Luna polo sur (#128), clasificador, Iris compañera v8 (#149) | #129, #131 (conflicto, rebase) |
 | infra/pitch (José) | Worker con pantalla y API, despliegue automático, login opcional sin correo + D1, e2e de la ruta dorada en cada PR, guion del video, tráiler, borrador del formulario | — |
-| datos (Daniel) | 8 tormentas reales, terreno de Jezero, dosis verificadas, fuentes de todas las tarjetas, dueños en inglés | #141 (fuente de la gravedad), Luna (#95, #126, borradores #97–#100) |
+| datos (Daniel) | 8 tormentas reales, terreno de Jezero, dosis verificadas, fuentes de todas las tarjetas, "qué datos usamos" con glosario (#158) | #162, #159, #148 (conflicto, rebase), #160, #147, #141, Luna (#95, #126), borradores #97–#100 |
 
 ## Plan de construcción de la pantalla y el 3D (acordado el 14 nov)
 
