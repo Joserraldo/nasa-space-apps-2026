@@ -158,6 +158,7 @@ Material:  tokens de DISEÑO §2 usados: ...   (ningún color suelto fuera de lo
 Conducta:  estados y animación como la lámina | difiere en ...
 Desviación permitida usada: ninguna | cielo de Marte (MARTE.md) | otra anotada en REFERENCIAS.md
 DISEÑO §8 (prohibidos): revisado, ninguno
+Emojis y aspecto genérico/IA (DISEÑO §8): revisado, nada fuera de la lámina
 ```
 
 Reglas de la ficha:
