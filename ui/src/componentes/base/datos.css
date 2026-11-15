@@ -37,3 +37,9 @@
 }
 @keyframes termino-abre { from { opacity: 0; } to { opacity: 1; } }
 @media (prefers-reduced-motion: reduce) { .termino-def { animation: none; } }
+
+/* Diálogo de fuentes y créditos sobre la portada. */
+.creditos-fondo { position: fixed; inset: 0; z-index: 20; display: grid; place-items: center; padding: var(--esp-4);
+  background: color-mix(in srgb, var(--color-espacio) 70%, transparent); }
+.creditos { width: min(100%, 760px); max-height: calc(100dvh - 2 * var(--esp-4)); overflow: auto; display: grid; gap: var(--esp-2); }
+.creditos-cerrar { justify-self: end; }
