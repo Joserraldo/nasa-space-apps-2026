@@ -29,7 +29,7 @@ Una sección por persona, máximo 5 líneas, y nadie edita la de otro (FLUJO §8
 - Hecho: contratos `VistaEscena` (#181), eventos de feedback (#182) y ajustes del jugador (#186) fusionados; CI corre en `feat/ui-escenarios`.
 
 ## Interfaz (Jaime)
-**Rama:** feat/ui-interfaz-tokens · **PR:** #208, #209, botón · **Tokens:** verde
+**Rama:** feat/ui-interfaz-tokens · **PR:** #208, #209, #213 · **Tokens:** verde
 - Hecho: `tokens.ts` (fuente única de DISEÑO §2, forma, sombra, tipo y movimiento), `tokens.css` generado con test y Nunito en `ui/public/fuentes/`.
 - Hecho también: `estilos.css` borrado y reemplazado por `estilos/base.css` solo con tokens (PR #209, depende de #208).
 - Hecho también: `FacetButton` con todos los estados de `ui/02` y `ui/03`, iconos facetados propios y muestrario en `componentes/base/muestrario.html`.
