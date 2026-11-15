@@ -13,6 +13,10 @@ import { liberarCache, liberarEscena, liberarMateriales } from "./liberar";
 import { LUGARES, TERRENO } from "./mundo";
 import type { EstadoModulo, VistaEscena } from "./vista";
 import { MODULOS_BASE } from "./activos/modulos";
+import { CAMARAS } from "./escena3d";
+import { decorado } from "./activos/baseExterior";
+import { crearHabitat, crearTorreControl } from "./activos/edificios";
+import { lugar } from "./mundo";
 import { PRESUPUESTO, aplanarClaro, alturaEnMundo, contarRender } from "./activos/terreno";
 
 const dir = (f: string) => fileURLToPath(new URL(`../../../data/terreno/jezero/${f}`, import.meta.url));
@@ -197,6 +201,45 @@ describe("armarEscena", () => {
     expect(a.modulos.panel_solar.vivos.scale.x).toBe(1);
     expect(a.modulos.antena.andamio.scale.y).toBe(1);
     a.liberar();
+  });
+});
+
+describe("encuadre de tercera persona (mundo/01)", () => {
+  /** Rectángulo en pantalla (NDC) de los vértices de un objeto vistos desde `CAMARAS.tercera` a 1024×683. */
+  function enPantalla(o: THREE.Object3D) {
+    const camara = new THREE.PerspectiveCamera(55, 1024 / 683, 0.1, 600);
+    camara.position.set(...CAMARAS.tercera.pos);
+    camara.lookAt(new THREE.Vector3(...CAMARAS.tercera.mira));
+    camara.updateMatrixWorld(true);
+    o.updateMatrixWorld(true);
+    const xs: number[] = [], ys: number[] = [];
+    const p = new THREE.Vector3();
+    o.traverse((malla) => {
+      if (!(malla instanceof THREE.Mesh)) return;
+      const pos = malla.geometry.getAttribute("position");
+      for (let i = 0; i < pos.count; i++) {
+        p.fromBufferAttribute(pos, i).applyMatrix4(malla.matrixWorld).project(camara);
+        xs.push(p.x);
+        ys.push(p.y);
+      }
+    });
+    return { x0: Math.min(...xs), x1: Math.max(...xs), y0: Math.min(...ys), y1: Math.max(...ys) };
+  }
+
+  it("la torre se ve entera, a la izquierda del hábitat y sin taparse con él", () => {
+    const m = crearMateriales();
+    const t = decorado("torre"), h = lugar("habitat");
+    const torre = crearTorreControl(m);
+    torre.position.set(t.x, 0, t.z);
+    torre.rotation.y = Math.atan2(-t.x, -t.z);
+    const habitat = crearHabitat(m);
+    habitat.position.set(h.mx, 0, h.mz);
+    const pt = enPantalla(torre), ph = enPantalla(habitat);
+    expect(pt.x1, "la torre invade el hábitat en pantalla").toBeLessThan(ph.x0);
+    expect(pt.x0).toBeGreaterThan(-1);
+    expect(pt.y1).toBeLessThan(1);
+    liberarEscena(torre);
+    liberarEscena(habitat);
   });
 });
 
