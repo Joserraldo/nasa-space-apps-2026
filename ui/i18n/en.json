@@ -189,7 +189,7 @@
   "ui.carga.estado": "Loading scene",
   "ui.carga.consejo": "Training tip",
   "ui.carga.consejos.1": "Panels collect sunlight. Batteries store energy.",
-  "ui.carga.consejos.2": "Every choice moves at least two meters. Check both before you decide.",
+  "ui.carga.consejos.2": "Every choice moves at least two gauges. Check both before you decide.",
   "ui.carga.consejos.3": "Shielding protects the crew and the electronics from solar storms.",
   "ui.carga.consejos.4": "Messages to Earth take time to arrive. Send them early.",
   "ui.datos.ventana_nueva": "(opens in a new window)",
@@ -214,5 +214,7 @@
   "ui.comun.muestrario.expresion.habla_cerrada": "Talk / closed",
   "ui.comun.muestrario.expresion.habla_abierta": "Talk / open",
   "ui.comun.muestrario.expresion.habla_redonda": "Talk / round",
-  "ui.comun.muestrario.expresion.parpadeo": "Blink"
+  "ui.comun.muestrario.expresion.parpadeo": "Blink",
+  "ui.carga.saltar": "Skip",
+  "ui.comun.cerrar": "Close"
 }

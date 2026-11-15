@@ -40,7 +40,7 @@ describe("retratos de diálogo (DISEÑO §4.4)", () => {
       expect(h).toContain(`var(--color-piel-${p})`);
       expect(h).toContain(`var(--color-cabello-${p})`);
     }
-    expect(html(<Retrato persona="doctora" />)).toMatch(/stroke="var\(--color-traje-marfil\)" stroke-width="3.4"/);
+    expect(html(<Retrato persona="doctora" />)).toMatch(/stroke="var\(--color-traje-marfil\)" stroke-width="4"/);
   });
 
   it("Iris dañada lo dice en texto además de verse: ojos de error y aviso escrito", () => {

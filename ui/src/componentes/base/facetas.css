@@ -37,7 +37,9 @@
 .costos { display: grid; grid-template-columns: 1fr 1fr; gap: var(--esp-4); }
 .costos-bloque h4 { display: inline-block; margin: 0 0 var(--esp-2); padding: 2px var(--esp-3); font-size: 15px; font-weight: var(--tipo-peso-etiqueta); background: var(--color-lila); clip-path: polygon(6px 0, calc(100% - 6px) 0, 100% 50%, calc(100% - 6px) 100%, 6px 100%, 0 50%); }
 .costos-bloque ul { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--esp-1); }
-.costos-bloque li { display: grid; grid-template-columns: 24px 1fr auto; align-items: center; gap: var(--esp-2); }
+/* Cada fila en su franja lila, como la tarjeta "Solar panel" de ui/01. */
+.costos-bloque li { display: grid; grid-template-columns: 24px 1fr auto; align-items: center; gap: var(--esp-2); padding: var(--esp-1) var(--esp-3); background: var(--color-lila);
+  clip-path: polygon(6px 0, calc(100% - 6px) 0, 100% 6px, 100% calc(100% - 6px), calc(100% - 6px) 100%, 6px 100%, 0 calc(100% - 6px), 0 6px); }
 .costos-bloque + .costos-bloque { border-left: var(--borde-fino) solid color-mix(in srgb, var(--color-ciruela) 30%, transparent); padding-left: var(--esp-4); }
 @media (max-width: 480px) { .costos { grid-template-columns: 1fr; } .costos-bloque + .costos-bloque { border-left: 0; padding-left: 0; } }
 
@@ -64,3 +66,7 @@
 @keyframes confirmar-abre { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
 
 @media (prefers-reduced-motion: reduce) { .placa-delta, .confirmar-entrada { animation: none; } }
+
+/* En ui/01 la acción principal del panel ocupa todo el ancho de la tarjeta; "Back" queda chico debajo. */
+.confirmar-botones > .fb-caja:first-child { width: 100%; }
+.confirmar-botones > .fb-caja:first-child .fb { width: 100%; }

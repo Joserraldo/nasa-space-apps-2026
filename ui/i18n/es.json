@@ -214,5 +214,7 @@
   "ui.comun.muestrario.expresion.habla_cerrada": "Habla / cerrada",
   "ui.comun.muestrario.expresion.habla_abierta": "Habla / abierta",
   "ui.comun.muestrario.expresion.habla_redonda": "Habla / redonda",
-  "ui.comun.muestrario.expresion.parpadeo": "Parpadeo"
+  "ui.comun.muestrario.expresion.parpadeo": "Parpadeo",
+  "ui.carga.saltar": "Saltar",
+  "ui.comun.cerrar": "Cerrar"
 }
