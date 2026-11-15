@@ -1,3 +1,5 @@
+import { lazy, Suspense, useCallback, useState } from "react";
+import { hayGraficos3D } from "../escena/soporte.js";
 import type { Idioma } from "../i18n.js";
 import { useT } from "../i18n.js";
 import { FacetButton } from "./base/FacetButton.js";
@@ -6,10 +8,12 @@ import { LogoSolarShield } from "./base/LogoSolarShield.js";
 import { Retrato } from "./base/Retrato.js";
 import "./base/inicio.css";
 
+const IlustracionPortada = lazy(() => import("./base/inicio3d/portada3d.js"));
+
 /**
- * Portada DOM (inicio/01, DISEÑO §6): logo, subtítulo, menú y preferencias. El fondo con el niño,
- * la nave y los planetas es la capa 3D de María Paula (`escena/activos/portada.ts`) y va DETRÁS:
- * esta capa deja libre la mitad derecha y no captura clics fuera de sus botones.
+ * Portada (inicio/01, DISEÑO §6): logo, subtítulo, menú y preferencias en DOM, encima de la capa 3D
+ * (`base/inicio3d/portada3d.ts`) con el niño, la nave, el cable y los planetas del juego. Sin WebGL,
+ * queda el respaldo DOM (retrato del niño y planeta). La capa de fondo no captura clics.
  * Sin guardado válido, "Continue" queda no disponible con el motivo escrito.
  */
 export interface PortadaProps {
@@ -18,10 +22,7 @@ export interface PortadaProps {
   sonido: boolean;
   onSonido(): void;
   puedeContinuar: boolean;
-  /**
-   * Respaldo 2D de la escena de fondo (niño flotando y planeta, capas 1 y 4 de DISEÑO §6) mientras no
-   * exista la capa 3D de María Paula. Cuando la capa 3D se monte detrás, se pasa false.
-   */
+  /** Ilustración de fondo (capas 1 a 4 de DISEÑO §6): en 3D si hay WebGL, si no, el respaldo DOM. */
   fondo2D?: boolean;
   onEmpezar(): void;
   onContinuar(): void;
@@ -32,14 +33,22 @@ export interface PortadaProps {
 
 export function Portada({ idioma, onIdioma, sonido, onSonido, puedeContinuar, onEmpezar, onContinuar, onAjustes, onCreditos, fondo2D = true }: PortadaProps) {
   const { t } = useT();
+  const [con3D, setCon3D] = useState(hayGraficos3D);
+  const sin3D = useCallback(() => setCon3D(false), []);
   return (
     <section className="portada" aria-labelledby="portada-titulo">
       <h1 id="portada-titulo" className="oculto-visual">{t("ui.portada.logo")}</h1>
       {fondo2D && (
         <div className="portada-fondo" aria-hidden="true">
-          <Icono nombre="planeta" tam={140} className="portada-planeta" />
-          <span className="portada-asteroide" />
-          <span className="portada-nino"><Retrato persona="nino" expresion="feliz" tam={360} parpadear /></span>
+          {con3D ? (
+            <Suspense fallback={null}><IlustracionPortada onFallo={sin3D} /></Suspense>
+          ) : (
+            <>
+              <Icono nombre="planeta" tam={140} className="portada-planeta" />
+              <span className="portada-asteroide" />
+              <span className="portada-nino"><Retrato persona="nino" expresion="feliz" tam={360} parpadear /></span>
+            </>
+          )}
         </div>
       )}
 
