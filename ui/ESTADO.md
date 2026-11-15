@@ -23,26 +23,32 @@ Una sección por persona, máximo 5 líneas, y nadie edita la de otro (FLUJO §8
 - Bloqueo: medición física en celular y PC viejo pendiente.
 
 ## Ubicación (Camilo)
-**Rama:** — · **PR:** ninguno · **Tokens:** —
-- Sin registrar todavía.
+**Rama:** feat/ui-ubicacion-lugares · **PR:** #205 · **Tokens:** verde
+- Iteración 1: expertas sin solaparse con niño/dock; radios, sólidos y punto de uso probados; typecheck, 540 tests, build y E2E en verde.
+- Sigue: revisar nuevos comentarios/checks de #205; después controles táctiles en rama independiente. Mapa #216 y colisiones intactos.
+- Bloqueo: ninguno para esta corrección; aceptación de Paula y montaje 3D pendientes. rotY de Daniel queda fuera de esta iteración.
 
 ## Integración (José)
-**Rama:** — · **PR:** ninguno · **Tokens:** —
-- Hecho: contratos `VistaEscena` (#181), eventos de feedback (#182) y ajustes del jugador (#186) fusionados; CI corre en `feat/ui-escenarios`.
+**Rama:** feat/ui-integracion-orientacion · **PR:** hacia feat/ui-escenarios · **Tokens:** verde
+- Hecho: contratos `VistaEscena` (#181), eventos (#182), ajustes (#186) y props de `EscenaBase` (#190, cerrado). Lógica del aviso de girar el teléfono (`juego/orientacion.ts`).
+- Sigue: pantallas nuevas desde las láminas cuando entren #208, #209 y #213 de Jaime; preview de esta rama en #207 (hacia develop).
+- Bloqueo: tokens y componentes de Jaime.
 
 ## Interfaz (Jaime)
-**Rama:** — · **PR:** ninguno · **Tokens:** —
-- Sin registrar todavía. Primera tarea: `tokens.ts`, `tokens.css` y Nunito (DISEÑO §2 y §2.4, contrato de FLUJO §3).
+**Rama:** — · **PR:** #220 (fusionado, trae toda la pila: #208, #209, #213, #214, #217, #219) · **Tokens:** verde
+- Hecho: tokens v8 y Nunito; `estilos.css` borrado y reemplazado por `estilos/base.css`; `FacetButton` e iconos; placas, costos, mensajes, efecto pendiente y `ConfirmarAccion`; portada, intro y carga; tarjeta de fuente, datos usados y glosario; retratos con 8 expresiones. Muestrario en `componentes/base/muestrario.html`.
+- Sigue: arreglos de fidelidad que pida María Paula (las fichas están en cada PR cerrado); audio y voz si sobra tiempo.
+- Bloqueo: ninguno. Falta la revisión de fidelidad de María Paula (las piezas entraron juntas con #220).
 
 ## Fidelidad
 Una línea por pieza (FLUJO §4 y §8). Estados: `sin empezar`, `en PR #n`, `aprobada`. Solo María Paula marca `aprobada`, después de comparar la captura con la lámina.
 
 | Pieza | Lámina | Dueño | Estado |
 | --- | --- | --- | --- |
-| Tokens, Nunito, botones y placas | `ui/02`, `ui/03` | Jaime | sin empezar |
-| Retratos de diálogo | `personajes/02, 04, 06, 09`, `ui/01` | Jaime | sin empezar |
-| Portada DOM, intro y carga | `inicio/01–03`, `ui/00` | Jaime | sin empezar |
-| Tarjeta de fuente, datos usados, glosario | `ui/04` | Jaime | sin empezar |
+| Tokens, Nunito, botones y placas | `ui/02`, `ui/03` | Jaime | fusionada en #220, revisión de fidelidad pendiente |
+| Retratos de diálogo | `personajes/02, 04, 06, 09`, `ui/01` | Jaime | fusionada en #220, revisión de fidelidad pendiente |
+| Portada DOM, intro y carga | `inicio/01–03`, `ui/00` | Jaime | fusionada en #220, revisión de fidelidad pendiente |
+| Tarjeta de fuente, datos usados, glosario | `ui/04` | Jaime | fusionada en #220, revisión de fidelidad pendiente |
 | Cielo, luz y niebla de Marte | MARTE.md §4–§5 (no el azul de `mundo/01`) | Daniel | sin empezar |
 | Terreno de Jezero y rocas | `mundo/01`, `exterior/02` | Daniel | sin empezar |
 | Kit de piezas | `piezas/01–10` | Daniel | sin empezar |

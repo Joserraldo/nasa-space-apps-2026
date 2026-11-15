@@ -193,6 +193,14 @@ Adaptadas de la skill `threejs-performance` de cloudai-x/threejs-skills (MIT), f
 - **Interacción:** el raycast prueba una lista explícita de objetos interactivos (`intersectObjects(lista, false)`), nunca `scene.children` recursivo en cada evento.
 - **Sin tirones al entrar:** `await renderer.compileAsync(scene, camera)` antes del primer fotograma de la base, detrás de la pantalla de carga.
 
+### 8.2 Carga y celular
+
+- **La portada aparece sin esperar a three:** el DOM de la portada se pinta primero y `three` con la escena llegan con `import()` dinámico en un archivo aparte (`soporte.ts` ya existe para preguntar por WebGL sin cargar three). La capa 3D de la portada entra con un fundido cuando está lista.
+- **Presupuesto de carga:** JavaScript inicial sin three de 200 KB comprimido como máximo (hoy el build da 136 KB), three en su propio chunk. La fuente Nunito se precarga (`<link rel="preload">`).
+- **Calidad inicial por dispositivo:** celular arranca en 3D liviano (DPR 1, sin sombras) y sube a completo si sostiene 50 fps; escritorio arranca en completo. La degradación de §8 sigue valiendo.
+- **Bucle en pausa** con `visibilitychange`: `renderer.setAnimationLoop(null)` al ocultarse y se retoma al volver.
+- Se prueba en un celular real: con `npm run dev -w ui -- --host` en la misma red, o en el preview desplegado.
+
 ## 9. Bloques de entrega (alineados con `docs/ORQUESTACION.md`)
 
 Quién ejecuta estos bloques y en qué rama está en [FLUJO.md](FLUJO.md) §1, §2 y §5: los bloques 1 y 2 son la fase 2 (en paralelo), el bloque 4 es la fase 3 (integración) y el bloque 3 va después de la entrega.

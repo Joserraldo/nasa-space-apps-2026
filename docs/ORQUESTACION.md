@@ -2,7 +2,7 @@
 
 Este archivo debe bastar para que otra sesión (u otro humano) retome la coordinación sin el chat original. Lo mantiene el orquestador (Santiago Cabeza, que desde el 13 nov en la noche solo supervisa y fusiona). **Suplente del orquestador:** Jaime (`JaimeMrF`).
 
-**Actualizado:** 14 nov 2026, 22:30.
+**Actualizado:** 15 nov 2026, 00:30.
 
 ## Resumen
 
@@ -26,9 +26,9 @@ Este archivo debe bastar para que otra sesión (u otro humano) retome la coordin
 
 Regla de corte si P2 no se cumple: Luna → Atlas → desbloqueos → 3D completo → dibujo de ruta en 3D → niveles adaptativos extra. El orquestador propone el momento y Santiago confirma.
 
-## Estado (sáb 14 nov, 22:30 — hechos)
+## Estado (dom 15 nov, 00:30 — hechos)
 
-- **Frontend v8 (ARRANQUE, ola 1 en curso):** `feat/ui-escenarios` al día con develop. María Paula empezó la subida de su código (#184, subida 1/6). José abrió los contratos #181, #182 y #186 hacia esa rama (los fusiona María Paula; #182 y #186 chocan solo en `agents/ESTADO.md`). Daniel tiene `feat/ui-escenario-base` sin PR todavía. Jaime y Camilo sin ramas de la ola 1 (avisados en #168). Nadie borró archivos viejos: eso es la ola 2.
+- **Frontend v8: ola 2 abierta (María Paula, 23:58).** La subida terminó con #197 (solo lógica; no hay subidas 3 a 6). `three` 0.160 está en `feat/ui-escenarios` (#204). Los cinco tienen PR hacia esa rama: Jaime tokens v8 (#208) y borrado de `estilos.css` (#209), Camilo lugares de Jezero (#205), Daniel base del escenario 3D (#206); José el preview desplegado de la rama (#207, hacia develop). Probados juntos: 600 pruebas, semilla dorada 16/16, build OK.
 - **#152 (Daniel):** motor para varias misiones y huecos del tipo `Mision` en develop (#169–#177). Misiones: entró #153; #154–#156 con las fuentes y textos de la revisión de Daniel, y se fusionan de a una porque comparten `missions/src/textos.ts`.
 
 - **develop (279f3a6):** compila, 347 pruebas en verde, semilla dorada y partidas ganadora/perdedora en verde (16/16), build de ui y e2e de la ruta dorada en verde en CI; preview desplegado.

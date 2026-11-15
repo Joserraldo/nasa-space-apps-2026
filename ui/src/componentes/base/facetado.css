@@ -1,0 +1,111 @@
+/*
+ * Familia facetada (DISEÑO §5, láminas ui/02 y ui/03). Solo tokens: colores por var(--color-…)
+ * y mezclas con color-mix. Capas del botón, de abajo arriba:
+ *   ::before  anillo de foco cian      (fuera del recorte, solo con :focus-visible)
+ *   ::after   trazo índigo del foco
+ *   .fb-sombra  bisel ciruela (el mismo hexágono, corrido hacia abajo)
+ *   .fb-superficie  hexágono marfil con su borde
+ */
+
+.fb-caja { display: inline-flex; flex-direction: column; align-items: center; gap: var(--esp-1); vertical-align: top; }
+
+.fb {
+  --fb-alto: 48px;
+  --fb-punta: 16px;
+  --fb-fondo: var(--color-marfil);
+  --fb-borde: color-mix(in srgb, var(--color-ciruela) 22%, var(--color-marfil));
+  --fb-texto: var(--color-indigo-texto);
+  --fb-bisel: 3px;
+  --fb-forma: polygon(var(--fb-punta) 0, calc(100% - var(--fb-punta)) 0, 100% 50%, calc(100% - var(--fb-punta)) 100%, var(--fb-punta) 100%, 0 50%);
+  position: relative;
+  isolation: isolate;
+  display: inline-grid;
+  min-height: var(--toque-minimo);
+  min-width: var(--toque-minimo);
+  height: var(--fb-alto);
+  padding: 0;
+  margin: 0 0 var(--fb-bisel);
+  border: 0;
+  background: none;
+  color: var(--fb-texto);
+  font-family: var(--tipo-familia);
+  font-weight: var(--tipo-peso-etiqueta);
+  font-size: var(--tipo-tam-cuerpo);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform var(--dur-salida-hover) var(--curva-salida);
+}
+.fb-primary { --fb-alto: 56px; --fb-punta: 18px; font-size: var(--tipo-tam-subtitulo); font-weight: var(--tipo-peso-titulo); }
+
+/* Menú de la portada (inicio/01): grande, ancho fijo, icono a la izquierda con separador. */
+.fb-menu { --fb-alto: 68px; --fb-punta: 22px; width: 100%; font-size: var(--tipo-tam-portada); font-weight: var(--tipo-peso-portada); }
+.fb-menu .fb-superficie { justify-content: flex-start; gap: var(--esp-4); padding-left: calc(var(--fb-punta) + var(--esp-5)); }
+.fb-menu .fb-icono { color: var(--color-ciruela); }
+.fb-menu .fb-texto { padding-left: var(--esp-4); border-left: var(--borde) solid color-mix(in srgb, var(--color-ciruela) 35%, transparent); }
+.fb-caja:has(> .fb-menu) { width: 100%; }
+
+.fb > * { grid-area: 1 / 1; }
+
+/* El foco lo dibuja el propio botón (no :focus-visible global): dos hexágonos más grandes, sin recorte. */
+.fb:focus-visible { outline: none; box-shadow: none; }
+.fb::before, .fb::after {
+  content: ""; position: absolute; z-index: -1; clip-path: var(--fb-forma); opacity: 0; pointer-events: none;
+}
+.fb::before { inset: calc(-1 * (var(--foco-separacion) + var(--foco-ancho) + 2px)); background: var(--color-cian); }
+.fb::after { inset: -2px; background: var(--color-indigo-texto); }
+.fb:focus-visible::before, .fb:focus-visible::after { opacity: 1; }
+
+.fb-sombra {
+  clip-path: var(--fb-forma);
+  background: color-mix(in srgb, var(--color-ciruela) 30%, transparent);
+  transform: translateY(var(--fb-bisel));
+  transition: transform var(--dur-salida-hover) var(--curva-salida);
+}
+
+.fb-superficie {
+  position: relative;
+  display: inline-flex; align-items: center; justify-content: center; gap: var(--esp-2);
+  height: 100%;
+  padding: 0 calc(var(--fb-punta) + var(--esp-4));
+  clip-path: var(--fb-forma);
+  background: var(--fb-borde);
+  white-space: nowrap;
+  transition: background var(--dur-salida-hover) var(--curva-salida);
+}
+/* Relleno interior: deja ver 2 px del borde alrededor, también en las puntas. */
+.fb-superficie::before {
+  content: ""; position: absolute; inset: 2px; clip-path: var(--fb-forma); background: var(--fb-fondo);
+  transition: background var(--dur-salida-hover) var(--curva-salida);
+}
+.fb-superficie > * { position: relative; }
+
+.fb-icono { flex: none; }
+.fb-texto { position: relative; display: inline-grid; }
+.fb-texto > * { grid-area: 1 / 1; text-align: center; }
+.fb-oculta { visibility: hidden; }
+
+/* Hover solo con puntero fino (APLICACION §7: no es selección). */
+@media (hover: hover) and (pointer: fine) {
+  .fb:not([aria-disabled="true"]):hover { transform: translateY(-2px); transition-duration: var(--dur-hover); transition-timing-function: var(--curva-entrada); }
+  .fb:not([aria-disabled="true"]):hover .fb-sombra { transform: translateY(calc(var(--fb-bisel) + 2px)); }
+  .fb:not([aria-disabled="true"]):hover { --fb-fondo: var(--color-lila); }
+}
+
+/* Presionado: baja 1 px, se achica apenas y casi pierde la sombra; el layout no se mueve. */
+.fb:not([aria-disabled="true"]):active { transform: translateY(1px) scale(.985); transition-duration: var(--dur-presionar); }
+.fb:not([aria-disabled="true"]):active .fb-sombra { transform: translateY(1px); }
+.fb:not([aria-disabled="true"]):active { --fb-fondo: color-mix(in srgb, var(--color-lila) 70%, var(--color-ciruela) 8%); }
+
+/* Seleccionado: check (lo pone el componente) y borde ciruela persistente. */
+.fb-sel { --fb-borde: var(--color-ciruela); }
+
+/* No disponible: atenuado pero legible, con el motivo escrito debajo. */
+.fb[aria-disabled="true"] { cursor: not-allowed; --fb-fondo: var(--color-deshabilitado); --fb-texto: var(--color-deshabilitado-texto); --fb-borde: color-mix(in srgb, var(--color-deshabilitado-texto) 35%, var(--color-deshabilitado)); }
+.fb-ocupado[aria-disabled="true"] { cursor: progress; --fb-fondo: var(--color-lila); --fb-texto: var(--color-indigo-texto); }
+.fb[aria-disabled="true"] .fb-icono { opacity: 0.55; }
+.fb-motivo { font-size: 15px; font-weight: var(--tipo-peso-etiqueta); color: var(--color-deshabilitado-texto); max-width: 22ch; text-align: center; line-height: 1.2; }
+
+@media (prefers-reduced-motion: reduce) {
+  .fb, .fb-sombra, .fb-superficie, .fb-superficie::before { transition: none; }
+  .fb:not([aria-disabled="true"]):hover, .fb:not([aria-disabled="true"]):active { transform: none; }
+}

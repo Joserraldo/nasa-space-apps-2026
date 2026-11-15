@@ -29,16 +29,13 @@ CÓMO TRABAJAMOS TODOS:
   lanzarlos. Sin OpenCode (solo lo tiene Camilo).
 
 TAREAS EN ORDEN (una por iteración; cada una dice cuándo está hecha):
-1. Subir tu trabajo local de feat/ui-escena-3d a feat/ui-escenarios en PRs atómicos de menos
-   de 300 líneas: primero los archivos nuevos de escena/ y componentes/, después los cambios
-   de pantallas, rebasados sobre develop (ya trae #163). Subilo tal como está: la lógica se
-   conserva y el diseño anterior lo borran Jaime, José y Daniel justo después (FLUJO §2.2).
-   Mientras tanto los demás ya trabajan en archivos nuevos; los que existen en tu trabajo
-   esperan esta subida.
-   HECHO: git status limpio en tu checkout y los PRs fusionados en feat/ui-escenarios.
-2. Avisar al equipo que tu trabajo ya está en la rama: arranca el borrado del diseño anterior
-   (FLUJO §2.2: Jaime estilos.css y mision.css, José la bienvenida oscura, Daniel el prototipo
-   en la escena). Revisá que no quede nada. HECHO: aviso enviado y borrado aprobado.
+1. Subida terminada: la lógica ya está en la rama (#184 reductor y cuenta, #197 lógica de
+   escena). El render, los componentes visuales, los CSS y las pantallas de tu trabajo local
+   NO se suben: eran base vieja (FLUJO §2.3). Nadie trabaja sobre el preview desplegado.
+   HECHO: #197 fusionado.
+2. Avisar al equipo que arranca la ola 2: Jaime borra estilos.css y José las pantallas viejas
+   a medida que escribe las nuevas (FLUJO §2.2 y §2.3). Revisá que no quede nada del preview.
+   HECHO: aviso enviado y borrado aprobado.
 3. Personajes y portada 3D: tareas 1 a 5 de front-personajes.md (niño, Iris rover, Ingeniera,
    portada 3D; Doctora y Meteoróloga si alcanza).
    HECHO: lo que diga cada tarea del brief.
@@ -56,8 +53,9 @@ cada uno en su worktree; búsquedas con Haiku. Fable sube a high solo para la pi
 META PARA PARAR EL LOOP: niño, Iris e Ingeniera fieles a las láminas en la base, y el punto de
 control final fusionado en develop antes de P4. Después solo arreglos.
 
-PRIMERA RESPUESTA (sin código, máx. 6 líneas): qué está sin subir en feat/ui-escena-3d y los
-primeros PRs atómicos hacia feat/ui-escenarios. Esperá el OK.
+PRIMERA RESPUESTA (sin código, máx. 6 líneas): estado de feat/ui-escenarios (PRs abiertos y
+fusionados), el mensaje de la ola 2 que vas a mandar y la primera pieza de personajes que
+arrancás. Esperá el OK.
 
 Después: /loop 10m Haz UNA iteración según docs/LOOP.md y docs/prompts/ui.md.
 ```

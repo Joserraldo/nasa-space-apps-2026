@@ -5,6 +5,7 @@ Un solo Worker de Cloudflare sirve la pantalla (`ui/dist`) y la API (`/api/*`). 
 | Entorno | Worker | Se publica cuando |
 |---|---|---|
 | Preview | `nasa-space-apps-2026-preview` | se fusiona un PR a `develop` |
+| Rediseño | `nasa-space-apps-2026-escenarios` | se fusiona un PR a `feat/ui-escenarios` (usa la base de preview) |
 | Producción | `nasa-space-apps-2026` | se fusiona a `main` |
 
 El link de cada uno es `https://<worker>.<subdominio>.workers.dev`; el subdominio lo muestra Cloudflare al primer despliegue (Workers & Pages → el Worker → "Visit").
