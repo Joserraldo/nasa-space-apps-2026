@@ -8,20 +8,20 @@ type P2 = PuntoPavimento;
 
 const MESA = lugar("mesa");
 /** Plataforma pavimentada bajo la consola de la mesa (claro central, ESCENAS §3.3). [E] */
-export const PLAZA = { x: MESA.mx, z: (MESA.mz + MESA.z) / 2 - 0.3, radio: 2.0 } as const;
+export const PLAZA = { x: MESA.mx, z: (MESA.mz + MESA.z) / 2 - 0.3, radio: 1.5 } as const;
 /**
  * Medidas de las losas en metros. [E] `ancho`: losa de borde a borde (sin bordillo). `bordillo`:
  * banda más oscura a cada lado. `juntas`: separación entre juntas a lo largo del camino.
  * Alturas: la losa queda un poco por debajo del bordillo y la plaza es un escalón más alta.
  */
 export const CAMINO = {
-  ancho: 1.3,
-  bordillo: 0.12,
-  juntas: 1.3,
+  ancho: 0.95,
+  bordillo: 0.08,
+  juntas: 1.0,
   altoLosa: 0.05,
   altoBordillo: 0.07,
   altoPlaza: 0.1,
-  bordePlaza: 0.16,
+  bordePlaza: 0.12,
 } as const;
 
 /** Punto donde se para el jugador en un lugar (`LUGARES`, mundo.ts). */
@@ -44,7 +44,7 @@ function plazaHacia(id: LugarId): P2 {
  * - `taller → escudo` rodea por el este la consola del taller (−4,8; −1,4).
  * - `sensor → reciclador` rodea por el oeste la consola del sensor (4,8; −0,8).
  * - `reciclador → invernadero` pasa por el cuello entre esa consola y la cúpula (9; −5, r 3,85).
- * - `antena → plaza` esquiva por el norte la roca de (7,6; 2,4).
+ * - `antena → plaza` sube por el norte y deja libre la esquina inferior derecha del encuadre para una roca grande.
  */
 export const CAMINOS: readonly (readonly P2[])[] = [
   [plazaHacia("taller"), en("taller"), [-5.0, 0.4], en("panel_solar")],
@@ -53,7 +53,7 @@ export const CAMINOS: readonly (readonly P2[])[] = [
   [plazaHacia("sensor"), en("sensor")],
   [en("sensor"), [2.8, 0.0], en("reciclador_agua"), [4.2, -2.5], [5.72, -1.72], [6.5, -0.3], en("invernadero")],
   [en("invernadero"), [10.6, 2.0], en("antena")],
-  [en("antena"), [5.5, 4.0], plazaHacia("antena")],
+  [en("antena"), [8.4, 1.8], plazaHacia("antena")],
   [en("banco"), [-1.6, 6.5]],
   [[-0.5, 3.0], [-1.6, 6.5], [-2.4, 10]],
 ];
@@ -251,7 +251,7 @@ export function chocaConBase(x: number, z: number, margen: number): boolean {
 export function posicionesBalizas(): P2[] {
   const salida: P2[] = [];
   for (const tramo of CAMINOS) {
-    let lado = 1; // alterna dentro de cada tramo: añadir o quitar uno no mueve las balizas de los demás
+    let lado = -1; // alterna dentro de cada tramo: añadir o quitar uno no mueve las balizas de los demás
     let recorrido = 0; // metros ya recorridos del tramo hasta el inicio del segmento
     let siguiente = BALIZAS.cada / 2;
     for (let k = 0; k < tramo.length - 1; k++) {

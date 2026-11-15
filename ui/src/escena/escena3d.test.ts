@@ -250,12 +250,13 @@ describe("encuadre de tercera persona (mundo/01)", () => {
     return new THREE.Vector3(x, y, z).project(camara);
   };
 
-  it("al menos 2 rocas de primer plano caen en el tercio inferior del cuadro (1024x683)", () => {
-    const abajo = ROCAS_PRIMER_PLANO.filter((r) => {
-      const p = punto(r.posicion[0], r.escala[1] * 0.6, r.posicion[2], 1024, 683);
-      return p.y < -1 / 3 && p.y > -1 && Math.abs(p.x) < 1;
-    });
-    expect(abajo.length).toBeGreaterThanOrEqual(2);
+  it("2 rocas grandes (escala >= 1,4) caen en el tercio inferior del cuadro, una en cada mitad (1024x683)", () => {
+    const grandes = ROCAS_PRIMER_PLANO.filter((r) => Math.max(...r.escala) >= 1.4);
+    const abajo = grandes.map((r) => punto(r.posicion[0], r.escala[1] * 1.2, r.posicion[2], 1024, 683))
+      .filter((p) => p.y < -1 / 3 && p.y > -1 && Math.abs(p.x) < 1);
+    expect(abajo.length).toBe(2);
+    expect(abajo.filter((p) => p.x < 0).length).toBe(1);
+    expect(abajo.filter((p) => p.x > 0).length).toBe(1);
     expect(ROCAS_PRIMER_PLANO.length).toBeLessThanOrEqual(4);
   });
 

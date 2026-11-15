@@ -125,10 +125,10 @@ const rocasGrandesPorRejilla = new WeakMap<Rejilla, TransformacionRoca[]>();
  * círculos de colisión en `TERRENO` (mundo.ts) con `radioRocaPrimerPlano`. [E]
  */
 export const ROCAS_PRIMER_PLANO: readonly TransformacionRoca[] = [
-  { posicion: [-5.5, 0, 2], escala: [0.5, 0.7, 0.5], rotacion: [0.05, 0.6, -0.04] },
-  { posicion: [1.6, 0, 2.8], escala: [0.45, 0.45, 0.45], rotacion: [0, 2.1, 0.06] },
-  { posicion: [6.3, 0, 1.8], escala: [0.75, 0.95, 0.72], rotacion: [-0.04, 1.4, 0.03] },
-  { posicion: [-11, 0, -0.5], escala: [0.75, 1.0, 0.7], rotacion: [0.05, 0.3, 0] },
+  { posicion: [-3.1, 0, 2.6], escala: [1.4, 0.95, 1.3], rotacion: [0.04, 0.6, -0.03] }, // grande, abajo a la izquierda
+  { posicion: [2.0, 0, 4.0], escala: [1.4, 0.9, 1.3], rotacion: [-0.03, 2.1, 0.04] }, // grande, abajo a la derecha
+  { posicion: [-5.6, 0, 1.6], escala: [0.5, 0.6, 0.48], rotacion: [0.05, 0.3, 0] },
+  { posicion: [7.2, 0, 3.4], escala: [0.5, 0.55, 0.5], rotacion: [0, 1.4, 0.03] },
 ];
 
 /** Huella en planta de una roca de primer plano. */
@@ -144,7 +144,7 @@ export function huellasRocas(claro: Rejilla): Huella[] {
 /** La roca de radio `radio` en (x, z) no pisa caminos, plaza, banco, sólidos, lugares ni decorado. */
 export function rocaPrimerPlanoLibre(x: number, z: number, radio: number): boolean {
   if (chocaConBase(x, z, radio) || sobreCamino(x, z, radio)) return false;
-  if (LUGARES.some((l) => Math.hypot(x - l.x, z - l.z) < l.radio + radio * 0.5)) return false;
+  if (LUGARES.some((l) => Math.hypot(x - l.x, z - l.z) < l.radio)) return false;
   if (DECORADO.some((d) => Math.hypot(x - d.x, z - d.z) < d.radio + radio)) return false;
   return !posicionesBalizas().some(([bx, bz]) => Math.hypot(x - bx, z - bz) < radio + 0.3);
 }
