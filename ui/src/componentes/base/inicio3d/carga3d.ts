@@ -75,7 +75,7 @@ function posar(pj: Personaje, t: number): void {
   const h = pj.huesos;
   // La pantalla mira al jugador (en el juego mira al niño), apaisada, entre las dos manos y del tamaño de la lámina.
   h.tableta.rotation.set(1.3, 0, Math.PI / 2);
-  h.tableta.scale.setScalar(1.8);
+  h.tableta.scale.setScalar(2.6);
   h.tableta.position.set(0.1, 0, -0.04);
   h.cabeza.rotation.set(-0.05, 0.25, 0);
   pj.expresion("feliz");
@@ -90,7 +90,8 @@ export function crearCarga3D(): Ilustracion {
   const sol = crearSol();
   sol.position.set(-0.025, 0.045, 0.069);
   pj.huesos.tableta.add(sol);
-  pj.grupo.rotation.y = 0.45;
+  // Girado hacia el panel de texto, como en la lámina.
+  pj.grupo.rotation.y = 0.7;
   const sombra = crearSombra();
   sombra.scale.set(0.42, 0.07, 1);
   sombra.position.set(0, 0.01, -0.5);
