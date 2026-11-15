@@ -66,17 +66,17 @@ Leé solo lo que tu tarea necesita. Cada documento es autónomo y enlaza sus lá
 9. **Accesible siempre:** teclado, foco visible, `prefers-reduced-motion`, áreas de 44 x 44 px y respaldo 2D equivalente.
 10. **Presupuesto:** menos de 80 draw calls y 80 000 triángulos por vista, DPR máximo 1,5.
 
-## 5. Decisiones que confirma Santiago al fusionar #157
+## 5. Decisiones de #157, aprobadas por Santiago (14 nov)
 
-Estaban pendientes en `docs/ORQUESTACION.md`. Ui las resolvió según las láminas; se aplican desde ya y Santiago las confirma al fusionar:
+Estaban pendientes en `docs/ORQUESTACION.md`. Ui las resolvió según las láminas; Santiago las aprobó el 14 nov:
 
 | Pregunta | Qué se aplica |
 | --- | --- |
-| ¿Iris se ve como rover de 4 ruedas? (en el contrato es la IA de la base, `iaBase` + equipo `ia_base`) | **Decidido por ui según la referencia:** rover 3D en el mundo desde el bloque 2 (`mundo/01`, `inicio/02`), y en las tarjetas de diálogo un retrato del mismo rover. Sigue siendo la IA de la base (`iaBase`, D2). Se confirma al fusionar #157. |
-| ¿Expertas en 3D o solo retratos 2D? | **Decidido por ui según la referencia:** personas 3D en el mundo (la Ingeniera aparece junto al niño en `mundo/01`) y retrato del mismo modelo en las tarjetas de diálogo. La Ingeniera entra en el bloque 2; la Doctora y la Meteoróloga si el presupuesto alcanza, si no, después de P4. |
+| ¿Iris se ve como rover de 4 ruedas? (en el contrato es la IA de la base, `iaBase` + equipo `ia_base`) | **Decidido por ui según la referencia:** rover 3D en el mundo desde el bloque 2 (`mundo/01`, `inicio/02`), y en las tarjetas de diálogo un retrato del mismo rover. Sigue siendo la IA de la base (`iaBase`, D2). Aprobado por Santiago (14 nov). |
+| ¿Expertas en 3D o solo retratos 2D? | **Decidido por ui según la referencia:** personas 3D en el mundo (la Ingeniera aparece junto al niño en `mundo/01`) y retrato del mismo modelo en las tarjetas de diálogo. La Ingeniera entra en el bloque 2 (aprobado por Santiago, 14 nov); la Doctora y la Meteoróloga si el presupuesto alcanza, si no, después de P4. |
 | ¿Se recortan las 8 estaciones completas? | Base compacta de Jezero primero; las 8 estaciones son ampliación posterior. |
 | ¿Cuándo entran las otras 4 misiones? | No aparecen en la UI hasta que el motor lea varias misiones (#152) y diseño las apruebe ([NIVELES.md](NIVELES.md) §7–8). |
-| Estilo y render; nombres de la tripulación | [D6](../decisiones/D6-estilo-visual.md) (Three.js procedural + DOM) y [D7](../decisiones/D7-tripulantes.md) (por su rol), ambas en propuesta. |
+| Estilo y render; nombres de la tripulación | [D6](../decisiones/D6-estilo-visual.md) (Three.js procedural + DOM) y [D7](../decisiones/D7-tripulantes.md) (por su rol), ambas aprobadas por Santiago (14 nov). |
 
 ## 6. Qué salió de esta carpeta y por qué
 
