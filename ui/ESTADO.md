@@ -17,10 +17,11 @@ Una sección por persona, máximo 5 líneas, y nadie edita la de otro (FLUJO §8
 - Bloqueo: ninguno.
 
 ## Escenario (Daniel)
-**Rama:** feat/ui-escena-r6-camara · **PR:** #253 (sobre #252) · **Tokens:** 🟡
-- Hecho: cámara adaptable, losas y plataforma, rocas y módulos sin solapes; montaje en #247; arranque sin WebGL notifica a la pantalla sin excepción React.
-- Verificado: 694 pruebas, tipos, build y E2E; 2 regresiones en navegador (StrictMode/desmontaje y fallo de creación WebGL).
-- Sigue: revisar #253 y consolidar cuando entre #237 aprobado; no añadir capas. Celular y PC viejo pendientes (medición Intel local no los sustituye).
+**Rama:** feat/ui-escena-v* · **PR:** cadena #282 → #285 → #286 → #288 → #289 → … → #295 → #300 hacia develop · **Tokens:** 🟡
+- Hecho: pila del escenario pasada a develop (reemplaza #248–#266); entraron #282, #285, #286 y #288. Fidelidad nueva: rocas de esquina, balizas del camino ancho, torre y hábitat.
+- Medido (15 nov, Chrome real, Intel Graphics 0x7D67 integrada, sin vsync, 15 s): PC 1920×1080 alta 258 fps (p95 0,8 ms), baja 777 fps; 1366×768 alta 383 fps. Tirones sueltos de 0,2–0,5 s (¿shaders?).
+- Celular emulado (412×915, dpr 2,6, CPU ÷4): alta 290 fps, baja 480 fps. Es emulación, no reemplaza el celular real.
+- Sigue: fusionar la cadena en orden; medir en un celular y un PC viejo reales.
 
 ## Ubicación (Camilo)
 **Rama:** feat/ui-ubicacion-colisiones · **PR:** hacia develop · **Tokens:** amarillo
