@@ -11,11 +11,11 @@
  */
 import * as THREE from "three";
 import { crearCielo, type Calidad, type Cielo } from "./cielo";
-import { geometriaBase, type Materiales } from "./materiales";
+import type { Materiales } from "./materiales";
 import { liberarEscena } from "./liberar";
-import { lugarDelModulo, lugar, type LugarId } from "./mundo";
-import type { VistaEscena, EstadoModulo } from "./vista";
-import { FORMA_MODULO as FORMA, MODULOS_BASE, TIEMPOS_MODULO_MS, colocar, crearFormaModulo, partesVisibles, type ModuloBase } from "./activos/modulos";
+import { lugar, type LugarId } from "./mundo";
+import type { VistaEscena } from "./vista";
+import { MODULOS_BASE, TIEMPOS_MODULO_MS, colocar, type ModuloBase } from "./activos/modulos";
 import { instanciar, type TransformacionPieza } from "./activos/instancias";
 import {
   crearBaliza,
@@ -25,6 +25,7 @@ import {
 import { crearCapsula, crearCorredor, crearHabitat, crearTorreControl } from "./activos/edificios";
 import { fusionar } from "./activos/fusionar";
 import { geometriaCaminos, posicionesBalizas } from "./activos/caminos";
+import { aplicarEstado, armarAnclajes, armarModulo, giroHacia, type ModuloArmado } from "./activos/modulosArmados";
 export { PLAZA, CAMINO, CAMINOS, BALIZAS, geometriaCaminos, posicionesBalizas } from "./activos/caminos";
 export { fusionar } from "./activos/fusionar";
 import {
@@ -73,116 +74,6 @@ export const ROCAS_GRANDES = { n: 18, semilla: 9, radioMin: 15, radio: 28, escal
 /** Las rocas grandes no caen sobre la torre de control, las cápsulas ni sus corredores. */
 export function rocaGrandeLibre(x: number, z: number): boolean {
   return !(z < -12 && Math.abs(x) < 16) && Math.hypot(x, z - 9) > 3;
-}
-
-// ---------------------------------------------------------------------------------------------
-// Andamio
-// ---------------------------------------------------------------------------------------------
-
-type V3 = [number, number, number];
-
-function malla(m: Materiales, slot: keyof Materiales, g: THREE.BufferGeometry, pos: V3, sombra = true): THREE.Mesh {
-  const x = new THREE.Mesh(g, m[slot]);
-  x.position.set(...pos);
-  x.castShadow = sombra;
-  x.receiveShadow = true;
-  return x;
-}
-
-const caja = (w: number, h: number, d: number) =>
-  geometriaBase(`armado-caja-${w}-${h}-${d}`, () => new THREE.BoxGeometry(w, h, d));
-
-/** Andamio de "instalando": cuatro postes teal y un marco arriba, del tamaño de la huella. */
-function crearAndamio(m: Materiales, ancho: number, fondo: number, alto: number): THREE.Group {
-  const g = new THREE.Group();
-  const x = ancho / 2, z = fondo / 2;
-  for (const [px, pz] of [[-x, -z], [x, -z], [-x, z], [x, z]] as const) {
-    g.add(malla(m, "Accent", caja(0.12, alto, 0.12), [px, alto / 2, pz]));
-  }
-  for (const y of [alto, alto / 2]) {
-    g.add(malla(m, "Accent", caja(ancho, 0.1, 0.1), [0, y, -z]));
-    g.add(malla(m, "Accent", caja(ancho, 0.1, 0.1), [0, y, z]));
-    g.add(malla(m, "Accent", caja(0.1, 0.1, fondo), [-x, y, 0]));
-    g.add(malla(m, "Accent", caja(0.1, 0.1, fondo), [x, y, 0]));
-  }
-  return fusionar(g, "Scaffold");
-}
-
-// ---------------------------------------------------------------------------------------------
-// Módulos
-// ---------------------------------------------------------------------------------------------
-
-const NOMBRE_MODULO: Readonly<Record<ModuloBase, string>> = {
-  panel_solar: "Module_SolarPanel",
-  escudo: "Module_Shield",
-  reciclador_agua: "Module_Recycler",
-  invernadero: "Module_Greenhouse",
-  antena: "Module_Antenna",
-};
-
-function crearSolido(m: Materiales, id: ModuloBase): THREE.Object3D {
-  return fusionar(crearFormaModulo(m, id), NOMBRE_MODULO[id]);
-}
-
-export interface ModuloArmado {
-  raiz: THREE.Group;
-  solido: THREE.Object3D;
-  andamio: THREE.Object3D;
-  /** Luz de estado: solo cuando funciona. */
-  vivos: THREE.Object3D;
-  estado: EstadoModulo;
-  /** Momento (ms) en que empezó la transición actual; −1 = empieza en el próximo fotograma. */
-  inicio: number;
-  /** Momento (ms) del último pulso de evento (avería); −Infinity si no hay. */
-  pulso: number;
-}
-
-function giroHacia(desde: { mx: number; mz: number }, hacia: { x: number; z: number }): number {
-  return Math.atan2(hacia.x - desde.mx, hacia.z - desde.mz);
-}
-
-function armarModulo(m: Materiales, id: ModuloBase): ModuloArmado {
-  const l = lugarDelModulo(id)!;
-  const f = FORMA[id];
-  const raiz = new THREE.Group();
-  raiz.name = `Module_${id}`;
-  raiz.position.set(l.mx, 0, l.mz);
-  raiz.rotation.y = f.giro ?? giroHacia(l, l);
-  const solido = crearSolido(m, id);
-  const andamio = crearAndamio(m, f.huella[0], f.huella[1], f.alto);
-  const vivos = malla(m, "Emissive", geometriaBase("armado-luz-estado", () => new THREE.IcosahedronGeometry(0.13, 0)), [0, f.alto + 0.2, 0], false);
-  vivos.name = `Module_${id}_Live`;
-  raiz.add(solido, andamio, vivos);
-  const modulo: ModuloArmado = { raiz, solido, andamio, vivos, estado: "ausente", inicio: 0, pulso: -Infinity };
-  aplicarEstado(modulo, "ausente");
-  return modulo;
-}
-
-function aplicarEstado(mod: ModuloArmado, estado: EstadoModulo): void {
-  const p = partesVisibles(estado);
-  mod.solido.visible = p.solido;
-  mod.andamio.visible = p.andamio;
-  mod.vivos.visible = p.vivos;
-  if (estado !== mod.estado) mod.inicio = -1;
-  mod.estado = estado;
-}
-
-/** Anclajes: una placa octogonal por módulo, todas en un `InstancedMesh` (siempre visibles). */
-function armarAnclajes(m: Materiales): THREE.Group {
-  const placa = geometriaBase("armado-anclaje", () => new THREE.CylinderGeometry(0.5, 0.5, 0.06, 8, 1));
-  const t: TransformacionPieza[] = MODULOS_BASE.map((id) => {
-    const l = lugarDelModulo(id)!;
-    const f = FORMA[id];
-    return { posicion: [l.mx, 0.03, l.mz], rotacion: [0, f.giro ?? giroHacia(l, l), 0], escala: [f.huella[0], 1, f.huella[1]] };
-  });
-  const g = instanciar(() => {
-    const p = malla(m, "SuitBase", placa, [0, 0, 0], false);
-    const x = new THREE.Group();
-    x.name = "Module_Anchor";
-    x.add(p);
-    return x;
-  }, t);
-  return g;
 }
 
 function mirandoA(id: LugarId, escala = 1): TransformacionPieza {
