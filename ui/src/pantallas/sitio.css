@@ -1,0 +1,141 @@
+/*
+ * E4 Sitio (ESCENAS §2.5 y §2.7). Solo tokens: mapa de Jezero facetado con los colores de entorno
+ * (DISEÑO §2.3) y la familia de tarjetas de DISEÑO §5. Sombras teñidas de ciruela, nunca negras.
+ * El cian solo marca lo que se puede usar: el sitio elegido y el foco.
+ */
+.sitio {
+  box-sizing: border-box;
+  block-size: calc(100dvh - var(--alto-barra, 0px));
+  min-block-size: 560px;
+  padding: max(var(--esp-5), env(safe-area-inset-top)) max(var(--esp-5), env(safe-area-inset-right))
+    max(var(--esp-5), env(safe-area-inset-bottom)) max(var(--esp-5), env(safe-area-inset-left));
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(340px, 40%);
+  grid-template-rows: auto minmax(0, 1fr);
+  grid-template-areas: "mapa cabeza" "mapa lista";
+  gap: var(--esp-4) var(--esp-5);
+  background: var(--color-marfil);
+}
+
+.sitio-cabeza { grid-area: cabeza; }
+.sitio-cabeza-cara { padding: var(--esp-4) var(--esp-5); }
+.sitio-cabeza-cara h2 { margin-block-end: var(--esp-2); }
+.sitio-cabeza-cara p { margin: 0; }
+
+/* ---- Mapa ---- */
+.sitio-mapa { grid-area: mapa; position: relative; container-type: size; min-block-size: 0; overflow: hidden;
+  background: var(--color-regolito-medio);
+  clip-path: polygon(var(--chaflan-grande) 0, calc(100% - var(--chaflan-grande)) 0, 100% var(--chaflan-grande), 100% calc(100% - var(--chaflan-grande)), calc(100% - var(--chaflan-grande)) 100%, var(--chaflan-grande) 100%, 0 calc(100% - var(--chaflan-grande)), 0 var(--chaflan-grande)); }
+/* El lienzo es cuadrado como el DEM; los marcadores se ubican en % del lienzo. */
+.sitio-lienzo { position: absolute; inline-size: max(100cqw, 100cqh); aspect-ratio: 1; inset-inline-start: 50%; inset-block-start: 50%; translate: -50% -50%; }
+.sitio-svg { display: block; inline-size: 100%; block-size: 100%; }
+.sitio-svg polygon { stroke-width: 0.5; stroke-linejoin: round; }
+.t-0 { fill: var(--color-roca-basalto); stroke: var(--color-roca-basalto); }
+.t-1 { fill: var(--color-montana-lejana); stroke: var(--color-montana-lejana); }
+.t-2 { fill: var(--color-regolito-medio); stroke: var(--color-regolito-medio); }
+.t-3 { fill: var(--color-regolito-claro); stroke: var(--color-regolito-claro); }
+.t-4 { fill: var(--color-sombra-suelo); stroke: var(--color-sombra-suelo); }
+
+.sitio-credito {
+  position: absolute; inset-inline-end: var(--esp-4); inset-block-start: var(--esp-3); margin: 0; max-inline-size: 70%;
+  padding: var(--esp-1) var(--esp-3); font-size: 15px; font-weight: var(--tipo-peso-etiqueta);
+  background: var(--color-marfil); color: var(--color-indigo-texto);
+  clip-path: polygon(6px 0, calc(100% - 6px) 0, 100% 50%, calc(100% - 6px) 100%, 6px 100%, 0 50%);
+}
+
+/* Marcador: octágono marfil con su número; la caja táctil es de 48 px y el foco no se recorta. */
+.sitio-pin {
+  position: absolute; translate: -50% -50%; inline-size: 48px; block-size: 48px; min-height: 0; padding: 0;
+  display: grid; place-items: center; background: none; border: 0; cursor: pointer;
+  filter: drop-shadow(0 3px 0 color-mix(in srgb, var(--color-ciruela) 45%, transparent));
+}
+.sitio-pin-cara {
+  display: grid; place-items: center; inline-size: 36px; block-size: 36px;
+  font-weight: var(--tipo-peso-titulo); font-size: var(--tipo-tam-cuerpo); color: var(--color-indigo-texto);
+  background: var(--color-marfil);
+  clip-path: polygon(30% 0, 70% 0, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0 70%, 0 30%);
+  transition: scale var(--dur-seleccion) var(--curva-entrada);
+}
+.sitio-pin:hover .sitio-pin-cara { background: var(--color-lila); }
+.sitio-pin-sel .sitio-pin-cara { background: var(--color-cian); scale: 1.15; }
+.sitio-pin-nombre {
+  position: absolute; inset-block-start: 100%; white-space: nowrap; padding: 2px var(--esp-2);
+  font-size: 15px; font-weight: var(--tipo-peso-titulo); background: var(--color-marfil); color: var(--color-indigo-texto);
+  clip-path: polygon(6px 0, calc(100% - 6px) 0, 100% 50%, calc(100% - 6px) 100%, 6px 100%, 0 50%);
+}
+
+/* ---- Tarjetas ---- */
+.sitio-lista { grid-area: lista; list-style: none; margin: 0; padding: 0 var(--esp-1) var(--esp-2) 0; min-block-size: 0;
+  overflow-y: auto; overscroll-behavior: contain; display: flex; flex-direction: column; gap: var(--esp-3); }
+.sitio-item { cursor: default; }
+.sitio-item-sel .sitio-tarjeta { background: var(--color-cian); }
+.sitio-tarjeta { display: grid; gap: var(--esp-2); padding: var(--esp-4) var(--esp-5); }
+.sitio-tarjeta p { margin: 0; max-inline-size: none; }
+.sitio-tarjeta-cab { display: flex; align-items: center; gap: var(--esp-2); }
+.sitio-tarjeta-cab h3 { margin: 0; }
+.sitio-num {
+  flex: none; display: grid; place-items: center; inline-size: 30px; block-size: 30px;
+  font-weight: var(--tipo-peso-titulo); background: var(--color-lila);
+  clip-path: polygon(30% 0, 70% 0, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0 70%, 0 30%);
+}
+.sitio-item-sel .sitio-num { background: var(--color-cian); }
+.sitio-desc { font-size: 16px; }
+.sitio-criterios { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--esp-1); }
+.sitio-criterios li { display: grid; grid-template-columns: minmax(7.5em, auto) 1fr 2.5ch; align-items: center; gap: var(--esp-2); font-size: 16px; font-weight: var(--tipo-peso-etiqueta); }
+.sitio-pista { display: block; block-size: 8px; background: var(--color-deshabilitado); clip-path: polygon(4px 0, 100% 0, calc(100% - 4px) 100%, 0 100%); }
+.sitio-pista > span { display: block; block-size: 100%; background: var(--color-ciruela); }
+.sitio-valor { text-align: end; font-variant-numeric: tabular-nums; font-weight: var(--tipo-peso-titulo); }
+.sitio-total { display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--esp-1) var(--esp-2); padding: var(--esp-1) var(--esp-3); background: var(--color-lila); font-weight: var(--tipo-peso-etiqueta); }
+.sitio-total strong { font-size: var(--tipo-tam-placa); font-variant-numeric: tabular-nums; }
+.sitio-rango { padding: 0 var(--esp-2); font-size: 15px; background: var(--color-marfil); border: var(--borde-fino) solid var(--color-ciruela); }
+.sitio-tarjeta .costos { gap: var(--esp-3); }
+.sitio-aterrizar { justify-self: stretch; }
+.sitio-aterrizar .fb { inline-size: 100%; }
+
+/* ---- Celular horizontal (844 x 390): mapa a pantalla completa y carrusel abajo ---- */
+@media (max-height: 500px) and (orientation: landscape) {
+  .sitio { display: block; position: relative; block-size: 100dvh; min-block-size: 0; padding: 0; overflow: hidden; }
+  .sitio-mapa { position: absolute; inset: 0; clip-path: none; }
+  /* El mapa sigue al sitio elegido: queda en la franja libre de arriba, sin dejar bordes vacíos. */
+  .sitio-lienzo {
+    inline-size: 112cqw; translate: none;
+    inset-inline-start: clamp(calc(100cqw - 112cqw), calc(50cqw - var(--foco-x) * 112cqw), 0px);
+    inset-block-start: clamp(calc(100cqh - 112cqw), calc(24cqh - var(--foco-y) * 112cqw), 0px);
+    transition: inset-block-start var(--dur-relleno) var(--curva-entrada), inset-inline-start var(--dur-relleno) var(--curva-entrada);
+  }
+  .sitio-cabeza { position: absolute; z-index: 1; inset-block-start: max(var(--esp-2), env(safe-area-inset-top)); inset-inline-start: max(var(--esp-3), env(safe-area-inset-left)); max-inline-size: 42%; }
+  .sitio-cabeza-cara { padding: var(--esp-2) var(--esp-4); }
+  .sitio-cabeza-cara h2 { font-size: var(--tipo-tam-subtitulo); margin-block-end: var(--esp-1); }
+  .sitio-cabeza-cara p { font-size: 16px; line-height: 1.25; }
+  .sitio-credito { inset-block-start: max(var(--esp-2), env(safe-area-inset-top)); inset-inline-end: max(var(--esp-3), env(safe-area-inset-right)); max-inline-size: 40%; }
+  .sitio-lista {
+    position: absolute; z-index: 1; inset-inline: 0; inset-block-end: 0; block-size: 48%;
+    flex-direction: row; overflow-x: auto; overflow-y: hidden; scroll-snap-type: x mandatory;
+    padding: 0 max(var(--esp-3), env(safe-area-inset-right)) max(var(--esp-2), env(safe-area-inset-bottom)) max(var(--esp-3), env(safe-area-inset-left));
+    scroll-padding-inline: max(var(--esp-3), env(safe-area-inset-left));
+  }
+  .sitio-lista > li { flex: 0 0 min(340px, 72vw); scroll-snap-align: center; block-size: 100%; }
+  .sitio-tarjeta, .sitio-fuente .fc-cara { block-size: 100%; overflow-y: auto; overscroll-behavior: contain; }
+  .sitio-tarjeta { padding: var(--esp-3) var(--esp-4); align-content: start; }
+  .sitio-tarjeta-cab h3 { font-size: var(--tipo-tam-cuerpo); }
+  .sitio-desc { display: none; }
+}
+
+/* ---- Celular vertical (390 x 844): mapa arriba, tarjetas debajo con desplazamiento ---- */
+@media (orientation: portrait) and (max-width: 700px) {
+  .sitio {
+    block-size: auto; min-block-size: 0; grid-template-columns: minmax(0, 1fr); grid-template-rows: auto auto auto;
+    grid-template-areas: "cabeza" "mapa" "lista"; gap: var(--esp-3);
+    padding: max(var(--esp-4), env(safe-area-inset-top)) max(var(--esp-4), env(safe-area-inset-right))
+      max(var(--esp-4), env(safe-area-inset-bottom)) max(var(--esp-4), env(safe-area-inset-left));
+  }
+  .sitio-cabeza-cara { padding: var(--esp-3) var(--esp-4); }
+  .sitio-cabeza-cara h2 { font-size: var(--tipo-tam-subtitulo); }
+  .sitio-mapa { block-size: min(calc(100vw - 2 * var(--esp-4)), 55dvh); }
+  .sitio-lista { overflow: visible; padding: 0; }
+  .sitio-tarjeta { padding: var(--esp-3) var(--esp-4); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sitio-pin-cara, .sitio-lienzo { transition: none; }
+}

@@ -18,7 +18,7 @@ import { Tripulacion } from "./componentes/Tripulacion.js";
 import { describirAccion } from "./componentes/Dialogos.js";
 import { IdiomaContext, useT, type Idioma } from "./i18n.js";
 import { ColocarModulos } from "./pantallas/ColocarModulos.js";
-import { ElegirSitio } from "./pantallas/ElegirSitio.js";
+import { PantallaSitio } from "./pantallas/PantallaSitio.js";
 import { Final } from "./pantallas/Final.js";
 import { Satelite } from "./pantallas/Satelite.js";
 import { Tormenta } from "./pantallas/Tormenta.js";
@@ -135,7 +135,7 @@ function Pantalla({ idioma, setIdioma }: { idioma: Idioma; setIdioma: (i: Idioma
           </section>
         )}
         {j.fase === "satelite" && <Satelite estado={j.estado} onContinuar={() => enviar({ tipo: "fase", fase: "sitio" })} />}
-        {j.fase === "sitio" && <ElegirSitio estado={j.estado} onElegir={(s) => enviar({ tipo: "sitio", sitio: s })} />}
+        {j.fase === "sitio" && <PantallaSitio estado={j.estado} onElegir={(s) => enviar({ tipo: "sitio", sitio: s })} />}
         {j.fase === "modulos" && (
           <>
             <Hud estado={j.estado} />
