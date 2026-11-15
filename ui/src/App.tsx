@@ -1,4 +1,4 @@
-import { useEffect, useReducer, useState } from "react";
+import { useEffect, useMemo, useReducer, useState } from "react";
 import type { Action, Equipment, GameState } from "@solar-shield/contracts";
 import {
   aplicarAccion,
@@ -25,6 +25,20 @@ import { Intro } from "./componentes/Intro.js";
 import { Carga } from "./componentes/Carga.js";
 import { Creditos } from "./componentes/Creditos.js";
 import type { TemaPregunta } from "@solar-shield/agents";
+import { Icono } from "./componentes/base/Iconos.js";
+import { guiaBase, objetivoBase } from "./pantallas/objetivo.js";
+import { pantallaActual, pideGirar } from "./juego/orientacion.js";
+
+/** Aviso para girar el teléfono (ESCENAS §2.7, FLUJO §9): tapa la pantalla sin desmontarla. */
+function useGirar(fase: Fase): boolean {
+  const [pantalla, setPantalla] = useState(pantallaActual);
+  useEffect(() => {
+    const medir = () => setPantalla(pantallaActual());
+    window.addEventListener("resize", medir);
+    return () => window.removeEventListener("resize", medir);
+  }, []);
+  return pantalla !== null && pideGirar(fase, pantalla);
+}
 
 /** Módulos que tienen pregunta de Iris nivel 2 al colocarlos. */
 const TEMAS_IRIS: readonly Equipment[] = ["panel_solar", "reciclador_agua", "invernadero", "escudo"];
@@ -120,11 +134,21 @@ function Pantalla({ idioma, setIdioma }: { idioma: Idioma; setIdioma: (i: Idioma
   useEffect(() => { document.documentElement.lang = idioma; }, [idioma]);
 
   const accion = (a: Action) => enviar({ tipo: "accion", accion: a });
+  // Guía de Iris en la base: objetivo bajo las placas y lugar resaltado en la escena y el mapa.
+  const guia = useMemo(() => (enBase ? guiaBase(j.estado) : null), [enBase, j.estado]);
+  const girar = useGirar(j.fase);
 
   return (
     <div className={enBase ? "app app-base" : "app"}>
+      {girar && (
+        <div className="aviso-girar" role="alert">
+          <Icono nombre="planeta" tam={56} />
+          <p className="aviso-girar-titulo">{t("ui.girar.titulo")}</p>
+          <p>{t("ui.girar.texto")}</p>
+        </div>
+      )}
       {(j.fase === "modulos" || enBase || j.fase === "tormenta") && (
-        <HudBase estado={j.estado} ultimas={enBase ? j.ultimas : null}
+        <HudBase estado={j.estado} ultimas={enBase ? j.ultimas : null} objetivo={enBase ? objetivoBase(guia) : undefined}
           reloj={enBase ? { velocidad, onPausa: () => enviar({ tipo: "pausa", pausado: !j.estado.pausado }), onVelocidad: setVelocidad } : undefined} />
       )}
 
@@ -150,7 +174,7 @@ function Pantalla({ idioma, setIdioma }: { idioma: Idioma; setIdioma: (i: Idioma
           </>
         )}
         {enBase && (
-          <PantallaBase estado={j.estado} colocados={j.colocados} ultimas={j.ultimas} onAccion={accion} onReanudar={() => enviar({ tipo: "pausa", pausado: false })} />
+          <PantallaBase estado={j.estado} colocados={j.colocados} ultimas={j.ultimas} lugarObjetivo={guia?.destino ?? null} onAccion={accion} onReanudar={() => enviar({ tipo: "pausa", pausado: false })} />
         )}
         {j.fase === "final" && <Final estado={j.estado} onOtra={() => enviar({ tipo: "nueva" })} />}
       </main>

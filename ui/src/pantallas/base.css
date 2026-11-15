@@ -1,36 +1,71 @@
 /*
- * E6 Base (ESCENAS §2.7, fila "E5 a E7"): mundo a la izquierda con el diálogo en franja inferior
- * (ui/01 arriba) y panel de decisión a la derecha al 40 % con desplazamiento interno (ui/01 abajo,
- * ui/04, personajes/07). Solo tokens; sombras ciruela, nunca negras. Cian solo para lo que se usa.
+ * E6 Base (ESCENAS §2.7 fila "E5 a E7", §3.1–§3.5; HUD de mundo/01): la escena 3D ocupa toda la pantalla
+ * de la base y la UI va encima. Placas y objetivo arriba a la derecha (HudBase), Crew y Map abajo a la
+ * izquierda, acción [E] al centro abajo, cámara [V] abajo a la derecha. El panel de decisión (ui/01 abajo,
+ * ui/04, personajes/07) es lateral a la derecha, se abre al pedirlo y se desplaza por dentro; el diálogo
+ * va en la franja inferior. Solo tokens; sombras ciruela, nunca negras. Cian solo para lo que se usa.
  */
 
-/* La fase base ocupa justo la pantalla: HUD arriba, mundo y panel en el resto; el panel se desplaza por dentro. */
+/* La fase base ocupa justo la pantalla; nada de desplazamiento de página. */
 .app-base { display: flex; flex-direction: column; block-size: 100dvh; overflow: hidden; }
 .app-base > main { flex: 1; min-block-size: 0; }
 .app-base > footer { flex: none; }
 
 .base-e6 {
+  /* Alto del HUD encima (placas + objetivo) y ancho del panel lateral. */
+  --base-hud-alto: 132px;
+  --base-panel-ancho: min(40%, 460px);
+  --base-margen: max(var(--esp-3), env(safe-area-inset-left));
+  --base-margen-der: max(var(--esp-3), env(safe-area-inset-right));
+  /* Alto de la fila de controles de abajo (Crew, Map, [E], cámara): el panel termina encima. */
+  --base-controles-alto: 92px;
+  position: relative;
   box-sizing: border-box;
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(300px, 40%);
-  gap: var(--esp-4);
-  padding: 0 max(var(--esp-4), env(safe-area-inset-right)) var(--esp-2) max(var(--esp-4), env(safe-area-inset-left));
   block-size: 100%;
+  overflow: hidden;
   color: var(--color-indigo-texto);
 }
 
-/* ---- Mundo: hueco de la escena 3D, novedades arriba y diálogo abajo ---- */
-.base-mundo { position: relative; display: flex; flex-direction: column; gap: var(--esp-3); min-inline-size: 0; min-block-size: 0; overflow-y: auto; }
-.base-escena, .base-escena-caja {
-  position: absolute; inset: 0;
-  background: var(--color-lila);
-  clip-path: polygon(var(--chaflan-grande) 0, calc(100% - var(--chaflan-grande)) 0, 100% var(--chaflan-grande), 100% calc(100% - var(--chaflan-grande)), calc(100% - var(--chaflan-grande)) 100%, var(--chaflan-grande) 100%, 0 calc(100% - var(--chaflan-grande)), 0 var(--chaflan-grande));
+/* ---- Escena a pantalla completa (o el hueco 2D si no hay WebGL) ---- */
+.base-escena-caja, .base-escena { position: absolute; inset: 0; background: var(--color-lila); }
+.base-escena-caja canvas { width: 100%; height: 100%; display: block; touch-action: none; }
+
+/* ---- Capa de la UI sobre el mundo: no captura toques salvo en sus piezas ---- */
+.base-capa {
+  position: absolute; inset: 0; z-index: 1; pointer-events: none;
+  display: flex; flex-direction: column; justify-content: flex-end; gap: var(--esp-2);
+  padding: var(--base-hud-alto) var(--base-margen-der) var(--esp-2) var(--base-margen);
 }
-.base-mundo > :not(.base-escena-caja) { position: relative; margin-inline: var(--esp-3); }
-.base-mundo > :last-child { margin-block-end: var(--esp-3); }
-.base-mundo > .dialogo-experto { margin-block-start: auto; }
-.base-novedades { display: grid; gap: var(--esp-2); justify-items: start; margin-block-start: var(--esp-3); }
+.base-capa > * { pointer-events: none; }
+.base-capa > * > * { pointer-events: auto; }
+/* Con el panel abierto, el diálogo y las novedades se corren a su izquierda; los controles siguen debajo. */
+.base-e6-con-panel .base-dialogo { margin-inline-end: calc(var(--base-panel-ancho) + var(--esp-2)); }
+
+.base-novedades {
+  position: absolute; inset-block-start: 72px; inset-inline-start: var(--base-margen);
+  max-inline-size: min(520px, calc(100% - var(--base-margen) * 2)); max-block-size: calc(100% - 160px); overflow-y: auto;
+  display: grid; gap: var(--esp-2); justify-items: start; pointer-events: auto; z-index: 2;
+}
 .base-polvo { padding: var(--esp-3) var(--esp-4); }
+
+/* Franja inferior del diálogo (ui/01 arriba), encima de los controles. */
+.base-dialogo { display: block; max-block-size: 45%; overflow-y: auto; }
+.base-dialogo > * { pointer-events: auto; }
+
+/* Controles de mundo/01: izquierda Crew y Map, centro la acción [E], derecha la cámara [V]. */
+.base-controles { display: grid; grid-template-columns: 1fr auto 1fr; align-items: end; gap: var(--esp-2); }
+.base-controles > * { display: flex; flex-wrap: wrap; align-items: end; gap: var(--esp-2); }
+.base-controles-izq > *, .base-controles-centro > *, .base-controles-der > * { pointer-events: auto; }
+.base-controles-centro { justify-content: center; }
+.base-controles-der { justify-content: flex-end; }
+.base-controles .fb { min-block-size: 48px; }
+.base-accion-e .fb { min-block-size: 72px; }
+.base-tecla {
+  display: inline-grid; place-items: center; min-inline-size: 28px; block-size: 28px; margin-inline-start: var(--esp-2); padding-inline: 4px;
+  background: var(--color-teal); color: var(--color-marfil); font: inherit; font-weight: 900; font-size: 16px;
+  clip-path: polygon(20% 0, 80% 0, 100% 20%, 100% 80%, 80% 100%, 20% 100%, 0 80%, 0 20%);
+}
+.base-camara .base-tecla { background: var(--color-ciruela); }
 
 /* Diálogo de ui/01: retrato octogonal, separador, nombre y línea; botones debajo a la derecha. */
 .dialogo-experto-cara {
@@ -48,21 +83,28 @@
 .dialogo-experto-texto p { margin: 0; font-size: var(--tipo-tam-dialogo); max-width: none; }
 .dialogo-experto-botones { grid-area: botones; display: flex; flex-wrap: wrap; justify-content: flex-end; gap: var(--esp-2); }
 
-/* ---- Panel de decisión (40 %, desplazamiento interno) ---- */
+/* ---- Panel de decisión lateral (se abre al pedirlo; desplazamiento interno) ---- */
 .base-panel {
-  display: flex; flex-direction: column; gap: var(--esp-3); min-inline-size: 0; min-block-size: 0;
-  max-block-size: 100%; overflow-y: auto; overscroll-behavior: contain;
+  position: absolute; z-index: 2;
+  inset-block: var(--base-hud-alto) var(--base-controles-alto); inset-inline-end: var(--base-margen-der);
+  inline-size: var(--base-panel-ancho); min-inline-size: 280px; box-sizing: border-box;
+  display: flex; flex-direction: column; gap: var(--esp-3);
+  overflow-y: auto; overscroll-behavior: contain;
   padding: var(--esp-1) var(--esp-2) var(--esp-2);
 }
-.base-panel > * { flex: none; }
+.base-panel > * { flex: none; min-inline-size: 0; }
+.base-panel { overflow-x: hidden; }
+.base-panel .fb-texto { white-space: normal; }
+.base-panel-cerrar { display: flex; justify-content: flex-end; }
 .base-panel > .confirmar-entrada .confirmar { max-width: none; }
+.base-panel .mapa { max-inline-size: none; }
 .base-bloque { display: grid; gap: var(--esp-2); padding: var(--esp-3) var(--esp-4); }
 .base-bloque h2 { margin: 0; font-size: var(--tipo-tam-subtitulo); }
 .base-bloque p { margin: 0; }
 .base-iris { display: inline-flex; align-items: center; gap: var(--esp-2); justify-self: start; padding: 2px var(--esp-3);
   background: var(--color-lila); font-size: 16px; font-weight: var(--tipo-peso-etiqueta); }
 .base-ayuda { font-size: 16px; }
-.base-acciones { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: var(--esp-2); }
+.base-acciones { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: 1fr; gap: var(--esp-2); }
 .base-acciones .fb-caja, .base-acciones .fb { inline-size: 100%; }
 
 .base-expertos { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--esp-2); }
@@ -79,24 +121,24 @@
 .base-registro li { display: grid; grid-template-columns: auto 1fr auto; gap: var(--esp-2); align-items: baseline; }
 .base-registro-turno { font-weight: var(--tipo-peso-etiqueta); color: var(--color-ciruela); }
 
-/* ---- Celular horizontal (844 x 390): panel al 40 %, diálogo en franja inferior ---- */
+/* ---- Celular horizontal (844 x 390): HUD compacto, panel al 40 % con scroll interno ---- */
 @media (max-height: 500px) and (orientation: landscape) {
-  .base-e6 { grid-template-columns: minmax(0, 1fr) 40%; gap: var(--esp-2); }
+  .base-e6 { --base-hud-alto: 96px; --base-panel-ancho: 40%; --base-controles-alto: 64px; }
+  .base-panel { min-inline-size: 0; }
+  .base-novedades { inset-block-start: 52px; }
   .dialogo-experto-cara { grid-template-areas: "retrato texto" "botones botones"; padding: var(--esp-2) var(--esp-3); gap: var(--esp-2); }
   .dialogo-experto-retrato { inline-size: 56px; block-size: 56px; }
   .dialogo-experto-retrato svg { inline-size: 48px; block-size: 48px; }
   .dialogo-experto-texto p { font-size: 16px; }
   .base-bloque { padding: var(--esp-2) var(--esp-3); }
   .base-acciones { grid-template-columns: 1fr; }
+  .base-controles .fb-texto { font-size: 16px; }
+  .base-accion-e .fb { min-block-size: 48px; }
+  .base-controles-izq { flex-wrap: nowrap; }
 }
 
-/* ---- Celular vertical (390 x 844): lo tapa el aviso de girar; si no, una columna ---- */
+/* ---- Celular vertical (390 x 844): lo tapa el aviso de girar (App); si no, una columna ---- */
 @media (orientation: portrait) and (max-width: 700px) {
-  .app-base { block-size: auto; overflow: visible; }
-  .base-e6 { grid-template-columns: minmax(0, 1fr); block-size: auto; }
-  .base-mundo { min-block-size: 240px; }
-  .base-panel { max-block-size: none; }
-  .dialogo-experto-cara { grid-template-areas: "retrato texto" "botones botones"; }
+  .base-e6 { --base-panel-ancho: calc(100% - var(--esp-3) * 2); }
+  .base-e6-con-panel .base-capa { padding-inline-end: var(--base-margen-der); }
 }
-.base-escena-caja canvas { width: 100%; height: 100%; display: block; }
-.base-escena-caja .base-escena { clip-path: none; }
