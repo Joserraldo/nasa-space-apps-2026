@@ -47,3 +47,34 @@
   .tormenta-expertos .retrato-marco svg { width: 50px; height: 50px; }
   .tormenta-expertos .retrato-nombre, .tormenta-expertos .retrato-especialidad { min-block-size: 0; font-size: 12px; }
 }
+
+/* Panel 02 "Compare your plan": experta con su frase a la izquierda, acción y costos a la derecha. */
+.tormenta-plan { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); gap: var(--esp-4); align-items: start; }
+.tormenta-plan-experta { min-inline-size: 0; display: grid; justify-items: center; gap: var(--esp-2); }
+.tormenta-plan-experta .retrato-ficha { min-width: 0; }
+.tormenta-frase { margin: 0; font-style: italic; text-align: center; text-wrap: balance; }
+.tormenta-otra { display: block; inline-size: 100%; min-inline-size: 0; }
+.tormenta-otra .fb { inline-size: 100%; min-inline-size: 0; }
+.tormenta-otra .fb-texto { white-space: normal; text-align: center; font-size: 15px; line-height: 1.1; }
+.tormenta-plan-accion { display: grid; gap: var(--esp-3); min-inline-size: 0; }
+.tormenta-pieza { display: block; padding: var(--esp-1) var(--esp-4); text-align: center; font-weight: var(--tipo-peso-etiqueta); background: var(--color-lila); }
+.tormenta-plan-accion .costos { grid-template-columns: 1fr; gap: var(--esp-2); }
+.tormenta-plan-accion .costos-bloque + .costos-bloque { border-left: 0; padding-left: 0; border-top: var(--borde-fino) solid color-mix(in srgb, var(--color-ciruela) 30%, transparent); padding-top: var(--esp-2); }
+.tormenta-plan-botones { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, auto); gap: var(--esp-2); align-items: center; }
+.tormenta-plan-botones .fb-caja { display: block; min-inline-size: 0; }
+.tormenta-plan-botones .fb { inline-size: 100%; min-inline-size: 0; }
+.tormenta-plan-botones .fb-texto { white-space: normal; text-align: center; }
+@media (max-width: 560px) { .tormenta-plan { grid-template-columns: 1fr; } .tormenta-plan-botones { grid-template-columns: 1fr; } }
+@media (max-height: 480px) {
+  .tormenta-plan { gap: var(--esp-2); grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  .tormenta-frase { font-size: 13px; line-height: 1.15; }
+  .tormenta-plan-accion { gap: var(--esp-1); }
+  .tormenta-plan-botones { grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); gap: var(--esp-1); }
+  .tormenta-plan-botones .fb-superficie { padding-inline: var(--esp-2); gap: var(--esp-1); }
+  .tormenta-plan-botones .fb-texto { font-size: 15px; line-height: 1.1; }
+  .tormenta-plan-botones .fb-icono { display: none; }
+  .tormenta-plan-accion .costos-bloque h4 { margin-block-end: var(--esp-1); font-size: 13px; }
+  .tormenta-plan-accion .costos-bloque li { padding-block: 0; }
+  .tormenta-plan-experta .retrato-marco { width: 56px; height: 56px; }
+  .tormenta-plan-experta .retrato-marco svg { width: 50px; height: 50px; }
+}

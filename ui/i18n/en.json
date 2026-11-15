@@ -278,5 +278,7 @@
   "ui.medir.calidad.alta": "high",
   "ui.medir.calidad.media": "medium",
   "ui.medir.calidad.baja": "low",
-  "ui.medir.lienzo": "Canvas"
+  "ui.medir.lienzo": "Canvas",
+  "ui.tormenta.comparar": "Compare your plan",
+  "ui.tormenta.otra": "Ask another expert"
 }
