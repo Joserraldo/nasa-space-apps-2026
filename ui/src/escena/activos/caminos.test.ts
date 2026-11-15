@@ -1,7 +1,7 @@
 import * as THREE from "three";
 import { describe, expect, it } from "vitest";
 import { BANCO, LUGARES, TERRENO } from "../mundo";
-import { CAMINO, CAMINOS, PLAZA, TRONCAL, distanciaTramo, geometriaCaminos, huellasDe, posicionesBalizas, sobreCamino } from "./caminos";
+import { ANILLO, CAMINO, CAMINOS, PLAZA, TRONCAL, distanciaTramo, geometriaCaminos, huellasDe, posicionesBalizas, sobreCamino } from "./caminos";
 
 type Tri = { a: THREE.Vector3; b: THREE.Vector3; c: THREE.Vector3; n: THREE.Vector3 };
 
@@ -30,10 +30,10 @@ describe("caminos de losas", () => {
   const g = geometriaCaminos();
   const tris = triangulos(g);
 
-  it("es una sola geometría con color por vértice y dentro del presupuesto de la red (≤ 3 000 triángulos)", () => {
+  it("es una sola geometría con color por vértice y dentro del presupuesto de la red (≤ 4 000 triángulos)", () => {
     expect(g.getAttribute("color").count).toBe(g.getAttribute("position").count);
     expect(tris.length).toBeGreaterThan(100);
-    expect(tris.length).toBeLessThan(3000);
+    expect(tris.length).toBeLessThan(4000);
   });
 
   it("solo hay caras horizontales hacia arriba y paredes verticales", () => {
@@ -155,6 +155,19 @@ describe("caminos de losas", () => {
           const x = tramo[i]![0] + Math.cos((a * Math.PI) / 180) * w * 0.95, z = tramo[i]![1] + Math.sin((a * Math.PI) / 180) * w * 0.95;
           expect(cubierto(red, x, z), `codo ${tramo[i]} a ${a}°`).toBe(true);
         }
+  });
+
+  it("el anillo exterior es un lazo cerrado que rodea todos los lugares", () => {
+    expect(ANILLO[0]).toEqual(ANILLO[ANILLO.length - 1]);
+    for (const l of LUGARES) {
+      let dentro = false;
+      for (let i = 1; i < ANILLO.length; i++) {
+        const a = ANILLO[i - 1]!, b = ANILLO[i]!;
+        if ((a[1] > l.z) !== (b[1] > l.z) && l.x < a[0] + ((l.z - a[1]) / (b[1] - a[1])) * (b[0] - a[0])) dentro = !dentro;
+      }
+      expect(dentro, l.id).toBe(true);
+    }
+    for (const [x, z] of ANILLO) expect(Math.hypot(x, z)).toBeLessThan(TERRENO.limite);
   });
 
   it("la plataforma abarca la consola de la mesa y el punto donde se para el jugador", () => {
