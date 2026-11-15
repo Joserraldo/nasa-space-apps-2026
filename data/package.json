@@ -12,6 +12,7 @@
     "jezero:curar": "tsx scripts/jezero-curar.ts",
     "luna:descargar": "tsx scripts/luna-descargar.ts",
     "luna:curar": "tsx scripts/luna-curar.ts",
+    "luna:luz": "tsx scripts/luz-luna.ts",
     "artemis": "tsx scripts/artemis.ts",
     "luna": "tsx scripts/luna.ts"
   },

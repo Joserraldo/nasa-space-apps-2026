@@ -97,3 +97,55 @@ export const TerrenoLunaSchema = z.object({
   }),
 });
 export type TerrenoLuna = z.infer<typeof TerrenoLunaSchema>;
+
+/**
+ * Luz de los sitios de luna-visible en 2024. La tabla del punto subsolar es de NASA SVS 5187;
+ * elevación del Sol y amaneceres son DERIVADOS por el equipo (fórmula esférica, horizonte plano).
+ */
+export const LuzLunaSchema = z.object({
+  version: z.literal("0.1.0"),
+  id: z.literal("luz-luna-visible"),
+  metodo: z.string(),
+  tabla: z.object({
+    archivo: z.string(),
+    filas: z.number().int(),
+    desde: z.string(),
+    hasta: z.string(),
+    columnas: z.object({ latSolar: z.string(), lonSolar: z.string() }),
+  }),
+  tormentas: z.array(
+    z.object({
+      id: z.string(),
+      /** Hora de la primera fase de la tormenta curada (DONKI), UTC. */
+      horaUtc: z.string(),
+      sitios: z.array(
+        z.object({
+          sitioId: z.string(),
+          subsolar: z.object({ latGrados: z.number().min(-90).max(90), lonGrados: z.number().min(-180).max(180) }),
+          /** Derivado: altura del Sol sobre un horizonte plano. */
+          elevacionSolGrados: z.number().min(-90).max(90),
+          dia: z.boolean(),
+          proximoAmanecerUtc: z.string().nullable(),
+          horasHastaAmanecer: z.number().min(0).nullable(),
+        }),
+      ),
+    }),
+  ),
+  sitios: z.array(
+    z.object({
+      sitioId: z.string(),
+      /** Derivado: fracción de las horas de 2024 con el Sol sobre el horizonte plano. */
+      fraccionConSol2024: z.number().min(0).max(1),
+      amaneceres2024Utc: z.array(z.string()),
+    }),
+  ),
+  fuente: z.object({
+    nombreKey: z.literal("fuente.svs"),
+    dueno: z.string(),
+    urls: z.array(z.string().url()).min(1),
+    consultadoEl: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+    estadoDato: z.literal("curado"),
+    derivadoKey: z.literal("datos.luz.derivado"),
+  }),
+});
+export type LuzLuna = z.infer<typeof LuzLunaSchema>;

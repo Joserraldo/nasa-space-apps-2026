@@ -47,4 +47,21 @@ La tarjeta debe decir (clave `datos.terreno.derivado`): la altura es una medida 
 | Rima Hadley (Apolo 15) | −1927 m | 0,9° | 1497 m |
 
 Los relieves coinciden con los de la propuesta #100; las pendientes difieren de las de la propuesta (1,1° / 3,7° / 5,1°); el método de la propuesta no tenía script, así que no se pudo reproducir.
-- **NO VERIFICADO:** luz (amanecer, horizonte; requeriría NASA SVS 5187 o el DEM más lejano) y blindaje (regla de juego sin fuente). Quedan en `null` y `fuente.pendientes`. Tampoco se afirma dosis de radiación en la Luna.
+- **NO VERIFICADO:** luz como criterio de puntaje (horizonte con montañas) y blindaje (regla de juego sin fuente). `puntajes.luz` y `blindaje` siguen en `null` y en `fuente.pendientes`. Tampoco se afirma dosis de radiación en la Luna.
+
+### Luz en 2024 (NASA SVS 5187) — `data/terreno/luna-visible/luz-2024.json`, export `luzLunaVisible`
+**Fuente [V]:** NASA Scientific Visualization Studio, "Moon Phase and Libration, 2024" (aprobado por Daniel), https://svs.gsfc.nasa.gov/5187/ , tabla `https://svs.gsfc.nasa.gov/vis/a000000/a005100/a005187/mooninfo_2024.txt` (8785 filas horarias, 2024-01-01 00:00 a 2025-01-01 00:00 UT; 1 MB, copiada en `data/raw/svs-5187/`). Consultado el 2026-11-14. Columnas usadas: `Slon` y `Slat` (longitud y latitud selenográficas del punto subsolar, este positivo). `npm run luna:luz --workspace data` (o `tsx scripts/luz-luna.ts`), sin red.
+**Derivado por el equipo:** `sin(e) = sin φ · sin φs + cos φ · cos φs · cos(λ − λs)`, con interpolación lineal entre filas, horizonte plano, Sol puntual, sin montañas ni refracción. La hora de cada tormenta es la de su primera fase en `data/curated`.
+
+| Tormenta (1ª fase, UT) | Tranquilidad | Descartes | Hadley |
+|---|---|---|---|
+| 2024-05-10 Gannon (05-09 09:13) | noche, −54,8°; amanece 05-13 20:48 | noche, −61,8°; 05-14 12:47 | noche, −59,2°; 05-15 10:48 |
+| 2024-05-11 X5.8 (05-11 01:23) | noche, −34,4°; 05-13 20:48 | noche, −41,9°; 05-14 12:47 | noche, −46,1°; 05-15 10:48 |
+| 2024-05-14 X8.7 (16:51) | día, 10,2°; atardece y amanece 06-12 08:03 | día, 2,0°; 06-13 00:11 | noche, −8,2°; 05-15 10:48 |
+| 2024-05-20 CME (05:36) | día, 77,7° | día, 67,4° | día, 50,2° |
+| 2024-10-03 X9.0 (12:18) | noche, −57,8°; 10-08 05:57 | noche, −64,3°; 10-08 21:33 | noche, −61,4°; 10-09 21:13 |
+| 2024-10-10 (10-09 01:56) | día, 10,2° | día, 2,2° | noche, −8,8°; 10-09 21:13 |
+
+(En las filas de día el "próximo amanecer" del JSON es el de después del siguiente atardecer, ~29 días más tarde.) Esto coincide con la propuesta (Tranquilidad amanece primero el 13 may ~21:00; Hadley el 15 may ~11:00), pero la tormenta de la ruta dorada (20 may, CME) llegó con el Sol alto en los 3 sitios; la afirmación "llegó de noche" de la propuesta NO coincide con esta tabla para el lado visible: el 11 may sí era de noche, el 20 may no.
+**Verificación [V]:** Apolo 11, 2024-05-10 15:00 UT, fila cruda `Slon 153,133`, `Slat 0,927` → e = −39,64° calculado aparte en Python y en el código; los 12 amaneceres de 2024 de cada sitio están separados 29,2–29,9 días (mes sinódico 29,53); la elevación cambia ≤ 0,62°/hora.
+**Por qué `luz` sigue `null`:** la fracción de horas con Sol en 2024 sale ≈ 0,49 en los 3 sitios (0,487 / 0,489 / 0,492): no distingue sitios, y el horizonte real (montañas de Hadley) no se calculó. Un puntaje con esos números sería inventado. **NO VERIFICADO:** efecto de montañas y de la libración del horizonte; el disco solar (0,25°) y la refracción nula en la Luna no se modelaron.
