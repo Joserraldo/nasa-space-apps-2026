@@ -69,11 +69,13 @@ El diseño que había antes del atlas v8 **se borra**, no se adapta. Lo borra ca
 | Quién | Qué borra |
 | --- | --- |
 | **Jaime** | `ui/src/estilos.css` y `ui/src/mision.css` completos (tema oscuro, `#0b1026`, `#1a2350`, `--hud: #141a2b`, `--life: #9be15d`). Los reemplaza por `ui/src/estilos/` con los tokens v8 para que la app siga compilando. |
-| **José** | En `App.tsx` y `pantallas/`: la bienvenida oscura de `Base3D.tsx` (`.vineta-mundo`, `.bienvenida-mision`, `.boton-despegar` verde, `.comunicador-iris`), el `<Hud />` en la fase `inicio` y toda clase o import del tema viejo. |
+| **José** | En `App.tsx` y `pantallas/`: la bienvenida oscura de `Base3D.tsx` (`.vineta-mundo`, `.bienvenida-mision`, `.boton-despegar` verde, `.comunicador-iris`), el `<Hud />` en la fase `inicio`, toda clase o import del tema viejo y **los emojis** que hoy usa la UI como iconos (en `develop`: `App.tsx`, `Dialogos.tsx`, `Hud.tsx`, `ColocarModulos.tsx`, `Final.tsx` y `Tormenta.tsx`); los reemplaza `Iconos.tsx`. |
 | **Daniel** | En `escena3d.ts`, `modelos.ts` y `EscenaBase.tsx`: el cielo `#323272`, los paneles oscuros, los visores opacos y cualquier geometría o material del prototipo. Quedan las firmas que consume la escena (APLICACION §1). |
 | **María Paula** | Revisa que no quede nada y lo aprueba. |
 
 Lo único que se conserva es la lógica: conexión con el motor, i18n, reductor, firmas de la escena y respaldo 2D.
+
+**Cierre de la fase 0b:** María Paula agrega `ui/src/sin-emojis.test.ts`, una prueba que recorre `ui/src/` y `ui/i18n/` y falla si encuentra un emoji o un símbolo decorativo de texto (rango Unicode de emojis y dingbats). Desde ahí la CI lo frena sola. Al resolver conflictos de la subida con `develop` (PR 6), ningún emoji de `develop` vuelve a entrar.
 
 ## 3. Contratos entre partes
 
