@@ -1,5 +1,5 @@
 # Estado — datos
-**Actualizado:** 2026-11-14 · **Rama:** feat/datos-luna-crater · **Abiertos:** #95, #126, #147, #148, #159, #160 (sobre develop) · fusionados #158 y #162 · issues #137 (ui) y #161 (pitch)
+**Actualizado:** 2026-11-14 · **Rama:** feat/datos-luna-crater · **Abiertos:** #95, #126, #147, #148, #159, #160 (sobre develop) · fusionados #158 y #162 · cubriendo a Jaime: #169 (motor multi-misión) · issues #137 (ui) y #161 (pitch)
 ## Hecho
 - #116, #122, #123, #125 y #133 fusionados; #95 y #126 rebasados sobre develop (80 y 84 ✓, repo 300 ✓).
 - #95: Luna con CRaTER (Gannon ×206,3, en órbita), constantes de ARES [V], dosis del viaje a Marte 1,84 mSv/día. Revisado por Codex.
