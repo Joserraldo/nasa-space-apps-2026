@@ -178,6 +178,8 @@ export interface Mision {
   /** Módulos que el jugador coloca en el paso 4 (elige 2 de estos). */
   modulosDisponibles: Equipment[];
   modulosAColocar: number;
+  /** Sobrescribe, solo en esta misión, el beneficio con retraso de un módulo (si no, el motor usa MODULOS de design/). */
+  modulos?: Partial<Record<Equipment, Partial<Record<Resource, number>>>>;
   /** Tick en el que la tormenta se activa (la pausa automática la hace ui). */
   tickTormenta: number;
   /** Ticks que tarda la respuesta de la Tierra a la telemetría. Si falta, el motor usa RETRASO_COMUNICACIONES[sitio] de design/. */

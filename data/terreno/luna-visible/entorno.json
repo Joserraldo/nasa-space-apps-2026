@@ -1,0 +1,40 @@
+{
+  "consultadoEl": "2026-11-15",
+  "capa": "LRO_LOLA_DEM_Global_128ppd_v04",
+  "radioM": 40000,
+  "px": 160,
+  "unidad": "m",
+  "tipo": "Int16LE",
+  "sitios": [
+    {
+      "id": "llanura-tranquilidad",
+      "bbox": {
+        "oeste": 22.153933232871392,
+        "sur": -0.6449554486723225,
+        "este": 24.79234676712861,
+        "norte": 1.9932754486723225
+      },
+      "url": "https://trek.nasa.gov/moon/trekarcgis/rest/services/LRO_LOLA_DEM_Global_128ppd_v04/ImageServer/exportImage?bbox=22.153933232871392,-0.6449554486723225,24.79234676712861,1.9932754486723225&bboxSR=104903&size=160,160&format=bsq&pixelType=F32&interpolation=RSP_BilinearInterpolation&f=image"
+    },
+    {
+      "id": "tierras-altas-descartes",
+      "bbox": {
+        "oeste": 14.16563966537869,
+        "sur": -10.292515448672322,
+        "este": 16.836560334621307,
+        "norte": -7.654284551327677
+      },
+      "url": "https://trek.nasa.gov/moon/trekarcgis/rest/services/LRO_LOLA_DEM_Global_128ppd_v04/ImageServer/exportImage?bbox=14.16563966537869,-10.292515448672322,16.836560334621307,-7.654284551327677&bboxSR=104903&size=160,160&format=bsq&pixelType=F32&interpolation=RSP_BilinearInterpolation&f=image"
+    },
+    {
+      "id": "borde-rima-hadley",
+      "bbox": {
+        "oeste": 2.1639897951720064,
+        "sur": 24.81327455132768,
+        "este": 5.102610204827994,
+        "norte": 27.45150544867232
+      },
+      "url": "https://trek.nasa.gov/moon/trekarcgis/rest/services/LRO_LOLA_DEM_Global_128ppd_v04/ImageServer/exportImage?bbox=2.1639897951720064,24.81327455132768,5.102610204827994,27.45150544867232&bboxSR=104903&size=160,160&format=bsq&pixelType=F32&interpolation=RSP_BilinearInterpolation&f=image"
+    }
+  ]
+}
