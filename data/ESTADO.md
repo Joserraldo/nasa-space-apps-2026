@@ -9,7 +9,7 @@
 - #147: luz del Sol en los sitios Apolo por tormenta de 2024 (SVS 5187); el 20 may fue de DÍA (avisado en #100). #148: terreno real de Marte polo norte (MOLA polar, 4 sitios).
 ## Qué sigue
 - Cuando Santiago fusione uno, rebasar el siguiente sobre develop (`git rebase --onto origin/develop <rama de abajo>`).
-- Polo sur (#126): luz del Sol y de la Tierra con NASA PGDA (aprobada por Daniel, Mazarico 2011). Pendiente: blindaje y cita del hielo (texto apagado).
+- Polo sur (#126): luz del Sol y de la Tierra con NASA PGDA (aprobada por Daniel, Mazarico 2011). Blindaje natural con PGDA SKYV. Pendiente: verificar la capa de hielo (texto apagado).
 ## Bloqueos / no verificado
 - El modo auto no deja cerrar issues ni quitar las 4 worktrees `.claude/worktrees/agent-*` (limpias, sin node_modules): las quita Daniel.
 Tokens: 🟡
