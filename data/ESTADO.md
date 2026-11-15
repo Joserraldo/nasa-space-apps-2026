@@ -1,10 +1,17 @@
-# ESTADO — datos (14 nov)
-**Actualizado:** 2026-11-14 22:20 · fase frontend: escenario 3D en feat/ui-escenario-base (cielo, terreno y tests sin Three; #180 espera el permiso de three)
+# Estado — datos
+**Actualizado:** 2026-11-14 · **Rama:** feat/datos-estado-codex · **PR:** por abrir
 
-- Fusionados: #55, #65, #69, #95, #104, #116, #122, #123, #125, #133, #136, #158, #162 y #169 (motor multi-misión).
-- Abiertos de datos (rebasados sobre develop): #126, #147, #148, #159 y #160.
-- #152 (asignado por Santiago): #170–#173 (tipo Mision), #175–#177 (motor), issue contrato #178 y revisión de diseño de #153–#156 hecha.
-- Issues para otros roles: #137 (ui) y #161 (pitch, ya aplicado en #165).
-- Pendiente: la cita de la capa de hielo (texto apagado) y el efecto del sitio sobre los módulos (#178).
-- Bloqueos: ninguno.
-Tokens: amarillo
+## Hecho
+- Revisé la cola del rol contra `origin/develop`, los issues y los PR abiertos.
+- #95, #126, #147, #148, #159, #160 y la parte implementada de #152 ya están en `develop`.
+- La gravedad de Marte y la Luna está en el PR #187, con CI verde y sin conflictos; cierra #141 al fusionarse.
+- #61 y D8 (#8) ya tienen entregables fusionados; esperan cierre o visto bueno del equipo.
+- La capa de hielo de Moon Trek sigue sin atribución verificable. Su texto permanece apagado; ver `docs/science/terreno.md`.
+
+## Qué sigue
+- Esperar revisión y fusión de #187; coordinar con UI el uso de `GRAVEDAD_MARTE_MS2`.
+- Retomar el efecto del sitio sobre módulos cuando los dueños aprueben el cambio de contrato #178.
+
+## Bloqueos
+- #178 requiere aprobación de contrato. La capa `SP_IceLoc_280m` carece de procedencia científica verificable.
+Tokens: 🟢
