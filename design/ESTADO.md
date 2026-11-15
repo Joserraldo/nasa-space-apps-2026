@@ -1,15 +1,15 @@
-# Estado — diseño y misiones
-Actualizado: 15 nov 2026 · Camilo · Rama: `feat/diseno-mecanicas-misiones` · PR: hacia `develop` (ver rama).
+# Estado — Diseño y misiones
+Actualizado: 15 nov 2026 · Rama feat/diseno-mecanicas-misiones · PR #267.
 Tokens: 🟡
 ## Hecho
-- Recuperados ocho archivos de misiones y los registros de OpenCode; original respaldado antes de editar.
-- Dilemas de Marte norte y Luna visible: escudo neutral conforme a #196, aprobado provisionalmente.
-- `eventoPolvo` opcional: Luna visible satisface `Mision`; Jezero conserva sus datos y eventos.
-- Luna sur y Outpost describen micrometeorito; Outpost usa zonas interiores sin terreno ficticio.
-- Local: typecheck, 502 pruebas y build OK; sin cambios de balance. CI en el PR.
-## Qué sigue / bloqueos
-- Motor: aplicar plazo e integrar expedición al hielo sin energía transitoria; PR separado con pruebas reales.
-- Santiago: tick de amanecer/noche polar, almacenamiento de batería y protección por zona sin definir.
-- Jaime: eventos especiales, panel nocturno, antena y persistencia de zonas requieren integración.
-- Luna visible sigue ganando por telemetría: contradice #196; no certificada como jugable.
-- Evidencia y alcance: `PRUEBAS-MECANICAS.md`; sin merges ni cambios de UI/contratos.
+- Datos y dilemas provisionales de #196 conservados, sin cambiar balance.
+- Origin/develop incorporado por merge en esta rama, según Santiago; sin reescribir historial.
+- MISION_JEZERO conserva tipo público amplio y eventoPolvo requerido: resuelve TS2677/TS18047.
+- PantallaFinal y los demás archivos del frontend no se editan; validación de cierre en build/cierre-267.
+## Siguiente / bloqueos
+- Revisión y fusión por Santiago; #268 sigue esperando aprobación de Jaime y del plazo.
+- No se integran nuevas mecánicas ni perfiles experimentales como reglas oficiales.
+- Laboratorio y tablero de cinco misiones preservados en playtest-mecanicas, commit local 3761f58.
+- Ubicación continúa según cierre-fidelidad: primero dependencias de Daniel y #254.
+- Capturas y propuestas anteriores intactas; sin force push ni merge a develop/main.
+- Simulaciones y limitaciones: PRUEBAS-MECANICAS.md y tablero del laboratorio.

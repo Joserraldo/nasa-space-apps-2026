@@ -198,7 +198,7 @@ export interface Mision {
   preguntaFinal: PreguntaFinal;
 }
 
-export const MISION_JEZERO = {
+export const MISION_JEZERO: Mision & { eventoPolvo: EventoPolvo } = {
   id: "jezero-dorada",
   nombreKey: "mision.jezero.nombre",
   sitio: "marte_jezero",

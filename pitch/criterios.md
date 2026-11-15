@@ -9,7 +9,7 @@ Una función que no apunta a ninguna fila es la primera candidata a corte.
 | Impacto | Un niño de 7–12 años toma decisiones con costo sobre energía, soporte vital y blindaje, sin descarga ni cuenta; pantalla "Qué aprendimos hoy" para padres y docentes | 2, 3, 4 y cierre · 0:10–0:40 y 1:47–2:00 |
 | Creatividad | Iris, la IA de la base, falla por la tormenta y el niño aprende a verificar antes de obedecer | 6 y 7 · 0:55–1:47 |
 | Validez | Tormenta real de mayo de 2024 de DONKI con ID y fecha a la vista; media diaria de RAD (Curiosity) unas 19 veces mayor que un día normal (4,1 → 79,7 µGy/h, sin mSv); terreno de Jezero (Mars Trek); estudios OSDR con su atribución (OSD-546 de la ESA; OSD-360 en tierra); etiqueta "datos reales curados, no en vivo"; lo que no está hecho va como trabajo futuro | 2 y 5 · 0:10–0:22 y 0:40–0:55 |
-| Relevancia | Responde punto por punto al enunciado: ninguna opción gratis, consecuencias visibles ligadas a clima espacial real, rejugable por semilla | 3, 4 y 8 · 0:22–0:40 y 1:47–1:55 |
+| Relevancia | Responde punto por punto al enunciado: ninguna opción gratis, consecuencias visibles ligadas a clima espacial real, cadena de causas (la rejugabilidad por semilla existe en el motor, no en la interfaz) | 3, 4 y 8 · 0:22–0:40 y 1:47–1:55 |
 | Presentación | Demo guiada de la semilla dorada, en ES y EN, con la primera decisión con costo antes de 0:40 | Todo el video · 0:00–2:00 |
 
 ## Los tres mensajes que el pitch repite
@@ -20,7 +20,8 @@ Una función que no apunta a ninguna fila es la primera candidata a corte.
 
 ## Por confirmar antes de cerrar el guion
 
-- Pasos 1–2 del guion (0:10–0:22: soltar el satélite y dibujar la ruta sobre Jezero): grabarlos solo si están en la pantalla para P3; si el 3D se recorta, ese tramo se cubre con el mapa 2D de Jezero y la locución no cambia.
+- Pasos 1–2 del guion (0:10–0:22): hoy son la órbita del satélite con Batería, Señal y Escudo; **no existe el dibujo de la ruta sobre Jezero** y el guion ya no lo dice (15 nov). Cuánto del 3D (base, Iris rover, personas) está montado a las 13:00 se confirma antes de grabar; si no, se graba en el preview de develop sin rover y la locución no cambia.
+- El juego solo juega la semilla dorada de Jezero; las otras 4 misiones son datos. Ya no se dice "cada partida es distinta" (fila de Relevancia: "rejugable por semilla" pasa a trabajo futuro hasta que la interfaz deje elegir semilla).
 
 - Criterios oficiales de 2026 y su peso.
 - Duración y formato del video (tener listo un corte corto).
