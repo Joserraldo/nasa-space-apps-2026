@@ -97,25 +97,25 @@ export const PLANTA_KIT = {
 /** Lámina 01 (puerta y marco): arco octogonal con 3 tiras cian y dos zócalos. Hueco de 1,3 m. */
 export function crearPuerta(m: Materiales): THREE.Group {
   const arco = geometriaBase("kit-puerta-arco", () => {
-    // Perfil en U (hueco de 1,3 m; jambas de 0,55 y dintel de 0,5, casi el doble que antes), 0,72 en z.
+    // Perfil en U (hueco de 1,3 m; jambas de 0,55 y dintel de 0,5, casi el doble que antes), 0,6 en z.
     const p = [
-      [-1.2, 0], [-0.65, 0], [-0.65, 1.5], [-0.35, 1.9], [0.35, 1.9], [0.65, 1.5], [0.65, 0],
-      [1.2, 0], [1.2, 1.75], [0.62, 2.4], [-0.62, 2.4], [-1.2, 1.75],
+      [-1.2, 0], [-0.65, 0], [-0.65, 1.2], [-0.35, 1.55], [0.35, 1.55], [0.65, 1.2], [0.65, 0],
+      [1.2, 0], [1.2, 1.4], [0.62, 2.05], [-0.62, 2.05], [-1.2, 1.4],
     ].map(([x, y]) => new THREE.Vector2(x, y));
     const g = new THREE.ExtrudeGeometry(new THREE.Shape(p), {
-      depth: 0.6, bevelEnabled: true, bevelThickness: 0.06, bevelSize: 0.08, bevelOffset: -0.08, bevelSegments: 1,
+      depth: 0.48, bevelEnabled: true, bevelThickness: 0.06, bevelSize: 0.08, bevelOffset: -0.08, bevelSegments: 1,
     });
-    g.translate(0, 0, -0.3); // bisel en los bordes: total 0,72 en z
+    g.translate(0, 0, -0.24); // bisel en los bordes: total 0,6 en z
     return g;
   });
   return grupo(
     "Kit_Door",
-    parte(m, "SuitBase", arco, [0, 0.15, 0], "Door_Frame"),
-    parte(m, "SuitBase", tronco(0.4, 0.48, 0.5, 8), [-1.03, 0.25, 0], "Door_PlinthL"),
-    parte(m, "SuitBase", tronco(0.4, 0.48, 0.5, 8), [1.03, 0.25, 0], "Door_PlinthR"),
-    parte(m, "Emissive", caja(0.85, 0.17, 0.02), [0, 2.3, 0.37], "Door_StripTop"),
-    parte(m, "Emissive", caja(0.14, 0.7, 0.02), [-0.925, 1.1, 0.37], "Door_StripL"),
-    parte(m, "Emissive", caja(0.14, 0.7, 0.02), [0.925, 1.1, 0.37], "Door_StripR"),
+    parte(m, "SuitBase", arco, [0, 0.5, 0], "Door_Frame"),
+    parte(m, "SuitBase", tronco(0.34, 0.38, 0.5, 8), [-1.0, 0.25, 0], "Door_PlinthL"),
+    parte(m, "SuitBase", tronco(0.34, 0.38, 0.5, 8), [1.0, 0.25, 0], "Door_PlinthR"),
+    parte(m, "Emissive", caja(0.85, 0.17, 0.02), [0, 2.3, 0.31], "Door_StripTop"),
+    parte(m, "Emissive", caja(0.14, 0.7, 0.02), [-0.925, 1.1, 0.31], "Door_StripL"),
+    parte(m, "Emissive", caja(0.14, 0.7, 0.02), [0.925, 1.1, 0.31], "Door_StripR"),
   );
 }
 
