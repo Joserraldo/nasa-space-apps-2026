@@ -20,7 +20,7 @@ Una sección por persona, máximo 5 líneas, y nadie edita la de otro (FLUJO §8
 **Rama:** feat/ui-escenario-base · **PR:** #206 listo para revisión · **Tokens:** 🟡
 - Hecho: revisión contra cuatro láminas; pavimento unido, módulos y consolas separados, decoración reducida y montaje modular; cinco capturas nuevas sin errores.
 - Verificado: 586 pruebas, tipos, build y E2E; cinco módulos: 71 llamadas / 32 321 triángulos.
-- Sigue: integrar tokens y anclajes de la base actual; personajes/HUD; juntas sutiles y fidelidad final. Medición física pendiente.
+- Sigue: integrar tokens de #235 y anclajes de la base actual; personajes/HUD; juntas sutiles y fidelidad final. Medición física pendiente.
 
 ## Ubicación (Camilo)
 **Rama:** — · **PR:** ninguno · **Tokens:** —

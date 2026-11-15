@@ -28,4 +28,18 @@ Referencias inspeccionadas: `mundo/01`, `mundo/02`, `exterior/03` y `piezas/02`;
 - El pavimento es continuo: faltan juntas sutiles de baldosas; se priorizó eliminar caras encimadas.
 - Las colisiones de navegación conservan las reservas del mapa; esta prueba verifica geometría y separación de objetos, no todas las trayectorias de un jugador integrado.
 - El formato vertical conserva el recorte; la base jugable móvil está prevista en horizontal según FLUJO §9.
-- Los FPS sintéticos anteriores corresponden al estado previo, no a esta revisión; no certifican hardware físico.
+- Las mediciones sintéticas no certifican hardware físico; se identifica la GPU usada a continuación.
+
+## Rendimiento de esta revisión (60 s por perfil)
+GPU detectada: **Google SwiftShader mediante ANGLE/Vulkan**, renderizado por software, no la tarjeta física. Vite desarrollo, Chromium headless, cinco módulos, DPR solicitado 1,5.
+
+| Perfil | FPS promedio | p95 de fotograma | Cota geométrica |
+| --- | --- | --- | --- |
+| Escritorio, alta | 21,44 | 50,1 ms | 71 llamadas / 32 321 triángulos |
+| CPU ×6, alta | 15,18 | 83,3 ms | 71 / 32 321 |
+| Móvil 844×390, CPU ×6, baja | 59,92 | 16,7 ms | 46 / 27 497 |
+
+No hubo errores JavaScript. En alta se propuso bajar a media y el driver de software emitió avisos de ReadPixels registrados en el JSON. No se extrapolan estos FPS a una GPU de celular. La calidad baja es la candidata conservadora en este entorno; la alta no cumple aquí los objetivos. La cota por recorrido no equivale a renderer.info real.
+
+Datos completos, commit medido y GPU: `rendimiento-revision.json`. Reproducción: `node ui/capturas/medir-sintetico.cjs`; duración por defecto 60 s/perfil, modificable con MEDICION_MS para diagnósticos rápidos.
+
