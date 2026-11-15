@@ -11,8 +11,20 @@ function girada(o: THREE.Object3D, rx: number, ry: number, rz: number): THREE.Ob
   return o;
 }
 
+/** Largo del casco del hábitat (eje x), en metros. [E] */
+export const LARGO_HABITAT = 6.8;
+
+/**
+ * Planta del hábitat (frente hacia +z): `ancho` de remate a remate, `fondo` desde la espalda del
+ * casco hasta el borde del escalón, y `dz`, cuánto se adelanta el centro de esa caja respecto del eje.
+ */
+export function plantaHabitat(largo = LARGO_HABITAT): { ancho: number; fondo: number; dz: number } {
+  const espalda = -1.8, escalon = 2.55 + 0.35;
+  return { ancho: largo + 2 * (0.3 + 0.45), fondo: escalon - espalda, dz: (escalon + espalda) / 2 };
+}
+
 /** Hábitat alargado (eje x): casco octogonal, remates, puerta central, escalón y ventanas cian. */
-export function crearHabitat(m: Materiales, largo = 6.8): THREE.Group {
+export function crearHabitat(m: Materiales, largo = LARGO_HABITAT): THREE.Group {
   const x = largo / 2;
   const partes: THREE.Object3D[] = [
     girada(parte(m, "SuitBase", chaflan(3.6, 3.0, largo, 0.85), [0, 1.5, 0], "Habitat_Hull"), 0, Math.PI / 2, 0),
