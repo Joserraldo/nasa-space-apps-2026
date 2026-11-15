@@ -21,17 +21,22 @@ La tarjeta debe decir (clave `datos.terreno.derivado`): la altura es una medida 
 - No se dan dosis de radiación por sitio. La dosis de referencia de Marte (RAD/Curiosity, en el cráter Gale) va aparte y con su cita.
 - Las coordenadas exactas de aterrizaje de Perseverance no se citan: solo el marcador de Trek.
 
-## Próxima región: polo norte de Marte (`marte_polo_norte` del contrato) — plan, aún sin datos
-- [V 2026-11-13] Mars Trek publica el DEM MOLA en estereográfica polar norte: `trekarcgis/rest/services/mola128_mola64_merge_90Nto90S_SimpleC_clon0_NP/ImageServer` (S16, metros, SR "Mars_Npolar_Sphere_Polar", radio 3 396 190 m). Como la rejilla está en metros, la pendiente se calcula sin corregir la longitud.
-- Recuadro: unos 250 km en el borde del casquete de hielo. Las coordenadas se fijan con el DEM.
-- La regla de luz de Jezero solo mira el horizonte; en el polo hay que añadir la latitud. **Inclinación del eje de Marte: 25,19° [V]** (NASA NSSDC, ficha de Marte, actualizada el 19 may 2025, https://nssdc.gsfc.nasa.gov/planetary/factsheet/marsfact.html). Altura máxima del Sol en pleno verano ≈ 90° − latitud + 25,19°.
-- **Probado el 13 nov, sin éxito:**
-  - El `exportImage` del servicio polar `_NP` devuelve error 400 con todos los formatos (bsq, tiff, png).
-  - El DEM MOLA equirectangular (`mola128_mola64_merge...`) no tiene datos por encima de ~83,5° N (devuelve −32768), y entre 76 y 79° N, cerca de 120° O, da valores raros que no se usan.
-  - El DEM mezclado MOLA+HRSC también da error para la franja 76–90° N.
-- Segundo intento, también fallido: el DEM MOLA equirectangular no tiene datos por encima de ~82,5° N, y la fila de 82,4° N sale casi constante (≈ −2000 m), lo que parece un artefacto del borde. El DEM mezclado da error 400 en 80–83,4° N.
-- **Plan B (implementado, `data/src/region.ts`):** polo norte **sin mapa ni sitios**. Solo una tarjeta con la luz por latitud (82° N de referencia): Sol máximo en verano ≈ 33,2°, y noche polar porque 82° > 64,81° (90 − 25,19). Son cálculos del equipo a partir de la inclinación [V]. **No se afirma nada del hielo** (sin fuente verificada).
-- El hielo no se ve en el DEM. Si se nombra, irá con su fuente (por verificar); si no, no se afirma.
+## Marte, polo norte (`marte_polo_norte` del contrato): 4 sitios con mapa
+**Fuente:** NASA Mars Trek, consultado el 2026-11-14. `npm run marte-norte:descargar` (sin clave, 1 petición cada ~2 s) y `npm run marte-norte:curar`. Salida: `data/terreno/marte-norte/` (224 KB). Export: `terrenoMarteNorte`.
+- **Corrección (14 nov):** el 13 nov se anotó que el `exportImage` del DEM polar `_NP` daba error 400. **Era un error de uso:** falla si se le manda `bboxSR`/`imageSR`; sin ellos responde 200 [V]. Los intentos con el DEM equirectangular y el mezclado ya no hacen falta.
+- **Servicio [V]:** `https://trek.nasa.gov/mars/trekarcgis/rest/services/mola128_mola64_merge_90Nto90S_SimpleC_clon0_NP/ImageServer/exportImage?bbox=xmin,ymin,xmax,ymax&size=160,160&format=bsq&pixelType=F32&f=image` (bbox en metros, sin bboxSR). DEM MOLA, metros, ~39 m/px nativo; recortes de 24 km a 150 m/px, guardados como Int16 LE. Rango visto en el casquete: −2359 a −1923 m (prueba 32×32).
+- **Proyección [V]:** estereográfica polar norte, esfera Mars 2000 de radio 3 396 190 m, meridiano central 0, metros. `x = ρ·sin(lon)`, `y = −ρ·cos(lon)`, `ρ = 2R·tan((90−lat)/2)` (`proyectarPolarNorte` en `data/src/terreno.ts`). **Comprobación de signo:** identify en 7 puntos nombrados repartidos en todos los cuadrantes de longitud (26° a 312° E) dio la misma altura que el DEM global `Mars_MOLA_blend200ppx_HRSC_DEM_clon0dd_200mpp_lzw` en lat/lon (Louth −4815 vs −4838; Korolev −4517 vs −4521; Escorial −5514 vs −5512; Olympia Undae −4339 vs −4333; Abalos Scopuli −4543 vs −4531; Gemini Scopuli −4071 vs −4068; Chasma Boreale −4916 vs −4985). Con el signo de `y` al revés, los puntos caerían a cientos de km. Nota: la capa de nomenclatura `combinedNom_np` declara un radio de 3 376 200 m en su SR, pero el DEM usa 3 396 190 m y es el que se verificó.
+- **Sitios [V posición]:** nombre y centro del nomenclátor de la UAI, capa `combinedNom_np` de Mars Trek (`.../services/combinedNom_np/MapServer/0/query`, campos `center_lat`, `center_lon`, `diameter`; todos "Adopted by IAU"). Elegidos para encajar con las franjas de la propuesta (`docs/ideas/mision-marte-polo-norte.md`, ~70°, ~76° y ~82° N). Longitudes este.
+  | Sitio | Lat, lon | Altura medida | Pendiente 1,5 km | Relieve 24 km | Plano |
+  |---|---|---|---|---|---|
+  | Cráter Louth (36 km) | 70,188° N, 103,236° E | −4838 m | 3,0° | 1463 m | 0,70 |
+  | Cráter Escorial (22 km) | 76,894° N, 304,960° E | −5515 m | 3,5° | 1143 m | 0,65 |
+  | Dunas Olympia Undae (1508 km) | 81,164° N, 178,483° E | −4334 m | 1,8° | 105 m | 0,82 |
+  | Cañón Chasma Boreale (460 km) | 82,541° N, 312,360° E | −4916 m | 0,6° | 193 m | 0,94 |
+- **Derivado por el equipo:** pendiente media por diferencias centrales en radio de 1,5 km (igual que Jezero; la rejilla está en metros, sin corregir por la latitud); relieve = máximo − mínimo del recorte; plano = 1 − pendiente / 10°. Luz y blindaje: **sin fuente, quedan en `null`** (el horizonte local no basta: en el polo la luz depende de la latitud y de la inclinación del eje 25,19° [V] NSSDC, ver `regionPoloNorte()`).
+- **Verificación independiente [V]:** identify en el centro de cada sitio, DEM polar vs DEM global: Louth 23 m, Escorial 2 m, Olympia Undae 6 m (≤ 50 m). **Chasma Boreale difiere 69 m** (−4916 polar, −4985 global; el global es casi plano alrededor, 9 puntos entre −4969 y −4994), por lo que supera el criterio de 50 m: son productos distintos (MOLA solo vs mezcla MOLA+HRSC). El DEM guardado difiere del identify polar ≤ 25 m (suavizado a 150 m/px).
+- **NO VERIFICADO:** que el centro del nomenclátor sea un buen sitio de aterrizaje (es el centro del rasgo, no un lugar escogido); si el DEM polar y el global deberían coincidir mejor en Chasma Boreale; el hielo no se ve en el DEM y **no se afirma nada de él** (la fuente F1 de la propuesta sigue pendiente de aprobación). No hay sombreado ni imagen: no se descargó producto de Trek para el polo. No se cruzó con el nomenclátor de USGS.
+- `regionPoloNorte()` (luz por latitud, sin mapa) se deja igual: sigue sirviendo para la luz; el terreno se lee aparte con `terrenoMarteNorte`.
 
 ## Luna lado visible (Moon Trek): 3 sitios Apolo
 **Fuente:** NASA Moon Trek (aprobada por Daniel; aparece en el catálogo oficial de api.nasa.gov), consultado el 2026-11-14. `npm run luna:descargar` (sin clave, 1 petición cada 2 s) y `npm run luna:curar`. Salida: `data/terreno/luna-visible/` (56 KB).

@@ -178,5 +178,14 @@
   "fuente.jpl.casqueteMarte": "NASA JPL (Mars north polar cap image)",
   "fuente.jpl.spiritInclinacion": "NASA JPL (Spirit rover winter tilt)",
   "fuente.nasa.phoenix": "NASA (Phoenix lander at Mars' north pole)",
-  "fuente.nasa.baterias": "NASA (Basics of Space Flight: spacecraft power)"
+  "fuente.nasa.baterias": "NASA (Basics of Space Flight: spacecraft power)",
+  "datos.terreno.marteNorte.nombre": "Mars, north pole",
+  "datos.terreno.sitio.crater-louth.nombre": "Louth crater",
+  "datos.terreno.sitio.crater-louth.descripcion": "A crater about 36 km wide, the southernmost of our four places (70° N).",
+  "datos.terreno.sitio.crater-escorial.nombre": "Escorial crater",
+  "datos.terreno.sitio.crater-escorial.descripcion": "A small crater about 22 km wide, in the middle band (77° N).",
+  "datos.terreno.sitio.dunas-olympia-undae.nombre": "Olympia Undae dunes",
+  "datos.terreno.sitio.dunas-olympia-undae.descripcion": "A huge dune field (\"undae\" means dunes), very close to the pole (81° N).",
+  "datos.terreno.sitio.canon-chasma-boreale.nombre": "Chasma Boreale canyon",
+  "datos.terreno.sitio.canon-chasma-boreale.descripcion": "A giant canyon, about 460 km across, the closest of our four places to the pole (83° N)."
 }
