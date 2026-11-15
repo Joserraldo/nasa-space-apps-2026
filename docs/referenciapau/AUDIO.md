@@ -1,6 +1,6 @@
 # AUDIO: música, efectos y voces
 
-**Cuándo:** es la **última fase** ([FLUJO.md](FLUJO.md) §4, fase 4), cuando el juego ya está completo, integrado y validado en silencio. **Quién:** la pista A de ui. **Regla de oro:** el juego se entiende y se juega entero **sin sonido**. El audio acompaña, nunca es la única señal.
+**Cuándo:** es la **última fase** ([FLUJO.md](FLUJO.md) §4, fase 4), cuando el juego ya está completo, integrado y validado en silencio. **Quién:** Jaime, o quien termine primero con OK de María Paula ([FLUJO.md](FLUJO.md) §1). **Regla de oro:** el juego se entiende y se juega entero **sin sonido**. El audio acompaña, nunca es la única señal.
 
 ---
 
@@ -11,8 +11,8 @@ Para que nadie las confunda:
 | Término | Qué es | Dueño |
 | --- | --- | --- |
 | **Voces de la misión** | Los **textos** que dicen la tripulación e Iris (consejos, escenas, avisos). Ya existen en `agents/` (ejemplo: "voces de la misión Marte polo norte", PR #127). | Agentes (José) |
-| **Lectura en voz alta** | El navegador lee en voz alta esos mismos textos (`speechSynthesis`). | ui, pista A |
-| **Entrada de voz** | El niño habla en lugar de escribir; el navegador lo transcribe (`SpeechRecognition`). | ui, pista A |
+| **Lectura en voz alta** | El navegador lee en voz alta esos mismos textos (`speechSynthesis`). | ui (audio) |
+| **Entrada de voz** | El niño habla en lugar de escribir; el navegador lo transcribe (`SpeechRecognition`). | ui (audio) |
 
 La UI nunca escribe frases de la tripulación: las toma de `agents/` y de `missions/` por clave i18n.
 
@@ -36,7 +36,7 @@ La UI nunca escribe frases de la tripulación: las toma de `agents/` y de `missi
 | Tormenta y dilema | Pulso más rápido y tensión moderada; sin percusión agresiva | Bucle de 30–45 s | Medio |
 | Final | Breve y amable; igual si se gana o se pierde (perder también enseña) | 10–20 s, sin bucle | Medio |
 
-- Cambios entre pistas con fundido de 1–2 s; nunca cortes.
+- Cambios entre temas musicales con fundido de 1–2 s; nunca cortes.
 - La música baja de volumen mientras suena la lectura en voz alta (ducking).
 - Origen: archivos con licencia (§2.8) o un colchón generado con Web Audio si no se consigue licencia a tiempo. Sin música es aceptable: el juego se entrega igual.
 
@@ -91,7 +91,7 @@ Máximo 3 efectos sonando a la vez; si llegan más en el mismo tick, se agrupan.
 | `assets/audio/` | Archivos de música con licencia (ogg y mp3 de respaldo). |
 | `assets/LICENCIAS.md` | Registro de licencias de todo asset de terceros. |
 
-La pista A no edita pantallas ni componentes: M monta los interruptores en `Settings` con los componentes de I y conecta el hook.
+Quien hace el audio no edita pantallas ni componentes: José monta los interruptores en `Settings` con los componentes de la interfaz y conecta el hook.
 
 ## 8. Validación
 

@@ -6,4 +6,4 @@ Dueña: rol 5, María Paula (`Paulasaah`). Reglas del rol: [`ui/CLAUDE.md`](CLAU
 
 - Dirección visual, escenas, mecánicas, niveles y cómo se construye: [`docs/referenciapau/README.md`](../docs/referenciapau/README.md).
 - Estilo y render: [D6](../docs/decisiones/D6-estilo-visual.md) (React 18 + Vite, Three.js `^0.160.0` procedural, UI en DOM).
-- Cómo se reparte el trabajo (pistas de integración, escenario, interfaz y audio): [`docs/referenciapau/FLUJO.md`](../docs/referenciapau/FLUJO.md).
+- Quién programa cada parte (personajes, escenario, interfaz, ubicación, integración, audio) y en qué rama: [`docs/referenciapau/FLUJO.md`](../docs/referenciapau/FLUJO.md).

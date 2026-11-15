@@ -182,7 +182,7 @@ Con `prefers-reduced-motion: reduce` (CSS y JS): sin deriva, giros, desplazamien
 
 ## 9. Bloques de entrega (alineados con `docs/ORQUESTACION.md`)
 
-Las fases y pistas que ejecutan estos bloques están en [FLUJO.md](FLUJO.md) §4: fase 0 = bloque 0; fase 2 = bloques 1 y 2; fase 3 = bloque 4; el bloque 3 va después de la entrega.
+Quién ejecuta estos bloques y en qué rama está en [FLUJO.md](FLUJO.md) §1, §2 y §5: los bloques 1 y 2 son la fase 2 (en paralelo), el bloque 4 es la fase 3 (integración) y el bloque 3 va después de la entrega.
 
 | Bloque | Qué entra | Hasta | Cierra cuando |
 | --- | --- | --- | --- |
@@ -233,4 +233,4 @@ Y el e2e de la ruta dorada que corre la CI en cada PR.
 
 ## 11. Trabajo en paralelo
 
-Quién escribe cada archivo, cómo se reparten las pistas (integración de misiones, escenario, interfaz y audio), los contratos entre ellas y el orden de fusión: [FLUJO.md](FLUJO.md). Pruebas conductuales en `ui/src/juego/reductor.test.ts` y `ui/src/escena/escena.test.ts`; no pruebas de "esta caja tiene N hijos".
+Quién escribe cada archivo (por persona), la rama `feat/ui-escenarios`, los contratos entre partes y el orden de fusión: [FLUJO.md](FLUJO.md). Pruebas conductuales en `ui/src/juego/reductor.test.ts` y `ui/src/escena/escena.test.ts`; no pruebas de "esta caja tiene N hijos".

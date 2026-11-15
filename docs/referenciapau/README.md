@@ -30,7 +30,7 @@ Leé solo lo que tu tarea necesita. Cada documento es autónomo y enlaza sus lá
 
 | Documento | Responde a |
 | --- | --- |
-| [FLUJO.md](FLUJO.md) | **Quién hace qué y en qué orden.** Pistas de trabajo de ui (integración de misiones, escenario, interfaz, audio), contratos entre pistas, división de assets, fases, validación y orden de fusión. |
+| [FLUJO.md](FLUJO.md) | **Quién programa qué y en qué orden.** Reparto del frontend por persona con sus archivos (personajes, escenario, ubicación, integración, interfaz, audio), rama `feat/ui-escenarios`, contratos, división de assets, fases y validación. |
 | [NIVELES.md](NIVELES.md) | **Todos los niveles.** Las 5 misiones con su ficha, el orden de la campaña, la dificultad, los niveles de Iris y lo que falta decidir. Prioridad 1. |
 | [HISTORIA.md](HISTORIA.md) | **Qué se cuenta.** Lore canónico, personajes y su personalidad, dónde empieza el juego, la misión de Jezero como historia, mapa de conexiones y resumen de la campaña. |
 | [DISEÑO.md](DISEÑO.md) | **Cómo se ve.** Paleta, materiales, luz, estilo low-poly facetado, personajes (poses, rostros, luz), Iris, sistema UI, inicio y lista de prohibiciones. |
