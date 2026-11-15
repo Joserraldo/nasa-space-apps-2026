@@ -74,6 +74,8 @@ export interface OpcionesExterior {
   planeta?: [number, number, number];
   rocas?: number;
   semilla?: number;
+  /** Marte visto desde la órbita: una esfera facetada (centro y radio) con el horizonte curvo, en lugar del suelo plano. */
+  globo?: { centro: [number, number, number]; radio: number };
 }
 
 /** Altura media del suelo de `exteriorMarte` en la profundidad `z` (sube hacia el fondo, sin el ruido). */
@@ -84,35 +86,16 @@ export function exteriorMarte(m: Materiales, o: OpcionesExterior): THREE.Group {
   const azar = aleatorio(o.semilla ?? 11);
   const g = new THREE.Group();
   g.name = "Window_Mars";
-  // Suelo con relieve: rejilla facetada, más alta hacia el fondo para que se lean las colinas.
-  const suelo = new THREE.PlaneGeometry(120, 50, 48, 20);
-  suelo.rotateX(-Math.PI / 2);
-  const pos = suelo.getAttribute("position");
-  const col = new Float32Array(pos.count * 3);
-  const [claro, medio] = [colorToken("regolito-claro"), colorToken("regolito-medio")];
-  for (let i = 0; i < pos.count; i++) {
-    const fondo = THREE.MathUtils.clamp((25 - pos.getZ(i)) / 50, 0, 1);
-    pos.setY(i, fondo * fondo * 9 + azar() * (0.4 + fondo * 1.8) + Math.sin(pos.getX(i) * 0.21) * fondo * 1.4);
-    const c = claro.clone().lerp(medio, azar() * 0.45 + fondo * 0.25);
-    col.set([c.r, c.g, c.b], i * 3);
-  }
-  suelo.setAttribute("color", new THREE.BufferAttribute(col, 3));
-  suelo.computeVertexNormals();
-  const terreno = new THREE.Mesh(suelo, m.Rock);
-  terreno.position.set(0, o.suelo, -28);
-  g.add(terreno);
-  // Rocas basálticas del juego (misma roca maestra), más grandes cerca.
-  const rocas = Array.from({ length: o.rocas ?? 40 }, () => {
-    const z = -6 - azar() * 24;
-    const e = (0.9 + azar() * 1.4) * (1 - (z + 6) / 40);
-    return { posicion: [(azar() - 0.5) * 34, alturaExterior(o.suelo, z) + 0.9, z] as [number, number, number], escala: [e, e * 0.7, e] as [number, number, number], rotacion: [0, azar() * 6, 0] as [number, number, number] };
-  });
-  g.add(instanciarRocas(m, rocas, "Window_Rocks"));
-  // Lomas lejanas en `montana-lejana`.
-  for (let i = 0; i < 7; i++) {
-    const loma = new THREE.Mesh(new THREE.ConeGeometry(6 + azar() * 8, 3 + azar() * 4, 5), mate("montana-lejana"));
-    loma.position.set(-45 + i * 15 + azar() * 6, o.suelo + 1.2, -48 - azar() * 6);
-    g.add(loma);
+  if (o.globo) {
+    g.add(globoMarte(m, o.globo, azar));
+  } else {
+    g.add(sueloMarte(m, o, azar));
+    // Lomas lejanas en `montana-lejana`.
+    for (let i = 0; i < 7; i++) {
+      const loma = new THREE.Mesh(new THREE.ConeGeometry(6 + azar() * 8, 3 + azar() * 4, 5), mate("montana-lejana"));
+      loma.position.set(-45 + i * 15 + azar() * 6, o.suelo + 1.2, -48 - azar() * 6);
+      g.add(loma);
+    }
   }
   if (o.cielo === "espacio") {
     g.add(cielo(colorToken("espacio"), colorToken("ciruela"), -60));
@@ -148,4 +131,59 @@ export function asiento(m: Materiales): THREE.Group {
     parte(m, "Boots", chaflan(0.62, 0.12, 0.55, 0.04), [0, 0.46, 0], "Seat_Cushion"),
     parte(m, "Boots", chaflan(0.64, 0.95, 0.14, 0.14), [0, 0.95, -0.27], "Seat_Back"),
   );
+}
+
+/** Suelo marciano cercano: rejilla facetada que sube hacia el fondo, con las rocas basálticas del juego. */
+function sueloMarte(m: Materiales, o: OpcionesExterior, azar: () => number): THREE.Group {
+  const suelo = new THREE.PlaneGeometry(120, 50, 48, 20);
+  suelo.rotateX(-Math.PI / 2);
+  const pos = suelo.getAttribute("position");
+  const col = new Float32Array(pos.count * 3);
+  const [claro, medio] = [colorToken("regolito-claro"), colorToken("regolito-medio")];
+  for (let i = 0; i < pos.count; i++) {
+    const fondo = THREE.MathUtils.clamp((25 - pos.getZ(i)) / 50, 0, 1);
+    const x = pos.getX(i);
+    pos.setY(i, fondo * fondo * 9 + azar() * (0.4 + fondo * 1.8) + Math.sin(x * 0.21) * fondo * 1.4);
+    const c = claro.clone().lerp(medio, azar() * 0.45 + fondo * 0.25);
+    col.set([c.r, c.g, c.b], i * 3);
+  }
+  suelo.setAttribute("color", new THREE.BufferAttribute(col, 3));
+  suelo.computeVertexNormals();
+  const terreno = new THREE.Mesh(suelo, m.Rock);
+  terreno.position.set(0, o.suelo, -28);
+  // Rocas basálticas del juego (misma roca maestra), más grandes cerca.
+  const rocas = Array.from({ length: o.rocas ?? 40 }, () => {
+    const z = -6 - azar() * 24;
+    const x = (azar() - 0.5) * 34;
+    const e = (0.9 + azar() * 1.4) * (1 - (z + 6) / 40);
+    return { posicion: [x, alturaExterior(o.suelo, z) + 0.9, z] as [number, number, number], escala: [e, e * 0.7, e] as [number, number, number], rotacion: [0, azar() * 6, 0] as [number, number, number] };
+  });
+  return grupo("Mars_Ground", terreno, instanciarRocas(m, rocas, "Window_Rocks"));
+}
+
+/** Marte desde la órbita: esfera facetada de regolito (horizonte curvo) con rocas del juego sobre la cara visible. */
+function globoMarte(m: Materiales, gl: NonNullable<OpcionesExterior["globo"]>, azar: () => number): THREE.Group {
+  const geo = new THREE.IcosahedronGeometry(gl.radio, 12);
+  const pos = geo.getAttribute("position");
+  const col = new Float32Array(pos.count * 3);
+  const [claro, medio] = [colorToken("regolito-claro"), colorToken("regolito-medio")];
+  // Un color por cara (tres vértices seguidos en la geometría no indexada), como las facetas de la lámina.
+  for (let i = 0; i < pos.count; i += 3) {
+    const c = claro.clone().lerp(medio, azar() * 0.5);
+    for (let k = 0; k < 3; k++) col.set([c.r, c.g, c.b], (i + k) * 3);
+  }
+  geo.setAttribute("color", new THREE.BufferAttribute(col, 3));
+  const esfera = new THREE.Mesh(geo, m.Rock);
+  const rocas = Array.from({ length: 70 }, () => {
+    // Direcciones cerca del polo que mira a la cámara (+y, un poco hacia +z).
+    const n = new THREE.Vector3((azar() - 0.5) * 0.7, 1, 0.15 + azar() * 0.45).normalize();
+    const e = 0.8 + azar() * 1.6;
+    const p = n.multiplyScalar(gl.radio - 0.15);
+    return { posicion: [p.x, p.y, p.z] as [number, number, number], escala: [e, e * 0.5, e] as [number, number, number], rotacion: [Math.atan2(p.z, p.y), azar() * 6, -Math.atan2(p.x, p.y)] as [number, number, number] };
+  });
+  // Atmósfera: casquete lila translúcido apenas mayor, la franja clara sobre el horizonte de la lámina.
+  const aire = new THREE.Mesh(new THREE.IcosahedronGeometry(gl.radio + 0.9, 12), new THREE.MeshBasicMaterial({ color: colorToken("lila"), transparent: true, opacity: 0.5, depthWrite: false, side: THREE.BackSide }));
+  const g = grupo("Mars_Globe", esfera, aire, instanciarRocas(m, rocas, "Globe_Rocks"));
+  g.position.set(...gl.centro);
+  return g;
 }
