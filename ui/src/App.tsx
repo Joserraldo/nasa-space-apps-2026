@@ -19,7 +19,7 @@ import { describirAccion } from "./componentes/Dialogos.js";
 import { IdiomaContext, useT, type Idioma } from "./i18n.js";
 import { ColocarModulos } from "./pantallas/ColocarModulos.js";
 import { ElegirSitio } from "./pantallas/ElegirSitio.js";
-import { Final } from "./pantallas/Final.js";
+import { PantallaFinal } from "./pantallas/PantallaFinal.js";
 import { Satelite } from "./pantallas/Satelite.js";
 import { Tormenta } from "./pantallas/Tormenta.js";
 import { Polvo } from "./componentes/Polvo.js";
@@ -203,7 +203,7 @@ function Pantalla({ idioma, setIdioma }: { idioma: Idioma; setIdioma: (i: Idioma
             <Tripulacion estado={j.estado} onAccion={accion} />
           </>
         )}
-        {j.fase === "final" && <Final estado={j.estado} onOtra={() => enviar({ tipo: "nueva" })} />}
+        {j.fase === "final" && <PantallaFinal estado={j.estado} onOtra={() => enviar({ tipo: "nueva" })} />}
       </main>
       <footer>{t("ui.aviso.nasa")}</footer>
     </div>
