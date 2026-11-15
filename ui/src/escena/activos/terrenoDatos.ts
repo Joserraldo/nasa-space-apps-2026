@@ -50,7 +50,7 @@ export const MEZCLA_SUELO = { variacion: 0.28, ladera: 0.75 } as const;
  * 0,1–0,3 m repartidas con semilla fija en todo el suelo cercano, fuera del centro de la base.
  * Decorativa e inventada (MARTE §8): no es dato de Mars Trek. [E]
  */
-export const GRAVILLA = { n: 370, semilla: 314, radioMin: 3, radio: 20, escalaMin: 0.14, escalaMax: 0.42 } as const;
+export const GRAVILLA = { n: 1100, semilla: 314, radioMin: 3, radio: 34, escalaMin: 0.14, escalaMax: 0.42 } as const;
 
 export interface Rejilla {
   alturas: Float32Array;
