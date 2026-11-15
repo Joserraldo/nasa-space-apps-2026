@@ -61,11 +61,13 @@ const FOCO = { x: lugar("mesa").x, z: lugar("mesa").z } as const;
 
 /**
  * Cámaras de juego (ESCENAS §3.1, `mundo/01` y `mundo/02`). [E] a calibrar con Camilo.
- * Tercera persona: baja y cerca, detrás del jugador en la mesa, con una picada de ~10° para que el
- * horizonte quede en el tercio superior como en la lámina.
+ * Tercera persona (`mundo/01`): más cerca y más alta que la primera versión (~10 m del jugador,
+ * picada de ~18°), así la torre queda centro-arriba, el hábitat al centro, los módulos alrededor y
+ * el horizonte en el tercio superior. Cuando Camilo integre la navegación, la cámara seguirá al
+ * jugador con este mismo desfase respecto del foco.
  */
 export const CAMARAS: Readonly<Record<CamaraEscena, { pos: [number, number, number]; mira: [number, number, number] }>> = {
-  tercera: { pos: [FOCO.x + 1.6, 4.0, FOCO.z + 10.5], mira: [FOCO.x + 0.5, 0.8, FOCO.z - 10] },
+  tercera: { pos: [FOCO.x + 1.0, 6.2, FOCO.z + 8.2], mira: [FOCO.x + 0.3, 0.6, FOCO.z - 9] },
   primera: { pos: [FOCO.x, 1.1, FOCO.z + 3.4], mira: [FOCO.x, 1.2, FOCO.z - 8] },
 };
 /** Interpolación de cámara (APLICACION §7): 300 ms; con movimiento reducido, corte directo. */

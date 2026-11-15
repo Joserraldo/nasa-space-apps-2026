@@ -18,6 +18,8 @@ import { MODULOS_BASE, TIEMPOS_MODULO_MS, type ModuloBase } from "./activos/modu
 import { DECORADO, armarKit, armarEdificios } from "./activos/baseExterior";
 import { aplicarEstado, armarAnclajes, armarModulo, type ModuloArmado } from "./activos/modulosArmados";
 export { PLAZA, CAMINO, CAMINOS, BALIZAS, geometriaCaminos, posicionesBalizas } from "./activos/caminos";
+import { chocaConBase, posicionesBalizas, sobreCamino } from "./activos/caminos";
+import { LUGARES } from "./mundo";
 export { fusionar } from "./activos/fusionar";
 import {
   ESCALA_VERTICAL_POR_DEFECTO,
@@ -27,10 +29,12 @@ import {
   crearMontanas,
   crearRocas,
   crearTerreno,
+  instanciarRocas,
   leerDem,
   submuestrear,
   type OpcionesMalla,
   type Rejilla,
+  type TransformacionRoca,
 } from "./activos/terreno";
 
 // ---------------------------------------------------------------------------------------------
@@ -66,6 +70,34 @@ export const ROCAS_GRANDES = { n: 10, semilla: 9, radioMin: 15, radio: 28, escal
 export function rocaGrandeLibre(x: number, z: number): boolean {
   if (DECORADO.some((d) => Math.hypot(x - d.x, z - d.z) < d.radio + 2)) return false;
   return !(z < -10 && Math.abs(x) < 20) && Math.hypot(x, z - 9) > 5;
+}
+
+/**
+ * Rocas basálticas grandes de primer plano (`mundo/01`: abajo a la izquierda y a la derecha del
+ * encuadre de tercera persona). Puestas a mano para el encuadre por defecto de `CAMARAS.tercera`,
+ * fuera de caminos, plaza, banco, sólidos de `TERRENO` y del radio de uso de cada lugar
+ * (`rocaPrimerPlanoLibre`). En el borde del círculo caminable: PENDIENTE que Camilo las sume como
+ * círculos de colisión en `TERRENO` (mundo.ts) con `radioRocaPrimerPlano`. [E]
+ */
+export const ROCAS_PRIMER_PLANO: readonly TransformacionRoca[] = [
+  { posicion: [7.2, 0, 2.1], escala: [0.8, 1.6, 0.76], rotacion: [0.05, 0.6, -0.04] },
+  { posicion: [8.1, 0, 2.7], escala: [0.6, 0.9, 0.6], rotacion: [0.04, 1.2, 0.05] },
+  { posicion: [12, 0, 3.4], escala: [0.8, 0.8, 0.8], rotacion: [0, 2.1, 0.06] },
+  { posicion: [-11, 0, 3.5], escala: [1.5, 1.3, 1.4], rotacion: [-0.04, 1.4, 0.03] },
+  { posicion: [-11.5, 0, 0.8], escala: [0.8, 0.75, 0.75], rotacion: [0.05, 0.3, 0] },
+];
+
+/** Huella en planta de una roca de primer plano (la roca maestra mide hasta 1,2 u de radio). */
+export function radioRocaPrimerPlano(r: TransformacionRoca): number {
+  return Math.max(r.escala[0], r.escala[2]) * 1.2;
+}
+
+/** La roca de radio `radio` en (x, z) no pisa caminos, plaza, banco, sólidos, lugares ni decorado. */
+export function rocaPrimerPlanoLibre(x: number, z: number, radio: number): boolean {
+  if (chocaConBase(x, z, radio) || sobreCamino(x, z, radio)) return false;
+  if (LUGARES.some((l) => Math.hypot(x - l.x, z - l.z) < l.radio + radio * 0.5)) return false;
+  if (DECORADO.some((d) => Math.hypot(x - d.x, z - d.z) < d.radio + radio)) return false;
+  return !posicionesBalizas().some(([bx, bz]) => Math.hypot(x - bx, z - bz) < radio + 0.3);
 }
 
 // ---------------------------------------------------------------------------------------------
@@ -108,7 +140,9 @@ export function armarEscena(
   const base = new THREE.Group();
   base.name = "Base";
   const modulos = Object.fromEntries(MODULOS_BASE.map((id) => [id, armarModulo(materiales, id)])) as Record<ModuloBase, ModuloArmado>;
-  base.add(armarAnclajes(materiales), armarKit(materiales), armarEdificios(materiales), ...MODULOS_BASE.map((id) => modulos[id].raiz));
+  // Las rocas de primer plano están dentro del claro llano (y = 0): no esperan al DEM.
+  const primerPlano = instanciarRocas(materiales, ROCAS_PRIMER_PLANO, "Rocks_Basalt_Foreground");
+  base.add(armarAnclajes(materiales), armarKit(materiales), armarEdificios(materiales), primerPlano, ...MODULOS_BASE.map((id) => modulos[id].raiz));
   escena.add(terreno, base, crearMontanas(materiales));
 
   const armada: EscenaArmada = {
