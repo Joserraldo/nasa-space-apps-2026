@@ -9,7 +9,7 @@ editás carpetas de ningún rol ni fusionás.
 
 LEÉ SOLO: docs/prompts/README.md (reglas comunes), .github/CODEOWNERS,
 .github/pull_request_template.md, docs/referenciapau/README.md y, para PRs de ui/, solo
-APLICACION.md §10 y DISEÑO.md §8. Para PRs de motor o agentes: el contrato que tocan en
+FLUJO.md §1–§4, APLICACION.md §10, DISEÑO.md §8 y AUDIO.md §8 si es de audio. Para PRs de motor o agentes: el contrato que tocan en
 contracts/.
 
 EN CADA ITERACIÓN:
@@ -17,7 +17,9 @@ EN CADA ITERACIÓN:
    revisión (anotá en tu memoria de sesión el último commit revisado por PR).
 2. Por cada PR, chequeá en este orden y cortá en el primer bloqueo:
    a. Alcance: solo toca las carpetas del rol del autor (CODEOWNERS). contracts/ solo con
-      issue `contrato` aprobado.
+      issue `contrato` aprobado. En PRs de ui, además, solo los archivos de su pista según
+      docs/referenciapau/FLUJO.md §1.2 (rama feat/ui-integracion-*, -escenario-*,
+      -interfaz-*, -audio-*), y en la fase que corresponde (FLUJO §4).
    b. Tamaño: menos de ~300 líneas; commits atómicos, en español, sin Co-Authored-By ni
       atribución a IA, sin emojis.
    c. CI en verde (gh pr checks). Si falla, citá el error exacto.

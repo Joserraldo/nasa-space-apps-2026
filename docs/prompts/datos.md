@@ -18,8 +18,8 @@ PENDIENTES EN ORDEN (uno por iteración):
    Fact Sheet). Revisá también los datos de MARTE.md §1 y §2 y decí cuáles quedan [V].
 2. #61, #93, #91: verificá qué ya entró en develop y cerrá con evidencia.
 3. #137: ayudar a ui a mostrar los datos ya listos (respondé dudas de firmas).
-4. #152: las fuentes POR VERIFICAR de las misiones nuevas (NSSDC Moon, refugio de Orion,
-   hielo de agua F1).
+4. #152 y docs/referenciapau/NIVELES.md §7 (decisión 6): las fuentes POR VERIFICAR de las
+   misiones nuevas (NSSDC Moon, refugio de Orion, hielo de agua F1).
 5. Luna: #95, #126, #147, #148, solo después de lo anterior.
 
 USO DE CODEX: scripts que comprueban URLs, cifras y formatos de data/; segunda lectura de

@@ -8,10 +8,14 @@ missions/. Santiago (@kcitas) supervisa y aprueba los números de balance.
 
 LEÉ SOLO: docs/prompts/README.md (reglas comunes), design/CLAUDE.md, design/ESTADO.md,
 docs/LOOP.md, design/src/recursos.ts, missions/src/jezero.ts y los issues #152, #114, #56.
-Para saber cómo la pantalla usa tus datos y la historia canónica de las 5 misiones:
-docs/referenciapau/MECANICAS.md y HISTORIA.md §6 (solo lectura, no los edites).
+Especificación de los 5 niveles (prioridad 1 del equipo): docs/referenciapau/NIVELES.md. Cómo
+usa la pantalla tus datos: MECANICAS.md (solo lectura; si algo está mal, avisá a María Paula).
 
 PENDIENTES EN ORDEN (uno por iteración):
+0. PRIORIDAD 1: NIVELES.md §7. Respondé en un issue nuevo "[diseño] Aprobar NIVELES" las
+   decisiones 1 (orden de campaña y desbloqueo), 4 (dilemas de los niveles 2 y 4 donde la
+   Doctora defiende dos opciones) y 5 (objetivo, dificultad y ticks de los niveles 2 y 4).
+   Llevale a Santiago tu propuesta y esperá su OK antes de cambiar datos.
 1. #114 y #56: verificá si ya están resueltos en develop (DURACION_TORMENTA_TICKS = 3 por
    #135, misión de Jezero como datos). Si sí, comentá la evidencia y pedí a Santiago que los
    cierre.

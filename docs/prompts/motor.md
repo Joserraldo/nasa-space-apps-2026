@@ -16,7 +16,7 @@ PENDIENTES EN ORDEN (uno por iteración):
    Santiago lo cierre.
 2. Lo que ui pida con bloquea:motor (prioridad máxima: María Paula conecta la ruta dorada
    hoy). Si una firma no le sirve a la pantalla, se cambia la API, no la pantalla.
-3. #152 (parte motor): que el motor reciba la misión como parámetro en lugar de importar
+3. #152 (parte motor, decisión 3 de docs/referenciapau/NIVELES.md §7): que el motor reciba la misión como parámetro en lugar de importar
    MISION_JEZERO, sin romper la ruta dorada (dorada.test.ts y ganable.test.ts en verde).
    Coordiná la forma de los campos nuevos con Camilo (#152 parte diseño).
 4. Prueba de variabilidad para P3: dos semillas distintas dan escenarios distintos y ambas

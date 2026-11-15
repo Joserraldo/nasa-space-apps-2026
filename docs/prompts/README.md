@@ -7,13 +7,22 @@ Cada persona abre su sesión, pega **su** prompt y después lanza el loop que el
 | Persona | Rol | Prompt | Herramientas |
 | --- | --- | --- | --- |
 | María Paula | orquestadora | [orquestadora.md](orquestadora.md) | Claude Code + subagentes Sonnet/Haiku + OpenCode (DeepSeek 4.1 Flash) |
-| María Paula | ui | [ui.md](ui.md) | Claude Code + subagentes Sonnet/Haiku + OpenCode (DeepSeek 4.1 Flash) |
+| María Paula | ui, en 4 pistas: integración (M), escenario (E), interfaz (I), audio (A) | [ui.md](ui.md) | Claude Code + subagentes Sonnet/Haiku + OpenCode (DeepSeek 4.1 Flash) |
 | Jaime (`JaimeMrF`) | motor | [motor.md](motor.md) | Claude Code + subagentes Sonnet/Haiku + OpenCode (DeepSeek 4.1 Flash) |
 | Camilo (`CamiloM21`) | diseño y misiones | [diseno.md](diseno.md) | Claude Code + subagentes Sonnet/Haiku + OpenCode (DeepSeek 4.1 Flash) |
 | José (`Joserraldo`) | agentes, infra y pitch | [agentes-infra.md](agentes-infra.md) | Claude Code + subagentes Sonnet/Haiku + OpenCode (DeepSeek 4.1 Flash) |
 | Daniel (`Daniverd15`) | datos | [datos.md](datos.md) | Claude Code + **Codex** + subagentes Sonnet/Haiku |
 | Santiago (`kcitas`) | supervisión y fusión | [supervisor.md](supervisor.md) | Claude Code |
 | Claude | revisor | [revisor.md](revisor.md) | Claude Code |
+
+## Prioridades del equipo
+
+1. **Definir y aprobar todos los niveles:** [NIVELES.md](../referenciapau/NIVELES.md) §7 (diseño, motor, datos; aprueba Santiago).
+2. **Nivel 1 (Jezero) jugable completo** en pantalla.
+3. Motor multi-misión y huecos del tipo `Mision` (#152).
+4. Niveles 2 a 5, uno por vez, cuando su código, su motor y su lámina estén listos.
+
+Cómo se reparte el trabajo de ui y cómo se integra: [FLUJO.md](../referenciapau/FLUJO.md).
 
 ## Calendario (de `docs/ORQUESTACION.md`)
 
