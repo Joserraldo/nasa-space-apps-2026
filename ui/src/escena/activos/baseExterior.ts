@@ -27,6 +27,12 @@ export const CONSOLAS = [
  */
 export const CAJAS: readonly { readonly x: number; readonly z: number; readonly giro: number }[] = [];
 
+/**
+ * Equipo solar de la plataforma de la mesa (`mundo/01`): dos paneles decorativos a la derecha de la
+ * consola, mirando a la cámara. `x` es relativo a la consola de la mesa; `z` a su centro. [E]
+ */
+export const PANELES_MESA = { dx: [2.2, 3.5], dz: -0.1, escala: 0.5, ancho: 1.0, fondo: 0.55 } as const;
+
 /** Consola de un lugar: en el centro del modelo, mirando al punto donde se para el jugador. */
 function consola(id: LugarId, escala: number): { x: number; z: number; giro: number; escala: number } {
   const l = lugar(id);
@@ -166,6 +172,7 @@ function huellasFijas(): Huella[] {
       const p = consola(k.lugar, k.escala);
       return { id: `consola:${k.lugar}`, x: p.x, z: p.z, ancho: pc.ancho * p.escala, fondo: pc.fondo * p.escala, giro: p.giro };
     }),
+    ...PANELES_MESA.dx.map((dx, i) => ({ id: `panel_mesa:${i}`, x: lugar("mesa").mx + dx, z: lugar("mesa").mz + PANELES_MESA.dz, ancho: PANELES_MESA.ancho, fondo: PANELES_MESA.fondo, giro: 0 })),
     ...CAJAS.map((k, i) => ({ id: `caja:${i}`, x: k.x, z: k.z, ancho: pk.ancho, fondo: pk.fondo, giro: k.giro })),
   ];
 }
@@ -229,6 +236,8 @@ export function armarEdificios(m: Materiales): THREE.Group {
     const p = consola(k.lugar, k.escala);
     g.add(colocar(crearConsola(m), [p.x, 0, p.z], [0, p.giro, 0], p.escala));
   }
+  const mesa = lugar("mesa");
+  for (const dx of PANELES_MESA.dx) g.add(colocar(crearPanelSolar(m), [mesa.mx + dx, 0.1, mesa.mz + PANELES_MESA.dz], [0, 0, 0], PANELES_MESA.escala));
   for (const k of CAJAS) g.add(colocar(crearCaja(m), [k.x, 0, k.z], [0, k.giro, 0]));
   return fusionar(g, "Base_Buildings");
 }

@@ -88,20 +88,26 @@ describe("caminos de losas", () => {
       }
   });
 
-  it("la pared exterior de la plaza se emite una sola vez por cara (sin paredes coplanares)", () => {
-    const ap = PLAZA.radio, lado = 2 * ap * Math.tan(Math.PI / 8), alto = CAMINO.altoPlaza + 0.02;
+  it("la pared exterior de la plataforma se emite una sola vez por cara (sin paredes coplanares)", () => {
+    const alto = CAMINO.altoPlaza + 0.02;
+    const caras = [
+      { n: [0, -1], d: PLAZA.z0, largo: PLAZA.x1 - PLAZA.x0, eje: "z" },
+      { n: [0, 1], d: PLAZA.z1, largo: PLAZA.x1 - PLAZA.x0, eje: "z" },
+      { n: [-1, 0], d: PLAZA.x0, largo: PLAZA.z1 - PLAZA.z0, eje: "x" },
+      { n: [1, 0], d: PLAZA.x1, largo: PLAZA.z1 - PLAZA.z0, eje: "x" },
+    ] as const;
     let area = 0;
-    for (let k = 0; k < 8; k++) {
-      const nx = Math.cos((k * Math.PI) / 4), nz = Math.sin((k * Math.PI) / 4);
+    for (const c of caras)
       for (const t of tris) {
-        const enPlano = [t.a, t.b, t.c].every(p => Math.abs((p.x - PLAZA.x) * nx + (p.z - PLAZA.z) * nz - ap) < 1e-6);
-        if (enPlano && t.n.x * nx + t.n.z * nz > 0.9) area += new THREE.Triangle(t.a, t.b, t.c).getArea();
+        const enPlano = [t.a, t.b, t.c].every(p => Math.abs(p[c.eje] - c.d) < 1e-6);
+        if (enPlano && t.n.x * c.n[0] + t.n.z * c.n[1] > 0.9) area += new THREE.Triangle(t.a, t.b, t.c).getArea();
       }
-    }
-    expect(area).toBeCloseTo(8 * lado * alto, 5);
+    // Los ramales se comen un trozo de la pared: nunca sobra área (ninguna cara repetida).
+    expect(area).toBeLessThanOrEqual(2 * (PLAZA.x1 - PLAZA.x0 + PLAZA.z1 - PLAZA.z0) * alto + 1e-6);
+    expect(area).toBeGreaterThan(0.5 * (PLAZA.x1 - PLAZA.x0) * alto);
   });
 
-  it("el centro de la plaza y su marco comparten vértices en la arista común (sin grietas en T)", () => {
+  it("el centro de la plataforma y su marco comparten vértices en la arista común (sin grietas en T)", () => {
     const col = g.getAttribute("color"), pos = g.getAttribute("position");
     const porColor = new Map<string, THREE.Vector3[]>();
     for (let i = 0; i < pos.count; i += 3) {
@@ -111,17 +117,15 @@ describe("caminos de losas", () => {
     }
     expect(porColor.size).toBe(2); // centro y marco
     const [uno, otro] = [...porColor.values()] as [THREE.Vector3[], THREE.Vector3[]];
-    // Radio del octógono del centro: sus vértices son los de `uno`/`otro` más alejados de la mitad.
-    const radio = (v: THREE.Vector3) => Math.hypot(v.x - PLAZA.x, v.z - PLAZA.z);
-    const apotema = PLAZA.radio - CAMINO.bordePlaza;
+    const b = CAMINO.bordePlaza;
     const enBorde = (v: THREE.Vector3) => {
-      // Distancia al lado más cercano del octógono (caras alineadas a los ejes): máx de proyecciones.
-      const m = Math.max(...Array.from({ length: 8 }, (_, k) => (v.x - PLAZA.x) * Math.cos(k * Math.PI / 4) + (v.z - PLAZA.z) * Math.sin(k * Math.PI / 4)));
-      return Math.abs(m - apotema) < 1e-6 && radio(v) < apotema / Math.cos(Math.PI / 8) + 1e-6;
+      const dentro = v.x > PLAZA.x0 + b - 1e-6 && v.x < PLAZA.x1 - b + 1e-6 && v.z > PLAZA.z0 + b - 1e-6 && v.z < PLAZA.z1 - b + 1e-6;
+      const enLinea = [PLAZA.x0 + b, PLAZA.x1 - b].some(x => Math.abs(v.x - x) < 1e-6) || [PLAZA.z0 + b, PLAZA.z1 - b].some(z => Math.abs(v.z - z) < 1e-6);
+      return dentro && enLinea;
     };
     const tiene = (lista: THREE.Vector3[], v: THREE.Vector3) => lista.some(o => o.distanceTo(v) < 1e-6);
-    for (const [a, b] of [[uno, otro], [otro, uno]] as const)
-      for (const v of a.filter(enBorde)) expect(tiene(b, v), `vértice (${v.x.toFixed(3)}, ${v.z.toFixed(3)}) de un lado sin pareja en el otro`).toBe(true);
+    for (const [a, c] of [[uno, otro], [otro, uno]] as const)
+      for (const v of a.filter(enBorde)) expect(tiene(c, v), `vértice (${v.x.toFixed(3)}, ${v.z.toFixed(3)}) de un lado sin pareja en el otro`).toBe(true);
   });
 
   it("el pavimento cubre los codos, también los muy cerrados (inglete limitado)", () => {
@@ -153,8 +157,10 @@ describe("caminos de losas", () => {
         }
   });
 
-  it("la plaza queda bajo la consola de la mesa", () => {
+  it("la plataforma abarca la consola de la mesa y el punto donde se para el jugador", () => {
     const mesa = LUGARES.find(l => l.id === "mesa")!;
-    expect(Math.hypot(mesa.mx - PLAZA.x, mesa.mz - PLAZA.z)).toBeLessThan(PLAZA.radio - 0.9);
+    expect(mesa.mx - 1.2).toBeGreaterThan(PLAZA.x0);
+    expect(mesa.mz).toBeGreaterThan(PLAZA.z0 + 0.6);
+    expect(mesa.z).toBeLessThan(PLAZA.z1);
   });
 });
