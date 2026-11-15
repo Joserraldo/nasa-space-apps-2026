@@ -84,7 +84,7 @@ function reducir(j: Juego, e: Evento): Juego {
 }
 
 export function App() {
-  const [idioma, setIdioma] = useState<Idioma>(() => (navigator.language.startsWith("es") ? "es" : "en"));
+  const [idioma, setIdioma] = useState<Idioma>("en");
   return (
     <IdiomaContext.Provider value={idioma}>
       <Pantalla idioma={idioma} setIdioma={setIdioma} />
@@ -111,7 +111,7 @@ function Pantalla({ idioma, setIdioma }: { idioma: Idioma; setIdioma: (i: Idioma
   const accion = (a: Action) => enviar({ tipo: "accion", accion: a });
 
   return (
-    <div className="app">
+    <div className="app" data-testid="app" data-phase={j.fase}>
       <header className="barra">
         <span className="titulo">🛡️ {t("ui.titulo")}</span>
         {enBase && (
@@ -123,7 +123,7 @@ function Pantalla({ idioma, setIdioma }: { idioma: Idioma; setIdioma: (i: Idioma
             <label>{t("ui.velocidad")} <select value={velocidad} onChange={(e) => setVelocidad(Number(e.target.value))}><option value={0.5}>0.5x</option><option value={1}>1x</option><option value={2}>2x</option></select></label>
           </>
         )}
-        <label>{t("ui.idioma")} <select value={idioma} onChange={(e) => setIdioma(e.target.value as Idioma)}><option value="en">English</option><option value="es">Español</option></select></label>
+        <label>{t("ui.idioma")} <select data-testid="language" value={idioma} onChange={(e) => setIdioma(e.target.value as Idioma)}><option value="en">English</option><option value="es">Español</option></select></label>
       </header>
 
       <main className={enBase ? "juego" : ""}>
@@ -131,7 +131,7 @@ function Pantalla({ idioma, setIdioma }: { idioma: Idioma; setIdioma: (i: Idioma
           <section className="tarjeta columna">
             <h1>{t("ui.titulo")}</h1>
             <p>{t("ui.subtitulo")}</p>
-            <div><button onClick={() => enviar({ tipo: "fase", fase: "satelite" })}>{t("ui.empezar")}</button></div>
+            <div><button data-testid="start-mission" onClick={() => enviar({ tipo: "fase", fase: "satelite" })}>{t("ui.empezar")}</button></div>
           </section>
         )}
         {j.fase === "satelite" && <Satelite estado={j.estado} onContinuar={() => enviar({ tipo: "fase", fase: "sitio" })} />}
@@ -162,7 +162,7 @@ function Pantalla({ idioma, setIdioma }: { idioma: Idioma; setIdioma: (i: Idioma
                   <button className="secundario" onClick={() => accion({ tipo: "subir_escudo", nivel: 1 })}>{t("ui.accion.subir_escudo")}</button>
                   <button className="secundario" onClick={() => accion({ tipo: "salida_exterior", objetivo: "panel_solar" })}>{t("ui.accion.salida_exterior")}</button>
                   {j.estado.iaBase === "danada" && <button className="peligro" onClick={() => accion({ tipo: "reparar", equipo: "ia_base" })}>{t("ui.accion.reparar_ia")}</button>}
-                  {tormentaActiva(j.estado) && !tele && <button className="solar" onClick={() => accion({ tipo: "enviar_telemetria" })}>📡 {t("ui.paso.7.telemetria")}</button>}
+                  {tormentaActiva(j.estado) && !tele && <button data-testid="send-telemetry" className="solar" onClick={() => accion({ tipo: "enviar_telemetria" })}>📡 {t("ui.paso.7.telemetria")}</button>}
                 </div>
                 {tele && <p>📡 {t("ui.paso.7.llegando", { ticks: tele.ticksRestantes })}</p>}
                 {j.estado.pausado && j.ultimas && (
@@ -171,7 +171,7 @@ function Pantalla({ idioma, setIdioma }: { idioma: Idioma; setIdioma: (i: Idioma
                     {j.ultimas.iaCambio && <p>◉ {t(`ui.iris.estado.${j.ultimas.iaCambio.a}`)}</p>}
                     {j.ultimas.efectosLlegaron.map((c, i) => <p key={`e${i}`}>✓ {t("ui.novedad.efecto")}: {t(c.descripcionKey)} <span className="delta mas">+{c.delta}</span></p>)}
                     {j.ultimas.malaSuerte.some((c) => c.descripcionKey === "mala_suerte.tormenta_polvo") && <Polvo estado={j.estado} onAccion={accion} onElegir={(a) => { accion(a); enviar({ tipo: "pausa", pausado: false }); }} />}
-                    <button onClick={() => enviar({ tipo: "pausa", pausado: false })}>▶ {t("ui.reanudar")}</button>
+                    <button data-testid="resume-event" onClick={() => enviar({ tipo: "pausa", pausado: false })}>▶ {t("ui.reanudar")}</button>
                   </div>
                 )}
                 <details>

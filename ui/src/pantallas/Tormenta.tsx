@@ -25,7 +25,7 @@ export function Tormenta({ estado, onDecidir, onAccion }: { estado: GameState; o
   const verificacion = verificada ? verificarIris(verificada, estado) : null;
 
   return (
-    <section className="tarjeta alerta columna" aria-live="assertive">
+    <section data-testid="storm-screen" className="tarjeta alerta columna" aria-live="assertive">
       <h2>☀ {t("ui.paso.5.titulo")}: {t(`datos.tormenta.${t0.id}.nombre`)}</h2>
       <p>{t(`datos.tormenta.${t0.id}.queOcurrio`)}</p>
       <TarjetaFuente fuente={t0.fuente} />
@@ -37,7 +37,7 @@ export function Tormenta({ estado, onDecidir, onAccion }: { estado: GameState; o
       {iris && (
         <>
           <Burbuja d={iris} irisDanada />
-          {!verificada && <div><button className="secundario" onClick={() => setVerificada(iris.falla)}>{t("ui.iris.verificar")}</button></div>}
+          {!verificada && <div><button data-testid="verify-iris" className="secundario" onClick={() => setVerificada(iris.falla)}>{t("ui.iris.verificar")}</button></div>}
           {verificacion && <Burbuja d={verificacion} />}
         </>
       )}
@@ -45,14 +45,14 @@ export function Tormenta({ estado, onDecidir, onAccion }: { estado: GameState; o
       <p><strong>{t("agentes.escena6.elige")}</strong></p>
       <div className="fila">
         {opciones.map((o) => (
-          <button key={o.id} className={elegida === o.id ? "" : "secundario"} onClick={() => setElegida(o.id)} aria-pressed={elegida === o.id}>
+          <button data-testid={`dilemma-${o.id}`} key={o.id} className={elegida === o.id ? "" : "secundario"} onClick={() => setElegida(o.id)} aria-pressed={elegida === o.id}>
             {describirAccion(o.accion, t)}
           </button>
         ))}
       </div>
       <QueSi estado={estado} opciones={escena.opciones} onSimular={onAccion} />
       <div>
-        <button disabled={!elegida} onClick={() => onDecidir(verificacion?.accion && verificada ? [verificacion.accion] : [], elegida!)}>
+        <button data-testid="dilemma-confirm" disabled={!elegida} onClick={() => onDecidir(verificacion?.accion && verificada ? [verificacion.accion] : [], elegida!)}>
           {t("ui.continuar")}
         </button>
       </div>

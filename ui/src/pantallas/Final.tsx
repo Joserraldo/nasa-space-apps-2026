@@ -10,7 +10,7 @@ export function Final({ estado, onOtra }: { estado: GameState; onOtra: () => voi
   const total = r.danoPorOrigen.decision + r.danoPorOrigen.mala_suerte + r.danoPorOrigen.sistema || 1;
   const origenes = ["decision", "mala_suerte", "sistema"] as const;
   return (
-    <section className="tarjeta columna">
+    <section data-testid="mission-result" data-result={r.resultado} className="tarjeta columna">
       <h2>{t(r.resultado === "exito" ? "ui.final.exito" : "ui.final.fallo")}</h2>
       <p><strong>{t("ui.final.puntaje")}:</strong> {r.puntaje} · <span className="etiqueta">{t(r.rangoKey)}</span></p>
 
@@ -49,7 +49,7 @@ export function Final({ estado, onOtra }: { estado: GameState; onOtra: () => voi
           <TarjetaFuente fuente={estado.tormenta.fuente} />
         </>
       )}
-      <div><button onClick={onOtra}>{t("ui.final.jugar_otra")}</button></div>
+      <div><button data-testid="play-again" onClick={onOtra}>{t("ui.final.jugar_otra")}</button></div>
     </section>
   );
 }

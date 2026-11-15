@@ -4,7 +4,7 @@ Pruebas transversales del rol `infra`. Las pruebas unitarias de cada paquete viv
 
 ## e2e: ruta dorada (`tests/e2e/ruta-dorada.spec.ts`)
 
-Playwright (Chromium) juega la partida de demo de #41 (semilla `jezero-2024-05-20`) en inglés: inicio, satélite, elegir sitio, 2 módulos, tormenta real del 20 may 2024 con tarjeta de fuente, Doctora vs. Ingeniera, Iris dañada que dice "todo perfecto" y se verifica, enviar telemetría y resumen con cadena de causas y tarjeta de ciencia. Falla si hay errores de consola.
+Playwright (Chromium) juega la partida de demo de #41 (semilla `jezero-2024-05-20`) en inglés y español: inicio, satélite, elegir sitio, 2 módulos, tormenta real del 20 may 2024 con tarjeta de fuente, Doctora vs. Ingeniera, Iris dañada que dice "todo perfecto" y se verifica, enviar telemetría y resumen con cadena de causas y tarjeta de ciencia. Falla si hay errores de consola.
 
 ### Cómo correrla
 
@@ -20,12 +20,8 @@ El reloj de la ui es de 4 s por turno; la prueba usa `page.clock` para avanzarlo
 
 ### Selectores
 
-Roles y textos de `ui/i18n/en.json` (el inglés es el idioma base). Si cambia un texto en inglés, la prueba falla a propósito: ajusta el texto en el spec. Aún no hay `data-testid`; cuando existan conviene pasarse a ellos (ver el comentario a ui en el PR de esta prueba).
+Identificadores estables definidos en [selectores.md](selectores.md). Los casos EN/ES conservan roles y nombres accesibles, pero el recorrido no depende de etiquetas literales o `details summary`. José actualiza la ruta con cada transición nueva; los autores conservan los IDs de los componentes.
 
-### Cuándo conectarla al CI (pendiente, a propósito)
+### CI
 
-No está en ningún workflow todavía. Cuando se mezcle la ui (#68) a `develop`:
-
-1. En `.github/workflows/deploy.yml`, antes del paso de producción, añadir `npx playwright install --with-deps chromium` y `npm run e2e` (con `CI=true`, que activa 1 reintento y el reporte HTML).
-2. Subir `playwright-report/` como artefacto si falla.
-3. Que el paso de despliegue a producción dependa (`needs`) de ese job: producción solo se publica si la ruta dorada pasa.
+La CI ejecuta la ruta dorada en PRs hacia develop, main y feat/ui-escenarios. Cualquier intro/carga nueva mantiene el contrato de inicio de selectores.md y llega al mismo estado orbital. No posponer el ajuste de la prueba a otro PR después de cambiar el flujo.

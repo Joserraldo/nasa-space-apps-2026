@@ -32,12 +32,12 @@ export function ColocarModulos({ colocados, onColocar, onListo }: { colocados: E
               <h3>{t(`agentes.equipo.${m}`)}</h3>
               <div><strong>{t("ui.paso.4.costo")}:</strong> <Deltas d={costo} /></div>
               <div><strong>{t("ui.paso.4.beneficio")}:</strong> <Deltas d={MODULOS[m]} /></div>
-              <button disabled={puesto || faltan <= 0} onClick={() => onColocar(m)}>{puesto ? "✓" : t("ui.paso.4.colocar")}</button>
+              <button data-testid={`module-${m}`} disabled={puesto || faltan <= 0} onClick={() => onColocar(m)}>{puesto ? "✓" : t("ui.paso.4.colocar")}</button>
             </div>
           );
         })}
       </div>
-      <div><button disabled={faltan > 0} onClick={onListo}>{t("ui.paso.4.listo")}</button></div>
+      <div><button data-testid="modules-ready" disabled={faltan > 0} onClick={onListo}>{t("ui.paso.4.listo")}</button></div>
     </section>
   );
 }

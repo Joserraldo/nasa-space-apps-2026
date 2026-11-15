@@ -30,7 +30,7 @@ export function ElegirSitio({ estado, onElegir }: { estado: GameState; onElegir:
                 </div>
               ))}
               <div><strong>{t("ui.paso.3.total")}:</strong> {Math.round(s.total * 100)} <span className="etiqueta">{t(s.rangoKey)}</span></div>
-              <button onClick={() => onElegir(s)}>{t("ui.paso.3.elegir")}</button>
+              <button data-testid={`landing-option-${s.id}`} onClick={() => onElegir(s)}>{t("ui.paso.3.elegir")}</button>
             </div>
           );
         })}

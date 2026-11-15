@@ -5,7 +5,7 @@ import { useT } from "../i18n.js";
 export function TarjetaFuente({ fuente }: { fuente: SourceCard }) {
   const { t } = useT();
   return (
-    <div className="fuente">
+    <div data-testid="source-card" className="fuente">
       <strong>{t("ui.fuente.titulo")}</strong> {t(fuente.nombreKey)}
       {fuente.dueno ? ` · ${fuente.dueno}` : ""}
       {" "}
@@ -20,7 +20,7 @@ export function TarjetaFuente({ fuente }: { fuente: SourceCard }) {
 export function FuenteTerreno({ fuente }: { fuente: { nombreKey: string; dueno?: string; consultadoEl: string; urls: string[]; estadoDato?: "curado" | "mock"; derivadoKey?: string } }) {
   const { t } = useT();
   return (
-    <div className="fuente">
+    <div data-testid="source-card" className="fuente">
       <strong>{t("ui.fuente.titulo")}</strong> {t(fuente.nombreKey)}{fuente.dueno ? ` · ${fuente.dueno}` : ""}{" "}
       <span className="etiqueta">{t(fuente.estadoDato === "mock" ? "datos.etiqueta.mock" : "datos.etiqueta.curado")}</span>
       {fuente.derivadoKey && <div>{t(fuente.derivadoKey)}</div>}

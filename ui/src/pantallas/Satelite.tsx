@@ -9,7 +9,7 @@ export function Satelite({ estado, onContinuar }: { estado: GameState; onContinu
   const o = estado.orbita!;
   const consejos = consejosSatelite(estado);
   return (
-    <section className="tarjeta columna">
+    <section data-testid="orbit-screen" className="tarjeta columna">
       <h2>{t("ui.paso.1.titulo")}</h2>
       <p>{t("ui.paso.1.texto", { altura: Math.round(o.alturaKm) })}</p>
       <svg viewBox="0 0 320 160" width="100%" height="160" role="img" aria-label={t("ui.paso.1.titulo")}>
@@ -29,7 +29,7 @@ export function Satelite({ estado, onContinuar }: { estado: GameState; onContinu
         <Mini nombre={t("ui.paso.1.escudo")} v={o.escudoPct} clase="soporte_vital" />
       </div>
       {consejos.map((d, i) => <Burbuja key={i} d={d} />)}
-      <div><button onClick={onContinuar}>{t("ui.continuar")}</button></div>
+      <div><button data-testid="continue-orbit" onClick={onContinuar}>{t("ui.continuar")}</button></div>
     </section>
   );
 }
