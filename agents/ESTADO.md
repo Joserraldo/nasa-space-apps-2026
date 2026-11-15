@@ -1,15 +1,16 @@
-# Estado — rol 3 (Agentes expertos)
-**Actualizado:** 14 nov 2026, 19:20 · **Rama:** feat/agentes-iris-acompana · **PR:** sin abrir
+# Estado — José (agentes, infra, integración del frontend)
+**Actualizado:** 14 nov 2026, 22:40 · **Rama:** feat/ui-integracion-ajustes · **PR:** hacia feat/ui-escenarios
 
 ## Hecho (esta iteración)
-- Propuesta `docs/ideas/iris-companera-v8.md` (6 mecánicas, destino por paso).
-- `agents/src/iris-acompana.ts`: `guiaIrisLugar` (destino, ruta, experto, gesto, cara) y `briefingIris`; claves `agentes.iris.acompana.*` y `agentes.iris.lugar.*` en en/es; 22 tests; tabla en README.
-- Antes: voces de Marte polo norte (#97) en `feat/agentes-voces-marte-polo-norte`.
+- Contrato de ajustes del jugador en `ui/src/juego/ajustes.ts` (FLUJO §3): idioma, sonido, movimiento reducido y calidad en localStorage, con valores por defecto si falla; 5 tests.
+- Antes: `VistaEscena` (#181) y eventos de feedback (#182); #151 fusionado; CI en feat/ui-escenarios; #129 y #131 rebasados.
 
 ## Qué sigue
-- Que Camilo apruebe las reglas y María Paula la representación; abrir PR hacia develop.
-- Si lo aprueban: issue `contrato` para mover `DestinoIris`/`LugarId` a `contracts/`.
-- Voces Luna polo sur (#98), outpost (#99) y Luna lado visible (#100).
+- Props de `EscenaBase` con Daniel (issue o comentario en su PR).
+- Rebasar #182 y este PR cuando entre #181 (los tres tocan este archivo).
+- Ola 2 (cuando María Paula suba su trabajo): borrar la bienvenida oscura de App.tsx y pantallas/.
 
 ## Bloqueos
-- `DestinoIris` es copia de `LugarId` de la rama local de ui v8: si ui cambia un id, hay que copiarlo.
+- `LugarObjetivo` usa `DestinoIris` de agents hasta que Camilo publique `LugarId` en `escena/mundo.ts`.
+
+Tokens: verde
