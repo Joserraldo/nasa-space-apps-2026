@@ -25,8 +25,8 @@ EN CADA ITERACIÓN:
 3. Riesgo de calendario: qué de lo que falta para la próxima puerta está en peligro. Si P2 o
    P3 no se cumplen, propone el recorte según la regla de ORQUESTACION (Luna, Atlas,
    desbloqueos, 3D completo, dibujo de ruta en 3D, niveles adaptativos extra).
-4. Lo que Santiago confirma al fusionar #157 (Iris rover 3D y tripulación 3D en el mundo,
-   D6 y D7, NIVELES §7): recordalo si bloquea trabajo.
+4. Ya aprobado por Santiago (14 nov): Iris rover 3D y la Ingeniera 3D en el bloque 2,
+   D6 y D7 (tripulantes por rol). Lo que siga abierto de NIVELES §7: recordalo si bloquea trabajo.
 5. Resumen para María Paula en máximo 10 líneas. No publiques nada en GitHub ni en Discord
    sin su OK explícito.
 
