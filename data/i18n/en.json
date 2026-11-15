@@ -147,5 +147,19 @@
   "datos.ciencia.csa-comer-en-la-estacion.titulo": "Meals on the Space Station",
   "datos.ciencia.csa-comer-en-la-estacion.texto": "On the Space Station, each astronaut can have 3 meals and 1 snack a day. On longer trips to the Moon they won't be able to bring all their food, so they will need to grow it.",
   "datos.ciencia.csa-granja-espacial.titulo": "A space farm from Canada",
-  "datos.ciencia.csa-granja-espacial.texto": "A Canadian contest looked for ways to grow food using very little energy, water and materials. The winning system, CANGrow, from a company in Vancouver, grows strawberries and cherry tomatoes and could make more than 700 kg of nutritious food a year."
+  "datos.ciencia.csa-granja-espacial.texto": "A Canadian contest looked for ways to grow food using very little energy, water and materials. The winning system, CANGrow, from a company in Vancouver, grows strawberries and cherry tomatoes and could make more than 700 kg of nutritious food a year.",
+  "datos.usados.artemis": "The radiation inside the Orion spacecraft on the Artemis I mission (2022) was measured by detectors on board (data from NASA OSDR RadLab).",
+  "datos.usados.luna": "The Moon maps come from NASA Moon Trek, with ground height measured by the LOLA laser instrument on NASA's LRO spacecraft; how flat each place is, we worked out ourselves.",
+  "datos.usados.osdrEstudios": "Seven real experiments from NASA OSDR tell us about food, bones, muscles, the body's defenses and radiation.",
+  "datos.usados.csa": "The food cards come from the Canadian Space Agency, a partner of the challenge: it is not NASA.",
+  "datos.usados.tipos": "We always keep apart what was measured, what a computer model calculated, and what we worked out ourselves.",
+  "datos.usados.aviso": "This is an unofficial project, not endorsed by NASA, and every piece of data says where it comes from.",
+  "datos.glosario.orbita.palabra": "Orbit",
+  "datos.glosario.orbita.def": "A regular, repeating path that an object in space follows around another one, like the Space Station around Earth.",
+  "datos.glosario.timo.palabra": "Thymus",
+  "datos.glosario.timo.def": "An organ of the body's defenses: it makes white blood cells that fight infections. It shrinks during spaceflight.",
+  "datos.glosario.modulo-de-aterrizaje.palabra": "Lander",
+  "datos.glosario.modulo-de-aterrizaje.def": "A spacecraft made to reach the surface of a planet and send data back to Earth. InSight was one on Mars.",
+  "datos.glosario.rover.palabra": "Rover",
+  "datos.glosario.rover.def": "A robot vehicle with wheels, made to move around on the surface of another world."
 }
