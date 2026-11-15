@@ -1,15 +1,18 @@
 {
-  "version": 3,
+  "version": 4,
   "status": "curated_v8_references",
   "primary_approach": "procedural_threejs_webgl",
   "world": "open_free_exploration",
   "runtime": "Three.js 0.160.0 + React 18",
   "sources": {
-    "master_guide": "../../assets/GUIA-FABLE-V8.md",
-    "atlas_markdown": "ATLAS-V8.md",
-    "guide": "APLICACION.md",
-    "expansion": "AMPLIACION-ESPACIOS.md",
-    "plan": "PLAN-IMPLEMENTACION-JEZERO.md",
+    "index": "README.md",
+    "design": "DISEÑO.md",
+    "mars": "MARTE.md",
+    "scenes": "ESCENAS.md",
+    "mechanics": "MECANICAS.md",
+    "implementation": "APLICACION.md",
+    "references": "REFERENCIAS.md",
+    "map": "mapa-base-jezero.svg",
     "factories": "piezas-procedurales.js"
   },
   "individuals": [
@@ -17,113 +20,315 @@
       "id": "door",
       "png": "referencias/piezas/01-puerta-marco.png",
       "factory": "door",
-      "reuse": ["airlock", "control", "greenhouse", "laboratory", "engineering", "medical", "quarters", "shelter"],
+      "reuse": [
+        "airlock",
+        "control",
+        "greenhouse",
+        "laboratory",
+        "engineering",
+        "medical",
+        "quarters",
+        "shelter"
+      ],
       "pivot": "base_center"
     },
     {
       "id": "console",
       "png": "referencias/piezas/02-consola.png",
       "factory": "consoleUnit",
-      "reuse": ["control", "greenhouse", "laboratory", "engineering", "medical", "shelter"],
+      "reuse": [
+        "control",
+        "greenhouse",
+        "laboratory",
+        "engineering",
+        "medical",
+        "shelter"
+      ],
       "pivot": "floor_center"
     },
     {
       "id": "crate",
       "png": "referencias/piezas/03-caja.png",
       "factory": "crate",
-      "reuse": ["airlock", "control", "laboratory", "engineering", "quarters", "shelter"],
+      "reuse": [
+        "airlock",
+        "control",
+        "laboratory",
+        "engineering",
+        "quarters",
+        "shelter"
+      ],
       "pivot": "floor_center"
     },
     {
       "id": "panel",
       "png": "referencias/piezas/04-panel-solar.png",
       "factory": "solarPanel",
-      "reuse": ["engineering", "exterior"],
+      "reuse": [
+        "engineering",
+        "exterior"
+      ],
       "pivot": "base_center; head_axis_separate"
     },
     {
       "id": "planter",
       "png": "referencias/piezas/05-jardinera.png",
       "factory": "planter",
-      "reuse": ["greenhouse"],
-      "children": ["plant", "leaf"],
+      "reuse": [
+        "greenhouse"
+      ],
+      "children": [
+        "plant",
+        "leaf"
+      ],
       "pivot": "base_center"
     },
     {
       "id": "tank",
       "png": "referencias/piezas/06-deposito.png",
       "factory": "tank",
-      "reuse": ["greenhouse", "medical", "shelter", "exterior"],
+      "reuse": [
+        "greenhouse",
+        "medical",
+        "shelter",
+        "exterior"
+      ],
       "pivot": "base_center"
     },
     {
       "id": "bench",
       "png": "referencias/piezas/07-banco.png",
       "factory": "bench",
-      "reuse": ["control", "medical", "quarters", "shelter"],
+      "reuse": [
+        "control",
+        "medical",
+        "quarters",
+        "shelter"
+      ],
       "pivot": "floor_center"
     },
     {
       "id": "antenna",
       "png": "referencias/piezas/08-antena.png",
       "factory": "antenna",
-      "reuse": ["control", "shelter", "exterior"],
+      "reuse": [
+        "control",
+        "shelter",
+        "exterior"
+      ],
       "pivot": "base_center"
     }
   ],
   "kits": [
-    { "id": "interior_logistics_kit", "png": "referencias/piezas/09-kit-interior-logistica.png" },
-    { "id": "exterior_modular_kit", "png": "referencias/piezas/10-kit-exterior-modular.png" },
-    { "id": "corridors", "png": "referencias/exterior/01-corredores-conexiones.png" },
-    { "id": "environment_crops", "png": "referencias/exterior/02-kit-entorno-cultivos.png" },
-    { "id": "exterior_layout", "png": "referencias/exterior/03-exterior-organizacion.png" }
+    {
+      "id": "interior_logistics_kit",
+      "png": "referencias/piezas/09-kit-interior-logistica.png"
+    },
+    {
+      "id": "exterior_modular_kit",
+      "png": "referencias/piezas/10-kit-exterior-modular.png"
+    },
+    {
+      "id": "corridors",
+      "png": "referencias/exterior/01-corredores-conexiones.png"
+    },
+    {
+      "id": "environment_crops",
+      "png": "referencias/exterior/02-kit-entorno-cultivos.png"
+    },
+    {
+      "id": "exterior_layout",
+      "png": "referencias/exterior/03-exterior-organizacion.png"
+    }
   ],
   "ui": [
-    { "id": "logo", "png": "referencias/ui/00-logo-actual.png" },
-    { "id": "dialogue_decision", "png": "referencias/ui/01-dialogo-decision.png" },
-    { "id": "buttons_crew_map", "png": "referencias/ui/02-botones-crew-map.png" },
-    { "id": "faceted_variants", "png": "referencias/ui/03-variantes-facetadas.png" },
-    { "id": "query_compare_source", "png": "referencias/ui/04-consulta-comparacion-fuente.png" }
+    {
+      "id": "logo",
+      "png": "referencias/ui/00-logo-actual.png"
+    },
+    {
+      "id": "dialogue_decision",
+      "png": "referencias/ui/01-dialogo-decision.png"
+    },
+    {
+      "id": "buttons_crew_map",
+      "png": "referencias/ui/02-botones-crew-map.png"
+    },
+    {
+      "id": "faceted_variants",
+      "png": "referencias/ui/03-variantes-facetadas.png"
+    },
+    {
+      "id": "query_compare_source",
+      "png": "referencias/ui/04-consulta-comparacion-fuente.png"
+    }
   ],
   "characters": [
-    { "id": "suit_family", "png": "referencias/personajes/00-familia-trajes.png", "note": "Keep per-role emblem from individual sheets" },
-    { "id": "engineer_poses", "png": "referencias/personajes/01-ingeniera-poses.png" },
-    { "id": "engineer_faces", "png": "referencias/personajes/02-ingeniera-rostros.png" },
-    { "id": "doctor_poses", "png": "referencias/personajes/03-doctora-poses.png" },
-    { "id": "doctor_faces", "png": "referencias/personajes/04-doctora-rostros.png" },
-    { "id": "meteorologist_poses", "png": "referencias/personajes/05-meteorologa-poses.png" },
-    { "id": "meteorologist_faces", "png": "referencias/personajes/06-meteorologa-rostros.png" },
-    { "id": "crew_mechanics", "png": "referencias/personajes/07-tripulacion-mecanicas.png" }
+    {
+      "id": "suit_family",
+      "png": "referencias/personajes/00-familia-trajes.png",
+      "note": "Keep per-role emblem from individual sheets"
+    },
+    {
+      "id": "engineer_poses",
+      "png": "referencias/personajes/01-ingeniera-poses.png"
+    },
+    {
+      "id": "engineer_faces",
+      "png": "referencias/personajes/02-ingeniera-rostros.png"
+    },
+    {
+      "id": "doctor_poses",
+      "png": "referencias/personajes/03-doctora-poses.png"
+    },
+    {
+      "id": "doctor_faces",
+      "png": "referencias/personajes/04-doctora-rostros.png"
+    },
+    {
+      "id": "meteorologist_poses",
+      "png": "referencias/personajes/05-meteorologa-poses.png"
+    },
+    {
+      "id": "meteorologist_faces",
+      "png": "referencias/personajes/06-meteorologa-rostros.png"
+    },
+    {
+      "id": "crew_mechanics",
+      "png": "referencias/personajes/07-tripulacion-mecanicas.png"
+    }
   ],
   "start": [
-    { "id": "start_original", "png": "referencias/inicio/00-inicio-original.png" },
-    { "id": "start_updated", "png": "referencias/inicio/01-inicio-actualizado.png" },
-    { "id": "intro_four_moments", "png": "referencias/inicio/02-intro-cuatro-momentos.png" },
-    { "id": "loading_panel", "png": "referencias/inicio/03-panel-carga.png" }
+    {
+      "id": "start_original",
+      "png": "referencias/inicio/00-inicio-original.png"
+    },
+    {
+      "id": "start_updated",
+      "png": "referencias/inicio/01-inicio-actualizado.png"
+    },
+    {
+      "id": "intro_four_moments",
+      "png": "referencias/inicio/02-intro-cuatro-momentos.png"
+    },
+    {
+      "id": "loading_panel",
+      "png": "referencias/inicio/03-panel-carga.png"
+    }
   ],
   "start_layers": [
-    { "id": "astronauta", "file": "referencias/inicio/capas/astronauta.png", "kind": "alpha_concept_reference" },
-    { "id": "nave", "file": "referencias/inicio/capas/nave.png", "kind": "alpha_concept_reference" },
-    { "id": "planeta", "file": "referencias/inicio/capas/planeta.png", "kind": "alpha_concept_reference" },
-    { "id": "asteroide", "file": "referencias/inicio/capas/asteroide.png", "kind": "alpha_concept_reference" }
+    {
+      "id": "astronauta",
+      "file": "referencias/inicio/capas/astronauta.png",
+      "kind": "alpha_concept_reference"
+    },
+    {
+      "id": "nave",
+      "file": "referencias/inicio/capas/nave.png",
+      "kind": "alpha_concept_reference"
+    },
+    {
+      "id": "planeta",
+      "file": "referencias/inicio/capas/planeta.png",
+      "kind": "alpha_concept_reference"
+    },
+    {
+      "id": "asteroide",
+      "file": "referencias/inicio/capas/asteroide.png",
+      "kind": "alpha_concept_reference"
+    }
   ],
   "stations": [
-    { "id": "overview", "reference": "referencias/estaciones/00-panorama-estaciones-y-piezas.png", "progression_gate": false },
-    { "id": "airlock", "reference": "referencias/estaciones/01-esclusa.png", "progression_gate": false },
-    { "id": "control", "reference": "referencias/estaciones/02-control-mision.png", "expansion": "referencias/estaciones/02b-control-operaciones.png", "progression_gate": false },
-    { "id": "greenhouse", "reference": "referencias/estaciones/03-invernadero.png", "expansion": "referencias/estaciones/03b-invernadero-cultivos.png", "progression_gate": false },
-    { "id": "laboratory", "reference": "referencias/estaciones/04-laboratorio.png", "expansion": "referencias/estaciones/04b-laboratorio-investigacion.png", "progression_gate": false },
-    { "id": "engineering", "reference": "referencias/estaciones/05-ingenieria.png", "expansion": "referencias/estaciones/05b-almacen-logistica.png", "progression_gate": false },
-    { "id": "medical", "reference": "referencias/estaciones/06-enfermeria.png", "expansion": "referencias/estaciones/06b-enfermeria-atencion.png", "progression_gate": false },
-    { "id": "quarters", "reference": "referencias/estaciones/07-descanso-comedor.png", "expansion": ["referencias/estaciones/07b-comedor-descanso-marte.png", "referencias/estaciones/07c-espacio-comun.png"], "progression_gate": false },
-    { "id": "shelter", "reference": "referencias/estaciones/08-refugio.png", "progression_gate": false }
+    {
+      "id": "overview",
+      "reference": "referencias/estaciones/00-panorama-estaciones-y-piezas.png",
+      "progression_gate": false
+    },
+    {
+      "id": "airlock",
+      "reference": "referencias/estaciones/01-esclusa.png",
+      "progression_gate": false
+    },
+    {
+      "id": "control",
+      "reference": "referencias/estaciones/02-control-mision.png",
+      "expansion": "referencias/estaciones/02b-control-operaciones.png",
+      "progression_gate": false
+    },
+    {
+      "id": "greenhouse",
+      "reference": "referencias/estaciones/03-invernadero.png",
+      "expansion": "referencias/estaciones/03b-invernadero-cultivos.png",
+      "progression_gate": false
+    },
+    {
+      "id": "laboratory",
+      "reference": "referencias/estaciones/04-laboratorio.png",
+      "expansion": "referencias/estaciones/04b-laboratorio-investigacion.png",
+      "progression_gate": false
+    },
+    {
+      "id": "engineering",
+      "reference": "referencias/estaciones/05-ingenieria.png",
+      "expansion": "referencias/estaciones/05b-almacen-logistica.png",
+      "progression_gate": false
+    },
+    {
+      "id": "medical",
+      "reference": "referencias/estaciones/06-enfermeria.png",
+      "expansion": "referencias/estaciones/06b-enfermeria-atencion.png",
+      "progression_gate": false
+    },
+    {
+      "id": "quarters",
+      "reference": "referencias/estaciones/07-descanso-comedor.png",
+      "expansion": [
+        "referencias/estaciones/07b-comedor-descanso-marte.png",
+        "referencias/estaciones/07c-espacio-comun.png"
+      ],
+      "progression_gate": false
+    },
+    {
+      "id": "shelter",
+      "reference": "referencias/estaciones/08-refugio.png",
+      "progression_gate": false
+    }
   ],
   "procedural_only": [
-    { "id": "rock", "factory": "rock", "variance": "seed, scale, rotation, basaltic palette" },
-    { "id": "plant", "factory": "plant", "children": ["leaf"], "variance": "seed, leaf placement (pressurized interior only)" },
-    { "id": "station", "factory": "station", "children": "shared wall/floor/door and station props" },
-    { "id": "character", "factory": "astronaut", "variants": ["child", "engineer", "doctor", "meteorologist"], "rig": "articulated Groups, not skinned GLB" },
-    { "id": "iris", "factory": "crearIris", "kind": "4-wheel solar rover router; visual fault when damaged by radiation" }
+    {
+      "id": "rock",
+      "factory": "rock",
+      "variance": "seed, scale, rotation, basaltic palette"
+    },
+    {
+      "id": "plant",
+      "factory": "plant",
+      "children": [
+        "leaf"
+      ],
+      "variance": "seed, leaf placement (pressurized interior only)"
+    },
+    {
+      "id": "station",
+      "factory": "station",
+      "children": "shared wall/floor/door and station props"
+    },
+    {
+      "id": "character",
+      "factory": "astronaut",
+      "variants": [
+        "child",
+        "engineer",
+        "doctor",
+        "meteorologist"
+      ],
+      "rig": "articulated Groups, not skinned GLB"
+    },
+    {
+      "id": "iris",
+      "factory": "crearIris",
+      "kind": "4-wheel solar rover router; visual fault when damaged by radiation"
+    }
   ],
   "limits": [
     "50 curated reference PNGs live optimized under docs/referenciapau/referencias/ (5.40 MB total).",

@@ -26,3 +26,6 @@ __pycache__/
 /prompts-produccion.json
 /revision.json
 /revision-plan-jezero.json
+
+# Atlas y plan en PDF: su contenido vive en los .md y en referencias/ (no se versionan).
+/*.pdf

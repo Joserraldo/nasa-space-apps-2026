@@ -23,4 +23,6 @@
 
 
 ## Notas / decisiones que afectan este rol
-- _(vacío)_
+- **Dirección visual única vigente (14 nov 2026):** [`docs/referenciapau/README.md`](../docs/referenciapau/README.md). Antes de tocar `ui/` o `assets/`, leé la fila de tu tarea en su tabla "Qué leer según la tarea".
+- **Reglas duras:** la referencia manda (fidelidad, no reinterpretación); todo se construye con código (Three.js `^0.160.0` procedural, DOM/CSS), sin GLB ni WebGPU ni librerías nuevas; Marte realista ([`MARTE.md`](../docs/referenciapau/MARTE.md)); el motor manda sobre toda animación ([`MECANICAS.md`](../docs/referenciapau/MECANICAS.md) §5); cada PR visual pasa la puerta de [`APLICACION.md`](../docs/referenciapau/APLICACION.md) §10.
+- **Descartes que no vuelven:** capibara, atlas `v2`–`v5` y `v7`, `polyfork.ts`, `ui/public/models/*.glb`, entradas crudas de la ampliación, tema oscuro del prototipo.

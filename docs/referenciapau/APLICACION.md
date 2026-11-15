@@ -1,160 +1,237 @@
-# Cómo construir la referencia: capas, piezas, animaciones y Marte realista
+# APLICACION: cómo se construye en código
 
-**Vigente · María Paula (`Paulasaah`) · Atlas v8 + [`ATLAS-V8.md`](ATLAS-V8.md) · Construcción por código con Three.js `^0.160.0` (`WebGLRenderer`) y React 18.**
+**Qué es:** el encargo técnico para llevar [DISEÑO.md](DISEÑO.md), [MARTE.md](MARTE.md) y [ESCENAS.md](ESCENAS.md) a `ui/`. **Pila fija:** React 18 + TypeScript + Three.js `^0.160.0` (`WebGLRenderer`) + CSS / Web Animations API. Sin frameworks nuevos, sin GLB, sin WebGPU, sin librerías npm nuevas.
+**Alcance de carpetas del rol ui:** solo `ui/` y `assets/`. Lo que haga falta de `engine/`, `design/`, `missions/`, `data/`, `agents/` o `contracts/` se pide con un issue `bloquea:<rol>`.
 
-El inicio, los personajes, las estaciones y los controles ya están curados en [`referencias/`](referencias/) y resumidos en [`ATLAS-V8.md`](ATLAS-V8.md). Este documento especifica cómo llevar esa dirección visual a `ui/src/`, unifica su índice directo con las imágenes optimizadas y fija los criterios de **animación fluida**, **adaptación realista de Marte (NASA)** y **cero herencia de Plan B**.
+---
 
-## 1. Índice visual de entregas y uso correcto en código
+## 1. Punto de partida: qué se conserva y qué se reemplaza
 
-| Categoría | Archivos en [`referencias/`](referencias/) | Uso correcto en `ui/src/` |
-| --- | --- | --- |
-| Inicio e intro | [`inicio/01-inicio-actualizado.png`](referencias/inicio/01-inicio-actualizado.png), [`00-inicio-original.png`](referencias/inicio/00-inicio-original.png), [`02-intro-cuatro-momentos.png`](referencias/inicio/02-intro-cuatro-momentos.png), [`03-panel-carga.png`](referencias/inicio/03-panel-carga.png) | Composición de referencia. UI y botones reales van siempre en DOM traducible EN/ES sobre render WebGL. |
-| Capas orbitales | [`inicio/capas/astronauta.png`](referencias/inicio/capas/astronauta.png), [`nave.png`](referencias/inicio/capas/nave.png), [`planeta.png`](referencias/inicio/capas/planeta.png), [`asteroide.png`](referencias/inicio/capas/asteroide.png) | Guías alpha de silueta y anclaje (`Socket_Tether`); se reconstruyen en Three.js con geometría y pivotes. |
-| Sistema UI y logo | [`ui/00-logo-actual.png`](referencias/ui/00-logo-actual.png), [`01-dialogo-decision.png`](referencias/ui/01-dialogo-decision.png), [`02-botones-crew-map.png`](referencias/ui/02-botones-crew-map.png), [`03-variantes-facetadas.png`](referencias/ui/03-variantes-facetadas.png), [`04-consulta-comparacion-fuente.png`](referencias/ui/04-consulta-comparacion-fuente.png) | Familia única de tarjetas marfil facetadas, variantes de estado, consulta y comparación `Costs now / Later`. |
-| Personajes humanos | [`personajes/00-familia-trajes.png`](referencias/personajes/00-familia-trajes.png), [`01–02 ingeniera`](referencias/personajes/01-ingeniera-poses.png), [`03–04 doctora`](referencias/personajes/03-doctora-poses.png), [`05–06 meteorologa`](referencias/personajes/05-meteorologa-poses.png), [`07-tripulacion-mecanicas.png`](referencias/personajes/07-tripulacion-mecanicas.png) | Niños y adultas siempre humanos (nunca robots). En `00-familia-trajes.png` ignorar el emblema repetido por error y respetar el distintivo individual de `01`–`06`. |
-| Estaciones (`8` + `04B`) | [`estaciones/00-panorama-estaciones-y-piezas.png`](referencias/estaciones/00-panorama-estaciones-y-piezas.png), [`01-esclusa.png`](referencias/estaciones/01-esclusa.png) a [`08-refugio.png`](referencias/estaciones/08-refugio.png) + ampliaciones `02b`–`07c` | Cortes abiertos por familia modular sobre los `LugarId` actuales de `mundo.ts`; sin candado secuencial. |
-| Piezas y kits | [`piezas/01-puerta-marco.png`](referencias/piezas/01-puerta-marco.png) a [`10-kit-exterior-modular.png`](referencias/piezas/10-kit-exterior-modular.png) | Catálogo de átomos e instancias compartidas; coincide con [`catalogo-assets.json`](catalogo-assets.json) y [`piezas-procedurales.js`](piezas-procedurales.js) (como base estructural, nunca como bisel final). |
-| Exteriores y corredores | [`exterior/01-corredores-conexiones.png`](referencias/exterior/01-corredores-conexiones.png), [`02-kit-entorno-cultivos.png`](referencias/exterior/02-kit-entorno-cultivos.png), [`03-exterior-organizacion.png`](referencias/exterior/03-exterior-organizacion.png) | Dos circuitos en bucle, atajos y entorno árido marciano separado de cultivos protegidos. |
+**Se reemplaza por completo (prototipo descartado, "Plan B"):**
+- Geometría, proporciones, cielo `#323272`, iluminación, paneles oscuros y visores opacos de `ui/src/escena/modelos.ts` y `escena3d.ts`.
+- Paleta oscura de `ui/src/estilos.css` (`#0b1026`, `#1a2350`, `color-scheme: dark`) y `ui/src/mision.css` (`--hud: #141a2b`, `--hud-edge: #2c3550`, `--life: #9be15d`).
+- Bienvenida de `Base3D.tsx` (`.vineta-mundo`, `.bienvenida-mision`, `.boton-despegar` verde, `.comunicador-iris` oscura).
+- `<Hud />` mostrado en la fase `inicio`.
+- `escena/polyfork.ts` (clona y reemplaza materiales por vertex colors: rompe visor, tela y acentos). Ya archivado; no vuelve.
 
-> **Aclaración técnica:** [`piezas-procedurales.js`](piezas-procedurales.js) exporta fábricas geométricas iniciales de referencia (`door`, `consoleUnit`, `crate`, `solarPanel`, `planter`, `tank`, `bench`, `antenna`, `rock`, `plant`, `station`, `astronaut`), pero su acabado es de bloques iniciales y no iguala por sí solo las siluetas y chaflanes curados de [`referencias/`](referencias/). En producción (`ui/src/escena/`), usar TypeScript + caché de geometrías/materiales de `assets/GUIA-FABLE-V8.md`.
+**Se conserva (contratos internos que consume la escena):** `Materiales`, `ModeloModulo`, `ModeloAstronauta`, `ModeloExperto`, `ModeloIris`, `GestoIris`, `crearMateriales`, `crearTerreno`, `crearModulo`, `crearAstronauta`, `crearExpertos`, `crearIris`, `crearDecorado`, `activarSombras`, `liberarEscena`, `LUGARES` y `LugarId` de `mundo.ts`, `GRAVEDAD_MARTE` de `fisica.ts`, i18n, el reductor y el respaldo 2D. Se reemplaza la implementación detrás de esas firmas, por fases.
 
-### Ruta principal: mundo abierto y adaptación realista de Marte (NASA + estética v8)
-
-Three.js `0.160.0` construye toda la geometría y renderiza con `WebGLRenderer`: `BufferGeometry` para facetas nítidas, `Shape` + `ExtrudeGeometry` para marcos y chaflanes, grupos con pivotes para articulación y `InstancedMesh` para repetidos estáticos. GLB/Blender no son requisitos.
-
-| Elemento abierto | Receta procedural y adaptación científica NASA |
-| --- | --- |
-| Terreno de Jezero | Triángulos `BufferGeometry` facetados coherentes con el DEM real de NASA Mars Trek (`data/terreno/jezero/elevacion.bin`, `280 x 280`, `-3093 m` a `-501 m`). Semilla decorativa separada del RNG de misión; distinguir altura real medida de micro-relieve decorativo. |
-| Rocas y bordes de cráter | `IcosahedronGeometry` / buffers deformados con normales facetadas (`flatShading: true`) representando regolito férrico oxidado y basaltos de Jezero, nunca ruinas ni estatuas. |
-| Atmósfera y luz diurna | Luz direccional cálida superior izquierda (`shadow.mapSize <= 1024`) + hemisférica + cielo diurno marciano cálido polvoriento en la gama pastel v8 y sombras suaves lila/ciruela; calibrar `ACESFilmicToneMapping` y exposición para que marfil `#F3EEE5` no se vuelva gris oscuro. |
-| Gravedad y física | Separada de las mallas en `ui/src/escena/fisica.ts` con `GRAVEDAD_MARTE = 3.73` m/s² (NASA NSSDC Mars Fact Sheet) y colliders simples base-centro. |
-| Caminos y conexiones | Baldosas, rampas bajas y pasillos modulares sobre anclajes `mundo.ts`; dos bucles navegables sin progresión lineal bloqueada. |
-| Paneles solares | Base, soporte, eje separado (`head_axis_separate`), bastidor y celdas repetidas. Rotar el eje físico sin reconstruir geometría por frame ni atribuir generación eléctrica fuera de `engine/`. |
-| Cultivos protegidos | Tallo, hoja maestra con volumen facetado, jardinera y frutos exclusivamente dentro del `Invernadero` presurizado. Cero plantas o pasto al aire libre en Marte. |
-| Habitáculos | Suelo módulo `1 m`, paredes múltiplo de `1 m`, marco `ExtrudeGeometry` con bisel, puerta deslizante y cúpula triangulada compartidos con props por estación. |
-| Astronauta e Iris | Niño con proporciones infantiles propias; expertas adultas humanas con rasgos propios; **Iris** como rover solar de 4 ruedas que evidencia falla visual al dañarse por radiación (`ia_base === "danada"`). |
-| Cables / tuberías | Curvas o buffers segmentados sobre canaletas fuera del paso peatonal; extremos anclados sin crear geometrías nuevas por frame. |
-
-El protagonista recorre libremente las estaciones con teclado (WASD/flechas), clic o lista accesible, alterna cámara tercera/primera persona (`KeyV`) y conserva el respaldo 2D accesible en todo momento sin perder `GameState`.
-
-## 2. División del inicio en capas (`1536 x 1024`, relación `3:2`)
-
-Preservar margen de lectura a la izquierda y personaje a la derecha. Coordenadas expresadas en porcentaje aproximado del lienzo de [`01-inicio-actualizado.png`](referencias/inicio/01-inicio-actualizado.png):
-
-| Orden / capa | Caja objetivo `x,y,w,h` | Implementación y movimiento |
-| --- | --- | --- |
-| 0. Fondo | `0,0,100,100` | Gradiente índigo y estrellas discretas sin UI horneada. Quieto por defecto. |
-| 1. Decoración lejana | Asteroide `39,7,10,13`; planeta `79,15,16,14` | Mallas o capas ligeras; deriva de hasta `4 px` en `8 s` (desactivada con `prefers-reduced-motion`). No pulsar estrellas en bucle. |
-| 2. Nave | `78,63,22,37` | Anclada abajo/derecha con recorte intencional de borde y pivote fijo. |
-| 3. Cable (tether) | Entre mochila y conector | Curva detrás del cuerpo y delante del fondo con extremos unidos a `Socket_Tether`. Solo en escena orbital inicial. |
-| 4. Niño | `49,18,31,57` | Cabeza y rostro visibles a través de visor transparente, mano levantada, flotación `6 px / 6 s` y giro máximo `1°`. |
-| 5. Marca y subtítulo | `5,5,31,31`; subtítulo `6,32,29,5` | Logo oficial ([`referencias/ui/00-logo-actual.png`](referencias/ui/00-logo-actual.png)) sin reescribir lettering ni tapar escena. |
-| 6. Menú | `5,40,36,36` | Botones DOM facetados marfil: iniciar, continuar (si hay guardado válido) y ajustes. |
-| 7. Preferencias / créditos | Arriba derecha / abajo izquierda | Idioma `EN/ES`, acceso opcional cuenta/invitado, sonido, atribución NASA y respaldo 2D; orden de foco independiente. |
-| 8. Ventanas y foco | Sobre controles | Ajustes y fuentes con foco atrapado y restaurado; capas decorativas `aria-hidden="true"` sin capturar puntero. |
-
-En `16:9` preservar toda la altura del diseño redistribuyendo espacio lateral sin estirar niño ni logo. En móvil pasar el menú a columna vertical legible (`>= 44 x 44 CSS px`). Entrada única del inicio: fondo en `180 ms`, marca en `240 ms`, niño en `320 ms`; menú desde `200 ms` con `45 ms` de escalonamiento y `220 ms` por control; todo botón responde desde que es visible y volver desde ajustes no repite la intro.
-
-## 3. Atomicidad: qué se comparte y qué cambia
-
-| Nivel | Piezas | Reutilización |
-| --- | --- | --- |
-| Tokens | Color (`#F3EEE5`, `#EEE5F1`, `#53306D`, `#73D4E1`), chaflán, sombra, tipografía (`18–20 px`), duración y easing | Un solo sistema para inicio, HUD, consulta, comparación y cierre. |
-| Átomos UI | `FacetButton`, icono, etiqueta i18n, valor, keycap, anillo de foco exterior | Variantes por propiedad; prohibido diseñar botones distintos por pantalla. |
-| Compuestos UI | `ResourcePlaque`, `ExpertPortrait`, `CostRow`, `PendingEffect`, mensaje, tarjeta de fuente | Separa dato real, apariencia y feedback; icono nunca es única etiqueta. |
-| Paneles | `DialogueCard`, `DecisionCard`, ajustes, fuentes, resultado | Mismo contrato de apertura, foco y cierre por `Escape`. |
-| Piezas 3D comunes | Suelo, pared `1 m`, marco, puerta deslizante, ventana, lámpara, consola, caja, banco, tanque | Caché compartida en `materiales.ts` y ensamblaje por tabla de configuración. |
-| Módulos semánticos | Esclusa, control, invernadero, laboratorio, ingeniería, enfermería, comedor/descanso, refugio | Composición reutilizable de piezas; identidad visual sin duplicar mallas base. |
-
-### Familia de astronautas y rover Iris
-
-Jerarquía compartida para personajes: `Root -> Rig -> Hips/Spine/Head/Arms/Legs`, `Socket_Hand_R`, `Socket_Back`, `Socket_Tether`. Slots de materiales: `SuitBase`, `Accent`, `Boots`, `Skin`, `Hair`, `Glass`, `Emissive`, `Rock`, `Plant`. Visor como superficie transparente separada sin doble capa coincidente. Clonar solo `Accent` por personaje al cambiar de rol.
-
-| Personaje | Referencias en [`referencias/personajes/`](referencias/personajes/) | Identidad y accesorios |
-| --- | --- | --- |
-| Niño | [`inicio/capas/astronauta.png`](referencias/inicio/capas/astronauta.png) | Proporciones infantiles propias (nunca adulto reescalado), marfil, collar/guantes teal, botas índigo, tether solo en inicio. |
-| Ingeniera | [`01-ingeniera-poses.png`](referencias/personajes/01-ingeniera-poses.png), [`02-ingeniera-rostros.png`](referencias/personajes/02-ingeniera-rostros.png) | Adulta humana, cabello castaño rojizo, acentos naranja, herramienta/tableta. |
-| Doctora | [`03-doctora-poses.png`](referencias/personajes/03-doctora-poses.png), [`04-doctora-rostros.png`](referencias/personajes/04-doctora-rostros.png) | Adulta humana morena, gafas octagonales, acentos teal, bolso con escudo propio (sin cruz roja). |
-| Meteoróloga | [`05-meteorologa-poses.png`](referencias/personajes/05-meteorologa-poses.png), [`06-meteorologa-rostros.png`](referencias/personajes/06-meteorologa-rostros.png) | Adulta humana, cabello plateado, acentos ciruela, instrumento de lectura solar. |
-| Iris | En escena (`ui/src/escena/activos/iris.ts`) | Rover solar de 4 ruedas con pivotes independientes, panel solar y canvas frontal animado (solo re-sube textura cuando cambia). Muestra daño visual cuando `ia_base === "danada"`. |
-
-Gestos requeridos para rig/pivotes: reposo (`idle`), caminar, mirar/interesar, explicar/señalar, inspeccionar, reparar, confirmar y recuperación.
-
-### Ensamblaje de las ocho estaciones
-
-| Estación y referencia | Piezas comunes | Identidad específica | Animación funcional |
-| --- | --- | --- | --- |
-| [Esclusa](referencias/estaciones/01-esclusa.png) | Marco, puerta, pared, caja, luz, rejilla | Rack de cascos, presión, rampa | Hojas deslizan por pivotes; indicador según estado. |
-| [Control](referencias/estaciones/02-control-mision.png) / [Op.](referencias/estaciones/02b-control-operaciones.png) | Marco, consola, banco, lámpara, caja | Mesa de terreno y cúpula panorámica | Enlace y respuesta pendiente real; sin telemetría falsa. |
-| [Invernadero](referencias/estaciones/03-invernadero.png) / [Cult.](referencias/estaciones/03b-invernadero-cultivos.png) | Consola, tanque, lámpara, marco | Ventanas trianguladas, jardineras, semilleros | Caudal y estado de equipo; crecimiento solo desde motor. |
-| [Laboratorio](referencias/estaciones/04-laboratorio.png) / [Inv.](referencias/estaciones/04b-laboratorio-investigacion.png) | Mesa, caja, consola, tanque, banco | Muestras de planta/roca, vitrina, microscopio | Tapa/enfoque visual; no otorga recursos por inspección. |
-| [Ingeniería](referencias/estaciones/05-ingenieria.png) / [Alm.](referencias/estaciones/05b-almacen-logistica.png) | Consola, mesa, caja, marco | Panel solar, batería, dock Iris, estantería bahías | Panel gira en eje `head_axis_separate`; instalando vs operativo. |
-| [Enfermería](referencias/estaciones/06-enfermeria.png) / [At.](referencias/estaciones/06b-enfermeria-atencion.png) | Tanque, consola, banco, marco | Camilla, botiquín con escudo, lavamanos | Gestos tranquilos; sin barra de salud inventada. |
-| [Comedor/descanso](referencias/estaciones/07-descanso-comedor.png) / [Marte](referencias/estaciones/07b-comedor-descanso-marte.png) / [Común](referencias/estaciones/07c-espacio-comun.png) | Mesa, banco, caja, lámpara, rejilla | Literas, dispensador, jardinera interior | Sentarse es gesto; exterior siempre árido sin árboles. |
-| [Refugio](referencias/estaciones/08-refugio.png) | Puerta, banco, tanque, consola, caja | Cubierta de regolito y acento ámbar puntual | Puerta y estado de protección; entrar no blinda automáticamente. |
-
-## 4. Tabla de animaciones y condiciones
-
-Easing estándar: entrada `cubic-bezier(.2,.8,.2,1)` · salida `cubic-bezier(.4,0,1,1)`. Evitar rebote excesivo y movimiento perpetuo en controles de lectura.
-
-| Disparador | Movimiento y duración | Resultado, interrupción y accesibilidad |
-| --- | --- | --- |
-| Botón aparece | Opacidad `0 -> 1`, `Y 8 -> 0 px`, `220 ms` | No repetir en cada rerender; cancelar al desmontar. |
-| Hover (puntero fino) | `Y -2 px`, tinte/sombra leve, `120 ms` | Revierte en `100 ms`; no marca selección. |
-| Presionar | `Y +1 px`, escala `.985`, sombra menor, `70 ms` | Soltar fuera cancela; teclado activa una vez. |
-| Foco | Anillo oscuro + cian inmediato | Visible sin animación ni recorte por `clip-path`. |
-| Seleccionar opción | Check y borde persistentes, `140 ms` | Distinto de hover/foco; nunca gasta recursos. |
-| Deshabilitar / procesar | Color y etiqueta, `100 ms` | Tamaño estable, sin pulsos infinitos ni porcentajes ficticios. |
-| Abrir diálogo / comparación | Opacidad + `Y 12 -> 0 px`, `220 ms` | Pausa y foco entran al instante de abrir. |
-| Cerrar panel | Opacidad + `Y 0 -> 8 px`, `140 ms` | Bloquear clic al fondo durante salida y restaurar foco; `Escape` cancela. |
-| Nueva línea de diálogo | Fundido `120 ms` | Texto completo inmediato; parpadeo retrato `100 ms` cada `4–7 s`. |
-| Gasto confirmado | Saldo cambia al instante; delta sube `10 px` en `700 ms`; relleno `280 ms` | Número y `aria-valuenow` reales siempre. |
-| Daño por evento | Delta con causa, realce `180 ms`, rastro `450 ms` | Sin sacudir pantalla ni flash rojo repetido. |
-| Beneficio recibido | Delta `+` `700 ms`, check `160 ms`, relleno `280 ms` | Disparar únicamente al aplicar el efecto en `engine/`. |
-| Recurso bajo | Icono + texto persistente al cruzar umbral | Señal única al cruce, no cada tick. |
-| Pendiente | Reloj estático + ticks restantes en `120 ms` | No girar en bucle ni simular segundos reales. |
-| Módulo instalando / operativo | Instalando `400 ms`; operativo luz/check `240 ms` | Reconciliar siempre desde `GameState`. |
-| Fuente / tooltip | Fundido `120 ms` | Teclado y restauración de foco; pausado mientras lee. |
-| Cambiar cámara (`KeyV`) | Interpolación `300 ms` sin atravesar paredes | Corte directo con `prefers-reduced-motion`. |
-| Tormenta / resultado | Alerta `240 ms` + música opcional | Solo tras evento real de motor; sin estrobo. |
-
-**Reglas de sincronización UI/animación:** usar nodos wrapper separados (`position-wrapper` y `feedback-wrapper`) para no competir en `transform` con Web Animations API; agrupar causas por tick e identificador derivado de secuencia/tick sin animar historia al cargar guardado; cancelar animaciones activas ante `prefers-reduced-motion: reduce` y pausar loops cuando `document.hidden` sea verdadero (`visibilitychange`).
-
-## 5. Mapeo al código actual de `ui/src/`
-
-`@solar-shield/engine` ya está conectado de punta a punta (`reductor.ts`, `App.tsx`, `Base3D.tsx`, `vista.ts`). La escena 3D es puramente presentacional y determinista sobre `EntradaEscena.vista`:
-
-| Parte actual | Responsabilidad limpia |
-| --- | --- |
-| `ui/src/componentes/Hud.tsx` | Tres placas `ResourcePlaque` separadas (energía, soporte vital, blindaje) con delta/causa por tick; oculto en `fase === "inicio"`. |
-| `Dialogos.tsx`, `Tripulacion.tsx` | `ExpertPortrait` (retratos humanos), `DialogueCard` y consulta/verificación de Iris sin aplicar acciones en selección. |
-| `ColocarModulos.tsx`, `Tormenta.tsx`, `Acciones.tsx` | `CostRow`, `PendingEffect`, `DecisionCard` y `FacetButton` sobre un único flujo de comparación y confirmación. |
-| `Base3D.tsx` | Coordina panel, pausa, foco y salidas sin calcular costos ni saldos. |
-| `escena/vista.ts` | Deriva presencia, instalación, funcionamiento y fallo de Iris desde `GameState`. |
-| `escena/materiales.ts` y `liberar.ts` | Caché compartida de geometrías base, slots `SuitBase/Accent/Boots/Skin/Hair/Glass/Emissive/Rock/Plant` y limpieza segura frente a `StrictMode`. |
-| `escena/modelos.ts` y `escena/activos/` | Conservar interfaces `ModeloAstronauta`, `ModeloExperto`, `ModeloIris`, `ModeloModulo` detrás de fábricas modulares nuevas (cero mallas del prototipo Plan B). |
-| `escena/escena3d.ts` y `EscenaBase.tsx` | Un único `WebGLRenderer`, `ACESFilmicToneMapping`, DPR `1.5` (`1` en baja), `< 80` draw calls, `< 80 000` triángulos, degradación `3D completo -> 3D liviano -> respaldo 2D` y cero asignaciones en `requestAnimationFrame`. |
-| `escena/mundo.ts` y `fisica.ts` | Anclajes reales (`1 u = 1 m`), gravedad marciana `3.73 m/s²` y colisiones desacopladas de la malla artística. |
-
-### Secuencia de estado obligatoria
-
-```text
-Entrada -> intención -> propuesta -> comparación -> confirmar
-  -> motor valida y aplica una sola vez -> snapshot + causa/efecto
-    -> HUD actualiza valor real inmediatamente
-    -> adaptador visual emite gasto/daño/beneficio una vez por tick
-    -> escena y UI animan presentación
+```ts
+// Firma existente que el modelo nuevo debe conservar (ui/src/escena/modelos.ts).
+interface ModeloModulo {
+  anclaje: THREE.Group;   // siempre visible: base del anclaje vacío
+  solido: THREE.Group;    // el módulo construido
+  andamio: THREE.Object3D; // estado "instalando"
+  reposo: THREE.Object3D[];
+  vivos: THREE.Object3D[];
+}
 ```
 
-## 6. Orden de producción en 10 pasos (por bloques y `/loop` sin colisión)
+## 2. Arquitectura de archivos
 
-1. Fijar referencia canónica: [`01-inicio-actualizado.png`](referencias/inicio/01-inicio-actualizado.png), UI [`referencias/ui/`](referencias/ui/03-variantes-facetadas.png) y personajes [`referencias/personajes/`](referencias/personajes/01-ingeniera-poses.png).
-2. Reproducir encuadre piloto en `Invernadero` con niño astronauta e Iris rover 3D antes de expandir a las ocho estaciones.
-3. Congelar medidas base (`1 u = 1 m`, ancho de puerta, altura del niño y de adultas).
-4. Construir una pieza maestra por familia (`door`, `consoleUnit`, `crate`, `solarPanel`, `planter`, `tank`, `bench`, `antenna`) antes de instanciar con `InstancedMesh`.
-5. Calibrar materiales, luz diurna cálida y exposición `ACESFilmicToneMapping` en cámara real de juego.
-6. Unificar tokens, `FacetButton` y `ResourcePlaque` con EN por defecto (`ui/i18n/en.json`) y ES completo (`es.json`).
-7. Articular pivotes de puertas, paneles, ruedas de Iris y extremidades de personajes sin reconstruir geometría.
-8. Conectar animaciones a transiciones ya confirmadas por el motor y verificar `prefers-reduced-motion`.
-9. Expandir la base abierta de Jezero (`Bloque 2`) y completar UI v8 (`Bloque 3`) antes de ampliar a las 8 estaciones completas y expertas 3D (`Bloque 4`).
-10. Verificar en navegador en escritorio y móvil/PC limitado: `< 80` draw calls, `< 80 000` triángulos, teclado, contraste, atribución NASA y cero errores WebGL.
+| Archivo | Responsabilidad única |
+| --- | --- |
+| `ui/src/escena/materiales.ts` | Caché de geometrías base inmutables (`Map<string, BufferGeometry>`) y materiales por slot. |
+| `ui/src/escena/liberar.ts` | Liberación con dueño explícito; no borra recursos compartidos al quitar una copia; resistente al doble montaje de `StrictMode`. |
+| `ui/src/escena/activos/piezasComunes.ts` | Fábricas del kit (§4): marco, puerta, pared, suelo, consola, caja, banco, tanque, panel, antena, jardinera, roca, baliza. |
+| `ui/src/escena/activos/instancias.ts` | `InstancedMesh` para repetidos estáticos con mapa `instanceId -> assetId / lugar`. |
+| `ui/src/escena/activos/astronautas.ts` | Familia de trajes: `crearCascoBase`, `crearVisorTransparente`, `crearTorsoYCollar`, `crearMochilaModular`, `crearExtremidadesConBotaYGuante`; niño y adultas por configuración. |
+| `ui/src/escena/activos/iris.ts` | Rover de 4 ruedas con pivotes por rueda, panel en techo y pantalla de ojos en canvas. |
+| `ui/src/escena/activos/modulos.ts` | Los 5 módulos de Jezero detrás de `crearModulo`. |
+| `ui/src/escena/activos/estaciones.ts` | Estaciones ensambladas por tabla de configuración (ampliación). |
+| `ui/src/escena/cielo.ts` | Cielo, niebla y luces por ambiente ([MARTE.md](MARTE.md) §4–5). |
+| `ui/src/escena/vista.ts` | Derivador puro `GameState -> estado visual` (presencia, instalando, funcionando, avería de Iris). Nunca calcula costos ni ticks. |
+| `ui/src/escena/mundo.ts`, `fisica.ts` | Anclajes `1 u = 1 m`, colisiones simples separadas de la malla artística, gravedad de Marte. |
+| `ui/src/escena/escena3d.ts`, `EscenaBase.tsx` | Un solo `WebGLRenderer`, ciclo de vida, calidad adaptativa, recuperación de contexto. |
+| `ui/src/componentes/` | Átomos y compuestos UI (§5). |
+| `ui/src/pantallas/` | Pantallas que componen los compuestos y coordinan con el reductor. `Base3D.tsx` coordina panel, pausa, foco y acciones; no es dueño de costos. |
+
+## 3. Contrato procedural
+
+- `1 u = 1 m`, `Y` arriba, frente acordado. Escala aplicada antes de registrar colliders.
+- Nombres estables: `Station_Greenhouse`, `Door_Frame_A`, `Door_Leaf_L` / `Door_Leaf_R`, `Socket_Entry`, `Socket_Console`, `Collider_*`.
+- Pivote **base-centro** para props; **bisagra o eje real** para lo que se mueve (`head_axis_separate` en paneles, hojas de puerta, ruedas, extremidades).
+- Cada pieza maestra tiene: fábrica editable, configuración o semilla, pivotes, slots de material, dimensiones de producción y miniatura de revisión.
+- Slots de material: `SuitBase`, `Accent`, `Boots`, `Skin`, `Hair`, `Glass`, `Emissive`, `Rock`, `Plant`. Cambiar el rol de un personaje **clona solo `Accent`** de esa instancia; nunca se modifica el material compartido.
+- Herramientas de forma: `Shape` + `ExtrudeGeometry` con bisel para marcos y chaflanes; `BufferGeometry` propia para facetas, hojas y terreno; `IcosahedronGeometry` no indexada con desplazamiento determinista y `computeVertexNormals()` para rocas; `Group` con pivotes para articular.
+- Semilla decorativa **separada** del RNG de la misión. Nunca `Math.random` en algo que afecte la partida.
+- Personajes: jerarquía `Root > Rig > Hips / Spine / Head / Arms / Legs` con `Socket_Hand_R`, `Socket_Back`, `Socket_Tether`. Visor como superficie transparente separada, sin doble capa coincidente. Cada personaje con su propio estado de animación aunque comparta curvas.
+- Rostros: ojos y boca intercambiables (o morph targets) para las 8 expresiones; el retrato UI sale de la misma identidad.
+
+## 4. Kit de piezas: nueve familias
+
+| Familia | Piezas reutilizables | Qué cambia por configuración |
+| --- | --- | --- |
+| Estantería | Montante, travesaño, balda, fondo opcional | Altura, bahías y ocupación, mismo paso modular |
+| Contenedor | Caja base, tapa, asa o cierre, canister | Tamaño, proporción, acento y pictograma |
+| Puesto de trabajo | Mesa, pantalla, soporte, silla | Composición; los datos visibles salen del motor |
+| Corredor | Suelo de 1 m, costilla, pared, cristal, puerta, conector T o cruce | Recto, T, cruce, longitud en módulos |
+| Cultivo | Hoja maestra, tallo, fruto, plántula, bandeja | Especie visual y distribución con semilla decorativa |
+| Mobiliario | Banco, mesa, armario, camilla, carrito | Accesorios y acentos; partes móviles con pivote propio |
+| Servicios | Tubo, codo, T, canaleta, enchufe, luminaria | Conexión sobre anclajes; se actualizan buffers, no se reconstruyen |
+| Envolvente exterior | Casco modular, puerta, rampa, techo, ventana, cúpula | Silueta de estación con piezas compatibles |
+| Terreno | Suelo, rocas pequeñas, montículos, camino, baliza | Semilla, escala y giro |
+
+Piezas maestras con lámina individual (detalle legible por máquina en [`catalogo-assets.json`](catalogo-assets.json)):
+
+| Pieza | Lámina | Fábrica | Pivote | Regla |
+| --- | --- | --- | --- | --- |
+| Puerta y marco | [`piezas/01`](referencias/piezas/01-puerta-marco.png) | `door` | base-centro | Hueco y biseles compartidos; hoja móvil aparte. |
+| Consola | [`piezas/02`](referencias/piezas/02-consola.png) | `consoleUnit` | suelo-centro | Carcasa y pantalla separadas; la pantalla dibuja datos reales, sin texto horneado. |
+| Caja | [`piezas/03`](referencias/piezas/03-caja.png) | `crate` | suelo-centro | Una maestra con variantes de tamaño, giro y acento; instanciada. |
+| Panel solar | [`piezas/04`](referencias/piezas/04-panel-solar.png) | `solarPanel` | base-centro + eje de cabeza | Gira en su eje; no "genera" energía visualmente. |
+| Jardinera | [`piezas/05`](referencias/piezas/05-jardinera.png) | `planter` / `plant` / `leaf` | base-centro | Maceta compartida; variación por semilla decorativa. Solo interiores. |
+| Depósito | [`piezas/06`](referencias/piezas/06-deposito.png) | `tank` | base-centro | Cuerpo, tapas y fluido; el nivel cambia solo con estado autorizado. |
+| Banco | [`piezas/07`](referencias/piezas/07-banco.png) | `bench` | suelo-centro | Base y cojines repetibles; sentarse no toca recursos. |
+| Antena | [`piezas/08`](referencias/piezas/08-antena.png) | `antenna` | base-centro | Base, mástil, plato y eje; la respuesta depende de ticks. |
+
+[`piezas-procedurales.js`](piezas-procedurales.js) exporta fábricas de bloque inicial (`door`, `consoleUnit`, `crate`, `solarPanel`, `planter`, `tank`, `bench`, `antenna`, `rock`, `plant`, `station`, `astronaut`). Sirve para medidas y arquitectura de caché; **sus siluetas no son arte aprobado** y no se copia su simulación.
+
+## 5. Interfaz: átomos y compuestos
+
+| Nivel | Piezas | Regla |
+| --- | --- | --- |
+| Tokens | Color, chaflán, grosor, sombra, espaciado, tipografía, duración, easing | Un solo conjunto (variables CSS) para portada, HUD, consulta, comparación, pausa y final. |
+| Átomos | `FacetButton`, icono, etiqueta i18n, valor, keycap, anillo de foco | Variantes por propiedad; prohibido un botón distinto por pantalla. |
+| Compuestos | `ResourcePlaque`, `ExpertPortrait`, `CostRow`, `PendingEffect`, mensaje, entrada, `TarjetaFuente` | Separar dato, aspecto y evento; un icono nunca es la única etiqueta. |
+| Paneles | `DialogueCard`, `DecisionCard`, ajustes, fuentes, resultado | Mismo contrato de apertura, foco, `Escape` y cierre. |
+
+Formas propuestas:
+
+```ts
+interface FacetButtonProps {
+  variant: "primary" | "secondary";
+  labelKey: string;          // clave i18n, nunca texto literal
+  disabled?: boolean;
+  disabledReasonKey?: string;
+  busy?: boolean;
+  selected?: boolean;
+  onClick(): void;
+}
+// Botón nativo; superficie recortada INTERIOR y wrapper de foco EXTERIOR:
+// el chaflán nunca recorta la caja táctil ni el anillo de foco.
+
+interface ResourcePlaqueProps {
+  recurso: "energia" | "soporte_vital" | "blindaje";
+  value: number;             // valor real del motor, siempre
+  pending: PendingEffect[];  // de estado.efectosPendientes
+  feedback: { id: string; delta: number; causaKey: string }[];
+}
+// La etiqueta del lector de pantalla se actualiza por grupo de cambios, no por fotograma.
+
+// Un único panel de confirmación para toda acción (construir, dilema, telemetría):
+interface ConfirmarAccionProps {
+  estado: GameState;
+  accion: BaseAction;
+  onCancelar(): void;
+  onConfirmar(accion: BaseAction): void; // único punto que pide ejecutar
+}
+```
+
+Reutilizar `CostRow`, `PendingEffect`, `DecisionCard` y `FacetButton` en `ColocarModulos.tsx`, `Tormenta.tsx` y `Acciones.tsx`: **un solo camino de confirmación y rechazo**.
+
+## 6. Conexión con el motor
+
+- La escena es presentacional y determinista: lee `vista.ts`, nunca calcula reglas.
+- `requestAnimationFrame` para dibujar; ticks del motor para la gestión. `animationend`, un clip terminado o un temporizador visual **nunca** dan recursos ni avanzan la misión.
+- Después de llamar al motor, comprobar que el estado cambió (acción aceptada) antes de marcar algo como colocado. Hoy el reductor actualiza `colocados` tras llamar al motor: debe verificar el resultado.
+- Identificador visual de cada feedback derivado de secuencia + tick + índice de causa en el adaptador de UI (sin añadir campos al contrato). Mismo snapshot no repite animación; un evento nuevo con igual delta sí.
+- Al cargar un guardado: construir la línea base sin animar las causas históricas.
+- Detalle de funciones y del ciclo de decisión: [MECANICAS.md](MECANICAS.md) §4 y §7.
+
+## 7. Animación
+
+Curvas: entrada `cubic-bezier(.2,.8,.2,1)`, salida `cubic-bezier(.4,0,1,1)`. CSS para estados; Web Animations API para efectos de una vez; rotación de `Group` con pivote para 3D (`AnimationMixer` solo si hubiera clips). Dos wrappers por elemento animado (`position-wrapper` para posición, `feedback-wrapper` para pulso): nunca dos animadores sobre el `transform` del mismo nodo; cancelar la animación anterior antes de iniciar otra sobre la misma propiedad.
+
+| Disparador | Movimiento y duración | Regla |
+| --- | --- | --- |
+| Entrada de portada | Fondo 180 ms, marca 240 ms, niño 320 ms, menú desde 200 ms con 45 ms entre botones y 220 ms cada uno | Todo es clicable desde que aparece; volver de ajustes no repite. |
+| Botón aparece | Opacidad 0 a 1, Y 8 a 0 px, 220 ms | Una vez; cancelar al desmontar. |
+| Hover (puntero fino) | Y −2 px, tinte y sombra leve, 120 ms (sale en 100 ms) | No es selección. |
+| Presionar | Y +1 px, escala .985, menos sombra, 70 ms | Soltar fuera cancela; teclado activa una vez. |
+| Foco | Anillo oscuro + cian, inmediato | Visible, fuera del recorte. |
+| Seleccionar | Check y borde persistentes, 140 ms | No gasta. |
+| Deshabilitar / procesar | Color y etiqueta, 100 ms | Tamaño estable, sin pulsos infinitos. |
+| Abrir diálogo o comparación | Opacidad + Y 12 a 0 px, 220 ms | **Pausa y foco se aplican al abrir**, no al terminar. |
+| Cerrar panel | Opacidad + Y 0 a 8 px, 140 ms | Bloquear clic al fondo; devolver foco; `Escape` cancela. |
+| Línea de diálogo | Fundido 120 ms | Texto completo inmediato; parpadeo de retrato 100 ms cada 4–7 s. |
+| Gasto confirmado | Valor real al instante; delta sube 10 px en 700 ms; relleno 280 ms | Número y `aria-valuenow` reales siempre. |
+| Daño por evento | Delta con causa, realce 180 ms, rastro del valor anterior 450 ms | Sin sacudidas ni destellos rojos. |
+| Beneficio recibido | Delta positivo 700 ms, check 160 ms, relleno 280 ms | Solo cuando el motor aplica el efecto. |
+| Recurso bajo | Icono + texto persistente al cruzar el umbral | Una señal por cruce, no cada tick. |
+| Pendiente | Reloj estático + ticks restantes; texto cambia en 120 ms al tick | No gira ni cuenta segundos. |
+| Módulo instalando / operativo | Instalando 400 ms; luz o check 240 ms | Siempre reconciliado desde el estado. |
+| Fuente / tooltip | Fundido 120 ms | Abre por teclado; restaura foco. |
+| Cambiar cámara (`KeyV`) | Interpolación 300 ms sin atravesar paredes | Con movimiento reducido: corte directo. |
+| Tormenta / resultado | Alerta 240 ms, música opcional | Solo tras evento real del motor. |
+| Portada: deriva lejana | Hasta 4 px en 8 s | Se elimina con movimiento reducido. |
+| Portada: niño flotando | 6 px en 6 s, giro máximo 1° | Se elimina con movimiento reducido. |
+
+Con `prefers-reduced-motion: reduce` (CSS y JS): sin deriva, giros, desplazamientos de cámara ni escalados; fundidos instantáneos; se conservan cambios de valor, etiquetas y foco. Si la preferencia cambia con una animación activa, se cancela y se fija el estado final. Con `document.hidden`: pausar bucle y audio. Al desmontar: limpiar timers, listeners y animaciones.
+
+## 8. Rendimiento y ciclo de vida
+
+- **Por vista:** menos de 80 draw calls y menos de 80 000 triángulos. `renderer.setPixelRatio(Math.min(devicePixelRatio, 1.5))`, y `1` en calidad baja.
+- **Degradación automática:** 3D completo, luego 3D liviano (sin sombras, menos instancias), luego respaldo 2D. Probado en un celular y un PC viejo desde el bloque 1.
+- **Luces:** 1 direccional con sombra (`mapSize` 1024, menor en baja) + 1 hemisférica + máximo 1–2 puntuales. `castShadow` solo en piezas grandes, nunca en gravilla ni partículas.
+- **Cero asignaciones por fotograma:** nada de `new Vector3`, `Matrix4`, geometrías, materiales ni texturas dentro del bucle. Temporales prealojados.
+- **Cero reconstrucción por estado:** rotar o escalar pivotes existentes; matrices de `InstancedMesh` solo cuando cambia el mundo. La textura de los ojos de Iris se re-sube solo si cambió.
+- `InstancedMesh` para estáticos idénticos (rocas, cajas, balizas, baldosas). No para personajes animados (esos: esqueleto clonado y estado propio, geometría compartida).
+- `webglcontextlost` / `restored` manejados; la partida sigue en 2D si no vuelve.
+- Un solo canvas para todo; nunca un canvas por objeto.
+
+## 9. Bloques de entrega (alineados con `docs/ORQUESTACION.md`)
+
+| Bloque | Qué entra | Hasta | Cierra cuando |
+| --- | --- | --- | --- |
+| **0** | Subir el trabajo local; ruta dorada conectada al motor con lo visual existente: `aterrizar()`, `elegirDilema()`, telemetría con retraso visible, `estado.resultado` + causas + tarjetas con fuente, cuenta / invitado | sáb 14, 22:00 (P2) | Los 8 pasos se juegan de punta a punta en `develop` y el e2e de la ruta dorada pasa. |
+| **1** | `materiales.ts`, `liberar.ts`, `cielo.ts` (luz y cielo de Marte), niño astronauta, portada v8 (sin HUD en `inicio`), presupuesto medido y degradación | dom 15, 09:00 | Portada y niño fieles a `inicio/01` y `personajes/08`; medidos en celular y PC viejo. |
+| **2** | Terreno de Jezero, kit común (§4), base compacta sobre `LUGARES`, Iris, los 5 módulos con presencia correcta | dom 15, 11:00 (P3: se decide 3D o 2D) | Captura de juego comparable con `mundo/01`; solo los 2 módulos construidos se ven construidos. |
+| **4** | HUD y CSS v8 completos (tokens, `FacetButton`, `ResourcePlaque`, consulta, comparación, tormenta, final), verificación final | dom 15, 13:00 (congelamiento) | Puerta de aceptación (§10) completa. |
+| **3** | 8 estaciones, cuerpos 3D de las expertas | Después del congelamiento, solo si sobra tiempo | Cada ampliación aporta una función y no rompe el recorrido. |
+
+Primer lote de piezas (bloque 2): suelo con rocas, caminos, casco del hábitat, marco y puerta, consola maestra y panel solar. Con eso se comprueba escala, recorrido y familia de materiales. **No empezar por ocho interiores.**
+
+Orden interno de producción para cualquier pieza o escena:
+1. Fijar la lámina canónica.
+2. Reproducir el encuadre con bloques (misma cámara que la lámina), sin detalle.
+3. Congelar medidas y siluetas (ancho de puerta, altura del niño y de las adultas).
+4. Una pieza maestra por familia; aprobar contacto con el suelo, grosor y lectura a escala de juego; después instanciar.
+5. Materiales y luz en la cámara del juego.
+6. UI real con tokens antes de replicar por pantallas.
+7. Pivotes, gestos y estados.
+8. Conectar interacción y datos; después animar según §7.
+9. Expandir desde configuración.
+10. Revisión de fidelidad y funcionamiento (§10).
+
+## 10. Puerta de aceptación (cada PR visual)
+
+**Comandos (todos en verde):**
+
+```bash
+npm run typecheck
+npm test
+npm run build
+```
+
+Y el e2e de la ruta dorada que corre la CI en cada PR.
+
+**Fidelidad visual:**
+- Captura en `http://localhost:5173/` con la misma cámara y proporción que la lámina, puesta al lado de la lámina en el PR.
+- Objetivo de trabajo: contornos y posiciones principales dentro del **2 % del lienzo** de la lámina en el mismo encuadre (tolerancia propuesta, no medida conseguida). Texto legible y control funcional mandan sobre glifos imperfectos de la imagen.
+- Diferencias anotadas por separado: silueta, layout, material, conducta.
+- Revisión contra [DISEÑO.md](DISEÑO.md) §8 (prohibido) y [MARTE.md](MARTE.md) §6.
+
+**Funcionamiento:**
+- Teclado completo, foco visible, EN y ES sin cortes, móvil, `prefers-reduced-motion`, respaldo 2D equivalente.
+- Cero errores o advertencias de WebGL en consola.
+- Draw calls y triángulos medidos (`renderer.info`) y escritos en el PR.
+- Los cinco invariantes de [MECANICAS.md](MECANICAS.md) §6 con prueba.
+- Atribución NASA visible donde haya datos.
+
+## 11. Trabajo en paralelo con agentes
+
+- Un coordinador y como máximo 2–3 subagentes con **archivos disjuntos** (ejemplo: uno en `ui/src/escena/activos/`, otro en `ui/src/componentes/` y `ui/src/pantallas/`, otro solo verifica).
+- Nunca dos escritores sobre el mismo archivo. Antes de editar, revisar `git status`: puede haber cambios sin commitear de otra sesión en la misma rama.
+- Cada bloque pasa su puerta (§10) antes de abrir el siguiente.
+- Pruebas conductuales en `ui/src/juego/reductor.test.ts` y `ui/src/escena/escena.test.ts`; no pruebas de "esta caja tiene N hijos".
