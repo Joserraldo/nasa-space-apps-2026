@@ -175,5 +175,21 @@
   "agentes.iris.pregunta.noche_polar.a": "From the ice",
   "agentes.iris.pregunta.noche_polar.b": "From the battery we charged before",
   "agentes.iris.pregunta.noche_polar.c": "From the storm",
-  "agentes.iris.pregunta.noche_polar.porque": "Panels only work with sunlight. What we saved before the night keeps the base going."
+  "agentes.iris.pregunta.noche_polar.porque": "Panels only work with sunlight. What we saved before the night keeps the base going.",
+  "agentes.escena6.doctora.medidaOrbitaLunaSinFactor": "Near the Moon, in orbit, an instrument measured this storm too. The Moon has no air to protect us. Shelter, now!",
+  "agentes.luna_sur.tormenta.doctora": "Near the Moon, in orbit, an instrument measured one of the highest values in our data. Not in our base, but close!",
+  "agentes.luna_sur.tormenta.sinAire": "The Moon has no air to slow the radiation down. Back inside, now!",
+  "agentes.luna_sur.tormenta.nube": "The Sun just threw out a very fast cloud!",
+  "agentes.luna_sur.tormenta.marte": "The same storm was also measured on Mars. There, radiation went up about {factor} times.",
+  "agentes.luna_sur.dilema.ingeniera": "Wait! If they come back empty, we run out of water tomorrow.",
+  "agentes.luna_sur.micrometeorito.alerta": "A tiny space rock hit a solar panel! It makes half the energy now. We have {energia}%.",
+  "agentes.luna_sur.micrometeorito.reparar": "I can fix it, but it takes energy and someone has to go outside.",
+  "agentes.luna_sur.micrometeorito.suerte": "This was bad luck, not your choice.",
+  "agentes.luna_sur.control.cerca": "Earth is close: our message arrives in about one second.",
+  "agentes.luna_sur.control.costo": "Calling is fast, but it still uses energy.",
+  "agentes.iris.pregunta.mensaje_luna.texto": "Quick question! How long does a message take from the Moon to Earth?",
+  "agentes.iris.pregunta.mensaje_luna.a": "About 1 second",
+  "agentes.iris.pregunta.mensaje_luna.b": "About 1 hour",
+  "agentes.iris.pregunta.mensaje_luna.c": "About 1 day",
+  "agentes.iris.pregunta.mensaje_luna.porque": "Messages travel at the speed of light. The Moon is close, so they take about one second."
 }
