@@ -66,3 +66,7 @@
 @keyframes confirmar-abre { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
 
 @media (prefers-reduced-motion: reduce) { .placa-delta, .confirmar-entrada { animation: none; } }
+
+/* En ui/01 la acción principal del panel ocupa todo el ancho de la tarjeta; "Back" queda chico debajo. */
+.confirmar-botones > .fb-caja:first-child { width: 100%; }
+.confirmar-botones > .fb-caja:first-child .fb { width: 100%; }
