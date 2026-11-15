@@ -27,6 +27,7 @@
   "ui.paso.3.total": "Score for this mission",
   "ui.paso.3.elegir": "Land here",
   "ui.paso.4.titulo": "Place {n} modules",
+  "ui.paso.4.elige": "Pick a module to see what it costs and what it gives back later.",
   "ui.paso.4.texto": "Every module costs energy and crew time now, and helps later. Pick wisely.",
   "ui.paso.4.colocar": "Place",
   "ui.paso.4.costo": "Costs now",
@@ -280,5 +281,11 @@
   "ui.medir.calidad.baja": "low",
   "ui.medir.lienzo": "Canvas",
   "ui.tormenta.comparar": "Compare your plan",
-  "ui.tormenta.otra": "Ask another expert"
+  "ui.tormenta.otra": "Ask another expert",
+  "ui.tormenta.verificar": "Verify the warning",
+  "ui.tormenta.fuente": "Check the source",
+  "ui.tormenta.pregunta.proteger": "What needs protection?",
+  "ui.tormenta.pregunta.sensor": "What does the sensor show?",
+  "ui.tormenta.verFuente": "View source",
+  "ui.tormenta.acceso": "{recurso} {valor}"
 }
