@@ -9,6 +9,8 @@
   "ui.velocidad": "Velocidad",
   "ui.dia": "Día {dia}",
   "ui.tick": "Turno {tick}",
+  "ui.hud.titulo": "Estado de la base",
+  "ui.hud.velocidad": "Velocidad {v}x",
   "ui.recurso.energia": "Energía",
   "ui.recurso.soporte_vital": "Soporte vital",
   "ui.recurso.blindaje": "Blindaje",
