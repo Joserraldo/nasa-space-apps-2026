@@ -222,3 +222,12 @@ El contenido de cada estación está en [ESCENAS.md](ESCENAS.md) §4. Reglas vis
 - Fundir los tres medidores o añadir una barra de salud.
 - Porcentajes falsos, relojes que giran sin fin, sacudidas de pantalla, destellos rojos repetidos.
 - Foco recortado por `clip-path`. Información comunicada solo con color.
+- **Emojis** en cualquier texto, botón, icono, placa o mensaje del juego, en los dos idiomas. Los iconos son SVG facetados propios (`Iconos.tsx`), dibujados como en las láminas.
+
+**Aspecto genérico (de plantilla o de IA)**
+- Librerías de iconos sueltas (Lucide, Heroicons, Font Awesome, Material Icons) o iconos de stock.
+- Fuentes por defecto (Inter, Roboto, Arial, la del sistema) en lugar de la tipografía que se ve en `ui/02` y `ui/03`.
+- Degradados de moda (violeta, azul eléctrico), sombras difusas grandes, glassmorphism, neón o brillos que no están en la lámina.
+- Tarjetas y botones redondeados genéricos en lugar de placas y botones facetados.
+- Componentes de kits de UI (shadcn, MUI, Chakra, Bootstrap) o su estilo de fábrica; colores sueltos fuera de los tokens de §2.
+- Relleno inventado: textos de ejemplo, adornos, iconos, ilustraciones o pantallas que no aparecen en la lámina. **Si la lámina no lo muestra, no va**; se pregunta a María Paula.
