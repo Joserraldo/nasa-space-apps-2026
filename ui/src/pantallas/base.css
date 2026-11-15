@@ -98,3 +98,16 @@
   .base-panel { max-block-size: none; }
   .dialogo-experto-cara { grid-template-areas: "retrato texto" "botones botones"; }
 }
+
+/* Tarjeta "Decision recorded" dentro del panel de la base (columna estrecha): una sola columna, personajes en fila. */
+.base-panel .decision { grid-template-columns: 1fr; gap: var(--esp-2); }
+.base-panel .decision-personajes { grid-template-columns: 1fr 1fr; }
+.base-panel .decision-detalle .costos { grid-template-columns: 1fr; }
+.base-panel .decision-detalle .costos-bloque + .costos-bloque { border-left: 0; padding-left: 0; }
+@media (max-height: 480px) and (orientation: landscape) {
+  .base-panel .decision { grid-template-columns: 1fr; }
+  .base-panel .decision-personajes { grid-template-columns: 1fr 1fr; }
+  .base-panel .decision-personajes .retrato-marco { width: 40px; height: 40px; }
+  .base-panel .decision-personajes .retrato-marco svg { width: 36px; height: 36px; }
+  .base-panel .decision-personajes .retrato-nombre { font-size: 12px; }
+}
