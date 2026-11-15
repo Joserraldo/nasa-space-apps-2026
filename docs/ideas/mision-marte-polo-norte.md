@@ -1,9 +1,17 @@
 # Misión Marte, polo norte (`marte_polo_norte`): "Sin Sol, ¿de dónde sale la energía?"
 
-**Rol que propone:** datos (Daniel) · **Dueños de la misión:** diseño (Santiago y Camilo) · **Estado:** propuesta · **Fecha:** 2026-11-14
+**Rol que propone:** datos (Daniel) · **Dueños de la misión:** diseño (Santiago y Camilo) · **Estado:** propuesta, implementada como datos (ver "Estado de implementación") · **Fecha:** 2026-11-14
 **Base:** el modelo de la misión 1 (`docs/ideas/mision-1-ares-mejorada.md` en `feat/agentes-mision1-ares`), `missions/src/jezero.ts`, `design/src/recursos.ts` y `data/src/region.ts` (`regionPoloNorte()`).
 **Destino:** un futuro `missions/src/polo-norte.ts` (lo escribe diseño). Este documento no toca `missions/`, `design/`, `engine/`, `agents/`, `ui/` ni `contracts/`.
 **Convención:** [V] = verificado en una fuente con URL (tabla §12). **NO VERIFICADO** = no se usa como dato hasta comprobarlo. "Valor de juego" = número del equipo, no de NASA.
+
+
+## Estado de implementación (14 nov, 22:45)
+
+- **Implementada como datos:** `missions/src/marte-polo-norte.ts` (#153, en develop), sobre el motor para varias misiones (#169–#177).
+- **Fuentes F1–F3 resueltas** (#159): `hielo_de_agua` → `fuente.jpl.casqueteMarte` (casquete **residual**; el estacional tiene CO₂), `sol_bajo` → `fuente.jpl.spiritInclinacion` y `guardar_energia` → `fuente.nasa.phoenix`, con los textos corregidos.
+- **Terreno real:** DEM MOLA polar con 4 sitios de nombre IAU (Louth, Escorial, Olympia Undae y Chasma Boreale), en #148.
+- **Pendiente (diseño):** efectos por zona (luz por latitud y noche polar sobre el panel y la batería) y usar los sitios reales de #148 en la misión. Hasta entonces, la elección de sitio casi no cambia la partida.
 
 ## 1. Por qué esta misión enseña algo distinto a Jezero
 
