@@ -102,7 +102,7 @@ export function fuenteTerreno(): SourceCard {
 
 /**
  * Luna lado visible (Moon Trek): 3 sitios Apolo. Las rutas son relativas a data/terreno/luna-visible/.
- * Elevación = medida (LOLA); pendiente, relieve y plano = derivados; luz y blindaje = null (sin fuente verificada).
+ * Elevación = medida (LOLA); pendiente, relieve, plano y blindaje del terreno = derivados; luz = null.
  */
 export const terrenoLunaVisible: TerrenoLuna = TerrenoLunaSchema.parse(lunaVisibleJson);
 
@@ -128,6 +128,7 @@ export const terrenoMarteNorte: TerrenoMarteNorte = TerrenoMarteNorteSchema.pars
 
 /**
  * Luna polo sur (Moon Trek): 6 cráteres del polo sur (posición: nomenclátor IAU). Rutas relativas a data/terreno/luna-polo-sur/.
- * Elevación = medida (LOLA polar 30 m); pendiente, relieve y plano = derivados; luz = null (Moon Trek no tiene capa de iluminación media); blindaje = null.
+ * Elevación = medida (LOLA polar 30 m); pendiente, relieve, plano, luz y blindaje del terreno = derivados.
+ * Luz y visibilidad de la Tierra vienen de NASA GSFC PGDA. La capa de hielo no genera texto sin cita verificada.
  */
 export const terrenoLunaPoloSur: TerrenoLunaPoloSur = TerrenoLunaPoloSurSchema.parse(lunaPoloSurJson);
