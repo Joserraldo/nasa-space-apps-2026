@@ -278,5 +278,7 @@
   "ui.medir.calidad.alta": "alta",
   "ui.medir.calidad.media": "media",
   "ui.medir.calidad.baja": "baja",
-  "ui.medir.lienzo": "Lienzo"
+  "ui.medir.lienzo": "Lienzo",
+  "ui.tormenta.comparar": "Compara tu plan",
+  "ui.tormenta.otra": "Preguntar a otro experto"
 }
