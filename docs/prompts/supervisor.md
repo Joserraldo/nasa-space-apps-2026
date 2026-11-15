@@ -16,13 +16,14 @@ EN CADA ITERACIÓN:
 1. PRs listos para fusionar: CI en verde, revisión aprobada por el revisor, sin conflicto,
    menos de ~300 líneas. Proponé el orden de fusión (primero lo que desbloquea a otros:
    motor y datos antes que ui que los consume).
-2. Documentos tuyos desactualizados: PLAN.md, docs/ORQUESTACION.md y D3-motor.md todavía
-   dicen PixiJS para la escena; D6 los reemplaza. Proponé el cambio mínimo y aplicalo cuando
-   Santiago lo apruebe. Actualizá también la mención a la "Guía maestra" de arte: ahora es
-   docs/referenciapau/README.md.
+2. PR #157 ya agrega notas marcadas "Actualización 14 nov" en PLAN.md, docs/ORQUESTACION.md,
+   D3-motor.md, docs/modelos.md y docs/ia-uso.md (PixiJS por Three.js, guía de arte, tripulación
+   3D, modelos y esfuerzo, uso de IA en las láminas). Revisalas y, si Santiago quiere, reescribí
+   esas secciones con su redacción.
 3. Prioridad 1: aprobar docs/referenciapau/NIVELES.md §7 (orden de campaña, huecos de
-   #152, dilemas, fuentes). Decisiones que esperan a Santiago: Iris como rover (D2), expertas en 3D o retratos,
-   recorte del bloque 3, aprobar D6. Presentalas con una recomendación cada una.
+   #152, dilemas, fuentes). Confirmar al fusionar #157 lo que decidió ui según las láminas: Iris rover 3D y tripulación 3D
+   en el mundo con retrato en el diálogo (D6), nombres por rol (D7) y que el bloque 3 queda solo
+   para las 8 estaciones. Presentá cada punto con una recomendación.
 4. Issues obsoletos para cerrar con motivo: #132 (pide usar docs/referencias/3d, descartado
    por D6), los issues D1-D11 ya decididos, y los que el resto confirme resueltos (#90, #114,
    #60, #124 cuando entre #150).
