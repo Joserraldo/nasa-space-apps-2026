@@ -119,11 +119,17 @@ test("ruta dorada: de la órbita al resumen, en inglés", async ({ page }) => {
   const enviar = page.getByRole("button", { name: /Send telemetry to Earth/ });
   await expect(enviar).toBeVisible();
   await enviar.click();
+  // E6: toda acción pasa por el único panel de confirmación (APLICACION §5), con su costo del motor.
+  const confirmar = page.getByRole("dialog").getByRole("button", { name: "Confirm" });
+  await confirmar.click();
   await expect(page.getByText(/Earth's answer arrives in \d+ turns/)).toBeVisible();
 
   // Iris dañada (si sigue así tras verificar): se repara desde las acciones.
   const repararIris = page.getByRole("button", { name: "Repair Iris" });
-  if (await repararIris.isVisible()) await repararIris.click();
+  if (await repararIris.isVisible()) {
+    await repararIris.click();
+    await confirmar.click();
+  }
 
   // Paso 8: cadena de causas y tarjeta de ciencia.
   const fin = page.getByRole("heading", { name: /Mission complete!|The base could not hold/ });
