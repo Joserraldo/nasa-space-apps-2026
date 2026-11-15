@@ -77,7 +77,7 @@ function LineaExperto({ d }: { d: Dialogo }) {
         <div>
           <p className="orbita-nombre">
             {alerta && <Icono nombre="aviso" tam={16} />}
-            {t(d.experto === "ia_base" ? "ui.iris.titulo" : `agentes.nombre.${d.experto}`)}
+            {t(d.experto === "ia_base" ? "ui.iris.titulo" : `agentes.titulo.${d.experto}`)}
           </p>
           {d.lineas.map((l, i) => <p key={i}>{t(l.clave, l.vars)}</p>)}
         </div>
