@@ -46,6 +46,28 @@ Mapa de Jezero desde arriba con los **4 sitios candidatos** de `MISION_JEZERO.si
 ### 2.6 E8 Final
 Resultado (`exito` o `fallo` desde `estado.resultado`), cadena de causas que separa **decisión** de **mala suerte**, tarjetas de ciencia con fuente y pregunta final. Botón para repetir la misma semilla o probar otra.
 
+### 2.7 Pantallas en escritorio y celular
+
+Tres tamaños de prueba, con captura en cada PR que toque una pantalla: **1024 x 683** (escritorio y tablet, el tamaño de las láminas), **844 x 390** (celular horizontal) y **390 x 844** (celular vertical).
+
+| Pantalla | Escritorio y tablet | Celular horizontal | Celular vertical |
+| --- | --- | --- | --- |
+| E0 Portada | Como `inicio/01`: logo y menú a la izquierda, niño flotando a la derecha | Igual, menú al 45 % del ancho y niño más chico | Logo arriba, niño al centro, menú en columna abajo |
+| E1 Intro | Las 4 viñetas de `inicio/02` en fila | Dos y dos, o carrusel | Una viñeta por pantalla; se pasa deslizando o con `Next`; `Skip` siempre visible |
+| E2 Carga | Como `inicio/03` | Niño a la izquierda más chico, panel a la derecha | Niño arriba, panel abajo |
+| E3 Satélite | Tarjetas de batería y señal sobre Marte facetado | Tarjetas en una columna lateral; la ruta se traza con el dedo | Aviso para girar el teléfono |
+| E4 Sitio | Mapa de Jezero grande y las 4 tarjetas de sitio al costado | Mapa a pantalla completa y tarjetas en carrusel abajo | Mapa arriba, tarjetas debajo con desplazamiento |
+| E5 a E7 Módulos, base y tormenta | HUD de `mundo/01`; panel de decisión de `ui/01` a la derecha | HUD compacto, joystick y botón de acción (§3.5); panel de decisión al 40 % del ancho con desplazamiento interno; diálogo en franja inferior | Aviso para girar el teléfono (FLUJO §9) |
+| E8 Final | Tarjetas en columnas | Dos columnas | Una columna con desplazamiento |
+
+Reglas para todas:
+- **Girar el teléfono no reinicia nada:** el estado vive en el reductor y el motor, no en el componente; la escena solo cambia de tamaño.
+- **HUD compacto:** las tres placas siguen separadas y con su nombre (texto corto y `aria-label`); escala `min(ancho/1024, alto/683)` con mínimo 0,75 para que se lea.
+- Texto de 16 px como mínimo en celular; áreas táctiles de 44 x 44 px, y 48 x 48 en los controles del juego.
+- Márgenes con `env(safe-area-inset-*)` para el notch y la barra de gestos.
+- Nada depende de pasar el mouse por encima: todo lo que muestra un hover tiene su equivalente al tocar y con teclado.
+- E3 y E4 no tienen lámina: se arman con la familia de `ui/03` y los valida María Paula antes de cerrarlos.
+
 ---
 
 ## 3. Mundo abierto: la base de Jezero (E5, E6, E7)
@@ -109,6 +131,26 @@ Reglas de recorrido: claro central que conecta los dos circuitos sin obligar a p
 ### 3.4 Panel `Map` (botón de la UI)
 
 **Propuesta de estilo, pendiente de aprobación de María Paula.** El botón `Map` abre un plano cenital simplificado de §3.2 dibujado con la familia v8 (tarjeta marfil, suelo `regolito`, caminos `camino`, lugares como placas facetadas con icono), con la posición del niño, el objetivo actual resaltado en cian y los módulos construidos frente a los anclajes vacíos. Es también la **lista accesible de lugares**: cada lugar es un botón que lleva al niño hasta allí, con el mismo resultado que caminar.
+
+### 3.5 Controles: teclado, mouse y táctil
+
+**Escritorio:** `WASD` o flechas para caminar, arrastrar con el mouse para girar la cámara, rueda para acercar (con límites), `E` para usar, `V` para cambiar de cámara, `Esc` para pausar o cerrar, `Tab` para recorrer los botones.
+
+**Celular y tablet** (se activan con `matchMedia("(pointer: coarse)")` o con el primer toque, y se esconden si se usa teclado):
+
+| Zona | Qué hace | Cómo se ve |
+| --- | --- | --- |
+| **Mitad izquierda: mover** | Joystick flotante: aparece donde apoya el pulgar. La dirección es relativa a la cámara; cuanto más se aleja la perilla, más rápido camina. Zona muerta del 12 %. Al soltar se desvanece en 150 ms (sin animación con movimiento reducido) y queda una pista tenue abajo a la izquierda. | Base octogonal facetada de 112 px (el chaflán de la familia), `marfil` al 70 % con borde `lila`; perilla `cian` de 48 px que se aleja hasta 48 px del centro. |
+| **Mitad derecha: mirar** | Arrastrar con un dedo gira la cámara (tercera persona) o la mirada (primera), con límites de inclinación y sin atravesar paredes. Doble toque recentra detrás del niño. Pellizco acerca o aleja, solo en tercera persona y con límites. | Sin elemento visible. |
+| **Botones a la derecha** | **Acción** (equivale a `E`): aparece solo cuando hay un lugar cercano (`onLugarCercano`), con icono y verbo (`Inspect`). **Cámara** (equivale a `V`). Arriba, los botones de la lámina (`Crew`, `Map`) y pausa. Los botones capturan su toque: no giran la cámara. | `FacetButton` de Jaime: acción de 72 px, cámara de 48 px, con estados presionado (escala 0,96), no disponible con motivo y ocupado. |
+
+Reglas:
+- **Mover y mirar a la vez:** cada dedo (`pointerId`) queda asignado a la zona donde tocó hasta que se levanta.
+- `touch-action: none` en el canvas y en la capa de controles: la página no se desplaza ni hace zoom, y la pulsación larga no abre menús.
+- **Alternativa sin arrastrar:** el panel `Map` (§3.4) lleva al niño a cualquier lugar con un toque. Sirve para chicos con poca motricidad y para el respaldo 2D.
+- **Pausa sola** cuando la app pasa a segundo plano (`visibilitychange`), sin perder la partida; el audio se habilita con el primer toque.
+- **Rendimiento:** los manejadores escriben en un vector prealojado que lee el bucle; nada de estado de React por fotograma; la perilla se mueve con `transform: translate3d`.
+- No hay lámina de controles táctiles: se dibujan con la familia de `ui/03` (chaflán, `marfil`, `cian` = se puede usar) y María Paula los aprueba con la captura en 844 x 390.
 
 ---
 

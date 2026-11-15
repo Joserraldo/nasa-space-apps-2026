@@ -22,6 +22,7 @@ Fuente: `docs/referenciapau/FLUJO.md` §4 (lámina de cada pieza) y §7.1 (ficha
    ```
 3. Pantallas que necesitan jugar hasta ahí (base, diálogo, tormenta): misma ventana de `<ancho>x<alto>`, misma cámara que la lámina, y captura del navegador. No se recorta para disimular diferencias.
 4. Las dos imágenes van al PR, una al lado de la otra.
+5. Si el PR toca una pantalla, sumá las capturas en celular: `--viewport-size "844,390"` (horizontal) y `--viewport-size "390,844"` (vertical), y revisá la fila de esa pantalla en ESCENAS §2.7. Si toca controles táctiles, probalo además en un celular real.
 
 ## 3. Ficha de fidelidad
 
