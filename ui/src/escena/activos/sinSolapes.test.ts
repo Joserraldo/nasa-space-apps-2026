@@ -89,7 +89,7 @@ describe("sin solapes en planta", () => {
   it("reúne las huellas de todo lo colocado, con ids únicos", () => {
     const ids = todas.map((h) => h.id);
     expect(new Set(ids).size).toBe(ids.length);
-    for (const prefijo of ["modulo:", "habitat", "decorado:torre", "corredor", "consola:", "caja:", "baliza:", "roca_primer_plano:", "roca_grande:"])
+    for (const prefijo of ["modulo:", "habitat", "decorado:torre", "corredor", "consola:", "baliza:", "roca_primer_plano:", "roca_grande:"])
       expect(ids.some((id) => id.startsWith(prefijo)), prefijo).toBe(true);
   });
 

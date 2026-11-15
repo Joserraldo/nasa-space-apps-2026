@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import { describe, expect, it } from "vitest";
-import { pavimento, type PuntoPavimento } from "./pavimento";
+import { MallaPavimento, barrer, pavimento, type PuntoPavimento } from "./pavimento";
 
 const rectangulo = (x: number, z: number, w: number, h: number): PuntoPavimento[] =>
   [[x, z], [x + w, z], [x + w, z + h], [x, z + h]];
@@ -41,5 +41,44 @@ describe("unión del pavimento", () => {
     expect(areas(g).reduce((a, b) => a + b, 0)).toBeCloseTo(2);
     const p = g.getAttribute("position");
     for (let i = 0; i < p.count; i++) expect(p.getY(i)).toBeCloseTo(0.04);
+  });
+});
+
+describe("barrido con huecos y paredes", () => {
+  const sumaAreas = (g: THREE.BufferGeometry) => areas(g).reduce((a, b) => a + b, 0);
+
+  it("resta el hueco: un marco de 4 × 4 con hueco de 2 × 2 deja 12 m²", () => {
+    const m = new MallaPavimento();
+    m.caras(barrer([rectangulo(0, 0, 4, 4)], [rectangulo(1, 1, 2, 2)]), 0.1, new THREE.Color());
+    expect(sumaAreas(m.geometria())).toBeCloseTo(12);
+  });
+
+  it("las paredes cubren todo el contorno (fuera y dentro del hueco) mirando hacia fuera", () => {
+    const m = new MallaPavimento();
+    m.paredes(barrer([rectangulo(0, 0, 4, 4)], [rectangulo(1, 1, 2, 2)]), 0, 0.5, new THREE.Color());
+    const g = m.geometria();
+    const p = g.getAttribute("position"), n = g.getAttribute("normal");
+    let area = 0;
+    for (let i = 0; i < p.count; i += 3) {
+      const a = new THREE.Vector3().fromBufferAttribute(p, i);
+      const b = new THREE.Vector3().fromBufferAttribute(p, i + 1);
+      const c = new THREE.Vector3().fromBufferAttribute(p, i + 2);
+      area += b.sub(a).cross(c.sub(a)).length() / 2;
+      expect(n.getY(i)).toBeCloseTo(0);
+      // Fuera de la región: lejos del centro en el borde exterior, hacia el centro en el hueco.
+      const cx = (p.getX(i) + p.getX(i + 1) + p.getX(i + 2)) / 3 - 2, cz = (p.getZ(i) + p.getZ(i + 1) + p.getZ(i + 2)) / 3 - 2;
+      const exterior = Math.max(Math.abs(cx), Math.abs(cz)) > 1.5;
+      expect(Math.sign(n.getX(i) * cx + n.getZ(i) * cz)).toBe(exterior ? 1 : -1);
+    }
+    // Perímetro exterior 16 m + hueco 8 m, por 0,5 m de alto.
+    expect(area).toBeCloseTo(12);
+  });
+
+  it("no corta un tramo recto en franjas por culpa de huellas lejanas", () => {
+    const m = new MallaPavimento();
+    const lejanos = Array.from({ length: 10 }, (_, i): PuntoPavimento[] => [[20, i], [21, i + 0.5], [20, i + 0.7]]);
+    m.caras(barrer([rectangulo(0, 0, 1, 10), ...lejanos]), 0, new THREE.Color());
+    // 2 triángulos del rectángulo entero + 2 por cada triángulo lejano (partido en su vértice medio).
+    expect(m.geometria().getAttribute("position").count / 3).toBe(2 + 10 * 2);
   });
 });
