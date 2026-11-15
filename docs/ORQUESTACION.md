@@ -62,7 +62,6 @@ Guía de arte: la "Guía maestra de construcción 3D procedural (Atlas v8)" de M
 - **Tripulación:** personas 3D en el mundo y retrato de la misma identidad en las tarjetas de diálogo (actualiza "retratos 2D animados" de la tabla de decisiones). La Ingeniera entra en el bloque 2; la Doctora y la Meteoróloga si alcanza el presupuesto, si no después de P4. Nombres: por su rol ([D7](decisiones/D7-tripulantes.md)).
 - **Láminas:** 55 curadas y comprimidas en el repo; el PDF queda fuera.
 - **Prioridades:** definir y aprobar todos los niveles ([NIVELES.md](referenciapau/NIVELES.md) §7) y cumplir el reto ([RETO.md](referenciapau/RETO.md)). Cómo se reparte ui: [FLUJO.md](referenciapau/FLUJO.md). Prompts por rol con modelo y esfuerzo: [`docs/prompts/`](prompts/README.md).
-- La tabla de la sección de roles de más abajo es histórica (dice ui = Camilo); los roles vigentes son los del Resumen.
 
 ## Ruta dorada (propuesta, sin aprobar)
 

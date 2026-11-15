@@ -12,7 +12,6 @@ Cada persona añade una fila cuando empieza a usar una herramienta o un modelo p
 | Santiago (`kcitas`) | Claude Code | Fable 5.1 / 5.2 y Opus 5.5 (subagentes Haiku para lecturas) | Coordinación del 13 nov: roles y documentos, misión 1 de Jezero en `design/` y `missions/` (polvo, dilema, módulos, tarjetas de ciencia, prueba de parejas), textos en/es, revisión de PRs y resolución de conflictos | 13 nov |
 | Santiago (`kcitas`) | Claude Code | Fable 5.1 / 5.2 y Opus 5.5 | 14 nov: infraestructura (Worker con pantalla y API, despliegue automático, login opcional y progreso en D1), arreglo del motor para que la ruta dorada se pueda ganar (#134), fuentes de las tarjetas de ciencia (#138), orquestación y simulaciones de los PRs antes de fusionarlos | 14 nov |
 | Santiago (`kcitas`) | Claude Code | Fable 5.2 | Prototipo 3D de Jezero fuera del repo (Blender, a partir del DEM de Mars Trek); no integrado | 13 nov |
-| María Paula (`Paulasaah`) | Generador de imágenes con IA (registrado en el atlas v8 como `image_gen`) | por confirmar | Láminas conceptuales de dirección visual (55 curadas en `docs/referenciapau/referencias/`). Son referencia para construir en código; no se usan como imágenes del juego, salvo el logo | 14 nov |
 | María Paula (`Paulasaah`) | Claude Code | Opus 5.5 | Reorganización de la dirección visual en `docs/referenciapau/`, D6 y D7, prompts por rol, verificación del enunciado del reto | 14 nov |
 | _(por confirmar con su autor)_ | por confirmar | por confirmar | Investigación del 2 nov en `docs/reglas.md` y `docs/science/fuentes.md` | 2 nov |
 
