@@ -17,6 +17,22 @@ hacia feat/ui-escenarios (FLUJO §2): git fetch origin && git switch -c feat/ui-
 origin/feat/ui-escenarios. No empieces hasta que María Paula suba su trabajo local a esa rama.
 Tus otras tareas de rol siguen yendo a develop como siempre.
 
+CÓMO TRABAJAMOS TODOS:
+- Commits atómicos: un cambio lógico por commit, mensaje en español y convencional, sin
+  Co-Authored-By ni atribución a IA. PRs de menos de ~300 líneas, solo con tus archivos.
+- Claude (revisor) revisa todo lo que sube cada persona y asigna los pendientes en GitHub.
+  Al empezar cada iteración mirá primero sus comentarios en tus PRs y tus issues asignados
+  (gh pr list --author @me; gh issue list --assignee @me).
+- Loop: una sola tarea por iteración (la primera sin hacer de TAREAS). Cuando se cumple la
+  META, parás el loop, escribís "META cumplida" en tu ESTADO.md y avisás a María Paula.
+- Consumo de tokens: leé solo lo de LEÉ SOLO; no releas lo que ya está en tu ESTADO.md;
+  anotá "Tokens: verde | amarillo | rojo" al cerrar cada iteración. En amarillo, solo tareas
+  chicas y modelos livianos; en rojo, parás y dejás el traspaso escrito.
+- Herramientas: Claude Code (sesión principal) + Codex con GPT-6.1 para verificar
+  (geometría, rendimiento, cifras; Claude escribe, Codex comprueba, nunca el mismo archivo) +
+  subagentes Sonnet (piezas, tests) y Haiku (búsquedas, textos). Máximo 2–3 subagentes a la
+  vez, con archivos disjuntos; decí cuántos y para qué antes de lanzarlos.
+
 TAREAS EN ORDEN (una por iteración; cada una dice cuándo está hecha):
 Rol datos (hacia develop), lo corto primero:
 1. #162: atendé la revisión; es lo que la pantalla final necesita. HECHO: #162 fusionado.

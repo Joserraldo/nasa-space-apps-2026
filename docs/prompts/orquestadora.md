@@ -12,6 +12,23 @@ LEÉ SOLO: docs/prompts/README.md (roles, tareas y calendario), docs/referenciap
 §4, RETO.md §3, NIVELES.md §7–§8, docs/ORQUESTACION.md (sección Estado), los ESTADO.md de
 cada carpeta y las listas de issues y PRs abiertos (gh issue list, gh pr list).
 
+CÓMO TRABAJAMOS TODOS:
+- Commits atómicos: un cambio lógico por commit, mensaje en español y convencional, sin
+  Co-Authored-By ni atribución a IA. PRs de menos de ~300 líneas, solo con tus archivos.
+- Claude (revisor) revisa todo lo que sube cada persona y asigna los pendientes en GitHub.
+  Al empezar cada iteración mirá primero sus comentarios en tus PRs y tus issues asignados
+  (gh pr list --author @me; gh issue list --assignee @me).
+- Loop: una sola tarea por iteración (la primera sin hacer de TAREAS). Cuando se cumple la
+  META, parás el loop, escribís "META cumplida" en tu ESTADO.md y avisás a María Paula.
+- Consumo de tokens: leé solo lo de LEÉ SOLO; no releas lo que ya está en tu ESTADO.md;
+  anotá "Tokens: verde | amarillo | rojo" al cerrar cada iteración. En amarillo, solo tareas
+  chicas y modelos livianos; en rojo, parás y dejás el traspaso escrito.
+- Herramientas: Claude Code (sesión principal) + subagentes Sonnet (componentes,
+  tests, bugs claros) y Haiku (búsquedas, textos EN/ES, JSON) + OpenCode con DeepSeek V4.1
+  Flash (opencode -m opencode/deepseek-v4.1-flash-free) para trabajo mecánico en lote sobre
+  archivos que nadie más toca. Máximo 2–3 subagentes a la vez, con archivos disjuntos; decí
+  cuántos y para qué antes de lanzarlos.
+
 EN CADA ITERACIÓN:
 1. Frontend: en qué tarea de su brief va cada persona (María Paula personajes, Daniel
    escenario, Jaime interfaz, Camilo ubicación, José integración; secciones de ui/ESTADO.md),

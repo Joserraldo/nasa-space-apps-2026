@@ -1,9 +1,12 @@
 # Brief del frontend: interfaz, el sistema facetado (Jaime)
 
-**Qué construís:** todas las piezas de interfaz v8 que José monta en las pantallas, y las pantallas de datos.
+**Qué construís:** la interfaz **de las láminas v8** (`ui/00` a `ui/04`, `inicio/01` a `inicio/03`, `personajes/07` y el HUD de `mundo/01`), **desde cero**, replicando su forma, paleta y composición según [DISEÑO.md](../referenciapau/DISEÑO.md) §5–§6. José monta tus piezas en las pantallas.
+
+> **Del esqueleto actual de ui (#68) no se toma nada visual:** ni `estilos.css`, ni `mision.css`, ni el tema oscuro, ni la forma de los componentes que hay hoy. Están descartados ([APLICACION.md](../referenciapau/APLICACION.md) §1, [DISEÑO.md](../referenciapau/DISEÑO.md) §8). La única guía visual son las láminas y DISEÑO.md. Si algo de hoy se parece a la lámina, igual se rehace con los tokens v8.
 **Tus archivos:** `ui/src/componentes/base/**`, `ui/src/estilos/**` (reemplaza `estilos.css` y `mision.css`), `ui/public/**`, `TarjetaFuente.tsx`, `Glosario.tsx`, `DatosUsados.tsx`, `Portada.tsx`, `Intro.tsx`, `Carga.tsx`, `Iconos.tsx`, `LogoSolarShield.tsx`, `RetratoIris.tsx`.
 **Leé:** [DISEÑO.md](../referenciapau/DISEÑO.md) §2, §5, §6 y §8, [APLICACION.md](../referenciapau/APLICACION.md) §5 y §7, [REFERENCIAS.md](../referenciapau/REFERENCIAS.md) §2 y §4, [HISTORIA.md](../referenciapau/HISTORIA.md) §3 (texto de la intro), láminas `ui/00–04`, `inicio/01–03`, `personajes/02, 04, 06, 07, 09`.
 **Rama:** desde `feat/ui-escenarios`, PR hacia `feat/ui-escenarios` ([FLUJO.md](../referenciapau/FLUJO.md) §2). **No empezar** hasta que María Paula suba su trabajo local a esa rama (FLUJO §5, fase 0).
+**Fuente visual única:** las láminas de `docs/referenciapau/referencias/` y [DISEÑO.md](../referenciapau/DISEÑO.md). Del prototipo descartado y del esqueleto actual de ui (`estilos.css`, `mision.css`, tema oscuro, formas de hoy) no se toma nada visual.
 **Cada PR:** solo tus archivos; menos de ~300 líneas; captura al lado de la lámina; salida de `npm run typecheck`, `npm test`, `npm run build` y `npm run e2e` (hasta que la CI cubra la rama); puerta de [APLICACION.md](../referenciapau/APLICACION.md) §10. Lo aprueba y fusiona María Paula.
 
 ## Tareas (en orden)
@@ -17,5 +20,5 @@
 7. Al final, si sobra tiempo antes de P4: audio y voz ([front-audio.md](front-audio.md)).
 
 **Contratos:** textos siempre por clave i18n (las claves nuevas se las pedís a José); props de APLICACION §5.
-**Además, tu rol de motor:** revisar el uso del motor en los PRs de pantalla, prueba de dos semillas para P3 y #152 (prompt [motor.md](motor.md)). Armaste el esqueleto de ui (#68): estos componentes reemplazan esa primera versión con la familia v8.
-**Meta:** todas las piezas v8 listas y montadas por José antes del punto de control de P4.
+**Además, tu rol de motor:** revisar el uso del motor en los PRs de pantalla, prueba de dos semillas para P3 y #152 (prompt [motor.md](motor.md)).
+**Meta:** todas las piezas, fieles a sus láminas y aprobadas por María Paula una por una, montadas por José antes del punto de control de P4.

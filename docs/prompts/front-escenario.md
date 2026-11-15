@@ -4,6 +4,7 @@
 **Tus archivos:** `ui/src/escena/escena3d.ts`, `EscenaBase.tsx`, `materiales.ts`, `liberar.ts`, `cielo.ts`, `soporte.ts`, `modelos.ts`, `escena.test.ts`, `ui/src/escena/activos/piezasComunes.ts`, `instancias.ts`, `terreno.ts`, `modulos.ts`, `estaciones.ts`.
 **Leé:** [MARTE.md](../referenciapau/MARTE.md), [DISEÑO.md](../referenciapau/DISEÑO.md) §2–§3 y §7–§8, [APLICACION.md](../referenciapau/APLICACION.md) §1–§4 y §7–§8, [ESCENAS.md](../referenciapau/ESCENAS.md) §3.1, láminas `mundo/01`, `mundo/02`, `piezas/01–10`, `exterior/02`, `exterior/03`.
 **Rama:** desde `feat/ui-escenarios`, PR hacia `feat/ui-escenarios` ([FLUJO.md](../referenciapau/FLUJO.md) §2). **No empezar** hasta que María Paula suba su trabajo local a esa rama (FLUJO §5, fase 0).
+**Fuente visual única:** las láminas de `docs/referenciapau/referencias/` y [DISEÑO.md](../referenciapau/DISEÑO.md). Del prototipo descartado y del esqueleto actual de ui (`estilos.css`, `mision.css`, tema oscuro, formas de hoy) no se toma nada visual.
 **Cada PR:** solo tus archivos; menos de ~300 líneas; captura al lado de la lámina; salida de `npm run typecheck`, `npm test`, `npm run build` y `npm run e2e` (hasta que la CI cubra la rama); puerta de [APLICACION.md](../referenciapau/APLICACION.md) §10. Lo aprueba y fusiona María Paula.
 
 ## Tareas (en orden)

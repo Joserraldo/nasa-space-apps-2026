@@ -4,6 +4,7 @@
 **Tus archivos:** `ui/src/escena/mundo.ts`, `fisica.ts`, `navegacion.ts`, `navegacion.test.ts`, `ui/src/componentes/Mapa.tsx`.
 **Leé:** [ESCENAS.md](../referenciapau/ESCENAS.md) §3, [`mapa-base-jezero.svg`](../referenciapau/mapa-base-jezero.svg), [MECANICAS.md](../referenciapau/MECANICAS.md) §3.4 (destinos de Iris por paso), [APLICACION.md](../referenciapau/APLICACION.md) §7 (cámara), láminas `exterior/03`, `mundo/01`, `mundo/02`.
 **Rama:** desde `feat/ui-escenarios`, PR hacia `feat/ui-escenarios` ([FLUJO.md](../referenciapau/FLUJO.md) §2). **No empezar** hasta que María Paula suba su trabajo local a esa rama (FLUJO §5, fase 0).
+**Fuente visual única:** las láminas de `docs/referenciapau/referencias/` y [DISEÑO.md](../referenciapau/DISEÑO.md). Del prototipo descartado y del esqueleto actual de ui (`estilos.css`, `mision.css`, tema oscuro, formas de hoy) no se toma nada visual.
 **Cada PR:** solo tus archivos; menos de ~300 líneas; captura al lado de la lámina; salida de `npm run typecheck`, `npm test`, `npm run build` y `npm run e2e` (hasta que la CI cubra la rama); puerta de [APLICACION.md](../referenciapau/APLICACION.md) §10. Lo aprueba y fusiona María Paula.
 
 ## Tareas (en orden)
