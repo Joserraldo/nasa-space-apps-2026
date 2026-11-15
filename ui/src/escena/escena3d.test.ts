@@ -6,6 +6,7 @@ import { afterEach, describe, expect, it } from "vitest";
 import type { Equipment } from "@solar-shield/contracts";
 import {
   CAMINOS, CLARO, DEM_JEZERO, MALLA_JEZERO, ROCAS, ROCAS_GRANDES, armarEscena, posicionesBalizas, rejillaJezero, rocaGrandeLibre,
+  ROCAS_PRIMER_PLANO, radioRocaPrimerPlano, rocaPrimerPlanoLibre,
 } from "./armado";
 import { cacheGeometrias, crearMateriales } from "./materiales";
 import { liberarCache, liberarEscena, liberarMateriales } from "./liberar";
@@ -134,6 +135,18 @@ describe("armarEscena", () => {
       p.setFromMatrixPosition(mt);
       expect(Math.hypot(p.x, p.z)).toBeGreaterThanOrEqual(ROCAS_GRANDES.radioMin - 1e-6);
       expect(rocaGrandeLibre(p.x, p.z)).toBe(true);
+    }
+    a.liberar();
+  });
+
+  it("las rocas de primer plano (mundo/01) van instanciadas y no tapan caminos, lugares ni sólidos", () => {
+    const a = armarEscena(crearMateriales(), EJEMPLO, null);
+    const fp = a.escena.getObjectByName("Rocks_Basalt_Foreground") as THREE.InstancedMesh;
+    expect(fp).toBeInstanceOf(THREE.InstancedMesh);
+    expect(fp.count).toBe(ROCAS_PRIMER_PLANO.length);
+    for (const r of ROCAS_PRIMER_PLANO) {
+      const [x, , z] = r.posicion;
+      expect(rocaPrimerPlanoLibre(x, z, radioRocaPrimerPlano(r)), `${x},${z}`).toBe(true);
     }
     a.liberar();
   });

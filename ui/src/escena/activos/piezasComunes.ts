@@ -8,7 +8,7 @@
  * Mapa de colores (DISEÑO §2 no define un token de "material de estructura"; se usan los slots):
  * - SuitBase (`traje-marfil`): cuerpo rosa-melocotón de las láminas.
  * - Accent (`teal`): bandas, teclas, fluido.
- * - Boots (`indigo-botas`): superficies oscuras (pantalla de la consola, celdas solares,
+ * - Boots (`indigo-botas`): superficies oscuras (celdas solares,
  *   columna de la antena). PROVISIONAL, aprobar María Paula: las láminas usan un teal/índigo
  *   más oscuro que no está en §2.
  * - Glass (`lila`): vidrio del depósito. Emissive (`cian`): tiras, pantallas, luces de estado.
@@ -95,11 +95,15 @@ export function crearPuerta(m: Materiales): THREE.Group {
   );
 }
 
-/** Lámina 02 (consola): pantalla alta chaflanada, encimera, 6 teclas, pantalla táctil y 2 tiras cian. */
+/**
+ * Lámina 02 (consola) y `mundo/01` (controlador solar): pantalla alta chaflanada, encimera, 6 teclas,
+ * pantalla táctil y 2 tiras cian. La pantalla es clara (azul cian, `cian` hacia `ciruela`) con un
+ * icono de sol y tres barras de señal en `cian` emisivo, como el controlador de la lámina.
+ */
 export function crearConsola(m: Materiales): THREE.Group {
-  const pantalla = geometriaBase("kit-pantalla-petroleo", () => {
+  const pantalla = geometriaBase("kit-pantalla-clara", () => {
     const g = chaflan(1.35, 0.6, 0.02, 0.12).clone();
-    const c = colorToken("teal").multiplyScalar(0.22);
+    const c = colorToken("cian").lerp(colorToken("ciruela"), MEZCLA_PANTALLA);
     const colores = new Float32Array(g.getAttribute("position").count * 3);
     for (let i = 0; i < colores.length; i += 3) colores.set([c.r, c.g, c.b], i);
     g.setAttribute("color", new THREE.BufferAttribute(colores, 3));
@@ -114,7 +118,7 @@ export function crearConsola(m: Materiales): THREE.Group {
   return grupo(
     "Kit_Console",
     parte(m, "SuitBase", chaflan(1.7, 0.95, 0.18, 0.22), [0, 1.4, -0.2], "Console_ScreenFrame"),
-    // Pantalla oscura, malla propia (la pantalla dibuja datos reales; sin texto horneado).
+    // Pantalla clara, malla propia (la pantalla dibuja datos reales; sin texto horneado).
     parte(m, "Rock", pantalla, [0, 1.42, -0.095], "Console_Screen"),
     parte(m, "SuitBase", chaflan(1.9, 0.28, 0.6, 0.1), [0, 0.78, 0], "Console_Desk"),
     parte(m, "SuitBase", caja(0.3, 0.64, 0.5), [-0.8, 0.32, 0], "Console_LegL"),
@@ -123,10 +127,34 @@ export function crearConsola(m: Materiales): THREE.Group {
     parte(m, "Emissive", caja(0.4, 0.03, 0.2), [0, 0.93, 0.02], "Console_Touch"),
     parte(m, "Emissive", caja(0.03, 0.05, 0.4), [-0.96, 0.7, 0.05], "Console_StripL"),
     parte(m, "Emissive", caja(0.03, 0.05, 0.4), [0.96, 0.7, 0.05], "Console_StripR"),
-    // Símbolo de señal del equipo, sin cifras ni texto de telemetría inventados.
-    ...[0.12, 0.22, 0.32].map((h, i) => parte(m, "Emissive", caja(0.08, h, 0.012), [-0.18 + i * 0.18, 1.25 + h / 2, -0.076], `Console_Signal${i}`)),
+    // Icono de sol y símbolo de señal, sin cifras ni texto de telemetría inventados.
+    ...iconoSol(m, -0.3, 1.46, -0.076),
+    ...[0.12, 0.22, 0.32].map((h, i) => parte(m, "Emissive", caja(0.08, h, 0.012), [0.08 + i * 0.15, 1.24 + h / 2, -0.076], `Console_Signal${i}`)),
     ...teclas,
   );
+}
+
+/** Cuánto se acerca la pantalla de `cian` a `ciruela`: azul claro legible bajo la luz del día. [E] */
+export const MEZCLA_PANTALLA = 0.2;
+
+/** Sol de la pantalla: disco octogonal plano y 8 rayos triangulares, emisivo (14 triángulos). */
+function iconoSol(m: Materiales, x: number, y: number, z: number): THREE.Mesh[] {
+  const sol = geometriaBase("kit-icono-sol", () => {
+    const v: number[] = [];
+    const p = (r: number, a: number) => [Math.sin(a) * r, Math.cos(a) * r, 0];
+    // x = sen, y = cos: el ángulo crece en sentido horario visto desde +z; se invierte el orden
+    // de cada triángulo para que la cara frontal mire a +z (fuera de la pantalla).
+    for (let i = 1; i < 7; i++) v.push(...p(0.075, Math.PI / 8), ...p(0.075, Math.PI / 8 + ((i + 1) * Math.PI) / 4), ...p(0.075, Math.PI / 8 + (i * Math.PI) / 4));
+    for (let i = 0; i < 8; i++) {
+      const a = (i * Math.PI) / 4;
+      v.push(...p(0.1, a - 0.22), ...p(0.1, a + 0.22), ...p(0.16, a));
+    }
+    const g = new THREE.BufferGeometry();
+    g.setAttribute("position", new THREE.Float32BufferAttribute(v, 3));
+    g.computeVertexNormals();
+    return g;
+  });
+  return [parte(m, "Emissive", sol, [x, y, z], "Console_Sun")];
 }
 
 /** Lámina 03 (caja): cuerpo chaflanado, tapa más ancha y banda teal que cruza tapa y laterales. */
