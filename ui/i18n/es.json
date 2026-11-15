@@ -214,5 +214,15 @@
   "ui.comun.muestrario.expresion.habla_cerrada": "Habla / cerrada",
   "ui.comun.muestrario.expresion.habla_abierta": "Habla / abierta",
   "ui.comun.muestrario.expresion.habla_redonda": "Habla / redonda",
-  "ui.comun.muestrario.expresion.parpadeo": "Parpadeo"
+  "ui.comun.muestrario.expresion.parpadeo": "Parpadeo",
+  "ui.medir.fps_prom": "FPS prom. (5 s)",
+  "ui.medir.fps_min": "FPS mín.",
+  "ui.medir.draw_calls": "Draw calls",
+  "ui.medir.triangulos": "Triángulos",
+  "ui.medir.cota": "(cota alta)",
+  "ui.medir.calidad": "Calidad",
+  "ui.medir.calidad.alta": "alta",
+  "ui.medir.calidad.media": "media",
+  "ui.medir.calidad.baja": "baja",
+  "ui.medir.lienzo": "Lienzo"
 }
