@@ -136,11 +136,11 @@ export const MISION_LUNA_POLO_SUR: Mision = {
     // Terreno del polo sur: DEM LOLA en Moon Trek (#126).
     { id: "sitio_terreno", textoKey: "mision.luna.ciencia.terreno", fuenteKey: "fuente.moonTrek" },
     // Irradiancia 1361,0 W/m², igual que la Tierra [V NSSDC moonfact].
-    { id: "panel_sol", modulo: "panel_solar", textoKey: "mision.luna.ciencia.panel", fuenteKey: "fuente.nssdc" },
+    { id: "panel_sol", modulo: "panel_solar", textoKey: "mision.luna.ciencia.panel", fuenteKey: "fuente.nssdcMoon" },
     // Periodo sinódico 29,53 días [V NSSDC moonfact].
-    { id: "bateria_noche", modulo: "bateria", textoKey: "mision.luna.ciencia.bateria", fuenteKey: "fuente.nssdc" },
-    // Hielo en sombras permanentes: science.nasa.gov, FUERA DE LISTA. Oculta hasta que datos la apruebe.
-    { id: "hielo_sombra", modulo: "reciclador_agua", textoKey: "mision.luna.ciencia.reciclador", fuenteKey: null },
+    { id: "bateria_noche", modulo: "bateria", textoKey: "mision.luna.ciencia.bateria", fuenteKey: "fuente.nssdcMoon" },
+    // [V] NASA Science: hielo de agua en regiones en sombra permanente (#159, LISTA).
+    { id: "hielo_sombra", modulo: "reciclador_agua", textoKey: "mision.luna.ciencia.reciclador", fuenteKey: "fuente.nasa.hieloLuna" },
     // Dosis de superficie de Chang'e-4/LND: CNSA, no NASA (Zhang et al. 2020); casi sin aire: 3e-15 bar [V NSSDC].
     { id: "escudo_sin_aire", modulo: "escudo", textoKey: "mision.luna.ciencia.escudo", fuenteKey: "fuente.dosis.lunaIss" },
     // Mismo dato verificado que Jezero (chiles en la Estación Espacial, NASA OSDR).

@@ -111,11 +111,11 @@ export const TEXTOS_LUNA_POLO_SUR: Record<Idioma, Record<string, string>> = {
     "mision.luna.sitio.nobile.porque":
       "Lots of sunlight for the panels, but the ice is far away. Bringing water costs energy and time.",
     "mision.luna.sitio.shackleton.porque":
-      "The ice is right next to you, but the Sun almost never shines here and the ground is steep.",
+      "The Sun almost never shines here (about 1% of the time) and the ground is steep.",
     "mision.luna.sitio.faustini.porque":
-      "The flattest place to land, but it's always in shadow. The crater walls will give you some cover.",
+      "The flattest place to land, but it's always in shadow.",
     "mision.luna.sitio.malapert.porque":
-      "High and sunny, so your panels pay you back later. But it's very steep and there is no ice nearby.",
+      "It gets more sun than the other craters (about 13% of the time), and from here you can see Earth almost half the time. But it is very steep.",
     "mision.luna.malasuerte.micrometeorito":
       "A tiny space rock hit a solar panel! Now it gives half the energy. This was bad luck, not your choice. Fix it, or keep going?",
     "mision.luna.dilema.pregunta": "The storm is here and your crew is halfway to the ice. What do you do?",
@@ -156,11 +156,11 @@ export const TEXTOS_LUNA_POLO_SUR: Record<Idioma, Record<string, string>> = {
     "mision.luna.sitio.nobile.porque":
       "Mucho sol para los paneles, pero el hielo está lejos. Traer agua cuesta energía y tiempo.",
     "mision.luna.sitio.shackleton.porque":
-      "El hielo está al lado, pero aquí casi nunca llega el Sol y el suelo está inclinado.",
+      "Aquí casi nunca llega el Sol (cerca del 1 % del tiempo) y el suelo está inclinado.",
     "mision.luna.sitio.faustini.porque":
-      "El lugar más plano para aterrizar, pero siempre está en sombra. Las paredes del cráter te cubren un poco.",
+      "El lugar más plano para aterrizar, pero siempre está en sombra.",
     "mision.luna.sitio.malapert.porque":
-      "Alto y con sol, así que tus paneles te lo devuelven después. Pero es muy empinado y no hay hielo cerca.",
+      "Recibe más sol que los otros cráteres (cerca del 13 % del tiempo) y desde aquí se ve la Tierra casi la mitad del tiempo. Pero es muy empinado.",
     "mision.luna.malasuerte.micrometeorito":
       "¡Una piedrita del espacio golpeó un panel solar! Ahora da la mitad de energía. Esto fue mala suerte, no tu decisión. ¿Lo reparas o sigues así?",
     "mision.luna.dilema.pregunta": "La tormenta llegó y tu tripulación va a medio camino del hielo. ¿Qué haces?",
