@@ -108,8 +108,13 @@ describe("reductor de la pantalla", () => {
     conInv = reducir(conInv, { tipo: "modulo", modulo: "panel_solar" });
     conInv = reducir(conInv, { tipo: "modulo", modulo: "invernadero" });
     conInv = reducir(conInv, { tipo: "fase", fase: "tormenta" });
-    const trasConInv = reducir(conInv, { tipo: "dilema", opcionId: "refugio_y_apagar_invernadero" });
+    const decidido = reducir(conInv, { tipo: "dilema", opcionId: "refugio_y_apagar_invernadero" });
+    // La decisión queda registrada y la tormenta sigue en pantalla hasta "seguir".
+    expect(decidido.fase).toBe("tormenta");
+    expect(decidido.registro).toBe(conInv.estado);
+    const trasConInv = reducir(decidido, { tipo: "seguir" });
     expect(trasConInv.fase).toBe("base");
+    expect(trasConInv.registro).toBeNull();
     expect(trasConInv.estado.pausado).toBe(false);
     expect(trasConInv.estado.efectosPendientes.some((c) => c.descripcionKey === "causa.apagar_invernadero")).toBe(true);
 
