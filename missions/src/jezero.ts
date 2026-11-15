@@ -4,12 +4,28 @@ import type { BaseAction, Difficulty, Equipment, Expert, MissionGoal, Resource, 
  * Misión de la ruta dorada: cráter Jezero, Marte. Solo datos; la lógica vive en engine/.
  * Es la partida de demo del issue #41: 8 pasos en unos 2 minutos.
  */
+export type MetaConocida =
+  | "satelite_suelto"
+  | "ruta_dibujada"
+  | "sitio_elegido"
+  | "modulos_colocados"
+  | "tormenta_llega"
+  | "consejo_opuesto"
+  | "telemetria_enviada"
+  | "fin";
+
+/** Meta de un paso: una de las 8 de Jezero o una propia de otra misión. */
+export type MetaPaso = MetaConocida | (string & {});
+
 export interface PasoMision {
   n: number;
   /** Clave i18n del título del paso. */
   tituloKey: string;
-  /** Qué debe pasar para avanzar. */
-  meta: "satelite_suelto" | "ruta_dibujada" | "sitio_elegido" | "modulos_colocados" | "tormenta_llega" | "consejo_opuesto" | "telemetria_enviada" | "fin";
+  /**
+   * Qué debe pasar para avanzar. Las 8 metas de Jezero dan autocompletado (`MetaConocida`);
+   * otra misión puede usar una meta propia (cualquier string), p. ej. un paso 2 que guarda una decisión.
+   */
+  meta: MetaPaso;
 }
 
 /** Efecto de una opción sobre los medidores: el costo llega ya, el beneficio con retraso. */
