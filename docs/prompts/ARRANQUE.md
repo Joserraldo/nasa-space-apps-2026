@@ -3,7 +3,7 @@
 **Para qué:** que el equipo arranque la implementación del frontend en orden, sin pisarse y sin gastar tokens de más. **Orquesta el frontend:** María Paula. **Orquesta el equipo y fusiona en `develop`:** Santiago. **Revisa todo PR y asigna pendientes:** Claude (revisor).
 Detalle de archivos por persona: [FLUJO.md](../referenciapau/FLUJO.md) §1. Modelos y esfuerzo: [README.md](README.md#modelos-y-esfuerzo).
 
-> **Regla visual:** el frontend se construye **solo con las láminas del atlas v8** (`docs/referenciapau/referencias/`) y [DISEÑO.md](../referenciapau/DISEÑO.md). El diseño anterior (prototipo, `estilos.css`, `mision.css`, tema oscuro) **se borra** ([FLUJO.md](../referenciapau/FLUJO.md) §2.2).
+> **Regla visual:** el frontend se construye **solo con las láminas del atlas v8** (`docs/referenciapau/referencias/`) y [DISEÑO.md](../referenciapau/DISEÑO.md). El diseño anterior (prototipo, `estilos.css`, `mision.css`, tema oscuro) **se borra** ([FLUJO.md](../referenciapau/FLUJO.md) §2.2). Todo PR visual trae la **ficha de fidelidad** ([FLUJO.md](../referenciapau/FLUJO.md) §7.1): sin ficha o sin coincidir con su lámina, no se fusiona.
 
 ---
 
