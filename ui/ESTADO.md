@@ -25,8 +25,10 @@ Una sección por persona, máximo 5 líneas, y nadie edita la de otro (FLUJO §8
 - Sin registrar todavía.
 
 ## Integración (José)
-**Rama:** — · **PR:** ninguno · **Tokens:** —
-- Hecho: contratos `VistaEscena` (#181), eventos de feedback (#182) y ajustes del jugador (#186) fusionados; CI corre en `feat/ui-escenarios`.
+**Rama:** feat/ui-integracion-orientacion · **PR:** hacia feat/ui-escenarios · **Tokens:** verde
+- Hecho: contratos `VistaEscena` (#181), eventos (#182), ajustes (#186) y props de `EscenaBase` (#190, cerrado). Lógica del aviso de girar el teléfono (`juego/orientacion.ts`).
+- Sigue: pantallas nuevas desde las láminas cuando entren #208, #209 y #213 de Jaime; preview de esta rama en #207 (hacia develop).
+- Bloqueo: tokens y componentes de Jaime.
 
 ## Interfaz (Jaime)
 **Rama:** — · **PR:** ninguno · **Tokens:** —
