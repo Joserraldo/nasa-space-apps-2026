@@ -3,6 +3,8 @@
 > **Estado:** propuesta del rol agentes (José), 14 nov 2026. **Aprueba:** Camilo (diseño) las reglas; María Paula (ui) la representación. Hasta que lo aprueben, el código vive solo en `agents/` y ui decide si lo usa.
 > **Base:** referencias de Pau v8 (rama `feat/ui-referencias-v8`: `README.md` §3, `PLAN-IMPLEMENTACION-JEZERO.md` §2-3, `APLICACION.md`), los 8 pasos de `MISION_JEZERO` y lo que Iris ya hace en `agents/` (`iris-guia.ts`, `iris.ts`, `iris-pregunta.ts`).
 
+> **Actualización 14 nov, noche:** los archivos citados de `feat/ui-referencias-v8` se reorganizaron. `PLAN-IMPLEMENTACION-JEZERO.md` §2–3 ahora está en [`ESCENAS.md`](../referenciapau/ESCENAS.md) §3.2 (lugares) y [`MECANICAS.md`](../referenciapau/MECANICAS.md) §3.4 y §5 (Iris y lo que la escena no puede hacer); el "§3" del README de Pau está en [`HISTORIA.md`](../referenciapau/HISTORIA.md) §4 (mundo abierto). La representación de Iris compañera la recoge ui en MECANICAS §3.4 y NIVELES §5.
+
 ## Por qué
 
 En las láminas v8, Iris es un **rover solar de cuatro ruedas** que acompaña al niño desde el inicio por una base abierta con 10 lugares (`mesa`, `taller`, `sensor`, `habitat`, cinco anclajes de módulo y `banco`). Hoy Iris solo habla: dice a qué experta llamar (tutorial) o insinúa el área (pistas). En un mundo donde se camina, falta decir **adónde ir**. Si no, el niño se pierde y explorar le esconde las decisiones, que es justo el riesgo que Pau marca en su §3.
