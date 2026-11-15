@@ -136,8 +136,8 @@ export interface Mision {
   /** Tick en el que la tormenta se activa (la pausa automática la hace ui). */
   tickTormenta: number;
   pasos: PasoMision[];
-  /** Carpeta en data/terreno/ con el mapa y los sitios candidatos. */
-  terrenoId: string;
+  /** Carpeta en data/terreno/ con el mapa y los sitios candidatos. Opcional: una misión sin mapa (p. ej. la nave del outpost) no la tiene. */
+  terrenoId?: string;
   /** Sitios del paso 3, en el orden en que ui los muestra. */
   sitiosCandidatos: SitioCandidato[];
   averiaIris: AveriaIris;
