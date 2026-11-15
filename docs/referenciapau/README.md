@@ -12,6 +12,7 @@ Leé solo lo que tu tarea necesita. Cada documento es autónomo y enlaza sus lá
 
 | Si vas a... | Leé primero | Después |
 | --- | --- | --- |
+| Comprobar que algo cumple el reto de NASA | [RETO.md](RETO.md) | [NIVELES.md](NIVELES.md) |
 | **Saber qué se construye primero y quién lo hace** | [FLUJO.md](FLUJO.md) | [NIVELES.md](NIVELES.md) §8 |
 | Entender el juego en 5 minutos | [HISTORIA.md](HISTORIA.md) (premisa, personajes, dónde empieza, conexiones) | Este README (secciones 3 y 4) |
 | Construir cualquier cosa visual (3D o UI) | [DISEÑO.md](DISEÑO.md) | [APLICACION.md](APLICACION.md) |
@@ -37,6 +38,7 @@ Leé solo lo que tu tarea necesita. Cada documento es autónomo y enlaza sus lá
 | [ESCENAS.md](ESCENAS.md) | **Qué hay en cada lugar.** Pantallas, mundo abierto, mapa de la base con coordenadas reales, estaciones y su contenido. |
 | [MECANICAS.md](MECANICAS.md) | **Qué hace el jugador y qué responde el juego.** Misión Jezero en 8 pasos, recursos, módulos, decisión, tormenta, Iris, telemetría, final e invariantes. |
 | [APLICACION.md](APLICACION.md) | **Cómo se construye en código.** Arquitectura de `ui/src/escena/`, contrato procedural, kit de piezas, animaciones, rendimiento, bloques de entrega y puerta de aceptación. |
+| [RETO.md](RETO.md) | **Qué pide NASA.** El enunciado oficial frente a lo que hace el juego, estado de cada requisito, mejoras asignadas, criterios de juicio y contraste con el resumen de Camilo. |
 | [AUDIO.md](AUDIO.md) | **Cómo suena.** Música, efectos, lectura en voz alta y entrada de voz. Última fase. |
 | [REFERENCIAS.md](REFERENCIAS.md) | **Catálogo de las 55 láminas.** Qué tomar, qué ignorar y dónde se usa cada una. |
 | [`mapa-base-jezero.svg`](mapa-base-jezero.svg) | Plano cenital de la base dibujado con las coordenadas de `ui/src/escena/mundo.ts`. |
@@ -45,9 +47,10 @@ Leé solo lo que tu tarea necesita. Cada documento es autónomo y enlaza sus lá
 
 ## 3. Orden de autoridad (cuando dos fuentes chocan)
 
+0. **El enunciado oficial del reto** ([RETO.md](RETO.md)).
 1. **Contratos y código de otros roles:** `contracts/`, `engine/`, `design/`, `missions/`, `data/`, `agents/`. Ningún documento de esta carpeta cambia una regla, un costo o un tick.
 2. **Decisiones del equipo:** `docs/decisiones/` y `docs/ORQUESTACION.md` (fechas, bloques, puertas).
-3. **Texto de esta carpeta** (FLUJO, NIVELES, HISTORIA, DISEÑO, MARTE, ESCENAS, MECANICAS, APLICACION, AUDIO). Lo anterior a esta reorganización no es canon.
+3. **Texto de esta carpeta** (RETO, FLUJO, NIVELES, HISTORIA, DISEÑO, MARTE, ESCENAS, MECANICAS, APLICACION, AUDIO). Lo anterior a esta reorganización no es canon.
 4. **Láminas** de `referencias/`. Guían silueta, paleta, composición, proporción y pose. Si una lámina contradice el texto, **manda el texto**. Cada contradicción conocida está anotada en [REFERENCIAS.md](REFERENCIAS.md).
 
 ## 4. Diez reglas que no se negocian
@@ -69,7 +72,7 @@ Registradas en `docs/ORQUESTACION.md` como pendientes de Santiago. Mientras no s
 
 | Pregunta | Mientras tanto |
 | --- | --- |
-| ¿Iris se ve como rover de 4 ruedas? (en el contrato es la IA de la base, `iaBase` + equipo `ia_base`) | La dirección v8 propone rover. Se construye detrás de la interfaz `ModeloIris` para poder cambiar la forma sin tocar la lógica. |
+| ¿Iris se ve como rover de 4 ruedas? (en el contrato es la IA de la base, `iaBase` + equipo `ia_base`) | Las láminas la muestran como rover. `docs/ORQUESTACION.md` deja el rover 3D para el bloque 3 (después de P4); antes se ve con su retrato 2D y el modelo existente, detrás de la interfaz `ModeloIris`. |
 | ¿Expertas en 3D o solo retratos 2D? | Retratos 2D en UI (bloque 4). Cuerpos 3D solo después del congelamiento. |
 | ¿Se recortan las 8 estaciones completas? | Base compacta de Jezero primero; las 8 estaciones son ampliación posterior. |
 | ¿Cuándo entran las otras 4 misiones? | No aparecen en la UI hasta que el motor lea varias misiones (#152) y diseño las apruebe ([NIVELES.md](NIVELES.md) §7–8). |

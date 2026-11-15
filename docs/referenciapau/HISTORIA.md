@@ -62,7 +62,7 @@ Datos de juego: `MISION_JEZERO` en `missions/src/jezero.ts`. Textos de los títu
 | 7 | *Send data to Earth* | Enviás la telemetría a Control de misión. La respuesta tarda (la luz tarda minutos entre Marte y la Tierra). Mientras, seguís gestionando. | **Si la respuesta llega con la base viva, ganás.** |
 | 8 | *What happened and why* | Ves el resultado, la **cadena de causas** (tus decisiones frente a la mala suerte), tarjetas de ciencia con fuente y una pregunta para pensar. | Podés repetir la misma partida o probar otra. |
 
-**Cómo se pierde:** si un recurso llega a cero. **Mala suerte:** micrometeorito, fallo de panel, fuga de agua o tormenta de polvo pueden aparecer; el final los separa de tus decisiones.
+**Cómo se pierde:** si un recurso llega a cero. En la historia no hay "Game Over": es un **rescate de entrenamiento** (idea de la misión 1 de Camilo a partir de ARES, `docs/ideas/mision-1-ares-mejorada.md`). Control de misión recoge a la tripulación, se muestra la cadena de causas y se puede reintentar. El motor sigue diciendo `fallo`; el nombre amable es solo del texto de la pantalla. **Mala suerte:** micrometeorito, fallo de panel, fuga de agua o tormenta de polvo pueden aparecer; el final los separa de tus decisiones.
 
 **El mundo es abierto:** desde el paso 4 caminás libremente por la base ([ESCENAS.md](ESCENAS.md) §3). Los pasos ordenan las **decisiones**, no los lugares: ninguna puerta se cierra por no haber visitado una sala.
 

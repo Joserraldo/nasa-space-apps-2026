@@ -19,9 +19,14 @@
 
 Si una firma no le sirve a la pantalla, se cambia la API en su carpeta, no se rodea en `ui/`. El PR #151 (José, edita `ui/`) lo absorbe la pista de integración: no se amplía desde agentes.
 
-### 1.2 Pistas de trabajo dentro de ui (sesiones de María Paula)
+### 1.2 Pistas de trabajo dentro de ui
 
-Cuatro pistas, cada una en su propia sesión y rama, con **archivos disjuntos**. Prompts en `docs/prompts/ui-*.md`.
+Cuatro pistas con **archivos disjuntos** y una rama cada una. Prompts en `docs/prompts/ui-*.md`.
+
+**Cómo se ejecutan (respeta `docs/COMO-TRABAJAMOS.md` §3, "una sola sesión principal por persona"):**
+- **Modo por defecto:** una sola sesión principal de María Paula (Opus) que es la pista M. Ella lanza las pistas E, I y A como **subagentes**, pasándoles su prompt como encargo, con máximo 2–3 a la vez y nunca dos sobre el mismo archivo. Así una sola cabeza controla el consumo.
+- **Cada pista trabaja en su propio worktree** para que las ramas no choquen en la misma carpeta: `git worktree add ../solar-shield-<pista> -b feat/ui-<pista>-<tema> origin/develop`. La sesión principal le pasa al subagente la ruta de su worktree; al terminar, revisa el diff, hace el commit y abre el PR.
+- **Modo paralelo (excepción):** sesiones separadas para E o I solo si la orquestadora lo autoriza por escrito en `ui/ESTADO.md` (por ejemplo, para recuperar tiempo antes de P3). Las reglas de archivos y ramas son las mismas.
 
 | Pista | Qué construye | Archivos que escribe (solo estos) | Rama |
 | --- | --- | --- | --- |
@@ -61,7 +66,7 @@ Ningún asset es una imagen de las láminas, salvo el logo. Todo se reconstruye.
 | Estaciones (ampliación) | E | `estaciones/00–08` | Composición del kit | `ui/src/escena/activos/estaciones.ts` |
 | Niño 3D | E | `personajes/08–10`, `inicio/capas/astronauta` | Grupos con pivotes | `ui/src/escena/activos/astronautas.ts` |
 | Expertas 3D (después de P4) | E | `personajes/01, 03, 05` | Misma familia de traje | idem |
-| Iris rover | E | `mundo/01`, `inicio/02` | Grupos con pivotes y canvas de ojos | `ui/src/escena/activos/iris.ts` |
+| Iris rover (bloque 3, después de P4) | E | `mundo/01`, `inicio/02` | Grupos con pivotes y canvas de ojos. Hasta entonces, Iris se ve en el retrato 2D y con el modelo que ya existe en la escena. | `ui/src/escena/activos/iris.ts` |
 | Portada: fondo, nave, planeta, asteroide, niño flotando | E | `inicio/01`, `inicio/capas/*` | Three.js en el mismo renderer | `ui/src/escena/` |
 | Portada: logo, menú, preferencias | I | `inicio/01`, `ui/00`, `ui/02` | DOM, SVG; logo como imagen | `ui/src/componentes/` |
 | Intro (4 viñetas) | I | `inicio/02` | Tarjetas DOM sobre el fondo de la portada, con iconos SVG y el texto de cada viñeta. Ilustración completa solo si sobra tiempo. | `ui/src/componentes/` |
@@ -81,10 +86,10 @@ Cada fase termina en una **puerta**. No se abre la siguiente hasta pasarla.
 | **Prioridad 1. Definir todos los niveles** | Orquestadora con diseño, motor y datos | [NIVELES.md](NIVELES.md) completo: las 5 misiones, dificultad y niveles de Iris; decisiones 1 a 6 de NIVELES §7 aprobadas por Camilo y Santiago. No bloquea la fase 0: corre en paralelo porque no toca `ui/`. | Santiago aprueba NIVELES §7. | lo antes posible |
 | **0. Subir y conectar** | M | Subir el trabajo local (#142) en PRs atómicos; ruta dorada jugable con lo visual que ya existe; absorber #151; #118 y #137. E, I y A **no** empiezan a escribir. | Los 8 pasos se juegan en el preview de `develop` y el e2e pasa. | P2 (sáb 22:00) |
 | **1. Contratos internos** | M, I | PR de `VistaEscena`, props de `EscenaBase` y eventos de feedback (M); tokens CSS y props de componentes (I). | Contratos fusionados; typecheck en verde. | dom temprano |
-| **2. Paralelo** | E, I, M | E: bloque 1 (cielo, materiales, niño, portada 3D) y bloque 2 (terreno, kit, base, Iris, módulos). I: átomos, compuestos, retratos, portada DOM, intro. M: pantallas, flujo de fases, i18n, respaldo 2D. | Cada PR pasa la puerta de [APLICACION.md](APLICACION.md) §10. En P3 se decide 3D o 2D. | P3 (dom 11:00) |
+| **2. Paralelo** | E, I, M | E: bloque 1 (cielo, materiales, niño, portada 3D) y bloque 2 (terreno, kit, base, módulos). I: átomos, compuestos, retratos, portada DOM, intro. M: pantallas, flujo de fases, i18n, respaldo 2D. | Cada PR pasa la puerta de [APLICACION.md](APLICACION.md) §10. En P3 se decide 3D o 2D. | P3 (dom 11:00) |
 | **3. Integración** | M | Monta los componentes de I en todas las pantallas y la escena de E en `Base3D`; borra el tema oscuro; un solo camino de confirmación. | Recorrido completo de la ruta dorada en EN y ES con teclado, móvil, movimiento reducido y respaldo 2D; aprobado por la orquestadora. | antes de P4 |
 | **4. Audio y voz** | A | Ajustes de sonido, efectos ligados a eventos, música, lectura en voz alta y entrada de voz. | El juego sigue completo en silencio; sin errores en consola; licencias registradas. | P4 (dom 13:00), si no entra, se entrega sin música |
-| **5. Congelamiento** | todas | Solo arreglos pedidos por el revisor o la orquestadora. Ampliaciones (estaciones, expertas 3D) solo después de la entrega. | — | P5 (dom 20:00) |
+| **5. Congelamiento** | todas | Solo arreglos pedidos por el revisor o la orquestadora. Bloque 3 (estaciones, Iris rover 3D, expertas 3D) solo después de la entrega. | — | P5 (dom 20:00) |
 
 Las otras 4 misiones no entran en estas fases: M arma el selector de misiones y E sus escenarios **solo** cuando el motor lea varias misiones (#152), diseño las apruebe y exista lámina aprobada ([NIVELES.md](NIVELES.md) §8).
 
