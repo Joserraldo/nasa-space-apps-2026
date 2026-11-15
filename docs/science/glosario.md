@@ -23,7 +23,9 @@ Cada palabra se explica en una o dos frases, sin números inventados. En el jueg
 | Curiosity | Curiosity | Un rover de la NASA en el cráter Gale de Marte. Tiene un detector de radiación llamado RAD. | A NASA rover in Gale Crater on Mars. It has a radiation detector called RAD. |
 | Perseverance | Perseverance | Un rover de la NASA que aterrizó en el cráter Jezero de Marte. | A NASA rover that landed in Jezero Crater on Mars. |
 | Microgravedad | Microgravity | Cuando casi no se siente el peso, como en la Estación Espacial. | When you can barely feel your weight, like on the Space Station. |
-| Órbita | Orbit | El camino que sigue un objeto alrededor de un planeta o de la Luna, como la Estación Espacial alrededor de la Tierra. | The path an object follows around a planet or the Moon, like the Space Station around Earth. |
-| Timo | Thymus | Un órgano pequeño dentro del cuerpo. En el espacio se encoge, y los científicos estudian por qué. | A small organ inside the body. In space it shrinks, and scientists study why. |
-| Módulo de aterrizaje | Lander | Una nave que se posa en otro mundo y se queda allí. InSight fue una de Marte. | A spacecraft that lands on another world and stays there. InSight was one on Mars. |
-| Rover | Rover | Un robot con ruedas que recorre otro mundo. | A robot with wheels that drives around another world. |
+| Órbita | Orbit | El camino regular y repetido que sigue un objeto en el espacio alrededor de otro, como la Estación Espacial alrededor de la Tierra. | A regular, repeating path that an object in space follows around another one, like the Space Station around Earth. |
+| Timo | Thymus | Un órgano de las defensas del cuerpo: fabrica glóbulos blancos que combaten infecciones. En los vuelos espaciales se encoge. | An organ of the body's defenses: it makes white blood cells that fight infections. It shrinks during spaceflight. |
+| Módulo de aterrizaje | Lander | Una nave hecha para llegar a la superficie de un planeta y enviar datos a la Tierra. InSight fue uno en Marte. | A spacecraft made to reach the surface of a planet and send data back to Earth. InSight was one on Mars. |
+| Rover | Rover | Un vehículo robot con ruedas, hecho para moverse por la superficie de otro mundo. | A robot vehicle with wheels, made to move around on the surface of another world. |
+
+Fuentes de las definiciones añadidas el 2026-11-14 [V]: órbita, NASA Space Place (https://spaceplace.nasa.gov/orbits/en/); timo, MedlinePlus/NIH (https://medlineplus.gov/myastheniagravis.html) y NASA OSDR OSD-289; módulo de aterrizaje, NASA Basics of Space Flight cap. 9 (https://science.nasa.gov/learn/basics-of-space-flight/chapter9-1/); rover, NASA Space Place (https://spaceplace.nasa.gov/mars-rovers/en/).
