@@ -59,9 +59,13 @@ const MAS_BAJA: Readonly<Record<CalidadGrafica, CalidadGrafica | null>> = { alta
 /** Jugador fijo en el punto de uso de la mesa (provisional, ver `lugarCercano`). */
 const FOCO = { x: lugar("mesa").x, z: lugar("mesa").z } as const;
 
-/** Cámaras de juego (ESCENAS §3.1, `mundo/01` y `mundo/02`). [E] a calibrar con Camilo. */
-const CAMARAS: Readonly<Record<CamaraEscena, { pos: [number, number, number]; mira: [number, number, number] }>> = {
-  tercera: { pos: [FOCO.x, 3.3, FOCO.z + 6.4], mira: [FOCO.x, 1.1, FOCO.z - 7] },
+/**
+ * Cámaras de juego (ESCENAS §3.1, `mundo/01` y `mundo/02`). [E] a calibrar con Camilo.
+ * Tercera persona: baja y cerca, detrás del jugador en la mesa, con una picada de ~10° para que el
+ * horizonte quede en el tercio superior como en la lámina.
+ */
+export const CAMARAS: Readonly<Record<CamaraEscena, { pos: [number, number, number]; mira: [number, number, number] }>> = {
+  tercera: { pos: [FOCO.x - 1.6, 3.4, FOCO.z + 7.0], mira: [FOCO.x + 0.6, 0.3, FOCO.z - 9] },
   primera: { pos: [FOCO.x, 1.45, FOCO.z], mira: [FOCO.x, 1.2, FOCO.z - 8] },
 };
 /** Interpolación de cámara (APLICACION §7): 300 ms; con movimiento reducido, corte directo. */
