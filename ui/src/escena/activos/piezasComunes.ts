@@ -142,7 +142,7 @@ export function crearConsola(m: Materiales): THREE.Group {
     parte(m, "SuitBase", chaflan(1.7, 0.95, 0.18, 0.22), [0, 1.4, -0.2], "Console_ScreenFrame"),
     // Pantalla clara, malla propia (la pantalla dibuja datos reales; sin texto horneado).
     parte(m, "Rock", pantalla, [0, 1.42, -0.095], "Console_Screen"),
-    parte(m, "SuitBase", chaflan(PLANTA_KIT.consola.ancho, 0.28, PLANTA_KIT.consola.fondo, 0.1), [0, 0.78, 0], "Console_Desk"),
+    parte(m, "SuitBase", mostradorCurvo(), [0, 0.78, 0], "Console_Desk"),
     parte(m, "SuitBase", caja(0.3, 0.64, 0.5), [-0.8, 0.32, 0], "Console_LegL"),
     parte(m, "SuitBase", caja(0.3, 0.64, 0.5), [0.8, 0.32, 0], "Console_LegR"),
     parte(m, "SuitBase", caja(1.0, 0.5, 0.06), [0, 0.35, -0.12], "Console_BackPanel"),
@@ -154,6 +154,17 @@ export function crearConsola(m: Materiales): THREE.Group {
     ...[0.12, 0.22, 0.32].map((h, i) => parte(m, "Emissive", caja(0.08, h, 0.012), [0.08 + i * 0.15, 1.24 + h / 2, -0.076], `Console_Signal${i}`)),
     ...teclas,
   );
+}
+
+/** Encimera de la lámina 02: planta con esquinas anguladas y frente cóncavo (ancho 1,9, fondo 0,6), alto 0,28. */
+function mostradorCurvo(): THREE.BufferGeometry {
+  return geometriaBase("kit-mostrador-concavo", () => {
+    const p: [number, number][] = [[-0.95, -0.3], [0.95, -0.3], [0.95, 0.2], [0.75, 0.3], [0.4, 0.2], [0, 0.16], [-0.4, 0.2], [-0.75, 0.3], [-0.95, 0.2]];
+    const g = new THREE.ExtrudeGeometry(new THREE.Shape(p.map(([x, z]) => new THREE.Vector2(x, -z))), { depth: 0.28, bevelEnabled: false });
+    g.rotateX(-Math.PI / 2);
+    g.translate(0, -0.14, 0);
+    return g;
+  });
 }
 
 /** Cuánto se acerca la pantalla de `cian` a `ciruela`: azul claro legible bajo la luz del día. [E] */
