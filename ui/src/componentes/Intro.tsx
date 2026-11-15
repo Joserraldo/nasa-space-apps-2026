@@ -6,19 +6,41 @@ import { Retrato, type Persona } from "./base/Retrato.js";
 import "./base/inicio.css";
 
 /**
- * Intro en 4 viñetas (inicio/02, HISTORIA §3, DISEÑO §6). Primera versión: tarjetas DOM con icono y
- * el texto de cada viñeta; la ilustración completa solo si sobra tiempo (FLUJO §3).
- * "Skip intro" en cualquier viñeta lleva al mismo punto que "Continue" en la última.
- * Flechas del teclado para avanzar y retroceder. No muestra decisiones tomadas.
+ * Intro en 4 viñetas (inicio/02, HISTORIA §3, DISEÑO §6, ESCENAS §2.2 y §2.7). Cada viñeta es una
+ * escena dentro de la nave, como la lámina: paredes lila, una ventana con lo que mira el niño y los
+ * personajes adelante. Etiqueta "01 / ..." arriba a la izquierda, el texto en una franja abajo y
+ * "Skip intro" siempre a mano. Se puede saltar en cualquier viñeta y lleva al mismo punto que
+ * "Continue" en la última. Flechas del teclado para avanzar y retroceder. No muestra decisiones.
  */
-/** Cada viñeta muestra a quién y qué tiene delante, como inicio/02: el niño, la tripulación e Iris. */
-const VINETAS: readonly { personas: Persona[]; iconos: NombreIcono[] }[] = [
-  { personas: ["nino"], iconos: ["planeta"] },
-  { personas: ["nino"], iconos: ["satelite"] },
-  { personas: ["ingeniera", "doctora", "meteorologa", "ia_base"], iconos: [] },
-  { personas: ["nino"], iconos: ["energia", "vida", "escudo"] },
+type Ventana = "marte" | "satelite" | "marte_lejos" | "base";
+
+const VINETAS: readonly { ventana: Ventana; adelante: Persona[]; atras?: Persona[]; iconos?: NombreIcono[] }[] = [
+  // 1: sentado en la cabina, Marte por la ventana.
+  { ventana: "marte", adelante: ["nino"] },
+  // 2: en la consola, el satélite listo afuera.
+  { ventana: "satelite", adelante: ["nino"] },
+  // 3: la tripulación en la mesa redonda, Iris al lado.
+  { ventana: "marte_lejos", adelante: ["nino"], atras: ["ingeniera", "doctora", "meteorologa", "ia_base"] },
+  // 4: la base que podría construir y los tres medidores.
+  { ventana: "base", adelante: ["nino"], iconos: ["energia", "vida", "escudo"] },
 ];
 export const TOTAL_VINETAS = VINETAS.length;
+
+function VistaVentana({ tipo }: { tipo: Ventana }) {
+  return (
+    <div className={`intro-ventana intro-ventana-${tipo}`} aria-hidden="true">
+      <span className="intro-estrellas" />
+      {(tipo === "marte" || tipo === "marte_lejos") && <span className="intro-marte" />}
+      {tipo === "satelite" && <Icono nombre="satelite" tam={120} className="intro-sat" />}
+      {tipo === "base" && (
+        <span className="intro-base">
+          <span className="intro-suelo" />
+          <span className="intro-domo" /><span className="intro-domo chico" /><span className="intro-domo chico otro" />
+        </span>
+      )}
+    </div>
+  );
+}
 
 export function Intro({ onTerminar, inicial = 0 }: { onTerminar(): void; inicial?: number }) {
   const { t } = useT();
@@ -38,28 +60,40 @@ export function Intro({ onTerminar, inicial = 0 }: { onTerminar(): void; inicial
   }, []);
 
   const n = i + 1;
+  const v = VINETAS[i]!;
   return (
     <section className="intro" aria-roledescription={t("ui.intro.descripcion")} aria-label={t("ui.intro.paso", { n, total: TOTAL_VINETAS })}>
-      <div className="fc intro-vineta" key={i}>
-        <div className="fc-cara intro-cara">
+      <div className="intro-vineta" key={i}>
+        <div className={`intro-escena intro-escena-${n}`}>
           <h2 ref={titulo} tabIndex={-1} className="intro-etiqueta">
             {String(n).padStart(2, "0")} / {t(`ui.intro.${n}.titulo`)}
           </h2>
-          <div className="intro-iconos" aria-hidden="true">
-            {VINETAS[i]!.personas.map((p) => <span key={p} className="intro-retrato"><Retrato persona={p} expresion={p === "nino" ? "feliz" : "neutral"} tam={VINETAS[i]!.personas.length > 1 ? 104 : 140} parpadear /></span>)}
-            {VINETAS[i]!.iconos.map((ic) => <span key={ic} className="intro-icono"><Icono nombre={ic} tam={64} /></span>)}
+          <VistaVentana tipo={v.ventana} />
+          {v.atras && (
+            <div className="intro-mesa" aria-hidden="true">
+              {v.atras.map((p) => <Retrato key={p} persona={p} expresion="feliz" tam={128} parpadear />)}
+              <span className="intro-mesa-tapa" />
+            </div>
+          )}
+          {v.iconos && (
+            <div className="intro-consola" aria-hidden="true">
+              {v.iconos.map((ic) => <span key={ic} className="intro-icono"><Icono nombre={ic} tam={48} /></span>)}
+            </div>
+          )}
+          <div className="intro-protagonista" aria-hidden="true">
+            {v.adelante.map((p) => <Retrato key={p} persona={p} expresion="feliz" tam={190} parpadear />)}
           </div>
           <p className="intro-texto">{t(`ui.intro.${n}.texto`)}</p>
-          <div className="intro-pie">
-            <span className="intro-puntos" aria-hidden="true">
-              {VINETAS.map((_, k) => <i key={k} className={k === i ? "actual" : k < i ? "hecho" : ""} />)}
-            </span>
-            {i > 0 && <FacetButton labelKey="ui.comun.atras" icon="atras" onClick={() => setI(i - 1)} />}
-            {ultima
-              ? <FacetButton variant="primary" labelKey="ui.intro.continuar" onClick={onTerminar} />
-              : <FacetButton variant="primary" labelKey="ui.intro.siguiente" onClick={() => setI(i + 1)} />}
-            {!ultima && <FacetButton labelKey="ui.intro.saltar" onClick={onTerminar} />}
-          </div>
+          {!ultima && <div className="intro-saltar"><FacetButton labelKey="ui.intro.saltar" onClick={onTerminar} /></div>}
+        </div>
+        <div className="intro-pie">
+          <span className="intro-puntos" aria-hidden="true">
+            {VINETAS.map((_, k) => <i key={k} className={k === i ? "actual" : k < i ? "hecho" : ""} />)}
+          </span>
+          {i > 0 && <FacetButton labelKey="ui.comun.atras" icon="atras" onClick={() => setI(i - 1)} />}
+          {ultima
+            ? <FacetButton variant="primary" labelKey="ui.intro.continuar" onClick={onTerminar} />
+            : <FacetButton variant="primary" labelKey="ui.intro.siguiente" onClick={() => setI(i + 1)} />}
         </div>
       </div>
     </section>

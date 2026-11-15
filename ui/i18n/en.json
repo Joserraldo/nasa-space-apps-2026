@@ -214,5 +214,7 @@
   "ui.comun.muestrario.expresion.habla_cerrada": "Talk / closed",
   "ui.comun.muestrario.expresion.habla_abierta": "Talk / open",
   "ui.comun.muestrario.expresion.habla_redonda": "Talk / round",
-  "ui.comun.muestrario.expresion.parpadeo": "Blink"
+  "ui.comun.muestrario.expresion.parpadeo": "Blink",
+  "ui.carga.saltar": "Skip",
+  "ui.comun.cerrar": "Close"
 }

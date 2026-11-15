@@ -24,6 +24,10 @@ import { Satelite } from "./pantallas/Satelite.js";
 import { Tormenta } from "./pantallas/Tormenta.js";
 import { Polvo } from "./componentes/Polvo.js";
 import { PreguntaDeIris } from "./componentes/PreguntaDeIris.js";
+import { Portada } from "./componentes/Portada.js";
+import { Intro } from "./componentes/Intro.js";
+import { Carga } from "./componentes/Carga.js";
+import { Creditos } from "./componentes/Creditos.js";
 import type { TemaPregunta } from "@solar-shield/agents";
 
 /** Módulos que tienen pregunta de Iris nivel 2 al colocarlos. */
@@ -97,6 +101,18 @@ function Pantalla({ idioma, setIdioma }: { idioma: Idioma; setIdioma: (i: Idioma
   const [j, enviar] = useReducer(reducir, undefined, inicial);
   const [velocidad, setVelocidad] = useState(1);
   const enBase = j.fase === "base";
+  // Inicio en tres momentos (ESCENAS E0 a E2): portada, intro de 4 viñetas y carga. Después, la órbita.
+  const [inicio, setInicio] = useState<"portada" | "intro" | "carga">("portada");
+  const [creditos, setCreditos] = useState(false);
+  const [sonido, setSonido] = useState(false);
+  useEffect(() => { if (j.fase === "inicio") setInicio("portada"); }, [j.fase]);
+  const empezarMision = () => enviar({ tipo: "fase", fase: "satelite" });
+  // La carga es un respiro corto entre la intro y la órbita; se puede saltar con "Skip".
+  useEffect(() => {
+    if (j.fase !== "inicio" || inicio !== "carga") return;
+    const id = setTimeout(empezarMision, 1800);
+    return () => clearTimeout(id);
+  }, [j.fase, inicio]);
 
   // Reloj fijo: un tick cada 4 s a 1x. El motor decide todo; ui solo dispara el tick.
   useEffect(() => {
@@ -112,7 +128,7 @@ function Pantalla({ idioma, setIdioma }: { idioma: Idioma; setIdioma: (i: Idioma
 
   return (
     <div className="app">
-      <header className="barra">
+      {j.fase !== "inicio" && <header className="barra">
         <span className="titulo">🛡️ {t("ui.titulo")}</span>
         {enBase && (
           <>
@@ -124,16 +140,16 @@ function Pantalla({ idioma, setIdioma }: { idioma: Idioma; setIdioma: (i: Idioma
           </>
         )}
         <label>{t("ui.idioma")} <select value={idioma} onChange={(e) => setIdioma(e.target.value as Idioma)}><option value="en">English</option><option value="es">Español</option></select></label>
-      </header>
+      </header>}
 
       <main className={enBase ? "juego" : ""}>
-        {j.fase === "inicio" && (
-          <section className="tarjeta columna">
-            <h1>{t("ui.titulo")}</h1>
-            <p>{t("ui.subtitulo")}</p>
-            <div><button onClick={() => enviar({ tipo: "fase", fase: "satelite" })}>{t("ui.empezar")}</button></div>
-          </section>
+        {j.fase === "inicio" && inicio === "portada" && (
+          <Portada idioma={idioma} onIdioma={setIdioma} sonido={sonido} onSonido={() => setSonido((x) => !x)}
+            puedeContinuar={false} onEmpezar={() => setInicio("intro")} onContinuar={empezarMision} onCreditos={() => setCreditos(true)} />
         )}
+        {j.fase === "inicio" && inicio === "intro" && <Intro onTerminar={() => setInicio("carga")} />}
+        {j.fase === "inicio" && inicio === "carga" && <Carga consejo={0} sonido={sonido} onSonido={() => setSonido((x) => !x)} onSaltar={empezarMision} />}
+        {creditos && <Creditos onCerrar={() => setCreditos(false)} />}
         {j.fase === "satelite" && <Satelite estado={j.estado} onContinuar={() => enviar({ tipo: "fase", fase: "sitio" })} />}
         {j.fase === "sitio" && <PantallaSitio estado={j.estado} onElegir={(s) => enviar({ tipo: "sitio", sitio: s })} />}
         {j.fase === "modulos" && (

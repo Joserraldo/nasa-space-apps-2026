@@ -1,7 +1,9 @@
 import type { Idioma } from "../i18n.js";
 import { useT } from "../i18n.js";
 import { FacetButton } from "./base/FacetButton.js";
+import { Icono } from "./base/Iconos.js";
 import { LogoSolarShield } from "./base/LogoSolarShield.js";
+import { Retrato } from "./base/Retrato.js";
 import "./base/inicio.css";
 
 /**
@@ -16,17 +18,30 @@ export interface PortadaProps {
   sonido: boolean;
   onSonido(): void;
   puedeContinuar: boolean;
+  /**
+   * Respaldo 2D de la escena de fondo (niño flotando y planeta, capas 1 y 4 de DISEÑO §6) mientras no
+   * exista la capa 3D de María Paula. Cuando la capa 3D se monte detrás, se pasa false.
+   */
+  fondo2D?: boolean;
   onEmpezar(): void;
   onContinuar(): void;
-  onAjustes(): void;
+  /** Sin pantalla de ajustes todavía: si falta, el botón no se muestra (mejor que uno que no hace nada). */
+  onAjustes?: (() => void) | undefined;
   onCreditos(): void;
 }
 
-export function Portada({ idioma, onIdioma, sonido, onSonido, puedeContinuar, onEmpezar, onContinuar, onAjustes, onCreditos }: PortadaProps) {
+export function Portada({ idioma, onIdioma, sonido, onSonido, puedeContinuar, onEmpezar, onContinuar, onAjustes, onCreditos, fondo2D = true }: PortadaProps) {
   const { t } = useT();
   return (
     <section className="portada" aria-labelledby="portada-titulo">
       <h1 id="portada-titulo" className="oculto-visual">{t("ui.portada.logo")}</h1>
+      {fondo2D && (
+        <div className="portada-fondo" aria-hidden="true">
+          <Icono nombre="planeta" tam={140} className="portada-planeta" />
+          <span className="portada-asteroide" />
+          <span className="portada-nino"><Retrato persona="nino" expresion="feliz" tam={360} parpadear /></span>
+        </div>
+      )}
 
       <div className="portada-prefs" role="group" aria-label={t("ui.portada.preferencias")}>
         <div className="portada-idiomas" role="group" aria-label={t("ui.portada.idioma")}>
@@ -47,7 +62,7 @@ export function Portada({ idioma, onIdioma, sonido, onSonido, puedeContinuar, on
         <FacetButton variant="menu" icon="jugar" labelKey="ui.portada.empezar" onClick={onEmpezar} />
         <FacetButton variant="menu" icon={puedeContinuar ? "jugar" : "candado"} labelKey="ui.portada.continuar"
           disabled={!puedeContinuar} disabledReasonKey={puedeContinuar ? undefined : "ui.portada.sin_guardado"} onClick={onContinuar} />
-        <FacetButton variant="menu" icon="engranaje" labelKey="ui.portada.ajustes" onClick={onAjustes} />
+        {onAjustes && <FacetButton variant="menu" icon="engranaje" labelKey="ui.portada.ajustes" onClick={onAjustes} />}
         <p className="portada-lema">{t("ui.portada.lema")}</p>
       </nav>
 
