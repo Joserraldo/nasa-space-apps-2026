@@ -70,6 +70,10 @@ try {
     await page.getByRole("button",{name:"HUD passthrough",exact:true}).tap();
     assert.equal(await page.evaluate(()=>window.stats.hud),1);
     assert.equal(await page.evaluate(()=>window.entrada.estado.moverX),0);
+    await touch("touchStart",[a]);await touch("touchMove",[{...a,x:a.x+30}]);
+    await touch("touchCancel",[]);
+    assert.equal(await page.evaluate(()=>window.entrada.estado.moverX),0);
+    assert.equal(await page.evaluate(()=>window.entrada.estado.joystickActivo),false);
     await page.getByRole("button",{name:"Inspect",exact:true}).tap();
     assert.deepEqual(await page.evaluate(()=>window.stats.usos),["taller"]);
     assert.equal(await page.evaluate(()=>window.entrada.estado.mirarX),0);
