@@ -86,6 +86,8 @@
   "ui.causa.reparar": "Reparar",
   "ui.causa.subir_escudo": "Subir el escudo",
   "ui.causa.refugiarse": "Ir al refugio",
+  "ui.causa.aterrizaje": "Aterrizar en el sitio elegido",
+  "ui.causa.apagar_invernadero": "Apagar el invernadero para refugiarse",
   "ui.causa.salida_exterior": "Salida al exterior",
   "ui.causa.ajustar_orbita": "Ajustar la órbita",
   "ui.causa.colocar_modulo": "Colocar un módulo",

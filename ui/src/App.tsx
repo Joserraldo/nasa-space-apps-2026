@@ -2,7 +2,9 @@ import { useEffect, useReducer, useState } from "react";
 import type { Action, Equipment, GameState } from "@solar-shield/contracts";
 import {
   aplicarAccion,
+  aterrizar,
   avanzarTick,
+  elegirDilema,
   novedades,
   partidaDorada,
   pausar,
@@ -36,7 +38,7 @@ type Evento =
   | { tipo: "nueva" }
   | { tipo: "fase"; fase: Fase }
   | { tipo: "accion"; accion: Action }
-  | { tipo: "acciones"; acciones: Action[] }
+  | { tipo: "dilema"; previas: Action[]; opcionId: string }
   | { tipo: "tick" }
   | { tipo: "pausa"; pausado: boolean }
   | { tipo: "sitio"; sitio: PuntajeSitio }
@@ -50,16 +52,18 @@ function reducir(j: Juego, e: Evento): Juego {
   switch (e.tipo) {
     case "nueva": return inicial();
     case "fase": return { ...j, fase: e.fase };
-    case "sitio": return { ...j, sitio: e.sitio, fase: "modulos" };
+    // Paso 3: el motor cobra el costo del sitio una sola vez (MISION_JEZERO.sitiosCandidatos).
+    case "sitio": return { ...j, estado: aterrizar(j.estado, e.sitio.id), sitio: e.sitio, fase: "modulos" };
     case "modulo": {
       const estado = aplicarAccion(j.estado, { tipo: "colocar_modulo", modulo: e.modulo });
       return { ...j, estado, colocados: [...j.colocados, e.modulo] };
     }
     case "accion": return { ...j, estado: aplicarAccion(j.estado, e.accion) };
-    case "acciones": {
+    // Paso 6: lo verificado con la experta (si lo hubo) y luego la salida del dilema, con el extra del invernadero.
+    case "dilema": {
       let s = j.estado;
-      for (const a of e.acciones) s = aplicarAccion(s, a);
-      return { ...j, estado: pausar(s, false), fase: "base" };
+      for (const a of e.previas) s = aplicarAccion(s, a);
+      return { ...j, estado: pausar(elegirDilema(s, e.opcionId), false), fase: "base" };
     }
     case "pausa": return { ...j, estado: pausar(j.estado, e.pausado) };
     case "tick": {
@@ -135,7 +139,7 @@ function Pantalla({ idioma, setIdioma }: { idioma: Idioma; setIdioma: (i: Idioma
         {j.fase === "tormenta" && (
           <>
             <Hud estado={j.estado} />
-            <Tormenta estado={j.estado} onDecidir={(as) => enviar({ tipo: "acciones", acciones: as })} />
+            <Tormenta estado={j.estado} onDecidir={(previas, opcionId) => enviar({ tipo: "dilema", previas, opcionId })} />
           </>
         )}
         {enBase && (
