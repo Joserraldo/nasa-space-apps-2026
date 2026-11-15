@@ -1,0 +1,31 @@
+/* Panel 04 de ui/04 "Decision recorded": personajes a la izquierda, resultado a la derecha. Solo tokens. */
+.decision { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: var(--esp-4); align-items: center; }
+.decision-personajes { display: grid; grid-template-columns: 1fr 1fr; gap: var(--esp-2); min-inline-size: 0; }
+.decision-personajes .retrato-ficha { min-width: 0; padding-inline: var(--esp-1); }
+.decision-personajes .retrato-nombre { font-size: 14px; line-height: 1.15; text-align: center; text-wrap: balance; }
+.decision-detalle { display: grid; gap: var(--esp-3); min-inline-size: 0; }
+.decision-detalle .costos { grid-template-columns: 1fr 1fr; }
+.decision-detalle .mensaje { grid-template-columns: 32px 0 minmax(0, 1fr) auto; column-gap: var(--esp-2); padding-inline: var(--esp-3); }
+.decision-detalle .costos { gap: var(--esp-2); }
+.decision-detalle .costos-bloque { min-inline-size: 0; }
+.decision-detalle .costos-bloque + .costos-bloque { padding-left: var(--esp-2); }
+.decision-detalle .costos-bloque li { padding-inline: var(--esp-2); gap: var(--esp-1); }
+.decision-detalle .mensaje::after { display: none; }
+.decision-detalle .fb-caja { display: block; min-inline-size: 0; }
+.decision-detalle .fb { inline-size: 100%; min-inline-size: 0; }
+.decision-detalle .fb-texto { white-space: normal; text-align: center; }
+@media (max-width: 560px) { .decision { grid-template-columns: 1fr; } }
+@media (max-height: 480px) and (orientation: landscape) {
+  .decision { gap: var(--esp-2); grid-template-columns: minmax(0, 2fr) minmax(0, 7fr); }
+  .decision-personajes { grid-template-columns: 1fr; gap: var(--esp-1); }
+  .decision-detalle .mensaje-titulo { font-size: 16px; line-height: 1.1; }
+  .decision-detalle .mensaje-detalle { font-size: 13px; }
+  .decision-detalle .costos { grid-template-columns: 1fr; }
+  .decision-detalle .costos-bloque + .costos-bloque { border-left: 0; padding-left: 0; }
+  .decision-detalle { gap: var(--esp-1); }
+  .decision-personajes .retrato-marco { width: 56px; height: 56px; }
+  .decision-personajes .retrato-marco svg { width: 50px; height: 50px; }
+  .decision-detalle .mensaje { min-height: 0; padding-block: var(--esp-1); padding-inline: var(--esp-2); }
+  .decision-detalle .costos-bloque h4 { margin-block-end: var(--esp-1); font-size: 13px; }
+  .decision-detalle .costos-bloque li { padding-block: 0; }
+}
