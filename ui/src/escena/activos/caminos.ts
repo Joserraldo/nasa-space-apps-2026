@@ -84,7 +84,8 @@ export function geometriaCaminos(): THREE.BufferGeometry {
 /** Separación entre balizas a lo largo del camino y distancia al eje. [E] */
 export const BALIZAS = { cada: 5, aparte: 1.1 } as const;
 
-function chocaConBase(x: number, z: number, margen: number): boolean {
+/** Choca con un sólido de `TERRENO`, el banco o la plaza (con `margen`). */
+export function chocaConBase(x: number, z: number, margen: number): boolean {
   if (TERRENO.circulos.some((c) => Math.hypot(x - c.x, z - c.z) < c.r + margen)) return true;
   if (TERRENO.capsulas.some((c) => x > c.x0 - c.r && x < c.x1 + c.r && Math.abs(z - c.z) < c.r + margen)) return true;
   if (x > BANCO.x0 - margen && x < BANCO.x1 + margen && z > BANCO.zBajo - margen && z < BANCO.zFondo + margen) return true;

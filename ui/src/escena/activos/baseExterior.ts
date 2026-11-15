@@ -11,9 +11,9 @@ import { fusionar } from "./fusionar";
 import { geometriaCaminos, posicionesBalizas } from "./caminos";
 
 export const CONSOLAS = [
-  { lugar: "mesa", escala: 1 },
-  { lugar: "taller", escala: 0.55 },
-  { lugar: "sensor", escala: 0.4 },
+  { lugar: "mesa", escala: 1.2 },
+  { lugar: "taller", escala: 0.7 },
+  { lugar: "sensor", escala: 0.55 },
 ] as const;
 
 function mirandoA(id: LugarId, escala = 1): TransformacionPieza {

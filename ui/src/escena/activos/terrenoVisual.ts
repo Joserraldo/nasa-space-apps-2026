@@ -1,7 +1,7 @@
 /** Mallas Three.js del terreno de Jezero, rocas y cordillera. */
 import * as THREE from "three";
 import { colorToken, geometriaBase, type Materiales } from "../materiales";
-import { MEZCLA_SUELO, aleatorio, mallaTerreno, rocasBasalticas, type OpcionesMalla, type OpcionesRocas, type Rejilla } from "./terrenoDatos";
+import { MEZCLA_SUELO, aleatorio, mallaTerreno, rocasBasalticas, type OpcionesMalla, type OpcionesRocas, type Rejilla, type TransformacionRoca } from "./terrenoDatos";
 
 // ---------------------------------------------------------------------------------------------
 // Wrappers Three.js. Terreno y rocas comparten el material `Rock` (color de vértice): 1 programa.
@@ -121,10 +121,14 @@ export function crearRocas(
   semilla: number,
   opciones: OpcionesRocas = {},
 ): THREE.InstancedMesh {
+  return instanciarRocas(materiales, rocasBasalticas(semilla, n, terreno.rejilla, terreno.opciones, opciones));
+}
+
+/** Rocas ya colocadas en UN `InstancedMesh` con la roca maestra de la caché (1 draw call + sombra). */
+export function instanciarRocas(materiales: Materiales, rocas: readonly TransformacionRoca[], nombre = "Rocks_Basalt"): THREE.InstancedMesh {
   const geo = geometriaBase("roca-basalto", geometriaRoca);
-  const rocas = rocasBasalticas(semilla, n, terreno.rejilla, terreno.opciones, opciones);
   const malla = new THREE.InstancedMesh(geo, materiales.Rock, rocas.length);
-  malla.name = "Rocks_Basalt";
+  malla.name = nombre;
   const m = new THREE.Matrix4();
   const p = new THREE.Vector3();
   const q = new THREE.Quaternion();
