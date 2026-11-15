@@ -94,7 +94,8 @@
   .modulos-e5 { grid-template-columns: minmax(0, 1fr) 40%; gap: var(--esp-3); padding-block: var(--esp-2); }
   .modulos-ancla { display: none; }
   .modulos-e5 { align-items: start; }
-  .modulos-izq { grid-template-rows: auto auto auto; gap: var(--esp-2); }
+  /* El HUD compacto es una sola fila: la lista empieza debajo de toda la fila, no solo de su izquierda. */
+  .modulos-izq { grid-template-rows: auto auto auto; gap: var(--esp-2); padding-block-start: var(--hud-reserva, 0px); }
   .modulos-cabeza { padding: var(--esp-1) var(--esp-4); gap: 0; }
   .modulos-cabeza h2 { font-size: var(--tipo-tam-subtitulo); }
   .modulos-cabeza p:not(.modulos-progreso) { display: none; }

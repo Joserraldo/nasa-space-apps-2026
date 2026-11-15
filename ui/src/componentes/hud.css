@@ -64,3 +64,18 @@
   }
   .hud-placas .pildora svg { inline-size: 16px; block-size: 16px; }
 }
+
+/* Celular apaisado: el objetivo largo de Iris se recorta con puntos suspensivos para no partir la fila
+   (el texto completo sigue en el estado que oye el lector). */
+@media (max-height: 500px), (max-width: 700px) {
+  .hud-arriba, .hud-der { min-inline-size: 0; }
+  .hud-der > .pildora-objetivo { flex: 0 1 auto; min-inline-size: 0; }
+  .pildora-objetivo > .fc, .pildora-objetivo .pildora { display: flex; max-inline-size: 100%; }
+  .pildora-objetivo .pildora > span:last-child { flex: 0 1 auto; min-inline-size: 0; overflow: hidden; text-overflow: ellipsis; }
+}
+
+/* Vertical: Crew y Map sobre la pista del joystick, para que nombres largos ("Tripulación") no
+   choquen con el botón de acción de la derecha. */
+@media (orientation: portrait) and (max-width: 700px) {
+  .hud-tactil .hud-abajo { padding-inline-start: 0; margin-block-end: calc(112px + var(--esp-2)); }
+}

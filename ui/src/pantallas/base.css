@@ -90,7 +90,7 @@
 /* ---- Celular vertical (390 x 844): hoja inferior de hasta la mitad del alto; el mundo arriba ---- */
 @media (orientation: portrait) and (max-width: 700px) {
   .base-panel {
-    inset: auto 0 0 0; inline-size: auto; max-block-size: 55dvh;
+    inset: auto 0 0 0; inline-size: auto; max-block-size: 50dvh;
     padding: var(--esp-2) max(var(--esp-3), env(safe-area-inset-right)) max(var(--esp-3), env(safe-area-inset-bottom)) max(var(--esp-3), env(safe-area-inset-left));
     background: color-mix(in srgb, var(--color-lila) 92%, transparent);
     box-shadow: 0 -3px 0 color-mix(in srgb, var(--color-ciruela) 28%, transparent);
