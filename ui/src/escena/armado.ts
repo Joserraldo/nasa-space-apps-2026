@@ -22,6 +22,7 @@ import { aplicarEstado, armarAnclajes, armarModulo, type ModuloArmado } from "./
 export { PLAZA, CAMINO, CAMINOS, BALIZAS, geometriaCaminos, posicionesBalizas } from "./activos/caminos";
 import { chocaConBase, posicionesBalizas, sobreCamino } from "./activos/caminos";
 import { LUGARES } from "./mundo";
+import { crearTripulacionBase, type TripulacionBase } from "./tripulacionBase";
 export { fusionar } from "./activos/fusionar";
 import {
   ESCALA_VERTICAL_POR_DEFECTO,
@@ -156,6 +157,7 @@ export function rocaPrimerPlanoLibre(x: number, z: number, radio: number): boole
 
 export interface EscenaArmada {
   escena: THREE.Scene;
+  tripulacion: TripulacionBase;
   cielo: Cielo;
   modulos: Readonly<Record<ModuloBase, ModuloArmado>>;
   /** Grupo del terreno y las rocas (vacío hasta `ponerTerreno`). */
@@ -184,6 +186,8 @@ export function armarEscena(
 ): EscenaArmada {
   const escena = new THREE.Scene();
   escena.name = "Exterior_Jezero";
+  const tripulacion = crearTripulacionBase();
+  escena.add(tripulacion.grupo);
   const cielo = crearCielo(escena, "dia", calidad);
   const terreno = new THREE.Group();
   terreno.name = "Terrain_Group";
@@ -197,10 +201,12 @@ export function armarEscena(
 
   const armada: EscenaArmada = {
     escena,
+    tripulacion,
     cielo,
     modulos,
     terreno,
     aplicarVista(v) {
+      tripulacion.aplicarVista(v);
       for (const id of MODULOS_BASE) aplicarEstado(modulos[id], v.modulos[id]);
     },
     ponerTerreno(r) {
@@ -223,6 +229,7 @@ export function armarEscena(
       modulos[id].pulso = ahora;
     },
     animar(ahora, reducido) {
+      tripulacion.animar(ahora, reducido);
       for (const id of MODULOS_BASE) {
         const mod = modulos[id];
         if (mod.inicio < 0) mod.inicio = ahora;
@@ -240,6 +247,7 @@ export function armarEscena(
       }
     },
     liberar() {
+      tripulacion.liberar();
       cielo.quitar();
       liberarEscena(escena);
     },

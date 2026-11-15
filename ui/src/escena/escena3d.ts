@@ -235,6 +235,7 @@ export function crearEscena3D(canvas: HTMLCanvasElement, opciones: OpcionesEscen
     },
     fijarCamara(c) {
       camaraActual = c;
+      armada.tripulacion.jugador.grupo.visible = c !== "primera";
       guantes.mostrar(c === "primera");
       camara.fov = fovParaAspecto(c, camara.aspect);
       camara.updateProjectionMatrix();
