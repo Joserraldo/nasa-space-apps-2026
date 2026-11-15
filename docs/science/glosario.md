@@ -23,3 +23,7 @@ Cada palabra se explica en una o dos frases, sin números inventados. En el jueg
 | Curiosity | Curiosity | Un rover de la NASA en el cráter Gale de Marte. Tiene un detector de radiación llamado RAD. | A NASA rover in Gale Crater on Mars. It has a radiation detector called RAD. |
 | Perseverance | Perseverance | Un rover de la NASA que aterrizó en el cráter Jezero de Marte. | A NASA rover that landed in Jezero Crater on Mars. |
 | Microgravedad | Microgravity | Cuando casi no se siente el peso, como en la Estación Espacial. | When you can barely feel your weight, like on the Space Station. |
+| Órbita | Orbit | El camino que sigue un objeto alrededor de un planeta o de la Luna, como la Estación Espacial alrededor de la Tierra. | The path an object follows around a planet or the Moon, like the Space Station around Earth. |
+| Timo | Thymus | Un órgano pequeño dentro del cuerpo. En el espacio se encoge, y los científicos estudian por qué. | A small organ inside the body. In space it shrinks, and scientists study why. |
+| Módulo de aterrizaje | Lander | Una nave que se posa en otro mundo y se queda allí. InSight fue una de Marte. | A spacecraft that lands on another world and stays there. InSight was one on Mars. |
+| Rover | Rover | Un robot con ruedas que recorre otro mundo. | A robot with wheels that drives around another world. |
