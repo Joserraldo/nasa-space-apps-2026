@@ -156,13 +156,13 @@ describe("cielo de Marte (Three)", () => {
     expect(alta.hemisferica.groundColor.getHexString()).toBe(new THREE.Color(TOKENS_TEMP["regolito-medio"]).getHexString());
   });
 
-  it("aplica ACES y exposición 1,06 al renderer, y quitar() limpia la escena", () => {
+  it("aplica sin tone mapping (DISEÑO §3.4) al renderer, y quitar() limpia la escena", () => {
     const escena = new THREE.Scene();
     const cielo = crearCielo(escena);
     const renderer = { toneMapping: THREE.NoToneMapping, toneMappingExposure: 1, shadowMap: { enabled: false, type: THREE.BasicShadowMap } } as unknown as RendererCielo;
     cielo.aplicarRenderer(renderer);
-    expect(renderer.toneMapping).toBe(THREE.ACESFilmicToneMapping);
-    expect(renderer.toneMappingExposure).toBe(1.06);
+    expect(renderer.toneMapping).toBe(THREE.NoToneMapping);
+    expect(renderer.toneMappingExposure).toBe(1);
     expect(renderer.shadowMap.enabled).toBe(true);
     cielo.quitar();
     expect(escena.children).toHaveLength(0);
@@ -215,17 +215,19 @@ describe("terreno y rocas (Three)", () => {
     const { rocas } = montar();
     const n = rocas.geometry.getAttribute("normal");
     const c = rocas.geometry.getAttribute("color");
-    const arriba = new THREE.Color(TOKENS_TEMP["regolito-medio"]);
-    const lados = new THREE.Color(TOKENS_TEMP["roca-basalto"]);
-    expect(arriba.getHSL({ h: 0, s: 0, l: 0 }).l).toBeGreaterThan(lados.getHSL({ h: 0, s: 0, l: 0 }).l);
-    let superiores = 0;
+    // Lados: `roca-basalto` calentado; cima: más clara por el polvo; cada faceta varía un poco.
+    const basalto = new THREE.Color(TOKENS_TEMP["roca-basalto"]);
+    const luz = (v: number) => c.getX(v) + c.getY(v) + c.getZ(v);
+    let superiores = 0, sumaArriba = 0, laterales = 0, sumaLados = 0;
     for (let v = 0; v < n.count; v += 3) {
-      if (n.getY(v) > 0.7) {
-        superiores++;
-        expect(c.getX(v)).toBeCloseTo(arriba.r, 5);
-      } else expect(c.getX(v)).toBeCloseTo(lados.r, 5);
+      if (n.getY(v) > 0.7) { superiores++; sumaArriba += luz(v); }
+      else if (n.getY(v) < 0.2) { laterales++; sumaLados += luz(v); }
+      expect(c.getX(v)).toBeGreaterThan(c.getZ(v)); // rojizo terroso, nunca magenta ni lila
+      expect(c.getX(v)).toBeGreaterThanOrEqual(basalto.r - 1e-6);
     }
     expect(superiores).toBeGreaterThan(0);
+    expect(laterales).toBeGreaterThan(0);
+    expect(sumaArriba / superiores).toBeGreaterThan(sumaLados / laterales);
   });
 });
 
