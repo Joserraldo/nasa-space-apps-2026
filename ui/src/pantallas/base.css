@@ -21,12 +21,12 @@
 
 /* ---- Mundo: hueco de la escena 3D, novedades arriba y diálogo abajo ---- */
 .base-mundo { position: relative; display: flex; flex-direction: column; gap: var(--esp-3); min-inline-size: 0; min-block-size: 0; overflow-y: auto; }
-.base-escena {
+.base-escena, .base-escena-caja {
   position: absolute; inset: 0;
   background: var(--color-lila);
   clip-path: polygon(var(--chaflan-grande) 0, calc(100% - var(--chaflan-grande)) 0, 100% var(--chaflan-grande), 100% calc(100% - var(--chaflan-grande)), calc(100% - var(--chaflan-grande)) 100%, var(--chaflan-grande) 100%, 0 calc(100% - var(--chaflan-grande)), 0 var(--chaflan-grande));
 }
-.base-mundo > :not(.base-escena) { position: relative; margin-inline: var(--esp-3); }
+.base-mundo > :not(.base-escena-caja) { position: relative; margin-inline: var(--esp-3); }
 .base-mundo > :last-child { margin-block-end: var(--esp-3); }
 .base-mundo > .dialogo-experto { margin-block-start: auto; }
 .base-novedades { display: grid; gap: var(--esp-2); justify-items: start; margin-block-start: max(var(--esp-3), var(--hud-reserva-izq, 0px)); }
@@ -119,3 +119,5 @@
   .base-panel .decision-detalle .mensaje-titulo { font-size: 15px; }
   .base-panel .decision-detalle > .fb-caja { position: sticky; bottom: 0; z-index: 1; background: var(--color-marfil); padding-block: var(--esp-1); }
 }
+.base-escena-caja canvas { width: 100%; height: 100%; display: block; }
+.base-escena-caja .base-escena { clip-path: none; }
