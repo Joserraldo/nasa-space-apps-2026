@@ -1,11 +1,56 @@
-# Estado — ui (frontend, voz, arte y accesibilidad)
-**Actualizado:** 13 nov 2026 · **Rama:** — · **PR:** ninguno · **Responsable:** María Paula
+# Estado — ui (frontend v8)
+**Actualizado:** 15 nov 2026 · **Rama base:** `feat/ui-escenarios` · **Orquesta:** María Paula
 
-## Hecho (últimas iteraciones)
-- Carpeta creada (foundation).
+Una sección por persona, máximo 5 líneas, y nadie edita la de otro (FLUJO §8). Cada uno la actualiza dentro de su PR hacia `feat/ui-escenarios`, con el formato de abajo. El estado de tu rol (motor, datos, diseño, agentes) va en el `ESTADO.md` de tu carpeta, en `develop`.
 
-## Qué sigue
-- Ver "Fase 0" / "Tareas de arranque" en CLAUDE.md.
+```text
+**Rama:** feat/ui-<parte>-<tema> · **PR:** #n o ninguno · **Tokens:** verde | amarillo | rojo
+- Hecho: ...
+- Sigue: ...
+- Bloqueo: ninguno | issue #n espera a <persona>
+```
 
-## Bloqueos
-- ninguno
+## Personajes (María Paula)
+**Rama:** feat/ui-personajes-subida-escena · **PR:** #197 · **Tokens:** verde
+- Hecho: subida 1/6 (#184, reductor y cuenta) fusionada; 2/6 (#197, lógica de escena) abierta con la puerta en verde.
+- Sigue: subida 3/6, render adaptado al contrato `VistaEscena` de José (`tormenta.anunciada`, `iris.averiada`); después 4 a 6.
+- Bloqueo: ninguno.
+
+## Escenario (Daniel)
+**Rama:** — · **PR:** ninguno · **Tokens:** —
+- Sin registrar todavía.
+
+## Ubicación (Camilo)
+**Rama:** — · **PR:** ninguno · **Tokens:** —
+- Sin registrar todavía.
+
+## Integración (José)
+**Rama:** — · **PR:** ninguno · **Tokens:** —
+- Hecho: contratos `VistaEscena` (#181), eventos de feedback (#182) y ajustes del jugador (#186) fusionados; CI corre en `feat/ui-escenarios`.
+
+## Interfaz (Jaime)
+**Rama:** — · **PR:** ninguno · **Tokens:** —
+- Sin registrar todavía. Primera tarea: `tokens.ts`, `tokens.css` y Nunito (DISEÑO §2 y §2.4, contrato de FLUJO §3).
+
+## Fidelidad
+Una línea por pieza (FLUJO §4 y §8). Estados: `sin empezar`, `en PR #n`, `aprobada`. Solo María Paula marca `aprobada`, después de comparar la captura con la lámina.
+
+| Pieza | Lámina | Dueño | Estado |
+| --- | --- | --- | --- |
+| Tokens, Nunito, botones y placas | `ui/02`, `ui/03` | Jaime | sin empezar |
+| Retratos de diálogo | `personajes/02, 04, 06, 09`, `ui/01` | Jaime | sin empezar |
+| Portada DOM, intro y carga | `inicio/01–03`, `ui/00` | Jaime | sin empezar |
+| Tarjeta de fuente, datos usados, glosario | `ui/04` | Jaime | sin empezar |
+| Cielo, luz y niebla de Marte | MARTE.md §4–§5 (no el azul de `mundo/01`) | Daniel | sin empezar |
+| Terreno de Jezero y rocas | `mundo/01`, `exterior/02` | Daniel | sin empezar |
+| Kit de piezas | `piezas/01–10` | Daniel | sin empezar |
+| Los 5 módulos | `mundo/01`, `piezas/` | Daniel | sin empezar |
+| Base compacta y plano exterior | `exterior/03`, `exterior/01`, `mundo/01` | Daniel | sin empezar |
+| Lugares, anclajes y caminos | `exterior/03`, `mapa-base-jezero.svg` | Camilo | sin empezar |
+| Cámaras de 3.ª y 1.ª persona | `mundo/01`, `mundo/02` | Camilo | sin empezar |
+| Panel `Map` y respaldo 2D | ESCENAS §3.4, FLUJO §9 | Camilo | sin empezar |
+| Niño 3D | `personajes/08–10` | María Paula | sin empezar |
+| Iris rover | `mundo/01`, `inicio/02`, `personajes/07` | María Paula | sin empezar |
+| Ingeniera 3D | `personajes/01`, `mundo/01` | María Paula | sin empezar |
+| Portada 3D | `inicio/01`, `inicio/capas/` | María Paula | sin empezar |
+| HUD, diálogo, comparación, tormenta y final (montaje) | `ui/01`, `ui/04`, `personajes/07`, `mundo/01` | José | sin empezar |
