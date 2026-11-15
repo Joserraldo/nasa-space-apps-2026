@@ -1,16 +1,31 @@
-/* HUD de mundo/01 (DISEÑO §5.2): placas separadas arriba a la derecha; día, turno y reloj a la izquierda.
-   Solo tokens; la escala la pone HudBase con `zoom` (ESCENAS §2.7). */
+/* HUD de mundo/01 (DISEÑO §5.2): sin franja; píldoras flotando sobre la escena. Solo tokens.
+   La capa cubre la pantalla y no captura el puntero; solo las píldoras reciben clics.
+   La escala la pone HudBase con `zoom` (nunca menos de 1, para que el texto no baje de 16 px). */
 .hud-base {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: var(--esp-2) var(--esp-3);
-  padding: max(var(--esp-2), env(safe-area-inset-top)) max(var(--esp-3), env(safe-area-inset-right)) var(--esp-2) max(var(--esp-3), env(safe-area-inset-left));
+  position: fixed; inset: 0; z-index: 5; pointer-events: none; display: flex; flex-direction: column; justify-content: space-between;
+  padding: max(var(--esp-3), env(safe-area-inset-top)) max(var(--esp-3), env(safe-area-inset-right)) max(var(--esp-3), env(safe-area-inset-bottom)) max(var(--esp-3), env(safe-area-inset-left));
   color: var(--color-indigo-texto);
 }
-.hud-reloj, .hud-placas { display: flex; flex-wrap: wrap; align-items: center; gap: var(--esp-2); }
-.hud-placas { justify-content: flex-end; margin-left: auto; }
-.hud-placas .placa { min-width: 128px; }
-.hud-dia { margin: 0; padding: var(--esp-2) var(--esp-4); min-height: 48px; display: flex; align-items: center; gap: var(--esp-1); font-weight: var(--tipo-peso-etiqueta); font-variant-numeric: tabular-nums; }
-.hud-reloj .fb { min-height: 48px; }
+.hud-base :is(.fc, button) { pointer-events: auto; }
+.hud-arriba { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start; gap: var(--esp-2) var(--esp-3); }
+.hud-izq, .hud-placas { display: flex; flex-wrap: wrap; align-items: flex-start; gap: var(--esp-2); }
+.hud-der { display: grid; justify-items: end; gap: var(--esp-2); margin-left: auto; max-inline-size: 100%; }
+.hud-placas { justify-content: flex-end; gap: var(--esp-2) var(--esp-3); }
+.hud-dia { font-variant-numeric: tabular-nums; }
+.hud-izq .pb { min-height: 36px; }
+
+.hud-abajo { position: relative; display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: var(--esp-2); margin-block-end: 0; }
+.hud-abajo-izq { display: flex; gap: var(--esp-2); }
+.hud-centro { position: absolute; inset-inline: 0; margin-inline: auto; inline-size: max-content; justify-content: center; }
+
+/* Celular: el aviso de [E] pasa a su propia fila para que nada se solape. */
+@media (max-width: 700px), (max-height: 500px) {
+  .hud-centro { position: static; order: -1; margin-inline: auto; flex-basis: 100%; }
+  .placa-capa { font-size: 16px; }
+}
+
+/* Celular vertical: la página se desplaza, así que el HUD sube con ella en vez de tapar el contenido. */
+@media (orientation: portrait) and (max-width: 700px) {
+  .hud-base { position: absolute; block-size: auto; inset-block-end: auto; }
+  .hud-abajo { position: fixed; inset: auto var(--esp-3) var(--esp-3); }
+}

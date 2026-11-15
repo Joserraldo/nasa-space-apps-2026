@@ -30,7 +30,7 @@ export function Carga({ consejo = 0, sonido, onSonido, onSaltar }: {
         </div>
       )}
       <div className="carga-iconos" aria-hidden="true">
-        {(["energia", "vida", "escudo"] as const).map((ic) => <span key={ic} className="carga-icono"><Icono nombre={ic} tam={40} /></span>)}
+        {(["energia", "pulmones", "escudo"] as const).map((ic) => <span key={ic} className="carga-icono"><Icono nombre={ic} tam={40} /></span>)}
       </div>
       {/* El niño mira la tableta mientras se prepara la misión (inicio/03). */}
       <div className="carga-nino" aria-hidden="true"><Retrato persona="nino" expresion="feliz" tam={200} parpadear /></div>

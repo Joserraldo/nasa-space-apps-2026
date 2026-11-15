@@ -12,12 +12,13 @@
   grid-template-columns: minmax(0, 1fr) minmax(300px, 40%);
   align-items: stretch;
   gap: var(--esp-5);
-  min-block-size: calc(100dvh - 72px);
+  min-block-size: calc(100dvh - 40px);
   background: var(--color-marfil);
   color: var(--color-indigo-texto);
 }
 
 .modulos-izq {
+  padding-block-start: var(--hud-reserva-izq, 0px);
   display: grid; grid-template-columns: minmax(0, 1fr); grid-template-rows: auto auto 1fr auto;
   gap: var(--esp-4); min-inline-size: 0;
 }
@@ -73,7 +74,7 @@
 .modulos-listo { justify-self: start; }
 
 /* ---- Panel de decisión (ui/01) ---- */
-.modulos-panel { position: sticky; inset-block-start: var(--esp-3); min-inline-size: 0; }
+.modulos-panel { position: sticky; inset-block-start: max(var(--esp-3), var(--hud-reserva-der, 0px)); margin-block-start: var(--hud-reserva-der, 0px); min-inline-size: 0; }
 .modulos-panel-cara {
   display: grid; gap: var(--esp-3); padding: var(--esp-4) var(--esp-5);
   max-block-size: calc(100dvh - 2 * var(--esp-3)); overflow-y: auto; overscroll-behavior: contain;
@@ -136,4 +137,10 @@
 
 @media (prefers-reduced-motion: reduce) {
   .modulos-ficha-cara { transition: none; }
+}
+
+/* Celular vertical: una columna, debajo de todas las píldoras del HUD. */
+@media (orientation: portrait) and (max-width: 700px) {
+  .modulos-izq { padding-block-start: var(--hud-reserva, 0px); }
+  .modulos-panel { margin-block-start: 0; inset-block-start: var(--esp-3); }
 }

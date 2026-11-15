@@ -18,12 +18,19 @@
 .fc-lila { --fc-fondo: var(--color-lila); }
 .fc-chico { --fc-ch: var(--chaflan-chico); }
 
-/* ---- Placa de recurso (ui/03 "Exploration", HUD de mundo/01) ---- */
-.placa { display: grid; grid-template-columns: auto 1fr; align-items: center; column-gap: var(--esp-2); padding: var(--esp-2) var(--esp-4); min-height: 56px; }
-.placa-nombre { font-weight: var(--tipo-peso-etiqueta); font-size: 16px; line-height: 1.1; }
-.placa-valor { font-weight: var(--tipo-peso-titulo); font-size: var(--tipo-tam-placa); font-variant-numeric: tabular-nums; line-height: 1; }
-.placa-texto { display: flex; flex-direction: column; align-items: center; }
-.placa-capa { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: var(--esp-1) var(--esp-3); font-size: 15px; font-weight: var(--tipo-peso-etiqueta); }
+/* ---- Píldora facetada (mundo/01) y placa de recurso: una línea, extremos en punta, 36 px a 1024 x 683 ---- */
+.pildora {
+  --fc-forma: polygon(12px 0, calc(100% - 12px) 0, 100% 50%, calc(100% - 12px) 100%, 12px 100%, 0 50%);
+  --fc-fondo: var(--color-marfil);
+  display: inline-flex; align-items: center; gap: 6px; box-sizing: border-box; min-height: 36px;
+  padding: 0 14px; white-space: nowrap; font-size: 17px; font-weight: var(--tipo-peso-etiqueta); line-height: 1;
+}
+.pildora > * { position: relative; flex: none; }
+.placa-conj { display: grid; justify-items: center; align-content: start; gap: var(--esp-1); }
+.placa-valor { font-variant-numeric: tabular-nums; }
+.placa-baja { background: var(--color-ambar); }
+.placa-baja .placa-valor { color: var(--color-aviso-texto); }
+.placa-capa { display: flex; flex-wrap: wrap; justify-content: center; gap: 0 var(--esp-3); font-size: 15px; font-weight: var(--tipo-peso-etiqueta); }
 .placa-capa:empty { display: none; }
 .placa-bajo { color: var(--color-aviso-texto); display: inline-flex; align-items: center; gap: var(--esp-1); }
 .placa-delta { animation: placa-sube var(--dur-delta) var(--curva-entrada) both; }
