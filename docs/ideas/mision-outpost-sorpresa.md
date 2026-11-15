@@ -1,9 +1,18 @@
 # Misión `outpost_sorpresa`: la nave en el espacio profundo
 
-**Rol que propone:** datos (Daniel) · **Dueños de la misión:** diseño (Santiago y Camilo) · **Estado:** propuesta · **Fecha:** 2026-11-14
+**Rol que propone:** datos (Daniel) · **Dueños de la misión:** diseño (Santiago y Camilo) · **Estado:** propuesta, implementada como datos (ver "Estado de implementación") · **Fecha:** 2026-11-14
 **Sitio del contrato:** `outpost_sorpresa` (`contracts/src/seed.ts`, PLAN §2.5: "Luna polo sur, Luna lado visible, Marte cráter Jezero, Marte polo norte, 'outpost' sorpresa").
 **Destino:** `missions/src/outpost.ts` + `design/src/recursos.ts`. Este documento no toca esas carpetas: allí lo implementa diseño.
 **Regla de cifras:** cada número de NASA lleva **[V]** y fuente en la tabla final (§12). Todo lo demás es **valor de juego** (0-100) y no se presenta como dato. Datos estáticos = "datos reales curados, no en vivo".
+
+
+## Estado de implementación (14 nov, 22:45)
+
+- **Implementada como datos:** `missions/src/outpost-sorpresa.ts` (#155, en develop). Voces de la misión en #129.
+- **Fuentes de las tarjetas** (#159): paneles y refugio de Orion (`fuente.nasa.orionPaneles`, `fuente.nasa.orionRefugio`), baterías (`fuente.nasa.baterias`) y mensajes (`fuente.nssdcMoon`). Los textos de `masa_protege` y `bateria_guarda` se corrigieron para no decir más que la fuente.
+- **Balance:** la cabina pasó a `blindaje: -5` (con −8 quedaba muy castigada).
+- **Huecos del tipo `Mision` ya resueltos en develop:** zona sin terreno (`terrenoId` opcional, #172), causa propia del evento (#170) y retraso de comunicaciones por misión (#175).
+- **Pendiente (diseño):** que la misión use esos tres campos nuevos en vez de los rodeos documentados en su archivo.
 
 ## 1. Qué es el outpost sorpresa y por qué enseña algo distinto
 
