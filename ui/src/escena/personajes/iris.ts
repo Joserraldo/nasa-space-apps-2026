@@ -65,7 +65,7 @@ function rueda(m: ConstructorMalla, c: V3, hueso: number): void {
 }
 
 /** Rectángulo con esquinas cortadas, en el plano de la pantalla. */
-const chaflanado = (rx: number, ry: number, k: number, cx = 0, cy = 0): Array<[number, number]> => [
+export const chaflanado = (rx: number, ry: number, k: number, cx = 0, cy = 0): Array<[number, number]> => [
   [cx - rx + k, cy - ry],
   [cx + rx - k, cy - ry],
   [cx + rx, cy - ry + k],
@@ -76,7 +76,7 @@ const chaflanado = (rx: number, ry: number, k: number, cx = 0, cy = 0): Array<[n
   [cx - rx, cy - ry + k],
 ];
 
-function geometriaCara(cara: CaraIris): THREE.BufferGeometry {
+export function geometriaCara(cara: CaraIris): THREE.BufferGeometry {
   const pos: number[] = [];
   const col: number[] = [];
   const tmp = new THREE.Color();
