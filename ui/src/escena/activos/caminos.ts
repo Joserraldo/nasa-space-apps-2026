@@ -7,8 +7,13 @@ import { MallaPavimento, barrer, dentroDe, type Franja, type PuntoPavimento } fr
 type P2 = PuntoPavimento;
 
 const MESA = lugar("mesa");
-/** Plataforma pavimentada bajo la consola de la mesa (claro central, ESCENAS §3.3). [E] */
-export const PLAZA = { x: MESA.mx, z: (MESA.mz + MESA.z) / 2 - 0.3, radio: 1.5 } as const;
+/**
+ * Plataforma baja de losas bajo la consola de la mesa y el equipo solar (dos paneles a su derecha,
+ * `mundo/01`). Rectángulo alineado con los ejes, como la consola (giro 0): `x0..x1` × `z0..z1`. [E]
+ */
+export const PLAZA = { x0: MESA.mx - 1.4, x1: MESA.mx + 4.1, z0: MESA.mz - 1.2, z1: MESA.z + 0.3, x: MESA.mx + 1.0, z: (MESA.mz - 1.2 + MESA.z + 0.4) / 2 } as const;
+/** Distancia de un punto al rectángulo de la plataforma (0 dentro). */
+export const distanciaPlaza = (x: number, z: number) => Math.hypot(Math.max(PLAZA.x0 - x, 0, x - PLAZA.x1), Math.max(PLAZA.z0 - z, 0, z - PLAZA.z1));
 /**
  * Medidas de las losas en metros. [E] `ancho`: losa de borde a borde (sin bordillo). `bordillo`:
  * banda más oscura a cada lado. `juntas`: separación entre juntas a lo largo del camino.
@@ -26,12 +31,13 @@ export const CAMINO = {
 
 /** Punto donde se para el jugador en un lugar (`LUGARES`, mundo.ts). */
 const en = (id: LugarId): P2 => [lugar(id).x, lugar(id).z];
-/** Punto del borde de la plaza en dirección al lugar `id`: ahí arranca cada ramal. */
+/** Punto 0,2 m fuera del borde de la plataforma, en dirección al lugar `id`: ahí arranca cada ramal. */
 function plazaHacia(id: LugarId): P2 {
   const [x, z] = en(id);
-  const d = Math.hypot(x - PLAZA.x, z - PLAZA.z);
-  const k = (PLAZA.radio + 0.2) / d;
-  return [PLAZA.x + (x - PLAZA.x) * k, PLAZA.z + (z - PLAZA.z) * k];
+  const dx = x - PLAZA.x, dz = z - PLAZA.z, d = Math.hypot(dx, dz);
+  const salida = Math.min((PLAZA.x1 - PLAZA.x) / Math.abs(dx || 1e-9), (PLAZA.z1 - PLAZA.z) / Math.abs(dz || 1e-9));
+  const k = salida + 0.2 / d;
+  return [PLAZA.x + dx * k, PLAZA.z + dz * k];
 }
 
 /**
@@ -153,8 +159,8 @@ function segmentos(): [P2, P2][] {
   return salida;
 }
 
-/** Plaza: octógono de apotema `ap` con caras alineadas a los ejes. */
-const plaza = (ap: number) => octogono([PLAZA.x, PLAZA.z], ap);
+/** Plataforma: rectángulo de la plaza crecido `m` por cada lado (negativo = encogido). */
+const plaza = (m = 0): P2[] => [[PLAZA.x0 - m, PLAZA.z0 - m], [PLAZA.x1 + m, PLAZA.z0 - m], [PLAZA.x1 + m, PLAZA.z1 + m], [PLAZA.x0 - m, PLAZA.z1 + m]];
 
 /**
  * Juntas entre losas: franjas finas transversales cada `CAMINO.juntas`, 4 mm sobre la losa (nunca
@@ -166,7 +172,7 @@ function juntas(m: MallaPavimento, color: THREE.Color, losas: readonly Franja[])
   const arriba = new THREE.Vector3(0, 1, 0);
   const segs = segmentos();
   const libre = (x: number, z: number, propio: number) =>
-    Math.hypot(x - PLAZA.x, z - PLAZA.z) > PLAZA.radio / COS8 + 0.1
+    distanciaPlaza(x, z) > 0.1
     && segs.every(([a, b], k) => k === propio || distanciaTramo(x, z, a, b) > r + CAMINO.bordillo + 0.05);
   segs.forEach(([a, b], k) => {
     const largo = Math.hypot(b[0] - a[0], b[1] - a[1]);
@@ -185,14 +191,13 @@ function juntas(m: MallaPavimento, color: THREE.Color, losas: readonly Franja[])
       m.cuadro(p(-1, -ancho / 2), p(1, -ancho / 2), p(1, ancho / 2), p(-1, ancho / 2), color, arriba);
     }
   });
-  // Plaza: dos juntas en cruz a cada lado de la consola, recortadas al octógono interior.
-  const ap = PLAZA.radio - CAMINO.bordePlaza, yp = CAMINO.altoPlaza + 0.004;
-  for (const c of [-0.75, 0.75]) {
-    const h = Math.min(ap, ap * Math.SQRT2 - Math.abs(c) - ancho);
-    const v = (x: number, z: number) => new THREE.Vector3(PLAZA.x + x, yp, PLAZA.z + z);
-    m.cuadro(v(c - ancho / 2, -h), v(c + ancho / 2, -h), v(c + ancho / 2, h), v(c - ancho / 2, h), color, arriba);
-    m.cuadro(v(-h, c - ancho / 2), v(h, c - ancho / 2), v(h, c + ancho / 2), v(-h, c + ancho / 2), color, arriba);
-  }
+  // Plataforma: juntas cada metro y medio en x y una en z, recortadas al rectángulo interior.
+  const bp = CAMINO.bordePlaza, yp = CAMINO.altoPlaza + 0.004;
+  const v = (x: number, z: number) => new THREE.Vector3(x, yp, z);
+  for (let x = PLAZA.x0 + bp + 1.5; x < PLAZA.x1 - bp - 0.5; x += 1.5)
+    m.cuadro(v(x - ancho / 2, PLAZA.z0 + bp), v(x + ancho / 2, PLAZA.z0 + bp), v(x + ancho / 2, PLAZA.z1 - bp), v(x - ancho / 2, PLAZA.z1 - bp), color, arriba);
+  const zj = PLAZA.z + 0.6;
+  m.cuadro(v(PLAZA.x0 + bp, zj - ancho / 2), v(PLAZA.x1 - bp, zj - ancho / 2), v(PLAZA.x1 - bp, zj + ancho / 2), v(PLAZA.x0 + bp, zj + ancho / 2), color, arriba);
 }
 
 /**
@@ -208,23 +213,23 @@ export function geometriaCaminos(): THREE.BufferGeometry {
   const r = CAMINO.ancho / 2, rb = r + CAMINO.bordillo;
   // Colores solo de tokens: losa marfil arena, bordillo y juntas hacia el regolito, cara lateral más oscura.
   const marfil = colorToken("traje-marfil");
-  const losa = marfil.clone().lerp(colorToken("sombra-suelo"), 0.4);
-  const borde = marfil.clone().lerp(colorToken("regolito-medio"), 0.45);
-  const lateral = marfil.clone().lerp(colorToken("regolito-medio"), 0.7);
-  const junta = marfil.clone().lerp(colorToken("regolito-medio"), 0.35);
+  const losa = marfil.clone().lerp(colorToken("sombra-suelo"), 0.3);
+  const borde = marfil.clone().lerp(colorToken("regolito-medio"), 0.28);
+  const lateral = marfil.clone().lerp(colorToken("regolito-medio"), 0.5);
+  const junta = marfil.clone().lerp(colorToken("regolito-medio"), 0.2);
 
   const m = new MallaPavimento();
-  const sinPlaza = [plaza(PLAZA.radio)];
+  const sinPlaza = [plaza()];
   const exterior = huellas(rb), interior = huellas(r);
   const losas = barrer(interior, sinPlaza);
   m.caras(losas, CAMINO.altoLosa, losa);
   // El escalón no se emite en el contorno de la plaza (ya lo cubre su pared exterior, coplanar):
   // para esta pasada el hueco es 1 cm más pequeño y su contorno queda oculto dentro de la plaza.
-  m.paredes(barrer(interior, [plaza(PLAZA.radio - 0.01)]), CAMINO.altoLosa, CAMINO.altoBordillo, borde, true);
+  m.paredes(barrer(interior, [plaza(-0.01)]), CAMINO.altoLosa, CAMINO.altoBordillo, borde, true);
   m.caras(barrer(exterior, [...interior, ...sinPlaza]), CAMINO.altoBordillo, borde);
   m.paredes(barrer(exterior, sinPlaza), -0.02, CAMINO.altoBordillo, lateral);
 
-  const centro = [plaza(PLAZA.radio - CAMINO.bordePlaza)];
+  const centro = [plaza(-CAMINO.bordePlaza)];
   m.caras(barrer(centro, [], sinPlaza), CAMINO.altoPlaza, losa); // mismas guías que el marco: sin grietas en T
   m.caras(barrer(sinPlaza, centro), CAMINO.altoPlaza, borde);
   m.paredes(barrer(sinPlaza), -0.02, CAMINO.altoPlaza, lateral);
@@ -244,7 +249,7 @@ export function chocaConBase(x: number, z: number, margen: number): boolean {
   if (TERRENO.circulos.some((c) => Math.hypot(x - c.x, z - c.z) < c.r + margen)) return true;
   if (TERRENO.capsulas.some((c) => x > c.x0 - c.r && x < c.x1 + c.r && Math.abs(z - c.z) < c.r + margen)) return true;
   if (x > BANCO.x0 - margen && x < BANCO.x1 + margen && z > BANCO.zBajo - margen && z < BANCO.zFondo + margen) return true;
-  return Math.hypot(x - PLAZA.x, z - PLAZA.z) < PLAZA.radio + margen;
+  return distanciaPlaza(x, z) < margen;
 }
 
 /** Balizas a los lados de los caminos, alternando lado, sin caer sobre módulos ni la plaza. */
