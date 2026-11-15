@@ -14,7 +14,7 @@
 Empezá ya por los archivos nuevos (tokens, `componentes/base/`, portada DOM, intro, carga).
 
 0. **Borrar el diseño anterior** apenas entre la subida de María Paula: `ui/src/estilos.css` y `ui/src/mision.css` completos, reemplazados por `ui/src/estilos/` con los tokens v8 (FLUJO §2.2). HECHO: la app compila sin esos archivos y sin el tema oscuro.
-1. **Tokens CSS** (DISEÑO §2.1): marfil, lila, ciruela, cian, chaflán, sombra, espaciado, tipografía de 18–20 px, duraciones y curvas. HECHO: el tema oscuro ya no se usa en ninguna pantalla nueva.
+1. **Tokens y tipografía** (DISEÑO §2.1, §2.1.1 y §2.4): `ui/src/estilos/tokens.ts` con todos los hex de DISEÑO §2 (también los de trajes y entorno, que usa el 3D), `tokens.css` con las mismas variables y un test que compara los dos; chaflán, sombra, espaciado, duraciones y curvas; Nunito y Nunito Italic servidas desde `ui/public/fuentes/` con su `OFL.txt`. Es contrato (FLUJO §3): va primero porque lo usan todos. HECHO: test de tokens en verde, la fuente carga sin red y el tema oscuro no se usa en ninguna pantalla nueva.
 2. **`FacetButton`** con todos los estados de `ui/02` y `ui/03` (normal, hover, pressed, focus fuera del recorte, disabled con motivo, selected, busy) y áreas de 44 x 44 px. HECHO: captura de todos los estados al lado de la lámina.
 3. **`ResourcePlaque`** (tres separados, valor real, delta y causa), **`CostRow`**, **`PendingEffect`**, mensajes y **`ConfirmarAccion`** (props de APLICACION §5, acordadas con José). HECHO: José los puede montar sin tocar tus archivos.
 4. **Retratos de diálogo** en SVG facetado del niño, las 3 expertas e Iris con las 8 expresiones. HECHO: misma identidad que los modelos 3D de María Paula.

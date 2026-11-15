@@ -69,11 +69,13 @@ El diseño que había antes del atlas v8 **se borra**, no se adapta. Lo borra ca
 | Quién | Qué borra |
 | --- | --- |
 | **Jaime** | `ui/src/estilos.css` y `ui/src/mision.css` completos (tema oscuro, `#0b1026`, `#1a2350`, `--hud: #141a2b`, `--life: #9be15d`). Los reemplaza por `ui/src/estilos/` con los tokens v8 para que la app siga compilando. |
-| **José** | En `App.tsx` y `pantallas/`: la bienvenida oscura de `Base3D.tsx` (`.vineta-mundo`, `.bienvenida-mision`, `.boton-despegar` verde, `.comunicador-iris`), el `<Hud />` en la fase `inicio` y toda clase o import del tema viejo. |
+| **José** | En `App.tsx` y `pantallas/`: la bienvenida oscura de `Base3D.tsx` (`.vineta-mundo`, `.bienvenida-mision`, `.boton-despegar` verde, `.comunicador-iris`), el `<Hud />` en la fase `inicio`, toda clase o import del tema viejo y **los emojis** que hoy usa la UI como iconos (en `develop`: `App.tsx`, `Dialogos.tsx`, `Hud.tsx`, `ColocarModulos.tsx`, `Final.tsx` y `Tormenta.tsx`); los reemplaza `Iconos.tsx`. |
 | **Daniel** | En `escena3d.ts`, `modelos.ts` y `EscenaBase.tsx`: el cielo `#323272`, los paneles oscuros, los visores opacos y cualquier geometría o material del prototipo. Quedan las firmas que consume la escena (APLICACION §1). |
 | **María Paula** | Revisa que no quede nada y lo aprueba. |
 
 Lo único que se conserva es la lógica: conexión con el motor, i18n, reductor, firmas de la escena y respaldo 2D.
+
+**Cierre de la fase 0b:** María Paula agrega `ui/src/sin-emojis.test.ts`, una prueba que recorre `ui/src/` y `ui/i18n/` y falla si encuentra un emoji o un símbolo decorativo de texto (rango Unicode de emojis y dingbats). Desde ahí la CI lo frena sola. Al resolver conflictos de la subida con `develop` (PR 6), ningún emoji de `develop` vuelve a entrar.
 
 ## 3. Contratos entre partes
 
@@ -86,6 +88,7 @@ Se fijan **antes** de trabajar en paralelo, en PRs cortos. Después no se cambia
 | `LUGARES` y anclajes (en `mundo.ts`) | Camilo | Daniel, María Paula, José | Posición de cada lugar, radio de interacción, anclajes de módulos y de personajes. |
 | Fábricas de personajes (`crearAstronauta`, `crearExpertos`, `crearIris`) | María Paula | Daniel | Firmas que ya consume `escena3d.ts` (`ModeloAstronauta`, `ModeloExperto`, `ModeloIris`, `GestoIris`). |
 | Materiales y slots (`materiales.ts`) | Daniel | María Paula | `SuitBase`, `Accent`, `Boots`, `Skin`, `Hair`, `Glass`, `Emissive`, `Rock`, `Plant`. |
+| Paleta (`ui/src/estilos/tokens.ts` y `tokens.css`) | Jaime | Daniel, María Paula, Camilo, José | Todos los hex de DISEÑO §2, con nombre de token. Es la única fuente de color de CSS, SVG y materiales 3D; un test compara `tokens.ts` con `tokens.css`. Va en el primer PR de Jaime. |
 | Props de componentes | Jaime | José | Formas de [APLICACION.md](APLICACION.md) §5 (`FacetButtonProps`, `ResourcePlaqueProps`, `ConfirmarAccionProps`). Textos por clave i18n. |
 | Eventos de feedback | José | Jaime, Daniel, María Paula | Cambios por tick desde `novedades(antes, despues)` con id estable. Única fuente para animar, sonar o mostrar deltas. |
 | Ajustes del jugador | José | Jaime | Idioma, sonido, movimiento reducido, calidad gráfica, en `localStorage`. |
@@ -197,7 +200,20 @@ Lo decide María Paula. El orden general de recorte del juego sigue siendo el de
 
 ## 8. Coordinación
 
-- `ui/ESTADO.md` tiene **una sección por persona** (`## Personajes (María Paula)`, `## Escenario (Daniel)`, `## Ubicación (Camilo)`, `## Integración (José)`, `## Interfaz (Jaime)`), máximo 5 líneas cada una. Nadie edita la sección de otro. Las secciones las crea María Paula en el último PR de su subida (fase 0). `ui/ESTADO.md` vive en `feat/ui-escenarios`: se edita dentro del PR de frontend de cada uno. El estado del rol de cada persona (motor, datos, diseño, agentes) sigue en el `ESTADO.md` de su carpeta, en `develop`.
+- `ui/ESTADO.md` tiene **una sección por persona** (`## Personajes (María Paula)`, `## Escenario (Daniel)`, `## Ubicación (Camilo)`, `## Integración (José)`, `## Interfaz (Jaime)`), máximo 5 líneas cada una. Nadie edita la sección de otro. Las secciones y el tablero ya existen desde el 15 nov, antes de la ola 1. `ui/ESTADO.md` vive en `feat/ui-escenarios`: se edita dentro del PR de frontend de cada uno. El estado del rol de cada persona (motor, datos, diseño, agentes) sigue en el `ESTADO.md` de su carpeta, en `develop`.
 - **Tablero de fidelidad:** sección `## Fidelidad` de `ui/ESTADO.md`, una línea por pieza: `pieza | lámina | sin empezar / en PR #n / aprobada`. La orquestación lo propone y la sesión principal de María Paula lo escribe al aprobar cada PR. Sirve también para elegir capturas para el video.
 - La orquestación del frontend revisa los semáforos cada 30 minutos ([`orquestadora.md`](../prompts/orquestadora.md)).
 - Un cambio de contrato (§3) se avisa en el PR de quien lo consume antes de fusionarlo.
+
+## 9. Decisiones por defecto
+
+Valen desde el 15 nov para no frenar a nadie. María Paula (frente visual) o Santiago (P3 y recortes) pueden cambiarlas; el cambio se escribe acá.
+
+| Tema | Decisión por defecto | Quién la aplica |
+| --- | --- | --- |
+| **Criterio de P3 (3D o 2D)** | Medir 60 s en la base con 2 módulos y la tormenta, con `renderer.info` y el tiempo por fotograma (skill `solar-shield-pr-visual`), en el celular más viejo del equipo y el PC más viejo (modelo anotado en el PR). **3D completo:** al menos 30 fps promedio en el celular y 45 en el PC, dentro de 80 draw calls y 80 000 triángulos. **3D liviano:** de 24 a 30 fps en el celular. **Respaldo 2D:** menos de 24 fps en el celular, o cualquier error de WebGL. | Daniel mide; deciden María Paula y Santiago |
+| **Encuadre de comparación** | Las capturas se toman a 1024 x 683, el tamaño de `mundo/01` y `ui/01`. En 16:9 el HUD conserva las esquinas de `mundo/01` y escala con `min(ancho/1024, alto/683)`; el mundo se ve más ancho, no estirado. | Todos (captura), Jaime (HUD) |
+| **Celular** | La base 3D se juega en horizontal. En vertical se muestra un aviso para girar el teléfono, por clave i18n. Portada, intro, carga y menús funcionan en las dos orientaciones. | José (aviso), Jaime (portada) |
+| **Cámara** | Tercera persona: campo de visión vertical 50°, 6 m detrás y 4 m arriba del niño, mirando a 1 m sobre su cabeza (picada de unos 30°). Primera persona: 70°, a 1,1 m del suelo (altura de ojos del niño), guantes en las esquinas como `mundo/02`. Son valores de partida: se calibran con la captura contra `mundo/01` y `mundo/02`, y el número final queda en `navegacion.ts` y en esta tabla. | Camilo, con Daniel |
+| **Respaldo 2D** | La vista principal es el plano cenital del panel `Map` (ESCENAS §3.4) a pantalla completa: lugares como placas facetadas, caminos, el niño y el objetivo en cian. Encima, la misma UI que en 3D (HUD, diálogo, tarjetas). Iris aparece como retrato. | Camilo (plano), José (montaje) |
+| **Módulo `averiado`** (contrato `VistaEscena`) | No hay lámina. Se dibuja el módulo construido con su luz `Emissive` apagada, sin formas ni colores nuevos. El aviso lo da la UI con su mensaje e icono. | Daniel |
