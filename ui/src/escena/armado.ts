@@ -13,19 +13,10 @@ import * as THREE from "three";
 import { crearCielo, type Calidad, type Cielo } from "./cielo";
 import type { Materiales } from "./materiales";
 import { liberarEscena } from "./liberar";
-import { lugar, type LugarId } from "./mundo";
 import type { VistaEscena } from "./vista";
-import { MODULOS_BASE, TIEMPOS_MODULO_MS, colocar, type ModuloBase } from "./activos/modulos";
-import { instanciar, type TransformacionPieza } from "./activos/instancias";
-import {
-  crearBaliza,
-  crearCaja,
-  crearConsola,
-} from "./activos/piezasComunes";
-import { crearCapsula, crearCorredor, crearHabitat, crearTorreControl } from "./activos/edificios";
-import { fusionar } from "./activos/fusionar";
-import { geometriaCaminos, posicionesBalizas } from "./activos/caminos";
-import { aplicarEstado, armarAnclajes, armarModulo, giroHacia, type ModuloArmado } from "./activos/modulosArmados";
+import { MODULOS_BASE, TIEMPOS_MODULO_MS, type ModuloBase } from "./activos/modulos";
+import { armarKit, armarEdificios } from "./activos/baseExterior";
+import { aplicarEstado, armarAnclajes, armarModulo, type ModuloArmado } from "./activos/modulosArmados";
 export { PLAZA, CAMINO, CAMINOS, BALIZAS, geometriaCaminos, posicionesBalizas } from "./activos/caminos";
 export { fusionar } from "./activos/fusionar";
 import {
@@ -62,73 +53,18 @@ export function rejillaJezero(buffer: ArrayBuffer): Rejilla {
 }
 
 /**
- * Claro llano: la base ocupa ±11 u, el camino en anillo llega a ~16. El terreno se aplana hasta
+ * Claro llano: incluye la base jugable y la torre a (-13, -22). El terreno se aplana hasta
  * `radio` (con margen de una celda del DEM, ~4,3 u) y sube suave hasta `borde`. [E]
  */
-export const CLARO = { radio: 22, borde: 36 } as const;
+export const CLARO = { radio: 34, borde: 46 } as const;
 /** Rocas sueltas fuera del claro. [E] */
-export const ROCAS = { n: 70, semilla: 42, radioMin: 24, radio: 110 } as const;
+export const ROCAS = { n: 40, semilla: 42, radioMin: 24, radio: 110 } as const;
 /** Rocas grandes facetadas en el borde del claro (lámina `mundo/01`). [E] */
-export const ROCAS_GRANDES = { n: 18, semilla: 9, radioMin: 15, radio: 28, escalaMin: 1.2, escalaMax: 2.6 } as const;
+export const ROCAS_GRANDES = { n: 10, semilla: 9, radioMin: 15, radio: 28, escalaMin: 1.2, escalaMax: 2.6 } as const;
 
 /** Las rocas grandes no caen sobre la torre de control, las cápsulas ni sus corredores. */
 export function rocaGrandeLibre(x: number, z: number): boolean {
-  return !(z < -12 && Math.abs(x) < 16) && Math.hypot(x, z - 9) > 3;
-}
-
-function mirandoA(id: LugarId, escala = 1): TransformacionPieza {
-  const l = lugar(id);
-  return { posicion: [l.mx, 0, l.mz], rotacion: [0, giroHacia(l, l), 0], escala };
-}
-
-function armarKit(m: Materiales): THREE.Group {
-  const kit = new THREE.Group();
-  kit.name = "Base_Kit";
-  kit.add(instanciar(() => fusionar(crearConsola(m), "Kit_Console"), [mirandoA("mesa"), mirandoA("taller"), mirandoA("sensor", 0.85)]));
-  kit.add(
-    instanciar(() => fusionar(crearCaja(m), "Kit_Crate"), [
-      { posicion: [-3.5, 0, -2.4], rotacion: [0, 0.3, 0] },
-      { posicion: [-2.7, 0, -2.0], rotacion: [0, -0.2, 0], escala: 0.8 },
-      { posicion: [6.0, 0, -1.7], rotacion: [0, 0.5, 0] },
-    ]),
-  );
-  const caminos = new THREE.Mesh(geometriaCaminos(), m.Rock);
-  caminos.name = "Kit_Paths";
-  caminos.receiveShadow = true;
-  kit.add(caminos);
-  kit.add(instanciar(() => fusionar(crearBaliza(m), "Kit_Beacon"), posicionesBalizas().map(([x, z]) => ({ posicion: [x, 0, z] }))));
-  return kit;
-}
-
-/**
- * Edificios fijos (decorado, no módulos): hábitat en su `LugarId`, torre de control detrás unida
- * por un corredor, y dos cápsulas laterales con corredores (lámina `exterior/01` y `exterior/03`).
- * Todo fusionado por material: ~1 llamada por slot (+ sombra).
- * La torre y las cápsulas quedan fuera del límite de juego (r = 20); el corredor no tiene colisión
- * todavía (es de `mundo.ts`).
- */
-export const EDIFICIOS = { torre: { x: 0, z: -24.5 }, capsulaX: 11, capsulaZ: -22.5 } as const;
-
-function armarEdificios(m: Materiales): THREE.Group {
-  const h = lugar("habitat");
-  const t = EDIFICIOS.torre;
-  const g = new THREE.Group();
-  const fondoHabitat = h.mz - 1.85;
-  const frenteTorre = t.z + 5.4;
-  const largo = fondoHabitat - frenteTorre;
-  g.add(
-    colocar(crearHabitat(m), [h.mx, 0, h.mz]),
-    colocar(crearTorreControl(m), [t.x, 0, t.z], [0, 0, 0], 1.3),
-    colocar(crearCorredor(m, largo), [0, 0, (fondoHabitat + frenteTorre) / 2]),
-  );
-  for (const s of [-1, 1]) {
-    const x0 = t.x + s * 4.2, x1 = EDIFICIOS.capsulaX * s - s * 2.3;
-    g.add(
-      colocar(crearCapsula(m), [EDIFICIOS.capsulaX * s, 0, EDIFICIOS.capsulaZ], [0, -s * 0.5, 0]),
-      colocar(crearCorredor(m, Math.abs(x1 - x0)), [(x0 + x1) / 2, 0, t.z + 1], [0, Math.PI / 2, 0]),
-    );
-  }
-  return fusionar(g, "Base_Buildings");
+  return !(z < -10 && Math.abs(x) < 20) && Math.hypot(x, z - 9) > 5;
 }
 
 // ---------------------------------------------------------------------------------------------

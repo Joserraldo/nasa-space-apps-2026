@@ -65,8 +65,8 @@ const FOCO = { x: lugar("mesa").x, z: lugar("mesa").z } as const;
  * horizonte quede en el tercio superior como en la lámina.
  */
 export const CAMARAS: Readonly<Record<CamaraEscena, { pos: [number, number, number]; mira: [number, number, number] }>> = {
-  tercera: { pos: [FOCO.x - 1.6, 3.4, FOCO.z + 7.0], mira: [FOCO.x + 0.6, 0.3, FOCO.z - 9] },
-  primera: { pos: [FOCO.x, 1.45, FOCO.z], mira: [FOCO.x, 1.2, FOCO.z - 8] },
+  tercera: { pos: [FOCO.x + 1.6, 4.0, FOCO.z + 10.5], mira: [FOCO.x + 0.5, 0.8, FOCO.z - 10] },
+  primera: { pos: [FOCO.x, 1.1, FOCO.z + 3.4], mira: [FOCO.x, 1.2, FOCO.z - 8] },
 };
 /** Interpolación de cámara (APLICACION §7): 300 ms; con movimiento reducido, corte directo. */
 const MS_CAMARA = 300;
@@ -194,6 +194,8 @@ export function crearEscena3D(canvas: HTMLCanvasElement, opciones: OpcionesEscen
       }
     },
     fijarCamara(c) {
+      camara.fov = c === "primera" ? 70 : 55;
+      camara.updateProjectionMatrix();
       posDesde.copy(camara.position);
       miraDesde.copy(mira);
       posHacia.set(...CAMARAS[c].pos);
