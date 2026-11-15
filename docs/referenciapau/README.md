@@ -32,7 +32,7 @@ Leé solo lo que tu tarea necesita. Cada documento es autónomo y enlaza sus lá
 | --- | --- |
 | [FLUJO.md](FLUJO.md) | **Quién hace qué y en qué orden.** Pistas de trabajo de ui (integración de misiones, escenario, interfaz, audio), contratos entre pistas, división de assets, fases, validación y orden de fusión. |
 | [NIVELES.md](NIVELES.md) | **Todos los niveles.** Las 5 misiones con su ficha, el orden de la campaña, la dificultad, los niveles de Iris y lo que falta decidir. Prioridad 1. |
-| [HISTORIA.md](HISTORIA.md) | **Qué se cuenta.** Lore canónico, personajes, dónde empieza el juego, la misión de Jezero como historia, mapa de conexiones y estado real de las 5 misiones. |
+| [HISTORIA.md](HISTORIA.md) | **Qué se cuenta.** Lore canónico, personajes y su personalidad, dónde empieza el juego, la misión de Jezero como historia, mapa de conexiones y resumen de la campaña. |
 | [DISEÑO.md](DISEÑO.md) | **Cómo se ve.** Paleta, materiales, luz, estilo low-poly facetado, personajes (poses, rostros, luz), Iris, sistema UI, inicio y lista de prohibiciones. |
 | [MARTE.md](MARTE.md) | **Por qué se ve así en Marte.** Análisis físico real de Jezero (gravedad, atmósfera, polvo, cielo, luz, terreno, escala) traducido a reglas de estilo y parámetros de Three.js. |
 | [ESCENAS.md](ESCENAS.md) | **Qué hay en cada lugar.** Pantallas, mundo abierto, mapa de la base con coordenadas reales, estaciones y su contenido. |
@@ -50,7 +50,7 @@ Leé solo lo que tu tarea necesita. Cada documento es autónomo y enlaza sus lá
 0. **El enunciado oficial del reto** ([RETO.md](RETO.md)).
 1. **Contratos y código de otros roles:** `contracts/`, `engine/`, `design/`, `missions/`, `data/`, `agents/`. Ningún documento de esta carpeta cambia una regla, un costo o un tick.
 2. **Decisiones del equipo:** `docs/decisiones/` y `docs/ORQUESTACION.md` (fechas, bloques, puertas).
-3. **Texto de esta carpeta** (RETO, FLUJO, NIVELES, HISTORIA, DISEÑO, MARTE, ESCENAS, MECANICAS, APLICACION, AUDIO). Lo anterior a esta reorganización no es canon.
+3. **Texto de esta carpeta** (RETO, FLUJO, NIVELES, HISTORIA, DISEÑO, MARTE, ESCENAS, MECANICAS, APLICACION, AUDIO). Los documentos de `develop` escritos antes del 14 nov siguen valiendo en lo suyo (reglas, datos, voces, pitch) y ya tienen notas "Actualización 14 nov" donde la dirección visual los cambió. Lo que **no** es canon es la dirección visual vieja: atlas v2–v5 y v7, el prototipo `docs/referencias/3d/`, PixiJS para la escena, GLB y "retratos 2D en lugar de personajes".
 4. **Láminas** de `referencias/`. Guían silueta, paleta, composición, proporción y pose. Si una lámina contradice el texto, **manda el texto**. Cada contradicción conocida está anotada en [REFERENCIAS.md](REFERENCIAS.md).
 
 ## 4. Diez reglas que no se negocian
@@ -66,16 +66,17 @@ Leé solo lo que tu tarea necesita. Cada documento es autónomo y enlaza sus lá
 9. **Accesible siempre:** teclado, foco visible, `prefers-reduced-motion`, áreas de 44 x 44 px y respaldo 2D equivalente.
 10. **Presupuesto:** menos de 80 draw calls y 80 000 triángulos por vista, DPR máximo 1,5.
 
-## 5. Decisiones abiertas (no las cierra esta carpeta)
+## 5. Decisiones que confirma Santiago al fusionar #157
 
-Registradas en `docs/ORQUESTACION.md` como pendientes de Santiago. Mientras no se cierren, se aplica lo indicado:
+Estaban pendientes en `docs/ORQUESTACION.md`. Ui las resolvió según las láminas; se aplican desde ya y Santiago las confirma al fusionar:
 
-| Pregunta | Mientras tanto |
+| Pregunta | Qué se aplica |
 | --- | --- |
 | ¿Iris se ve como rover de 4 ruedas? (en el contrato es la IA de la base, `iaBase` + equipo `ia_base`) | **Decidido por ui según la referencia:** rover 3D en el mundo desde el bloque 2 (`mundo/01`, `inicio/02`), y en las tarjetas de diálogo un retrato del mismo rover. Sigue siendo la IA de la base (`iaBase`, D2). Se confirma al fusionar #157. |
 | ¿Expertas en 3D o solo retratos 2D? | **Decidido por ui según la referencia:** personas 3D en el mundo (la Ingeniera aparece junto al niño en `mundo/01`) y retrato del mismo modelo en las tarjetas de diálogo. La Ingeniera entra en el bloque 2; la Doctora y la Meteoróloga si el presupuesto alcanza, si no, después de P4. |
 | ¿Se recortan las 8 estaciones completas? | Base compacta de Jezero primero; las 8 estaciones son ampliación posterior. |
 | ¿Cuándo entran las otras 4 misiones? | No aparecen en la UI hasta que el motor lea varias misiones (#152) y diseño las apruebe ([NIVELES.md](NIVELES.md) §7–8). |
+| Estilo y render; nombres de la tripulación | [D6](../decisiones/D6-estilo-visual.md) (Three.js procedural + DOM) y [D7](../decisiones/D7-tripulantes.md) (por su rol), ambas en propuesta. |
 
 ## 6. Qué salió de esta carpeta y por qué
 

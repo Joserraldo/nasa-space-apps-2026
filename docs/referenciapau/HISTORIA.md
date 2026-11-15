@@ -1,6 +1,6 @@
 # HISTORIA: lore, dónde empieza el juego y cómo se conecta todo
 
-**Qué es:** la historia canónica de Solar Shield para que todos los agentes cuenten lo mismo. **Canon = solo esto:** este documento, las láminas de [`referencias/`](referencias/) y los datos de misión en código (`missions/src/jezero.ts`). Cualquier historia, nombre, mascota o propuesta anterior que no esté aquí **no es canon**, aunque aparezca en el historial, en otra rama o en un documento viejo.
+**Qué es:** la historia canónica de Solar Shield para que todos los agentes cuenten lo mismo. **Canon:** este documento, las láminas de [`referencias/`](referencias/) y los datos de misión en código (`missions/src/jezero.ts`). Ya integra lo que sigue vigente de `develop`: las personalidades y fallas de Iris de `docs/ideas/agentes.md`, el "rescate de entrenamiento" de `docs/ideas/mision-1-ares-mejorada.md` y el guion del pitch (`pitch/guion-video.md`). Nombres propios, mascotas o estéticas viejas que no estén aquí **no son canon**, aunque aparezcan en el historial o en otra rama.
 **Dueña:** María Paula (ui). Las reglas de juego siguen siendo de diseño y motor ([MECANICAS.md](MECANICAS.md)); esta página cuenta la historia que esas reglas ya producen.
 
 ---
@@ -101,4 +101,4 @@ Regla para la UI: ningún nivel aparece como jugable hasta que su código y el m
 - Iris humanoide o voladora.
 - Una "barra de salud" del niño o muertes narrativas.
 - Misiones distintas de Jezero presentadas como jugables.
-- Historias, nombres o estéticas de documentos anteriores a esta reorganización (atlas v2–v5 y v7, prototipo `docs/referencias/3d/`, propuestas con GLB).
+- La dirección visual anterior a esta reorganización (atlas v2–v5 y v7, prototipo `docs/referencias/3d/`, propuestas con GLB).
