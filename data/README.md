@@ -16,3 +16,22 @@ import es from "@solar-shield/data/i18n/es.json";
 ```
 
 `npm test` valida mocks, i18n, escala y muestras.
+
+## Para ui
+
+Funciones puras en `src/pantallas.ts`: solo `.map` y `t()`. Una clave de `vars` que termina en `Key` es otra clave i18n.
+
+```jsx
+// Pantalla final: "qué datos de NASA usamos y por qué"
+const { tituloKey, lineas } = datosUsados();
+<h2>{t(tituloKey)}</h2>; lineas.map((l) => <p key={l.clave}>{t(l.clave)}</p>);
+
+// Tarjetas de ciencia (OSDR + CSA). Para CSA, creditoKey es obligatorio mostrarlo.
+tarjetasCienciaFinal({ temas: ["comida"], max: 3 }).map((c) => (
+  <Card key={c.id} titulo={t(c.tituloKey)} texto={t(c.textoKey)} fuente={c.fuente} credito={c.creditoKey && t(c.creditoKey)} />
+));
+
+// Tormenta: tarjeta de fuente con la medición real de RAD (null si el id no es curado)
+const tarjeta = tarjetaTormentaPorEvento(estado.tormenta.id);
+tarjeta && tarjeta.lineas.map((l) => <p key={l.clave}>{t(l.clave, l.vars)}</p>);
+```
