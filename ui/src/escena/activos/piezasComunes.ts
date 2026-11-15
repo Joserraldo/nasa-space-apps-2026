@@ -69,6 +69,28 @@ export function grupo(nombre: string, ...hijos: THREE.Object3D[]): THREE.Group {
 }
 
 // ------------------------------------------------------------------------------------------
+// Huellas en planta (para comprobar que nada se monta sobre otra cosa)
+// ------------------------------------------------------------------------------------------
+
+/**
+ * Huella en planta (x–z) de algo colocado en la base: un círculo de radio `r`, o una caja de
+ * `ancho` (x local) × `fondo` (z local) girada `giro` rad alrededor de y, como `rotation.y`.
+ */
+export type Huella =
+  | { readonly id: string; readonly x: number; readonly z: number; readonly r: number }
+  | { readonly id: string; readonly x: number; readonly z: number; readonly ancho: number; readonly fondo: number; readonly giro: number };
+
+/** Medidas en planta de las piezas del kit (las mismas que usan sus fábricas). [E] */
+export const PLANTA_KIT = {
+  /** Encimera de la consola (lo más ancho) y fondo desde la pantalla hasta el borde de la encimera. */
+  consola: { ancho: 1.9, fondo: 0.6 },
+  /** Tapa de la caja con sus bandas. */
+  caja: { ancho: 1.1, fondo: 0.87 },
+  /** Radio del zócalo de la baliza. */
+  baliza: 0.24,
+} as const;
+
+// ------------------------------------------------------------------------------------------
 // Piezas
 // ------------------------------------------------------------------------------------------
 
@@ -120,7 +142,7 @@ export function crearConsola(m: Materiales): THREE.Group {
     parte(m, "SuitBase", chaflan(1.7, 0.95, 0.18, 0.22), [0, 1.4, -0.2], "Console_ScreenFrame"),
     // Pantalla clara, malla propia (la pantalla dibuja datos reales; sin texto horneado).
     parte(m, "Rock", pantalla, [0, 1.42, -0.095], "Console_Screen"),
-    parte(m, "SuitBase", chaflan(1.9, 0.28, 0.6, 0.1), [0, 0.78, 0], "Console_Desk"),
+    parte(m, "SuitBase", chaflan(PLANTA_KIT.consola.ancho, 0.28, PLANTA_KIT.consola.fondo, 0.1), [0, 0.78, 0], "Console_Desk"),
     parte(m, "SuitBase", caja(0.3, 0.64, 0.5), [-0.8, 0.32, 0], "Console_LegL"),
     parte(m, "SuitBase", caja(0.3, 0.64, 0.5), [0.8, 0.32, 0], "Console_LegR"),
     parte(m, "SuitBase", caja(1.0, 0.5, 0.06), [0, 0.35, -0.12], "Console_BackPanel"),
@@ -162,7 +184,7 @@ export function crearCaja(m: Materiales): THREE.Group {
   return grupo(
     "Kit_Crate",
     parte(m, "SuitBase", chaflan(1, 0.5, 0.75, 0.08), [0, 0.25, 0], "Crate_Body"),
-    parte(m, "SuitBase", chaflan(1.1, 0.22, 0.85, 0.07), [0, 0.61, 0], "Crate_Lid"),
+    parte(m, "SuitBase", chaflan(PLANTA_KIT.caja.ancho, 0.22, 0.85, 0.07), [0, 0.61, 0], "Crate_Lid"),
     parte(m, "Accent", caja(0.2, 0.02, 0.87), [0, 0.73, 0], "Crate_BandTop"),
     parte(m, "Accent", caja(0.2, 0.7, 0.02), [0, 0.36, 0.43], "Crate_BandFront"),
     parte(m, "Accent", caja(0.2, 0.7, 0.02), [0, 0.36, -0.43], "Crate_BandBack"),
@@ -257,7 +279,7 @@ export function crearAntena(m: Materiales): THREE.Group {
 export function crearBaliza(m: Materiales): THREE.Group {
   return grupo(
     "Kit_Beacon",
-    parte(m, "SuitBase", tronco(0.2, 0.24, 0.08, 8), [0, 0.04, 0], "Beacon_Foot"),
+    parte(m, "SuitBase", tronco(0.2, PLANTA_KIT.baliza, 0.08, 8), [0, 0.04, 0], "Beacon_Foot"),
     parte(m, "SuitBase", tronco(0.12, 0.15, 0.6, 8), [0, 0.38, 0], "Beacon_Post"),
     parte(m, "Emissive", tronco(0.1, 0.1, 0.12, 8), [0, 0.74, 0], "Beacon_Light"),
   );
