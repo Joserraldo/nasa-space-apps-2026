@@ -17,8 +17,10 @@ Una sección por persona, máximo 5 líneas, y nadie edita la de otro (FLUJO §8
 - Bloqueo: ninguno.
 
 ## Escenario (Daniel)
-**Rama:** — · **PR:** ninguno · **Tokens:** —
-- Sin registrar todavía.
+**Rama:** feat/ui-escenario-base · **PR:** #206 (borrador) · **Tokens:** amarillo
+- Hecho: escena 3D montada; 3 capturas exactas y ficha de fidelidad; 59 pruebas de escena, 578 del repo, tipos y build en verde.
+- Sigue: dividir #206 en PRs pequeños; consumir tokens de #208 y anclajes de #205 cuando entren; medir en celular y PC viejo.
+- Bloqueo: María Paula debe decidir colores provisionales y aprobar la fidelidad; #205 tiene cambios solicitados.
 
 ## Ubicación (Camilo)
 **Rama:** — · **PR:** ninguno · **Tokens:** —
