@@ -17,6 +17,20 @@
       "esNasa": true
     },
     {
+      "id": "marte-crucero",
+      "lugarKey": "datos.radiacion.marte-crucero.lugar",
+      "valor": 1.84,
+      "incertidumbre": 0.3,
+      "unidad": "mSv/día",
+      "magnitud": "dosis equivalente",
+      "periodo": "crucero a Marte (253 días)",
+      "instrumento": "RAD (rover Curiosity, misión MSL)",
+      "dueno": "NASA (misión MSL)",
+      "cita": "Reitz G., Matthiä D., Hassler D. M., Wimmer-Schweingruber R., Ehresmann B., Zeitlin C., Guo J., Koehler J. (2016). Radiation Measurements of the Mars Science Lab Radiation Assessment Detector (MSL-RAD) on the Surface of Mars. 46th International Conference on Environmental Systems (ICES2016), Viena, 437, pp. 3504–3512.",
+      "url": "https://elib.dlr.de/106090/",
+      "esNasa": true
+    },
+    {
       "id": "luna-superficie",
       "lugarKey": "datos.radiacion.luna-superficie.lugar",
       "valor": 1.369,

@@ -21,8 +21,10 @@ import radiacionJson from "../ciencia/radiacion.json";
 import osdrJson from "../ciencia/osdr.json";
 import artemisJson from "../ciencia/artemis.json";
 import csaJson from "../ciencia/csa.json";
+import lunaJson from "../ciencia/luna.json";
 import { ArtemisSchema, CsaSchema, FUENTE_DOSIS, OsdrSchema, RadiacionSchema, type Artemis, type Csa, type Osdr, type Radiacion } from "./ciencia";
 import type { SourceCard } from "./contrato";
+import { LunaSchema, type Luna, type MedicionLuna } from "./luna";
 import { TerrenoLunaSchema, TerrenoSchema, type Terreno, type TerrenoLuna } from "./terreno";
 import { aConvenio } from "./convenio";
 import { TormentaSchema, type Tormenta } from "./tormenta";
@@ -38,6 +40,8 @@ export * from "./tarjeta";
 export * from "./pantallas";
 export * from "./comunicaciones";
 export * from "./fuentes";
+export * from "./luna";
+export * from "./medicion";
 export { aConvenio, magnitud } from "./convenio";
 
 /** Mocks validados al cargarse: si alguien rompe un JSON, falla aquí y no en la pantalla. */
@@ -98,3 +102,11 @@ export function fuenteTerreno(): SourceCard {
  * Elevación = medida (LOLA); pendiente, relieve y plano = derivados; luz y blindaje = null (sin fuente verificada).
  */
 export const terrenoLunaVisible: TerrenoLuna = TerrenoLunaSchema.parse(lunaVisibleJson);
+
+/** Tormentas curadas medidas cerca de la Luna (CRaTER, LRO, en órbita). µGy/h, dosis absorbida. */
+export const luna: Luna = LunaSchema.parse(lunaJson);
+/**
+ * Medición lunar de una tormenta curada, o undefined si CRaTER no tiene datos (no se inventa).
+ * Usa el texto `datos.luna.medicion` solo si `fondoTranquilo` es true; si no, el factor sale engañoso.
+ */
+export const medicionLuna = (id: string): MedicionLuna | undefined => luna.mediciones.find((m) => m.id === id);

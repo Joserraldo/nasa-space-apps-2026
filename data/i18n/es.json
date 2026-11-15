@@ -162,5 +162,9 @@
   "datos.glosario.modulo-de-aterrizaje.def": "Una nave hecha para llegar a la superficie de un planeta y enviar datos a la Tierra. InSight fue uno en Marte.",
   "datos.glosario.rover.palabra": "Rover",
   "datos.glosario.rover.def": "Un vehículo robot con ruedas, hecho para moverse por la superficie de otro mundo.",
-  "datos.credito.csa": "© Canadian Space Agency (Agencia Espacial Canadiense)"
+  "datos.credito.csa": "© Canadian Space Agency (Agencia Espacial Canadiense)",
+  "fuente.crater": "Radiación cerca de la Luna: instrumento CRaTER del Lunar Reconnaissance Orbiter de la NASA, vía NASA OSDR RadLab. Datos reales curados, no en vivo.",
+  "datos.luna.orbita": "Lo midió una nave que da vueltas alrededor de la Luna, no en el suelo.",
+  "datos.luna.medicion": "Cerca de la Luna, la radiación pasó de {fondo} a {pico} µGy/h el {dia}: unas {factor} veces más que en los cinco días anteriores.",
+  "datos.radiacion.marte-crucero.lugar": "Dentro de una nave camino a Marte"
 }

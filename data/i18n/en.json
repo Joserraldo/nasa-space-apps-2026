@@ -162,5 +162,9 @@
   "datos.glosario.modulo-de-aterrizaje.def": "A spacecraft made to reach the surface of a planet and send data back to Earth. InSight was one on Mars.",
   "datos.glosario.rover.palabra": "Rover",
   "datos.glosario.rover.def": "A robot vehicle with wheels, made to move around on the surface of another world.",
-  "datos.credito.csa": "© Canadian Space Agency"
+  "datos.credito.csa": "© Canadian Space Agency",
+  "fuente.crater": "Radiation near the Moon: CRaTER instrument on NASA's Lunar Reconnaissance Orbiter, via NASA OSDR RadLab. Real curated data, not live.",
+  "datos.luna.orbita": "Measured by a spacecraft flying around the Moon, not on the ground.",
+  "datos.luna.medicion": "Near the Moon, radiation went from {fondo} to {pico} µGy/h on {dia}: about {factor} times more than in the five days before.",
+  "datos.radiacion.marte-crucero.lugar": "Inside a spaceship on the way to Mars"
 }
