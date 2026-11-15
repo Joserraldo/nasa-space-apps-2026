@@ -1,6 +1,6 @@
 # Datos de NASA usados y por qué · NASA data used and why
 
-Para el formulario de entrega y para la pantalla "Qué aprendimos hoy". En el juego, la versión para niños está en `data/i18n` (claves `datos.usados.*`). Todos los datos son **reales y curados, no en vivo**: se descargaron el 2026-11-13 y van dentro del juego. Proyecto no oficial, no avalado por NASA.
+Para el formulario de entrega y para la pantalla "Qué aprendimos hoy". En el juego, la versión para niños está en `data/i18n` (claves `datos.usados.*`). Todos los datos son **reales y curados, no en vivo**: se consultaron el 13–15 de noviembre de 2026 y van dentro del juego. Cada archivo conserva su fecha de consulta. Proyecto no oficial, no avalado por NASA.
 
 ## Español
 
@@ -12,7 +12,9 @@ Para el formulario de entrega y para la pantalla "Qué aprendimos hoy". En el ju
 | Altura del suelo de Jezero, relieve sombreado e imagen CTX | **NASA Mars Trek** (DEM de MOLA, NASA, más HRSC, ESA/DLR; imagen CTX de MRO, NASA) | Mapa para dibujar la ruta y elegir el sitio. Pendiente, luz y blindaje los calcula el equipo a partir de la altura y se marcan como derivados |
 | Dosis diaria de referencia (mSv/día) | Marte: RAD/Curiosity (NASA), Reitz et al. 2016. Luna e ISS: Zhang et al. 2020 (instrumento LND de Chang’e-4, **CNSA, no NASA**; ISS con DOSIS 3D) | Consejos de la Doctora y comparación Luna / ISS / Marte |
 | Radiación dentro de la nave Orión en Artemis I (2022) | **NASA OSDR RadLab**, instrumento HERA de la misión Artemis I (NASA) | Tarjeta de ciencia: qué tan distinta es la radiación según el momento del viaje |
-| Altura del suelo de 3 sitios de la Luna (cerca de donde aterrizaron Apolo 11, Apolo 16 y Apolo 15) y sombreado | **NASA Moon Trek** (JPL); DEM del instrumento **LOLA** de la nave LRO (NASA); posiciones: capa de nomenclatura de Moon Trek. Consultado el 2026-11-14 | Mapa de las misiones lunares del lado visible. La altura es medida; pendiente y relieve son derivados. Luz y blindaje de la Luna visible aún no tienen fuente y no se muestran |
+| Altura del suelo de 3 sitios de la Luna (cerca de Apolo 11, 16 y 15), sombreado y cielo tapado | **NASA Moon Trek** (JPL), DEM LOLA de LRO; posiciones de Moon Trek. Método de horizonte inspirado en NASA GSFC PGDA, Mazarico et al. 2011 | Mapa de la Luna visible. Altura medida; pendiente, relieve y blindaje del terreno derivados. La puntuación de luz sigue sin fuente y no se muestra |
+| Seis cráteres del polo sur lunar: altura, sombra, luz, visibilidad de la Tierra y cielo tapado | **NASA Moon Trek**, LOLA de LRO; **NASA GSFC PGDA**, Mazarico et al. 2011 | Comparar sitios con datos de terreno y luz. Los puntajes son derivados. La capa de posibles puntos de hielo no tiene atribución verificada y no genera texto en el juego |
+| Altura del terreno del polo norte marciano | **NASA Mars Trek**, DEM polar MOLA y nomenclátor UAI | Comparar cuatro sitios; pendiente y relieve derivados. Luz y blindaje no se muestran |
 | 7 estudios de ciencia espacial (OSD-772, OSD-546, OSD-360, OSD-269, OSD-314, OSD-326, OSD-289) | **NASA OSDR** (OSD-546: seleccionado por la ESA; OSD-314: en el EMCS de la ESA; OSD-289: experimento de JAXA) | Tarjetas de ciencia: comida, huesos, músculo, defensas y radiación |
 | Comida en la Estación y la granja espacial CANGrow | **Agencia Espacial Canadiense (CSA), socia del reto, no NASA** · © Canadian Space Agency | Tarjetas de comida para Soporte vital |
 
@@ -20,11 +22,7 @@ Para el formulario de entrega y para la pantalla "Qué aprendimos hoy". En el ju
 
 **Medido / modelado / derivado:** *medido* = RAD, CRaTER y HERA en RadLab, altura de MOLA y LOLA, estudios OSDR; *modelado* = llegada a Marte (WSA-ENLIL); *derivado por el equipo* = pendiente, relieve y puntajes de los sitios, tiempos de comunicación, factores "veces el nivel normal".
 
-**Fuentes en PRs abiertos (entran al fusionarse, aún NO están en el juego):**
-- Radiación vista desde la órbita de la Luna: OSDR RadLab, instrumento CRaTER del Lunar Reconnaissance Orbiter (NASA); mide en órbita, no en la superficie (rama `feat/datos-luna-crater`).
-- Polo sur de la Luna: Moon Trek (DEM LOLA de 30 m/px, capa de sombra permanente LOLA) y NASA GSFC PGDA (iluminación media y visibilidad de la Tierra; Mazarico et al. 2011, doi:10.1016/j.icarus.2010.10.030) (rama `feat/datos-terreno-luna-sur`).
-- Luz de la Luna visible en 2024: NASA SVS 5187 (rama `feat/datos-luz-luna`).
-- Polo norte de Marte: Mars Trek con el DEM de MOLA (rama `feat/datos-terreno-marte-norte`).
+**Otros datos curados:** CRaTER de LRO mide radiación en órbita lunar, no en la superficie; NASA SVS 5187 aporta la posición del Sol para las fechas de tormentas de 2024 en los sitios Apolo. La luz calculada supone horizonte plano y no se usa como puntaje de sitio.
 
 **No usado:** Mars Rover Photos (la API devolvía 404 el 2026-11-13).
 
@@ -40,19 +38,20 @@ Para el formulario de entrega y para la pantalla "Qué aprendimos hoy". En el ju
 
 ## English
 
-All data are **real and curated, not live**: downloaded on 2026-11-13 and bundled in the game. Unofficial project, not endorsed by NASA.
+All data are **real and curated, not live**: retrieved on 13–15 November 2026 and bundled in the game. Each file records its retrieval date. Unofficial project, not endorsed by NASA.
 
 - **NASA CCMC DONKI:** 8 real solar storms (flares, CMEs, energetic particles, geomagnetic storms) with their IDs. The Kp index comes from NOAA. They drive the shielding decisions; the Space Weather expert reads the real phases. WSA-ENLIL simulations give the *modeled* arrival at Mars.
 - **NASA OSDR RadLab (RAD, Curiosity rover, Gale Crater):** the radiation actually *measured* on the Martian surface. On 20 May 2024 the daily mean was about 19× the background, which proves our golden-path storm reached Mars.
 - **NASA Mars Trek (MOLA + HRSC elevation, CTX image):** the real Jezero map. Slope, sunlight and shielding scores are *derived by the team* from elevation.
 - **Reference doses (mSv/day):** Mars from RAD/Curiosity (NASA; Reitz et al. 2016). Moon and ISS from Zhang et al. 2020 (Chang’e-4 LND, **CNSA, not NASA**).
 - **NASA OSDR RadLab, Artemis I (HERA):** absorbed dose inside Orion in 2022. Steady during the cruise, about 480× higher for a while shortly after launch.
-- **NASA Moon Trek (JPL; LOLA elevation, NASA's LRO):** ground height of 3 Moon sites near where Apollo 11, 16 and 15 landed (consulted 2026-11-14). Height is *measured*; slope and relief are *derived*. Sunlight and shielding for the near side have no source yet and are not shown.
+- **NASA Moon Trek (JPL; LOLA elevation, NASA's LRO):** ground height of 3 sites near Apollo 11, 16 and 15. Height is *measured*; slope, relief and terrain shielding are *derived*. The site sunlight score remains unavailable.
+- **NASA Moon Trek and NASA GSFC PGDA (Mazarico et al. 2011):** terrain, permanent shadow, average sunlight, Earth visibility and sky occlusion for six lunar south pole craters. Site scores are *derived*. The possible ice layer has no verified attribution and produces no game text.
+- **NASA Mars Trek (MOLA polar DEM):** elevation at four north polar Martian sites; slope and relief are *derived*. Sunlight and shielding scores remain unavailable.
+- **NASA OSDR RadLab (CRaTER, LRO):** radiation measured in lunar orbit, never presented as a surface measurement. **NASA SVS 5187:** Sun position at Apollo sites during the 2024 storm dates, calculated for a flat horizon.
 - **NASA OSDR studies OSD-772, OSD-546 (ESA-selected), OSD-360, OSD-269, OSD-314 (ESA's EMCS), OSD-326, OSD-289 (JAXA):** science cards on food, bones, muscles, the body's defenses and radiation.
 - **Canadian Space Agency (CSA, a challenge partner, not NASA; © Canadian Space Agency):** food cards for Life Support (meals on the Space Station, the CANGrow space farm).
 
-**Sources in open PRs (they enter on merge; NOT in the game yet):** CRaTER radiation seen from lunar orbit (OSDR RadLab, LRO, NASA; orbit, not surface); Moon south pole (Moon Trek LOLA DEM and permanent-shadow layer; NASA GSFC PGDA illumination and Earth visibility, Mazarico et al. 2011, doi:10.1016/j.icarus.2010.10.030); Moon near-side sunlight in 2024 (NASA SVS 5187); Mars north pole (Mars Trek, MOLA DEM).
-
-*Measured* = RAD, HERA, MOLA/LOLA heights, OSDR studies; *modeled* = Mars arrival (WSA-ENLIL); *derived by the team* = slopes, relief, site scores, communication times, "times normal" factors.
+*Measured* = RAD, CRaTER, HERA, MOLA/LOLA heights, OSDR studies; *modeled* = Mars arrival (WSA-ENLIL); *derived by the team* = slopes, relief, site scores, communication times, "times normal" factors.
 
 We always label what is **measured**, **modeled** or **derived**.
