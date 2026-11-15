@@ -125,9 +125,9 @@ export const TEXTOS_OUTPOST_SORPRESA: Record<Idioma, Record<string, string>> = {
     "mision.outpost.ciencia.crater":
       "In orbit around the Moon, a NASA instrument measured about 206 times more radiation than before this storm. It was not on your ship.",
     "mision.outpost.ciencia.panel": "Far from any planet, the ship gets its power from sunlight.",
-    "mision.outpost.ciencia.bateria": "A battery saves energy now so you can use it later, like during a storm.",
+    "mision.outpost.ciencia.bateria": "A battery stores energy while the solar panels get sunlight, and gives it back when the panels are in shade.",
     "mision.outpost.ciencia.reciclador": "Astronauts recycle water again and again. Water doesn't appear out of nowhere.",
-    "mision.outpost.ciencia.escudo": "In space there is no ground to hide behind. The more stuff around you, the more it protects you.",
+    "mision.outpost.ciencia.escudo": "On Orion, astronauts can build a shelter from the bags of supplies and water on board. The more stuff around you, the more it protects you.",
     "mision.outpost.ciencia.antena": "From near the Moon, a radio message reaches Earth in about one second.",
     "mision.outpost.pregunta":
       "An instrument called RAD, on the Curiosity rover, measured radiation on the way to Mars and on the ground of Mars. Where did it measure more each day?",
@@ -164,9 +164,9 @@ export const TEXTOS_OUTPOST_SORPRESA: Record<Idioma, Record<string, string>> = {
     "mision.outpost.ciencia.crater":
       "En órbita alrededor de la Luna, un instrumento de NASA midió unas 206 veces más radiación que antes de esta tormenta. No fue en tu nave.",
     "mision.outpost.ciencia.panel": "Lejos de cualquier planeta, la nave saca su energía de la luz del Sol.",
-    "mision.outpost.ciencia.bateria": "Una batería guarda energía ahora para usarla después, por ejemplo durante una tormenta.",
+    "mision.outpost.ciencia.bateria": "Una batería guarda energía mientras los paneles reciben sol, y la devuelve cuando los paneles quedan a la sombra.",
     "mision.outpost.ciencia.reciclador": "Los astronautas reciclan el agua una y otra vez. El agua no aparece de la nada.",
-    "mision.outpost.ciencia.escudo": "En el espacio no hay suelo para esconderse. Mientras más cosas tengas alrededor, más te protegen.",
+    "mision.outpost.ciencia.escudo": "En Orion, los astronautas pueden armar un refugio con las bolsas de provisiones y agua. Mientras más cosas tengas alrededor, más te protegen.",
     "mision.outpost.ciencia.antena": "Desde cerca de la Luna, un mensaje de radio llega a la Tierra en más o menos un segundo.",
     "mision.outpost.pregunta":
       "Un instrumento llamado RAD, en el rover Curiosity, midió la radiación en el viaje a Marte y en el suelo de Marte. ¿Dónde midió más cada día?",

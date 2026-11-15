@@ -53,7 +53,7 @@ export const MISION_OUTPOST_SORPRESA: Mision = {
   // Hueco 2: esta carpeta no existe en data/terreno/. Las zonas son de juego.
   terrenoId: "outpost-sorpresa",
   /*
-   * Zonas de la nave (propuesta §2). El costo inmediato sale de la propuesta (cabina 🛡️-8, centro 🫁-6,
+   * Zonas de la nave (propuesta §2). El costo inmediato sale de la propuesta (cabina 🛡️-5 tras la revisión de diseño de Daniel en #155: con -8 quedaba en -5 neto, muy castigada; centro 🫁-6,
    * fondo ⚡-6); el beneficio con retraso es POR AJUSTAR (diseño), puesto para que ninguna domine:
    * - cabina: mucho espacio y cerca de controles, paredes delgadas → pierde blindaje, gana soporte vital.
    * - centro: rodeada de bolsas de provisiones → protege, pero sin espacio para trabajar ni comer.
@@ -64,7 +64,7 @@ export const MISION_OUTPOST_SORPRESA: Mision = {
   sitiosCandidatos: [
     {
       id: "cabina",
-      aterrizaje: { inmediato: { blindaje: -8 }, retrasado: { soporte_vital: 3 } },
+      aterrizaje: { inmediato: { blindaje: -5 }, retrasado: { soporte_vital: 3 } },
       porQueKey: "mision.outpost.zona.cabina.porque",
     },
     {
@@ -144,16 +144,16 @@ export const MISION_OUTPOST_SORPRESA: Mision = {
     { id: "tormenta_real", textoKey: "mision.outpost.ciencia.tormenta", fuenteKey: "fuente.donki" },
     // CRaTER en órbita lunar, ×206 con fondo tranquilo. DEPENDE del PR #95 (data/ciencia/luna.json).
     { id: "tormenta_crater", textoKey: "mision.outpost.ciencia.crater", fuenteKey: "fuente.radlab" },
-    // Sin cifra; POR VERIFICAR: no hay fuente en data/i18n para "la nave vive de la luz del Sol".
-    { id: "panel_sol", modulo: "panel_solar", textoKey: "mision.outpost.ciencia.panel", fuenteKey: null },
-    // Sin cifra; POR VERIFICAR: sin fuente en data/i18n.
-    { id: "bateria_guarda", modulo: "bateria", textoKey: "mision.outpost.ciencia.bateria", fuenteKey: null },
+    // [V] NASA: cuatro alas solares alimentan el módulo de servicio de Orion (#159, LISTA).
+    { id: "panel_sol", modulo: "panel_solar", textoKey: "mision.outpost.ciencia.panel", fuenteKey: "fuente.nasa.orionPaneles" },
+    // [V] NASA Basics of Space Flight cap. 11: la batería carga al sol y descarga en sombra (#159, texto corregido).
+    { id: "bateria_guarda", modulo: "bateria", textoKey: "mision.outpost.ciencia.bateria", fuenteKey: "fuente.nasa.baterias" },
     // Misma afirmación que en Jezero, ya verificada por datos.
     { id: "agua_reciclada", modulo: "reciclador_agua", textoKey: "mision.outpost.ciencia.reciclador", fuenteKey: "fuente.nasa.agua" },
-    // POR VERIFICAR: la página de NASA del refugio de Orion está fuera de la lista oficial (pendiente de datos).
-    { id: "masa_protege", modulo: "escudo", textoKey: "mision.outpost.ciencia.escudo", fuenteKey: null },
-    // POR VERIFICAR: ~1,3 s sale de la ficha lunar de NSSDC; en data/i18n solo está fuente.nssdc (ficha de Marte).
-    { id: "mensajes_luna", modulo: "antena", textoKey: "mision.outpost.ciencia.antena", fuenteKey: null },
+    // [V] NASA: refugio de Orion con las bolsas y la masa a bordo (#159, texto corregido).
+    { id: "masa_protege", modulo: "escudo", textoKey: "mision.outpost.ciencia.escudo", fuenteKey: "fuente.nasa.orionRefugio" },
+    // [V] Ficha lunar de NSSDC: 384 400 km / c = 1,28 s (#159, LISTA por cálculo).
+    { id: "mensajes_luna", modulo: "antena", textoKey: "mision.outpost.ciencia.antena", fuenteKey: "fuente.nssdcMoon" },
   ],
   /*
    * RAD (Curiosity): 1,84 ± 0,3 mSv/día en el viaje y 0,64 ± 0,12 en la superficie (Reitz et al. 2016).
