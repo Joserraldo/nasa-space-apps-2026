@@ -111,6 +111,8 @@ Se invocan con el comando de skills de Claude Code. Las del proyecto viven en `.
 **Opcionales, cada uno en su máquina** (revisadas el 14 nov: licencia MIT, repos con más de 3000 estrellas). Sirven como consulta; si chocan con `docs/referenciapau/`, manda `docs/referenciapau/`:
 - Daniel y María Paula: `npx skills add cloudai-x/threejs-skills@threejs-geometry` y `@threejs-materials`. Están escritas para Three.js r183: verificá cada API contra `three@0.160` antes de usarla. Las reglas de rendimiento ya están resumidas en [APLICACION.md](../referenciapau/APLICACION.md) §8.1.
 - Jaime: `npx skills add addyosmani/web-quality-skills@accessibility` para auditar teclado, foco y contraste.
+- Camilo: `npx skills add cloudai-x/threejs-skills@threejs-interaction` (eventos de puntero y cámaras) y `npx skills add mengto/skills@build-mobile-threejs-games` y `@build-game-camera-controls` (MIT, 7532 estrellas: zonas separadas para mover y mirar, encuadre recuperable, girar el teléfono sin perder la partida). Lo que aplica ya está en ESCENAS §3.5.
+- José y Jaime: la skill local `web-performance-optimization` para revisar la carga de APLICACION §8.2.
 
 **No se usan para decidir el aspecto:** skills de diseño generativo (`frontend-design`, `impeccable` y similares) proponen una estética propia y eso choca con "la referencia manda". Solo sirven para auditar accesibilidad o estados, nunca para elegir colores, fuentes, formas o disposición.
 

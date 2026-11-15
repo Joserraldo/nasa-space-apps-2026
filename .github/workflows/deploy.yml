@@ -1,13 +1,14 @@
 name: Despliegue (Cloudflare Workers)
 # Cada merge a develop publica la PREVIEW (Worker nasa-space-apps-2026-preview).
 # Cada merge a main publica PRODUCCIÓN (Worker nasa-space-apps-2026).
+# Cada merge a feat/ui-escenarios publica el preview del rediseño (Worker nasa-space-apps-2026-escenarios).
 # Solo se publica si pasan tipos y pruebas. Sin los secretos CLOUDFLARE_API_TOKEN y
 # CLOUDFLARE_ACCOUNT_ID el job se salta (no falla). Basado en el #78 de José.
 # Si existe el secreto BAI_API_KEY en GitHub, se copia al Worker después de publicar
 # (así la clave de la IA no depende de que alguien corra `wrangler secret put` a mano).
 on:
   push:
-    branches: [develop, main]
+    branches: [develop, main, feat/ui-escenarios]
   workflow_dispatch:
 
 permissions:
@@ -53,6 +54,11 @@ jobs:
         working-directory: infra/worker
         run: npx --yes wrangler@4 deploy --env preview
 
+      - name: Publicar preview del rediseño (feat/ui-escenarios)
+        if: steps.hay.outputs.ok == 'true' && github.ref_name == 'feat/ui-escenarios'
+        working-directory: infra/worker
+        run: npx --yes wrangler@4 deploy --env escenarios
+
       - name: Publicar producción (main)
         if: steps.hay.outputs.ok == 'true' && github.ref_name == 'main'
         working-directory: infra/worker
@@ -63,6 +69,11 @@ jobs:
         if: steps.hay.outputs.ok == 'true' && github.ref_name == 'develop' && env.BAI_API_KEY != ''
         working-directory: infra/worker
         run: printf %s "$BAI_API_KEY" | npx --yes wrangler@4 secret put BAI_API_KEY --env preview
+
+      - name: Clave de la IA al Worker del rediseño
+        if: steps.hay.outputs.ok == 'true' && github.ref_name == 'feat/ui-escenarios' && env.BAI_API_KEY != ''
+        working-directory: infra/worker
+        run: printf %s "$BAI_API_KEY" | npx --yes wrangler@4 secret put BAI_API_KEY --env escenarios
 
       - name: Clave de la IA al Worker de producción
         if: steps.hay.outputs.ok == 'true' && github.ref_name == 'main' && env.BAI_API_KEY != ''

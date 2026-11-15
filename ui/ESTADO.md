@@ -21,36 +21,32 @@ Una sección por persona, máximo 5 líneas, y nadie edita la de otro (FLUJO §8
 - Sin registrar todavía.
 
 ## Ubicación (Camilo)
-**Rama:** — · **PR:** ninguno · **Tokens:** —
-- Sin registrar todavía.
+**Rama:** feat/ui-ubicacion-lugares · **PR:** #205 · **Tokens:** verde
+- Iteración 1: expertas sin solaparse con niño/dock; radios, sólidos y punto de uso probados; typecheck, 540 tests, build y E2E en verde.
+- Sigue: revisar nuevos comentarios/checks de #205; después controles táctiles en rama independiente. Mapa #216 y colisiones intactos.
+- Bloqueo: ninguno para esta corrección; aceptación de Paula y montaje 3D pendientes. rotY de Daniel queda fuera de esta iteración.
 
 ## Integración (José)
 **Rama:** feat/ui-integracion-tema-viejo · **PR:** E3 Órbita hacia feat/ui-escenarios · **Tokens:** verde
-- Hecho: contratos (#181, #182, #186, #190). E3 Órbita nueva (`PantallaOrbita.tsx`), `Satelite.tsx` borrada. Aviso de girar en #215; develop en la rama en #218.
+- Hecho: contratos (#181, #182, #186, #190). E3 Órbita nueva (`PantallaOrbita.tsx`), `Satelite.tsx` borrada. Aviso de girar (#215) y preview de la rama (#218) fusionados: https://nasa-space-apps-2026-escenarios.santiago031541.workers.dev
 - Sigue: E4 Sitio nueva; después App.tsx sin la barra vieja ni emojis.
 - Bloqueo: E3 y E4 no tienen lámina; las valida María Paula.
 
 ## Interfaz (Jaime)
-**Rama:** feat/ui-interfaz-tokens · **PR:** #208, #209, #213, #214, #217, #219, #220 · **Tokens:** verde
-- Hecho: `tokens.ts` (fuente única de DISEÑO §2, forma, sombra, tipo y movimiento), `tokens.css` generado con test y Nunito en `ui/public/fuentes/`.
-- Hecho también: `estilos.css` borrado y reemplazado por `estilos/base.css` solo con tokens (PR #209, depende de #208).
-- Hecho también: `FacetButton` con todos los estados de `ui/02` y `ui/03`, iconos facetados propios y muestrario en `componentes/base/muestrario.html`.
-- Hecho también: `ResourcePlaque`, `CostRow`, `EfectoPendiente`, `Mensaje` y `ConfirmarAccion` (costos y permiso del motor).
-- Hecho también: portada DOM (logo oficial sin fondo, menú, idioma y sonido), intro de 4 viñetas y carga con indicador indeterminado.
-- Hecho también: `TarjetaFuente` rehecha desde la lámina (misma API), `DatosUsados` y `Glosario` con términos en contexto.
-- Hecho también: retratos SVG del niño, las 3 expertas e Iris con las 8 expresiones, y `ExpertPortrait`.
-- Sigue: audio y voz si sobra tiempo; mientras, revisar el uso del motor en los PRs de pantalla.
-- Bloqueo: ninguno.
+**Rama:** — · **PR:** #220 (fusionado, trae toda la pila: #208, #209, #213, #214, #217, #219) · **Tokens:** verde
+- Hecho: tokens v8 y Nunito; `estilos.css` borrado y reemplazado por `estilos/base.css`; `FacetButton` e iconos; placas, costos, mensajes, efecto pendiente y `ConfirmarAccion`; portada, intro y carga; tarjeta de fuente, datos usados y glosario; retratos con 8 expresiones. Muestrario en `componentes/base/muestrario.html`.
+- Sigue: arreglos de fidelidad que pida María Paula (las fichas están en cada PR cerrado); audio y voz si sobra tiempo.
+- Bloqueo: ninguno. Falta la revisión de fidelidad de María Paula (las piezas entraron juntas con #220).
 
 ## Fidelidad
 Una línea por pieza (FLUJO §4 y §8). Estados: `sin empezar`, `en PR #n`, `aprobada`. Solo María Paula marca `aprobada`, después de comparar la captura con la lámina.
 
 | Pieza | Lámina | Dueño | Estado |
 | --- | --- | --- | --- |
-| Tokens, Nunito, botones y placas | `ui/02`, `ui/03` | Jaime | en PR #208 (tokens y Nunito); botones y placas sin empezar |
-| Retratos de diálogo | `personajes/02, 04, 06, 09`, `ui/01` | Jaime | en PR #220 |
-| Portada DOM, intro y carga | `inicio/01–03`, `ui/00` | Jaime | en PR #217 |
-| Tarjeta de fuente, datos usados, glosario | `ui/04` | Jaime | en PR #219 |
+| Tokens, Nunito, botones y placas | `ui/02`, `ui/03` | Jaime | fusionada en #220, revisión de fidelidad pendiente |
+| Retratos de diálogo | `personajes/02, 04, 06, 09`, `ui/01` | Jaime | fusionada en #220, revisión de fidelidad pendiente |
+| Portada DOM, intro y carga | `inicio/01–03`, `ui/00` | Jaime | fusionada en #220, revisión de fidelidad pendiente |
+| Tarjeta de fuente, datos usados, glosario | `ui/04` | Jaime | fusionada en #220, revisión de fidelidad pendiente |
 | Cielo, luz y niebla de Marte | MARTE.md §4–§5 (no el azul de `mundo/01`) | Daniel | sin empezar |
 | Terreno de Jezero y rocas | `mundo/01`, `exterior/02` | Daniel | sin empezar |
 | Kit de piezas | `piezas/01–10` | Daniel | sin empezar |

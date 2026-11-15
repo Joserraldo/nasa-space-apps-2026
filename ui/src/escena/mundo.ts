@@ -1,5 +1,6 @@
 import type { Equipment, Expert } from "@solar-shield/contracts";
 import type { Terreno } from "./fisica.js";
+import { puestoDeGuia } from "./guia.js";
 
 /**
  * El único mapa: una base compacta. Coordenadas de juego en metros (Y arriba, la cámara mira hacia −Z).
@@ -58,6 +59,58 @@ export function lugar(id: LugarId): Lugar {
 export function lugarDelModulo(m: Equipment): Lugar | undefined {
   return LUGARES.find((l) => l.modulo === m);
 }
+
+export type ModuloJezero = Extract<Equipment,
+  "panel_solar" | "reciclador_agua" | "escudo" | "invernadero" | "antena">;
+export type ExpertaBase = Extract<Expert, "ingeniera" | "doctora" | "meteorologa">;
+
+/** Geometría reservada para el encuentro, en metros; no son números de balance. */
+export const DISTANCIA_USO_EXPERTA = 1;
+export const RADIO_EXPERTA = 0.4;
+
+/** Metros de juego; Y es el suelo, no la altura del marcador `my`. */
+export interface Anclaje {
+  readonly id: string;
+  readonly lugarId: LugarId;
+  readonly x: number;
+  readonly y: number;
+  readonly z: number;
+}
+
+/** Los cinco soportes existen incluso cuando el módulo está ausente (VistaEscena). */
+export const ANCLAJES_MODULOS: Readonly<Record<ModuloJezero, Anclaje>> = {
+  panel_solar: anclajeModulo("panel_solar"),
+  reciclador_agua: anclajeModulo("reciclador_agua"),
+  escudo: anclajeModulo("escudo"),
+  invernadero: anclajeModulo("invernadero"),
+  antena: anclajeModulo("antena"),
+};
+
+function anclajeModulo(id: ModuloJezero): Anclaje {
+  const l = lugar(id);
+  return { id: `modulo:${id}`, lugarId: id, x: l.mx, y: 0, z: l.mz };
+}
+
+/** Puestos de encuentro de ESCENAS §3.2, separados del centro de los edificios. */
+export const ANCLAJES_EXPERTAS: Readonly<Record<ExpertaBase, Anclaje>> = {
+  ingeniera: anclajeExperta("ingeniera", "taller"),
+  doctora: anclajeExperta("doctora", "habitat"),
+  meteorologa: anclajeExperta("meteorologa", "sensor"),
+};
+
+function anclajeExperta(id: ExpertaBase, lugarId: LugarId): Anclaje {
+  const l = lugar(lugarId);
+  // Usa el costado opuesto al puesto de Iris sin acercar el cuerpo al sólido del edificio.
+  const iris = puestoDeGuia(l);
+  const dx = iris.x - l.x, dz = iris.z - l.z;
+  const escala = DISTANCIA_USO_EXPERTA / Math.hypot(dx, dz);
+  return { id: `experta:${id}`, lugarId, x: l.x - dx * escala, y: 0, z: l.z - dz * escala };
+}
+
+/** Mismo puesto lateral que usa la guía de Paula; no añade coordenadas a mano. */
+export const DOCK_IRIS: Anclaje = {
+  id: "iris:dock", lugarId: "taller", y: 0, ...puestoDeGuia(lugar("taller")),
+};
 
 /** Banco de pruebas: rampa ancha que sube a una plataforma baja. */
 export const BANCO = { x0: -9, x1: -6.4, zBajo: 2.4, zAlto: 5.4, zFondo: 8, alto: 0.6 } as const;
