@@ -11,7 +11,7 @@ Una sección por persona, máximo 5 líneas, y nadie edita la de otro (FLUJO §8
 ```
 
 ## Personajes (María Paula)
-**Rama:** fix/ui-integracion-develop-3d · **PR:** hacia develop · **Tokens:** amarillo
+**Rama:** fix/ui-integracion-develop-3d · **PR:** #328 hacia develop · **Tokens:** amarillo
 - Hecho: monta niño, Ingeniera e Iris vigentes en la escena compartida; materiales por referencia y liberación de esqueletos. Plan de dos personas: Haiku lee, Opus implementa, Fable audita. No incluye la versión descartada de 5199.
 - Verificado: tipos, build y ruta dorada; prueba combinada con #247 en cuatro tamaños, capturas E6/E7 sin errores. Cinco módulos: cota de 80 llamadas/69951 triángulos; rendimiento físico pendiente.
 - Sigue: Santiago revisa/fusiona #247 y este PR; aplicar frentes A/B del plan. Movimiento, táctiles y fidelidad final no están implementados por este montaje.
