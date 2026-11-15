@@ -99,7 +99,10 @@ export function submuestrear(alturas: Float32Array, ancho: number, alto: number,
 }
 
 /** Escala y desplazamientos compartidos por la malla y por `alturaEnMundo`. */
-function marco(r: Rejilla, o: OpcionesMalla) {
+/** Marco precalculado: calcúlalo una vez por rejilla y pásalo a `alturaEnMundo` en bucles. */
+export type MarcoTerreno = ReturnType<typeof marco>;
+
+export function marco(r: Rejilla, o: OpcionesMalla) {
   let min = Infinity;
   let max = -Infinity;
   for (const h of r.alturas) {
@@ -169,8 +172,13 @@ export function mallaTerreno(alturas: Float32Array, ancho: number, alto: number,
  * Altura del terreno (unidades de mundo) en (x, z), interpolada sobre los dos triángulos de la
  * celda igual que `mallaTerreno`, para que lo apoyado quede justo sobre la superficie.
  */
-export function alturaEnMundo(r: Rejilla, opciones: OpcionesMalla, x: number, z: number): number {
-  const m = marco(r, opciones);
+export function alturaEnMundo(
+  r: Rejilla,
+  opciones: OpcionesMalla,
+  x: number,
+  z: number,
+  m: MarcoTerreno = marco(r, opciones),
+): number {
   const u = Math.min(r.ancho - 1, Math.max(0, (x - m.x0) / m.paso));
   const v = Math.min(r.alto - 1, Math.max(0, (z - m.z0) / m.paso));
   const c = Math.min(r.ancho - 2, Math.floor(u));
@@ -226,6 +234,7 @@ export function rocasBasalticas(
   const eMin = opciones.escalaMin ?? 0.4;
   const eMax = opciones.escalaMax ?? 1.6;
   const rocas: TransformacionRoca[] = [];
+  const m = marco(terreno, opcionesMalla); // una vez, no por roca
   for (let i = 0; i < n; i++) {
     const ang = azar() * Math.PI * 2;
     const dist = Math.sqrt(azar()) * radio;
@@ -233,7 +242,7 @@ export function rocasBasalticas(
     const z = Math.sin(ang) * dist;
     const e = eMin + azar() * (eMax - eMin);
     rocas.push({
-      posicion: [x, alturaEnMundo(terreno, opcionesMalla, x, z), z],
+      posicion: [x, alturaEnMundo(terreno, opcionesMalla, x, z, m), z],
       escala: [e * (0.8 + azar() * 0.4), e * (0.5 + azar() * 0.3), e * (0.8 + azar() * 0.4)],
       rotacion: [(azar() - 0.5) * 0.3, azar() * Math.PI * 2, (azar() - 0.5) * 0.3],
     });
