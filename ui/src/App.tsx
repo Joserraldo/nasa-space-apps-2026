@@ -149,7 +149,7 @@ function Pantalla({ idioma, setIdioma }: { idioma: Idioma; setIdioma: (i: Idioma
           <>
             {/* Panel a de E7 detrás de ?tormenta=nueva: la ruta dorada aún depende de Tormenta.tsx (paneles b a d pendientes). */}
             {new URLSearchParams(window.location.search).get("tormenta") === "nueva"
-              ? <PantallaTormenta estado={j.estado} colocados={j.colocados} />
+              ? <PantallaTormenta estado={j.estado} colocados={j.colocados} onDecidir={(previas, opcionId) => enviar({ tipo: "dilema", previas, opcionId })} />
               : <Tormenta estado={j.estado} onDecidir={(previas, opcionId) => enviar({ tipo: "dilema", previas, opcionId })} onAccion={accion} />}
           </>
         )}
