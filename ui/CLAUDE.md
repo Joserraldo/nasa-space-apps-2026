@@ -1,5 +1,5 @@
 # Rol 5: Frontend, voz, arte y accesibilidad
-**Humano responsable:** María Paula (`Paulasaah`), también orquestadora del equipo
+**Humano responsable:** María Paula (`Paulasaah`), también co-orquestadora de esta fase con Santiago
 **Slug de ramas:** `ui` → `feat/ui-<tema>`
 **Etiqueta de issues:** `rol:ui`
 **Posees:** `/ui`, `/assets`

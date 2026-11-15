@@ -122,10 +122,10 @@ Hoy todas las misiones usan `media`. Si se ofrece elegir dificultad, la UI muest
 
 | Nivel | Qué hace Iris | Cómo se ve |
 | --- | --- | --- |
-| `tutorial` | Guía paso a paso y señala adónde ir | Ojos abiertos, atentos |
-| `pistas` | Solo da pistas si el niño las pide o se traba | Ojos tranquilos |
-| `danada` | La radiación la daña: da un número equivocado | Pantalla con interferencia, ojos con falla |
-| `offline` | No ayuda; el niño decide solo | Pantalla apagada |
+| `tutorial` | Nombra el lugar y la experta y traza la ruta (Iris compañera, #149) | Ojos abiertos, atentos; el rover avanza delante del niño |
+| `pistas` | Solo mira hacia el área, sin nombre ni ruta | Ojos tranquilos; el rover gira hacia el lugar |
+| `danada` | La radiación la daña: da un número equivocado y pide reparación | Pantalla con interferencia, cara `error`, gesto `pedir_reparacion` |
+| `offline` | No ayuda; el niño decide solo | Pantalla apagada; el rover queda en su dock del taller |
 
 El motor mueve a Iris entre niveles según el rendimiento del niño; la avería del paso 6 la pone en `danada` y la Ingeniera la repara.
 

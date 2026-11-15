@@ -1,12 +1,12 @@
 # Prompts de arranque por rol (14 nov 2026, noche)
 
-**Orquestadora:** María Paula (`Paulasaah`). **Revisión de PRs y tablero de pendientes:** sesión revisora de Claude ([revisor.md](revisor.md)). **Fusiona:** Santiago (`kcitas`), solo con squash, cuando pasa la CI.
+**Orquestación:** Santiago (`kcitas`), orquestador: supervisa y fusiona, solo con squash, cuando pasa la CI. María Paula (`Paulasaah`), **co-orquestadora de esta fase**: dirección visual, prompts por rol y seguimiento del equipo. **Revisión de PRs y tablero de pendientes:** sesión revisora de Claude ([revisor.md](revisor.md)). Los roles de cada persona no cambian (`README.md` y `docs/ORQUESTACION.md`).
 
 Cada persona abre su sesión, pega **su** prompt y después lanza el loop que el prompt indica. Si un prompt choca con un `CLAUDE.md` de carpeta o con un prompt viejo del historial, manda este.
 
 | Persona | Rol | Prompt | Herramientas |
 | --- | --- | --- | --- |
-| María Paula | orquestadora | [orquestadora.md](orquestadora.md) | Claude Code + subagentes Sonnet/Haiku + OpenCode (DeepSeek V4.1 Flash) |
+| María Paula | co-orquestadora | [orquestadora.md](orquestadora.md) | Claude Code + subagentes Sonnet/Haiku + OpenCode (DeepSeek V4.1 Flash) |
 | María Paula | ui, en 4 pistas: integración (M), escenario (E), interfaz (I), audio (A) | [ui.md](ui.md) | Claude Code + subagentes Sonnet/Haiku + OpenCode (DeepSeek V4.1 Flash) |
 | Jaime (`JaimeMrF`) | motor | [motor.md](motor.md) | Claude Code + subagentes Sonnet/Haiku + OpenCode (DeepSeek V4.1 Flash) |
 | Camilo (`CamiloM21`) | diseño y misiones | [diseno.md](diseno.md) | Claude Code + subagentes Sonnet/Haiku + OpenCode (DeepSeek V4.1 Flash) |
@@ -46,19 +46,19 @@ Cómo se reparte el trabajo de ui y cómo se integra: [FLUJO.md](../referenciapa
 
 ### Loop
 - Una iteración = **una** tarea pequeña y verificable, según `docs/LOOP.md`.
-- Cada prompt trae su **META** (condición para parar). Cuando se cumple: detené el loop, escribí el cierre en `ESTADO.md` y avisá a María Paula.
+- Cada prompt trae su **META** (condición para parar). Cuando se cumple: detené el loop, escribí el cierre en `ESTADO.md` y avisá a María Paula (co-orquestadora).
 - También se para el loop si: dos iteraciones seguidas sin avance (avisá con un issue o en `#bloqueos`), tokens en rojo, o la tarea necesita una decisión humana.
 - Si no hay tarea disponible en una iteración, terminala sin hacer nada (no inventes trabajo).
 
 ### Modelos y esfuerzo
 
-Verificado el 14 nov en este equipo: `claude` acepta `--model` (`fable`, `opus`, `sonnet`, `haiku`) y `--effort` (`low`, `medium`, `high`, `xhigh`, `max`); los subagentes de Claude Code reciben `model` y `effort` al lanzarlos; OpenCode lista `opencode/deepseek-v4.1-flash-free` y `openai/gpt-6.1-sol`; Codex fija el esfuerzo con `model_reasoning_effort`.
+Verificado el 14 nov en este equipo: `claude` acepta `--model` (`fable`, `opus`, `sonnet`, `haiku`) y `--effort` (`low`, `medium`, `high`, `xhigh`, `max`); los subagentes de Claude Code reciben `model` y `effort` al lanzarlos; OpenCode lista `opencode/deepseek-v4.1-flash-free` y `openai/gpt-6.1-sol`; Codex fija el esfuerzo con `model_reasoning_effort`. Daniel usa Codex con GPT-6.1 (dicho por María Paula).
 
 | Sesión o tarea | Modelo | Esfuerzo | Cómo se abre |
 | --- | --- | --- | --- |
 | Santiago: supervisión, decisiones y fusión | Fable 5.2 | `medium` (`high` solo para decidir un recorte) | `claude --model fable --effort medium` |
-| Orquestadora: semáforo cada 30 min | Sonnet 5.5 | `medium` | `claude --model sonnet --effort medium` |
-| Orquestadora: decisión de prioridad o recorte | Fable 5.2 | `high` | Sesión corta solo para esa decisión |
+| Co-orquestadora: semáforo cada 30 min | Sonnet 5.5 | `medium` | `claude --model sonnet --effort medium` |
+| Co-orquestadora: decisión de prioridad o recorte | Fable 5.2 | `high` | Sesión corta solo para esa decisión |
 | Revisor de PRs | Opus 5.5 | `medium`; `high` si el PR toca `contracts/`, `engine/` o la integración de ui | `claude --model opus --effort medium` |
 | ui, pista M (sesión principal de María Paula) | Opus 5.5 | `high` | `claude --model opus --effort high` |
 | ui, pista E: pieza maestra o primera versión de una escena | Opus 5.5 (subagente) | `medium` | `model: opus, effort: medium` |
@@ -68,7 +68,7 @@ Verificado el 14 nov en este equipo: `claude` acepta `--model` (`fable`, `opus`,
 | Diseño (Camilo) | Opus 5.5 | `medium` | `claude --model opus --effort medium` |
 | Agentes e infra (José) | Opus 5.5 | `medium` | `claude --model opus --effort medium` |
 | Datos (Daniel) | Opus 5.5 | `medium` | `claude --model opus --effort medium` |
-| Datos (Daniel): verificación y scripts | Codex con GPT-6.1 Sol si su cuenta lo tiene | `medium` | `codex -m <modelo> -c model_reasoning_effort="medium"` (Daniel confirma el nombre del modelo en su Codex) |
+| Datos (Daniel): verificación y scripts | Codex con GPT-6.1 | `medium` | `codex -c model_reasoning_effort="medium"` (con GPT-6.1 como modelo de su Codex) |
 | Componentes, tests unitarios, bugs claros | Sonnet 5.5 (subagente) | `medium` | `model: sonnet, effort: medium` |
 | Buscar en el repo, i18n EN/ES, JSON, documentación | Haiku 5.5 (subagente) | `low` | `model: haiku, effort: low` |
 | Lote mecánico sobre archivos que nadie más toca | DeepSeek V4.1 Flash en OpenCode | (sin ajuste) | `opencode -m opencode/deepseek-v4.1-flash-free` |
@@ -76,7 +76,7 @@ Verificado el 14 nov en este equipo: `claude` acepta `--model` (`fable`, `opus`,
 
 Reglas de uso:
 - **Primero se sube el esfuerzo, después el modelo:** `medium` → `high` → `xhigh`; recién entonces Sonnet → Opus → Fable. Si un modelo falla dos veces en lo mismo, se sube un escalón; al terminar la tarea difícil, se baja.
-- **`max` nunca** sin el OK de la orquestadora.
+- **`max` nunca** sin el OK de la co-orquestadora.
 - Máximo 2–3 subagentes a la vez, con **archivos disjuntos**. Decí cuántos y para qué antes de lanzarlos. Un subagente no lanza otros subagentes ni corre `/loop`.
 - En `ESTADO.md`, una línea `Tokens: verde | amarillo | rojo` (equivale a los círculos de `docs/COMO-TRABAJAMOS.md`, sin emojis). En amarillo: solo tareas chicas y modelos livianos. En rojo: parar, dejar el traspaso escrito y avisar en `#bloqueos`.
 - `docs/modelos.md` (de Santiago) tiene la escalera general; esta tabla la concreta para estos prompts. Si chocan, se avisa a Santiago.

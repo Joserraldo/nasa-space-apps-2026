@@ -30,7 +30,9 @@ Fase 0 (P2, nadie más escribe en ui/ hasta cerrarla):
    Mejoras P0 del reto (RETO.md §3): comida visible en toda partida (1), retraso de
    comunicaciones explicado (4), "qué datos de NASA usamos" al final (5).
 3. #118: integrar el PR #151 de José (no rehacerlo); conversar, escenaTormenta, escenaPolvo,
-   compararOpciones, preguntaIris, consejosAterrizaje.
+   compararOpciones, preguntaIris, consejosAterrizaje. Iris compañera (#149): guiaIrisLugar y
+   briefingIris (MECANICAS.md §3.4). Ojo: agents exporta un tipo GestoIris que choca de nombre
+   con el de ui/src/escena/modelos.ts; importalo con alias.
 4. #137: DATOS_USADOS_KEYS, tarjetaTormenta, tarjetas OSDR y CSA con su crédito, retraso de
    comunicaciones. #109: cuenta o invitado.
 Fase 1:

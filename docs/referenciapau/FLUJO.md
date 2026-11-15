@@ -37,7 +37,7 @@ Cuatro pistas con **archivos disjuntos** y una rama cada una. Prompts en `docs/p
 
 Fuera de las pistas:
 - **Validación:** la sesión revisora ([`docs/prompts/revisor.md`](../prompts/revisor.md)) revisa cada PR; no escribe código.
-- **Orquestadora (María Paula):** asigna, decide, aprueba la fidelidad visual contra la lámina y hace el primer recorrido de la ruta dorada.
+- **Co-orquestadora (María Paula, con Santiago):** asigna, decide lo visual, aprueba la fidelidad contra la lámina y hace el primer recorrido de la ruta dorada.
 - **Fusión:** Santiago, con squash.
 
 Si una pista necesita cambiar un archivo de otra, **no lo edita**: lo pide a esa pista con un comentario en su PR o en el issue (ejemplo: E necesita un dato nuevo en `vista.ts`, se lo pide a M).

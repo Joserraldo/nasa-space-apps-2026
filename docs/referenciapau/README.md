@@ -50,7 +50,7 @@ Leé solo lo que tu tarea necesita. Cada documento es autónomo y enlaza sus lá
 0. **El enunciado oficial del reto** ([RETO.md](RETO.md)).
 1. **Contratos y código de otros roles:** `contracts/`, `engine/`, `design/`, `missions/`, `data/`, `agents/`. Ningún documento de esta carpeta cambia una regla, un costo o un tick.
 2. **Decisiones del equipo:** `docs/decisiones/` y `docs/ORQUESTACION.md` (fechas, bloques, puertas).
-3. **Texto de esta carpeta** (RETO, FLUJO, NIVELES, HISTORIA, DISEÑO, MARTE, ESCENAS, MECANICAS, APLICACION, AUDIO). Los documentos de `develop` escritos antes del 14 nov siguen valiendo en lo suyo (reglas, datos, voces, pitch) y ya tienen notas "Actualización 14 nov" donde la dirección visual los cambió. Lo que **no** es canon es la dirección visual vieja: atlas v2–v5 y v7, el prototipo `docs/referencias/3d/`, PixiJS para la escena, GLB y "retratos 2D en lugar de personajes".
+3. **Texto de esta carpeta** (RETO, FLUJO, NIVELES, HISTORIA, DISEÑO, MARTE, ESCENAS, MECANICAS, APLICACION, AUDIO). Los documentos de `develop` escritos antes del 14 nov siguen valiendo en lo suyo (reglas, datos, voces, pitch); las notas "Actualización 14 nov" donde la dirección visual los cambia llegan con el PR #164. Lo que **no** es canon es la dirección visual vieja: atlas v2–v5 y v7, el prototipo `docs/referencias/3d/`, PixiJS para la escena, GLB y "retratos 2D en lugar de personajes".
 4. **Láminas** de `referencias/`. Guían silueta, paleta, composición, proporción y pose. Si una lámina contradice el texto, **manda el texto**. Cada contradicción conocida está anotada en [REFERENCIAS.md](REFERENCIAS.md).
 
 ## 4. Diez reglas que no se negocian
