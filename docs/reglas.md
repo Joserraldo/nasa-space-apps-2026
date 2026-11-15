@@ -51,7 +51,7 @@ Investigado el 2026-11-02. Limitación importante: las páginas oficiales de spa
 
 ## Sobre el reto
 
-- Nombre: "Build a Junior Astronaut Mission Trainer". URL: https://www.spaceappschallenge.org/2026/challenges/build-a-junior-astronaut-mission-trainer/ (página no leída directamente; resumen vía https://nasaspaceapps.ae/ )
+- Nombre: "Build a Junior Astronaut Mission Trainer". URL: https://www.spaceappschallenge.org/2026/challenges/junior-astronaut-mission-trainer/ (página no leída directamente; resumen vía https://nasaspaceapps.ae/ )
 - Contexto: el contenido STEM espacial suele simplificar de más los compromisos de ingeniería de una misión, o ser demasiado complejo para un niño; faltan herramientas que los hagan tangibles y divertidas.
 - Objetivo: construir un juego o app interactiva donde estudiantes administran un puesto avanzado lunar o marciano y equilibran soporte vital, blindaje contra radiación, energía y producción de alimentos, viendo cómo sus decisiones llevan al éxito o fracaso.
 - Etiquetas: Intermediate, Beginner/Youth.

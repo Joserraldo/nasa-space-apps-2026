@@ -2,24 +2,32 @@ import { useEffect, useReducer, useState } from "react";
 import type { Action, Equipment, GameState } from "@solar-shield/contracts";
 import {
   aplicarAccion,
+  aterrizar,
   avanzarTick,
+  elegirDilema,
   novedades,
   partidaDorada,
   pausar,
-  telemetriaPendiente,
-  tormentaActiva,
   type Novedades,
   type PuntajeSitio,
 } from "@solar-shield/engine";
-import { Hud } from "./componentes/Hud.js";
-import { Tripulacion } from "./componentes/Tripulacion.js";
-import { describirAccion } from "./componentes/Dialogos.js";
+import { HudBase } from "./componentes/HudBase.js";
 import { IdiomaContext, useT, type Idioma } from "./i18n.js";
-import { ColocarModulos } from "./pantallas/ColocarModulos.js";
+import { PantallaModulos } from "./pantallas/PantallaModulos.js";
 import { ElegirSitio } from "./pantallas/ElegirSitio.js";
-import { Final } from "./pantallas/Final.js";
+import { PantallaFinal } from "./pantallas/PantallaFinal.js";
 import { Satelite } from "./pantallas/Satelite.js";
+import { PantallaBase } from "./pantallas/PantallaBase.js";
 import { Tormenta } from "./pantallas/Tormenta.js";
+import { PreguntaDeIris } from "./componentes/PreguntaDeIris.js";
+import { Portada } from "./componentes/Portada.js";
+import { Intro } from "./componentes/Intro.js";
+import { Carga } from "./componentes/Carga.js";
+import { Creditos } from "./componentes/Creditos.js";
+import type { TemaPregunta } from "@solar-shield/agents";
+
+/** Módulos que tienen pregunta de Iris nivel 2 al colocarlos. */
+const TEMAS_IRIS: readonly Equipment[] = ["panel_solar", "reciclador_agua", "invernadero", "escudo"];
 
 type Fase = "inicio" | "satelite" | "sitio" | "modulos" | "base" | "tormenta" | "final";
 
@@ -36,7 +44,7 @@ type Evento =
   | { tipo: "nueva" }
   | { tipo: "fase"; fase: Fase }
   | { tipo: "accion"; accion: Action }
-  | { tipo: "acciones"; acciones: Action[] }
+  | { tipo: "dilema"; previas: Action[]; opcionId: string }
   | { tipo: "tick" }
   | { tipo: "pausa"; pausado: boolean }
   | { tipo: "sitio"; sitio: PuntajeSitio }
@@ -50,16 +58,18 @@ function reducir(j: Juego, e: Evento): Juego {
   switch (e.tipo) {
     case "nueva": return inicial();
     case "fase": return { ...j, fase: e.fase };
-    case "sitio": return { ...j, sitio: e.sitio, fase: "modulos" };
+    // Paso 3: el motor cobra el costo del sitio una sola vez (MISION_JEZERO.sitiosCandidatos).
+    case "sitio": return { ...j, estado: aterrizar(j.estado, e.sitio.id), sitio: e.sitio, fase: "modulos" };
     case "modulo": {
       const estado = aplicarAccion(j.estado, { tipo: "colocar_modulo", modulo: e.modulo });
       return { ...j, estado, colocados: [...j.colocados, e.modulo] };
     }
     case "accion": return { ...j, estado: aplicarAccion(j.estado, e.accion) };
-    case "acciones": {
+    // Paso 6: lo verificado con la experta (si lo hubo) y luego la salida del dilema, con el extra del invernadero.
+    case "dilema": {
       let s = j.estado;
-      for (const a of e.acciones) s = aplicarAccion(s, a);
-      return { ...j, estado: pausar(s, false), fase: "base" };
+      for (const a of e.previas) s = aplicarAccion(s, a);
+      return { ...j, estado: pausar(elegirDilema(s, e.opcionId), false), fase: "base" };
     }
     case "pausa": return { ...j, estado: pausar(j.estado, e.pausado) };
     case "tick": {
@@ -87,6 +97,18 @@ function Pantalla({ idioma, setIdioma }: { idioma: Idioma; setIdioma: (i: Idioma
   const [j, enviar] = useReducer(reducir, undefined, inicial);
   const [velocidad, setVelocidad] = useState(1);
   const enBase = j.fase === "base";
+  // Inicio en tres momentos (ESCENAS E0 a E2): portada, intro de 4 viñetas y carga. Después, la órbita.
+  const [inicio, setInicio] = useState<"portada" | "intro" | "carga">("portada");
+  const [creditos, setCreditos] = useState(false);
+  const [sonido, setSonido] = useState(false);
+  useEffect(() => { if (j.fase === "inicio") setInicio("portada"); }, [j.fase]);
+  const empezarMision = () => enviar({ tipo: "fase", fase: "satelite" });
+  // La carga es un respiro corto entre la intro y la órbita; se puede saltar con "Skip".
+  useEffect(() => {
+    if (j.fase !== "inicio" || inicio !== "carga") return;
+    const id = setTimeout(empezarMision, 1800);
+    return () => clearTimeout(id);
+  }, [j.fase, inicio]);
 
   // Reloj fijo: un tick cada 4 s a 1x. El motor decide todo; ui solo dispara el tick.
   useEffect(() => {
@@ -97,85 +119,40 @@ function Pantalla({ idioma, setIdioma }: { idioma: Idioma; setIdioma: (i: Idioma
 
   useEffect(() => { document.documentElement.lang = idioma; }, [idioma]);
 
-  const tele = telemetriaPendiente(j.estado);
   const accion = (a: Action) => enviar({ tipo: "accion", accion: a });
 
   return (
-    <div className="app">
-      <header className="barra">
-        <span className="titulo">🛡️ {t("ui.titulo")}</span>
-        {enBase && (
-          <>
-            <span>{t("ui.dia", { dia: j.estado.dia })} · {t("ui.tick", { tick: j.estado.tick })}</span>
-            <button className="secundario" onClick={() => enviar({ tipo: "pausa", pausado: !j.estado.pausado })} aria-pressed={j.estado.pausado}>
-              {j.estado.pausado ? `▶ ${t("ui.reanudar")}` : `⏸ ${t("ui.pausa")}`}
-            </button>
-            <label>{t("ui.velocidad")} <select value={velocidad} onChange={(e) => setVelocidad(Number(e.target.value))}><option value={0.5}>0.5x</option><option value={1}>1x</option><option value={2}>2x</option></select></label>
-          </>
-        )}
-        <label>{t("ui.idioma")} <select value={idioma} onChange={(e) => setIdioma(e.target.value as Idioma)}><option value="en">English</option><option value="es">Español</option></select></label>
-      </header>
+    <div className={enBase ? "app app-base" : "app"}>
+      {(j.fase === "modulos" || enBase || j.fase === "tormenta") && (
+        <HudBase estado={j.estado} ultimas={enBase ? j.ultimas : null}
+          reloj={enBase ? { velocidad, onPausa: () => enviar({ tipo: "pausa", pausado: !j.estado.pausado }), onVelocidad: setVelocidad } : undefined} />
+      )}
 
-      <main className={enBase ? "juego" : ""}>
-        {j.fase === "inicio" && (
-          <section className="tarjeta columna">
-            <h1>{t("ui.titulo")}</h1>
-            <p>{t("ui.subtitulo")}</p>
-            <div><button onClick={() => enviar({ tipo: "fase", fase: "satelite" })}>{t("ui.empezar")}</button></div>
-          </section>
+      <main>
+        {j.fase === "inicio" && inicio === "portada" && (
+          <Portada idioma={idioma} onIdioma={setIdioma} sonido={sonido} onSonido={() => setSonido((x) => !x)}
+            puedeContinuar={false} onEmpezar={() => setInicio("intro")} onContinuar={empezarMision} onCreditos={() => setCreditos(true)} />
         )}
+        {j.fase === "inicio" && inicio === "intro" && <Intro onTerminar={() => setInicio("carga")} />}
+        {j.fase === "inicio" && inicio === "carga" && <Carga consejo={0} sonido={sonido} onSonido={() => setSonido((x) => !x)} onSaltar={empezarMision} />}
+        {creditos && <Creditos onCerrar={() => setCreditos(false)} />}
         {j.fase === "satelite" && <Satelite estado={j.estado} onContinuar={() => enviar({ tipo: "fase", fase: "sitio" })} />}
         {j.fase === "sitio" && <ElegirSitio estado={j.estado} onElegir={(s) => enviar({ tipo: "sitio", sitio: s })} />}
         {j.fase === "modulos" && (
           <>
-            <Hud estado={j.estado} />
-            <ColocarModulos colocados={j.colocados} onColocar={(m) => enviar({ tipo: "modulo", modulo: m })} onListo={() => enviar({ tipo: "fase", fase: "base" })} />
+            <PantallaModulos estado={j.estado} colocados={j.colocados} onColocar={(m) => enviar({ tipo: "modulo", modulo: m })} onListo={() => enviar({ tipo: "fase", fase: "base" })} />
+            {TEMAS_IRIS.find((m) => m === j.colocados.at(-1)) && <PreguntaDeIris key={j.colocados.length} tema={j.colocados.at(-1) as TemaPregunta} nivel={j.estado.iaBase} />}
           </>
         )}
         {j.fase === "tormenta" && (
           <>
-            <Hud estado={j.estado} />
-            <Tormenta estado={j.estado} onDecidir={(as) => enviar({ tipo: "acciones", acciones: as })} />
+            <Tormenta estado={j.estado} onDecidir={(previas, opcionId) => enviar({ tipo: "dilema", previas, opcionId })} onAccion={accion} />
           </>
         )}
         {enBase && (
-          <>
-            <div className="columna">
-              <Hud estado={j.estado} />
-              <section className="tarjeta columna" aria-label={t("ui.acciones.titulo")}>
-                <h2>{t("ui.acciones.titulo")}</h2>
-                <p><span className="etiqueta">{t(`ui.iris.estado.${j.estado.iaBase}`)}</span></p>
-                <div className="fila">
-                  <button className="secundario" onClick={() => accion({ tipo: "esperar" })}>{t("ui.accion.esperar")}</button>
-                  <button className="secundario" onClick={() => accion({ tipo: "refugiarse" })}>{t("ui.accion.refugiarse")}</button>
-                  <button className="secundario" onClick={() => accion({ tipo: "subir_escudo", nivel: 1 })}>{t("ui.accion.subir_escudo")}</button>
-                  <button className="secundario" onClick={() => accion({ tipo: "salida_exterior", objetivo: "panel_solar" })}>{t("ui.accion.salida_exterior")}</button>
-                  {j.estado.iaBase === "danada" && <button className="peligro" onClick={() => accion({ tipo: "reparar", equipo: "ia_base" })}>{t("ui.accion.reparar_ia")}</button>}
-                  {tormentaActiva(j.estado) && !tele && <button className="solar" onClick={() => accion({ tipo: "enviar_telemetria" })}>📡 {t("ui.paso.7.telemetria")}</button>}
-                </div>
-                {tele && <p>📡 {t("ui.paso.7.llegando", { ticks: tele.ticksRestantes })}</p>}
-                {j.estado.pausado && j.ultimas && (
-                  <div className="tarjeta alerta" role="status">
-                    {j.ultimas.malaSuerte.map((c, i) => <p key={`m${i}`}>⚠ {t("ui.novedad.mala_suerte")}: {t(c.descripcionKey)} <span className="delta menos">{c.delta}</span></p>)}
-                    {j.ultimas.iaCambio && <p>◉ {t(`ui.iris.estado.${j.ultimas.iaCambio.a}`)}</p>}
-                    {j.ultimas.efectosLlegaron.map((c, i) => <p key={`e${i}`}>✓ {t("ui.novedad.efecto")}: {t(c.descripcionKey)} <span className="delta mas">+{c.delta}</span></p>)}
-                    <button onClick={() => enviar({ tipo: "pausa", pausado: false })}>▶ {t("ui.reanudar")}</button>
-                  </div>
-                )}
-                <details>
-                  <summary>{t("ui.paso.8.titulo")}</summary>
-                  <ul className="registro">
-                    {[...j.estado.causas].reverse().slice(0, 30).map((c, i) => (
-                      <li key={i}>{t("ui.tick", { tick: c.tick })} · {t(c.descripcionKey)}{c.accion && c.descripcionKey.startsWith("causa.") ? ` (${describirAccion(c.accion, t)})` : ""} {c.delta !== undefined && <span className={`delta ${c.delta > 0 ? "mas" : "menos"}`}>{c.delta > 0 ? "+" : ""}{c.delta}</span>}</li>
-                    ))}
-                  </ul>
-                </details>
-              </section>
-            </div>
-            <Tripulacion estado={j.estado} onAccion={accion} />
-          </>
+          <PantallaBase estado={j.estado} ultimas={j.ultimas} onAccion={accion} onReanudar={() => enviar({ tipo: "pausa", pausado: false })} />
         )}
-        {j.fase === "final" && <Final estado={j.estado} onOtra={() => enviar({ tipo: "nueva" })} />}
+        {j.fase === "final" && <PantallaFinal estado={j.estado} onOtra={() => enviar({ tipo: "nueva" })} />}
       </main>
       <footer>{t("ui.aviso.nasa")}</footer>
     </div>

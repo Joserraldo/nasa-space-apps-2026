@@ -10,3 +10,4 @@ export * from "./dorada.js";
 export * from "./novedades.js";
 export * from "./tormenta.js";
 export * from "./dilema.js";
+export * from "./compactar.js";

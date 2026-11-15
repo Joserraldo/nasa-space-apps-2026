@@ -248,11 +248,11 @@ Todo es investigación y documentos, sin código del juego.
 |---|---|---|---|---|
 | D1 | Nombre del juego | Ver sección 9 | Todos (votación) | |
 | D2 | Nombre de la IA de la base | IRIS, Orbi, Chispa, Faro, Nodo | Todos | |
-| D3 | Motor/stack web | React + Vite + PixiJS (recomendado, ver 13) / Phaser | Rol 2 | |
+| D3 | Motor/stack web | React + Vite + PixiJS (recomendado, ver 13) / Phaser | Rol 2 | Tomada: React + Vite. La escena pasó a Three.js por D6 (14 nov) |
 | D4 | Modelo del clasificador | Qwen flash / DeepSeek / otro | Rol 3 | |
 | D5 | Hosting y serverless | Cloudflare (recomendado, ver 13) / Vercel | Rol 6 | |
-| D6 | Estilo visual | Pixel art / vector plano / cartoon 2D | Rol 5 | |
-| D7 | Nombres y diseño de los 5 tripulantes | | Roles 1 y 5 | |
+| D6 | Estilo visual | Pixel art / vector plano / cartoon 2D | Rol 5 | Propuesta 14 nov: 3D low-poly facetado procedural con Three.js ([D6](docs/decisiones/D6-estilo-visual.md), [`docs/referenciapau/`](docs/referenciapau/README.md)) |
+| D7 | Nombres y diseño de los 5 tripulantes | | Roles 1 y 5 | Propuesta 14 nov: por su rol, sin nombres propios ([D7](docs/decisiones/D7-tripulantes.md)) |
 | D8 | Catálogo de tormentas reales | | Rol 4 | |
 | D9 | Duración de una partida | 5 / 10 / 15 min | Rol 1 | |
 | D10 | Presupuesto de API del modelo | | Todos | |
@@ -277,6 +277,8 @@ Cada decisión tomada se guarda como `docs/decisiones/D<n>-<tema>.md` con: opcio
 | **OrbiCrew** | Junta la IA (Orbi) y la tripulación |
 
 ### Conceptos de logo
+> **Actualización 14 nov:** el logo elegido es [`docs/referenciapau/referencias/ui/00-logo-actual.png`](docs/referenciapau/referencias/ui/00-logo-actual.png). Estos conceptos quedan como historia.
+
 1. **Casco de astronauta** con el visor reflejando una llamarada solar.
 2. **Base en forma de cúpula** con un escudo encima y un sol travieso asomándose.
 3. **Ícono de la IA** (un ojo/orbe) con una grieta, que representa la avería.
@@ -285,7 +287,7 @@ Cada decisión tomada se guarda como `docs/decisiones/D<n>-<tema>.md` con: opcio
 
 ### Temática y tono
 - Ciencia absurda y divertida, sarcasmo tierno, nada grosero.
-- Paleta: noche espacial + naranja solar (peligro) + cian (escudo) + verde (vida).
+- Paleta: noche espacial + naranja solar (peligro) + cian (escudo) + verde (vida). **Actualización 14 nov:** reemplazada por la paleta v8 (marfil, lila, ciruela y cian; [DISEÑO.md](docs/referenciapau/DISEÑO.md) §2).
 - Cada tripulante tiene un tic de personalidad y una frase recurrente.
 - Original de punta a punta. Sin parecerse a personajes ni marcas existentes.
 
@@ -357,13 +359,15 @@ El juego corre **completo en el navegador del niño**. No hay servidor propio qu
 
 Phaser conviene para juegos de acción (física, plataformas, colisiones). Aquí no los hay. Para que la base "se vea juego", se mete **PixiJS** solo en la escena animada (cúpula, tormenta, partículas), dentro de un componente de React.
 
+> **Actualización 14 nov ([D6](docs/decisiones/D6-estilo-visual.md)):** la escena se hace con **Three.js `^0.160.0` procedural** (`WebGLRenderer`), no con PixiJS. React sigue siendo la interfaz, con la misma razón de accesibilidad.
+
 ### 13.3 Stack recomendado
 | Capa | Elección | Por qué |
 |---|---|---|
 | Lenguaje | **TypeScript** en todo | Los contratos (`/contracts`) son tipos que el compilador vigila entre los 6 agentes |
 | Monorepo | **npm workspaces** (`contracts`, `engine`, `agents`, `data`, `ui`, `infra`) | Cada rol es un paquete en su carpeta; encaja con CODEOWNERS |
 | UI | **React + Vite** | Ver 13.2 |
-| Escena animada | **PixiJS** (opcional) | Efectos sin pasar todo a un motor de juego |
+| Escena | **Three.js** `^0.160.0` procedural (D6, 14 nov; antes PixiJS opcional) | Mundo 3D construido con código, con respaldo 2D |
 | Motor | **TypeScript puro**, sin dependencias de UI | Determinista por semilla, se prueba sin navegador |
 | Validación | **Zod** | Valida el JSON del clasificador y de NASA en tiempo de ejecución |
 | API | **Hono** sobre Cloudflare Workers | Pequeño, rápido y hecho para Workers |

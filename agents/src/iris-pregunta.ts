@@ -1,4 +1,4 @@
-import type { BaseAiLevel } from "@solar-shield/contracts";
+import type { BaseAiLevel, SourceCard } from "@solar-shield/contracts";
 import type { Dialogo } from "./dialogo.js";
 
 /**
@@ -6,7 +6,7 @@ import type { Dialogo } from "./dialogo.js";
  * Nunca bloquea: el niño puede saltarla, y responda lo que responda Iris explica el porqué.
  * No da puntos ni quita recursos: solo enseña a relacionar el problema con el sistema.
  */
-export type TemaPregunta = "panel_solar" | "reciclador_agua" | "invernadero" | "escudo" | "tormenta" | "noche_polar";
+export type TemaPregunta = "panel_solar" | "reciclador_agua" | "invernadero" | "escudo" | "tormenta" | "noche_polar" | "mensaje_luna" | "luna_vs_marte" | "viaje_marte";
 
 export interface PreguntaIris {
   tema: TemaPregunta;
@@ -17,7 +17,12 @@ export interface PreguntaIris {
   correcta: 0 | 1 | 2;
   /** Siempre se puede saltar. */
   saltable: true;
+  /** Fuente de la cifra que da la explicación (solo en temas con dato). */
+  fuente?: SourceCard;
 }
+
+/** Temas cuya explicación cita una cifra: sin fuente no se pregunta (nunca un número sin fuente). */
+const CON_CIFRA: ReadonlySet<TemaPregunta> = new Set(["viaje_marte"]);
 
 const CORRECTA: Record<TemaPregunta, 0 | 1 | 2> = {
   panel_solar: 1,
@@ -26,10 +31,15 @@ const CORRECTA: Record<TemaPregunta, 0 | 1 | 2> = {
   escudo: 1,
   tormenta: 0,
   noche_polar: 1,
+  mensaje_luna: 0,
+  luna_vs_marte: 0,
+  viaje_marte: 0,
 };
 
-export function preguntaIris(tema: TemaPregunta, nivel: BaseAiLevel): PreguntaIris | null {
+/** @param fuente para temas con cifra, ej. viaje_marte: `referenciaDosis("marte-crucero").fuente` de data. */
+export function preguntaIris(tema: TemaPregunta, nivel: BaseAiLevel, fuente?: SourceCard): PreguntaIris | null {
   if (nivel !== "pistas") return null;
+  if (CON_CIFRA.has(tema) && !fuente) return null;
   const base = `agentes.iris.pregunta.${tema}`;
   return {
     tema,
@@ -37,6 +47,7 @@ export function preguntaIris(tema: TemaPregunta, nivel: BaseAiLevel): PreguntaIr
     opcionesKeys: [`${base}.a`, `${base}.b`, `${base}.c`],
     correcta: CORRECTA[tema],
     saltable: true,
+    ...(fuente ? { fuente } : {}),
   };
 }
 
@@ -44,5 +55,5 @@ export function preguntaIris(tema: TemaPregunta, nivel: BaseAiLevel): PreguntaIr
 export function responderPreguntaIris(p: PreguntaIris, elegida: 0 | 1 | 2 | null): Dialogo {
   const base = `agentes.iris.pregunta.${p.tema}`;
   const veredicto = elegida === null ? "agentes.iris.pregunta.saltada" : elegida === p.correcta ? "agentes.iris.pregunta.bien" : "agentes.iris.pregunta.casi";
-  return { experto: "ia_base", prioridad: "charla", lineas: [{ clave: veredicto }, { clave: `${base}.porque` }] };
+  return { experto: "ia_base", prioridad: "charla", ...(p.fuente ? { fuente: p.fuente } : {}), lineas: [{ clave: veredicto }, { clave: `${base}.porque` }] };
 }

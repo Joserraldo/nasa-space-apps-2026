@@ -2,7 +2,7 @@
 
 Este archivo debe bastar para que otra sesión (u otro humano) retome la coordinación sin el chat original. Lo mantiene el orquestador (Santiago Cabeza, que desde el 13 nov en la noche solo supervisa y fusiona). **Suplente del orquestador:** Jaime (`JaimeMrF`).
 
-**Actualizado:** 14 nov 2026, 18:30.
+**Actualizado:** 15 nov 2026, 00:30.
 
 ## Resumen
 
@@ -20,26 +20,30 @@ Este archivo debe bastar para que otra sesión (u otro humano) retome la coordin
 |---|---|---|
 | P1 Contratos + esqueleto | Sáb 14, 12:00 | Todos compilan contra `/contracts`; link vivo en Cloudflare; mocks disponibles |
 | P2 Rebanada vertical | Sáb 14, 22:00 | Misión completa en Marte, 3 expertos, Iris 1–3, 1 tormenta real, cadena de causas; e2e de la semilla dorada en CI y desplegado |
-| P3 Variabilidad | Dom 15, 11:00 | Dos semillas dan escenarios distintos; 3D con respaldo 2D probado, o recortado a 2D |
+| P3 Variabilidad | Dom 15, 11:00 | Dos semillas dan escenarios distintos. El juego va en 3D (decisión de Santiago del 15 nov en #237): P3 ya no decide entre 3D y 2D |
 | P4 Congelamiento | Dom 15, 13:00 | Solo arreglos |
 | P5 Entrega | Dom 15, 20:00 | Formulario enviado (cierra 23:59) |
 
 Regla de corte si P2 no se cumple: Luna → Atlas → desbloqueos → 3D completo → dibujo de ruta en 3D → niveles adaptativos extra. El orquestador propone el momento y Santiago confirma.
 
-## Estado (sáb 14 nov, 18:30 — hechos)
+## Estado (dom 15 nov, 00:30 — hechos)
 
-- **develop:** compila, 307 pruebas en verde, semilla dorada y partidas ganadora/perdedora en verde (`engine/src/ganable.test.ts`).
+- **Frontend v8: ola 2 abierta (María Paula, 23:58).** La subida terminó con #197 (solo lógica; no hay subidas 3 a 6). `three` 0.160 está en `feat/ui-escenarios` (#204). Los cinco tienen PR hacia esa rama: Jaime tokens v8 (#208) y borrado de `estilos.css` (#209), Camilo lugares de Jezero (#205), Daniel base del escenario 3D (#206); José el preview desplegado de la rama (#207, hacia develop). Probados juntos: 600 pruebas, semilla dorada 16/16, build OK.
+- **#152 (Daniel):** motor para varias misiones y huecos del tipo `Mision` en develop (#169–#177). Misiones: entró #153; #154–#156 con las fuentes y textos de la revisión de Daniel, y se fusionan de a una porque comparten `missions/src/textos.ts`.
+
+- **develop (279f3a6):** compila, 347 pruebas en verde, semilla dorada y partidas ganadora/perdedora en verde (16/16), build de ui y e2e de la ruta dorada en verde en CI; preview desplegado.
 - **Links (despliegue automático con cada merge):** preview https://nasa-space-apps-2026-preview.santiago031541.workers.dev (develop) · producción https://nasa-space-apps-2026.santiago031541.workers.dev (main, versión de las 11:40). Ambos con IA (b.ai) y base de datos D1 propia.
-- **P1 cumplida.** **P2 (22:00):** motor, diseño, datos y agentes listos; falta la pantalla conectada al motor (trabajo local de María Paula, #142).
+- **P1 cumplida.** **P2 (22:00): cumplida en lo que pide la puerta.** En develop: pantalla conectada a `aterrizar()` y `elegirDilema()` (#163), conversar, ¿Y si…?, pregunta de Iris y polvo (#151, cierra #118), funciones de datos para la pantalla final (#162), cadena de causas en `Final.tsx` y e2e hasta el resumen. Falta del bloque 0: login/invitado en la pantalla (el Worker ya lo tiene; ui no llama a `/api/auth`).
+- **Cola de revisión:** 16 PRs abiertos, ninguno de P2, todos con más de 60 min sin revisión: #153–#156 (Camilo), #129 y #131, #160, y en conflicto solo por `data/i18n` #95, #126, #147, #148 y #159 (Daniel rebasa). Borradores #97–#100.
 
 | Rol | Hecho y en develop | Abierto |
 |---|---|---|
-| motor (Jaime) | Ventana de tormenta 3–5, victoria al llegar la telemetría, `aterrizar()`, módulos validados, `puedeAplicar()` (rechazo con motivo), consumo por tick de los módulos | #144 (`elegirDilema`: el dilema con el extra del invernadero) |
-| diseño (Camilo; Santiago supervisa) | Misión 1 de Jezero como datos, `DURACION_TORMENTA_TICKS = 3` (aprobada, #114), 7 tarjetas de ciencia y pregunta final con fuente verificada | #135 (quitar la duración repetida) |
-| ui (María Paula) | Esqueleto de Jaime (#68) | **Subir el trabajo local (#142)**, ruta dorada en pantalla (#58), login/invitado (#109), 3D según la guía v8 |
-| agentes (José) | Tripulación, Iris 1–3, Matemático, voces de la misión 1, clasificador, guía de qué llama cada pantalla | #128, #129, #131 (rebase) |
-| infra/pitch (José) | Worker con pantalla y API, despliegue automático, login opcional sin correo + D1, e2e de la ruta dorada en cada PR, guion del video, tráiler, borrador del formulario | — |
-| datos (Daniel) | 8 tormentas reales, terreno de Jezero, dosis verificadas, fuentes de todas las tarjetas, dueños en inglés | #141 (fuente de la gravedad), Luna (#95, #126, borradores #97–#100) |
+| motor (Jaime) | Ventana de tormenta 3–5, victoria al llegar la telemetría, `aterrizar()`, módulos validados, `puedeAplicar()`, consumo por tick, `elegirDilema()` (#144) | #152 (motor multimisión, bloquea diseño) |
+| diseño (Camilo; Santiago supervisa) | Misión 1 de Jezero como datos, `DURACION_TORMENTA_TICKS = 3` (#135), 7 tarjetas de ciencia y pregunta final con fuente verificada | Revisar las 4 misiones propuestas como datos (#153–#156) |
+| ui (María Paula; orquesta el 3D y la pantalla) | Esqueleto (#68), dirección v8 (#157, #164, #166), ruta dorada conectada (#163, #151) | Login/invitado (#109), bloque 1 del 3D (dom 09:00). `ui/ESTADO.md` sin actualizar desde el 13 nov |
+| agentes (José) | Tripulación, Iris 1–3, Matemático, voces de la misión 1 y de Luna polo sur (#128), clasificador, Iris compañera v8 (#149) | #129, #131 (sin conflictos, esperan #152) |
+| infra/pitch (José) | Worker con pantalla y API, despliegue automático, login opcional sin correo + D1, e2e de la ruta dorada en cada PR, guion del video, tráiler, borrador del formulario, precisiones de datos (#165) | Criterios oficiales 2026 sin verificar |
+| datos (Daniel) | 8 tormentas reales, terreno de Jezero, dosis verificadas, fuentes de todas las tarjetas, "qué datos usamos" con glosario (#158), funciones para las pantallas (#162) | Rebase de #95, #126, #147, #148 y #159 (solo `data/i18n`), #160, #141, borradores #97–#100 |
 
 ## Plan de construcción de la pantalla y el 3D (acordado el 14 nov)
 
@@ -47,13 +51,23 @@ Regla de corte si P2 no se cumple: Luna → Atlas → desbloqueos → 3D complet
 |---|---|---|
 | 0 | Subir lo local y conectar la ruta dorada al motor con lo visual que ya existe: `aterrizar()` (paso 3), `elegirDilema()` (paso 6, #144), telemetría con retraso visible (7), `estado.resultado` + cadena de causas + tarjetas con fuente (8), login/invitado | sáb 22:00 (P2) |
 | 1 | Materiales y cachés, iluminación v8, niño astronauta, inicio nuevo; prueba en un celular y un PC viejo | dom 09:00 |
-| 2 | Terreno de Jezero, kit común, los 5 módulos según el motor | dom 11:00 (P3: decisión 3D o 2D) |
+| 2 | Terreno de Jezero, kit común, los 5 módulos según el motor | dom 11:00 (P3; el juego va en 3D, #237) |
 | 4 | HUD y CSS v8, verificación final (teclado, móvil, reduce-motion, respaldo 2D) | dom 13:00 (congelamiento) |
-| 3 | 8 estaciones, Iris rover, expertas en 3D | después de P4, solo si sobra tiempo |
+| 3 | 8 estaciones interiores (Iris rover y la Ingeniera 3D pasan al bloque 2, aprobado por Santiago) | después de P4, solo si sobra tiempo |
+
+**Decisión 15 nov, 02:35 (Santiago, en #237):** el escenario 3D de Daniel entra como una sola entrega por #237, como excepción de subida única, y la cobertura del agente de José sobre esos archivos queda aceptada. El juego va siempre en 3D y P3 ya no decide entre 3D y 2D.
 
 Guía de arte: la "Guía maestra de construcción 3D procedural (Atlas v8)" de María Paula. Presupuesto por vista: < 80 draw calls, < 80 000 triángulos, DPR máx 1,5 (calidad baja 1, sin sombras). Invariantes: doble clic nunca cobra dos veces; cambiar cámara o perder WebGL no toca el GameState; abrir paneles conserva pausa y foco.
 
 **Decisiones pendientes de Santiago:** ¿Iris pasa a ser un rover (hoy es la IA de la base, D2)? ¿Expertas en 3D o retratos 2D? ¿Se recorta el bloque 3? ¿Las ~70 láminas y el PDF de referencia entran al repo o solo las comprimidas que se usen?
+
+**Actualización 14 nov, noche: dirección visual v8 (María Paula, PR #157), aprobada por Santiago el 14 nov:**
+- **María Paula orquesta el desarrollo 3D y de la pantalla** (sus pistas de ui y lo que ui pide a otros roles). Santiago sigue orquestando el equipo y fusionando.
+- **Guía de arte:** ahora es [`docs/referenciapau/README.md`](referenciapau/README.md) (la "Guía maestra" se fusionó ahí). Estilo y render: [D6](decisiones/D6-estilo-visual.md), Three.js procedural + UI en DOM; reemplaza las menciones a PixiJS de este documento, de `PLAN.md` §13 y de D3.
+- **Iris:** rover 3D en el mundo, como en las láminas, desde el bloque 2. Sigue siendo la IA de la base (D2 y `iaBase` no cambian).
+- **Tripulación:** personas 3D en el mundo y retrato de la misma identidad en las tarjetas de diálogo (actualiza "retratos 2D animados" de la tabla de decisiones). La Ingeniera entra en el bloque 2; la Doctora y la Meteoróloga si alcanza el presupuesto, si no después de P4. Nombres: por su rol ([D7](decisiones/D7-tripulantes.md)).
+- **Láminas:** 55 curadas y comprimidas en el repo; el PDF queda fuera.
+- **Prioridades:** definir y aprobar todos los niveles ([NIVELES.md](referenciapau/NIVELES.md) §7) y cumplir el reto ([RETO.md](referenciapau/RETO.md)). Cómo se reparte ui: [FLUJO.md](referenciapau/FLUJO.md). Prompts por rol con modelo y esfuerzo: [`docs/prompts/`](prompts/README.md).
 
 ## Ruta dorada (propuesta, sin aprobar)
 
@@ -134,8 +148,8 @@ Arquitectura IA (innegociable): el modelo **solo clasifica** (JSON estricto: `{e
 | Nombre (D1) | **Solar Shield** (en inglés) | Verificar que no choque con marcas/juegos existentes antes del video. Subtítulo ES por definir. |
 | IA de la base (D2) | **Iris** | Es el "ojo" de la base y del satélite. No copiar personajes existentes. |
 | Ritmo | **Tiempo real con pausa**, motor por **ticks fijos** | Misma semilla ⇒ mismo resultado. **Pausa automática** en tormenta, avería, consejo y diálogo. Botones pausa/1x/2x. Reloj lento para los más pequeños. |
-| Arte | **3D low-poly estilizado**, luz y color cuidados | Three.js o react-three-fiber. Modelos de librerías CC0/licencia abierta, modelos públicos de NASA donde existan y apoyo de IA; **toda pieza registra su licencia en `assets/LICENCIAS.md`**. Alguien del equipo sabe Three.js; **nadie sabe Blender** ⇒ no depender de modelado propio. |
-| Tripulantes | **Retratos 2D animados** sobre la escena 3D | Expresiones simples (3–5 estados), burbuja de texto, personajes originales. |
+| Arte | **3D low-poly estilizado**, luz y color cuidados (14 nov: construido solo con código en Three.js, sin modelos externos, según [D6](decisiones/D6-estilo-visual.md)) | Three.js o react-three-fiber. Modelos de librerías CC0/licencia abierta, modelos públicos de NASA donde existan y apoyo de IA; **toda pieza registra su licencia en `assets/LICENCIAS.md`**. Alguien del equipo sabe Three.js; **nadie sabe Blender** ⇒ no depender de modelado propio. |
+| Tripulantes | **Retratos 2D animados** sobre la escena 3D (14 nov: ahora personas 3D en el mundo y retrato en el diálogo, ver actualización en Estado) | Expresiones simples (3–5 estados), burbuja de texto, personajes originales. |
 | Audio | **Voz del navegador** (es/en) + música y efectos ligeros | Texto siempre disponible; cada experto con tono/velocidad distinta; sin guardar audio. |
 | Datos reales | **Catálogo curado** de tormentas históricas (DONKI) | "Datos reales curados, no en vivo". Un banner "Hoy en el Sol" en vivo queda como opcional si sobra tiempo y se oculta si la API falla. |
 | Telemetría | **Armar un paquete** eligiendo qué datos mandar con la antena apuntada | Ventana limitada, cuesta energía; ciencia sube puntos, estado de la base evita ayuda tardía. Nunca un botón sin costo. |
@@ -211,7 +225,7 @@ Usuarios de GitHub (confirmados, todos colaboradores del repo; `José` es el due
 > Nota para tu criterio: si `agentes` o `ui` van lentos (el PLAN ya lo anticipa), reasigna una persona a esa área en la reunión diaria. `mecanicas` ayuda a `engine` antes que a nadie.
 
 # STACK (decidido en PLAN §13; confirmar D3–D5 el día 1)
-TypeScript en todo · npm workspaces (`contracts`, `engine`, `agents`, `data`, `ui`, `infra`) · React + Vite · PixiJS solo en la escena animada · Zod para validar JSON de NASA y del clasificador · Hono sobre Cloudflare Workers/Pages Functions · D1/KV (caché NASA, límite de uso, estadísticas anónimas) · Web Speech API (texto y botones siempre disponibles) · i18n JSON es/en · `localStorage` para progreso · Vitest + Playwright · GitHub Actions (tipos + tests + build) · Cloudflare Pages (preview por PR, producción desde `main`).
+TypeScript en todo · npm workspaces (`contracts`, `engine`, `agents`, `data`, `ui`, `infra`) · React + Vite · Three.js procedural en la escena (D6; antes PixiJS) · Zod para validar JSON de NASA y del clasificador · Hono sobre Cloudflare Workers/Pages Functions · D1/KV (caché NASA, límite de uso, estadísticas anónimas) · Web Speech API (texto y botones siempre disponibles) · i18n JSON es/en · `localStorage` para progreso · Vitest + Playwright · GitHub Actions (tipos + tests + build) · Cloudflare Pages (preview por PR, producción desde `main`).
 
 # DATOS NASA: LO QUE SABEMOS Y LO QUE NO
 Fuente interna: `docs/science/fuentes.md` (marcado [V] verificado / NO VERIFICADO). Reglas:

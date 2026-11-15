@@ -1,5 +1,6 @@
 // Un solo Worker sirve la pantalla (ui/dist) y la API (/api/*).
 // Producción: Worker "nasa-space-apps-2026" (rama main). Preview: "nasa-space-apps-2026-preview" (rama develop).
+// Rediseño: "nasa-space-apps-2026-escenarios" (rama feat/ui-escenarios).
 // Las claves NUNCA van aquí: se suben con `npx wrangler secret put <NOMBRE>` (ver infra/worker/README.md).
 {
   "name": "nasa-space-apps-2026",
@@ -39,6 +40,20 @@
         { "binding": "DB", "database_name": "solar-shield-preview", "database_id": "c08ac513-575e-4c07-a99d-6feb4bc447da", "migrations_dir": "migrations" }
       ],
       "ratelimits": [{ "name": "LIMITADOR", "namespace_id": "1002", "simple": { "limit": 20, "period": 60 } }]
+    },
+    // Preview del rediseño (rama feat/ui-escenarios), para probar en celular sin pisar el de develop.
+    // Comparte la base de preview: nunca toca usuarios de producción.
+    "escenarios": {
+      "name": "nasa-space-apps-2026-escenarios",
+      "vars": {
+        "ENTORNO": "preview",
+        "BAI_BASE_URL": "https://api.b.ai/v1",
+        "BAI_MODEL": "qwen3.8-flash"
+      },
+      "d1_databases": [
+        { "binding": "DB", "database_name": "solar-shield-preview", "database_id": "c08ac513-575e-4c07-a99d-6feb4bc447da", "migrations_dir": "migrations" }
+      ],
+      "ratelimits": [{ "name": "LIMITADOR", "namespace_id": "1003", "simple": { "limit": 20, "period": 60 } }]
     }
   }
 }

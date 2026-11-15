@@ -1,0 +1,110 @@
+/*
+ * Tokens v8 (DISEÑO §2, APLICACION §5 y §7). NO se edita a mano: la fuente es tokens.ts.
+ * Para cambiar un valor: edita tokens.ts y corre `npx tsx ui/src/estilos/generar-tokens-css.ts`.
+ * tokens.test.ts falla si este archivo y tokens.ts no coinciden.
+ */
+
+/* Nunito y Nunito Italic (SIL OFL 1.1), variables 200 a 1000, subconjunto latin (cubre el español).
+   Se sirven desde el juego: funciona sin conexión y no manda datos de niños a terceros (DISEÑO §2.4). */
+@font-face {
+  font-family: "Nunito";
+  font-style: normal;
+  font-weight: 200 1000;
+  font-display: swap;
+  src: url("/fuentes/nunito-latin.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Nunito";
+  font-style: italic;
+  font-weight: 200 1000;
+  font-display: swap;
+  src: url("/fuentes/nunito-italic-latin.woff2") format("woff2");
+}
+
+:root {
+  --color-marfil: #F3EEE5;
+  --color-lila: #EEE5F1;
+  --color-ciruela: #53306D;
+  --color-cian: #73D4E1;
+  --color-indigo-texto: #30255F;
+  --color-espacio: #1C1248;
+  --color-ambar: #F2B531;
+  --color-error: #B33A3A;
+  --color-exito: #237443;
+  --color-aviso-texto: #875000;
+  --color-deshabilitado: #D9CFE1;
+  --color-deshabilitado-texto: #655570;
+  --color-icono-energia: #10D4E8;
+  --color-icono-vida: #47BE5B;
+  --color-icono-escudo: #1BCEE2;
+  --color-exito-fondo: #E8E7E3;
+  --color-aviso-fondo: #FCE5CB;
+  --color-error-fondo: #FBD7DA;
+  --color-info-fondo: #E5DAF3;
+  --color-traje-marfil: #FCE6D6;
+  --color-teal: #47AAB5;
+  --color-naranja: #F88536;
+  --color-ciruela-traje: #94478B;
+  --color-indigo-botas: #675B95;
+  --color-piel-nino: #D97B54;
+  --color-cabello-nino: #6E4250;
+  --color-piel-ingeniera: #E38853;
+  --color-cabello-ingeniera: #823B35;
+  --color-piel-doctora: #C87654;
+  --color-cabello-doctora: #533848;
+  --color-piel-meteorologa: #D1835A;
+  --color-cabello-meteorologa: #C8B5BD;
+  --color-regolito-claro: #FA8D6F;
+  --color-regolito-medio: #B76A78;
+  --color-roca-basalto: #813E55;
+  --color-sombra-suelo: #F8B9B2;
+  --color-camino: #BDAFC4;
+  --color-montana-lejana: #8975C6;
+  --chaflan-chico: 8px;
+  --chaflan: 12px;
+  --chaflan-grande: 18px;
+  --borde-fino: 1px;
+  --borde: 2px;
+  --foco-ancho: 3px;
+  --foco-separacion: 3px;
+  --toque-minimo: 44px;
+  --esp-1: 4px;
+  --esp-2: 8px;
+  --esp-3: 12px;
+  --esp-4: 16px;
+  --esp-5: 24px;
+  --esp-6: 32px;
+  --esp-7: 48px;
+  --dur-presionar: 70ms;
+  --dur-salida-hover: 100ms;
+  --dur-estado: 100ms;
+  --dur-hover: 120ms;
+  --dur-fundido: 120ms;
+  --dur-cerrar: 140ms;
+  --dur-seleccion: 140ms;
+  --dur-realce: 180ms;
+  --dur-aparecer: 220ms;
+  --dur-alerta: 240ms;
+  --dur-relleno: 280ms;
+  --dur-instalando: 400ms;
+  --dur-delta: 700ms;
+  --curva-entrada: cubic-bezier(.2,.8,.2,1);
+  --curva-salida: cubic-bezier(.4,0,1,1);
+  --sombra-bisel: 0 3px 0 #53306D4D;
+  --sombra-suave: 0 3px 0 #53306D4D, 0 6px 14px #53306D29;
+  --sombra-hover: 0 4px 0 #53306D4D, 0 8px 16px #53306D2E;
+  --sombra-presionada: 0 1px 0 #53306D4D;
+  --tipo-familia: "Nunito", system-ui, sans-serif;
+  --tipo-peso-cuerpo: 600;
+  --tipo-peso-etiqueta: 700;
+  --tipo-peso-titulo: 800;
+  --tipo-peso-portada: 900;
+  --tipo-tam-cuerpo: 18px;
+  --tipo-tam-dialogo: 20px;
+  --tipo-tam-subtitulo: 22px;
+  --tipo-tam-placa: 22px;
+  --tipo-tam-titulo: 28px;
+  --tipo-tam-titulo-grande: 35px;
+  --tipo-tam-portada: 28px;
+  --tipo-interlineado: 1.4;
+}

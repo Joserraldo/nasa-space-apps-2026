@@ -1,17 +1,16 @@
 # Estado — rol 2 (Motor y simulación)
-**Actualizado:** 2026-11-14 18:05 · **Rama:** feat/motor-validacion-dilema · **PR:** #139 puedeAplicar → develop
+**Actualizado:** 2026-11-15 · **Rama:** feat/motor-variabilidad · **PR:** variabilidad (P3) → develop
 
-## Hecho (últimas iteraciones)
-- #134 (Santiago, revisado por motor): tormenta solo en ticks 3–5 (`tormentaEnCurso`), fin por telemetría, `aterrizar(estado, sitioId)`, `colocar_modulo` validado (`puedeColocar`, `modulosColocados`). Cierra #113 y #83.
-- Pedido de ui: `puedeAplicar(estado, accion)` → `{ ok: true } | { ok: false, motivo, recurso? }`; una acción rechazada devuelve el mismo estado (no se puede pagar un costo que deje un medidor en 0).
-- Dilema del paso 6 (extra del invernadero): lo cubre #140 de Santiago con `elegirDilema(estado, opcionId)`; se quitó de esta rama para no duplicar.
+## Hecho
+- Multi-misión (#152, parte motor, Daniel cubriendo a Jaime): la misión es el último parámetro opcional de todas las funciones públicas; `partidaDeMision(mision, semilla?)`. Revisado por Jaime.
+- P3, variabilidad: `variabilidad.test.ts`. Con el catálogo curado, dos semillas arman escenarios distintos (sitio, objetivo, tormenta, avería, órbita). En la misma misión, otra semilla cambia la suerte y la tripulación, no las reglas. Con tres semillas, cuidar a la tripulación gana y descuidarla pierde. Misma semilla y mismas decisiones: misma partida.
+- #90 consumo de módulos por tick (#143) y rechazo limpio `puedeAplicar` (#139), en develop.
 
 ## Qué sigue
-- #90 consumo por tick de los módulos (hoy costo único, plan B de diseño). No bloquea la demo.
-- `MISION_JEZERO.fin.tickLimite` (10) no se aplica aún: falta que diseño diga si vencer el tiempo sin telemetría es fallo u otro cierre.
-- Diseño debe confirmar el umbral del rechazo (hoy: el costo no puede dejar un medidor en 0).
+- Propuesta (issue `contrato`, no hecho): guardar `misionId` en GameState para no pasar la misión en cada llamada.
+- `MISION_JEZERO.fin.tickLimite` sin aplicar: falta que diseño diga qué pasa al vencer el tiempo sin telemetría.
+- Revisar el uso del motor en los PRs de pantalla del frontend v8.
 
 ## Bloqueos
 - ninguno
-
-Tokens: 🟢
+Tokens: verde

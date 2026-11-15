@@ -74,7 +74,7 @@ Toda la música y los efectos se **generan** con síntesis de ffmpeg en [`musica
 ## Fuentes y créditos
 
 - Datos que aparecen en pantalla: NASA CCMC **DONKI** (evento `2024-05-20T05:36:00-CME-001`), **NASA OSDR RadLab** (Curiosity RAD) y **NASA Mars Trek**, tal como los muestra el juego en sus tarjetas de fuente. Datos curados, no en vivo.
-- 3D: [Three.js](https://threejs.org) r160 (MIT) y [GSAP](https://gsap.com) 3.15, cargados por CDN (jsDelivr) en el render. Modelos hechos con código a partir de `docs/referencias/3d/`; las partículas de la tormenta son simuladas.
+- 3D: [Three.js](https://threejs.org) r160 (MIT) y [GSAP](https://gsap.com) 3.15, cargados por CDN (jsDelivr) en el render. Modelos hechos con código a partir del prototipo de FASE 0 (`docs/referencias/3d/`, commit 745427c, retirado el 14 nov por D6; la dirección visual vigente está en `docs/referenciapau/`); las partículas de la tormenta son simuladas.
 - Tipografías: Outfit y Nunito (incluidas en HyperFrames, SIL OFL).
 - Proyecto no oficial, no avalado por NASA. Sin logo de NASA.
 

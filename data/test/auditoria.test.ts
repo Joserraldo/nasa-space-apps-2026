@@ -5,7 +5,7 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
-import { eventosCurados, eventosMock, radiacion, tarjetasOsdr, terrenoJezero, tormentasCuradas } from "../src";
+import { eventosCurados, eventosMock, luna, luzLunaVisible, radiacion, tarjetasOsdr, terrenoJezero, terrenoLunaPoloSur, terrenoLunaVisible, terrenoMarteNorte, tormentasCuradas } from "../src";
 
 const es: Record<string, string> = JSON.parse(readFileSync(join(__dirname, "..", "i18n", "es.json"), "utf-8"));
 const en: Record<string, string> = JSON.parse(readFileSync(join(__dirname, "..", "i18n", "en.json"), "utf-8"));
@@ -50,6 +50,37 @@ describe("auditoría de datos visibles", () => {
     expect(radiacion.consultadoEl).toMatch(FECHA);
     expect(tarjetasOsdr.consultadoEl).toMatch(FECHA);
     for (const t of tarjetasOsdr.tarjetas) expect(t.url).toContain(t.id);
+  });
+
+  it("los catálogos nuevos conservan dueño, enlace, fecha y etiqueta de dato curado", () => {
+    for (const catalogo of [terrenoLunaVisible, terrenoLunaPoloSur, terrenoMarteNorte, luzLunaVisible]) {
+      expect(catalogo.fuente.dueno, catalogo.id).toBeTruthy();
+      expect(catalogo.fuente.consultadoEl, catalogo.id).toMatch(FECHA);
+      expect(catalogo.fuente.estadoDato, catalogo.id).toBe("curado");
+      expect(catalogo.fuente.urls.length, catalogo.id).toBeGreaterThan(0);
+      for (const url of catalogo.fuente.urls) expect(new URL(url).protocol, catalogo.id).toBe("https:");
+      expect(en[catalogo.fuente.nombreKey], catalogo.id).toBeTruthy();
+      expect(es[catalogo.fuente.nombreKey], catalogo.id).toBeTruthy();
+    }
+    expect(luna.consultadoEl).toMatch(FECHA);
+    for (const medicion of luna.mediciones) {
+      expect(new URL(medicion.url).hostname, medicion.id).toBe("visualization.osdr.nasa.gov");
+      expect(medicion.instrumento, medicion.id).toMatch(/^CRaTER/);
+    }
+  });
+
+  it("la luz y el cielo del polo sur tienen cita; el hielo sin atribución sigue oculto", () => {
+    for (const sitio of terrenoLunaPoloSur.sitios) {
+      expect(sitio.iluminacion?.cita, sitio.id).toBeTruthy();
+      expect(sitio.iluminacion?.consultadoEl, sitio.id).toMatch(FECHA);
+      expect(sitio.cielo?.cita, sitio.id).toBeTruthy();
+      expect(sitio.cielo?.consultadoEl, sitio.id).toMatch(FECHA);
+      const hielo = sitio.hieloSombra?.senalHielo;
+      if (hielo?.atribucionCapa === "no verificada") {
+        expect(hielo.citaVerificada, sitio.id).toBe(false);
+        expect(hielo.textoKey, sitio.id).toBeNull();
+      }
+    }
   });
 
   it("unidades: dosis de referencia en mSv/día y mediciones RAD en µGy/h, nunca mezcladas", () => {

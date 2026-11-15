@@ -23,3 +23,14 @@ Cada palabra se explica en una o dos frases, sin números inventados. En el jueg
 | Curiosity | Curiosity | Un rover de la NASA en el cráter Gale de Marte. Tiene un detector de radiación llamado RAD. | A NASA rover in Gale Crater on Mars. It has a radiation detector called RAD. |
 | Perseverance | Perseverance | Un rover de la NASA que aterrizó en el cráter Jezero de Marte. | A NASA rover that landed in Jezero Crater on Mars. |
 | Microgravedad | Microgravity | Cuando casi no se siente el peso, como en la Estación Espacial. | When you can barely feel your weight, like on the Space Station. |
+| Órbita | Orbit | El camino regular y repetido que sigue un objeto en el espacio alrededor de otro, como la Estación Espacial alrededor de la Tierra. | A regular, repeating path that an object in space follows around another one, like the Space Station around Earth. |
+| Timo | Thymus | Un órgano de las defensas del cuerpo: fabrica glóbulos blancos que combaten infecciones. En los vuelos espaciales se encoge. | An organ of the body's defenses: it makes white blood cells that fight infections. It shrinks during spaceflight. |
+| Módulo de aterrizaje | Lander | Una nave hecha para llegar a la superficie de un planeta y enviar datos a la Tierra. InSight fue uno en Marte. | A spacecraft made to reach the surface of a planet and send data back to Earth. InSight was one on Mars. |
+| Rover | Rover | Un vehículo robot con ruedas, hecho para moverse por la superficie de otro mundo. | A robot vehicle with wheels, made to move around on the surface of another world. |
+| Sol (día de Marte) | Sol (Mars day) | Un día en Marte. Dura un poco más que un día en la Tierra: unas 24 horas y 40 minutos. | A day on Mars. It is a little longer than a day on Earth: about 24 hours and 40 minutes. |
+| Telemetría | Telemetry | Los datos que una nave o una base envía por radio a la Tierra para contar cómo está y qué midió. | The data a spacecraft or a base sends to Earth by radio to tell how it is doing and what it measured. |
+| Tick | Tick | Un paso de tiempo del juego: en cada tick la partida avanza un poco. | One step of time in the game: with each tick, the game moves forward a little. |
+
+Fuentes de las definiciones añadidas el 2026-11-14 [V]: órbita, NASA Space Place (https://spaceplace.nasa.gov/orbits/en/); timo, MedlinePlus/NIH (https://medlineplus.gov/myastheniagravis.html) y NASA OSDR OSD-289; módulo de aterrizaje, NASA Basics of Space Flight cap. 9 (https://science.nasa.gov/learn/basics-of-space-flight/chapter9-1/); rover, NASA Space Place (https://spaceplace.nasa.gov/mars-rovers/en/).
+
+Fuentes de las definiciones añadidas el 2026-11-14 (2) [V]: sol (día de Marte), NASA NSSDC, ficha de Marte, "Length of day 24.6597 h" (https://nssdc.gsfc.nasa.gov/planetary/factsheet/marsfact.html); telemetría, NASA Basics of Space Flight cap. 10 (https://science.nasa.gov/learn/basics-of-space-flight/chapter10-1/). Tick es un término del juego (motor), no científico.

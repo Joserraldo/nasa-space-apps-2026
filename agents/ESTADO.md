@@ -1,13 +1,17 @@
-# Estado — rol 3 (Agentes expertos)
-**Actualizado:** 14 nov 2026, 14:45 · **Rama:** feat/agentes-voces-marte-polo-norte · **PR:** ver abajo
+# Estado — José (agentes, infra, integración del frontend)
+**Actualizado:** 14 nov 2026, 22:55 · **Ramas:** feat/ui-integracion-{vista,eventos,ajustes} · **PRs:** #181, #182, #186 hacia feat/ui-escenarios
 
-## Hecho (últimas iteraciones)
-- En develop: expertos con fuente, escenas 4b/6, Iris 1-3, `conversar()`, Matemático (#74), README por pantalla (#119), `MedicionCitada` y Kp en la Tierra (#120).
-- Voces de misiones de datos (pedido de José, sin esperar merges): Marte polo norte (#97) en esta rama — zonas por latitud, escarcha, dilema de la batería con "medido en Gale", noche polar, pregunta de Iris.
+## Hecho
+- Contratos del frontend (FLUJO §3): `VistaEscena` (#181), eventos de feedback (#182) y ajustes del jugador (#186), cada uno con 5 tests.
+- Props de `EscenaBase`: propuesta en #190 para Daniel.
+- Antes: #151 fusionado; CI en feat/ui-escenarios; #129 y #131 rebasados.
 
 ## Qué sigue
-- Voces Luna polo sur (#98, datos de #95 CRaTER y #126 terreno), luego outpost (#99) y Luna lado visible (#100, #125).
-- Loop se detiene cuando los 4 PRs de voces estén abiertos y en verde.
+- OK de Daniel en #190 y fijar el tipo.
+- Ola 2 (cuando María Paula suba su trabajo): borrar la bienvenida oscura de App.tsx y pantallas/.
+- #156 (Luna lado visible) volver a combinar con develop después de #155.
 
 ## Bloqueos
-- Las 4 misiones dependen de que Camilo las apruebe. Fuente F1 (hielo de agua) de #97 sin aprobar por Daniel.
+- `LugarObjetivo` usa `DestinoIris` de agents hasta que Camilo publique `LugarId` en `escena/mundo.ts`.
+
+Tokens: verde
