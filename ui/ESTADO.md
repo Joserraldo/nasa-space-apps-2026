@@ -18,10 +18,11 @@ Una sección por persona, máximo 5 líneas, y nadie edita la de otro (FLUJO §8
 - Bloqueo: ninguno.
 
 ## Escenario (Daniel)
-**Rama:** feat/ui-medicion-render-real · **PR:** #306 hacia develop · **Tokens:** 🟡
-- Hecho: diagnóstico opcional conectado al render real, sin segundo RAF; reinicia al pausar/perder WebGL/cambiar calidad. Las piezas visuales de Claude (#295, #300–302) quedan intactas.
-- Verificado: 770 pruebas, tipos, build y E2E; pérdida/restauración en Chrome sin errores y sin FPS obsoletos; revisión ligera independiente sin fallos nuevos.
-- Sigue: revisión de #306 y fusión ordenada de la pila visual; medir en celular y PC viejo reales (la emulación no los sustituye).
+**Rama:** feat/ui-escena-v* · **PR:** #311–#315 abiertos hacia develop (la pila #282–#310 ya entró) · **Tokens:** 🟡
+- Hecho: pila del escenario en develop (composición, suelo, caminos, cámara, medición, contorno y guantes, planta, anillo, vista, rocas, balizas, torre, kit: panel, consola, antena) y medición sobre el render real (#306).
+- Abiertos: torre con anillo de vidrio (#311), corredores de vidrio (#312), caja y depósito (#313), primera persona (#314), puerta (#315, después de #313).
+- Medido en PC real (Intel integrada, Chrome): 1920×1080 alta ~258 fps, baja ~777 fps; tirones sueltos de 0,2–0,5 s. Celular solo emulado.
+- Sigue: medir en celular y PC viejo reales. Torre al centro y refugio dentro del anillo dependen de `mundo.ts` (issue #254, Camilo). Fila de 4 paneles: el primero sale cortado (decisión de Daniel).
 
 ## Ubicación (Camilo)
 **Rama:** feat/ui-ubicacion-colisiones · **PR:** hacia develop · **Tokens:** amarillo
