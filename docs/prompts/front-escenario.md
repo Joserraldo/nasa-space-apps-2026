@@ -24,3 +24,24 @@ Empezá **ya** por 1 a 5. La 6 (escena nueva) apenas estén las props de `Escena
 **Contratos:** leés `VistaEscena` (José) y `LUGARES` (Camilo); consumís las fábricas de personajes de María Paula. Nunca leés `GameState` directo ni calculás reglas.
 **Además, tu rol de datos:** #162, #141, glosario y fuentes (prompt [datos.md](datos.md)). El DEM de Jezero es tuyo en `data/`: conocés su formato mejor que nadie.
 **Meta:** escenario fiel a `mundo/01` con el cielo de Marte, dentro de 80 draw calls y 80 000 triángulos, antes de P3.
+
+## Cierre del escenario (15 nov, pedido de Santiago)
+
+El exterior de Jezero está consolidado en #237 y su pila (#239, #242, #248 a #253). Los PRs viejos (#206, #223 a #230, #232, #235) ya están cerrados. Falta acercarlo a las láminas. Cada punto es un PR chico con su ficha de fidelidad: captura al lado de la lámina, en 1024×683 y 844×390. El cielo sigue siendo el caramelo de MARTE §4, nunca el azul de las láminas.
+
+1. **No apilés más capas sobre #253.** Cuando entre #237, lo que sigue sale de `feat/ui-escenarios` actualizada.
+2. **Planta según `exterior/03`** (captura cenital al lado de la lámina). Hoy faltan:
+   - la plataforma de aterrizaje con la nave, arriba a la izquierda;
+   - los corredores de vidrio entre los edificios;
+   - los dos caminos en anillo con balizas en los bordes. Hoy hay tramos y losas sueltas que no llevan a ningún `LUGAR`;
+   - el refugio con regolito, abajo a la izquierda;
+   - los volúmenes exteriores de las estaciones (laboratorio, enfermería, comedor), cerrados, sin interior.
+3. **Cámara de juego según `mundo/01`.** Hoy faltan:
+   - un solo camino ancho desde el primer plano hasta la consola, la torre y el hábitat;
+   - las dos cúpulas de invernadero en plano medio a la derecha, con cultivos. Hoy la cúpula queda al fondo y chica;
+   - la fila de 4 paneles a la izquierda, además del par junto a la consola;
+   - la parabólica sobre una loma y la base de montaña semienterrada al fondo;
+   - más rocas chicas dispersas en el suelo.
+4. **Interacción.** La consola cercana lleva el contorno cian de `mundo/01` y `mundo/02`. Coordinalo con `guia.ts` de María Paula.
+5. **Primera persona según `mundo/02`.** Los guantes del traje van en las esquinas inferiores. Coordinalo con las fábricas de personajes de María Paula.
+6. **Presupuesto y medición** (tarea 8 pendiente). Seguí por debajo de 80 llamadas de dibujo y 80 000 triángulos con los 5 módulos. Medí en un celular y en un PC real, no con SwiftShader. Los números van en el PR y en `ui/ESTADO.md`.
