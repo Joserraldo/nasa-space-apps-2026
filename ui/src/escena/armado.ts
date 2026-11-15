@@ -15,7 +15,7 @@ import type { Materiales } from "./materiales";
 import { liberarEscena } from "./liberar";
 import type { VistaEscena } from "./vista";
 import { MODULOS_BASE, TIEMPOS_MODULO_MS, type ModuloBase } from "./activos/modulos";
-import { armarKit, armarEdificios } from "./activos/baseExterior";
+import { DECORADO, armarKit, armarEdificios } from "./activos/baseExterior";
 import { aplicarEstado, armarAnclajes, armarModulo, type ModuloArmado } from "./activos/modulosArmados";
 export { PLAZA, CAMINO, CAMINOS, BALIZAS, geometriaCaminos, posicionesBalizas } from "./activos/caminos";
 export { fusionar } from "./activos/fusionar";
@@ -53,7 +53,7 @@ export function rejillaJezero(buffer: ArrayBuffer): Rejilla {
 }
 
 /**
- * Claro llano: incluye la base jugable y la torre a (-13, -22). El terreno se aplana hasta
+ * Claro llano: incluye la base jugable y todo el decorado (`DECORADO`, a menos de 31 m). El terreno se aplana hasta
  * `radio` (con margen de una celda del DEM, ~4,3 u) y sube suave hasta `borde`. [E]
  */
 export const CLARO = { radio: 34, borde: 46 } as const;
@@ -62,8 +62,9 @@ export const ROCAS = { n: 40, semilla: 42, radioMin: 24, radio: 110 } as const;
 /** Rocas grandes facetadas en el borde del claro (lámina `mundo/01`). [E] */
 export const ROCAS_GRANDES = { n: 10, semilla: 9, radioMin: 15, radio: 28, escalaMin: 1.2, escalaMax: 2.6 } as const;
 
-/** Las rocas grandes no caen sobre la torre de control, las cápsulas ni sus corredores. */
+/** Las rocas grandes no caen sobre la torre, las cápsulas, sus corredores ni el resto del decorado. */
 export function rocaGrandeLibre(x: number, z: number): boolean {
+  if (DECORADO.some((d) => Math.hypot(x - d.x, z - d.z) < d.radio + 2)) return false;
   return !(z < -10 && Math.abs(x) < 20) && Math.hypot(x, z - 9) > 5;
 }
 

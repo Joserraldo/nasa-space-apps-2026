@@ -1,7 +1,7 @@
 /** Red adoquinada y balizas de Jezero (ESCENAS §3.2). */
 import * as THREE from "three";
 import { colorToken } from "../materiales";
-import { BANCO, TERRENO } from "../mundo";
+import { BANCO, TERRENO, lugar, type LugarId } from "../mundo";
 
 // ---------------------------------------------------------------------------------------------
 // Caminos adoquinados, balizas, edificios y kit
@@ -11,26 +11,39 @@ import { pavimento } from "./pavimento";
 
 type P2 = readonly [number, number];
 
-/** Plaza adoquinada alrededor de la mesa (claro central, ESCENAS §3.3). [E] */
-export const PLAZA = { x: 0, z: 0.6, radio: 2.0 } as const;
+const MESA = lugar("mesa");
+/** Plaza adoquinada alrededor de la mesa (claro central, ESCENAS §3.3): entre el modelo y el puesto. [E] */
+export const PLAZA = { x: MESA.mx, z: (MESA.mz + MESA.z) / 2 - 0.3, radio: 2.0 } as const;
 /** Ancho del camino y lado de cada adoquín. [E] */
 export const CAMINO = { ancho: 1.3 } as const;
 
+/** Punto donde se para el jugador en un lugar (`LUGARES`, mundo.ts). */
+const en = (id: LugarId): P2 => [lugar(id).x, lugar(id).z];
+/** Punto del borde de la plaza en dirección al lugar `id`: ahí arranca cada ramal. */
+function plazaHacia(id: LugarId): P2 {
+  const [x, z] = en(id);
+  const d = Math.hypot(x - PLAZA.x, z - PLAZA.z);
+  const k = (PLAZA.radio + 0.2) / d;
+  return [PLAZA.x + (x - PLAZA.x) * k, PLAZA.z + (z - PLAZA.z) * k];
+}
+
 /**
- * Red de caminos (ESCENAS §3.2): circuito A (oeste) `mesa → taller → panel_solar → escudo →
- * habitat → mesa`, circuito B (este) `mesa → sensor → invernadero → antena → mesa`, el reciclador
- * desde el hábitat, el atajo del banco y la entrada desde la cámara. Puntos `x, z` de juego; los
- * extremos son los puntos donde se para el jugador (`LUGARES`) y los codos esquivan los módulos.
+ * Red de caminos de `mapa-base-jezero.svg` (ESCENAS §3.2), con extremos en los puestos de `LUGARES`:
+ * anillo A (oeste) `mesa → taller → panel_solar`, `taller → escudo → habitat → mesa`; anillo B (este)
+ * `mesa → sensor → reciclador_agua → invernadero → antena → mesa`; atajo `taller → banco → mesa` y
+ * la entrada desde la cámara. Los codos (únicos números a mano) rodean los sólidos de `TERRENO`:
+ * el tramo directo `panel_solar → escudo` del plano cruzaría la plataforma solar, por eso el anillo
+ * A vuelve por el taller.
  */
 export const CAMINOS: readonly (readonly P2[])[] = [
-  [[-2.2, 0.5], [-4, 0.1], [-8, -0.5]],
-  [[-4, 0.1], [-2.9, -2.8], [-4.5, -5.3]],
-  [[-4.5, -5.3], [-1.8, -4.6], [0, -4.3], [0, -2.2]],
-  [[0, -4.3], [2.6, -4.4], [4.6, -4.2]],
-  [[2.2, 0.6], [4.2, 0.9], [6.6, 0.9], [9, -0.4]],
-  [[9, -0.4], [10.6, 2.0], [9.6, 4.4]],
-  [[9.6, 4.4], [5.5, 4.0], [1.9, 2.5]],
-  [[-1.9, 2.5], [-4.6, 4.4]],
+  [plazaHacia("taller"), en("taller"), en("panel_solar")],
+  [en("taller"), [-2.9, -2.8], en("escudo")],
+  [en("escudo"), [-1.8, -4.6], en("habitat"), plazaHacia("habitat")],
+  [plazaHacia("sensor"), en("sensor"), [3.4, -1.2], en("reciclador_agua")],
+  [en("reciclador_agua"), [6.0, -0.9], en("invernadero")],
+  [en("invernadero"), [10.6, 2.0], en("antena")],
+  [en("antena"), [5.5, 4.0], plazaHacia("antena")],
+  [en("taller"), en("banco"), plazaHacia("banco")],
   [[-0.5, 3.0], [-1.6, 6.5], [-2.4, 10]],
 ];
 
