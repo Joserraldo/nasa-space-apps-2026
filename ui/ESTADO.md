@@ -27,8 +27,10 @@ Una sección por persona, máximo 5 líneas, y nadie edita la de otro (FLUJO §8
 - Bloqueo: ninguno para esta corrección; aceptación de Paula y montaje 3D pendientes. rotY de Daniel queda fuera de esta iteración.
 
 ## Integración (José)
-**Rama:** — · **PR:** ninguno · **Tokens:** —
-- Hecho: contratos `VistaEscena` (#181), eventos de feedback (#182) y ajustes del jugador (#186) fusionados; CI corre en `feat/ui-escenarios`.
+**Rama:** feat/ui-integracion-orientacion · **PR:** hacia feat/ui-escenarios · **Tokens:** verde
+- Hecho: contratos `VistaEscena` (#181), eventos (#182), ajustes (#186) y props de `EscenaBase` (#190, cerrado). Lógica del aviso de girar el teléfono (`juego/orientacion.ts`).
+- Sigue: pantallas nuevas desde las láminas cuando entren #208, #209 y #213 de Jaime; preview de esta rama en #207 (hacia develop).
+- Bloqueo: tokens y componentes de Jaime.
 
 ## Interfaz (Jaime)
 **Rama:** — · **PR:** #220 (fusionado, trae toda la pila: #208, #209, #213, #214, #217, #219) · **Tokens:** verde
