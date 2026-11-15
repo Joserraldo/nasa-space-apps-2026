@@ -21,8 +21,10 @@ Una sección por persona, máximo 5 líneas, y nadie edita la de otro (FLUJO §8
 - Sin registrar todavía.
 
 ## Ubicación (Camilo)
-**Rama:** — · **PR:** ninguno · **Tokens:** —
-- Sin registrar todavía.
+**Rama:** feat/ui-ubicacion-lugares · **PR:** #205 · **Tokens:** verde
+- Iteración 1: expertas sin solaparse con niño/dock; radios, sólidos y punto de uso probados; typecheck, 540 tests, build y E2E en verde.
+- Sigue: revisar nuevos comentarios/checks de #205; después controles táctiles en rama independiente. Mapa #216 y colisiones intactos.
+- Bloqueo: ninguno para esta corrección; aceptación de Paula y montaje 3D pendientes. rotY de Daniel queda fuera de esta iteración.
 
 ## Integración (José)
 **Rama:** — · **PR:** ninguno · **Tokens:** —
