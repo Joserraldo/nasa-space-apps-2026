@@ -21,13 +21,11 @@ export const CONSOLAS = [
 ] as const;
 
 /**
- * Caja de suministros junto al taller (sin lámina propia; `exterior/03` guarda cajas junto al
- * taller). Una sola: `mundo/01` no muestra cajas sueltas. Puesta a mano en suelo libre, fuera de
- * caminos, módulos, banco y balizas (`sinSolapes.test`). [E]
+ * Cajas de suministros sueltas: ninguna. `mundo/01` no muestra cajas en el exterior y la que había
+ * quedaba sola en primer plano. La lista sigue para que `sinSolapes.test` cubra cualquier caja
+ * futura (fuera de caminos, módulos, banco y balizas). [E]
  */
-export const CAJAS: readonly { readonly x: number; readonly z: number; readonly giro: number }[] = [
-  { x: -5.9, z: 1.35, giro: -0.25 },
-];
+export const CAJAS: readonly { readonly x: number; readonly z: number; readonly giro: number }[] = [];
 
 /** Consola de un lugar: en el centro del modelo, mirando al punto donde se para el jugador. */
 function consola(id: LugarId, escala: number): { x: number; z: number; giro: number; escala: number } {
