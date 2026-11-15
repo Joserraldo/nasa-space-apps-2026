@@ -245,7 +245,9 @@ export function crearIrisB(): IrisB {
   cuerpo.castShadow = true;
   grupo.add(cuerpo);
   grupo.updateMatrixWorld(true);
-  cuerpo.bind(new THREE.Skeleton(HUESOS_IRIS_B.map((n) => huesos[n])));
+  const esqueleto = new THREE.Skeleton(HUESOS_IRIS_B.map((n) => huesos[n]));
+  cuerpo.bind(esqueleto);
+  let liberado = false;
 
   // Ojos: las mismas seis caras de Iris A, una malla visible a la vez.
   const caras = new Map<CaraIris, THREE.Mesh>();
@@ -276,7 +278,7 @@ export function crearIrisB(): IrisB {
     animar(t, o = {}) {
       const vivo = o.quieto ? 0 : 1;
       const v = o.velocidad ?? 0;
-      const giro = (v * t) / RADIO;
+      const giro = o.quieto ? 0 : (v * t) / RADIO;
       for (const n of ["ruedaDI", "ruedaDD", "ruedaTI", "ruedaTD"] as const) huesos[n].rotation.x = giro;
       const rodando = Math.min(1, Math.abs(v));
       // Suspensión: rebote corto al rodar, respiración lenta en reposo.
@@ -300,6 +302,9 @@ export function crearIrisB(): IrisB {
       cara(vivo && (t + 0.4) % 3.3 > 3.16 && (base === "atenta" || base === "pensando") ? "parpadeo" : base);
     },
     liberar() {
+      if (liberado) return;
+      liberado = true;
+      esqueleto.dispose();
       geometria.dispose();
       caras.forEach((c) => c.geometry.dispose());
     },

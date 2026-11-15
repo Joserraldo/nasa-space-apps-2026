@@ -253,9 +253,11 @@ export function crearPersonajeB(id: IdPersonaje): PersonajeB {
   cuerpo.receiveShadow = true;
   escala.add(cuerpo);
   grupo.updateMatrixWorld(true);
-  cuerpo.bind(new THREE.Skeleton(HUESOS.map((n) => huesos[n])));
+  const esqueleto = new THREE.Skeleton(HUESOS.map((n) => huesos[n]));
+  cuerpo.bind(esqueleto);
   // El equipo de mano nace oculto; `animar` lo muestra según el gesto.
   for (const n of ["tableta", "llave", "catalejo"] as const) huesos[n].scale.setScalar(0);
+  let liberado = false;
 
   const gCasco = new THREE.IcosahedronGeometry(1, 1);
   const casco = new THREE.Mesh(gCasco, materialCasco);
@@ -281,6 +283,9 @@ export function crearPersonajeB(id: IdPersonaje): PersonajeB {
     topologia: Object.fromEntries(PIEZAS.map((p) => [p, s.topologia(p)])),
     expresion: (e) => rostro.expresion(e),
     liberar() {
+      if (liberado) return;
+      liberado = true;
+      esqueleto.dispose();
       geometria.dispose();
       gCasco.dispose();
       rostro.grupo.traverse((o) => {

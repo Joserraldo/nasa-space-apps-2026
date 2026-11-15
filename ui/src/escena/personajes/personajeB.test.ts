@@ -231,8 +231,28 @@ describe("iris B", () => {
     expect(iris.huesos.alaD.rotation.z).toBeCloseTo(-iris.huesos.alaI.rotation.z, 9);
     iris.animar(1, { paneles: 1 });
     expect(iris.huesos.alaI.rotation.z).toBeCloseTo(0, 9);
+    iris.animar(2, { velocidad: 1, quieto: true });
+    expect(iris.huesos.ruedaDI.rotation.x).toBe(0);
     iris.animar(0.2, { averiada: true });
     expect(iris.huesos.antena.rotation.z).toBeCloseTo(0.5);
     iris.liberar();
+    iris.liberar();
+  });
+
+  it("el equipo de mano cambia por gesto y liberar es idempotente en la tripulacion B", () => {
+    const ing = crearPersonajeB("ingeniera");
+    animar(ing, "reparar", 0.3);
+    expect(ing.huesos.llave.parent).toBe(ing.huesos.manoD);
+    expect(ing.huesos.llave.scale.x).toBe(1);
+    animar(ing, "inspeccionar", 0.5);
+    expect(ing.huesos.llave.scale.x).toBe(0);
+    expect(ing.huesos.tableta.scale.x).toBe(1);
+    ing.liberar();
+    ing.liberar();
+
+    const met = crearPersonajeB("meteorologa");
+    animar(met, "observar", 0.2);
+    expect(met.huesos.catalejo.scale.x).toBe(1);
+    met.liberar();
   });
 });
