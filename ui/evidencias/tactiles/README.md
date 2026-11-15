@@ -1,6 +1,6 @@
 # Controles táctiles: evidencia de cierre
 
-Estado: componente preparado localmente; depende del contrato `EntradaTactil` de #298 para publicarse como diff pequeño hacia develop. El código original está preservado en `respaldo/ui-ubicacion-tactiles-1511`.
+Estado: entrada y componente se revisan juntos en #298 hacia develop. El código original está preservado en `respaldo/ui-ubicacion-tactiles-1511`.
 
 ## Referencia y alcance
 Fuente de la geometría del joystick y de los gestos: ESCENAS §3.5; familia de `ui/03`. El HUD final se compara con `mundo/01` y sus botones Crew/Map con `ui/02`.
@@ -28,8 +28,7 @@ Desviaciones: montaje3D ausente y posición definitiva del joystick esperando co
 Prohibidos: sin emojis, activos de otro estilo ni tema oscuro.
 
 ## Bloqueos reales
-1. Integrar/revisar #298 antes de publicar el componente por separado.
-2. José/Daniel: consumir vectores por frame y cámara/posición real; el renderer de esta base sigue con foco fijo.
-3. José: conectar onUsar/onCamara/onPausar y mantener Crew/Map/E/V sin taparse, según #269 comentario6898047254.
-4. Celular/tablet físico y aprobación visual de Paula; la emulación no los sustituye.
+1. José/Daniel: consumir vectores por frame y cámara/posición real; el renderer de esta base sigue con foco fijo.
+2. José: conectar onUsar/onCamara/onPausar y mantener Crew/Map/E/V sin taparse, según #269 comentario6898047254.
+3. Celular/tablet físico y aprobación visual de Paula; la emulación no los sustituye.
 No se declara base recorrible ni controles móviles integrados por tener estas pruebas verdes.

@@ -22,9 +22,9 @@ Una sección por persona, máximo 5 líneas, y nadie edita la de otro (FLUJO §8
 - Consolidado por el agente de José mientras Daniel no tiene tokens; Daniel revisa al volver.
 
 ## Ubicación (Camilo)
-**Rama:** feat/ui-ubicacion-tactiles · **PR:** contrato hacia develop · **Tokens:** amarillo
-- Hecho: entrada táctil pura recuperada, 13 pruebas; montaje y multitáctil emulado en tres tamaños preparados en local. Original preservado.
-- Sigue: publicar el componente cuando entre este contrato, sin PR duplicado ni CI dependiente de archivos ausentes. #216 ya fusionado; física en #297.
+**Rama:** feat/ui-ubicacion-tactiles · **PR:** #298 hacia develop · **Tokens:** amarillo
+- Hecho: entrada+componente recuperados, 18 pruebas y697totales; navegador en3tamaños con HUD libre, pausa/limpieza, Nunito/tokens y E2E1/1.
+- Sigue: revisión de Paula y montaje con José/Daniel; #216 ya fusionado y física en #297. Original y QA preservados.
 - Bloqueo: montaje en escena/HUD de José/Daniel y celular físico; #254 espera la pila. No se afirma juego3D móvil integrado.
 
 ## Integración (José)
