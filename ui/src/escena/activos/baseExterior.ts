@@ -8,6 +8,8 @@ import { crearCapsula, crearCorredor, crearHabitat, crearPlataformaNave, crearRe
 import { colocar, crearFormaModulo } from "./modulos";
 import { giroHacia, huellasModulos } from "./modulosArmados";
 import { fusionar } from "./fusionar";
+import { corredorEntre } from "./corredores";
+import { POS_ESTACIONES, crearEstacion } from "./estaciones";
 import { geometriaCaminos, posicionesBalizas } from "./caminos";
 
 // ---------------------------------------------------------------------------------------------
@@ -167,6 +169,7 @@ function huellasFijas(): Huella[] {
   return [
     { id: "habitat", x: h.mx, z: h.mz + ph.dz, ancho: ph.ancho, fondo: ph.fondo, giro: 0 },
     ...DECORADO.map((d) => ({ id: `decorado:${d.id}`, x: d.x, z: d.z, r: d.radio })),
+    ...POS_ESTACIONES.map((e) => ({ id: `estacion:${e.id}`, x: e.x, z: e.z, r: e.radio })),
     { id: "corredor", x: c.x, z: c.z, ancho: ANCHO_CORREDOR, fondo: LARGO_CORREDOR, giro: c.giro },
     ...CONSOLAS.map((k) => {
       const p = consola(k.lugar, k.escala);
@@ -232,6 +235,16 @@ export function armarEdificios(m: Materiales): THREE.Group {
     en("refugio", crearRefugio(m)),
     en("cupula", crearFormaModulo(m, "invernadero")),
   );
+  // Estaciones por fuera y corredores de vidrio entre edificios vecinos.
+  for (const e of POS_ESTACIONES) g.add(colocar(crearEstacion(m, e.id), [e.x, 0, e.z], [0, alCentro(e.x, e.z), 0]));
+  const [com, enf, lab] = POS_ESTACIONES, hab = { x: 0, z: -10.9, radio: 1.1 };
+  type Huella = { x: number; z: number; radio: number };
+  const pares: [Huella | undefined, Huella | undefined][] = [[hab, enf], [com, enf], [enf, lab], [lab, decorado("cupula")]];
+  for (const [a, b] of pares) {
+    if (!a || !b) continue;
+    const k = corredorEntre(a, b);
+    if (k) g.add(colocar(crearCorredor(m, k.largo), [k.x, 0, k.z], [0, k.giro, 0]));
+  }
   for (const k of CONSOLAS) {
     const p = consola(k.lugar, k.escala);
     g.add(colocar(crearConsola(m), [p.x, 0, p.z], [0, p.giro, 0], p.escala));
