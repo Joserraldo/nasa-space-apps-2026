@@ -27,6 +27,7 @@
   "ui.paso.3.total": "Puntaje para esta misión",
   "ui.paso.3.elegir": "Aterrizar aquí",
   "ui.paso.4.titulo": "Coloca {n} módulos",
+  "ui.paso.4.elige": "Elige un módulo para ver cuánto cuesta y qué te devuelve después.",
   "ui.paso.4.texto": "Cada módulo cuesta energía y tiempo de la tripulación ahora, y ayuda después. Elige bien.",
   "ui.paso.4.colocar": "Colocar",
   "ui.paso.4.costo": "Cuesta ahora",
