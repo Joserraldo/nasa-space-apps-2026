@@ -1,0 +1,36 @@
+/*
+ * E7 Tormenta, panel 01 de ui/04 "Choose your expert": escena en pausa detrás y la ficha a la
+ * izquierda. Solo tokens; sombras ciruela, nunca negras. Cian solo para foco y selección.
+ */
+.tormenta-e7 {
+  position: relative; box-sizing: border-box; min-block-size: calc(100dvh - 120px);
+  padding: var(--esp-4) max(var(--esp-4), env(safe-area-inset-right)) var(--esp-4) max(var(--esp-4), env(safe-area-inset-left));
+  background: var(--color-lila); color: var(--color-indigo-texto);
+}
+.tormenta-escena { position: absolute; inset: 0; overflow: hidden; }
+.tormenta-escena canvas { inline-size: 100%; block-size: 100%; display: block; }
+.tormenta-panel { position: relative; inline-size: min(100%, 640px); }
+.tormenta-cara { display: grid; gap: var(--esp-3); padding: var(--esp-3) var(--esp-4); }
+.tormenta-cabeza { display: flex; align-items: center; justify-content: space-between; gap: var(--esp-3); }
+.tormenta-titulo { margin: 0; }
+.tormenta-cabeza > .fc { display: block; flex: none; }
+.tormenta-pausa { display: flex; align-items: center; gap: var(--esp-2); padding: var(--esp-1) var(--esp-4); white-space: nowrap; font-weight: var(--tipo-peso-etiqueta); }
+
+.tormenta-expertos, .tormenta-accesos { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--esp-3); }
+.tormenta-accesos { gap: var(--esp-3); }
+.tormenta-accesos .fb-caja, .tormenta-accesos .fb { inline-size: 100%; }
+.tormenta-expertos .retrato-boton { inline-size: 100%; }
+.tormenta-preguntar { display: flex; gap: var(--esp-2); align-items: center; }
+.tormenta-preguntar input { flex: 1; min-inline-size: 0; min-block-size: var(--toque-minimo); background: var(--color-marfil); border-color: color-mix(in srgb, var(--color-ciruela) 40%, transparent); }
+.tormenta-respuesta { display: grid; gap: var(--esp-1); padding: var(--esp-2) var(--esp-3); background: var(--color-lila); }
+.tormenta-respuesta h3, .tormenta-respuesta p { margin: 0; }
+
+/* Pantalla baja (móvil horizontal): el panel no tapa toda la escena. */
+@media (max-block-size: 480px) {
+  .tormenta-e7 { min-block-size: calc(100dvh - 80px); padding-block: var(--esp-2); }
+  .tormenta-panel { inline-size: min(100%, 560px); }
+  .tormenta-cara { gap: var(--esp-2); padding: var(--esp-2) var(--esp-3); max-block-size: calc(100dvh - 100px); overflow-y: auto; }
+  .tormenta-expertos .retrato-ficha { min-width: 0; padding: var(--esp-1); }
+  .tormenta-expertos .retrato-marco { width: 72px; height: 72px; }
+  .tormenta-expertos .retrato-marco svg { width: 64px; height: 64px; }
+}
