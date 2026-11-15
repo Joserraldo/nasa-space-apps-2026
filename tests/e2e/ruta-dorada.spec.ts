@@ -29,12 +29,29 @@ test("ruta dorada: de la órbita al resumen, en inglés", async ({ page }) => {
   await page.clock.install();
   await page.goto("/");
 
-  // Idioma base: inglés, aviso de que no es oficial de NASA.
-  await expect(page.getByRole("heading", { name: "Solar Shield" })).toBeVisible();
+  // E0 Portada (inicio/01): logo oficial, inglés base y aviso de que no es oficial de NASA.
+  await expect(page.getByRole("img", { name: "Solar Shield" })).toBeVisible();
   await expect(page.getByText("Unofficial project, not endorsed by NASA")).toBeVisible();
+  // Sin partida guardada, "Continue" no está disponible y dice por qué.
+  await expect(page.getByRole("button", { name: "Continue" })).toHaveAttribute("aria-disabled", "true");
+  await expect(page.getByText("No saved mission yet")).toBeVisible();
+
+  // Fuentes y créditos: qué datos de NASA usamos; se cierra con "Close".
+  await page.getByRole("button", { name: "Sources & credits" }).click();
+  await expect(page.getByRole("dialog", { name: "Sources & credits" })).toBeVisible();
+  await page.getByRole("button", { name: "Close" }).click();
+  await expect(page.getByRole("dialog")).toHaveCount(0);
+
+  // E1 Intro (inicio/02): primera viñeta y "Skip intro" (FLUJO §7.2).
+  await page.getByRole("button", { name: "Start mission" }).click();
+  await expect(page.getByRole("heading", { name: "01 / A new mission" })).toBeVisible();
+  await page.getByRole("button", { name: "Skip intro" }).click();
+
+  // E2 Carga (inicio/03): indicador sin porcentajes y "Skip".
+  await expect(page.getByRole("heading", { name: "Preparing your mission" })).toBeVisible();
+  await page.getByRole("button", { name: "Skip", exact: true }).click();
 
   // Paso 1: la nave suelta el satélite (batería, señal, escudo del satélite).
-  await page.getByRole("button", { name: "Start the mission" }).click();
   await expect(page.getByRole("heading", { name: "The ship releases the satellite" })).toBeVisible();
   for (const m of ["Battery", "Signal", "Satellite shield"]) {
     await expect(page.getByRole("meter", { name: m })).toBeVisible();
@@ -102,11 +119,17 @@ test("ruta dorada: de la órbita al resumen, en inglés", async ({ page }) => {
   const enviar = page.getByRole("button", { name: /Send telemetry to Earth/ });
   await expect(enviar).toBeVisible();
   await enviar.click();
+  // E6: toda acción pasa por el único panel de confirmación (APLICACION §5), con su costo del motor.
+  const confirmar = page.getByRole("dialog").getByRole("button", { name: "Confirm" });
+  await confirmar.click();
   await expect(page.getByText(/Earth's answer arrives in \d+ turns/)).toBeVisible();
 
   // Iris dañada (si sigue así tras verificar): se repara desde las acciones.
   const repararIris = page.getByRole("button", { name: "Repair Iris" });
-  if (await repararIris.isVisible()) await repararIris.click();
+  if (await repararIris.isVisible()) {
+    await repararIris.click();
+    await confirmar.click();
+  }
 
   // Paso 8: cadena de causas y tarjeta de ciencia.
   const fin = page.getByRole("heading", { name: /Mission complete!|The base could not hold/ });

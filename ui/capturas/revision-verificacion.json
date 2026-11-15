@@ -1,0 +1,62 @@
+[
+  {
+    "nombre": "1024x683",
+    "viewport": [
+      1024,
+      683
+    ],
+    "canvas": [
+      1024,
+      683
+    ],
+    "errores": []
+  },
+  {
+    "nombre": "844x390",
+    "viewport": [
+      844,
+      390
+    ],
+    "canvas": [
+      844,
+      390
+    ],
+    "errores": []
+  },
+  {
+    "nombre": "390x844",
+    "viewport": [
+      390,
+      844
+    ],
+    "canvas": [
+      390,
+      844
+    ],
+    "errores": []
+  },
+  {
+    "nombre": "dos-modulos",
+    "viewport": [
+      1024,
+      683
+    ],
+    "canvas": [
+      1024,
+      683
+    ],
+    "errores": []
+  },
+  {
+    "nombre": "primera-persona",
+    "viewport": [
+      1024,
+      683
+    ],
+    "canvas": [
+      1024,
+      683
+    ],
+    "errores": []
+  }
+]

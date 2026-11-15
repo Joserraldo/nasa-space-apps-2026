@@ -1,11 +1,64 @@
-# Estado — ui (frontend, voz, arte y accesibilidad)
-**Actualizado:** 13 nov 2026 · **Rama:** — · **PR:** ninguno · **Responsable:** María Paula
+# Estado — ui (frontend v8)
+**Actualizado:** 15 nov 2026 · **Rama base:** `feat/ui-escenarios` · **Orquesta:** María Paula
 
-## Hecho (últimas iteraciones)
-- Carpeta creada (foundation).
+Una sección por persona, máximo 5 líneas, y nadie edita la de otro (FLUJO §8). Cada uno la actualiza dentro de su PR hacia `feat/ui-escenarios`, con el formato de abajo. El estado de tu rol (motor, datos, diseño, agentes) va en el `ESTADO.md` de tu carpeta, en `develop`.
 
-## Qué sigue
-- Ver "Fase 0" / "Tareas de arranque" en CLAUDE.md.
+```text
+**Rama:** feat/ui-<parte>-<tema> · **PR:** #n o ninguno · **Tokens:** verde | amarillo | rojo
+- Hecho: ...
+- Sigue: ...
+- Bloqueo: ninguno | issue #n espera a <persona>
+```
 
-## Bloqueos
-- ninguno
+## Personajes (María Paula)
+**Rama:** feat/ui-personajes-subida-escena · **PR:** #197 · **Tokens:** verde
+- Hecho: subida 1/6 (#184, reductor y cuenta) fusionada; 2/6 (#197, lógica de escena) abierta con la puerta en verde.
+- Sigue: subida 3/6, render adaptado al contrato `VistaEscena` de José (`tormenta.anunciada`, `iris.averiada`); después 4 a 6.
+- Bloqueo: ninguno.
+
+## Escenario (Daniel)
+**Rama:** feat/ui-escena-consolidada · **PR:** consolida #206, #223–#232 y #235 · **Tokens:** 🟢
+- Hecho: pila #223–#232 + base (#206: EscenaBase, escena3d, armado, baseExterior, pavimento, capturas) + materiales con tokens (#235) en una sola rama.
+- Consolidado por el agente de José mientras Daniel no tiene tokens; Daniel revisa al volver.
+
+## Ubicación (Camilo)
+**Rama:** feat/ui-ubicacion-mapa · **PR:** #216 · **Tokens:** verde
+- Hecho: #205/#220 incorporados; claves conciliadas; chaflanes desde tokens; typecheck, 598 tests, build, E2E y tres capturas en verde.
+- Sigue: revisión de Paula del PR #216 corregido, sin reescribir el historial ni fusionarlo.
+- Bloqueo: aceptación de Paula; incidente histórico 40101509 documentado si reaparece. Otros worktrees intactos.
+
+## Integración (José)
+**Rama:** feat/ui-integracion-orientacion · **PR:** hacia feat/ui-escenarios · **Tokens:** verde
+- Hecho: contratos `VistaEscena` (#181), eventos (#182), ajustes (#186) y props de `EscenaBase` (#190, cerrado). Lógica del aviso de girar el teléfono (`juego/orientacion.ts`).
+- Sigue: pantallas nuevas desde las láminas cuando entren #208, #209 y #213 de Jaime; preview de esta rama en #207 (hacia develop).
+- Bloqueo: tokens y componentes de Jaime.
+
+## Interfaz (Jaime)
+**Rama:** — · **PR:** #220 (fusionado, trae toda la pila: #208, #209, #213, #214, #217, #219) · **Tokens:** verde
+- Hecho: tokens v8 y Nunito; `estilos.css` borrado y reemplazado por `estilos/base.css`; `FacetButton` e iconos; placas, costos, mensajes, efecto pendiente y `ConfirmarAccion`; portada, intro y carga; tarjeta de fuente, datos usados y glosario; retratos con 8 expresiones. Muestrario en `componentes/base/muestrario.html`.
+- Sigue: arreglos de fidelidad que pida María Paula (las fichas están en cada PR cerrado); audio y voz si sobra tiempo.
+- Bloqueo: ninguno. Falta la revisión de fidelidad de María Paula (las piezas entraron juntas con #220).
+
+## Fidelidad
+Una línea por pieza (FLUJO §4 y §8). Estados: `sin empezar`, `en PR #n`, `aprobada`. Solo María Paula marca `aprobada`, después de comparar la captura con la lámina.
+
+| Pieza | Lámina | Dueño | Estado |
+| --- | --- | --- | --- |
+| Tokens, Nunito, botones y placas | `ui/02`, `ui/03` | Jaime | fusionada en #220, revisión de fidelidad pendiente |
+| Retratos de diálogo | `personajes/02, 04, 06, 09`, `ui/01` | Jaime | fusionada en #220, revisión de fidelidad pendiente |
+| Portada DOM, intro y carga | `inicio/01–03`, `ui/00` | Jaime | fusionada en #220, revisión de fidelidad pendiente |
+| Tarjeta de fuente, datos usados, glosario | `ui/04` | Jaime | fusionada en #220, revisión de fidelidad pendiente |
+| Cielo, luz y niebla de Marte | MARTE.md §4–§5 (no el azul de `mundo/01`) | Daniel | sin empezar |
+| Terreno de Jezero y rocas | `mundo/01`, `exterior/02` | Daniel | sin empezar |
+| Kit de piezas | `piezas/01–10` | Daniel | sin empezar |
+| Los 5 módulos | `mundo/01`, `piezas/` | Daniel | sin empezar |
+| Base compacta y plano exterior | `exterior/03`, `exterior/01`, `mundo/01` | Daniel | sin empezar |
+| Lugares, anclajes y caminos | `exterior/03`, `mapa-base-jezero.svg` | Camilo | sin empezar |
+| Cámaras de 3.ª y 1.ª persona | `mundo/01`, `mundo/02` | Camilo | sin empezar |
+| Panel `Map` y respaldo 2D | ESCENAS §3.4, FLUJO §9 | Camilo | sin empezar |
+| Controles táctiles (joystick, cámara, acción) | Familia de `ui/03`, ESCENAS §3.5 | Camilo | sin empezar |
+| Niño 3D | `personajes/08–10` | María Paula | sin empezar |
+| Iris rover | `mundo/01`, `inicio/02`, `personajes/07` | María Paula | sin empezar |
+| Ingeniera 3D | `personajes/01`, `mundo/01` | María Paula | sin empezar |
+| Portada 3D | `inicio/01`, `inicio/capas/` | María Paula | sin empezar |
+| HUD, diálogo, comparación, tormenta y final (montaje) | `ui/01`, `ui/04`, `personajes/07`, `mundo/01` | José | sin empezar |
