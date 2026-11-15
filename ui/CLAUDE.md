@@ -9,7 +9,7 @@
 
 ## Antes de tocar `ui/` o `assets/`
 1. Leé [`docs/referenciapau/README.md`](../docs/referenciapau/README.md) y, de su tabla "Qué leer según la tarea", solo la fila de tu tarea.
-2. Tu prompt de arranque: [`docs/prompts/ui.md`](../docs/prompts/ui.md).
+2. El rol se trabaja en 4 pistas con archivos disjuntos (integración de misiones, escenario, interfaz, audio): [`docs/prompts/ui.md`](../docs/prompts/ui.md) y [`FLUJO.md`](../docs/referenciapau/FLUJO.md). Prioridades y niveles: [`NIVELES.md`](../docs/referenciapau/NIVELES.md).
 3. Estilo y render: [D6](../docs/decisiones/D6-estilo-visual.md) (Three.js procedural + DOM). Donde `PLAN.md`, `docs/ORQUESTACION.md` o `D3` digan PixiJS, manda D6.
 
 ## Reglas duras

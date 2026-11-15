@@ -163,7 +163,7 @@ Curvas: entrada `cubic-bezier(.2,.8,.2,1)`, salida `cubic-bezier(.4,0,1,1)`. CSS
 | Módulo instalando / operativo | Instalando 400 ms; luz o check 240 ms | Siempre reconciliado desde el estado. |
 | Fuente / tooltip | Fundido 120 ms | Abre por teclado; restaura foco. |
 | Cambiar cámara (`KeyV`) | Interpolación 300 ms sin atravesar paredes | Con movimiento reducido: corte directo. |
-| Tormenta / resultado | Alerta 240 ms, música opcional | Solo tras evento real del motor. |
+| Tormenta / resultado | Alerta 240 ms; sonido según [AUDIO.md](AUDIO.md) | Solo tras evento real del motor. |
 | Portada: deriva lejana | Hasta 4 px en 8 s | Se elimina con movimiento reducido. |
 | Portada: niño flotando | 6 px en 6 s, giro máximo 1° | Se elimina con movimiento reducido. |
 
@@ -173,7 +173,7 @@ Con `prefers-reduced-motion: reduce` (CSS y JS): sin deriva, giros, desplazamien
 
 - **Por vista:** menos de 80 draw calls y menos de 80 000 triángulos. `renderer.setPixelRatio(Math.min(devicePixelRatio, 1.5))`, y `1` en calidad baja.
 - **Degradación automática:** 3D completo, luego 3D liviano (sin sombras, menos instancias), luego respaldo 2D. Probado en un celular y un PC viejo desde el bloque 1.
-- **Luces:** 1 direccional con sombra (`mapSize` 1024, menor en baja) + 1 hemisférica + máximo 1–2 puntuales. `castShadow` solo en piezas grandes, nunca en gravilla ni partículas.
+- **Luces:** 1 direccional + 1 hemisférica + máximo 1–2 puntuales. Sombras por calidad: completa `mapSize` 1024, liviana 512, baja **sin sombras** (igual que `docs/ORQUESTACION.md` y [MARTE.md](MARTE.md) §5). `castShadow` solo en piezas grandes, nunca en gravilla ni partículas.
 - **Cero asignaciones por fotograma:** nada de `new Vector3`, `Matrix4`, geometrías, materiales ni texturas dentro del bucle. Temporales prealojados.
 - **Cero reconstrucción por estado:** rotar o escalar pivotes existentes; matrices de `InstancedMesh` solo cuando cambia el mundo. La textura de los ojos de Iris se re-sube solo si cambió.
 - `InstancedMesh` para estáticos idénticos (rocas, cajas, balizas, baldosas). No para personajes animados (esos: esqueleto clonado y estado propio, geometría compartida).
@@ -181,6 +181,8 @@ Con `prefers-reduced-motion: reduce` (CSS y JS): sin deriva, giros, desplazamien
 - Un solo canvas para todo; nunca un canvas por objeto.
 
 ## 9. Bloques de entrega (alineados con `docs/ORQUESTACION.md`)
+
+Las fases y pistas que ejecutan estos bloques están en [FLUJO.md](FLUJO.md) §4: fase 0 = bloque 0; fase 2 = bloques 1 y 2; fase 3 = bloque 4; el bloque 3 va después de la entrega.
 
 | Bloque | Qué entra | Hasta | Cierra cuando |
 | --- | --- | --- | --- |
@@ -229,9 +231,6 @@ Y el e2e de la ruta dorada que corre la CI en cada PR.
 - Los cinco invariantes de [MECANICAS.md](MECANICAS.md) §6 con prueba.
 - Atribución NASA visible donde haya datos.
 
-## 11. Trabajo en paralelo con agentes
+## 11. Trabajo en paralelo
 
-- Un coordinador y como máximo 2–3 subagentes con **archivos disjuntos** (ejemplo: uno en `ui/src/escena/activos/`, otro en `ui/src/componentes/` y `ui/src/pantallas/`, otro solo verifica).
-- Nunca dos escritores sobre el mismo archivo. Antes de editar, revisar `git status`: puede haber cambios sin commitear de otra sesión en la misma rama.
-- Cada bloque pasa su puerta (§10) antes de abrir el siguiente.
-- Pruebas conductuales en `ui/src/juego/reductor.test.ts` y `ui/src/escena/escena.test.ts`; no pruebas de "esta caja tiene N hijos".
+Quién escribe cada archivo, cómo se reparten las pistas (integración de misiones, escenario, interfaz y audio), los contratos entre ellas y el orden de fusión: [FLUJO.md](FLUJO.md). Pruebas conductuales en `ui/src/juego/reductor.test.ts` y `ui/src/escena/escena.test.ts`; no pruebas de "esta caja tiene N hijos".

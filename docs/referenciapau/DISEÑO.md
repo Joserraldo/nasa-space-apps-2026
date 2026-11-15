@@ -159,7 +159,7 @@ Tarjetas marfil con **esquinas recortadas**, bisel bajo, sombra suave ciruela y 
 | Fila de costo (`CostRow`) | `Costs now` con iconos y deltas negativos; `Later` con delta positivo verde. |
 | Mensajes | Éxito con check, advertencia con triángulo, error con cruz, pendiente con reloj. Siempre con texto, no solo color. No son botones. |
 | Tarjeta de fuente | Pequeña: tipo de evidencia, fecha e identificador **solo si existen en los datos**, enlace descriptivo. |
-| Entrada de texto y voz | Campo con etiqueta persistente (`Ask your crew...`), interruptor de voz, botón `Send`. Voz opcional. |
+| Entrada de texto y voz | Campo con etiqueta persistente (`Ask your crew...`), interruptor de voz, botón `Send`. Voz opcional ([AUDIO.md](AUDIO.md) §6). |
 | Superficie oscura | Ciruela, solo para énfasis puntual. La versión clara es la de siempre. |
 
 Medidas mínimas: áreas táctiles de **44 x 44 px**, texto de lectura **18–20 px** escalable, espacio para que el español (más largo) no se corte.
@@ -185,7 +185,7 @@ Láminas: [`inicio/01-inicio-actualizado.png`](referencias/inicio/01-inicio-actu
 
 En 16:9 se conserva la altura y se redistribuye el ancho sin estirar al niño ni al logo. En móvil el menú pasa a columna. La placa cian grande del concepto original **no** es el estilo de los botones.
 
-**Intro (4 viñetas omitibles):** una nueva misión, prepararse para observar, conocé a tu tripulación, tu turno (texto en [HISTORIA.md](HISTORIA.md) §3). Omitir lleva al mismo briefing. No muestra decisiones ya tomadas.
+**Intro (4 viñetas omitibles):** una nueva misión, prepararse para observar, conocé a tu tripulación, tu turno (texto en [HISTORIA.md](HISTORIA.md) §3). Omitir lleva al mismo briefing. No muestra decisiones ya tomadas. Primera versión: tarjetas DOM sobre el fondo de la portada con iconos y el texto de cada viñeta; la ilustración completa solo si sobra tiempo ([FLUJO.md](FLUJO.md) §3).
 **Carga:** ilustración ámbar, consejo corto e indicador **indeterminado** si no hay progreso medible. Nunca porcentajes inventados.
 
 ---

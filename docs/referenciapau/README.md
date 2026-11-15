@@ -12,26 +12,32 @@ Leé solo lo que tu tarea necesita. Cada documento es autónomo y enlaza sus lá
 
 | Si vas a... | Leé primero | Después |
 | --- | --- | --- |
+| **Saber qué se construye primero y quién lo hace** | [FLUJO.md](FLUJO.md) | [NIVELES.md](NIVELES.md) §8 |
 | Entender el juego en 5 minutos | [HISTORIA.md](HISTORIA.md) (premisa, personajes, dónde empieza, conexiones) | Este README (secciones 3 y 4) |
 | Construir cualquier cosa visual (3D o UI) | [DISEÑO.md](DISEÑO.md) | [APLICACION.md](APLICACION.md) |
 | Construir terreno, cielo, luz o rocas | [MARTE.md](MARTE.md) | [DISEÑO.md](DISEÑO.md) §2–3 |
+| Trabajar en un nivel o misión (cualquiera de los 5) | [NIVELES.md](NIVELES.md) | [MECANICAS.md](MECANICAS.md) |
+| Música, efectos, lectura en voz alta o entrada de voz | [AUDIO.md](AUDIO.md) (va al final) | [FLUJO.md](FLUJO.md) §4 |
 | Escribir textos, diálogos o la intro | [HISTORIA.md](HISTORIA.md) | [MECANICAS.md](MECANICAS.md) §3 |
 | Armar una pantalla o una estación | [ESCENAS.md](ESCENAS.md) (la ficha de esa escena) | [DISEÑO.md](DISEÑO.md) §5–6 |
 | Conectar una acción al motor | [MECANICAS.md](MECANICAS.md) | [APLICACION.md](APLICACION.md) §6 |
 | Modelar un personaje o a Iris | [DISEÑO.md](DISEÑO.md) §4 | [REFERENCIAS.md](REFERENCIAS.md) §3 |
 | Buscar una lámina concreta | [REFERENCIAS.md](REFERENCIAS.md) | — |
-| Revisar un PR visual | [APLICACION.md](APLICACION.md) §9 (puerta de aceptación) | [DISEÑO.md](DISEÑO.md) §8 (prohibido) |
+| Revisar un PR visual | [APLICACION.md](APLICACION.md) §10 (puerta de aceptación) | [DISEÑO.md](DISEÑO.md) §8 (prohibido) |
 
 ## 2. Mapa de documentos
 
 | Documento | Responde a |
 | --- | --- |
+| [FLUJO.md](FLUJO.md) | **Quién hace qué y en qué orden.** Pistas de trabajo de ui (integración de misiones, escenario, interfaz, audio), contratos entre pistas, división de assets, fases, validación y orden de fusión. |
+| [NIVELES.md](NIVELES.md) | **Todos los niveles.** Las 5 misiones con su ficha, el orden de la campaña, la dificultad, los niveles de Iris y lo que falta decidir. Prioridad 1. |
 | [HISTORIA.md](HISTORIA.md) | **Qué se cuenta.** Lore canónico, personajes, dónde empieza el juego, la misión de Jezero como historia, mapa de conexiones y estado real de las 5 misiones. |
 | [DISEÑO.md](DISEÑO.md) | **Cómo se ve.** Paleta, materiales, luz, estilo low-poly facetado, personajes (poses, rostros, luz), Iris, sistema UI, inicio y lista de prohibiciones. |
 | [MARTE.md](MARTE.md) | **Por qué se ve así en Marte.** Análisis físico real de Jezero (gravedad, atmósfera, polvo, cielo, luz, terreno, escala) traducido a reglas de estilo y parámetros de Three.js. |
 | [ESCENAS.md](ESCENAS.md) | **Qué hay en cada lugar.** Pantallas, mundo abierto, mapa de la base con coordenadas reales, estaciones y su contenido. |
 | [MECANICAS.md](MECANICAS.md) | **Qué hace el jugador y qué responde el juego.** Misión Jezero en 8 pasos, recursos, módulos, decisión, tormenta, Iris, telemetría, final e invariantes. |
 | [APLICACION.md](APLICACION.md) | **Cómo se construye en código.** Arquitectura de `ui/src/escena/`, contrato procedural, kit de piezas, animaciones, rendimiento, bloques de entrega y puerta de aceptación. |
+| [AUDIO.md](AUDIO.md) | **Cómo suena.** Música, efectos, lectura en voz alta y entrada de voz. Última fase. |
 | [REFERENCIAS.md](REFERENCIAS.md) | **Catálogo de las 55 láminas.** Qué tomar, qué ignorar y dónde se usa cada una. |
 | [`mapa-base-jezero.svg`](mapa-base-jezero.svg) | Plano cenital de la base dibujado con las coordenadas de `ui/src/escena/mundo.ts`. |
 | [`catalogo-assets.json`](catalogo-assets.json) | Inventario de piezas maestras legible por máquina (fábrica, pivote, reutilización). |
@@ -41,7 +47,7 @@ Leé solo lo que tu tarea necesita. Cada documento es autónomo y enlaza sus lá
 
 1. **Contratos y código de otros roles:** `contracts/`, `engine/`, `design/`, `missions/`, `data/`, `agents/`. Ningún documento de esta carpeta cambia una regla, un costo o un tick.
 2. **Decisiones del equipo:** `docs/decisiones/` y `docs/ORQUESTACION.md` (fechas, bloques, puertas).
-3. **Texto de esta carpeta** (HISTORIA, DISEÑO, MARTE, ESCENAS, MECANICAS, APLICACION). Lo anterior a esta reorganización no es canon.
+3. **Texto de esta carpeta** (FLUJO, NIVELES, HISTORIA, DISEÑO, MARTE, ESCENAS, MECANICAS, APLICACION, AUDIO). Lo anterior a esta reorganización no es canon.
 4. **Láminas** de `referencias/`. Guían silueta, paleta, composición, proporción y pose. Si una lámina contradice el texto, **manda el texto**. Cada contradicción conocida está anotada en [REFERENCIAS.md](REFERENCIAS.md).
 
 ## 4. Diez reglas que no se negocian
@@ -66,7 +72,7 @@ Registradas en `docs/ORQUESTACION.md` como pendientes de Santiago. Mientras no s
 | ¿Iris se ve como rover de 4 ruedas? (en el contrato es la IA de la base, `iaBase` + equipo `ia_base`) | La dirección v8 propone rover. Se construye detrás de la interfaz `ModeloIris` para poder cambiar la forma sin tocar la lógica. |
 | ¿Expertas en 3D o solo retratos 2D? | Retratos 2D en UI (bloque 4). Cuerpos 3D solo después del congelamiento. |
 | ¿Se recortan las 8 estaciones completas? | Base compacta de Jezero primero; las 8 estaciones son ampliación posterior. |
-| ¿Cuándo entran las otras 4 misiones? | No aparecen en la UI hasta que el motor lea varias misiones (#152) y diseño las apruebe ([HISTORIA.md](HISTORIA.md) §6). |
+| ¿Cuándo entran las otras 4 misiones? | No aparecen en la UI hasta que el motor lea varias misiones (#152) y diseño las apruebe ([NIVELES.md](NIVELES.md) §7–8). |
 
 ## 6. Qué salió de esta carpeta y por qué
 

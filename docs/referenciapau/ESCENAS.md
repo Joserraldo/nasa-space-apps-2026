@@ -84,7 +84,7 @@ Plano: [`mapa-base-jezero.svg`](mapa-base-jezero.svg). Coordenadas en metros de 
 | `antena` | 9.6, 4.4 | 11, 5.6 | módulo `antena` | Base, mástil y plato. |
 | `banco` | −4.6, 4.4 | −7.7, 6.7 | — | Experimento opcional de caída (rampa y caja). No es necesario para ganar. |
 
-**Recorridos [propuesta de estilo]:** dos circuitos en bucle desde el centro: **A (oeste)** `mesa → taller → panel_solar → escudo → habitat → mesa` y **B (este)** `mesa → sensor → reciclador_agua → invernadero → antena → mesa`, más un atajo por `banco`. Se puede caminar libre por todo el mapa en cualquier fase; las fases ordenan decisiones, no bloquean lugares.
+**Recorridos [propuesta de estilo]:** dos circuitos en bucle desde el centro: **A (oeste)** `mesa → taller → panel_solar → escudo → habitat → mesa` y **B (este)** `mesa → sensor → reciclador_agua → invernadero → antena → mesa`, más un atajo por `banco`. Desde el paso 4 (fases `modulos`, `base` y `tormenta`) se camina libre por todo el mapa; las fases ordenan decisiones, no bloquean lugares. En los pasos 1 a 3 el jugador todavía está en órbita (pantallas E3 y E4).
 
 **Los cinco anclajes de módulo siempre existen**, pero solo los dos módulos que el jugador construyó se ven construidos. Los otros tres se muestran como anclaje o propuesta (base marcada en el suelo), nunca como equipo funcionando.
 
