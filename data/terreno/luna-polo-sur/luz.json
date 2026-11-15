@@ -1,0 +1,221 @@
+{
+  "consultadoEl": "2026-11-15",
+  "cita": "Mazarico, E., et al. (2011), Illumination conditions of the lunar polar regions using LOLA topography, Icarus 211, 1066-1081, doi:10.1016/j.icarus.2010.10.030",
+  "pagina": "https://pgda.gsfc.nasa.gov/products/69",
+  "capaSol": {
+    "archivo": "AVGVISIB_75S_120M_201608",
+    "url": "http://imbrium.mit.edu/EXTRAS/ILLUMINATION/IMG/AVGVISIB_75S_120M_201608.IMG",
+    "etiqueta": "http://imbrium.mit.edu/EXTRAS/ILLUMINATION/IMG/AVGVISIB_75S_120M_201608.LBL"
+  },
+  "capaTierra": {
+    "archivo": "AVGVISIB_75S_120M_201608_EARTH",
+    "url": "http://imbrium.mit.edu/EXTRAS/ILLUMINATION/IMG/AVGVISIB_75S_120M_201608_EARTH.IMG",
+    "etiqueta": "http://imbrium.mit.edu/EXTRAS/ILLUMINATION/IMG/AVGVISIB_75S_120M_201608_EARTH.LBL"
+  },
+  "capaVerificacion": {
+    "sol": "AVGVISIB_65S_240M_201608",
+    "tierra": "AVGVISIB_65S_240M_201608_EARTH"
+  },
+  "escala": 0.00004,
+  "resolucionM": 120,
+  "sitios": [
+    {
+      "id": "shackleton",
+      "sol": {
+        "centro": 0,
+        "media": 0.0133,
+        "maximo": 0.7411,
+        "minimo": 0,
+        "pixeles": 16384
+      },
+      "tierra": {
+        "centro": 0,
+        "media": 0.0753,
+        "maximo": 0.5769,
+        "minimo": 0,
+        "pixeles": 16384
+      },
+      "verificacion240m": {
+        "sol": {
+          "centro": 0,
+          "media": 0.0144,
+          "maximo": 0.7416,
+          "minimo": 0,
+          "pixeles": 16384
+        },
+        "tierra": {
+          "centro": 0,
+          "media": 0.0763,
+          "maximo": 0.5765,
+          "minimo": 0,
+          "pixeles": 16384
+        }
+      }
+    },
+    {
+      "id": "haworth",
+      "sol": {
+        "centro": 0,
+        "media": 0.0013,
+        "maximo": 0.036,
+        "minimo": 0,
+        "pixeles": 16384
+      },
+      "tierra": {
+        "centro": 0,
+        "media": 0.0179,
+        "maximo": 0.2116,
+        "minimo": 0,
+        "pixeles": 16384
+      },
+      "verificacion240m": {
+        "sol": {
+          "centro": 0,
+          "media": 0.0013,
+          "maximo": 0.0361,
+          "minimo": 0,
+          "pixeles": 16384
+        },
+        "tierra": {
+          "centro": 0,
+          "media": 0.0189,
+          "maximo": 0.2086,
+          "minimo": 0,
+          "pixeles": 16384
+        }
+      }
+    },
+    {
+      "id": "faustini",
+      "sol": {
+        "centro": 0,
+        "media": 0,
+        "maximo": 0,
+        "minimo": 0,
+        "pixeles": 16384
+      },
+      "tierra": {
+        "centro": 0.1064,
+        "media": 0.1094,
+        "maximo": 0.3501,
+        "minimo": 0,
+        "pixeles": 16384
+      },
+      "verificacion240m": {
+        "sol": {
+          "centro": 0,
+          "media": 0,
+          "maximo": 0,
+          "minimo": 0,
+          "pixeles": 16384
+        },
+        "tierra": {
+          "centro": 0.1106,
+          "media": 0.1106,
+          "maximo": 0.3506,
+          "minimo": 0,
+          "pixeles": 16384
+        }
+      }
+    },
+    {
+      "id": "malapert",
+      "sol": {
+        "centro": 0.1228,
+        "media": 0.1339,
+        "maximo": 0.2636,
+        "minimo": 0,
+        "pixeles": 16384
+      },
+      "tierra": {
+        "centro": 0.4606,
+        "media": 0.4434,
+        "maximo": 0.6005,
+        "minimo": 0,
+        "pixeles": 16384
+      },
+      "verificacion240m": {
+        "sol": {
+          "centro": 0.1251,
+          "media": 0.137,
+          "maximo": 0.2642,
+          "minimo": 0,
+          "pixeles": 16384
+        },
+        "tierra": {
+          "centro": 0.4653,
+          "media": 0.4554,
+          "maximo": 0.5995,
+          "minimo": 0,
+          "pixeles": 16384
+        }
+      }
+    },
+    {
+      "id": "nobile",
+      "sol": {
+        "centro": 0.3514,
+        "media": 0.2204,
+        "maximo": 0.3608,
+        "minimo": 0,
+        "pixeles": 16384
+      },
+      "tierra": {
+        "centro": 0.2826,
+        "media": 0.226,
+        "maximo": 0.3428,
+        "minimo": 0,
+        "pixeles": 16384
+      },
+      "verificacion240m": {
+        "sol": {
+          "centro": 0.3522,
+          "media": 0.2267,
+          "maximo": 0.361,
+          "minimo": 0,
+          "pixeles": 16384
+        },
+        "tierra": {
+          "centro": 0.2842,
+          "media": 0.2297,
+          "maximo": 0.3434,
+          "minimo": 0,
+          "pixeles": 16384
+        }
+      }
+    },
+    {
+      "id": "de-gerlache",
+      "sol": {
+        "centro": 0,
+        "media": 0.0079,
+        "maximo": 0.191,
+        "minimo": 0,
+        "pixeles": 16384
+      },
+      "tierra": {
+        "centro": 0,
+        "media": 0.0255,
+        "maximo": 0.272,
+        "minimo": 0,
+        "pixeles": 16384
+      },
+      "verificacion240m": {
+        "sol": {
+          "centro": 0,
+          "media": 0.0083,
+          "maximo": 0.1882,
+          "minimo": 0,
+          "pixeles": 16384
+        },
+        "tierra": {
+          "centro": 0,
+          "media": 0.026,
+          "maximo": 0.2734,
+          "minimo": 0,
+          "pixeles": 16384
+        }
+      }
+    }
+  ]
+}

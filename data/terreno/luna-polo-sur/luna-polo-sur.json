@@ -1,0 +1,788 @@
+{
+  "version": "0.1.0",
+  "nombreKey": "datos.terreno.lunaPoloSur.nombre",
+  "fuente": {
+    "nombreKey": "fuente.moonTrek",
+    "dueno": "NASA Moon Trek (JPL); DEM LRO LOLA polar 30 m (LRO_LOLA_DEM_SPole75_30mp_v04); positions: Moon Trek CombinedNomenclature layer (IAU gazetteer)",
+    "urls": [
+      "https://trek.nasa.gov/moon/"
+    ],
+    "consultadoEl": "2026-11-14",
+    "estadoDato": "curado",
+    "derivadoKey": "datos.terreno.derivado",
+    "pendientes": [
+      "citaHielo"
+    ]
+  },
+  "id": "luna-polo-sur",
+  "sitios": [
+    {
+      "id": "shackleton",
+      "nombreKey": "datos.terreno.sitio.shackleton.nombre",
+      "descripcionKey": "datos.terreno.sitio.shackleton.descripcion",
+      "lon": 132.321845,
+      "lat": -89.625776,
+      "dem": {
+        "archivo": "shackleton/elevacion.bin",
+        "ancho": 128,
+        "alto": 128,
+        "metrosPorPixel": 120
+      },
+      "elevacionM": -2635,
+      "pendienteGrados": 9.1,
+      "relieveM": 4173,
+      "puntajes": {
+        "plano": 0.09,
+        "luz": 0.01,
+        "blindaje": 0.29
+      },
+      "nombreIau": "Shackleton",
+      "diametroKm": 21,
+      "bboxM": {
+        "xmin": 710,
+        "ymin": -15320,
+        "xmax": 16070,
+        "ymax": 40
+      },
+      "hieloSombra": {
+        "sombraPermanente": {
+          "capa": "PSR_SP",
+          "instrumento": null,
+          "consultadoEl": "2026-11-14",
+          "url": "https://trek.nasa.gov/moon/trekarcgis/rest/services/PSR_SP/MapServer/0",
+          "origen": "derivado",
+          "regionesEnRecuadro": 1,
+          "ids": [
+            "SP_896450_1282030"
+          ],
+          "areaRegionesKm2": 233.7,
+          "textoKey": "datos.terreno.luna.sombra"
+        },
+        "sombraPermanenteLola": {
+          "capa": "LRO_LOLA_Illumination_SPole65S_240m_EQ",
+          "instrumento": "LOLA (LRO)",
+          "consultadoEl": "2026-11-14",
+          "url": "https://trek.nasa.gov/tiles/Moon/EQ/LRO_LOLA_Illumination_SPole65S_240m_EQ/1.0.0/WMTSCapabilities.xml",
+          "origen": "derivado",
+          "fraccion": 0.886,
+          "centro": true,
+          "cita": "Mazarico et al. 2011, Icarus 211, 1066-1081 (doi:10.1016/j.icarus.2010.10.030)",
+          "resolucionLecturaM": 667
+        },
+        "senalHielo": {
+          "capa": "SP_IceLoc_280m",
+          "instrumento": null,
+          "consultadoEl": "2026-11-14",
+          "url": "https://trek.nasa.gov/moon/trekarcgis/rest/services/SP_IceLoc_280m/MapServer/0",
+          "origen": "derivado",
+          "puntosEnRecuadro": 36,
+          "citaVerificada": false,
+          "atribucionCapa": "no verificada",
+          "cita": "Li, S., et al. (2018), Direct evidence of surface exposed water ice in the lunar polar regions, PNAS 115(36), 8907-8912, doi:10.1073/pnas.1802345115 (solo contexto, atribución de la capa no verificada)",
+          "instrumentoArticulo": "M3 (NASA) en Chandrayaan-1 (ISRO)",
+          "puntosEnSombraPermanente": 33,
+          "textoKey": null
+        },
+        "temperatura": {
+          "capa": "DIVINER_summer_Max_Temp_SP_below110K_240mp",
+          "instrumento": "LRO Diviner (nombre de la capa; el servicio no da más descripción)",
+          "consultadoEl": "2026-11-14",
+          "url": "https://trek.nasa.gov/moon/trekarcgis/rest/services/DIVINER_summer_Max_Temp_SP_below110K_240mp/ImageServer",
+          "origen": "derivado",
+          "capaInvierno": "DIVINER_winter_Max_Temp_SP_below110K_240mp",
+          "fraccionBajo110KVerano": 0.809,
+          "fraccionBajo110KInvierno": 0.96,
+          "minimoMaxVeranoK": 81.3,
+          "minimoMaxInviernoK": 53.5,
+          "textoKey": "datos.terreno.luna.frio"
+        }
+      },
+      "iluminacion": {
+        "capaSol": "AVGVISIB_75S_120M_201608",
+        "capaTierra": "AVGVISIB_75S_120M_201608_EARTH",
+        "urlSol": "http://imbrium.mit.edu/EXTRAS/ILLUMINATION/IMG/AVGVISIB_75S_120M_201608.IMG",
+        "urlTierra": "http://imbrium.mit.edu/EXTRAS/ILLUMINATION/IMG/AVGVISIB_75S_120M_201608_EARTH.IMG",
+        "pagina": "https://pgda.gsfc.nasa.gov/products/69",
+        "cita": "Mazarico, E., et al. (2011), Illumination conditions of the lunar polar regions using LOLA topography, Icarus 211, 1066-1081, doi:10.1016/j.icarus.2010.10.030",
+        "consultadoEl": "2026-11-15",
+        "origen": "medido",
+        "resolucionM": 120,
+        "sol": {
+          "centro": 0,
+          "media": 0.0133,
+          "maximo": 0.7411,
+          "minimo": 0
+        },
+        "tierra": {
+          "centro": 0,
+          "media": 0.0753,
+          "maximo": 0.5769,
+          "minimo": 0
+        },
+        "textoSolKey": "datos.terreno.luna.sol",
+        "textoTierraKey": "datos.terreno.luna.tierra",
+        "pctSol": 1,
+        "pctTierra": 8
+      },
+      "cielo": {
+        "capa": "SKYV_65S_240M",
+        "url": "http://imbrium.mit.edu/EXTRAS/ILLUMINATION/IMG/SKYV_65S_240M.IMG",
+        "pagina": "https://pgda.gsfc.nasa.gov/products/69",
+        "cita": "Mazarico, E., et al. (2011), Illumination conditions of the lunar polar regions using LOLA topography, Icarus 211, 1066-1081, doi:10.1016/j.icarus.2010.10.030",
+        "consultadoEl": "2026-11-15",
+        "origen": "derivado",
+        "resolucionM": 240,
+        "cieloVisibleSr": {
+          "centro": 4.0586,
+          "media": 4.4367,
+          "minimo": 3.8624,
+          "maximo": 6.3674
+        },
+        "cieloTapado": {
+          "centro": 0.3541,
+          "media": 0.2939
+        },
+        "textoKey": "datos.terreno.luna.cielo"
+      }
+    },
+    {
+      "id": "haworth",
+      "nombreKey": "datos.terreno.sitio.haworth.nombre",
+      "descripcionKey": "datos.terreno.sitio.haworth.descripcion",
+      "lon": -7.493656,
+      "lat": -87.202858,
+      "dem": {
+        "archivo": "haworth/elevacion.bin",
+        "ancho": 128,
+        "alto": 128,
+        "metrosPorPixel": 120
+      },
+      "elevacionM": -3147,
+      "pendienteGrados": 9.2,
+      "relieveM": 2992,
+      "puntajes": {
+        "plano": 0.08,
+        "luz": 0,
+        "blindaje": 0.14
+      },
+      "nombreIau": "Haworth",
+      "diametroKm": 51.4231,
+      "bboxM": {
+        "xmin": -18744,
+        "ymin": 76431,
+        "xmax": -3384,
+        "ymax": 91791
+      },
+      "hieloSombra": {
+        "sombraPermanente": {
+          "capa": "PSR_SP",
+          "instrumento": null,
+          "consultadoEl": "2026-11-14",
+          "url": "https://trek.nasa.gov/moon/trekarcgis/rest/services/PSR_SP/MapServer/0",
+          "origen": "derivado",
+          "regionesEnRecuadro": 0,
+          "ids": [],
+          "areaRegionesKm2": 0,
+          "textoKey": "datos.terreno.luna.sombra"
+        },
+        "sombraPermanenteLola": {
+          "capa": "LRO_LOLA_Illumination_SPole65S_240m_EQ",
+          "instrumento": "LOLA (LRO)",
+          "consultadoEl": "2026-11-14",
+          "url": "https://trek.nasa.gov/tiles/Moon/EQ/LRO_LOLA_Illumination_SPole65S_240m_EQ/1.0.0/WMTSCapabilities.xml",
+          "origen": "derivado",
+          "fraccion": 0.867,
+          "centro": true,
+          "cita": "Mazarico et al. 2011, Icarus 211, 1066-1081 (doi:10.1016/j.icarus.2010.10.030)",
+          "resolucionLecturaM": 667
+        },
+        "senalHielo": {
+          "capa": "SP_IceLoc_280m",
+          "instrumento": null,
+          "consultadoEl": "2026-11-14",
+          "url": "https://trek.nasa.gov/moon/trekarcgis/rest/services/SP_IceLoc_280m/MapServer/0",
+          "origen": "derivado",
+          "puntosEnRecuadro": 20,
+          "citaVerificada": false,
+          "atribucionCapa": "no verificada",
+          "cita": "Li, S., et al. (2018), Direct evidence of surface exposed water ice in the lunar polar regions, PNAS 115(36), 8907-8912, doi:10.1073/pnas.1802345115 (solo contexto, atribución de la capa no verificada)",
+          "instrumentoArticulo": "M3 (NASA) en Chandrayaan-1 (ISRO)",
+          "puntosEnSombraPermanente": 20,
+          "textoKey": null
+        },
+        "temperatura": {
+          "capa": "DIVINER_summer_Max_Temp_SP_below110K_240mp",
+          "instrumento": "LRO Diviner (nombre de la capa; el servicio no da más descripción)",
+          "consultadoEl": "2026-11-14",
+          "url": "https://trek.nasa.gov/moon/trekarcgis/rest/services/DIVINER_summer_Max_Temp_SP_below110K_240mp/ImageServer",
+          "origen": "derivado",
+          "capaInvierno": "DIVINER_winter_Max_Temp_SP_below110K_240mp",
+          "fraccionBajo110KVerano": 0.978,
+          "fraccionBajo110KInvierno": 1,
+          "minimoMaxVeranoK": 59.7,
+          "minimoMaxInviernoK": 36.4,
+          "textoKey": "datos.terreno.luna.frio"
+        }
+      },
+      "iluminacion": {
+        "capaSol": "AVGVISIB_75S_120M_201608",
+        "capaTierra": "AVGVISIB_75S_120M_201608_EARTH",
+        "urlSol": "http://imbrium.mit.edu/EXTRAS/ILLUMINATION/IMG/AVGVISIB_75S_120M_201608.IMG",
+        "urlTierra": "http://imbrium.mit.edu/EXTRAS/ILLUMINATION/IMG/AVGVISIB_75S_120M_201608_EARTH.IMG",
+        "pagina": "https://pgda.gsfc.nasa.gov/products/69",
+        "cita": "Mazarico, E., et al. (2011), Illumination conditions of the lunar polar regions using LOLA topography, Icarus 211, 1066-1081, doi:10.1016/j.icarus.2010.10.030",
+        "consultadoEl": "2026-11-15",
+        "origen": "medido",
+        "resolucionM": 120,
+        "sol": {
+          "centro": 0,
+          "media": 0.0013,
+          "maximo": 0.036,
+          "minimo": 0
+        },
+        "tierra": {
+          "centro": 0,
+          "media": 0.0179,
+          "maximo": 0.2116,
+          "minimo": 0
+        },
+        "textoSolKey": null,
+        "textoTierraKey": null,
+        "pctSol": 0,
+        "pctTierra": 2
+      },
+      "cielo": {
+        "capa": "SKYV_65S_240M",
+        "url": "http://imbrium.mit.edu/EXTRAS/ILLUMINATION/IMG/SKYV_65S_240M.IMG",
+        "pagina": "https://pgda.gsfc.nasa.gov/products/69",
+        "cita": "Mazarico, E., et al. (2011), Illumination conditions of the lunar polar regions using LOLA topography, Icarus 211, 1066-1081, doi:10.1016/j.icarus.2010.10.030",
+        "consultadoEl": "2026-11-15",
+        "origen": "derivado",
+        "resolucionM": 240,
+        "cieloVisibleSr": {
+          "centro": 5.3834,
+          "media": 5.431,
+          "minimo": 4.5972,
+          "maximo": 5.6026
+        },
+        "cieloTapado": {
+          "centro": 0.1432,
+          "media": 0.1356
+        },
+        "textoKey": null
+      }
+    },
+    {
+      "id": "faustini",
+      "nombreKey": "datos.terreno.sitio.faustini.nombre",
+      "descripcionKey": "datos.terreno.sitio.faustini.descripcion",
+      "lon": 85.0241,
+      "lat": -87.177099,
+      "dem": {
+        "archivo": "faustini/elevacion.bin",
+        "ancho": 128,
+        "alto": 128,
+        "metrosPorPixel": 120
+      },
+      "elevacionM": -2713,
+      "pendienteGrados": 6.5,
+      "relieveM": 1095,
+      "puntajes": {
+        "plano": 0.35,
+        "luz": 0,
+        "blindaje": 0.14
+      },
+      "nombreIau": "Faustini",
+      "diametroKm": 42.4846,
+      "bboxM": {
+        "xmin": 77614,
+        "ymin": -254,
+        "xmax": 92974,
+        "ymax": 15106
+      },
+      "hieloSombra": {
+        "sombraPermanente": {
+          "capa": "PSR_SP",
+          "instrumento": null,
+          "consultadoEl": "2026-11-14",
+          "url": "https://trek.nasa.gov/moon/trekarcgis/rest/services/PSR_SP/MapServer/0",
+          "origen": "derivado",
+          "regionesEnRecuadro": 1,
+          "ids": [
+            "SP_871460_0840750"
+          ],
+          "areaRegionesKm2": 663.9,
+          "textoKey": "datos.terreno.luna.sombra"
+        },
+        "sombraPermanenteLola": {
+          "capa": "LRO_LOLA_Illumination_SPole65S_240m_EQ",
+          "instrumento": "LOLA (LRO)",
+          "consultadoEl": "2026-11-14",
+          "url": "https://trek.nasa.gov/tiles/Moon/EQ/LRO_LOLA_Illumination_SPole65S_240m_EQ/1.0.0/WMTSCapabilities.xml",
+          "origen": "derivado",
+          "fraccion": 1,
+          "centro": true,
+          "cita": "Mazarico et al. 2011, Icarus 211, 1066-1081 (doi:10.1016/j.icarus.2010.10.030)",
+          "resolucionLecturaM": 667
+        },
+        "senalHielo": {
+          "capa": "SP_IceLoc_280m",
+          "instrumento": null,
+          "consultadoEl": "2026-11-14",
+          "url": "https://trek.nasa.gov/moon/trekarcgis/rest/services/SP_IceLoc_280m/MapServer/0",
+          "origen": "derivado",
+          "puntosEnRecuadro": 9,
+          "citaVerificada": false,
+          "atribucionCapa": "no verificada",
+          "cita": "Li, S., et al. (2018), Direct evidence of surface exposed water ice in the lunar polar regions, PNAS 115(36), 8907-8912, doi:10.1073/pnas.1802345115 (solo contexto, atribución de la capa no verificada)",
+          "instrumentoArticulo": "M3 (NASA) en Chandrayaan-1 (ISRO)",
+          "puntosEnSombraPermanente": 9,
+          "textoKey": null
+        },
+        "temperatura": {
+          "capa": "DIVINER_summer_Max_Temp_SP_below110K_240mp",
+          "instrumento": "LRO Diviner (nombre de la capa; el servicio no da más descripción)",
+          "consultadoEl": "2026-11-14",
+          "url": "https://trek.nasa.gov/moon/trekarcgis/rest/services/DIVINER_summer_Max_Temp_SP_below110K_240mp/ImageServer",
+          "origen": "derivado",
+          "capaInvierno": "DIVINER_winter_Max_Temp_SP_below110K_240mp",
+          "fraccionBajo110KVerano": 1,
+          "fraccionBajo110KInvierno": 1,
+          "minimoMaxVeranoK": 56.7,
+          "minimoMaxInviernoK": 43.5,
+          "textoKey": "datos.terreno.luna.frio"
+        }
+      },
+      "iluminacion": {
+        "capaSol": "AVGVISIB_75S_120M_201608",
+        "capaTierra": "AVGVISIB_75S_120M_201608_EARTH",
+        "urlSol": "http://imbrium.mit.edu/EXTRAS/ILLUMINATION/IMG/AVGVISIB_75S_120M_201608.IMG",
+        "urlTierra": "http://imbrium.mit.edu/EXTRAS/ILLUMINATION/IMG/AVGVISIB_75S_120M_201608_EARTH.IMG",
+        "pagina": "https://pgda.gsfc.nasa.gov/products/69",
+        "cita": "Mazarico, E., et al. (2011), Illumination conditions of the lunar polar regions using LOLA topography, Icarus 211, 1066-1081, doi:10.1016/j.icarus.2010.10.030",
+        "consultadoEl": "2026-11-15",
+        "origen": "medido",
+        "resolucionM": 120,
+        "sol": {
+          "centro": 0,
+          "media": 0,
+          "maximo": 0,
+          "minimo": 0
+        },
+        "tierra": {
+          "centro": 0.1064,
+          "media": 0.1094,
+          "maximo": 0.3501,
+          "minimo": 0
+        },
+        "textoSolKey": null,
+        "textoTierraKey": "datos.terreno.luna.tierra",
+        "pctSol": 0,
+        "pctTierra": 11
+      },
+      "cielo": {
+        "capa": "SKYV_65S_240M",
+        "url": "http://imbrium.mit.edu/EXTRAS/ILLUMINATION/IMG/SKYV_65S_240M.IMG",
+        "pagina": "https://pgda.gsfc.nasa.gov/products/69",
+        "cita": "Mazarico, E., et al. (2011), Illumination conditions of the lunar polar regions using LOLA topography, Icarus 211, 1066-1081, doi:10.1016/j.icarus.2010.10.030",
+        "consultadoEl": "2026-11-15",
+        "origen": "derivado",
+        "resolucionM": 240,
+        "cieloVisibleSr": {
+          "centro": 5.4446,
+          "media": 5.3743,
+          "minimo": 4.8328,
+          "maximo": 5.482
+        },
+        "cieloTapado": {
+          "centro": 0.1335,
+          "media": 0.1447
+        },
+        "textoKey": null
+      }
+    },
+    {
+      "id": "malapert",
+      "nombreKey": "datos.terreno.sitio.malapert.nombre",
+      "descripcionKey": "datos.terreno.sitio.malapert.descripcion",
+      "lon": 12.305737,
+      "lat": -84.798043,
+      "dem": {
+        "archivo": "malapert/elevacion.bin",
+        "ancho": 128,
+        "alto": 128,
+        "metrosPorPixel": 120
+      },
+      "elevacionM": -1670,
+      "pendienteGrados": 14.3,
+      "relieveM": 3153,
+      "puntajes": {
+        "plano": 0,
+        "luz": 0.13,
+        "blindaje": 0.14
+      },
+      "nombreIau": "Malapert",
+      "diametroKm": 70.4424,
+      "bboxM": {
+        "xmin": 25962,
+        "ymin": 146543,
+        "xmax": 41322,
+        "ymax": 161903
+      },
+      "hieloSombra": {
+        "sombraPermanente": {
+          "capa": "PSR_SP",
+          "instrumento": null,
+          "consultadoEl": "2026-11-14",
+          "url": "https://trek.nasa.gov/moon/trekarcgis/rest/services/PSR_SP/MapServer/0",
+          "origen": "derivado",
+          "regionesEnRecuadro": 0,
+          "ids": [],
+          "areaRegionesKm2": 0,
+          "textoKey": null
+        },
+        "sombraPermanenteLola": {
+          "capa": "LRO_LOLA_Illumination_SPole65S_240m_EQ",
+          "instrumento": "LOLA (LRO)",
+          "consultadoEl": "2026-11-14",
+          "url": "https://trek.nasa.gov/tiles/Moon/EQ/LRO_LOLA_Illumination_SPole65S_240m_EQ/1.0.0/WMTSCapabilities.xml",
+          "origen": "derivado",
+          "fraccion": 0.009,
+          "centro": false,
+          "cita": "Mazarico et al. 2011, Icarus 211, 1066-1081 (doi:10.1016/j.icarus.2010.10.030)",
+          "resolucionLecturaM": 667
+        },
+        "senalHielo": {
+          "capa": "SP_IceLoc_280m",
+          "instrumento": null,
+          "consultadoEl": "2026-11-14",
+          "url": "https://trek.nasa.gov/moon/trekarcgis/rest/services/SP_IceLoc_280m/MapServer/0",
+          "origen": "derivado",
+          "puntosEnRecuadro": 0,
+          "citaVerificada": false,
+          "atribucionCapa": "no verificada",
+          "cita": "Li, S., et al. (2018), Direct evidence of surface exposed water ice in the lunar polar regions, PNAS 115(36), 8907-8912, doi:10.1073/pnas.1802345115 (solo contexto, atribución de la capa no verificada)",
+          "instrumentoArticulo": "M3 (NASA) en Chandrayaan-1 (ISRO)",
+          "puntosEnSombraPermanente": 0,
+          "textoKey": null
+        },
+        "temperatura": {
+          "capa": "DIVINER_summer_Max_Temp_SP_below110K_240mp",
+          "instrumento": "LRO Diviner (nombre de la capa; el servicio no da más descripción)",
+          "consultadoEl": "2026-11-14",
+          "url": "https://trek.nasa.gov/moon/trekarcgis/rest/services/DIVINER_summer_Max_Temp_SP_below110K_240mp/ImageServer",
+          "origen": "derivado",
+          "capaInvierno": "DIVINER_winter_Max_Temp_SP_below110K_240mp",
+          "fraccionBajo110KVerano": 0,
+          "fraccionBajo110KInvierno": 0.032,
+          "minimoMaxVeranoK": null,
+          "minimoMaxInviernoK": 89.5,
+          "textoKey": null
+        }
+      },
+      "iluminacion": {
+        "capaSol": "AVGVISIB_75S_120M_201608",
+        "capaTierra": "AVGVISIB_75S_120M_201608_EARTH",
+        "urlSol": "http://imbrium.mit.edu/EXTRAS/ILLUMINATION/IMG/AVGVISIB_75S_120M_201608.IMG",
+        "urlTierra": "http://imbrium.mit.edu/EXTRAS/ILLUMINATION/IMG/AVGVISIB_75S_120M_201608_EARTH.IMG",
+        "pagina": "https://pgda.gsfc.nasa.gov/products/69",
+        "cita": "Mazarico, E., et al. (2011), Illumination conditions of the lunar polar regions using LOLA topography, Icarus 211, 1066-1081, doi:10.1016/j.icarus.2010.10.030",
+        "consultadoEl": "2026-11-15",
+        "origen": "medido",
+        "resolucionM": 120,
+        "sol": {
+          "centro": 0.1228,
+          "media": 0.1339,
+          "maximo": 0.2636,
+          "minimo": 0
+        },
+        "tierra": {
+          "centro": 0.4606,
+          "media": 0.4434,
+          "maximo": 0.6005,
+          "minimo": 0
+        },
+        "textoSolKey": "datos.terreno.luna.sol",
+        "textoTierraKey": "datos.terreno.luna.tierra",
+        "pctSol": 13,
+        "pctTierra": 44
+      },
+      "cielo": {
+        "capa": "SKYV_65S_240M",
+        "url": "http://imbrium.mit.edu/EXTRAS/ILLUMINATION/IMG/SKYV_65S_240M.IMG",
+        "pagina": "https://pgda.gsfc.nasa.gov/products/69",
+        "cita": "Mazarico, E., et al. (2011), Illumination conditions of the lunar polar regions using LOLA topography, Icarus 211, 1066-1081, doi:10.1016/j.icarus.2010.10.030",
+        "consultadoEl": "2026-11-15",
+        "origen": "derivado",
+        "resolucionM": 240,
+        "cieloVisibleSr": {
+          "centro": 5.3994,
+          "media": 5.3796,
+          "minimo": 4.6498,
+          "maximo": 5.5244
+        },
+        "cieloTapado": {
+          "centro": 0.1407,
+          "media": 0.1438
+        },
+        "textoKey": null
+      }
+    },
+    {
+      "id": "nobile",
+      "nombreKey": "datos.terreno.sitio.nobile.nombre",
+      "descripcionKey": "datos.terreno.sitio.nobile.descripcion",
+      "lon": 53.647625,
+      "lat": -85.239498,
+      "dem": {
+        "archivo": "nobile/elevacion.bin",
+        "ancho": 128,
+        "alto": 128,
+        "metrosPorPixel": 120
+      },
+      "elevacionM": 755,
+      "pendienteGrados": 9,
+      "relieveM": 1527,
+      "puntajes": {
+        "plano": 0.1,
+        "luz": 0.22,
+        "blindaje": 0.09
+      },
+      "nombreIau": "Nobile",
+      "diametroKm": 73.5361,
+      "bboxM": {
+        "xmin": 108648,
+        "ymin": 77935,
+        "xmax": 124008,
+        "ymax": 93295
+      },
+      "hieloSombra": {
+        "sombraPermanente": {
+          "capa": "PSR_SP",
+          "instrumento": null,
+          "consultadoEl": "2026-11-14",
+          "url": "https://trek.nasa.gov/moon/trekarcgis/rest/services/PSR_SP/MapServer/0",
+          "origen": "derivado",
+          "regionesEnRecuadro": 0,
+          "ids": [],
+          "areaRegionesKm2": 0,
+          "textoKey": "datos.terreno.luna.sombra"
+        },
+        "sombraPermanenteLola": {
+          "capa": "LRO_LOLA_Illumination_SPole65S_240m_EQ",
+          "instrumento": "LOLA (LRO)",
+          "consultadoEl": "2026-11-14",
+          "url": "https://trek.nasa.gov/tiles/Moon/EQ/LRO_LOLA_Illumination_SPole65S_240m_EQ/1.0.0/WMTSCapabilities.xml",
+          "origen": "derivado",
+          "fraccion": 0.203,
+          "centro": false,
+          "cita": "Mazarico et al. 2011, Icarus 211, 1066-1081 (doi:10.1016/j.icarus.2010.10.030)",
+          "resolucionLecturaM": 667
+        },
+        "senalHielo": {
+          "capa": "SP_IceLoc_280m",
+          "instrumento": null,
+          "consultadoEl": "2026-11-14",
+          "url": "https://trek.nasa.gov/moon/trekarcgis/rest/services/SP_IceLoc_280m/MapServer/0",
+          "origen": "derivado",
+          "puntosEnRecuadro": 0,
+          "citaVerificada": false,
+          "atribucionCapa": "no verificada",
+          "cita": "Li, S., et al. (2018), Direct evidence of surface exposed water ice in the lunar polar regions, PNAS 115(36), 8907-8912, doi:10.1073/pnas.1802345115 (solo contexto, atribución de la capa no verificada)",
+          "instrumentoArticulo": "M3 (NASA) en Chandrayaan-1 (ISRO)",
+          "puntosEnSombraPermanente": 0,
+          "textoKey": null
+        },
+        "temperatura": {
+          "capa": "DIVINER_summer_Max_Temp_SP_below110K_240mp",
+          "instrumento": "LRO Diviner (nombre de la capa; el servicio no da más descripción)",
+          "consultadoEl": "2026-11-14",
+          "url": "https://trek.nasa.gov/moon/trekarcgis/rest/services/DIVINER_summer_Max_Temp_SP_below110K_240mp/ImageServer",
+          "origen": "derivado",
+          "capaInvierno": "DIVINER_winter_Max_Temp_SP_below110K_240mp",
+          "fraccionBajo110KVerano": 0.003,
+          "fraccionBajo110KInvierno": 0.025,
+          "minimoMaxVeranoK": 93.9,
+          "minimoMaxInviernoK": 73.1,
+          "textoKey": null
+        }
+      },
+      "iluminacion": {
+        "capaSol": "AVGVISIB_75S_120M_201608",
+        "capaTierra": "AVGVISIB_75S_120M_201608_EARTH",
+        "urlSol": "http://imbrium.mit.edu/EXTRAS/ILLUMINATION/IMG/AVGVISIB_75S_120M_201608.IMG",
+        "urlTierra": "http://imbrium.mit.edu/EXTRAS/ILLUMINATION/IMG/AVGVISIB_75S_120M_201608_EARTH.IMG",
+        "pagina": "https://pgda.gsfc.nasa.gov/products/69",
+        "cita": "Mazarico, E., et al. (2011), Illumination conditions of the lunar polar regions using LOLA topography, Icarus 211, 1066-1081, doi:10.1016/j.icarus.2010.10.030",
+        "consultadoEl": "2026-11-15",
+        "origen": "medido",
+        "resolucionM": 120,
+        "sol": {
+          "centro": 0.3514,
+          "media": 0.2204,
+          "maximo": 0.3608,
+          "minimo": 0
+        },
+        "tierra": {
+          "centro": 0.2826,
+          "media": 0.226,
+          "maximo": 0.3428,
+          "minimo": 0
+        },
+        "textoSolKey": "datos.terreno.luna.sol",
+        "textoTierraKey": "datos.terreno.luna.tierra",
+        "pctSol": 22,
+        "pctTierra": 23
+      },
+      "cielo": {
+        "capa": "SKYV_65S_240M",
+        "url": "http://imbrium.mit.edu/EXTRAS/ILLUMINATION/IMG/SKYV_65S_240M.IMG",
+        "pagina": "https://pgda.gsfc.nasa.gov/products/69",
+        "cita": "Mazarico, E., et al. (2011), Illumination conditions of the lunar polar regions using LOLA topography, Icarus 211, 1066-1081, doi:10.1016/j.icarus.2010.10.030",
+        "consultadoEl": "2026-11-15",
+        "origen": "derivado",
+        "resolucionM": 240,
+        "cieloVisibleSr": {
+          "centro": 5.8742,
+          "media": 5.7223,
+          "minimo": 4.5878,
+          "maximo": 6.0378
+        },
+        "cieloTapado": {
+          "centro": 0.0651,
+          "media": 0.0893
+        },
+        "textoKey": null
+      }
+    },
+    {
+      "id": "de-gerlache",
+      "nombreKey": "datos.terreno.sitio.de-gerlache.nombre",
+      "descripcionKey": "datos.terreno.sitio.de-gerlache.descripcion",
+      "lon": -90.447515,
+      "lat": -88.448714,
+      "dem": {
+        "archivo": "de-gerlache/elevacion.bin",
+        "ancho": 128,
+        "alto": 128,
+        "metrosPorPixel": 120
+      },
+      "elevacionM": -1868,
+      "pendienteGrados": 19,
+      "relieveM": 2028,
+      "puntajes": {
+        "plano": 0,
+        "luz": 0.01,
+        "blindaje": 0.16
+      },
+      "nombreIau": "de Gerlache",
+      "diametroKm": 31.4131,
+      "bboxM": {
+        "xmin": -54722,
+        "ymin": -8047,
+        "xmax": -39362,
+        "ymax": 7313
+      },
+      "hieloSombra": {
+        "sombraPermanente": {
+          "capa": "PSR_SP",
+          "instrumento": null,
+          "consultadoEl": "2026-11-14",
+          "url": "https://trek.nasa.gov/moon/trekarcgis/rest/services/PSR_SP/MapServer/0",
+          "origen": "derivado",
+          "regionesEnRecuadro": 1,
+          "ids": [
+            "SP_883120_2691430"
+          ],
+          "areaRegionesKm2": 243.3,
+          "textoKey": "datos.terreno.luna.sombra"
+        },
+        "sombraPermanenteLola": {
+          "capa": "LRO_LOLA_Illumination_SPole65S_240m_EQ",
+          "instrumento": "LOLA (LRO)",
+          "consultadoEl": "2026-11-14",
+          "url": "https://trek.nasa.gov/tiles/Moon/EQ/LRO_LOLA_Illumination_SPole65S_240m_EQ/1.0.0/WMTSCapabilities.xml",
+          "origen": "derivado",
+          "fraccion": 0.684,
+          "centro": true,
+          "cita": "Mazarico et al. 2011, Icarus 211, 1066-1081 (doi:10.1016/j.icarus.2010.10.030)",
+          "resolucionLecturaM": 667
+        },
+        "senalHielo": {
+          "capa": "SP_IceLoc_280m",
+          "instrumento": null,
+          "consultadoEl": "2026-11-14",
+          "url": "https://trek.nasa.gov/moon/trekarcgis/rest/services/SP_IceLoc_280m/MapServer/0",
+          "origen": "derivado",
+          "puntosEnRecuadro": 7,
+          "citaVerificada": false,
+          "atribucionCapa": "no verificada",
+          "cita": "Li, S., et al. (2018), Direct evidence of surface exposed water ice in the lunar polar regions, PNAS 115(36), 8907-8912, doi:10.1073/pnas.1802345115 (solo contexto, atribución de la capa no verificada)",
+          "instrumentoArticulo": "M3 (NASA) en Chandrayaan-1 (ISRO)",
+          "puntosEnSombraPermanente": 2,
+          "textoKey": null
+        },
+        "temperatura": {
+          "capa": "DIVINER_summer_Max_Temp_SP_below110K_240mp",
+          "instrumento": "LRO Diviner (nombre de la capa; el servicio no da más descripción)",
+          "consultadoEl": "2026-11-14",
+          "url": "https://trek.nasa.gov/moon/trekarcgis/rest/services/DIVINER_summer_Max_Temp_SP_below110K_240mp/ImageServer",
+          "origen": "derivado",
+          "capaInvierno": "DIVINER_winter_Max_Temp_SP_below110K_240mp",
+          "fraccionBajo110KVerano": 0.766,
+          "fraccionBajo110KInvierno": 1,
+          "minimoMaxVeranoK": 51,
+          "minimoMaxInviernoK": 47.2,
+          "textoKey": "datos.terreno.luna.frio"
+        }
+      },
+      "iluminacion": {
+        "capaSol": "AVGVISIB_75S_120M_201608",
+        "capaTierra": "AVGVISIB_75S_120M_201608_EARTH",
+        "urlSol": "http://imbrium.mit.edu/EXTRAS/ILLUMINATION/IMG/AVGVISIB_75S_120M_201608.IMG",
+        "urlTierra": "http://imbrium.mit.edu/EXTRAS/ILLUMINATION/IMG/AVGVISIB_75S_120M_201608_EARTH.IMG",
+        "pagina": "https://pgda.gsfc.nasa.gov/products/69",
+        "cita": "Mazarico, E., et al. (2011), Illumination conditions of the lunar polar regions using LOLA topography, Icarus 211, 1066-1081, doi:10.1016/j.icarus.2010.10.030",
+        "consultadoEl": "2026-11-15",
+        "origen": "medido",
+        "resolucionM": 120,
+        "sol": {
+          "centro": 0,
+          "media": 0.0079,
+          "maximo": 0.191,
+          "minimo": 0
+        },
+        "tierra": {
+          "centro": 0,
+          "media": 0.0255,
+          "maximo": 0.272,
+          "minimo": 0
+        },
+        "textoSolKey": null,
+        "textoTierraKey": null,
+        "pctSol": 1,
+        "pctTierra": 3
+      },
+      "cielo": {
+        "capa": "SKYV_65S_240M",
+        "url": "http://imbrium.mit.edu/EXTRAS/ILLUMINATION/IMG/SKYV_65S_240M.IMG",
+        "pagina": "https://pgda.gsfc.nasa.gov/products/69",
+        "cita": "Mazarico, E., et al. (2011), Illumination conditions of the lunar polar regions using LOLA topography, Icarus 211, 1066-1081, doi:10.1016/j.icarus.2010.10.030",
+        "consultadoEl": "2026-11-15",
+        "origen": "derivado",
+        "resolucionM": 240,
+        "cieloVisibleSr": {
+          "centro": 5.0546,
+          "media": 5.265,
+          "minimo": 4.6438,
+          "maximo": 5.6928
+        },
+        "cieloTapado": {
+          "centro": 0.1955,
+          "media": 0.162
+        },
+        "textoKey": null
+      }
+    }
+  ]
+}

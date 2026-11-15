@@ -43,7 +43,9 @@ TAREAS EN ORDEN (una por iteración; cada una dice cuándo está hecha):
    portada 3D; Doctora y Meteoróloga si alcanza).
    HECHO: lo que diga cada tarea del brief.
 4. Revisar y fusionar los PRs hacia feat/ui-escenarios de Daniel, Camilo, José y Jaime cuando
-   el revisor los apruebe: fidelidad contra la lámina y que solo toquen sus archivos.
+   el revisor los apruebe: ficha de fidelidad de FLUJO §7.1, captura igual a la lámina en
+   silueta, layout, material y conducta, y que solo toquen sus archivos. Si no queda igual a
+   la lámina, no se fusiona.
    HECHO: ningún PR aprobado esperando más de una iteración.
 5. Puntos de control con Santiago (FLUJO §2): PR feat/ui-escenarios -> develop antes de P3
    (decisión 3D o 2D) y antes de P4 (versión final).

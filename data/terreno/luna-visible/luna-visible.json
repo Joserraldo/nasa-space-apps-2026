@@ -29,7 +29,20 @@
       "puntajes": {
         "plano": 0.9,
         "luz": null,
-        "blindaje": null
+        "blindaje": 0.01
+      },
+      "cieloTapado": {
+        "fraccion": 0.01,
+        "omegaSr": 6.2452,
+        "horizonteMaxGrados": 1,
+        "direcciones": 72,
+        "radioKm": 40,
+        "dem": {
+          "archivo": "llanura-tranquilidad/entorno.bin",
+          "ancho": 160,
+          "alto": 160,
+          "metrosPorPixel": 500
+        }
       }
     },
     {
@@ -58,7 +71,20 @@
       "puntajes": {
         "plano": 0.83,
         "luz": null,
-        "blindaje": null
+        "blindaje": 0.03
+      },
+      "cieloTapado": {
+        "fraccion": 0.03,
+        "omegaSr": 6.0942,
+        "horizonteMaxGrados": 5.1,
+        "direcciones": 72,
+        "radioKm": 40,
+        "dem": {
+          "archivo": "tierras-altas-descartes/entorno.bin",
+          "ancho": 160,
+          "alto": 160,
+          "metrosPorPixel": 500
+        }
       }
     },
     {
@@ -87,7 +113,20 @@
       "puntajes": {
         "plano": 0.91,
         "luz": null,
-        "blindaje": null
+        "blindaje": 0.09
+      },
+      "cieloTapado": {
+        "fraccion": 0.09,
+        "omegaSr": 5.725,
+        "horizonteMaxGrados": 14.6,
+        "direcciones": 72,
+        "radioKm": 40,
+        "dem": {
+          "archivo": "borde-rima-hadley/entorno.bin",
+          "ancho": 160,
+          "alto": 160,
+          "metrosPorPixel": 500
+        }
       }
     }
   ],
@@ -101,8 +140,13 @@
     "estadoDato": "curado",
     "derivadoKey": "datos.terreno.derivado",
     "pendientes": [
-      "luz",
-      "blindaje"
-    ]
+      "luz"
+    ],
+    "blindajeFuente": {
+      "metodo": "cieloTapado = 1 − Ω/2π; Ω = Σ (2π/72)(1 − sin h) con h = elevación máxima del horizonte (≥ 0) cada 5° hasta 40 km, DEM LOLA con curvatura lunar",
+      "cita": "Definición como en NASA GSFC PGDA SKYV: Mazarico, E., et al. (2011), Icarus 211, 1066-1081, doi:10.1016/j.icarus.2010.10.030",
+      "capa": "LRO_LOLA_DEM_Global_128ppd_v04 (Moon Trek)",
+      "consultadoEl": "2026-11-15"
+    }
   }
 }

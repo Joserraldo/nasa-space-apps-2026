@@ -1,0 +1,158 @@
+/**
+ * data/terreno/luna-polo-sur (Moon Trek) → luna-polo-sur.json. Sin red.
+ * Elevación = medida (LOLA polar 30 m). Pendiente (radio 1,5 km, igual que Jezero y luna-visible), relieve y
+ * puntaje "plano" = DERIVADOS. Luz: Moon Trek no tiene capa de iluminación media → null. Blindaje = DERIVADO de PGDA SKYV (fracción del cielo tapada por el relieve; cielo.json).
+ */
+import { readFileSync, writeFileSync } from "node:fs";
+import { join } from "node:path";
+import { LUNA_SUR_CUADRO, TerrenoLunaPoloSurSchema, type SitioLunaSur, type TerrenoLunaPoloSur } from "../src/terreno";
+import { RAIZ } from "./config";
+import { REGLAS } from "./jezero-curar";
+
+const ARCGIS = "https://trek.nasa.gov/moon/trekarcgis/rest/services";
+const DIVINER = "LRO Diviner (nombre de la capa; el servicio no da más descripción)";
+
+/** Hielo/sombra/frío desde hielo.json (luna-sur-hielo.ts). Los textos solo se activan si el dato los respalda. */
+function curarHielo(h: any) {
+  const el = h.consultadoEl as string;
+  const regiones = h.psr.regiones as any[];
+  const v = h.diviner.verano, i = h.diviner.invierno;
+  const fv = v.pixelesBajo110K / v.pixelesTotal, fi = i.pixelesBajo110K / i.pixelesTotal;
+  const r3 = (x: number) => Math.round(x * 1000) / 1000;
+  const lola = h.sombraPermanenteLola as { fraccion: number; centro: boolean } | undefined;
+  if (!lola) throw new Error("falta sombraPermanenteLola en hielo.json (npm run luna-sur:psr)");
+  return {
+    sombraPermanenteLola: {
+      capa: h.capaPsrLola.capa, instrumento: "LOLA (LRO)", consultadoEl: h.capaPsrLola.consultadoEl, url: h.capaPsrLola.url, origen: "derivado" as const,
+      fraccion: lola.fraccion, centro: lola.centro,
+      cita: "Mazarico et al. 2011, Icarus 211, 1066-1081 (doi:10.1016/j.icarus.2010.10.030)",
+      resolucionLecturaM: 667,
+    },
+    sombraPermanente: {
+      capa: "PSR_SP", instrumento: null, consultadoEl: el, url: `${ARCGIS}/PSR_SP/MapServer/0`, origen: "derivado" as const,
+      regionesEnRecuadro: regiones.length, ids: regiones.map((r) => r.id),
+      areaRegionesKm2: Math.round(regiones.reduce((a, r) => a + r.areaKm2, 0) * 10) / 10,
+      // el texto depende de la fracción LOLA, no de los centros PSR_SP
+      textoKey: lola.fraccion > 0.01 ? "datos.terreno.luna.sombra" : null,
+    },
+    senalHielo: {
+      capa: "SP_IceLoc_280m", instrumento: null, consultadoEl: el, url: `${ARCGIS}/SP_IceLoc_280m/MapServer/0`, origen: "derivado" as const,
+      puntosEnRecuadro: h.hielo.puntos.length,
+      // Ni la capa ni el catálogo de Moon Trek declaran su artículo. Li et al. 2018 es el candidato (contexto), NO verificado:
+      // el texto de hielo sigue apagado y "citaHielo" sigue pendiente hasta verificar la atribución.
+      atribucionCapa: "no verificada" as const,
+      citaVerificada: false,
+      cita: "Li, S., et al. (2018), Direct evidence of surface exposed water ice in the lunar polar regions, PNAS 115(36), 8907-8912, doi:10.1073/pnas.1802345115 (solo contexto, atribución de la capa no verificada)",
+      instrumentoArticulo: "M3 (NASA) en Chandrayaan-1 (ISRO)",
+      puntosEnSombraPermanente: (h.hielo.puntosEnSombra as number | undefined) ?? 0,
+      textoKey: null,
+    },
+    temperatura: {
+      capa: "DIVINER_summer_Max_Temp_SP_below110K_240mp", instrumento: DIVINER, consultadoEl: el,
+      url: `${ARCGIS}/DIVINER_summer_Max_Temp_SP_below110K_240mp/ImageServer`, origen: "derivado" as const,
+      capaInvierno: "DIVINER_winter_Max_Temp_SP_below110K_240mp",
+      fraccionBajo110KVerano: r3(fv), fraccionBajo110KInvierno: r3(fi),
+      minimoMaxVeranoK: v.minimoK, minimoMaxInviernoK: i.minimoK,
+      textoKey: fv >= 0.01 ? "datos.terreno.luna.frio" : null,
+    },
+  };
+}
+
+const DIR = join(RAIZ, "terreno", "luna-polo-sur");
+
+/** Luz del Sol y de la Tierra desde luz.json (luna-sur-luz.ts). Textos solo si el dato los respalda (umbrales fijados antes de ver los datos). */
+/** Puntaje de luz 0–1 = iluminación solar media del recuadro (fracción del tiempo con Sol). */
+const luzMedia = (l: any, id: string) => r2(l.sitios.find((x: any) => x.id === id).sol.media);
+function curarLuz(l: any, id: string) {
+  const s = l.sitios.find((x: any) => x.id === id);
+  if (!s) throw new Error("falta " + id + " en luz.json (npm run luna-sur:luz)");
+  const med = (m: any) => ({ centro: m.centro, media: m.media, maximo: m.maximo, minimo: m.minimo });
+  const pctSol = Math.round(s.sol.media * 100), pctTierra = Math.round(s.tierra.media * 100);
+  return {
+    capaSol: l.capaSol.archivo, capaTierra: l.capaTierra.archivo, urlSol: l.capaSol.url, urlTierra: l.capaTierra.url,
+    pagina: l.pagina, cita: l.cita, consultadoEl: l.consultadoEl, origen: "medido" as const, resolucionM: l.resolucionM,
+    sol: med(s.sol), tierra: med(s.tierra),
+    textoSolKey: s.sol.media >= 0.01 ? "datos.terreno.luna.sol" : null,
+    textoTierraKey: s.tierra.media >= 0.05 ? "datos.terreno.luna.tierra" : null,
+    pctSol, pctTierra,
+  };
+}
+/** Cielo tapado por el relieve desde cielo.json (luna-sur-cielo.ts). Texto solo si la media tapada ≥ 0,2 (umbral fijado antes de ver los datos). */
+function curarCielo(c: any, id: string) {
+  const s = c.sitios.find((x: any) => x.id === id);
+  if (!s) throw new Error("falta " + id + " en cielo.json (npm run luna-sur:cielo)");
+  return {
+    capa: c.capa.archivo, url: c.capa.url, pagina: c.pagina, cita: c.cita, consultadoEl: c.consultadoEl,
+    origen: "derivado" as const, resolucionM: c.resolucionM,
+    cieloVisibleSr: s.cieloVisibleSr, cieloTapado: s.cieloTapado,
+    textoKey: s.cieloTapado.media >= 0.2 ? "datos.terreno.luna.cielo" : null,
+  };
+}
+const r1 = (x: number) => Math.round(x * 10) / 10;
+const r2 = (x: number) => Math.round(x * 100) / 100;
+
+export function curarLunaSur(): TerrenoLunaPoloSur {
+  const consulta = JSON.parse(readFileSync(join(DIR, "consulta.json"), "utf-8"));
+  const n = LUNA_SUR_CUADRO.px;
+  const paso = LUNA_SUR_CUADRO.ladoM / n; // m por píxel (plano en la proyección; escala 1 en el polo, error < 0,1 % a < 3° del polo)
+  const hielo = JSON.parse(readFileSync(join(DIR, "hielo.json"), "utf-8"));
+  if (hielo.sitios.length !== consulta.sitios.length) throw new Error("hielo.json no coincide con consulta.json");
+  const luz = JSON.parse(readFileSync(join(DIR, "luz.json"), "utf-8"));
+  const cielo = JSON.parse(readFileSync(join(DIR, "cielo.json"), "utf-8"));
+  const sitios: SitioLunaSur[] = consulta.sitios.map((s: any) => {
+    const b = readFileSync(join(DIR, s.id, "elevacion.bin"));
+    const h = new Int16Array(b.buffer, b.byteOffset, b.length / 2);
+    const at = (c: number, f: number) => h[Math.min(n - 1, Math.max(0, f)) * n + Math.min(n - 1, Math.max(0, c))]!;
+    const pend = (c: number, f: number) => {
+      const gx = (at(c + 1, f) - at(c - 1, f)) / (2 * paso);
+      const gy = (at(c, f + 1) - at(c, f - 1)) / (2 * paso);
+      return (Math.atan(Math.hypot(gx, gy)) * 180) / Math.PI;
+    };
+    const c0 = n / 2, f0 = n / 2; // el recuadro está centrado en el sitio
+    const rp = Math.round(REGLAS.radioPendienteM / paso);
+    let suma = 0, cuenta = 0;
+    for (let f = f0 - rp; f <= f0 + rp; f++)
+      for (let c = c0 - rp; c <= c0 + rp; c++)
+        if (((c - c0) * paso) ** 2 + ((f - f0) * paso) ** 2 <= REGLAS.radioPendienteM ** 2) { suma += pend(c, f); cuenta++; }
+    const pendiente = suma / cuenta;
+    return {
+      id: s.id,
+      nombreKey: `datos.terreno.sitio.${s.id}.nombre`,
+      descripcionKey: `datos.terreno.sitio.${s.id}.descripcion`,
+      nombreIau: s.nombreIau,
+      diametroKm: s.diametroKm,
+      lon: s.lon,
+      lat: s.lat,
+      bboxM: s.bboxM,
+      dem: { archivo: `${s.id}/elevacion.bin`, ancho: n, alto: n, metrosPorPixel: paso },
+      elevacionM: at(c0, f0),
+      pendienteGrados: r1(pendiente),
+      relieveM: Math.max(...h) - Math.min(...h),
+      hieloSombra: curarHielo({ consultadoEl: hielo.consultadoEl, capaPsrLola: hielo.sombraPermanenteLola, ...hielo.sitios.find((x: any) => x.id === s.id) }),
+      iluminacion: curarLuz(luz, s.id),
+      cielo: curarCielo(cielo, s.id),
+      puntajes: { plano: r2(Math.min(1, Math.max(0, 1 - pendiente / REGLAS.pendienteMaxGrados))), luz: luzMedia(luz, s.id), blindaje: r2(cielo.sitios.find((x: any) => x.id === s.id).cieloTapado.media) },
+    };
+  });
+  return TerrenoLunaPoloSurSchema.parse({
+    version: "0.1.0",
+    id: "luna-polo-sur",
+    nombreKey: "datos.terreno.lunaPoloSur.nombre",
+    sitios,
+    fuente: {
+      nombreKey: "fuente.moonTrek",
+      dueno: "NASA Moon Trek (JPL); DEM LRO LOLA polar 30 m (LRO_LOLA_DEM_SPole75_30mp_v04); positions: Moon Trek CombinedNomenclature layer (IAU gazetteer)",
+      urls: ["https://trek.nasa.gov/moon/"],
+      consultadoEl: consulta.consultadoEl,
+      estadoDato: "curado",
+      derivadoKey: "datos.terreno.derivado",
+      pendientes: ["citaHielo"],
+    },
+  });
+}
+
+if (process.argv[1]?.endsWith("luna-sur-curar.ts")) {
+  const t = curarLunaSur();
+  writeFileSync(join(DIR, "luna-polo-sur.json"), JSON.stringify(t, null, 2) + "\n");
+  for (const s of t.sitios) console.log(`${s.id}: ${s.elevacionM} m, pendiente ${s.pendienteGrados}°, relieve ${s.relieveM} m, plano ${s.puntajes.plano}`);
+}

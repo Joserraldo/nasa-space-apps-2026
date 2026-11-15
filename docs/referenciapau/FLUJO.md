@@ -52,7 +52,8 @@ develop  (demo estable; la fusiona Santiago)
 ### 2.1 Qué se puede empezar ya y qué espera
 
 - **Ya, sin esperar:** archivos **nuevos** de cada parte, en su rama desde `feat/ui-escenarios`. Daniel: `materiales.ts`, `liberar.ts`, `cielo.ts`, `activos/terreno.ts`, `activos/piezasComunes.ts`, `activos/instancias.ts`, `activos/modulos.ts`. Jaime: `componentes/base/`, `estilos/`, `Portada.tsx`, `Intro.tsx`, `Carga.tsx`, `Glosario.tsx`, `DatosUsados.tsx`. Camilo: `componentes/Mapa.tsx`. María Paula: `activos/astronautas.ts`, `activos/iris.ts`, `activos/portada.ts`.
-- **Espera la subida de María Paula:** los archivos que **ya existen** en su trabajo local: {EXISTENTES}. Tocarlos antes pisa su trabajo.
+- **Espera la subida de María Paula:** los archivos que **ya existen** en su trabajo local de `feat/ui-escena-3d`. En `ui/src/`: `App.tsx`, `main.tsx`, `i18n.ts`, `estilos.css`, `mision.css`; `componentes/Dialogos.tsx`, `Hud.tsx`, `Tripulacion.tsx`, `Acciones.tsx`, `Cuenta.tsx`, `Iconos.tsx`, `LogoSolarShield.tsx`, `RetratoIris.tsx`; `pantallas/ColocarModulos.tsx`, `ElegirSitio.tsx`, `Final.tsx`, `Satelite.tsx`, `Tormenta.tsx`, `Base3D.tsx`; `escena/escena3d.ts`, `EscenaBase.tsx`, `modelos.ts`, `soporte.ts`, `mundo.ts`, `fisica.ts`, `navegacion.ts`, `guia.ts`, `vista.ts` y sus tests; `juego/reductor.ts` y `cuenta.ts` con sus tests. Fuera de `src/`: `ui/index.html`, `ui/package.json`, `ui/i18n/en.json`, `ui/i18n/es.json` y `ui/public/icono.svg`. Tocarlos antes pisa su trabajo.
+- **Esperan solo para no pisar la lógica** (motor, i18n, reductor, firmas de la escena, respaldo 2D). **Lo visual de esos archivos no es punto de partida de nada:** se borra en la fase 0b (§2.2) y se rehace desde las láminas. Nadie copia colores, formas, clases CSS ni geometría del trabajo anterior.
 
 ### 2.2 Borrar el diseño anterior (fase 0b)
 
@@ -143,6 +144,27 @@ Buenas prácticas para todos: funciones cortas, tablas de configuración en luga
 | 1. Autor | Quien escribió | Puerta de [APLICACION.md](APLICACION.md) §10: typecheck, test, build, e2e, captura al lado de la lámina, draw calls y triángulos, teclado, EN/ES, movimiento reducido, respaldo 2D, cero errores WebGL. | Salida real pegada en el PR. |
 | 2. Revisor | Sesión revisora | Que solo toque sus archivos (§1), tamaño, commits atómicos, CI o salida local, reglas del producto, prohibidos de [DISEÑO.md](DISEÑO.md) §8, choques entre PRs. | `gh pr review` con lista numerada. |
 | 3. Fidelidad | María Paula | Fidelidad visual contra la lámina y que la historia se entienda ([HISTORIA.md](HISTORIA.md)). | Aprueba o pide cambios; fusiona en `feat/ui-escenarios`. |
+
+### 7.1 Ficha de fidelidad (obligatoria en todo PR visual)
+
+Un PR que cambia algo visible sin esta ficha **no se revisa ni se fusiona**. El revisor pide cambios y la orquestación lo marca en rojo. Va en la descripción del PR:
+
+```text
+Lámina canónica: <carpeta/archivo de §4>  (y la sección de DISEÑO.md o ESCENAS.md)
+Captura: localhost:5173, misma cámara y proporción que la lámina, una al lado de la otra
+Silueta:   igual | difiere en ...
+Layout:    igual | difiere en ...   (posiciones dentro del 2 % del lienzo, APLICACION §10)
+Material:  tokens de DISEÑO §2 usados: ...   (ningún color suelto fuera de los tokens)
+Conducta:  estados y animación como la lámina | difiere en ...
+Desviación permitida usada: ninguna | cielo de Marte (MARTE.md) | otra anotada en REFERENCIAS.md
+DISEÑO §8 (prohibidos): revisado, ninguno
+```
+
+Reglas de la ficha:
+- **La estética es la de la lámina.** Low-poly facetado, paleta marfil, lila, ciruela y cian, sombras lilas y proporciones de los personajes como se ven. No se "mejora", no se reinterpreta, no se toma nada del diseño anterior.
+- **La única desviación libre es el cielo:** el azul de `mundo/01` y `mundo/02` se cambia por el cielo de [MARTE.md](MARTE.md). Cualquier otra diferencia se anota en la ficha y la aprueba María Paula. Si la decisión es durable, va a [REFERENCIAS.md](REFERENCIAS.md).
+- **Si la silueta no coincide, no se sigue** (§6, paso 3). Se corrige antes de pasar a materiales o estados.
+- **Una lámina por pieza:** la columna "Lámina" de §4. Si una pieza no tiene lámina, no se inventa: se pregunta a María Paula.
 
 ## 8. Coordinación
 

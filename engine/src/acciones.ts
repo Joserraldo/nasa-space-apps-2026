@@ -50,7 +50,7 @@ function aplicarDeltas(
 }
 
 /** Costo y beneficio de una acción base, ya escalados por sus parámetros. */
-export function costoDe(accion: BaseAction): { inmediato: Partial<Record<Resource, number>>; retrasado: Partial<Record<Resource, number>>; causaKey: string } {
+export function costoDe(accion: BaseAction, mision: Mision = MISION_JEZERO): { inmediato: Partial<Record<Resource, number>>; retrasado: Partial<Record<Resource, number>>; causaKey: string } {
   const base = COSTOS_ACCION[accion.tipo];
   switch (accion.tipo) {
     case "redistribuir_energia":
@@ -60,7 +60,7 @@ export function costoDe(accion: BaseAction): { inmediato: Partial<Record<Resourc
         causaKey: base.causaKey,
       };
     case "colocar_modulo":
-      return { inmediato: { ...base.inmediato }, retrasado: { ...MODULOS[accion.modulo] }, causaKey: base.causaKey };
+      return { inmediato: { ...base.inmediato }, retrasado: { ...(mision.modulos?.[accion.modulo] ?? MODULOS[accion.modulo]) }, causaKey: base.causaKey };
     case "subir_escudo":
       return {
         inmediato: { energia: (base.inmediato.energia ?? 0) * accion.nivel },
@@ -94,12 +94,12 @@ export function aplicarAccion(estado: GameState, accionCruda: unknown, mision: M
   // Rechazo limpio: si la acción no se puede hacer, devuelve el MISMO estado (ni cobra ni agenda nada).
   if (!puedeAplicar(estado, accion, mision).ok) return estado;
 
-  const { inmediato, retrasado, causaKey } = costoDe(accion);
+  const { inmediato, retrasado, causaKey } = costoDe(accion, mision);
   let s = aplicarDeltas(estado, inmediato, "decision", causaKey, accion);
 
   const retraso = RETRASO_POR_DIFICULTAD[s.dificultad];
   // La telemetría no depende de la dificultad: tarda lo que tarda la luz hasta la Tierra y de vuelta.
-  const retrasoFijo = accion.tipo === "enviar_telemetria" ? RETRASO_COMUNICACIONES[s.sitio] : null;
+  const retrasoFijo = accion.tipo === "enviar_telemetria" ? (mision.retrasoComunicacionesTicks ?? RETRASO_COMUNICACIONES[s.sitio]) : null;
   let rng = s.rngEstado;
   const nuevos: PendingEffect[] = [];
   for (const r of RECURSOS) {
@@ -216,7 +216,7 @@ export function puedeAplicar(estado: GameState, accionCruda: unknown, mision: Mi
     return estado.simulacionesRestantes === 0 ? { ok: false, motivo: "sin_simulaciones" } : { ok: true };
   }
   if (accion.tipo === "colocar_modulo" && !puedeColocar(estado, accion.modulo, mision)) return { ok: false, motivo: "modulo_no_permitido" };
-  const { inmediato } = costoDe(accion);
+  const { inmediato } = costoDe(accion, mision);
   for (const r of RECURSOS) {
     const d = inmediato[r] ?? 0;
     if (d < 0 && estado.recursos[r] + d <= 0) return { ok: false, motivo: "recursos_insuficientes", recurso: r };
@@ -305,7 +305,7 @@ export function avanzarTick(estado: GameState, mision: Mision = MISION_JEZERO): 
   // Fin de la misión (mision.fin; hoy solo hay una regla, igual para todas): pierde si algo llega a 0, aunque la telemetría llegue
   // en ese mismo tick; gana cuando la telemetría llega a la Tierra con todo por encima de 0.
   if (RECURSOS.some((r) => s.recursos[r] <= 0)) s = { ...s, resultado: "fallo" };
-  else if (llegoTelemetria) s = { ...s, resultado: "exito" };
+  else if (mision.fin.exitoCuando === "telemetria_llega" ? llegoTelemetria : s.tick >= mision.fin.exitoCuando.tick) s = { ...s, resultado: "exito" };
   else if (s.dia > DIAS_PARA_GANAR) s = { ...s, resultado: "exito" };
   return s;
 }
