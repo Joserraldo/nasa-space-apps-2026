@@ -190,17 +190,35 @@ function iconoSol(m: Materiales, x: number, y: number, z: number): THREE.Mesh[] 
   return [parte(m, "Emissive", sol, [x, y, z], "Console_Sun")];
 }
 
-/** Lámina 03 (caja): cuerpo chaflanado, tapa más ancha y banda teal que cruza tapa y laterales. */
+/** Prisma con bisel arriba y abajo y esquinas verticales recortadas: caja `w`×`h`×`d`, centrada. */
+const prismaBiselado = (w: number, h: number, d: number, bisel: number, c: number) =>
+  geometriaBase(`kit-biselado-${w}-${h}-${d}-${bisel}-${c}`, () => {
+    const x = w / 2 - bisel, y = d / 2 - bisel, v = (a: number, b: number) => new THREE.Vector2(a, b);
+    const forma = new THREE.Shape([v(-x + c, -y), v(x - c, -y), v(x, -y + c), v(x, y - c), v(x - c, y), v(-x + c, y), v(-x, y - c), v(-x, -y + c)]);
+    const g = new THREE.ExtrudeGeometry(forma, { depth: h - 2 * bisel, bevelEnabled: true, bevelThickness: bisel, bevelSize: bisel, bevelSegments: 1 });
+    g.rotateX(-Math.PI / 2);
+    g.translate(0, -(h - 2 * bisel) / 2, 0);
+    return g;
+  });
+
+/** Lámina 03 (caja): cuerpo y tapa chaflanados (la tapa apenas más ancha), banda teal y asas en ranura. */
 export function crearCaja(m: Materiales): THREE.Group {
+  // Ranura: marfil algo más oscuro (color de vértice sobre el material Rock, que ya está en la escena).
+  const ranura = geometriaBase("kit-caja-ranura", () => {
+    const g = new THREE.BoxGeometry(0.2, 0.04, 0.004);
+    const c = colorToken("traje-marfil").multiplyScalar(0.78);
+    g.setAttribute("color", new THREE.BufferAttribute(new Float32Array(Array.from({ length: g.getAttribute("position").count }, () => [c.r, c.g, c.b]).flat()), 3));
+    return g;
+  });
   return grupo(
     "Kit_Crate",
-    parte(m, "SuitBase", chaflan(1, 0.5, 0.75, 0.08), [0, 0.25, 0], "Crate_Body"),
-    parte(m, "SuitBase", chaflan(PLANTA_KIT.caja.ancho, 0.22, 0.85, 0.07), [0, 0.61, 0], "Crate_Lid"),
-    parte(m, "Accent", caja(0.2, 0.02, 0.87), [0, 0.73, 0], "Crate_BandTop"),
-    parte(m, "Accent", caja(0.2, 0.7, 0.02), [0, 0.36, 0.43], "Crate_BandFront"),
-    parte(m, "Accent", caja(0.2, 0.7, 0.02), [0, 0.36, -0.43], "Crate_BandBack"),
-    parte(m, "Boots", caja(0.2, 0.05, 0.02), [-0.3, 0.38, 0.385], "Crate_HandleL"),
-    parte(m, "Boots", caja(0.2, 0.05, 0.02), [0.3, 0.38, 0.385], "Crate_HandleR"),
+    parte(m, "SuitBase", prismaBiselado(1, 0.5, 0.75, 0.05, 0.07), [0, 0.25, 0], "Crate_Body"),
+    parte(m, "SuitBase", prismaBiselado(1.08, 0.22, 0.83, 0.05, 0.08), [0, 0.6, 0], "Crate_Lid"),
+    parte(m, "Accent", caja(0.2, 0.02, 0.86), [0, 0.71, 0], "Crate_BandTop"),
+    parte(m, "Accent", caja(0.2, 0.7, 0.05), [0, 0.36, 0.4], "Crate_BandFront"),
+    parte(m, "Accent", caja(0.2, 0.7, 0.05), [0, 0.36, -0.4], "Crate_BandBack"),
+    parte(m, "Rock", ranura, [-0.3, 0.32, 0.375], "Crate_HandleL"),
+    parte(m, "Rock", ranura, [0.3, 0.32, 0.375], "Crate_HandleR"),
   );
 }
 
@@ -260,23 +278,29 @@ export function crearPanelSolarInclinado(m: Materiales, ancho = 1.15, alto = 0.9
 export function crearDeposito(m: Materiales): THREE.Group {
   const gota = geometriaBase("kit-gota", () => {
     const f = new THREE.Shape();
-    f.moveTo(0, 0.14);
-    f.lineTo(0.08, 0.02);
-    f.lineTo(0.08, -0.04);
-    f.lineTo(0.03, -0.09);
-    f.lineTo(-0.03, -0.09);
-    f.lineTo(-0.08, -0.04);
-    f.lineTo(-0.08, 0.02);
+    const k = 1.8;
+    const p: [number, number][] = [[0, 0.14], [0.08, 0.02], [0.08, -0.04], [0.03, -0.09], [-0.03, -0.09], [-0.08, -0.04], [-0.08, 0.02]];
+    p.forEach(([x, y], i) => (i ? f.lineTo(x * k, y * k) : f.moveTo(x * k, y * k)));
     return new THREE.ShapeGeometry(f);
+  });
+  // Fluido teal claro: color de vértice sobre Rock (el slot Accent sale demasiado oscuro con la luz).
+  const fluido = geometriaBase("kit-fluido", () => {
+    const g = tronco(0.5, 0.5, 1.23, 10).clone();
+    const c = colorToken("teal").multiplyScalar(1.35);
+    g.setAttribute("color", new THREE.BufferAttribute(new Float32Array(Array.from({ length: g.getAttribute("position").count }, () => [c.r, c.g, c.b]).flat()), 3));
+    return g;
   });
   return grupo(
     "Kit_Tank",
     parte(m, "SuitBase", tronco(0.5, 0.6, 0.3, 10), [0, 0.15, 0], "Tank_Base"),
-    parte(m, "Accent", tronco(0.46, 0.46, 1.0, 10), [0, 0.8, 0], "Tank_Fluid"),
+    parte(m, "Rock", fluido, [0, 0.935, 0], "Tank_Fluid"),
     parte(m, "Glass", tronco(0.52, 0.52, 1.4, 10), [0, 1.0, 0], "Tank_Glass"),
     parte(m, "SuitBase", tronco(0.6, 0.5, 0.3, 10), [0, 1.85, 0], "Tank_Cap"),
     parte(m, "SuitBase", tronco(0.2, 0.22, 0.2, 8), [0, 2.1, 0], "Tank_Nozzle"),
-    parte(m, "Emissive", gota, [0, 1.0, 0.54], "Tank_Drop"),
+    parte(m, "Emissive", tronco(0.5, 0.5, 0.015, 10), [0, 1.555, 0], "Tank_Surface"),
+    parte(m, "Emissive", caja(0.03, 1.1, 0.006), [-0.165, 0.93, 0.497], "Tank_ShineA"),
+    parte(m, "Emissive", caja(0.02, 1.1, 0.006), [0.165, 0.93, 0.497], "Tank_ShineB"),
+    parte(m, "Emissive", gota, [0, 0.95, 0.54], "Tank_Drop"),
   );
 }
 
