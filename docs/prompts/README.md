@@ -94,6 +94,25 @@ Reglas de uso:
 - Antes de cada PR, pegar la salida real de `npm run typecheck` y `npm test` (y `npm run build` si tocaste `ui/`).
 - Solo se editan las carpetas del rol. Lo de otro rol se pide con issue `bloquea:<rol>`.
 - Antes de editar, `git status`: puede haber cambios sin commitear de otra sesión en la misma carpeta. No los pises.
+- `.claude/settings.json` niega `gh pr merge` a todas las sesiones. María Paula fusiona los PRs hacia `feat/ui-escenarios` desde la web de GitHub (squash), no desde la terminal.
+
+### Skills
+
+Se invocan con el comando de skills de Claude Code. Las del proyecto viven en `.claude/skills/` y llegan a todos con `git pull`.
+
+| Skill | Cuándo | Quién |
+| --- | --- | --- |
+| `solar-shield-pr-visual` | Antes de abrir o actualizar un PR que cambia algo visible: lámina, captura con el mismo encuadre, ficha, números de la escena y puerta | Todo el frontend |
+| `solar-shield-qa` | Antes de cualquier PR | Todos |
+| `solar-shield-i18n` | Al crear o cambiar un texto visible | Todos |
+| `solar-shield-handoff` | Al dejar o tomar trabajo de otra persona | Todos |
+| `solar-shield-game-balance` | Al tocar costos, ticks o cifras de diseño | Camilo, Jaime |
+
+**Opcionales, cada uno en su máquina** (revisadas el 14 nov: licencia MIT, repos con más de 3000 estrellas). Sirven como consulta; si chocan con `docs/referenciapau/`, manda `docs/referenciapau/`:
+- Daniel y María Paula: `npx skills add cloudai-x/threejs-skills@threejs-geometry` y `@threejs-materials`. Están escritas para Three.js r183: verificá cada API contra `three@0.160` antes de usarla. Las reglas de rendimiento ya están resumidas en [APLICACION.md](../referenciapau/APLICACION.md) §8.1.
+- Jaime: `npx skills add addyosmani/web-quality-skills@accessibility` para auditar teclado, foco y contraste.
+
+**No se usan para decidir el aspecto:** skills de diseño generativo (`frontend-design`, `impeccable` y similares) proponen una estética propia y eso choca con "la referencia manda". Solo sirven para auditar accesibilidad o estados, nunca para elegir colores, fuentes, formas o disposición.
 
 ### Producto
 - Niños de 7 a 12 años: frases cortas, nada inapropiado, personajes originales.

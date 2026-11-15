@@ -180,6 +180,19 @@ Con `prefers-reduced-motion: reduce` (CSS y JS): sin deriva, giros, desplazamien
 - `webglcontextlost` / `restored` manejados; la partida sigue en 2D si no vuelve.
 - Un solo canvas para todo; nunca un canvas por objeto.
 
+### 8.1 Reglas finas de Three.js `0.160`
+
+Adaptadas de la skill `threejs-performance` de cloudai-x/threejs-skills (MIT), filtradas a lo que aplica a `three@0.160` y `WebGLRenderer`. Esa skill está escrita para r183: sus menciones a WebGPU, TSL, `THREE.Timer` en el núcleo y deprecaciones de r182/r183 **no aplican** acá.
+
+- **Medir después de `render()`.** `renderer.info` se reinicia al empezar cada `render()`: leerlo antes da el fotograma anterior. Las sombras suman sus draw calls al mismo contador.
+- **Bucle con `renderer.setAnimationLoop`**, no `requestAnimationFrame` a mano.
+- **Agrupar:** geometría estática que no se mueve y comparte material se fusiona con `BufferGeometryUtils.mergeGeometries`, por grupos de zona (una fusión de todo el mapa rompe el descarte por cámara). Piezas iguales: `InstancedMesh`. Piezas distintas con el mismo material: `BatchedMesh`.
+- **Lo que duplica draw calls sin avisar:** material `transparent` con `side: DoubleSide` (dibuja dos veces) y cualquier `MeshPhysicalMaterial` con `transmission` (redibuja todo lo opaco). El vidrio de visores y cúpulas usa transparencia simple de una cara, sin `transmission`.
+- **Descarte por cámara:** nunca `frustumCulled = false` en toda la escena. Si se mueven vértices en CPU, `geometry.computeBoundingSphere()`.
+- **Liberar texturas aparte:** `material.dispose()` no libera sus texturas; cada `texture.dispose()` va explícito (la textura de los ojos de Iris, la del terreno). `Object3D` no libera a sus hijos: `liberar.ts` recorre el grupo.
+- **Interacción:** el raycast prueba una lista explícita de objetos interactivos (`intersectObjects(lista, false)`), nunca `scene.children` recursivo en cada evento.
+- **Sin tirones al entrar:** `await renderer.compileAsync(scene, camera)` antes del primer fotograma de la base, detrás de la pantalla de carga.
+
 ## 9. Bloques de entrega (alineados con `docs/ORQUESTACION.md`)
 
 Quién ejecuta estos bloques y en qué rama está en [FLUJO.md](FLUJO.md) §1, §2 y §5: los bloques 1 y 2 son la fase 2 (en paralelo), el bloque 4 es la fase 3 (integración) y el bloque 3 va después de la entrega.
