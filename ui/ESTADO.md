@@ -17,8 +17,9 @@ Una sección por persona, máximo 5 líneas, y nadie edita la de otro (FLUJO §8
 - Bloqueo: ninguno.
 
 ## Escenario (Daniel)
-**Rama:** — · **PR:** ninguno · **Tokens:** —
-- Sin registrar todavía.
+**Rama:** feat/ui-escena-consolidada · **PR:** consolida #206, #223–#232 y #235 · **Tokens:** 🟢
+- Hecho: pila #223–#232 + base (#206: EscenaBase, escena3d, armado, baseExterior, pavimento, capturas) + materiales con tokens (#235) en una sola rama.
+- Consolidado por el agente de José mientras Daniel no tiene tokens; Daniel revisa al volver.
 
 ## Ubicación (Camilo)
 **Rama:** feat/ui-ubicacion-lugares · **PR:** #205 · **Tokens:** verde
