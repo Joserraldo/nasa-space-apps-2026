@@ -1,5 +1,6 @@
 import * as THREE from "three";
 import { describe, expect, it } from "vitest";
+import { COLORES } from "../estilos/tokens";
 import { crearMateriales, geometriaBase } from "./materiales";
 import { liberarCache, liberarEscena, liberarMateriales } from "./liberar";
 
@@ -15,6 +16,14 @@ describe("materiales y recursos compartidos", () => {
     }
     liberarMateriales(Object.values(m));
     liberarCache();
+  });
+
+  it("consume los tokens oficiales y conserva una identidad infantil por defecto", () => {
+    const m = crearMateriales();
+    expect(m.SuitBase.color.getHexString()).toBe(COLORES["traje-marfil"].slice(1).toLowerCase());
+    expect(m.Skin.color.getHexString()).toBe(COLORES["piel-nino"].slice(1).toLowerCase());
+    expect(m.Hair.color.getHexString()).toBe(COLORES["cabello-nino"].slice(1).toLowerCase());
+    liberarMateriales(Object.values(m));
   });
 
   it("libera cada recurso una sola vez al desmontar la escena", () => {

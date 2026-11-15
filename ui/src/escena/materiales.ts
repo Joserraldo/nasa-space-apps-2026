@@ -10,32 +10,11 @@
  */
 import * as THREE from "three";
 
-// ---------------------------------------------------------------------------------------------
-// TOKENS_TEMP — REEMPLAZAR POR IMPORT DE `ui/src/estilos/tokens.ts` CUANDO ENTRE (lo fusiona Jaime).
-// Mismos nombres y hex que DISEÑO.md §2. No añadir hex sueltos fuera de este bloque.
-// `piel-base` y `cabello-base` NO existen en DISEÑO §2 todavía: son provisionales, a aprobar
-// por María Paula (cada personaje los sobrescribe con su identidad, DISEÑO §4.2).
-// ---------------------------------------------------------------------------------------------
-export const TOKENS_TEMP = {
-  marfil: "#F3EEE5",
-  lila: "#EEE5F1",
-  ciruela: "#53306D",
-  cian: "#73D4E1",
-  "icono-vida": "#47BE5B",
-  "traje-marfil": "#FCE6D6",
-  teal: "#47AAB5",
-  "indigo-botas": "#675B95",
-  "regolito-claro": "#FA8D6F",
-  "regolito-medio": "#B76A78",
-  "roca-basalto": "#813E55",
-  "sombra-suelo": "#F8B9B2",
-  camino: "#BDAFC4", // DISEÑO §2.3: baldosas lila grisáceo (tramos de camino, slot Rock con color de vértice)
-  "montana-lejana": "#8975C6", // DISEÑO §2.3: cordillera lejana desaturada hacia lila (slot Rock con color de vértice)
-  "piel-base": "#C68E6A",
-  "cabello-base": "#4A3328",
-} as const;
-export type TokenTemp = keyof typeof TOKENS_TEMP;
-// ------------------------------------- fin de TOKENS_TEMP -------------------------------------
+import { COLORES, type TokenColor } from "../estilos/tokens";
+
+/** Alias de compatibilidad para las subidas del escenario; no mantiene una paleta duplicada. */
+export { COLORES as TOKENS_TEMP } from "../estilos/tokens";
+export type TokenTemp = TokenColor;
 
 export const SLOTS = ["SuitBase", "Accent", "Boots", "Skin", "Hair", "Glass", "Emissive", "Rock", "Plant"] as const;
 export type Slot = (typeof SLOTS)[number];
@@ -46,8 +25,8 @@ export const TOKEN_SLOT: Readonly<Record<Slot, TokenTemp>> = {
   SuitBase: "traje-marfil",
   Accent: "teal",
   Boots: "indigo-botas",
-  Skin: "piel-base",
-  Hair: "cabello-base",
+  Skin: "piel-nino",
+  Hair: "cabello-nino",
   Glass: "lila",
   Emissive: "cian",
   Rock: "roca-basalto",
@@ -56,7 +35,7 @@ export const TOKEN_SLOT: Readonly<Record<Slot, TokenTemp>> = {
 
 /** Color de Three desde un token (sRGB → espacio de trabajo lineal). */
 export function colorToken(token: TokenTemp): THREE.Color {
-  return new THREE.Color(TOKENS_TEMP[token]);
+  return new THREE.Color(COLORES[token]);
 }
 
 /**
