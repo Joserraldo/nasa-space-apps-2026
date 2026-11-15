@@ -84,7 +84,11 @@ Notas:
 | Árboles fuera del comedor (versión descartada) | Ya retirado: exterior árido. |
 | Rocas con formas de arco o estatua (lámina de entorno original) | Solo rocas naturales pequeñas y medianas. |
 
-## 7. Lo que no se afirma
+## 7. Otros lugares
+
+La Luna y el interior de la nave del outpost no tienen láminas todavía. Sus datos físicos básicos y su consecuencia visual están en [HISTORIA.md](HISTORIA.md) §6.1.
+
+## 8. Lo que no se afirma
 
 - Las distancias y medidas de la base (puertas, pasillos, separación entre módulos) son **medidas de producción del juego**, no estándares de ingeniería de NASA.
 - El relieve decorativo cercano (montículos, piedras) es inventado y no se presenta como dato de Mars Trek. Solo el relieve general sale del DEM.

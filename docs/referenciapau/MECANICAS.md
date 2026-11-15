@@ -8,7 +8,7 @@ Fuentes leídas en `origin/develop` (`c8c7247`, 14 nov 2026): `contracts/src/`, 
 
 ## 1. El juego en un párrafo
 
-El niño es un astronauta junior entrenando en una base en el cráter Jezero. Administra **tres recursos** que compiten entre sí (energía, soporte vital, blindaje), consulta a tres **expertas humanas** y a **Iris** (la IA de la base), y toma decisiones que **cuestan ahora y rinden después**. Llega una **tormenta solar real**, Iris se daña y da un número falso, y el niño tiene que verificar antes de decidir. Gana si la telemetría llega a la Tierra con la base viva; pierde si un recurso llega a cero. Al final ve la **cadena de causas**: qué fue decisión suya y qué fue mala suerte.
+La historia completa (premisa, personajes, dónde empieza y cómo se conecta cada paso) está en [HISTORIA.md](HISTORIA.md). En resumen de reglas: el niño administra **tres recursos** que compiten, consulta a la tripulación y a Iris, y cada decisión **cuesta ahora y rinde después**. Gana si la telemetría llega a la Tierra con la base viva; pierde si un recurso llega a cero. **Solo la misión de Jezero es jugable** (las otras cuatro: [HISTORIA.md](HISTORIA.md) §6).
 
 ## 2. Recursos
 
@@ -146,7 +146,11 @@ Ejemplos concretos: entrar al refugio caminando **no** blinda (la protección es
 
 Detalle de qué pantalla llama qué: guía del rol agentes (PR #119 en `develop`).
 
-## 8. Ciencia que la UI debe respetar
+## 8. Otras misiones
+
+`@solar-shield/missions` exporta solo `MISION_JEZERO` y el motor la importa directamente. Las misiones de Marte polo norte, Luna polo sur, Luna lado visible y outpost sorpresa existen como propuestas y PRs de datos abiertos, con huecos del tipo `Mision` listados en #152. Hasta que motor y diseño cierren #152, la UI no construye selector de misiones ni pantallas propias para ellas. Estado y resumen: [HISTORIA.md](HISTORIA.md) §6.
+
+## 9. Ciencia que la UI debe respetar
 
 1. Separar **evento observado**, **predicción** (ENLIL), **medición** y **regla de juego**. Ninguna cifra del balance se etiqueta "según NASA".
 2. La dosis de tormenta usada (RAD/Curiosity, mayo 2024) se midió en el cráter **Gale**; el juego la usa como referencia en un entrenamiento en Jezero. No se afirma medición en Jezero.

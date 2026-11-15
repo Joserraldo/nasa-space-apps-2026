@@ -1,5 +1,7 @@
 # ESCENAS: pantallas, mundo abierto, mapa y estaciones
 
+**Historia y conexiones entre escenas:** [HISTORIA.md](HISTORIA.md) §3–5.
+
 **Qué es:** el índice de cada lugar del juego con lo que contiene, qué lámina lo define y qué fase del juego lo muestra. **Cómo se ve** cada cosa está en [DISEÑO.md](DISEÑO.md); **qué hace** el jugador allí, en [MECANICAS.md](MECANICAS.md).
 
 Fases reales de la UI (`ui/src/juego/reductor.ts`): `inicio` · `satelite` · `sitio` · `modulos` · `base` · `tormenta` · `final`. El tick de la UI es de 4000 ms (`ui/src/App.tsx`); no se cambia para acomodar animaciones.
@@ -30,7 +32,7 @@ Fases reales de la UI (`ui/src/juego/reductor.ts`): `inicio` · `satelite` · `s
 Composición y capas en [DISEÑO.md](DISEÑO.md) §6. Contenido: logo oficial, `Start mission`, `Continue` (solo con guardado válido), `Settings`, selector EN/ES, acceso opcional de cuenta o invitado (`ui/src/componentes/Cuenta.tsx`), sonido, fuentes y créditos. **El HUD de recursos no se muestra en la portada.** El cable (tether) existe solo aquí.
 
 ### 2.2 E1 Intro
-Cuatro viñetas: la misión, observar, la tripulación, decidir solo. Botón de omitir que lleva al mismo estado inicial. No vuelve a mostrar el menú.
+Cuatro viñetas (texto y escena de cada una en [HISTORIA.md](HISTORIA.md) §3): una nueva misión, prepararse para observar, conocé a tu tripulación, tu turno. Botón de omitir que lleva al mismo estado inicial. No vuelve a mostrar el menú.
 
 ### 2.3 E2 Carga
 Ilustración ámbar, consejo corto, indicador indeterminado. Si falla: reintentar o volver sin perder estado.

@@ -8,8 +8,8 @@ missions/. Santiago (@kcitas) supervisa y aprueba los números de balance.
 
 LEÉ SOLO: docs/prompts/README.md (reglas comunes), design/CLAUDE.md, design/ESTADO.md,
 docs/LOOP.md, design/src/recursos.ts, missions/src/jezero.ts y los issues #152, #114, #56.
-Para saber cómo la pantalla usa tus datos: docs/referenciapau/MECANICAS.md (solo lectura,
-no lo edites).
+Para saber cómo la pantalla usa tus datos y la historia canónica de las 5 misiones:
+docs/referenciapau/MECANICAS.md y HISTORIA.md §6 (solo lectura, no los edites).
 
 PENDIENTES EN ORDEN (uno por iteración):
 1. #114 y #56: verificá si ya están resueltos en develop (DURACION_TORMENTA_TICKS = 3 por

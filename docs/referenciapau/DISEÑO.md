@@ -185,7 +185,7 @@ Láminas: [`inicio/01-inicio-actualizado.png`](referencias/inicio/01-inicio-actu
 
 En 16:9 se conserva la altura y se redistribuye el ancho sin estirar al niño ni al logo. En móvil el menú pasa a columna. La placa cian grande del concepto original **no** es el estilo de los botones.
 
-**Intro (4 viñetas omitibles):** misión, observación, tripulación y autonomía. Omitir lleva al mismo briefing. No muestra decisiones ya tomadas.
+**Intro (4 viñetas omitibles):** una nueva misión, prepararse para observar, conocé a tu tripulación, tu turno (texto en [HISTORIA.md](HISTORIA.md) §3). Omitir lleva al mismo briefing. No muestra decisiones ya tomadas.
 **Carga:** ilustración ámbar, consejo corto e indicador **indeterminado** si no hay progreso medible. Nunca porcentajes inventados.
 
 ---

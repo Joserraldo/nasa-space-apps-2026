@@ -1,0 +1,118 @@
+# HISTORIA: lore, dónde empieza el juego y cómo se conecta todo
+
+**Qué es:** la historia canónica de Solar Shield para que todos los agentes cuenten lo mismo. **Canon = solo esto:** este documento, las láminas de [`referencias/`](referencias/) y los datos de misión en código (`missions/src/jezero.ts`). Cualquier historia, nombre, mascota o propuesta anterior que no esté aquí **no es canon**, aunque aparezca en el historial, en otra rama o en un documento viejo.
+**Dueña:** María Paula (ui). Las reglas de juego siguen siendo de diseño y motor ([MECANICAS.md](MECANICAS.md)); esta página cuenta la historia que esas reglas ya producen.
+
+---
+
+## 1. La premisa
+
+**Solar Shield es un programa de entrenamiento para astronautas junior.** Vos sos el astronauta más joven de la tripulación (de 7 a 12 años, como el jugador). Tu nave llega a Marte, montás una base de entrenamiento en el cráter Jezero y tenés que protegerla de una **tormenta solar real**. La tripulación te aconseja, pero **las decisiones son tuyas**. Al final ves qué pasó por lo que elegiste y qué fue mala suerte.
+
+Tres ideas que se repiten en toda la historia y salen de la intro ([`inicio/02`](referencias/inicio/02-intro-cuatro-momentos.png)):
+
+1. **Primero mirá, después elegí** (*First, look before you choose*).
+2. **Tu tripulación ayuda, vos decidís** (*Your crew helps. You decide*).
+3. **Explorá, preguntá, decidí** (*Explore. Ask. Decide*).
+
+Es un **entrenamiento**: la base es una recreación educativa, no una misión real de NASA. Los datos de tormentas, terreno y radiación sí son reales y llevan su fuente.
+
+## 2. Personajes
+
+En el juego nadie tiene nombre propio: se los llama por su rol (así están en el código, `agentes.titulo.*`). No inventar nombres.
+
+| Personaje | Quién es en la historia | Qué le importa (su prioridad cuando aconseja) | Cómo se ve |
+| --- | --- | --- | --- |
+| **Vos** (el jugador) | Astronauta junior en su primera misión de entrenamiento. | Aprender a decidir con recursos limitados. | El niño de [`personajes/08`](referencias/personajes/08-nino-proporciones-poses.png). |
+| **La Ingeniera** | Responsable de energía y reparaciones. Es quien repara a Iris. | Que la base tenga energía y que los equipos funcionen. | [`personajes/01`](referencias/personajes/01-ingeniera-poses.png) |
+| **La Doctora de radiación** | Cuida la salud de la tripulación frente a la radiación. | Que nadie reciba más radiación de la necesaria. | [`personajes/03`](referencias/personajes/03-doctora-poses.png) |
+| **La Meteoróloga solar** | Observa el Sol y avisa de las tormentas. | Saber qué viene y cuándo; leer bien los datos. | [`personajes/05`](referencias/personajes/05-meteorologa-poses.png) |
+| **El Matemático** | Responde "¿y si...?": simula una opción sin aplicarla. Usos limitados. | Comparar antes de decidir. | Sin lámina todavía (retrato neutro de la familia de trajes). |
+| **Iris** | La IA de la base. Te guía al principio, te da pistas y, en plena tormenta, **la radiación la daña y te da un dato equivocado**. | Ayudarte, hasta que falla. | Rover de 4 ruedas con cara en pantalla ([`mundo/01`](referencias/mundo/01-exterior-tercera-persona.png), [`inicio/02`](referencias/inicio/02-intro-cuatro-momentos.png)). |
+| **Control de misión** | La Tierra. Recibe tu telemetría y responde con retraso, porque la luz tarda en llegar. | Saber que la base está viva. | No aparece en persona: es un mensaje en la consola de la mesa. |
+
+Las expertas **no siempre están de acuerdo**: en la tormenta, la Doctora defiende refugiarse y la Ingeniera subir el escudo. Ese desacuerdo es el corazón de la misión.
+
+## 3. Dónde empieza: de la portada a la base
+
+| Orden | Momento | Qué pasa en la historia | Lámina | Fase UI |
+| --- | --- | --- | --- | --- |
+| 1 | **Portada** | Flotás en órbita, sujeto a tu nave por un cable, saludando. Todavía no empezó nada. | [`inicio/01`](referencias/inicio/01-inicio-actualizado.png) | `inicio` |
+| 2 | **Intro 1: una nueva misión** | Estás sentado en la cabina de la nave; por la ventana se ve Marte. "A new training mission begins." | [`inicio/02`](referencias/inicio/02-intro-cuatro-momentos.png) | `inicio` |
+| 3 | **Intro 2: prepararse para observar** | En la consola preparás el satélite que vas a soltar. "First, look before you choose." | idem | `inicio` |
+| 4 | **Intro 3: conocé a tu tripulación** | La Ingeniera, la Doctora y la Meteoróloga en la mesa redonda de la nave, con Iris al lado. "Your crew helps. You decide." | idem | `inicio` |
+| 5 | **Intro 4: tu turno** | Ves cómo podría ser la base y los tres medidores. "Explore. Ask. Decide." → `Continue`. | idem | `inicio` |
+| 6 | **Carga** | Se prepara la misión (indicador honesto). | [`inicio/03`](referencias/inicio/03-panel-carga.png) | entre fases |
+| 7 | **Paso 1** | Empieza Jezero (§4). | — | `satelite` |
+
+La intro se puede saltar en cualquier viñeta y lleva al mismo punto. **La base de la viñeta 4 es una vista previa**: todavía no elegiste sitio ni construiste nada.
+
+## 4. Misión 1: Jezero, la historia paso a paso
+
+Datos de juego: `MISION_JEZERO` en `missions/src/jezero.ts`. Textos de los títulos: `mision.jezero.paso1..8`.
+
+| Paso | Título en el juego (EN) | Lo que pasa en la historia | Qué conecta con lo siguiente |
+| --- | --- | --- | --- |
+| 1 | *Release the satellite* | Desde la nave en órbita soltás un satélite para mirar Marte antes de bajar. | Sin satélite no hay mapa: es "primero mirá". |
+| 2 | *Draw the satellite's path* | Trazás su recorrido sobre Jezero; mirar cuesta batería y señal. | Lo que el satélite ve te deja comparar los sitios. |
+| 3 | *Pick a landing spot* | Elegís uno de 4 sitios. Ninguno es perfecto: cada uno gana algo y pierde algo. | **El sitio cambia tus recursos de partida** (costo ahora, beneficio después). |
+| 4 | *Build two modules* | Ya en la superficie, construís **2 de 5** módulos: panel solar, reciclador de agua, escudo, invernadero o antena. | **Los módulos cambian lo que pasa después:** si tenés invernadero, refugiarte en la tormenta te obliga a apagarlo. |
+| 5 | *A real solar storm is coming!* | La Meteoróloga detecta una tormenta solar **real** (20 de mayo de 2024, medida por Curiosity). El juego se pausa y ves la fuente. | La tormenta hace daño durante 3 ticks: hay que decidir ya. |
+| 6 | *Two experts disagree* | La Doctora dice "refugiate"; la Ingeniera, "subí el escudo"; también podés aguantar. **Iris se daña** y te da un número de blindaje equivocado. Lo comparás con el medidor, lo verificás con la Ingeniera y decidís vos. | Tu decisión queda registrada como causa. |
+| 7 | *Send data to Earth* | Enviás la telemetría a Control de misión. La respuesta tarda (la luz tarda minutos entre Marte y la Tierra). Mientras, seguís gestionando. | **Si la respuesta llega con la base viva, ganás.** |
+| 8 | *What happened and why* | Ves el resultado, la **cadena de causas** (tus decisiones frente a la mala suerte), tarjetas de ciencia con fuente y una pregunta para pensar. | Podés repetir la misma partida o probar otra. |
+
+**Cómo se pierde:** si un recurso llega a cero. **Mala suerte:** micrometeorito, fallo de panel, fuga de agua o tormenta de polvo pueden aparecer; el final los separa de tus decisiones.
+
+**El mundo es abierto:** desde el paso 4 caminás libremente por la base ([ESCENAS.md](ESCENAS.md) §3). Los pasos ordenan las **decisiones**, no los lugares: ninguna puerta se cierra por no haber visitado una sala.
+
+## 5. Mapa de conexiones
+
+```text
+Portada (órbita) --Start--> Intro x4 (cabina de la nave) --Continue/Skip--> Carga
+  --> [1-2] Satélite: órbita sobre Jezero ........ fase satelite  (E3)
+  --> [3]   Elegir sitio: mapa real de Jezero ..... fase sitio     (E4)  aterrizar()
+  --> [4]   Construir 2 módulos en la base ........ fase modulos   (E5)  colocar_modulo
+  --> base abierta: caminar, consultar, decidir .... fase base      (E6)
+        Tormenta revelada (tick 3)
+  --> [5-6] Tormenta y dilema, Iris dañada ........ fase tormenta  (E7)  elegirDilema()
+  --> [7]   Telemetría a la Tierra (vuelve a base)  fase base      (E6)  enviar_telemetria
+        Respuesta llega (o un recurso llega a 0)
+  --> [8]   Final y cadena de causas .............. fase final     (E8)  resumenPartida()
+        --> Repetir semilla / Nueva semilla --> Paso 1
+```
+
+Escenas (E0–E9): [ESCENAS.md](ESCENAS.md) §1. Funciones: [MECANICAS.md](MECANICAS.md) §7.
+
+## 6. Las cinco ubicaciones (campaña)
+
+**Solo Jezero es jugable.** Las otras cuatro están contempladas en las tablas de recursos y tienen propuestas, voces de expertos y datos en distintos estados, pero **el motor todavía lee solo Jezero** (issue #152). Regla para la UI: **ninguna misión aparece como jugable hasta que su código y el motor estén integrados y diseño la apruebe.** En la demo no se muestra un selector de misiones.
+
+Estado verificado el 14 nov 2026 en GitHub (`gh pr view` / `gh issue view`):
+
+| Misión | Historia en una frase | Qué aprende el niño | Estado real |
+| --- | --- | --- | --- |
+| **1. Marte, cráter Jezero** | Montás una base, llega una tormenta real e Iris falla. | Decidir con recursos limitados y verificar antes de confiar. | **Jugable.** Datos en `missions/`; se puede ganar por telemetría (#113 cerrado el 14 nov). Abierto: #114. |
+| **2. Marte, polo norte** | La luz cambia con las estaciones y llega una noche polar larga. | Administrar energía cuando los paneles dejan de producir. | Propuesta #97 abierta; voces #127 fusionadas; datos de misión #153 abiertos; terreno #148 abierto. |
+| **3. Luna, polo sur** | Base cerca del polo sur: explorar zonas con posible hielo o priorizar la seguridad. | Elegir entre explorar, protegerse y abastecerse. | Propuesta #98 abierta; voces #128 fusionadas; datos de misión #154 abiertos; terreno #126 abierto. |
+| **4. Luna, lado visible** | Una noche lunar muy larga: guardar energía para la calefacción y protegerse de la tormenta. | Almacenar energía importa tanto como producirla. | Propuesta #100 abierta; voces #131 abiertas; datos de misión #156 abiertos; luz #147 y blindaje #160 abiertos. |
+| **5. Outpost sorpresa** | Tu puesto no está en un planeta: estás dentro de una nave rumbo a la Luna. | Cómo se protege a los astronautas durante el viaje. | Propuesta #99 abierta; voces #129 abiertas; datos de misión #155 abiertos. |
+
+### 6.1 Escenarios de las misiones futuras (sin láminas todavía)
+
+No hay láminas v8 para la Luna ni para el interior de la nave del outpost. **No se construyen hasta tener lámina aprobada por María Paula.** Cuando se hagan, mantienen la familia v8 (formas, paleta de UI, personajes) y respetan la física real del lugar, igual que [MARTE.md](MARTE.md) hace con Marte:
+
+| Lugar | Datos físicos ([NSSDC Moon Fact Sheet](https://nssdc.gsfc.nasa.gov/planetary/factsheet/moonfact.html), verificado 14 nov) | Consecuencia visual |
+| --- | --- | --- |
+| Luna (polo sur y lado visible) | Gravedad 1,62 m/s²; prácticamente sin atmósfera (3 x 10⁻¹⁵ bar); día solar de 29,53 días terrestres; de 95 K a 390 K en el ecuador | Cielo **negro** también de día, sombras duras y negras sin luz de cielo, regolito gris, la Tierra visible desde el lado visible, sin polvo flotando. |
+| Outpost (interior de nave) | Sin terreno | Solo interiores: cabina, centro y fondo de la nave, con la familia de corredores y módulos v8. |
+| Marte polo norte | Mismas leyes que [MARTE.md](MARTE.md), con luz más baja y escarcha estacional | Pendiente de lámina. |
+
+## 7. Lo que no es canon
+
+- Nombres propios para la tripulación o el jugador.
+- La mascota capibara, cualquier personaje de franquicias, robots en lugar de las expertas.
+- Iris humanoide o voladora.
+- Una "barra de salud" del niño o muertes narrativas.
+- Misiones distintas de Jezero presentadas como jugables.
+- Historias, nombres o estéticas de documentos anteriores a esta reorganización (atlas v2–v5 y v7, prototipo `docs/referencias/3d/`, propuestas con GLB).
