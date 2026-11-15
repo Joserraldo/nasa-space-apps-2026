@@ -5,12 +5,14 @@ Base única: implementación nueva de Claude en `ui/src/escena/personajes/`. Los
 ## Uso
 
 ```ts
-import { crearPersonaje } from "../../ui/src/escena/personajes/personaje.js";
-import { animar } from "../../ui/src/escena/personajes/animaciones.js";
-const personaje = crearPersonaje("ingeniera");
-// Añadir personaje.grupo al renderer de la escena.
+import { crearPersonaje, crearIris, animar } from "../../ui/src/escena/personajes/index.js";
+const personaje = crearPersonaje("ingeniera"); // Variante B por defecto
+const iris = crearIris(); // Iris B por defecto
+// Añadir personaje.grupo e iris.grupo al renderer de la escena.
 animar(personaje, "caminar", segundos, { quieto: movimientoReducido });
+iris.animar(segundos, { velocidad: 0.9, quieto: movimientoReducido });
 personaje.liberar();
+iris.liberar();
 ```
 
 Identidades: `ingeniera`, `doctora`, `meteorologa`, `nino`. Cada humano usa una SkinnedMesh, un rostro intercambiable y un visor: tres llamadas de dibujo; Iris usa dos. Las extremidades tienen huesos en hombro, codo, muñeca, cadera, rodilla y tobillo. Los materiales compartidos no se liberan al retirar una instancia; sí sus geometrías y esqueleto.
