@@ -1,12 +1,12 @@
 # Estado — Frente A (José)
 
 **Hecho (16 nov):**
-- Fusionados: A0 (#337), A1 (#340), A2 parte 1 (#345), A3 (#347, falta aprobación), A4 (#353), A5 (#365),
-  A12 (#369) y A13 (#373).
-- #372 (rama `feat/frente-a-372-camara-ajustes`): `camara` en `AjustesJugador`, "tercera" por defecto y
-  validada; los ajustes viejos sin `camara` siguen cargando. Destraba E4.
+- Fusionados: A0, A1, A2 parte 1, A3 (falta aprobación), A4, A5, A12, A13 y #372 (cámara en ajustes).
+- A6 (#382): Doctora y Meteoróloga en sus estaciones, `[E]` para hablar con una experta. Espera fusión.
+- A7 (rama `feat/frente-a-A7-coreografia`, borrador, depende de #382): `coreografia.ts` con la tabla de los 14
+  gestos para los cuatro humanos; conectada al niño y a la Ingeniera (lo de "mientras tanto").
 
-**Sigue:** A7 (coreografía con los 14 gestos), después A6. Revisar #370 de B (lo pide #360).
+**Sigue:** cuando entre #382, conectar la Doctora y la Meteoróloga a `gestoDe` y sacar A7 de borrador.
 
 **Bloqueado:**
 - E: #339 (quizá resuelto por #367), #344, #364 y #368. Al conectar #344, rehacer las capturas de A2.
