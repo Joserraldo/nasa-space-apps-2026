@@ -1,4 +1,4 @@
-import { CLASSIFIER_FALLBACK, ClassifierOutputSchema, EquipmentSchema, type Cause, type ClassifierIntent, type ClassifierOutput, type Expert, type GameState } from "@solar-shield/contracts";
+import { CLASSIFIER_FALLBACK, CONFIDENCE_THRESHOLD, ClassifierOutputSchema, EquipmentSchema, type Cause, type ClassifierIntent, type ClassifierOutput, type Expert, type GameState } from "@solar-shield/contracts";
 import { clasificarConAtajos, EXPERTO_DE } from "./atajos.js";
 import { conversar, type OpcionesConversar } from "./conversar.js";
 import type { Dialogo, Linea } from "./dialogo.js";
@@ -196,7 +196,8 @@ export function turno(entrada: EntradaConversacion, estado: GameState, memoria: 
     ? conversar({ clasificacion: s }, estado, o)
     : { experto: (entrada as { con: Interlocutor }).con, prioridad: "charla", lineas: [{ clave: `agentes.conversacion.saludo.${(entrada as { con: Interlocutor }).con}` }] };
   const habla = dialogo.experto;
-  const entendido = !s || (s.confianza > 0 && s.accion !== "fuera_de_tema");
+  // PLAN §2.3: bajo el umbral el personaje pregunta; eso no cuenta como entendido ni se recuerda.
+  const entendido = !s || (s.confianza >= CONFIDENCE_THRESHOLD && s.accion !== "fuera_de_tema");
   return {
     habla,
     actor: actorDe(habla),

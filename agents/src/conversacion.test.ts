@@ -66,6 +66,13 @@ describe("contrato de conversación: un turno", () => {
     const r = turno({ via: "voz", transcripcion: "will the rays make us ill", con: "ingeniera" }, s, MEMORIA_INICIAL, { ...o, clasificacion });
     expect(r).toMatchObject({ habla: "doctora", actor: "doctora", entendido: true, origen: "modelo" });
   });
+  it("con confianza bajo el umbral el personaje pregunta y no queda como última pregunta", () => {
+    const clasificacion = validarClasificacion({ version: "0", experto: "ia_base", accion: "estado_salud", parametros: {}, confianza: 0.4, fuente: "modelo" });
+    const r = turno({ via: "texto", texto: "my tummy feels funny" }, s, MEMORIA_INICIAL, { ...o, clasificacion });
+    expect(r).toMatchObject({ habla: "doctora", entendido: false });
+    expect(r.globo?.clave).toBe("agentes.aclarar.doctora");
+    expect(r.memoria.ultima).toBeNull();
+  });
   it("los atajos ganan al modelo: lo que se entiende sin red no depende de él", () => {
     const clasificacion = validarClasificacion({ version: "0", experto: "ia_base", accion: "saludo", parametros: {}, confianza: 0.9, fuente: "modelo" });
     expect(turno({ via: "texto", texto: "is a storm coming?" }, s, MEMORIA_INICIAL, { ...o, clasificacion })).toMatchObject({ habla: "meteorologa", origen: "regex" });
