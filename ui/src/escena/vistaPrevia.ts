@@ -41,6 +41,9 @@ const VISTA_EJEMPLO: VistaEscena = {
 };
 
 const parametros = new URLSearchParams(location.search);
+// `?fase=tormenta|final` (D3): ver la luz de la tarde o del atardecer.
+const fasePedida = parametros.get("fase");
+if (fasePedida === "tormenta" || fasePedida === "final") VISTA_EJEMPLO.fase = fasePedida;
 if (parametros.get("modulos") === "todos") {
   for (const id of ["panel_solar", "antena", "reciclador_agua", "escudo", "invernadero"] as const) VISTA_EJEMPLO.modulos[id] = "funcionando";
 }

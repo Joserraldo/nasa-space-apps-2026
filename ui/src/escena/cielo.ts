@@ -164,8 +164,22 @@ const rotLuz = new THREE.Matrix4();
 const ejeX = new THREE.Vector3();
 const ejeY = new THREE.Vector3();
 const ejeZ = new THREE.Vector3();
-const DIR_SOL = new THREE.Vector3(...LUZ.direccionSol);
-rotLuz.lookAt(DIR_SOL, new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, 1, 0)).extractBasis(ejeX, ejeY, ejeZ);
+/** Dirección hacia el Sol en este momento (la cambia el ciclo del día, D3); por defecto la de `LUZ`. */
+const DIR_SOL = new THREE.Vector3();
+const ORIGEN = new THREE.Vector3();
+const ARRIBA = new THREE.Vector3(0, 1, 0);
+
+/** Fija la dirección hacia el Sol (normalizada) que usan la sombra que sigue al niño y el domo. */
+export function fijarDireccionSol(x: number, y: number, z: number): void {
+  DIR_SOL.set(x, y, z).normalize();
+  rotLuz.lookAt(DIR_SOL, ORIGEN, ARRIBA).extractBasis(ejeX, ejeY, ejeZ);
+}
+
+/** Dirección hacia el Sol vigente (copia). */
+export function direccionSolActual(destino = new THREE.Vector3()): THREE.Vector3 {
+  return destino.copy(DIR_SOL);
+}
+fijarDireccionSol(...LUZ.direccionSol);
 
 /**
  * Centro de la caja de sombra para un punto del suelo, ajustado a la grilla de píxeles de sombra en
@@ -211,23 +225,36 @@ function suave(a: number, b: number, x: number): number {
   return t * t * (3 - 2 * t);
 }
 
-/** Domo en gradiente horizonte→cénit con el halo junto al Sol pintado en color de vértice. */
-function crearDomo(ambiente: Ambiente): THREE.Mesh {
-  const geo = new THREE.SphereGeometry(RADIO_DOMO, 48, 24);
+const mezclar = (a: Rgb, b: Rgb, k: number): Rgb => [a[0] + (b[0] - a[0]) * k, a[1] + (b[1] - a[1]) * k, a[2] + (b[2] - a[2]) * k];
+
+/**
+ * Pinta el domo con el gradiente horizonte→cénit y el halo junto al Sol, mezclando el ambiente de día
+ * (`k` = 0) con el de atardecer (`k` = 1) en lineal; `dir` es la dirección hacia el Sol (normalizada).
+ */
+export function pintarDomo(geo: THREE.BufferGeometry, k: number, dir: Readonly<{ x: number; y: number; z: number }>): void {
   const pos = geo.getAttribute("position");
-  const colores = new Float32Array(pos.count * 3);
-  const halo = hexALineal(PALETA_CIELO[ambiente].halo);
-  const radioHalo = RADIO_HALO * TAMANO_HALO[ambiente];
-  const [sx, sy, sz] = LUZ.direccionSol;
+  let atributo = geo.getAttribute("color") as THREE.BufferAttribute | undefined;
+  if (!atributo) geo.setAttribute("color", (atributo = new THREE.BufferAttribute(new Float32Array(pos.count * 3), 3)));
+  const colores = atributo.array as Float32Array;
+  const halo = mezclar(hexALineal(PALETA_CIELO.dia.halo), hexALineal(PALETA_CIELO.atardecer.halo), k);
+  const radioHalo = RADIO_HALO * (TAMANO_HALO.dia + (TAMANO_HALO.atardecer - TAMANO_HALO.dia) * k);
   for (let i = 0; i < pos.count; i++) {
     const x = pos.getX(i) / RADIO_DOMO, y = pos.getY(i) / RADIO_DOMO, z = pos.getZ(i) / RADIO_DOMO;
     // Banda clara ancha junto al horizonte: sqrt abre el gradiente hacia arriba.
-    const base = colorCielo(Math.sqrt(Math.max(0, y)), ambiente);
-    const angulo = Math.acos(Math.min(1, Math.max(-1, x * sx + y * sy + z * sz)));
+    const t = Math.sqrt(Math.max(0, y));
+    const base = mezclar(colorCielo(t, "dia"), colorCielo(t, "atardecer"), k);
+    const angulo = Math.acos(Math.min(1, Math.max(-1, x * dir.x + y * dir.y + z * dir.z)));
     const w = 1 - suave(0, radioHalo, angulo);
     for (let c = 0; c < 3; c++) colores[i * 3 + c] = (1 - w) * base[c]! + w * halo[c]!;
   }
-  geo.setAttribute("color", new THREE.BufferAttribute(colores, 3));
+  atributo.needsUpdate = true;
+}
+
+/** Domo en gradiente horizonte→cénit con el halo junto al Sol pintado en color de vértice. */
+function crearDomo(ambiente: Ambiente): THREE.Mesh {
+  const geo = new THREE.SphereGeometry(RADIO_DOMO, 48, 24);
+  const [sx, sy, sz] = LUZ.direccionSol;
+  pintarDomo(geo, ambiente === "dia" ? 0 : 1, { x: sx, y: sy, z: sz });
   const mat = new THREE.MeshBasicMaterial({ vertexColors: true, side: THREE.BackSide, fog: false, depthWrite: false, toneMapped: false });
   const domo = new THREE.Mesh(geo, mat);
   domo.name = "Sky_Dome";
