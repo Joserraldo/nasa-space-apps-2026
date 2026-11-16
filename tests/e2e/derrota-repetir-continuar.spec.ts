@@ -164,6 +164,10 @@ test("perder WebGL deja la misma partida en el respaldo 2D, y el mapa lleva al n
   await page.getByRole("button",{name:"Close",exact:true}).click();
   expect(await energia(page)).toBe(energiaAntes);
 
+  // Tras consultar a la Ingeniera, volver a la consola para comprobar su misma interacción con E.
+  await page.getByRole("button", { name: "Map", exact: true }).click();
+  await page.getByRole("list", { name: "Places" }).getByRole("button", { name: /^Mission control/ }).click();
+
   // E2: la tecla E va por la misma vía que el botón (un solo manejador) y abrir no cobra (invariante 1).
   // Con algo abierto el mundo está bloqueado; cerrado el plan, E vuelve a abrirlo desde la consola.
   await expect(page.getByRole("button", { name: "Wait a turn at the console" })).toBeVisible();
