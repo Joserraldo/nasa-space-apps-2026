@@ -1,15 +1,16 @@
 # Estado del Frente D (Daniel)
 
-Actualizado: 16 nov 2026, iteración 10 del loop.
+Actualizado: 16 nov 2026, iteración 12 del loop.
 
 **Hecho**
-- D2 (#350), D4 (#371) y D5 corredor (#376): fusionados.
+- D2 (#350), D4 (#371), D5 corredor (#376) y D5 taller (#381): fusionados.
 - D1 (#342, borrador): hábitat y antena con los pedidos de F3 corregidos. Espera la revisión de F3 y a C2.
-- D5 taller (#381): taller como `estaciones/05` en `activos/interiores/taller.ts`, con puntos de uso y obstáculos para A8. Vista previa `/escena.html?sala=taller`. 5 draw calls, 1 642 triángulos.
+- D5 hábitat (#388): descanso, comedor y enfermería como `estaciones/06` y `07` en `activos/interiores/habitat.ts`. Vista previa `/escena.html?sala=habitat`. 6 draw calls, unos 1 500 triángulos.
 
 **Sigue**
-- D5 parte 3: hábitat (estaciones 06 a 08).
+- Unificar `tinte` y la caja de sala del taller con `interiores/comun.ts` (PR chico aparte).
+- D3 (día y atardecer con `cicloDia.ts`).
 
 **Bloqueado**
 - C2 sin PR (bloquea cerrar D1).
-- A8 (José) conecta corredor y taller al juego; las puertas exteriores dependen de C2.
+- A8 (José) conecta las salas al juego; las puertas exteriores dependen de C2.
