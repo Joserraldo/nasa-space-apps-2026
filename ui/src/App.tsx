@@ -16,7 +16,7 @@ import { Carga } from "./componentes/Carga.js";
 import { Creditos } from "./componentes/Creditos.js";
 import { Transicion } from "./componentes/Transicion.js";
 import { MundoBase } from "./pantallas/MundoBase.js";
-import type { TemaPregunta } from "@solar-shield/agents";
+import { MEMORIA_INICIAL, type MemoriaConversacion, type TemaPregunta } from "@solar-shield/agents";
 import { MISION_JEZERO } from "@solar-shield/missions";
 import { cargarAjustes, guardarAjustes, type CalidadGrafica } from "./juego/ajustes.js";
 import { almacenDelNavegador, cargarPartida, guardarPartida } from "./juego/guardado.js";
@@ -61,6 +61,9 @@ function Pantalla({ idioma, setIdioma, sonido, setSonido, grafica }: {
   // HUD progresivo (E3): qué partes ya aparecieron en esta partida. Una partida nueva empieza sin ellas;
   // una partida retomada con "Continue" las trae todas (el niño ya las conoció).
   const [progreso, setProgreso] = useState<ProgresoHud>(PROGRESO_INICIAL);
+  // #377: lo que la tripulación recuerda de esta partida. Vive mientras dura la sesión; guardarlo con la
+  // partida es del frente A (juego/guardado, #360). Una partida nueva empieza sin recuerdos.
+  const [memoria, setMemoria] = useState<MemoriaConversacion>(MEMORIA_INICIAL);
   const avanzarHud = (p: Partial<ProgresoHud>) => setProgreso((a) => (Object.entries(p).every(([k, v]) => a[k as keyof ProgresoHud] === v) ? a : { ...a, ...p }));
   const enBase = j.fase === "base";
   // E5 a E7 comparten un solo mundo 3D (MundoBase): cambiar de fase no vuelve a montar la escena.
@@ -95,7 +98,7 @@ function Pantalla({ idioma, setIdioma, sonido, setSonido, grafica }: {
     else if (j.fase === "final") tocar(j.estado.resultado === "exito" ? "exito" : "fallo", sonido);
   }, [j.fase, j.estado.resultado, sonido]);
   useEffect(() => { if (j.fase === "inicio") setInicio("portada"); }, [j.fase]);
-  const empezarMision = () => { setProgreso(PROGRESO_INICIAL); enviar({ tipo: "fase", fase: "satelite" }); };
+  const empezarMision = () => { setProgreso(PROGRESO_INICIAL); setMemoria(MEMORIA_INICIAL); enviar({ tipo: "fase", fase: "satelite" }); };
   // La carga es un respiro corto entre la intro y la órbita; se puede saltar con "Skip".
   useEffect(() => {
     if (j.fase !== "inicio" || inicio !== "carga") return;
@@ -141,7 +144,7 @@ function Pantalla({ idioma, setIdioma, sonido, setSonido, grafica }: {
                   onConverso={() => avanzarHud({ conversado: true })} />
               )}
               {enBase && (
-                <PantallaBase estado={j.estado} colocados={j.colocados} ultimas={j.ultimas} hud={{ reloj }} progreso={progreso} onProgreso={avanzarHud}
+                <PantallaBase estado={j.estado} colocados={j.colocados} ultimas={j.ultimas} hud={{ reloj }} progreso={progreso} onProgreso={avanzarHud} memoria={memoria} onMemoria={setMemoria}
                   onAccion={accion} onReanudar={() => enviar({ tipo: "pausa", pausado: false })} />
               )}
             </Transicion>
@@ -156,7 +159,7 @@ function Pantalla({ idioma, setIdioma, sonido, setSonido, grafica }: {
             {j.fase === "inicio" && inicio === "carga" && <Carga consejo={0} sonido={sonido} onSonido={alternarSonido} onSaltar={empezarMision} />}
             {j.fase === "satelite" && <PantallaOrbita estado={j.estado} onContinuar={() => enviar({ tipo: "fase", fase: "sitio" })} />}
             {j.fase === "sitio" && <PantallaSitio estado={j.estado} onElegir={(s) => { tocar("confirmar", sonido); enviar({ tipo: "sitio", sitio: s }); }} />}
-            {j.fase === "final" && <PantallaFinal estado={j.estado} onOtra={() => { setProgreso(PROGRESO_INICIAL); enviar({ tipo: "nueva" }); }} />}
+            {j.fase === "final" && <PantallaFinal estado={j.estado} onOtra={() => { setProgreso(PROGRESO_INICIAL); setMemoria(MEMORIA_INICIAL); enviar({ tipo: "nueva" }); }} />}
           </Transicion>
         )}
         {creditos && <Creditos onCerrar={() => setCreditos(false)} />}

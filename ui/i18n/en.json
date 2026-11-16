@@ -268,6 +268,7 @@
   "ui.base.tripulacion.campo": "Ask your crew…",
   "ui.base.dialogo.otra": "Ask another expert",
   "ui.base.globo.lector": "{quien} says: {texto}",
+  "ui.base.charla.opciones": "Keep talking",
   "ui.base.dialogo.plan": "Compare the plan: {plan}",
   "ui.base.novedad.detalle": "{causaKey} {delta}",
   "ui.mapa.titulo": "Jezero base map",

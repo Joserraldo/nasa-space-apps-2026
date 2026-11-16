@@ -223,8 +223,9 @@ export function MundoBase({ fase, estado, colocados, calidad, movimientoReducido
               hablando={hablando}
               objetivo={guia?.objetivo ?? null}
               iris={guia?.iris ?? null}
-              // El globo de una conversación corta (E5) pasa delante del de la guía; al irse, vuelve el de Iris.
-              globo={globo ?? guia?.globo ?? null}
+              // Un globo a la vez: el de una conversación corta (E5) pasa delante del de la guía, y mientras
+              // alguien habla en una charla la guía calla. Al terminar, vuelve el de Iris.
+              globo={globo ?? (hablando ? null : guia?.globo ?? null)}
               onCalidad={onCalidad}
               onWebGLPerdido={() => setSin3d(true)}
               destino={destino}

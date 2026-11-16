@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { conversar, type Dialogo, type Entrada } from "@solar-shield/agents";
+import { conversarConRed, interlocutorDe, MEMORIA_INICIAL, reaccionTripulacion, type Dialogo, type EntradaConversacion, type MemoriaConversacion, type OpcionConversacion } from "@solar-shield/agents";
 import type { Action, BaseAction, Equipment, GameState } from "@solar-shield/contracts";
 import { referenciaDosis } from "@solar-shield/data";
 import { telemetriaPendiente, tormentaActiva, type Novedades } from "@solar-shield/engine";
@@ -56,7 +56,7 @@ const signo = (n: number) => (n > 0 ? `+${n}` : `${n}`);
 /** Qué ocupa el panel cuando no hay una decisión: la tripulación (con las acciones) o el mapa. */
 type Panel = "tripulacion" | "mapa" | null;
 
-export function PantallaBase({ estado, colocados = [], ultimas, hud, progreso = PROGRESO_INICIAL, onProgreso, onAccion, onReanudar }: {
+export function PantallaBase({ estado, colocados = [], ultimas, hud, progreso = PROGRESO_INICIAL, onProgreso, memoria = MEMORIA_INICIAL, onMemoria, onAccion, onReanudar }: {
   estado: GameState;
   colocados?: readonly Equipment[];
   ultimas: Novedades | null;
@@ -65,6 +65,9 @@ export function PantallaBase({ estado, colocados = [], ultimas, hud, progreso = 
   /** Qué partes del HUD ya aparecieron en esta partida (E3); lo guarda App para que sobreviva a la tormenta. */
   progreso?: ProgresoHud;
   onProgreso?(p: Partial<ProgresoHud>): void;
+  /** Lo que la tripulación recuerda de esta partida (frente B, #377). Lo guarda App; solo sale texto. */
+  memoria?: MemoriaConversacion;
+  onMemoria?(m: MemoriaConversacion): void;
   onAccion(a: Action): void;
   onReanudar(): void;
 }) {
@@ -78,6 +81,14 @@ export function PantallaBase({ estado, colocados = [], ultimas, hud, progreso = 
   const [panel, setPanel] = useState<Panel>(null);
   const [preguntada, setPreguntada] = useState<string | null>(null);
   const [texto, setTexto] = useState("");
+  // #377: la conversación pasa por el adaptador de B (atajos, modelo vía /api/clasificar o respaldo local).
+  // `solicitud` descarta una respuesta que llega tarde si el niño ya cerró o abrió otra cosa.
+  const [opciones, setOpciones] = useState<OpcionConversacion[]>([]);
+  const [ocupado, setOcupado] = useState(false);
+  const solicitud = useRef(0);
+  const memoriaActual = useRef(memoria);
+  memoriaActual.current = memoria;
+  useEffect(() => () => { solicitud.current++; }, []);
   const [fallasIris, setFallasIris] = useState(0);
   // Panel 04 "Decision recorded": `antes` es el estado al confirmar; `despues` se toma en el render que ya trae la acción aplicada.
   const [registro, setRegistro] = useState<{ antes: GameState; despues: GameState | null } | null>(null);
@@ -128,7 +139,14 @@ export function PantallaBase({ estado, colocados = [], ultimas, hud, progreso = 
     setPlan(null);
     devolverFoco();
   }
+  /** Deja de esperar la respuesta en curso (cerrar, abrir otro panel o decidir). No cambia nada del juego. */
+  function soltarCharla() {
+    solicitud.current++;
+    setOcupado(false);
+    setOpciones([]);
+  }
   function confirmar(a: BaseAction) {
+    soltarCharla();
     if (confirmada.current) return;
     confirmada.current = true;
     setRegistro({ antes: estado, despues: null });
@@ -150,33 +168,46 @@ export function PantallaBase({ estado, colocados = [], ultimas, hud, progreso = 
    * `desdeMundo`: la conversación nace en el mundo (`[E]` en un lugar o un tripulante) sin una decisión
    * abierta. Solo así, si es corta y quien habla está en escena, va al globo (E5); si no, a la franja.
    */
-  function hablar(entrada: Entrada, desdeMundo = false) {
-    const d = conversar(entrada, estado, { tormentaActiva: tormentaActiva(estado), dosisMarte: referenciaDosis("marte-superficie"), vecesFallaIris: fallasIris });
-    if ("falla" in d) setFallasIris((n) => n + 1);
+  async function hablar(entrada: EntradaConversacion, desdeMundo = false) {
+    const n = ++solicitud.current;
+    setOcupado(true);
+    const r = await conversarConRed(entrada, estado, memoriaActual.current, {
+      tormentaActiva: tormentaActiva(estado), dosisMarte: referenciaDosis("marte-superficie"), vecesFallaIris: fallasIris, reaccion: reaccionTripulacion,
+    });
+    if (n !== solicitud.current) return;
+    setOcupado(false);
+    memoriaActual.current = r.memoria;
+    onMemoria?.(r.memoria);
+    const d = r.dialogo;
+    if ("falla" in d) setFallasIris((v) => v + 1);
     const actor = actorDeExperto(d.experto);
     const texto = d.lineas.map((l) => t(l.clave, l.vars)).join(" ");
-    if (desdeMundo && actor && !mundo.sin3d && formaDeDialogo(d, texto) === "globo") {
+    // E5: con opciones para seguir hablando es una conversación larga: va a la franja con sus botones.
+    if (desdeMundo && actor && !mundo.sin3d && r.opciones.length === 0 && formaDeDialogo(d, texto) === "globo") {
       setDialogo(null);
+      setOpciones([]);
       setCorto((c) => ({ actor, experto: d.experto, texto, n: (c?.n ?? 0) + 1 }));
     } else {
       setCorto(null);
       setDialogo(d);
+      setOpciones(r.opciones);
     }
     // E3: la primera conversación con la tripulación trae `Crew` al HUD.
     if (!progreso.conversado) onProgreso?.({ conversado: true });
   }
   function preguntar(id: GameState["tripulacion"][number]["id"], desdeMundo = false) {
     setPreguntada(id);
-    hablar({ experto: id }, desdeMundo);
+    void hablar(desdeMundo ? { via: "acercarse", con: id } : { via: "boton", con: id }, desdeMundo);
   }
   function enviarTexto(ev: React.FormEvent) {
     ev.preventDefault();
-    if (!texto.trim()) return;
-    hablar({ texto });
+    if (!texto.trim() || ocupado) return;
+    void hablar({ via: "texto", texto });
     setTexto("");
   }
   /** Cierra la consulta y el panel (no hay decisión abierta: no cambia nada del motor). */
   function cerrarTodo() {
+    soltarCharla();
     setDialogo(null);
     setPanel(null);
     devolverFoco();
@@ -184,6 +215,7 @@ export function PantallaBase({ estado, colocados = [], ultimas, hud, progreso = 
   function alternarPanel(p: Exclude<Panel, null>) {
     if (panel === p && !dialogo) { cerrarTodo(); return; }
     recordarOrigen();
+    soltarCharla();
     setDialogo(null);
     setPanel(p);
     requestAnimationFrame(() => hoja.current?.querySelector<HTMLElement>("h2, button")?.focus());
@@ -195,7 +227,8 @@ export function PantallaBase({ estado, colocados = [], ultimas, hud, progreso = 
     const uso = usoDelLugar(l, estado);
     recordarOrigen();
     setPanel(null);
-    if (uso.consulta) hablar(uso.consulta, !uso.accion); else setDialogo(null);
+    // Los lugares siempre consultan a una experta o a Iris (`usoDelLugar`): llegar es acercarse a ella.
+    if (uso.consulta && "experto" in uso.consulta) void hablar({ via: "acercarse", con: uso.consulta.experto }, !uso.accion); else setDialogo(null);
     if (uso.accion) abrirPlan(uso.accion);
     else requestAnimationFrame(() => hoja.current?.querySelector<HTMLElement>("button")?.focus());
   }
@@ -206,7 +239,7 @@ export function PantallaBase({ estado, colocados = [], ultimas, hud, progreso = 
     if (plan || registro || a === "nino") return;
     recordarOrigen();
     setPanel(null);
-    if (a === "iris") hablar({ experto: "ia_base" }, true); else preguntar(a, true);
+    if (a === "iris") void hablar({ via: "acercarse", con: interlocutorDe(a) }, true); else preguntar(a, true);
     mundo.fijarHablando(a);
   }
   const conActor = useRef(hablarCon);
@@ -220,6 +253,11 @@ export function PantallaBase({ estado, colocados = [], ultimas, hud, progreso = 
     return () => mundo.fijarUso(null);
   }, [mundo.fijarUso]);
   useEffect(() => { if (!dialogo && !corto) mundo.fijarHablando(null); }, [dialogo, corto, mundo.fijarHablando]);
+  // Con la franja abierta, quien habla (si está en escena) gira hacia el niño y la guía de Iris calla.
+  useEffect(() => {
+    const a = dialogo ? actorDeExperto(dialogo.experto) : null;
+    if (a) mundo.fijarHablando(a);
+  }, [dialogo, mundo.fijarHablando]);
   // E5: el globo sobre quien habla, y que se vaya solo; abrir un panel o una decisión también lo quita.
   useEffect(() => {
     if (!corto) { mundo.fijarGlobo(null); return; }
@@ -307,8 +345,17 @@ export function PantallaBase({ estado, colocados = [], ultimas, hud, progreso = 
             <>
               {dialogo && (
                 <DialogoExperto d={dialogo} irisDanada={averiaIrisRevelada(estado)} soloTexto={plan !== null} onPlan={abrirPlan}
-                  onCerrar={() => { setDialogo(null); if (!panel) devolverFoco(); }}
+                  onCerrar={() => { soltarCharla(); setDialogo(null); if (!panel) devolverFoco(); }}
                   onOtra={() => alternarPanel("tripulacion")} />
+              )}
+              {/* #377: botones para seguir hablando; funcionan sin modelo y nunca aplican una acción. */}
+              {dialogo && !plan && opciones.length > 0 && (
+                <div className="fila" role="group" aria-label={t("ui.base.charla.opciones")} aria-busy={ocupado}>
+                  {opciones.map((o) => (
+                    <FacetButton key={`${o.entrada.con}-${o.entrada.pregunta ?? ""}`} labelKey={o.etiqueta.clave} labelVars={o.etiqueta.vars}
+                      disabled={ocupado} onClick={() => void hablar(o.entrada)} />
+                  ))}
+                </div>
               )}
               {plan ? (
                 <ConfirmarAccion estado={estado} accion={plan} onCancelar={cerrarPlan} onConfirmar={confirmar} />
@@ -337,10 +384,10 @@ export function PantallaBase({ estado, colocados = [], ultimas, hud, progreso = 
                         </li>
                       ))}
                     </ul>
-                    <form className="base-preguntar" onSubmit={enviarTexto}>
+                    <form className="base-preguntar" onSubmit={enviarTexto} aria-busy={ocupado}>
                       <label className="oculto-visual" htmlFor="base-campo">{t("ui.base.tripulacion.campo")}</label>
                       <input id="base-campo" type="text" value={texto} onChange={(e) => setTexto(e.target.value)} placeholder={t("ui.base.tripulacion.campo")} />
-                      <FacetButton type="submit" labelKey="ui.tripulacion.enviar" onClick={() => undefined} />
+                      <FacetButton type="submit" labelKey="ui.tripulacion.enviar" busy={ocupado} onClick={() => undefined} />
                     </form>
                   </div></section>
 

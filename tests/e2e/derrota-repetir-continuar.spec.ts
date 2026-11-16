@@ -186,3 +186,48 @@ test("perder WebGL deja la misma partida en el respaldo 2D, y el mapa lleva al n
   await expect(page.getByRole("dialog")).toHaveCount(0);
   expect(await energia(page)).toBe(energiaAntes);
 });
+
+/**
+ * #377 (frente B en la base): la conversación pasa por /api/clasificar con un modelo simulado, nunca muestra
+ * una cifra que inventó el modelo, y si la red falla quedan las preguntas de respaldo, que funcionan solas.
+ */
+test("la tripulación conversa con el modelo y, sin red, deja preguntas que funcionan", async ({ page }) => {
+  const errores: string[] = [];
+  page.on("pageerror", (e) => errores.push(e.message));
+  await page.clock.install();
+  await page.goto("/");
+  await llegarALaBase(page);
+  await page.getByRole("button", { name: "Pause", exact: true }).click();
+  await abrirTripulacion(page);
+
+  // El modelo clasifica (experta e intención); la cifra la pone el código, no el modelo.
+  let pedidos = 0;
+  await page.route("**/api/clasificar", async (r) => {
+    pedidos++;
+    expect(r.request().postDataJSON()).toEqual({ texto: "my tummy feels funny" });
+    await r.fulfill({ json: { version: "0", fuente: "modelo", experto: "doctora", accion: "estado_salud", parametros: { dosis: "999" }, confianza: 0.9 } });
+  });
+  await page.getByLabel(/Ask your crew/).fill("my tummy feels funny");
+  await page.getByRole("button", { name: "Send", exact: true }).click();
+  const franja = page.locator(".dialogo-experto");
+  await expect(franja.locator("h3")).toContainText("Doctor");
+  await expect(franja).not.toContainText("999");
+  expect(pedidos).toBe(1); // la frase pasó por el modelo (no la resolvió un atajo local)
+  const seguir = page.getByRole("group", { name: "Keep talking" });
+  await expect(seguir.getByRole("button").first()).toBeVisible();
+
+  // Sin red: igual responde y deja botones; tocar uno sigue la charla sin modelo y sin cobrar nada.
+  await page.unroute("**/api/clasificar");
+  await page.route("**/api/clasificar", (r) => r.fulfill({ status: 503, json: { error: "offline" } }));
+  const energiaAntes = await energia(page);
+  await page.getByLabel(/Ask your crew/).fill("blablabla");
+  await page.getByRole("button", { name: "Send", exact: true }).click();
+  await expect(franja).toBeVisible();
+  const boton = seguir.getByRole("button").first();
+  await expect(boton).toBeVisible();
+  const antes = await franja.innerText();
+  await boton.click();
+  await expect(franja).not.toHaveText(antes);
+  expect(await energia(page)).toBe(energiaAntes);
+  expect(errores, `errores de consola: ${errores.join(" | ")}`).toEqual([]);
+});
