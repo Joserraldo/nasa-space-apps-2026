@@ -140,10 +140,14 @@
 
 /* Personajes: el niño adelante a la izquierda; la tripulación detrás de la mesa en la viñeta 3. */
 .intro-protagonista { position: absolute; z-index: 2; left: 2%; bottom: 14%; }
-.intro-protagonista :is(svg, .retrato-img) { width: clamp(120px, 24vw, 230px); height: auto; }
-.intro-mesa { position: absolute; z-index: 1; left: 26%; right: 4%; bottom: 20%; display: flex; justify-content: space-around; align-items: flex-end; }
-.intro-mesa :is(svg, .retrato-img) { width: clamp(70px, 13vw, 128px); height: auto; }
-.intro-mesa-tapa { position: absolute; left: 4%; right: 18%; bottom: -6%; height: 22%; background: var(--color-traje-marfil);
+/* Los retratos se miden contra el ancho de la escena (no de la ventana): en celular apaisado la escena es chica. */
+.intro-escena { container-type: inline-size; }
+.intro-protagonista :is(svg, .retrato-img) { width: clamp(90px, 24cqw, 230px); height: auto; }
+/* La tripulación se sienta detrás de la mesa pero se ve entera, como en la lámina: la tapa solo cubre el borde
+   recortado de cada busto, no los hombros ni el cuello. */
+.intro-mesa { position: absolute; z-index: 1; left: 26%; right: 4%; bottom: 22%; display: flex; justify-content: space-around; align-items: flex-end; }
+.intro-mesa :is(svg, .retrato-img) { width: clamp(60px, 16cqw, 150px); height: auto; }
+.intro-mesa-tapa { position: absolute; left: 4%; right: 18%; bottom: -12%; height: 19%; background: var(--color-traje-marfil);
   clip-path: polygon(6% 0, 94% 0, 100% 50%, 94% 100%, 6% 100%, 0 50%); box-shadow: inset 0 -6px 0 var(--color-lila); }
 .intro-consola { position: absolute; z-index: 1; right: 6%; bottom: 20%; display: flex; gap: var(--esp-3); padding: var(--esp-3);
   background: var(--color-espacio); box-shadow: 0 0 0 4px var(--color-cian);
@@ -175,6 +179,7 @@
   /* En vertical la mesa de la tripulación ocupa el ancho: el niño (de espaldas en la lámina) no se dibuja. */
   .intro-escena-3 .intro-protagonista { display: none; }
   .intro-mesa { bottom: 36%; }
+  .intro-mesa :is(svg, .retrato-img) { width: clamp(60px, 22cqw, 110px); }
   .intro-saltar { bottom: 2%; }
 }
 /* Celular horizontal: la escena no puede pasar del alto de la pantalla. */
