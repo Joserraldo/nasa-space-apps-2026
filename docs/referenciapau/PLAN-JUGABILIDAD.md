@@ -61,40 +61,26 @@ Cada paso de la misión se juega igual, en el mundo, sin pasar por un menú:
 
 ## 3. Bloque 0, juntos (antes de separarse): el contrato de frontera
 
-Un archivo nuevo, `ui/src/escena/frontera.ts`. Lo escribe María Paula; Santiago solo lo importa. Las props
-nuevas de `EscenaBase` son **aditivas y opcionales**, igual que en la frontera A/B anterior.
+**Hecho:** `ui/src/escena/frontera.ts`, con pruebas en `frontera.test.ts`. Lo escribe solo María Paula;
+Santiago lo importa. Las props nuevas de `EscenaBase` (`extends PedidoEscena, AvisosEscena`) son
+**aditivas y opcionales**, igual que en la frontera A/B anterior. El archivo es la fuente: si este resumen
+y el código no coinciden, manda el código.
 
-```ts
-export type ActorId = "nino" | "ingeniera" | "doctora" | "meteorologa" | "iris";
-export type SalaId = "exterior" | "taller" | "habitat";
-
-/** Lo que hay al alcance del niño: una sola vía para el [E]. */
-export type Interactivo =
-  | { tipo: "lugar"; lugar: LugarId }
-  | { tipo: "actor"; actor: ActorId }
-  | { tipo: "puerta"; sala: SalaId; entrar: boolean };
-
-/** Lo que la UI le pide a la escena. */
-export interface PedidoEscena {
-  objetivo?: { lugar: LugarId; ruta: boolean } | null;              // de guiaIrisLugar
-  iris?: { gesto: GestoIris; cara: CaraIris } | null;               // tipos de @solar-shield/agents (guiaIrisLugar);
-                                                                    // la escena los traduce a las caras del modelo
-                                                                    // (escena/personajes/iris.ts tiene otro CaraIris)
-  globo?: { actor: ActorId; texto: string } | null;                 // texto ya traducido; la escena solo lo ancla
-  hablando?: ActorId | null;                                        // quién habla: gira hacia el niño y gesticula
-  sala?: SalaId;                                                    // dónde está el niño (la UI lo guarda)
-}
-
-/** Lo que la escena avisa. */
-export interface AvisosEscena {
-  onInteractivo?: (cerca: Interactivo | null) => void;              // reemplaza a onLugarCercano (que queda)
-}
-```
+| Pieza | Para qué | Estado en la escena |
+| --- | --- | --- |
+| `Interactivo` (`lugar` / `actor` / `puerta`) y `onInteractivo` | Una sola vía para el `[E]` | Emite lugares; actores en P3 y puertas en P7 |
+| `objetivo: { lugar, ruta }` | Marcar el destino de Iris en el mundo | Se acepta; se dibuja en P2. Reemplaza a `vista.lugarObjetivo` |
+| `iris: { gesto, cara }` | Gesto y cara del rover (tipos de `guiaIrisLugar`) | Se acepta; se anima en P6. `caraIrisModelo` traduce a las caras del modelo |
+| `globo: { actor, texto }` | Línea sobre quien habla (texto ya traducido) | Se acepta; se ancla en P6 |
+| `hablando` | Quién habla: gira y gesticula | Se acepta; se anima en P4 |
+| `sala` | Dónde está el niño (la pantalla es dueña) | Se acepta; salas en P7 y P8 |
+| `CARAS_RETRATO_*` y `rutaRetrato(actor, cara)` | Retratos B en `ui/public/retratos/<actor>-<cara>.png` | Los PNG se generan en P5 |
 
 En el bloque 0 también se decide:
 - El dibujo del mapa nuevo (María Paula aprueba un boceto de Santiago).
 - El flujo del paso 4 en el mundo (§5, tarea S3).
-- Las caras de cada personaje que se exportan como retrato (`CARAS` en `frontera.ts`).
+- Si las caras de retrato de `frontera.ts` alcanzan (persona: neutral, feliz, pensando y preocupado; Iris:
+  atenta, feliz, pensando, error y apagada).
 
 ---
 
@@ -107,7 +93,7 @@ JSON de i18n: si necesita un texto, se lo pide a Santiago.
 
 | # | Prioridad | Tarea | Hecho cuando |
 | --- | --- | --- | --- |
-| P1 | P0 | `frontera.ts` (bloque 0) y las props nuevas en `EscenaBase` | `npm run typecheck` en verde y Santiago puede importar los tipos |
+| P1 | P0 | ~~`frontera.ts` y las props nuevas en `EscenaBase`~~ **Hecho** (bloque 0) | typecheck, 901 pruebas, e2e 5/5 y build en verde |
 | P2 | P0 | **Destino visible**, archivo nuevo `escena/marcadores.ts`: haz de luz cian en el lugar objetivo, ruta en el piso con `planearRuta` (ya existe) y flecha DOM en el borde cuando el destino queda fuera de cuadro. Sin estado de React por fotograma | Captura con el objetivo dentro y fuera de cuadro, en 1440x900 y 390x844; dentro del presupuesto (prueba de `escena3d.test.ts`: ≤ 80 draw calls) |
 | P3 | P0 | **Doctora y Meteoróloga en escena**, en su estación (hábitat y sensor) | Las tres expertas se ven en la captura de la base |
 | P4 | P0 | **Coreografía**, archivo nuevo `escena/coreografia.ts`: función pura `(vista, hablando, eventos, cercanía) → gesto por actor`, que usa los 14 gestos de `animaciones.ts`. Mínimo: el niño inspecciona al usar un lugar y habla en diálogo; la experta explica al hablar, repara en el taller y confirma cuando se acepta una acción; la Meteoróloga alerta en la tormenta y verifica al ver la fuente; la Doctora escucha y tranquiliza | Prueba unitaria de la tabla y un video corto o tira de capturas del gesto en el juego |

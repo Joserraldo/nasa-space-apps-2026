@@ -3,6 +3,7 @@ import type { CalidadGrafica } from "../juego/ajustes";
 import type { EventoFeedback } from "../juego/eventos";
 import { crearEscena3D, type CamaraEscena, type Escena3D } from "./escena3d";
 import type { EntradaTactil } from "./entradaTactil";
+import { interactivoDeLugar, type AvisosEscena, type PedidoEscena } from "./frontera";
 import type { LugarObjetivo, VistaEscena } from "./vista";
 
 export type { CamaraEscena } from "./escena3d";
@@ -11,7 +12,12 @@ export type { CamaraEscena } from "./escena3d";
  * Props de `EscenaBase` acordadas en el issue #190 (Daniel + José), con la adición de `eventos`.
  * Si José publica el tipo en otro archivo, este se reemplaza por el import.
  */
-export interface EscenaBaseProps {
+/**
+ * `PedidoEscena` y `AvisosEscena` (frontera.ts, PLAN-JUGABILIDAD §3) suman las props del bloque 0.
+ * Estado: `onInteractivo` emite lugares; actores (P3), puertas y `sala` (P7), `objetivo` (P2), `iris` y
+ * `globo` (P6) y `hablando` (P4) se aceptan y todavía no cambian nada en la escena.
+ */
+export interface EscenaBaseProps extends PedidoEscena, AvisosEscena {
   // Entrada (la escena solo lee esto, nunca GameState)
   vista: VistaEscena;
   /** Los eventos del último tick; la escena anima cada uno una sola vez por su id estable. */
@@ -89,7 +95,10 @@ export function EscenaBase(props: EscenaBaseProps) {
         movimientoReducido: p.movimientoReducido,
         alPerderContexto: () => actuales.current.onWebGLPerdido(),
         alExceso: (nivel) => actuales.current.onCalidad(nivel),
-        alLugarCercano: (l) => actuales.current.onLugarCercano(l),
+        alLugarCercano: (l) => {
+          actuales.current.onLugarCercano(l);
+          actuales.current.onInteractivo?.(interactivoDeLugar(l));
+        },
         alUsar: (l) => actuales.current.onUsar(l),
         alCambiarCamara: () => actuales.current.onCambiarCamara?.(),
         alPosicion: (pos) => actuales.current.onPosicion?.(pos),
@@ -112,7 +121,9 @@ export function EscenaBase(props: EscenaBaseProps) {
     const observador = new ResizeObserver(medir);
     observador.observe(canvas);
 
-    actuales.current.onLugarCercano(escena.lugarCercano());
+    const cercano = escena.lugarCercano();
+    actuales.current.onLugarCercano(cercano);
+    actuales.current.onInteractivo?.(interactivoDeLugar(cercano));
     actuales.current.onPosicion?.(escena.posicionJugador());
     actuales.current.onEntradaTactil?.(escena.entradaTactil);
 
