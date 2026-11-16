@@ -51,6 +51,25 @@ export const tronco = (rArriba: number, rAbajo: number, h: number, n: number) =>
     return g;
   });
 
+type Token = Parameters<typeof colorToken>[0];
+
+/**
+ * Copia de `g` (de la caché) pintada con color de vértice: el token `a` mezclado hacia `b` en la
+ * fracción `t`. Va con el slot `Rock` (blanco con `vertexColors`), así los tonos de las láminas que
+ * la paleta no tiene sueltos (malva grisáceo, lila del plato) no suman materiales ni draw calls.
+ */
+export function tenida(clave: string, g: THREE.BufferGeometry, a: Token, b: Token, t: number): THREE.BufferGeometry {
+  return geometriaBase(`kit-tenida-${clave}-${a}-${b}-${t}`, () => {
+    const c = g.clone();
+    const color = colorToken(a).lerp(colorToken(b), t);
+    const n = c.getAttribute("position").count;
+    const col = new Float32Array(n * 3);
+    for (let i = 0; i < n; i++) col.set([color.r, color.g, color.b], i * 3);
+    c.setAttribute("color", new THREE.BufferAttribute(col, 3));
+    return c;
+  });
+}
+
 /** Malla con geometría de caché y material de slot, ya colocada. */
 export function parte(m: Materiales, slot: Slot, g: THREE.BufferGeometry, pos: V3, nombre: string): THREE.Mesh {
   const malla = new THREE.Mesh(g, m[slot]);
