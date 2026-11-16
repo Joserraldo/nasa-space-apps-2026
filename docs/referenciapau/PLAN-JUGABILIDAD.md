@@ -1,189 +1,326 @@
-# Plan de jugabilidad: mundo abierto, interacción y misiones
+# Plan de jugabilidad para seis personas: misión interactiva en mundo abierto
 
-**Para:** Santiago y María Paula, que trabajan en paralelo, y el equipo para lo delegable (§7).
-**Base:** `ss-rescue`, rama local `main` en `89a50d6` (A + B + F integrados, 897 pruebas y e2e 5/5 en verde).
-**Fecha:** domingo 15 nov 2026. `[V]` = comprobado en el código o en captura; `[NV]` = no comprobado.
+**Para:** José, Santiago, María Paula y las tres personas de los frentes B, C y D. Cada frente de §4 se
+puede pegar entero como encargo para el agente de esa persona (ver §7).
+**Base:** `origin/develop` desde #330 (rescate integrado) y #331 (e2e estables en CI).
+**Fecha:** 16 nov 2026. `[V]` = comprobado en el código, en captura o en la fuente; `[NV]` = no comprobado.
 
-Hoy el juego tiene interfaz pero no se juega en el mundo: el niño camina, pero casi todo pasa en paneles. Este
-plan convierte la base en el lugar donde ocurre la misión. No cambia reglas del motor (MECANICAS §5).
-
----
-
-## 1. Diagnóstico: qué hay y qué falta
-
-| Capacidad | Estado | Evidencia |
-| --- | --- | --- |
-| Caminar (teclado y joystick), cámara 3.ª/1.ª con `V` | Existe y se usa `[V]` | `escena/escena3d.ts`, `movimientoBase.ts`, `entradaTactil.ts` |
-| `[E]` por lugar (mesa, taller, hábitat, sensor, escudo) | Existe y se usa `[V]` | `pantallas/lugares.ts:23-45` |
-| Objetivo de Iris (`guiaIrisLugar`) | Solo como texto en el chip del HUD `[V]` | `pantallas/lugares.ts:64` |
-| Objetivo marcado en el mundo | **No existe.** `vista.lugarObjetivo` se calcula y la escena no lo lee `[V]` | `pantallas/MundoBase.tsx:125`; sin uso en `escena3d.ts` |
-| Mapa | Plano con 10 pines **numerados** sobre un cuadro naranja; los nombres solo en la lista `[V]` | `componentes/Mapa.tsx`, captura `e6-base-mapa-1440x900.png` |
-| Iris habla en el mundo | **No.** Habla en una franja inferior; `Burbuja` existe sin CSS `[V]` | `componentes/DialogoExperto.tsx`, `Dialogos.tsx:16` |
-| Hablar con un tripulante acercándose | **No.** Solo `[E]` sobre el lugar; la Ingeniera gira y saluda, sin diálogo `[V]` | `escena/tripulacionBase.ts:60-72` |
-| Tripulación en escena | Solo niño, Ingeniera e Iris. Doctora y Meteoróloga no están `[V]` | `escena/tripulacionBase.ts:29-31` |
-| Animaciones | 14 gestos procedurales en `animaciones.ts`; en el juego se usan 4 (reposo, caminar, saludar, explicar) `[V]` | `escena/personajes/animaciones.ts:14-27` |
-| Personajes alternativa B | Única implementación en 3D `[V]`. Los retratos 2D siguen siendo el SVG viejo `[V]` | `componentes/base/Retrato.tsx` (no importa nada de `escena/personajes`) |
-| Interiores (salas) | **No existen.** Hay puertas como malla, sin entrada `[V]` | `escena/activos/edificios.ts`, `refugio.ts` |
-| Paso 4 (módulos) | Lista superpuesta; no se construye caminando al anclaje `[V]` | `pantallas/PantallaModulos.tsx` |
-| Otras 4 misiones | Datos en `missions/`, la UI solo importa `MISION_JEZERO` `[V]` | `App.tsx:19` y otros 5 archivos |
-| Avería de Iris a destiempo | En la base, en el turno 0, el chip ya dice "Iris needs a repair at the workshop". Según MECANICAS §3.4 se revela en el paso 6. Causa `[NV]`: el umbral de daño en `media` es blindaje < 20 y la captura muestra 52 | captura `e6-base-1440x900.png`, `design/src/ia.ts:23` |
+**Objetivo:** que un niño de 7 a 10 años juegue la misión de Jezero en un mundo abierto que se siente vivo
+(camina, salta con la gravedad de Marte, entra a las salas, habla con la tripulación y se sorprende),
+aprende ciencia real y no pasa la partida leyendo tarjetas fijas.
 
 ---
 
-## 2. El bucle que se tiene que sentir
+## 0. Diagnóstico: todos los problemas identificados y quién los resuelve
 
-Cada paso de la misión se juega igual, en el mundo, sin pasar por un menú:
+| # | Problema | Estado | Dueño |
+| --- | --- | --- | --- |
+| 1 | El mapa son 10 números sobre un cuadro naranja; los nombres solo en la lista | `[V]` captura `e6-base-mapa` | C |
+| 2 | La distribución de la base no se parece a la organización de referencia (`exterior/03`) | `[V]` comparando capturas con la lámina | C (posiciones) + D (mallas) |
+| 3 | El destino no se marca en el mundo: `vista.lugarObjetivo` se calcula y la escena no lo lee | `[V]` `MundoBase.tsx:125` | C (marcador) + A (dato) |
+| 4 | Tarjetas fijas que tapan el mundo (E5: lista de módulos y panel siempre abiertos) | `[V]` captura de María Paula | E + F |
+| 5 | Al caminar el movimiento no se siente fluido | `[NV]` causa: fps o locomoción | A |
+| 6 | No se puede saltar ni se siente la gravedad de Marte | `[V]` sin salto en el código | A |
+| 7 | La cámara 1.ª/3.ª persona no está en el menú (solo `V` y un botón del HUD) | `[V]` | E |
+| 8 | Iris habla en una franja inferior; `Burbuja` existe sin CSS | `[V]` `Dialogos.tsx:16` | B (líneas) + A (anclaje) + F (estilo) |
+| 9 | No se puede hablar con un tripulante acercándose | `[V]` `tripulacionBase.ts:60-72` | A (cercanía) + B (conversación) + E (`[E] Talk`) |
+| 10 | Doctora y Meteoróloga no están en la escena | `[V]` `tripulacionBase.ts:29-31` | A |
+| 11 | Se usan 4 de 14 gestos; las animaciones se sienten genéricas | `[V]` `personajes/animaciones.ts` | A |
+| 12 | Los retratos 2D son el SVG viejo, no los personajes de la alternativa B | `[V]` `componentes/base/Retrato.tsx` | F |
+| 13 | No hay salas: las puertas son decorado | `[V]` | D (geometría) + A (entrar y salir) |
+| 14 | El paso 4 es una lista superpuesta, no se construye caminando | `[V]` `PantallaModulos.tsx` | A (flujo) + E (tarjeta) |
+| 15 | Iris pide reparación en el turno 0; la avería es del paso 6 | `[V]` síntoma, `[NV]` causa | A |
+| 16 | No hay ciclo de día y noche (solo los ambientes `dia` y `atardecer`) | `[V]` `escena/cielo.ts:15` | D (luz) + A (regla) |
+| 17 | La escena es pesada: 17-26 fps sin GPU en calidad `media` | `[V]` medido con SwiftShader | D |
+| 18 | En celular vertical la cámara muestra mucho cielo | `[V]` captura `e6-base-390x844` | A |
+| 19 | Emojis en `componentes/Dialogos.tsx:7` | `[V]` | E |
+| 20 | Solo Jezero se juega; el motor no recibe la misión como parámetro (#152) | `[V]` | A (P2) |
+| 21 | Recurso en 0 y telemetría en el mismo tick (`engine/src/acciones.ts:330`) | `[V]` | A (P2, decisión de diseño) |
+| 22 | La cámara se mira arrastrando con el mouse; se pide mirar con solo mover el mouse (y con los dedos en celular) | `[V]` ESCENAS §3.5 dice "arrastrar" | A |
+| 23 | La cámara hace zooms raros al caminar o al usar el mapa | Reportado por María Paula; `[NV]` causa | A |
+| 24 | La sombra del personaje se ve con fallas (glitch) | Reportado por María Paula; `[NV]` causa | D |
+| 25 | Acercarse a un edificio no permite entrar a la sala ni cambia a la vista interior | `[V]` (ver #13) | A (entrar) + D (interior) |
+| 26 | Las pantallas de entrada (portada, carga, órbita, "listo para explorar") no siguen la lámina nueva de flujo | Lámina nueva `inicio/04` | F (visual) + E (flujo) |
 
-1. **Iris dice adónde ir.** Globo sobre el rover con una línea corta, y el rover gira o avanza hacia allá.
-2. **El destino se ve.** Marcador cian en el lugar, ruta en el piso y flecha en el borde de la pantalla si
-   queda fuera de cuadro. El mapa resalta el mismo destino.
-3. **El niño camina** (o toca el lugar en el mapa y camina solo, que es la alternativa accesible).
-4. **Al llegar, alguien reacciona.** La experta gira, saluda y explica. Aparece `[E] Talk` o `[E] Build`.
-5. **Decide.** Recién aquí se abre la tarjeta: costo ahora, después, fuente, confirmar (MECANICAS §4).
-6. **Ve la consecuencia en el mundo.** El módulo se instala, la antena gira, Iris falla con cara de error.
-   El motor ya aplicó el cambio; la animación solo lo muestra (MECANICAS §5).
-7. **Iris propone el siguiente destino.**
+---
 
-**La UI aparece cuando se necesita:**
+## 1. La experiencia que se busca
 
-| Elemento | Cuándo aparece |
+**El bucle de cada paso, sin pasar por un menú:**
+1. Iris dice adónde ir: globo sobre el rover y el rover que avanza o señala.
+2. El destino se ve: haz de luz, ruta en el piso y flecha en el borde; el mapa marca lo mismo.
+3. El niño camina, salta, explora; si quiere, toca el lugar en el mapa y camina solo.
+4. Al llegar, alguien reacciona: la experta gira, lo mira, saluda y explica con gestos propios.
+5. `[E] Talk`, `[E] Build`, `[E] Enter`: recién ahí aparece la tarjeta de decisión.
+6. La consecuencia se ve en el mundo (el módulo se instala, la antena gira, Iris falla con interferencia).
+   El motor ya aplicó el cambio; la animación solo lo muestra.
+7. La tripulación comenta lo que el niño eligió, y Iris propone el siguiente destino.
+
+**Sorpresa y curiosidad con ciencia real.** Cada momento de asombro sale de algo que pasa de verdad en
+Marte y lleva su fuente:
+
+| Dato | Estado |
+| --- | --- |
+| Gravedad media 3,73 m/s², 0,380 de la terrestre (ecuatorial 3,69) | `[V]` NASA NSSDC, Mars Fact Sheet, leído el 16 nov 2026 |
+| Día marciano (sol) de 24,6597 h | `[V]` misma ficha |
+| Temperatura media de unos −59 °C | `[V]` misma ficha |
+| Atardeceres azulados, remolinos de polvo, Fobos y Deimos en el cielo, retraso de la señal con la Tierra, tormentas globales, MOXIE (oxígeno a partir de CO2), análogos de base como Mars Dune Alpha | `[NV]` cada uno se muestra solo con una fuente verificada por el frente B y el rol de datos |
+
+**Física que se va a revisar.** El salto usa `GRAVEDAD_MARTE` de `ui/src/escena/fisica.ts` (con su
+fuente). Con la misma velocidad de despegue `v`, la altura es `h = v²/2g` y el tiempo en el aire `t = 2v/g`:
+en Marte el niño salta **1/0,380 ≈ 2,6 veces** más alto y está 2,6 veces más tiempo en el aire que en la
+Tierra. La velocidad de despegue es una suposición de juego y se declara como tal. Ninguna cifra de balance
+se etiqueta "según NASA" (MECANICAS §9).
+
+**La UI aparece cuando hace falta** (frentes E y F):
+
+| Elemento | Cuándo |
 | --- | --- |
 | Recursos, chip de objetivo, globo de Iris | Al entrar a la base |
-| `[E]` con verbo (`Talk`, `Build`, `Enter`, `Use`) | Solo cuando hay algo al alcance |
+| `[E]` con verbo | Solo con algo al alcance |
 | `Map` | Con el primer objetivo |
 | `Crew` | Después de la primera conversación en el mundo (en el respaldo 2D, siempre) |
-| Velocidad del reloj | Cuando el reloj importa (después de colocar los módulos) |
-| Tarjeta de decisión, fuente, dilema | Solo dentro del paso 5 del bucle |
+| Velocidad del reloj | Después de colocar los módulos |
+| Tarjeta de decisión, fuente, dilema | Solo dentro del paso 5 del bucle; una a la vez; se cierra al decidir |
 
-`Pause` y la cámara quedan siempre visibles (accesibilidad).
-
----
-
-## 3. Bloque 0, juntos (antes de separarse): el contrato de frontera
-
-**Hecho:** `ui/src/escena/frontera.ts`, con pruebas en `frontera.test.ts`. Lo escribe solo María Paula;
-Santiago lo importa. Las props nuevas de `EscenaBase` (`extends PedidoEscena, AvisosEscena`) son
-**aditivas y opcionales**, igual que en la frontera A/B anterior. El archivo es la fuente: si este resumen
-y el código no coinciden, manda el código.
-
-| Pieza | Para qué | Estado en la escena |
-| --- | --- | --- |
-| `Interactivo` (`lugar` / `actor` / `puerta`) y `onInteractivo` | Una sola vía para el `[E]` | Emite lugares; actores en P3 y puertas en P7 |
-| `objetivo: { lugar, ruta }` | Marcar el destino de Iris en el mundo | Se acepta; se dibuja en P2. Reemplaza a `vista.lugarObjetivo` |
-| `iris: { gesto, cara }` | Gesto y cara del rover (tipos de `guiaIrisLugar`) | Se acepta; se anima en P6. `caraIrisModelo` traduce a las caras del modelo |
-| `globo: { actor, texto }` | Línea sobre quien habla (texto ya traducido) | Se acepta; se ancla en P6 |
-| `hablando` | Quién habla: gira y gesticula | Se acepta; se anima en P4 |
-| `sala` | Dónde está el niño (la pantalla es dueña) | Se acepta; salas en P7 y P8 |
-| `CARAS_RETRATO_*` y `rutaRetrato(actor, cara)` | Retratos B en `ui/public/retratos/<actor>-<cara>.png` | Los PNG se generan en P5 |
-
-En el bloque 0 también se decide:
-- El dibujo del mapa nuevo (María Paula aprueba un boceto de Santiago).
-- El flujo del paso 4 en el mundo (§5, tarea S3).
-- Si las caras de retrato de `frontera.ts` alcanzan (persona: neutral, feliz, pensando y preocupado; Iris:
-  atenta, feliz, pensando, error y apagada).
+`Pause` y el menú siempre visibles (accesibilidad).
 
 ---
 
-## 4. Plan de María Paula: mundo, actores y animación
+## 2. Bloque 0, todos juntos (30 a 45 minutos, antes de separarse)
 
-**Archivos de los que es dueña:** `ui/src/escena/**` (incluye `escena3d.ts`, `EscenaBase.tsx`,
-`tripulacionBase.ts`, `movimientoBase.ts`, `mundo.ts`, `personajes/**`, `activos/**`), los archivos nuevos
-de abajo, `tests/capturas/retratos.mjs` y `ui/public/retratos/`. No toca `pantallas/`, `componentes/` ni los
-JSON de i18n: si necesita un texto, se lo pide a Santiago.
+| Quién | Qué deja cerrado |
+| --- | --- |
+| A (José) | **Ganchos de sistemas** en `escena3d.ts`: `montar(ctx)`, `actualizar(dt, ctx)` y `dispose()`, para que C y D sumen marcadores y ciclo de día sin editar `escena3d.ts`. Extrae `AJUSTE_CALIDAD` a `escena/calidad.ts` (pasa al frente D). Actualiza el encabezado de `frontera.ts` con los dueños nuevos |
+| A + B | El contrato de conversación con la tripulación en `agents/`: el modelo clasifica en JSON estricto, el código responde, nunca inventa números (`CLAUDE.md`) |
+| C + D | Las posiciones salen de `mundo.ts` (C); la forma de cada edificio, de `activos/` (D). Nadie copia coordenadas en dos lugares |
+| E + F | La API de la tarjeta contextual (`<TarjetaContextual>`: de dónde aparece, cuándo se cierra, una a la vez) |
+| A | Arranca la propuesta de misión interactiva (A3), que todos leen antes del bloque 2 |
 
-| # | Prioridad | Tarea | Hecho cuando |
+El contrato de frontera escena/pantalla ya existe: `ui/src/escena/frontera.ts` (Interactivo, `objetivo`,
+`iris`, `globo`, `hablando`, `sala`, retratos). Hoy solo `onInteractivo` emite lugares; el resto se acepta
+y todavía no cambia la escena.
+
+---
+
+## 3. Archivos: un archivo, un escritor
+
+| Frente | Dueño de |
+| --- | --- |
+| A José | `engine/`, `missions/`, `ui/src/juego/**`, `ui/src/pantallas/lugares.ts`, y en `ui/src/escena/`: `escena3d.ts`, `EscenaBase.tsx`, `frontera.ts`, `movimientoBase.ts`, `fisica.ts`, `navegacion.ts`, `entradaTactil.ts`, `tripulacionBase.ts`, `coreografia.ts` (nuevo), `salas.ts` (nuevo) y `personajes/animaciones.ts` |
+| B | `agents/**`, `infra/worker/**` |
+| C | `ui/src/escena/mundo.ts`, `escena/activos/caminos.ts`, `escena/marcadores.ts` (nuevo), `componentes/Mapa.tsx`, `componentes/Mapa.css`, `pantallas/PantallaSitio.tsx`, `pantallas/sitio.css`, `docs/referenciapau/mapa-base-jezero.svg` |
+| D | `ui/src/escena/activos/**` (salvo `caminos.ts`), `escena/armado.ts`, `escena/cielo.ts`, `escena/calidad.ts`, `escena/cicloDia.ts` (nuevo), y la malla de los personajes (`personajes/cuerpo.ts`, `cabeza.ts`, `malla.ts`, `rostro.ts`, `superficie.ts`, `iris.ts`) **coordinado con María Paula**, que los hizo |
+| E Santiago | `ui/src/App.tsx`, los `.tsx` de `pantallas/` (salvo `lugares.ts` y `PantallaSitio.tsx`), los `.tsx` de `componentes/` (salvo `base/` y `Mapa.tsx`), `tests/e2e/**`, `.github/workflows/**` |
+| F María Paula | `ui/src/componentes/base/**`, todos los `.css` de `ui/src` (salvo `Mapa.css` y `sitio.css`), `tests/capturas/**`, `ui/public/retratos/**` |
+
+**i18n:** la UI usa `ui/i18n/en.json` y `es.json`: todos agregan, nadie borra claves ajenas y cada frente usa su
+prefijo (`ui.mapa.*` C, etc.). El Frente B escribe sus textos en `agents/i18n/en.json` y `es.json`, que son suyos. Inglés primero, español después.
+
+---
+
+## 4. Los seis frentes
+
+### Frente A — José: misiones, mecánicas, movimiento y animación (el más difícil)
+
+**Meta:** la misión se juega en el mundo; caminar, saltar y la tripulación se sienten vivos.
+
+| # | Prio | Tarea | Hecho cuando |
 | --- | --- | --- | --- |
-| P1 | P0 | ~~`frontera.ts` y las props nuevas en `EscenaBase`~~ **Hecho** (bloque 0) | typecheck, 901 pruebas, e2e 5/5 y build en verde |
-| P2 | P0 | **Destino visible**, archivo nuevo `escena/marcadores.ts`: haz de luz cian en el lugar objetivo, ruta en el piso con `planearRuta` (ya existe) y flecha DOM en el borde cuando el destino queda fuera de cuadro. Sin estado de React por fotograma | Captura con el objetivo dentro y fuera de cuadro, en 1440x900 y 390x844; dentro del presupuesto (prueba de `escena3d.test.ts`: ≤ 80 draw calls) |
-| P3 | P0 | **Doctora y Meteoróloga en escena**, en su estación (hábitat y sensor) | Las tres expertas se ven en la captura de la base |
-| P4 | P0 | **Coreografía**, archivo nuevo `escena/coreografia.ts`: función pura `(vista, hablando, eventos, cercanía) → gesto por actor`, que usa los 14 gestos de `animaciones.ts`. Mínimo: el niño inspecciona al usar un lugar y habla en diálogo; la experta explica al hablar, repara en el taller y confirma cuando se acepta una acción; la Meteoróloga alerta en la tormenta y verifica al ver la fuente; la Doctora escucha y tranquiliza | Prueba unitaria de la tabla y un video corto o tira de capturas del gesto en el juego |
-| P5 | P0 | **Retratos con los personajes B**: `tests/capturas/retratos.mjs` renderiza cada actor y cada cara a `ui/public/retratos/<actor>-<cara>.png`. Se pre-renderiza para no meter three en la carga inicial (≤ 200 KB, APLICACION §8.2) | PNG de los 4 personajes y la pantalla de Iris, con fondo transparente |
-| P6 | P0 | **Iris compañera**: en modo `tutorial` avanza delante del niño hacia el destino; `senalar`, `mirar` y `pedir_reparacion` como gestos del rover; cara `error` con interferencia. Ancla el `globo` sobre el actor que habla | Captura de Iris señalando el destino con el globo encima |
-| P7 | P1 | **Primera sala: el taller.** Puerta con `Interactivo` de tipo `puerta`; fundido; escena interior propia con sus colisiones y cámara en corte (ESCENAS E9); dock de Iris, banco de trabajo y panel en eje (estación 05). Salir por la misma puerta | Se entra, se camina, se usa el dock y se sale sin perder el `GameState`; e2e de entrar y salir |
-| P8 | P1 | Segunda sala: hábitat (refugio, enfermería y comedor, estaciones 06 a 08) con la Doctora adentro | Igual que P7 |
-| P9 | P2 | Tormenta en el mundo (cielo, polvo y luz según MARTE.md); animación de instalación de módulo y de antena girando | Capturas antes y durante la tormenta |
+| A0 | P0 | Bloque 0 (§2): ganchos de sistemas, `calidad.ts`, encabezado de `frontera.ts` | C y D montan un sistema de prueba sin tocar `escena3d.ts` |
+| A1 | P0 | **Iris averiada en el turno 0** (#15): encontrar la causa. Hechos: `lugares.ts:64` usa `estado.iaBase === "danada"`; el motor daña a Iris en `engine/src/ia.ts:36-38` solo con señal de tormenta y blindaje < `BLINDAJE_DANA_IA` (20 en `media`, `design/src/ia.ts:23`), y la captura muestra blindaje 52 | Al entrar a la base el objetivo es el del paso 4; prueba que lo fija |
+| A2 | P0 | **Cadena de objetivos:** `guiaIrisLugar` y `briefingIris` alimentan `objetivo`, `iris` y `globo` de la escena y el chip del HUD. Deja de pasar `lugarObjetivo` a `vistaEscena`. En la escena: el globo anclado sobre quien habla, e Iris que avanza delante del niño y señala con su cara (`caraIrisModelo`) | Prueba de las props por paso; captura de Iris señalando con el globo; e2e "seguir a Iris" del paso 4 al 8 sin abrir `Crew` (con E) |
+| A3 | P0 | **Propuesta de misión interactiva** (`docs/referenciapau/MISION-INTERACTIVA.md`, una página): qué hace el niño en el mundo en cada paso, qué lo sorprende, qué aprende y qué lo engancha a seguir. Revisan Santiago y María Paula antes del bloque 2 | Propuesta aprobada |
+| A4 | P0 | **Caminar fluido** (#5): primero medir con `medir: true` (`escena3d.ts:45`, `medicion()` en `:786`) en 1440x900 con GPU real. Si los fps están bien: aceleración y frenado con curva, giro suavizado, ciclo de pasos según la velocidad (sin pies que patinan), cámara con amortiguación | Video o tira de capturas, y fps medidos antes y después |
+| A5 | P0 | **Salto y gravedad de Marte** (#6): `Space` y botón táctil de 48 px. Física en `fisica.ts` con `GRAVEDAD_MARTE`; velocidad de despegue declarada como suposición; anticipación, aire y aterrizaje. Saltar nunca da ni quita recursos | Pruebas: altura y tiempo en el aire simulados coinciden con `v²/2g` y `2v/g`; la proporción Marte/Tierra es 1/0,380 |
+| A6 | P0 | Doctora y Meteoróloga en su estación; acercarse a cualquier tripulante emite `Interactivo` de tipo `actor` | Las tres expertas en la captura; prueba del aviso |
+| A7 | P0 | **Animaciones que no son genéricas** (#11), en `coreografia.ts`: función pura `(vista, hablando, eventos, cercanía) → gesto por actor` con los 14 gestos. Principios de juegos de mundo abierto: anticipación y continuidad, movimiento secundario, reposos con variaciones, mirar al niño y al objetivo, cambio de peso, arranque y frenado. Referencias de sensación (no de recursos): *A Short Hike*, *Astroneer*, *Animal Crossing* | Prueba de la tabla; ningún actor queda quieto mientras habla |
+| A8 | P0 | **Entrar a las salas** (#25), `salas.ts`: al acercarse a la puerta de un edificio aparece `[E] Enter`; fundido y cambio a la vista interior (escena propia con sus colisiones, cámara dentro del corredor como en `exterior/01-corredores-conexiones.png`); `[E] Exit` vuelve afuera, junto a la misma puerta. Geometría del frente D | Entrar, caminar y salir del taller sin perder el `GameState`; e2e |
+| A9 | P1 | El paso 4 en el mundo: hablar con la Ingeniera y `[E] Build` en un anclaje vacío (tarjeta del frente E) | Los 2 módulos se colocan caminando; la ruta dorada sigue en verde |
+| A10 | P1 | Encuadre de la cámara en celular vertical (#18) | Captura 390x844 con el niño y el mundo, no medio cielo |
+| A11 | P2 | Motor con la misión como parámetro (#152, #20) y la decisión de #21 | Issue cerrado con diseño |
+| A12 | P0 | **Mirar con el mouse sin arrastrar** (#22): Pointer Lock al hacer clic una vez en el mundo, con aviso ("Click to look around · Esc for the menu"). Abrir una tarjeta o el menú suelta el puntero solo. En celular, mirar con un dedo en la mitad derecha (ya existe en `entradaTactil.ts`: comprobarlo en el juego real). Ver la decisión en §8 | e2e de que abrir una tarjeta suelta el puntero; captura del aviso; prueba táctil en emulación |
+| A13 | P0 | **Zooms raros de la cámara** (#23): reproducir (caminar junto a edificios, elegir un destino en el mapa), registrar la distancia cámara-niño por fotograma y corregir. Causas probables `[NV]`: el choque de la cámara con paredes que la acerca de golpe, o la transición al cambiar de destino. Sin saltos de distancia que el jugador no pidió | Prueba de que la distancia no salta entre fotogramas salvo choque; video antes y después |
 
----
+### Frente B — tripulación viva, IA y jugador de prueba
 
-## 5. Plan de Santiago: flujo de la misión, UI y conexión
+**Meta:** hablar con la tripulación se siente como hablar con personas que recuerdan lo que hiciste.
+Todo se conecta. **Esta persona juega en el lugar del niño de 7 a 10 años.**
 
-**Archivos de los que es dueño:** `ui/src/App.tsx`, `pantallas/**`, `componentes/**`, `juego/**`,
-`ui/i18n/*.json` y `tests/e2e/**`. No toca `ui/src/escena/**`: si necesita algo de la escena, lo pide como
-cambio en `frontera.ts`.
-
-| # | Prioridad | Tarea | Hecho cuando |
+| # | Prio | Tarea | Hecho cuando |
 | --- | --- | --- | --- |
-| S1 | P0 | **Investigar la avería de Iris a destiempo** (§1, última fila) y corregirla en la UI o abrir un issue al motor si la causa está allá | Al entrar a la base, el objetivo es el del paso 4 y no "Iris needs a repair"; prueba que lo fija |
-| S2 | P0 | **Cadena de objetivos**: de `guiaIrisLugar` salen `objetivo`, `iris` y `globo` hacia la escena, y el chip del HUD. `briefingIris()` al entrar a la base, línea por línea en el globo | Se sigue el objetivo del paso 4 al 8 sin abrir `Crew` (nueva e2e: "seguir a Iris") |
-| S3 | P0 | **El paso 4 en el mundo**: hablar con la Ingeniera en el taller y caminar a un anclaje vacío; `[E] Build <módulo>` abre la tarjeta de ese módulo (costo ahora y después) y confirma. La lista actual queda como alternativa accesible y para el respaldo 2D | Se colocan los 2 módulos caminando; la ruta dorada sigue en verde |
-| S4 | P0 | **Una sola vía para el `[E]`**: leer `onInteractivo` y mostrar el verbo correcto. Con un actor, `Talk` abre el diálogo con `hablando` puesto y el retrato B; con una puerta, cambia `sala` | Prueba de que cada `Interactivo` produce su acción y ninguno cobra al acercarse (invariante 1) |
-| S5 | P0 | **Retratos B en toda la UI**: `Retrato.tsx` usa `ui/public/retratos/*.png` con el SVG actual como respaldo si falta el archivo. Se ven en la portada, la intro, la carga, el diálogo, la tormenta y el final | Capturas de las 6 pantallas con las caras nuevas |
-| S6 | P0 | **UI progresiva** según la tabla de §2 | e2e: al entrar a la base no se ve `Crew`; aparece después de la primera conversación |
-| S7 | P1 | **Mapa nuevo**: plano dibujado con la familia v8 (ESCENAS §3.4): placas con icono y nombre corto en vez de números, caminos, módulos construidos frente a anclajes vacíos, el niño con su rumbo y el objetivo en cian con pulso. Tocar un lugar fija el destino, cierra el mapa y la escena muestra la ruta. Si el niño está dentro de una sala, el mapa lo dice | Captura en los 4 tamaños aprobada por María Paula |
-| S8 | P1 | **Tormenta y telemetría escenificadas**: alerta, la Meteoróloga en el sensor y luego el dilema; telemetría desde la mesa con los ticks pendientes reales en el chip | La ruta dorada pasa por el mundo, no solo por paneles |
-| S9 | P1 | E4: pines del sitio con icono y nombre en vez de solo números | Captura en 1440x900 y 844x390 |
-| S10 | P2 | Quitar los emojis de `componentes/Dialogos.tsx:7` (reemplazar por `Icono`) | grep sin emojis en `ui/src` |
+| B0 | P0 | Contrato de conversación con A (§2) | Tipos en `agents/` con pruebas |
+| B1 | P0 | Líneas cortas para el globo: bienvenida de Iris y 1 o 2 líneas por paso y por nivel de Iris (`tutorial`, `pistas`, `danada`, `offline`). Tono de ciencia divertida, sin miedo | Claves en EN y ES; ninguna línea pasa de 2 renglones en 390 px |
+| B2 | P0 | La tripulación **recuerda y reacciona**: líneas que nombran lo que el niño eligió (las causas del motor). Personalidades: la Ingeniera práctica, la Doctora tranquila, la Meteoróloga curiosa | Prueba: con dos partidas distintas, la tripulación comenta cosas distintas |
+| B3 | P0 | Conversación en el mundo: `Ask your crew...` y voz opcional → clasificador en JSON estricto → responde la experta con datos del motor. Si el modelo cae, quedan los botones. El modelo nunca ve el estado completo ni inventa cifras | Pruebas del clasificador con entradas de niños; respaldo sin modelo |
+| B4 | P1 | Momentos de curiosidad: 8 a 10 datos reales de Marte (§1) dichos por quien corresponde en el momento justo (la Meteoróloga en la tormenta, la Doctora con la radiación, Iris con el retraso de la señal). Cada dato con fuente verificada | Tabla de datos con fuente y estado `[V]` |
+| B5 | P0 | **Jugador de prueba**, en cada encuentro: juega 10 minutos como un niño de 7 a 10 años, con un guion, y escribe `docs/referenciapau/DIARIO-JUGADOR.md`: dónde se perdió, dónde se aburrió y qué lo sorprendió. Abre un issue para el dueño de cada problema | Diario actualizado en cada encuentro |
+| B6 | P1 | Los niveles de Iris se notan en su comportamiento (con A) | Captura de cada nivel |
 
----
+### Frente C — mapa, distribución del escenario y navegación
 
-## 6. Orden en paralelo y puntos de encuentro
+**Meta:** la base está organizada como una base real en Marte y como la lámina de referencia; el mapa se
+lee de un vistazo y el niño siempre sabe adónde ir.
 
-| Bloque | María Paula | Santiago | Encuentro al final |
+| # | Prio | Tarea | Hecho cuando |
 | --- | --- | --- | --- |
-| 0 | P1 (contrato) | Boceto del mapa y del paso 4 | Contrato cerrado; nadie arranca sin él |
-| 1 | P2, P3, P4, P5 | S1, S2, S4, S5 | Integrar en `main`. Probar juntos: Iris marca el destino, el niño llega, la experta reacciona y habla con cara B |
-| 2 | P6, P7 | S3, S6, S7 | Integrar. Probar juntos: paso 4 completo caminando y entrar y salir del taller |
-| 3 | P8, P9 | S8, S9, S10 | Integrar. Ruta dorada completa en inglés y español en los 4 tamaños, y PR hacia `develop` |
+| C1 | P0 | **Referencias reales** (`docs/referenciapau/REFERENCIAS-BASE.md`, con enlaces): conceptos de base de NASA, análogos (Mars Dune Alpha/CHAPEA, MDRS) y la lámina `exterior/03-exterior-organizacion.png`. Qué es real y por qué (por ejemplo, dónde va la plataforma de aterrizaje respecto del hábitat), cada afirmación con su fuente | Documento con fuentes verificadas |
+| C2 | P0 | **Redistribuir la base** (#2) en `mundo.ts` para que el exterior quede **como `exterior/03-exterior-organizacion.png`** (ESCENAS §3.3); el mapa (C3) dibuja esa misma distribución: plataforma con nave arriba a la izquierda, energía a la izquierda, cúpula de control al centro con corredores, invernadero geodésico arriba a la derecha, laboratorio y enfermería a la derecha, comedor y descanso abajo, refugio de regolito abajo a la izquierda, dos caminos en anillo con balizas. **Sin `LugarId` nuevos**: los sectores extra son salas o decorado (un lugar nuevo exige contrato con agentes) | Captura cenital junto a la lámina, aprobada por María Paula; rutas y colisiones siguen en verde |
+| C3 | P0 | **Mapa nuevo** (#1), según ESCENAS §3.4: plano dibujado con la familia v8, placas con icono y nombre corto en vez de números, caminos, módulos construidos frente a anclajes vacíos, el niño con su rumbo, el objetivo en cian con pulso. Tocar un lugar fija el destino y el niño camina. Si está dentro de una sala, el mapa lo dice | Capturas en los 4 tamaños aprobadas por María Paula |
+| C4 | P0 | **Destino en el mundo** (#3), `marcadores.ts` montado con el gancho de A0: haz cian en el objetivo, ruta en el piso con `planearRuta` y flecha en el borde cuando queda fuera de cuadro. Sin estado de React por fotograma | Capturas con el objetivo dentro y fuera de cuadro; presupuesto de draw calls en verde |
+| C5 | P1 | E4: pines de sitio con icono y nombre; mapa de Jezero fiel al relieve (con su fuente) | Capturas 1440x900 y 844x390 |
+| C6 | P2 | Brújula arriba con la dirección del objetivo | Captura |
 
-**Cómo se integra cada bloque:** cada uno trabaja en su worktree (`ss-rescue-a` para Santiago y `ss-rescue-b`
-para María Paula), hace rebase sobre `main` y se fusiona con `git merge --no-ff`. Antes de fusionar:
-`npm run typecheck && npx vitest run && npm run build -w ui`, `E2E_BASE_URL=http://localhost:5210 npx
-playwright test` y `node tests/capturas/capturar.mjs ui/capturas/rescate/<bloque> http://localhost:5210`.
+### Frente D — mallas, fidelidad, luz, día y noche, detalle y rendimiento
 
-**La prueba que importa en cada encuentro:** jugar 5 minutos desde la portada sin leer ningún menú. Si en
-algún momento no se sabe adónde ir o qué hacer, el bloque no está terminado aunque las pruebas pasen.
+**Meta:** cada objeto se reconoce y se ve como en las láminas; la luz cuenta la hora del día; Marte se siente
+real y la escena corre fluida.
+
+| # | Prio | Tarea | Hecho cuando |
+| --- | --- | --- | --- |
+| D1 | P0 | **Fidelidad de mallas** contra `estaciones/`, `exterior/` y `mundo/01`: módulos (escudo, antena, reciclador), hábitats, corredores, edificios de la distribución de C2. Las 7 comprobaciones de ESCENAS §4.3 | Pares lámina/captura aprobados por María Paula |
+| D2 | P0 | **Sombras y luz:** arreglar la sombra del personaje que falla (#24: probar el sesgo de sombra, que la cámara de sombra siga al niño y el tamaño del mapa de sombra); calidad de sombra por nivel; sombra de contacto de los personajes (que no floten); reglas de luz de MARTE.md | Video sin parpadeo de sombra al caminar; capturas en `alta`, `media` y `baja` |
+| D3 | P0 | **Día y noche** (#16), `cicloDia.ts` montado con el gancho de A0: el sol dura 24,6597 h (NSSDC). En Jezero la luz pasa de día a tarde y al atardecer azulado al final de la misión. **No hay noche jugable** salvo que el motor modele que el panel no da energía de noche (regla de A con diseño): la imagen no puede contradecir a Iris cuando dice "sin sol no hay energía" | Tira de capturas por turno; la regla escrita con A |
+| D4 | P0 | **Rendimiento** (#17): ≥ 30 fps en `media` en una laptop común; presupuesto por vista de 80 draw calls y 80 000 triángulos (prueba de `escena3d.test.ts`). Hoy `baja` (sin sombras, 0,75 de resolución) da 46 a 55 fps sin GPU; `media`, 17 a 26 | fps medidos antes y después con `medir: true` |
+| D5 | P0 | **Interiores** (#25): corredor de conexión como `exterior/01-corredores-conexiones.png` (ventanas al invernadero, puertas laterales, piso con luces guía) y después las salas: taller (estación 05: dock de Iris, banco, panel en eje) y hábitat (06 a 08). Cada sala es su propia vista | La sala entra en el presupuesto; A la conecta; par lámina/captura aprobado por María Paula |
+| D6 | P1 | Detalles que asombran, solo de ambiente: remolinos de polvo a lo lejos, Fobos y Deimos, polvo con viento, la nave en la plataforma. Cada fenómeno con fuente verificada por B y datos (§1) | Capturas; tabla de fuentes |
+| D7 | P2 | La tormenta en el cielo y la luz, leída del estado del motor | Capturas antes y durante |
+
+### Frente E — Santiago: UI de flujo, tarjetas que aparecen, HUD y menú
+
+**Meta:** ninguna tarjeta fija; la interfaz aparece cuando el juego la necesita y se va al decidir.
+
+| # | Prio | Tarea | Hecho cuando |
+| --- | --- | --- | --- |
+| E0 | P0 | Fusionar #332 (este plan y sus prompts) para que todos lean lo mismo desde `develop`, y fusionar A0 apenas pase CI | Plan en `develop`; A0 fusionado en la primera hora |
+| E1 | P0 | **Tarjetas contextuales** (#4): nacen de un evento del mundo (llegar, `[E]`, una novedad del motor), una a la vez, al costado o como hoja inferior, y se cierran al decidir. E5 deja de tener la lista y el panel fijos: aparecen al hablar con la Ingeniera o al usar un anclaje | Captura de E5 con el mundo libre; e2e de abrir y cerrar |
+| E2 | P0 | **Una sola vía para el `[E]`** con `onInteractivo`: `Talk` abre el diálogo con `hablando`, `Build` abre la tarjeta del módulo, `Enter`/`Exit` cambia `sala`. Un solo manejador de teclado | Prueba por tipo; acercarse nunca cobra (invariante 1) |
+| E3 | P0 | **HUD progresivo** según la tabla de §1 | e2e: al entrar a la base no se ve `Crew`; aparece después de la primera conversación |
+| E4 | P0 | **Menú** (#7): cámara 1.ª/3.ª persona (se guarda en ajustes; `V` y el botón siguen), calidad gráfica, sonido e idioma | e2e: cambiar la cámara desde el menú conserva la partida (invariante 4) |
+| E5 | P1 | **Conversación larga** (más de 2 líneas u opciones) en la franja de diálogo, con el retrato B. El globo corto sobre el actor lo posiciona A (A2) y lo estiliza F (F4) | Capturas en los 4 tamaños |
+| E6 | P1 | e2e nuevas: seguir a Iris, construir caminando y que saltar no cobre (pausar el reloj antes de caminar: en CI no hay GPU) | Suite en verde en CI |
+| E7 | P2 | Quitar los emojis de `Dialogos.tsx:7` (#19) | grep sin emojis en `ui/src` |
+| E9 | P1 | Botón de salto táctil de 48 px en `ControlesTactiles.tsx`, después de A5 (estilo de F4) | Captura en 844x390; prueba de que llama al salto |
+| E8 | P1 | **Flujo de entrada** (#26) según `inicio/04-flujo-entrada-carga-orbita-explorar.png`: portada, carga con consejo, llegada en órbita ("Arriving at Jezero", con `Skip`) y **"Ready to explore"** antes de la base: "Your crew is ready", `Explore the base` y `Show controls` (mouse, teclas, salto, `E`, `V`; en celular, los gestos) | e2e del recorrido de entrada; capturas en los 4 tamaños |
+
+### Frente F — María Paula: UI visual, personajes B en la interfaz y fidelidad
+
+**Meta:** las caras de la tripulación son las de la alternativa B en toda la interfaz; las tarjetas
+aparecen y se van con gracia; todo respeta las láminas.
+
+| # | Prio | Tarea | Hecho cuando |
+| --- | --- | --- | --- |
+| F1 | P0 | **Retratos B** (#12): `tests/capturas/retratos.mjs` escribe `ui/public/retratos/<actor>-<cara>.png` con `rutaRetrato` y las caras de `frontera.ts`; `Retrato.tsx` usa el PNG y queda el SVG como respaldo | Capturas de portada, intro, carga, diálogo, tormenta y final con las caras nuevas |
+| F2 | P0 | Diseño de las tarjetas contextuales y sus transiciones (120 a 200 ms, sin movimiento con `prefers-reduced-motion`), en escritorio y celular | Capturas en los 4 tamaños |
+| F3 | P0 | **Autoridad de referencia:** aprueba el boceto del mapa (C3), la distribución (C2) y las mallas (D1) contra las láminas | Aprobación escrita en cada PR |
+| F4 | P1 | Estilo del globo, del aviso `[E]` y del botón de salto táctil | Capturas |
+| F5 | P1 | Revisión de capturas en cada encuentro, en los 4 tamaños | Lista de diferencias para cada dueño |
+| F6 | P1 | **Pantallas de entrada** (#26): composición y orden de `inicio/04` (fondo espacial facetado, tarjetas marfil, insignia de sección). **El personaje es el niño de la alternativa B, no la capibara de la lámina**: la capibara está descartada (DISEÑO.md:274, HISTORIA.md:100, README.md:86); la carga sigue `inicio/03-panel-carga.png` | Capturas en los 4 tamaños aprobadas |
+
+### Referencias de cada frente (en `docs/referenciapau/referencias/`)
+
+| Frente | Láminas |
+| --- | --- |
+| A, D | Interior: `exterior/01-corredores-conexiones.png` y `estaciones/01` a `08` (con sus `b` y `c`) |
+| C, D | Exterior: **`exterior/03-exterior-organizacion.png`** (así tiene que quedar la base), `exterior/02-kit-entorno-cultivos.png`, `mundo/01` y `mundo/02` |
+| E, F | Entrada: **`inicio/04-flujo-entrada-carga-orbita-explorar.png`** (composición y orden; personaje: el niño B), `inicio/01`, `inicio/02` y `inicio/03`. Decisión y tripulación: `ui/01`, `ui/04` y `personajes/07` |
+| A, B, F | Personajes: `personajes/` (alternativa B) |
 
 ---
 
-## 7. Delegable al equipo
+## 5. Orden en paralelo y encuentros
 
-Nada de esto bloquea los bloques 1 a 3. Cada tarea toca archivos que no son de Santiago ni de María Paula,
-salvo donde se indica.
+| Bloque | A José | B | C | D | E Santiago | F María Paula |
+| --- | --- | --- | --- | --- | --- | --- |
+| 0 | A0, empieza A3 | B0 | acuerdo con D | acuerdo con C | E0, acuerdo con F | acuerdo con E |
+| 1 | A1, A2, A4, A5, A12, A13 | B1, B2, B5 | C1, C2 | D1, D2, D4 | E1, E2 | F1, F2 |
+| 2 | A6, A7, A8, A3 aprobada | B3, B5 | C3, C4 | D3, D5 | E3, E4, E8 | F3, F4, F6 |
+| 3 | A9, A10 | B4, B6, B5 | C5 | D6, D7 | E5, E6, E7, E9 | F5 |
 
-| Tarea | Rol | Referencia |
-| --- | --- | --- |
-| Motor que recibe la misión como parámetro (escalabilidad de niveles) | motor (Jaime) | NIVELES §7.2-3, #152 |
-| Decisiones de campaña: orden, desbloqueo, dilemas sin consejo opuesto, balance de niveles 2 y 4 | diseño (Camilo) + Santiago | NIVELES §7.1, 7.4, 7.5 |
-| Recurso en cero contra telemetría en el mismo tick | motor + diseño | RESCUE_STATUS problema 12, `engine/src/acciones.ts:330` |
-| Líneas cortas de Iris y de las expertas para el globo (EN primero, ES después), 1 a 2 líneas por paso | agentes (José) | `agentes.iris.acompana.*` |
-| Fuentes `null` de las tarjetas de los niveles 2 a 5 | datos (Daniel) | NIVELES §7.6 |
-| Audio (fase 4): efectos ligados a eventos del motor y música por momento | quien tenga tiempo | AUDIO.md |
-| `useMision()` en vez de importar `MISION_JEZERO` en 6 archivos de la UI. **Toca archivos de Santiago: solo después del encuentro 2 y coordinado con él** | ui | `App.tsx:19` y otros |
-| Láminas de la Luna, el polo norte y la nave (para los niveles 2 a 5) | María Paula, después del bloque 3 | NIVELES §6 |
-| Publicación: PR hacia `develop` y dominio `trakatra.lat` | Santiago (requiere la cuenta) | RESCUE_STATUS, Cloudflare |
+### Dependencias: qué espera cada tarea
+
+"Espera" quiere decir **fusionado en `develop`**, no "terminado en la rama de otro". Las tareas que no
+aparecen en la tabla no esperan a nadie y arrancan ya.
+
+| Tarea | Espera | Mientras tanto | Desbloquea |
+| --- | --- | --- | --- |
+| A0 ganchos y `calidad.ts` | — | — | C4, D3, D4, D6, D7 |
+| A2 cadena de objetivos | A1, para que el objetivo inicial sea el correcto (puede avanzar con A1 abierto) | — | C4, C6, B6, E6 |
+| A5 salto | — | — | E9 (botón táctil), E8 (`Show controls`) |
+| A7 coreografía | A6 (las cinco figuras en escena) | gestos del niño y de la Ingeniera | — |
+| A8 entrar a las salas | C2 (dónde quedan las puertas), D5 (interior), E2 (`[E] Enter`) | sala de prueba: una caja con una puerta | C3 (el mapa dice en qué sala está el niño) |
+| A9 paso 4 caminando | A3 aprobada, E1 | flujo con la lista actual | E6 |
+| A12 mirar con el mouse | — (usa `bloqueado`, que ya existe) | — | E8 (`Show controls`) |
+| B2 y B3 | B0 | líneas sin memoria | — |
+| B3 en el mundo | A6 y E2 | la conversación por el campo `Ask your crew…` que ya existe | — |
+| B4 datos de Marte | fuente verificada de cada dato | — | D6 |
+| C2 redistribuir | C1 y la aprobación de F (F3) | — | C3, D1 (ubicación), D5 y A8 (puertas) |
+| C3 mapa nuevo | C2 y F3 | boceto sobre la distribución vieja | — |
+| C4 destino en el mundo | A0 y A2 | `objetivo` fijo en `escena/vistaPrevia.ts` | — |
+| D1 mallas | C2, para ubicar los edificios | la forma de cada malla por separado | — |
+| D3 día y atardecer | A0, y la regla de la noche escrita con A | prototipo en `escena/vistaPrevia.ts` | — |
+| D4 rendimiento | A0 (`calidad.ts`) | medir y anotar | — |
+| D6 y D7 | A0 (D6 además B4) | prototipo en `escena/vistaPrevia.ts` | — |
+| E1 tarjetas contextuales | F2 (estilo) | estructura con el estilo actual | A9 |
+| E5 conversación larga | F4 | — | — |
+| E6 e2e nuevas | A2, A5, A9 | e2e de lo que ya está fusionado | — |
+| E8 flujo de entrada | F6 (visual); A5 y A12 (qué controles mostrar) | flujo con el estilo actual | — |
+| E9 botón de salto | A5 | — | — |
+| F3 aprobaciones | los PR de C2, C3 y D1 | — | la fusión de esos PR |
+
+**Si tu tarea espera a otra:**
+1. No te quedes parado: arrancá con datos falsos detrás del contrato (la columna "mientras tanto") y con
+   pruebas.
+2. Abrí el PR como borrador (`gh pr create --draft`) y escribí `Depende de #<PR>` en la descripción.
+3. Cuando la dependencia se fusiona: `git fetch origin && git rebase origin/develop`, corré todo otra vez y
+   sacá el PR de borrador (`gh pr ready`).
+4. Si no hay forma de avanzar, abrí un issue titulado `[bloquea <frente>] ...`, mencioná al dueño y pasá a
+   otra tarea de tu lista.
+
+**Orden de fusión en cada bloque** (fusiona Santiago, con squash):
+1. Contratos y ganchos: A0 y B0.
+2. C2, que mueve la base: después de fusionarlo, todos hacen rebase sobre `develop`.
+3. El resto, en el orden en que pasen CI y su aprobación (F3 para C2, C3 y D1).
+
+**Encuentro al final de cada bloque:** cada uno fusiona sus PR en `develop`. Después, B juega 10 minutos
+como un niño (B5) y todos miran el diario. Si en algún momento el niño no sabe adónde ir ni qué hacer, el
+bloque no terminó aunque las pruebas pasen.
 
 ---
 
-## 8. Reglas que no se negocian
+## 6. Reglas que no se negocian
 
-- **Un archivo, un escritor.** `frontera.ts` y `mundo.ts` son de María Paula; los JSON de i18n, de Santiago.
-- **El motor manda:** caminar, entrar a una sala o terminar una animación nunca da ni quita recursos
-  (MECANICAS §5). La animación va después del cambio del motor, no antes.
+- **El motor manda:** caminar, saltar, entrar a una sala o terminar una animación nunca da ni quita recursos
+  (MECANICAS §5). La animación va después del cambio del motor.
+- **Ciencia con fuente:** toda cifra o fenómeno real lleva su fuente; las suposiciones de juego se declaran.
+  Separar evento observado, predicción, medición y regla de juego (MECANICAS §9).
 - **Sin GLB ni librerías nuevas** además de three (DISEÑO §8). Presupuesto por vista: ≤ 80 draw calls y
   ≤ 80 000 triángulos; cada sala es su propia vista.
-- **Bilingüe:** cada texto nuevo, primero en inglés y después en español, y siempre por i18n.
-- **Público de 7 a 12 años:** frases cortas, nada de miedo. La tormenta se vive como un desafío, no como un
-  peligro mortal.
-- **Nada se da por cerrado sin el juego real:** captura antes y después en 1440x900, 1024x683, 844x390 y
-  390x844, más la prueba de 5 minutos de §6.
+- **Bilingüe:** inglés primero, español después, siempre por i18n. Público de 7 a 10 años: frases cortas,
+  nada de miedo, nada de franquicias.
+- **Git:** rama `feat/<slug>-<tema>` o `fix/<slug>-<tema>` desde `origin/develop`; PR pequeño hacia
+  `develop`; nunca empujar a `develop` ni a `main` (despliega). El equipo fusiona con squash: después de cada
+  fusión, la rama nueva sale otra vez de `origin/develop`.
+- **Antes de cada PR:** `npm run typecheck && npx vitest run && npm run build -w ui`, las e2e
+  (`E2E_BASE_URL=http://localhost:5210 npx playwright test`) y capturas en 1440x900, 1024x683, 844x390 y
+  390x844 (`node tests/capturas/capturar.mjs ui/capturas/<tema> http://localhost:5210`).
+- **Informe de cada tarea:** qué se verificó (comando y resultado), qué no y qué está bloqueado. "Las pruebas
+  pasan" no es "se juega": abrir el juego y comprobarlo.
 
-## 9. Decisiones tomadas en este plan y por qué
+## 7. Cómo dárselo a tu agente
 
-| Decisión | Por qué | Alternativa descartada |
-| --- | --- | --- |
-| Sala como escena propia con fundido | Respeta el presupuesto por vista y reutiliza el movimiento con otras colisiones | Edificios en corte dentro del exterior: duplica las mallas y supera los 80 draw calls |
-| Retratos pre-renderizados a PNG desde los personajes B | Una sola identidad entre 2D y 3D (DISEÑO §4.4) sin cargar three en la portada | Dibujar SVG nuevos a mano: dos fuentes que se separan con el tiempo |
-| Una sola vía para el `[E]` (`Interactivo`) | Un solo aviso y un solo manejador para lugares, actores y puertas: no hay dos caminos que cobren | Un callback por tipo: tres listeners de teclado que compiten |
-| Taller primero | Es donde pasan el paso 4 y la reparación de Iris: la sala con más juego | Hábitat primero: solo se usa en el paso 6 |
-| Paso 4 caminando, con la lista como alternativa | Es la interacción que pide el juego, y la lista mantiene la accesibilidad y la ruta dorada | Reemplazar la lista: rompe el respaldo 2D y las e2e |
-| Sin selector de niveles todavía | NIVELES §8: no se muestra ninguna misión como jugable hasta que el motor reciba la misión como parámetro | Selector con niveles "próximamente": promete algo que no existe |
+Cada frente tiene su prompt listo en [`prompts/`](prompts/README.md): se pega entero al empezar la sesión
+de Claude Code, desde una rama nueva sobre `origin/develop`.
+
+## 8. Decisiones de este plan y por qué
+
+| Decisión | Por qué |
+| --- | --- |
+| José se queda con flujo, mecánicas, movimiento y animación | Es lo más difícil y está todo acoplado: el gesto depende del paso de la misión y del movimiento |
+| Ganchos de sistemas en `escena3d.ts` (A0) | Seis personas y un archivo central: los marcadores (C) y el día (D) se suman sin editar el archivo de A |
+| Sin `LugarId` nuevos al redistribuir | Un lugar nuevo cambia el tipo que comparten agentes y UI; los sectores extra entran como salas (`SalaId`) o decorado |
+| Sin noche jugable en Jezero por ahora | Una noche visual con el panel dando energía contradice lo que enseña Iris; la noche entra cuando el motor la modele |
+| Retratos pre-renderizados desde los personajes B | Una sola identidad 2D/3D (DISEÑO §4.4) sin cargar three en la portada |
+| `baja` dibuja a 0,75 de resolución | Medido: la base sube de 34 a ~50 fps sin GPU; es el nivel al que cae la escena cuando no rinde |
+| Mirar con el mouse con Pointer Lock tras un clic | El navegador solo bloquea el puntero después de un gesto del usuario; sin bloqueo el cursor choca con el borde de la pantalla y no se puede girar 360°. Es el estándar de los juegos web. Abrir una tarjeta o el menú suelta el puntero para que el niño pueda hacer clic |
+| La lámina `inicio/04` vale por composición, no por personaje | La capibara está descartada en DISEÑO, HISTORIA y README; el protagonista es el niño de la alternativa B |

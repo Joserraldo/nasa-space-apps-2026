@@ -1,10 +1,13 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+import * as THREE from "three";
+import { useT } from "../i18n";
 import type { CalidadGrafica } from "../juego/ajustes";
 import type { EventoFeedback } from "../juego/eventos";
-import { crearEscena3D, type CamaraEscena, type Escena3D } from "./escena3d";
+import { crearEscena3D, type CamaraEscena, type Escena3D, type SistemaEscena } from "./escena3d";
 import type { EntradaTactil } from "./entradaTactil";
-import { interactivoDeLugar, type AvisosEscena, type PedidoEscena } from "./frontera";
+import type { ActorId, AvisosEscena, Interactivo, PedidoEscena } from "./frontera";
 import type { LugarObjetivo, VistaEscena } from "./vista";
+import { ANCLAJES_EXPERTAS, type ExpertaBase } from "./mundo";
 
 export type { CamaraEscena } from "./escena3d";
 
@@ -14,8 +17,10 @@ export type { CamaraEscena } from "./escena3d";
  */
 /**
  * `PedidoEscena` y `AvisosEscena` (frontera.ts, PLAN-JUGABILIDAD §3) suman las props del bloque 0.
- * Estado: `onInteractivo` emite lugares; actores (P3), puertas y `sala` (P7), `objetivo` (P2), `iris` y
- * `globo` (P6) y `hablando` (P4) se aceptan y todavía no cambian nada en la escena.
+ * Estado: `onInteractivo` emite lugares y expertas (A6; `[E]` con una experta va a `onUsarInteractivo`);
+ * puertas y `sala` (A8), `objetivo` (A2 + marcador C4),
+ * `iris` y `globo` (A2) y `hablando` (A7) se aceptan y llegan a los sistemas en `ctx.pedido` (A0), pero la
+ * escena todavía no los dibuja.
  */
 export interface EscenaBaseProps extends PedidoEscena, AvisosEscena {
   // Entrada (la escena solo lee esto, nunca GameState)
@@ -63,6 +68,11 @@ export interface EscenaBaseProps extends PedidoEscena, AvisosEscena {
   onEntradaTactil?: ((entrada: EntradaTactil | null) => void) | undefined;
 }
 
+/** Las props de `PedidoEscena` (frontera.ts) en un objeto nuevo: los sistemas lo leen en `ctx.pedido`. */
+function pedidoDe(p: PedidoEscena): PedidoEscena {
+  return { objetivo: p.objetivo, iris: p.iris, globo: p.globo, hablando: p.hablando, sala: p.sala };
+}
+
 export type PosicionJugador = Readonly<{ x: number; z: number }>;
 export type EventoDestino = Readonly<{ tipo: "llego" | "cancelado" | "sin_ruta"; lugar: LugarObjetivo }>;
 
@@ -79,6 +89,10 @@ export type EventoDestino = Readonly<{ tipo: "llego" | "cancelado" | "sin_ruta";
  */
 export function EscenaBase(props: EscenaBaseProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const { t } = useT();
+  const [punteroBloqueado, setPunteroBloqueado] = useState(false);
+  const [mouse] = useState(() => typeof matchMedia === "function" && matchMedia("(pointer: fine)").matches);
+  const globoRef = useRef<HTMLDivElement>(null);
   const escenaRef = useRef<Escena3D | null>(null);
   // Siempre las últimas props para los callbacks, sin recrear la escena.
   const actuales = useRef(props);
@@ -95,14 +109,23 @@ export function EscenaBase(props: EscenaBaseProps) {
         movimientoReducido: p.movimientoReducido,
         alPerderContexto: () => actuales.current.onWebGLPerdido(),
         alExceso: (nivel) => actuales.current.onCalidad(nivel),
-        alLugarCercano: (l) => {
-          actuales.current.onLugarCercano(l);
-          actuales.current.onInteractivo?.(interactivoDeLugar(l));
+        alLugarCercano: (l) => actuales.current.onLugarCercano(l),
+        // A6: lugar o experta al alcance; [E] con una experta va a `onUsarInteractivo` si la pantalla lo pasa.
+        alInteractivo: (i) => actuales.current.onInteractivo?.(i),
+        alUsarInteractivo: (i: Interactivo) => {
+          const usar = actuales.current.onUsarInteractivo;
+          if (usar) usar(i);
+          // Sin `onUsarInteractivo`, se avisa por `onUsar` con la estación de la experta: la pantalla (E2) decide
+          // con el último `onInteractivo`, que ya es el actor, así una sola tecla abre una sola conversación.
+          else if (i.tipo === "actor") actuales.current.onUsar(i.actor in ANCLAJES_EXPERTAS ? ANCLAJES_EXPERTAS[i.actor as ExpertaBase].lugarId : "taller");
+          else return false;
+          return true;
         },
         alUsar: (l) => actuales.current.onUsar(l),
         alCambiarCamara: () => actuales.current.onCambiarCamara?.(),
         alPosicion: (pos) => actuales.current.onPosicion?.(pos),
         alDestino: (tipo, lugar) => actuales.current.onDestino?.({ tipo, lugar }),
+        alPunteroBloqueado: setPunteroBloqueado,
       });
     } catch {
       // WebGL puede fallar al crear el contexto, antes de que exista el evento de pérdida.
@@ -115,6 +138,8 @@ export function EscenaBase(props: EscenaBaseProps) {
     escena.fijarBloqueado(p.bloqueado ?? false);
     escena.actualizar(p.vista, p.eventos);
     escena.fijarDestino(p.destino ?? null);
+    escena.fijarPedido(pedidoDe(p));
+    escena.agregarSistema(crearSistemaGlobo(canvas, globoRef));
 
     const medir = () => escena.redimensionar(canvas.clientWidth, canvas.clientHeight);
     medir();
@@ -123,7 +148,7 @@ export function EscenaBase(props: EscenaBaseProps) {
 
     const cercano = escena.lugarCercano();
     actuales.current.onLugarCercano(cercano);
-    actuales.current.onInteractivo?.(interactivoDeLugar(cercano));
+    actuales.current.onInteractivo?.(escena.interactivo());
     actuales.current.onPosicion?.(escena.posicionJugador());
     actuales.current.onEntradaTactil?.(escena.entradaTactil);
 
@@ -159,7 +184,110 @@ export function EscenaBase(props: EscenaBaseProps) {
     escenaRef.current?.fijarBloqueado(props.bloqueado ?? false);
   }, [props.bloqueado]);
 
+  useEffect(() => {
+    escenaRef.current?.fijarPedido(pedidoDe(props));
+  }, [props.objetivo, props.iris, props.globo, props.hablando, props.sala]);
+
   // Decorativo para lectores de pantalla: la lista accesible de lugares lee la misma tabla LUGARES.
   // `touch-action: none`: los gestos son del juego, la página no se desplaza ni hace zoom.
-  return <canvas ref={canvasRef} aria-hidden="true" style={{ display: "block", width: "100%", height: "100%", touchAction: "none" }} />;
+  // El globo usa la cara facetada de la base (F); el sistema lo mueve sobre la cabeza de quien habla.
+  // A12: con mouse, mientras el puntero esté libre y el mundo no esté bloqueado, un aviso dice cómo mirar.
+  // Usa la misma cara facetada; no captura clics (el clic va al canvas y bloquea el puntero).
+  const avisoMirar = props.camara === "primera" && mouse && !punteroBloqueado && !props.bloqueado;
+  return (
+    <>
+      <canvas ref={canvasRef} aria-hidden="true" style={{ display: "block", width: "100%", height: "100%", touchAction: "none" }} />
+      {avisoMirar && (
+        <div className="fc-cara fc-chico aviso-mirar" data-aviso="mirar"
+          style={{ position: "absolute", left: "50%", top: "22%", transform: "translateX(-50%)", padding: "0.4rem 0.9rem", pointerEvents: "none", whiteSpace: "nowrap" }}>
+          <span>{t("ui.escena.mirar")}</span>
+        </div>
+      )}
+      {props.globo && (
+        <div ref={globoRef} className="fc-cara fc-chico globo-escena" data-actor={props.globo.actor}
+          style={{ position: "absolute", left: 0, top: 0, maxInlineSize: "16rem", padding: "0.5rem 0.75rem", pointerEvents: "none", visibility: "hidden" }}>
+          <span>{props.globo.texto}</span>
+        </div>
+      )}
+    </>
+  );
+}
+
+/** Margen del globo contra los bordes y contra el HUD (px). */
+const MARGEN_GLOBO = 8;
+/** Lo que reserva abajo la fila de controles (Crew, Map, joystick) (px). */
+const RESERVA_ABAJO = 96;
+
+/** Hasta dónde llegan las píldoras del HUD (`--hud-reserva`, la publica HudBase). Sin HUD, 64 px como antes. */
+function reservaHud(): number {
+  if (typeof document === "undefined") return 64;
+  const v = parseFloat(document.documentElement.style.getPropertyValue("--hud-reserva"));
+  return Number.isFinite(v) && v > 0 ? v : 64;
+}
+
+/**
+ * Dónde va la punta de abajo del globo (#390): centrado sobre el actor, sin salirse por los costados, con su
+ * borde de arriba siempre debajo del HUD y sin tapar la fila de abajo. Si no entra en ningún lado (celular
+ * horizontal con texto largo), manda no taparse con el HUD: queda pegado debajo de él. Pura.
+ */
+export function posicionGlobo(
+  ancla: { x: number; y: number },
+  cuadro: { ancho: number; alto: number },
+  globo: { ancho: number; alto: number },
+  reservaArriba: number,
+): { x: number; y: number } {
+  const medio = globo.ancho / 2 + MARGEN_GLOBO;
+  const x = Math.min(Math.max(ancla.x, medio), cuadro.ancho - medio);
+  const minimo = reservaArriba + MARGEN_GLOBO + globo.alto;
+  const maximo = cuadro.alto - RESERVA_ABAJO;
+  const y = Math.max(minimo, Math.min(maximo, ancla.y));
+  return { x: Math.round(x), y: Math.round(y) };
+}
+
+/** Altura del ancla del globo sobre los pies de cada actor (m): por encima del casco o de la antena. [E] */
+const ALTURA_GLOBO: Readonly<Record<ActorId, number>> = { iris: 1.35, nino: 1.75, ingeniera: 2.25, doctora: 2.25, meteorologa: 2.25 };
+
+/**
+ * Sistema que ancla el globo (DOM) sobre el actor de `ctx.pedido.globo`: proyecta su cabeza con la cámara y
+ * mueve el div con `transform`, sin estado de React por fotograma. Fuera de cuadro o detrás de la cámara,
+ * se oculta. Lo mismo sirve para quien habla en un diálogo (A7).
+ */
+function crearSistemaGlobo(canvas: HTMLCanvasElement, ref: React.RefObject<HTMLDivElement | null>): SistemaEscena {
+  const p = new THREE.Vector3();
+  let ultimo = "";
+  let ultimoDiv: HTMLDivElement | null = null;
+  return {
+    id: "globo",
+    montar() {},
+    actualizar(_dt, ctx) {
+      const div = ref.current;
+      const g = ctx.pedido.globo;
+      const actor = g ? ctx.actores[g.actor] : undefined;
+      if (!div) return;
+      if (div !== ultimoDiv) {
+        ultimoDiv = div;
+        ultimo = "";
+      }
+      let estilo = "hidden";
+      if (g && actor) {
+        actor.getWorldPosition(p);
+        p.y += ALTURA_GLOBO[g.actor];
+        p.project(ctx.camara);
+        if (p.z < 1 && Math.abs(p.x) <= 1 && Math.abs(p.y) <= 1) {
+          const { x, y } = posicionGlobo(
+            { x: ((p.x + 1) / 2) * canvas.clientWidth, y: ((1 - p.y) / 2) * canvas.clientHeight },
+            { ancho: canvas.clientWidth, alto: canvas.clientHeight },
+            { ancho: div.offsetWidth, alto: div.offsetHeight || 64 },
+            reservaHud(),
+          );
+          estilo = `translate(${x}px, ${y}px) translate(-50%, -100%)`;
+        }
+      }
+      if (estilo === ultimo) return;
+      ultimo = estilo;
+      div.style.visibility = estilo === "hidden" ? "hidden" : "visible";
+      if (estilo !== "hidden") div.style.transform = estilo;
+    },
+    dispose() {},
+  };
 }

@@ -49,15 +49,14 @@ export const PALETA_CIELO: Readonly<Record<Ambiente, Readonly<PaletaCielo>>> = {
 export const TAMANO_HALO: Readonly<Record<Ambiente, number>> = { dia: 1, atardecer: 2.5 };
 
 /** Tokens de DISEÑO.md §2.3 que usa la luz. */
-export const REGOLITO_MEDIO = "#B76A78";
+export const REGOLITO_MEDIO = "#9E5340";
 /** Sombras teñidas de lila, nunca negras (DISEÑO.md §2.3 `sombra-suelo`, §3.3). */
 export const SOMBRA_SUELO = "#F8B9B2";
 /**
- * Relleno de la hemisférica de día: `lila` (DISEÑO §2.1). Lo que el Sol no toca recibe sobre todo
- * este color, así las sombras del suelo leen lila como en la lámina `mundo/01` y nunca negras
- * (DISEÑO §2.3 `sombra-suelo`, §3.3 "relleno suave frío"). [E] a aprobar por María Paula.
+ * Relleno de la hemisférica de día: `lila` más saturado (cambio #1 del bloque 1) para dar contraste
+ * cálido/frío sin lavar los blancos.
  */
-export const LILA_RELLENO = "#EEE5F1";
+export const LILA_RELLENO = "#D9C6E3";
 /** Marfil de referencia para calibrar la exposición (MARTE.md §5). */
 export const MARFIL_CALIBRACION = "#F3EEE5";
 
@@ -68,30 +67,25 @@ function normalizar(v: Rgb): Rgb {
 
 /**
  * Parámetros de luz (MARTE.md §5). Convención de ejes de Three: +x derecha, +y arriba,
- * +z hacia la cámara. `direccionSol` apunta DESDE la escena HACIA el Sol (posición de la luz
- * direccional = objetivo + direccionSol * distancia): arriba a la izquierda, casi de lado, apenas
- * al frente y a ~38° de altura, así las sombras caen a la derecha y se ven desde la cámara como en
- * `mundo/01`. Antes ([-0,6, 1, 0,45], ~53°) caían cortas y detrás de cada pieza.
+ * +z hacia la cámara. `direccionSol` apunta DESDE la escena HACIA el Sol.
  */
 export const LUZ = {
   direccionSol: normalizar([-0.8, 0.65, 0.2]),
   /** Direccional: blanco cálido, más débil y blanco que en la Tierra (DISEÑO.md §3.3). [E] */
-  colorSol: "#FFF3E4",
+  colorSol: "#FFEAD2",
   /** Hemisférica: suelo = `regolito-medio` (MARTE.md §5); cielo de día = `lila` (relleno frío), al atardecer = horizonte. */
   hemisferica: {
     dia: { cielo: LILA_RELLENO, suelo: REGOLITO_MEDIO },
     atardecer: { cielo: PALETA_CIELO.atardecer.horizonte, suelo: REGOLITO_MEDIO },
   } as Readonly<Record<Ambiente, { cielo: string; suelo: string }>>,
-  /** `mapSize` de la sombra: <= 1024; 512 en calidad baja (MARTE.md §5). */
-  tamanoSombra: { alta: 1024, baja: 512 } as Readonly<Record<Calidad, number>>,
+  /** `mapSize` de la sombra: 2048 en alta y 1024 en media/baja para bordes nítidos (bloque 1). */
+  tamanoSombra: { alta: 2048, baja: 1024 } as Readonly<Record<Calidad, number>>,
   /**
-   * Nombre del tone mapping de Three (`THREE.NoToneMapping`). DISEÑO §3.4 manda sobre MARTE §5:
-   * ACES desaturaba y lavaba el regolito (salía salmón pálido); sin tone mapping cada pieza queda
-   * del color de su token y el marfil `#F3EEE5` lee marfil con la luz calibrada abajo.
+   * Tone mapping AgX (DISEÑO §3.4 permite activarlo cuando la escena se ve plana): evita quemar el
+   * marfil y recupera el volumen entre caras al sol y caras en sombra.
    */
-  toneMapping: "No" as const,
-  /** Exposición: sin tone mapping Three la ignora; se deja en 1 para que no engañe. */
-  exposicion: 1,
+  toneMapping: "AgX" as const,
+  exposicion: 1.05,
   /** Puntuales activas como máximo (pantallas, balizas, faros de Iris). */
   maxPuntuales: 2,
 } as const;
@@ -147,9 +141,64 @@ export const RADIO_HALO = 0.2;
  * token (`regolito-claro` lee naranja saturado) y en sombra ≈ 0,45, teñido de lila (DISEÑO §3.3).
  * Antes: sol 2,8 y hemisférica 0,9 con ACES, que lavaba el suelo. [E] a aprobar por María Paula.
  */
-export const INTENSIDAD = { sol: 2.6, hemisferica: 1.55 } as const;
-/** Media caja de la cámara de sombras alrededor de la base. [E] */
+export const INTENSIDAD = { sol: 2.5, hemisferica: 1.0 } as const;
+/** Media caja de la cámara de sombras alrededor de la base, cuando nada la mueve. [E] */
 const CAJA_SOMBRA = 40;
+/** Distancia del Sol al centro de la caja de sombra (m); el rango de profundidad va de 100 a 200. [E] */
+const DISTANCIA_SOL = 150;
+
+/**
+ * Cámara de sombra que sigue al niño (D2, #24): con la caja fija de 80 m, 512 px en `media` daban
+ * 16 cm por píxel y el niño casi no proyectaba sombra. Media caja por calidad y cuánto se adelanta
+ * el centro hacia donde mira la cámara. [E]
+ */
+export const SOMBRA_SEGUIDA = { mediaCaja: { alta: 20, media: 16, baja: 16 }, adelante: 6 } as const;
+
+const rotLuz = new THREE.Matrix4();
+const ejeX = new THREE.Vector3();
+const ejeY = new THREE.Vector3();
+const ejeZ = new THREE.Vector3();
+/** Dirección hacia el Sol en este momento (la cambia el ciclo del día, D3); por defecto la de `LUZ`. */
+const DIR_SOL = new THREE.Vector3();
+const ORIGEN = new THREE.Vector3();
+const ARRIBA = new THREE.Vector3(0, 1, 0);
+
+/** Fija la dirección hacia el Sol (normalizada) que usan la sombra que sigue al niño y el domo. */
+export function fijarDireccionSol(x: number, y: number, z: number): void {
+  DIR_SOL.set(x, y, z).normalize();
+  rotLuz.lookAt(DIR_SOL, ORIGEN, ARRIBA).extractBasis(ejeX, ejeY, ejeZ);
+}
+
+/** Dirección hacia el Sol vigente (copia). */
+export function direccionSolActual(destino = new THREE.Vector3()): THREE.Vector3 {
+  return destino.copy(DIR_SOL);
+}
+fijarDireccionSol(...LUZ.direccionSol);
+
+/**
+ * Centro de la caja de sombra para un punto del suelo, ajustado a la grilla de píxeles de sombra en
+ * el plano de la luz: así la caja se mueve de a un píxel entero y los bordes de sombra no tiemblan.
+ */
+export function centroSombra(x: number, z: number, mediaCaja: number, lado: number, destino = new THREE.Vector3()): THREE.Vector3 {
+  const paso = (2 * mediaCaja) / lado;
+  const p = new THREE.Vector3(x, 0, z);
+  const u = Math.round(p.dot(ejeX) / paso) * paso;
+  const v = Math.round(p.dot(ejeY) / paso) * paso;
+  const w = p.dot(ejeZ);
+  return destino.copy(ejeX).multiplyScalar(u).addScaledVector(ejeY, v).addScaledVector(ejeZ, w);
+}
+
+/** Mueve el Sol y su blanco para que la caja de sombra (media caja `mediaCaja`) quede centrada en `centro`. */
+export function seguirConSombra(sol: THREE.DirectionalLight, centro: THREE.Vector3, mediaCaja: number): void {
+  const cam = sol.shadow.camera;
+  if (cam.right !== mediaCaja) {
+    cam.left = -mediaCaja; cam.right = mediaCaja; cam.top = mediaCaja; cam.bottom = -mediaCaja;
+    cam.updateProjectionMatrix();
+  }
+  sol.target.position.copy(centro);
+  sol.position.copy(centro).addScaledVector(DIR_SOL, DISTANCIA_SOL);
+  sol.target.updateMatrixWorld();
+}
 
 /** Lo mínimo del renderer que toca el cielo (así se prueba sin WebGL). */
 export type RendererCielo = Pick<THREE.WebGLRenderer, "toneMapping" | "toneMappingExposure" | "shadowMap">;
@@ -159,8 +208,8 @@ export interface Cielo {
   sol: THREE.DirectionalLight;
   hemisferica: THREE.HemisphereLight;
   niebla: THREE.Fog;
-  /** Sin tone mapping (DISEÑO §3.4), exposición 1 y sombras suaves. */
-  aplicarRenderer(renderer: RendererCielo): void;
+  /** Tone mapping AgX en media/alta (o sin tone mapping en baja sin GPU) y sombras suaves. */
+  aplicarRenderer(renderer: RendererCielo, conTono?: boolean): void;
   /** Quita todo de la escena y libera el domo. */
   quitar(): void;
 }
@@ -170,23 +219,36 @@ function suave(a: number, b: number, x: number): number {
   return t * t * (3 - 2 * t);
 }
 
-/** Domo en gradiente horizonte→cénit con el halo junto al Sol pintado en color de vértice. */
-function crearDomo(ambiente: Ambiente): THREE.Mesh {
-  const geo = new THREE.SphereGeometry(RADIO_DOMO, 48, 24);
+const mezclar = (a: Rgb, b: Rgb, k: number): Rgb => [a[0] + (b[0] - a[0]) * k, a[1] + (b[1] - a[1]) * k, a[2] + (b[2] - a[2]) * k];
+
+/**
+ * Pinta el domo con el gradiente horizonte→cénit y el halo junto al Sol, mezclando el ambiente de día
+ * (`k` = 0) con el de atardecer (`k` = 1) en lineal; `dir` es la dirección hacia el Sol (normalizada).
+ */
+export function pintarDomo(geo: THREE.BufferGeometry, k: number, dir: Readonly<{ x: number; y: number; z: number }>): void {
   const pos = geo.getAttribute("position");
-  const colores = new Float32Array(pos.count * 3);
-  const halo = hexALineal(PALETA_CIELO[ambiente].halo);
-  const radioHalo = RADIO_HALO * TAMANO_HALO[ambiente];
-  const [sx, sy, sz] = LUZ.direccionSol;
+  let atributo = geo.getAttribute("color") as THREE.BufferAttribute | undefined;
+  if (!atributo) geo.setAttribute("color", (atributo = new THREE.BufferAttribute(new Float32Array(pos.count * 3), 3)));
+  const colores = atributo.array as Float32Array;
+  const halo = mezclar(hexALineal(PALETA_CIELO.dia.halo), hexALineal(PALETA_CIELO.atardecer.halo), k);
+  const radioHalo = RADIO_HALO * (TAMANO_HALO.dia + (TAMANO_HALO.atardecer - TAMANO_HALO.dia) * k);
   for (let i = 0; i < pos.count; i++) {
     const x = pos.getX(i) / RADIO_DOMO, y = pos.getY(i) / RADIO_DOMO, z = pos.getZ(i) / RADIO_DOMO;
     // Banda clara ancha junto al horizonte: sqrt abre el gradiente hacia arriba.
-    const base = colorCielo(Math.sqrt(Math.max(0, y)), ambiente);
-    const angulo = Math.acos(Math.min(1, Math.max(-1, x * sx + y * sy + z * sz)));
+    const t = Math.sqrt(Math.max(0, y));
+    const base = mezclar(colorCielo(t, "dia"), colorCielo(t, "atardecer"), k);
+    const angulo = Math.acos(Math.min(1, Math.max(-1, x * dir.x + y * dir.y + z * dir.z)));
     const w = 1 - suave(0, radioHalo, angulo);
     for (let c = 0; c < 3; c++) colores[i * 3 + c] = (1 - w) * base[c]! + w * halo[c]!;
   }
-  geo.setAttribute("color", new THREE.BufferAttribute(colores, 3));
+  atributo.needsUpdate = true;
+}
+
+/** Domo en gradiente horizonte→cénit con el halo junto al Sol pintado en color de vértice. */
+function crearDomo(ambiente: Ambiente): THREE.Mesh {
+  const geo = new THREE.SphereGeometry(RADIO_DOMO, 48, 24);
+  const [sx, sy, sz] = LUZ.direccionSol;
+  pintarDomo(geo, ambiente === "dia" ? 0 : 1, { x: sx, y: sy, z: sz });
   const mat = new THREE.MeshBasicMaterial({ vertexColors: true, side: THREE.BackSide, fog: false, depthWrite: false, toneMapped: false });
   const domo = new THREE.Mesh(geo, mat);
   domo.name = "Sky_Dome";
@@ -210,14 +272,15 @@ export function crearCielo(escena: THREE.Scene, ambiente: Ambiente = "dia", cali
   const sol = new THREE.DirectionalLight(new THREE.Color(LUZ.colorSol), INTENSIDAD.sol);
   sol.name = "Light_Sun";
   const [dx, dy, dz] = LUZ.direccionSol;
-  sol.position.set(dx * 150, dy * 150, dz * 150);
+  sol.position.set(dx * DISTANCIA_SOL, dy * DISTANCIA_SOL, dz * DISTANCIA_SOL);
   sol.castShadow = true;
   const lado = LUZ.tamanoSombra[calidad];
   sol.shadow.mapSize.set(lado, lado);
   const cam = sol.shadow.camera;
   cam.left = -CAJA_SOMBRA; cam.right = CAJA_SOMBRA; cam.top = CAJA_SOMBRA; cam.bottom = -CAJA_SOMBRA;
-  cam.near = 1; cam.far = 320;
-  sol.shadow.bias = -0.0005;
+  // Rango de profundidad justo (antes 1 a 320): el mismo sesgo despega menos la sombra del pie.
+  cam.near = DISTANCIA_SOL - 50; cam.far = DISTANCIA_SOL + 50;
+  sol.shadow.bias = -0.0003;
   sol.shadow.normalBias = 0.02;
 
   const fondoAnterior = escena.background;
@@ -231,9 +294,9 @@ export function crearCielo(escena: THREE.Scene, ambiente: Ambiente = "dia", cali
     sol,
     hemisferica,
     niebla,
-    aplicarRenderer(renderer) {
-      renderer.toneMapping = THREE.NoToneMapping;
-      renderer.toneMappingExposure = LUZ.exposicion;
+    aplicarRenderer(renderer, conTono = true) {
+      renderer.toneMapping = conTono ? THREE.AgXToneMapping : THREE.NoToneMapping;
+      renderer.toneMappingExposure = conTono ? LUZ.exposicion : 1;
       renderer.shadowMap.enabled = true;
       renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     },

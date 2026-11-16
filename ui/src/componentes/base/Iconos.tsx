@@ -9,7 +9,8 @@ export type NombreIcono =
   | "pausa" | "documento" | "libro" | "pulso" | "avion_papel" | "flecha_derecha"
   | "tripulacion" | "mapa" | "check" | "check_exito" | "microfono" | "energia" | "vida" | "pulmones" | "escudo"
   | "aviso" | "error" | "reloj" | "enlace" | "atras"
-  | "jugar" | "candado" | "engranaje" | "sonido_off" | "sonido_on" | "planeta" | "satelite" | "llave" | "sol";
+  | "jugar" | "candado" | "engranaje" | "sonido_off" | "sonido_on" | "planeta" | "satelite" | "llave" | "sol"
+  | "salto" | "senal";
 
 const C = "currentColor";
 
@@ -151,6 +152,19 @@ const DIBUJOS: Record<NombreIcono, JSX.Element> = {
   pulso: <polyline fill="none" stroke="var(--color-teal)" strokeWidth="2.2" strokeLinejoin="miter" points="1,12.5 6,12.5 8.6,5 12.6,19.5 15.6,9 17.2,12.5 23,12.5" />,
   avion_papel: <polygon fill="var(--color-teal)" points="2,11 22,3 18.5,21 12.8,15.6 9,20 9,13.4 17,7.4 8,12.2" />,
   flecha_derecha: <polygon fill="var(--color-teal)" points="14,4 12,6 16.6,10.6 3,10.6 3,13.4 16.6,13.4 12,18 14,20 22,12" />,
+  // Salto (F4): flecha hacia arriba sobre el suelo.
+  // Señal (ui/05): tres barras de altura creciente.
+  senal: (
+    <g fill="var(--color-icono-escudo)">
+      <polygon points="2,14 7,14 7,22 2,22" /><polygon points="9.5,8 14.5,8 14.5,22 9.5,22" /><polygon points="17,2 22,2 22,22 17,22" />
+    </g>
+  ),
+  salto: (
+    <g fill={C}>
+      <polygon points="12,2 20,10 17.2,12.8 13.5,9.1 13.5,16 10.5,16 10.5,9.1 6.8,12.8 4,10" />
+      <polygon points="4,19 20,19 20,22 4,22" />
+    </g>
+  ),
 };
 
 export function Icono({ nombre, tam = 24, className }: { nombre: NombreIcono; tam?: number; className?: string }) {

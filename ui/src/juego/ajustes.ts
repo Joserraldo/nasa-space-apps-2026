@@ -9,15 +9,20 @@ import type { Idioma } from "../i18n";
  * valores por defecto y el juego sigue.
  */
 export type CalidadGrafica = "alta" | "media" | "baja";
+/** Cámara del mundo: tercera persona (detrás del niño) o primera (sus ojos). Igual que `CamaraEscena`. */
+export type CamaraJugador = "tercera" | "primera";
 
 export interface AjustesJugador {
   idioma: Idioma;
   sonido: boolean;
   movimientoReducido: boolean;
   calidad: CalidadGrafica;
+  /** Cámara elegida en el menú o con `V` (#372). Cambiarla no toca la partida. */
+  camara: CamaraJugador;
 }
 
-export const CLAVE_AJUSTES = "solar-shield.ajustes.v1";
+export const CLAVE_AJUSTES = "solar-shield.ajustes.v2";
+const CLAVE_AJUSTES_ANTERIOR = "solar-shield.ajustes.v1";
 
 /** Lo que el navegador dice del jugador; se pasa desde afuera para poder probarlo. */
 export interface EntornoNavegador {
@@ -27,13 +32,14 @@ export interface EntornoNavegador {
 
 type Almacen = Pick<Storage, "getItem" | "setItem">;
 
-/** Inglés es la base: solo arranca en español si el navegador lo pide. */
+/** Inglés es la base: solo arranca en español si el navegador lo pide. Calidad alta por defecto en computador. */
 export function ajustesPorDefecto(entorno: EntornoNavegador = {}): AjustesJugador {
   return {
     idioma: entorno.idiomaNavegador?.toLowerCase().startsWith("es") ? "es" : "en",
     sonido: true,
     movimientoReducido: entorno.prefiereMovimientoReducido ?? false,
-    calidad: "media",
+    calidad: "alta",
+    camara: "tercera",
   };
 }
 
@@ -41,8 +47,13 @@ export function cargarAjustes(almacen: Almacen | undefined, entorno: EntornoNave
   const base = ajustesPorDefecto(entorno);
   try {
     const crudo = almacen?.getItem(CLAVE_AJUSTES);
-    if (!crudo) return base;
-    return validar(JSON.parse(crudo), base);
+    if (crudo) return validar(JSON.parse(crudo), base);
+    // Conserva "baja" explícita de v1 (p. ej. E2E sin GPU en CI o equipos lentos); "media" hereda "alta".
+    const previo = almacen?.getItem(CLAVE_AJUSTES_ANTERIOR);
+    if (!previo) return base;
+    const dato = JSON.parse(previo) as { calidad?: unknown } | null;
+    const v1 = validar(dato, base);
+    return dato?.calidad === "baja" ? v1 : { ...v1, calidad: base.calidad };
   } catch {
     return base;
   }
@@ -65,5 +76,6 @@ function validar(dato: unknown, base: AjustesJugador): AjustesJugador {
     sonido: typeof d.sonido === "boolean" ? d.sonido : base.sonido,
     movimientoReducido: typeof d.movimientoReducido === "boolean" ? d.movimientoReducido : base.movimientoReducido,
     calidad: d.calidad === "alta" || d.calidad === "media" || d.calidad === "baja" ? d.calidad : base.calidad,
+    camara: d.camara === "tercera" || d.camara === "primera" ? d.camara : base.camara,
   };
 }

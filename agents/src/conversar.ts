@@ -24,7 +24,8 @@ export function preguntaDelBoton(experto: Expert | "ia_base"): ClassifierOutput 
   return { version: "0", experto, accion: PREGUNTA_DEL_BOTON[experto], parametros: {}, confianza: 1, fuente: "boton" };
 }
 
-export type Entrada = { texto: string } | { experto: Expert | "ia_base" };
+/** `clasificacion`: ya clasificada por el contrato de conversación (`conversacion.ts`). */
+export type Entrada = { texto: string } | { experto: Expert | "ia_base" } | { clasificacion: ClassifierOutput };
 
 export interface OpcionesConversar {
   /** `tormentaActiva(estado)` del motor: antes del paso 5 nadie habla de la tormenta. */
@@ -32,13 +33,28 @@ export interface OpcionesConversar {
   dosisMarte?: ReferenciaDosis;
   /** Veces que Iris ya falló en la partida (la 1.ª es el número falso). */
   vecesFallaIris?: number;
+  /**
+   * ¿El niño ya puede saber que Iris está averiada? (#401) La partida de Jezero arranca con Iris dañada,
+   * pero la sorpresa es del paso `averiaIris.pasoRevelacion`. Con `false`, Iris contesta como en el
+   * tutorial y nadie la reporta rota, igual que `guiaIrisLugar`. Ausente: la avería se ve (como antes).
+   */
+  averiaRevelada?: boolean;
+}
+
+/** Vista de antes de la revelación: Iris parece sana para todos (la verdad sigue en el motor). */
+function sinAveriaVisible(v: ReturnType<typeof vistaVisible>): ReturnType<typeof vistaVisible> {
+  const equipos = "ia_base" in v.equipos && v.equipos.ia_base === "averiado" ? { ...v.equipos, ia_base: "ok" as const } : v.equipos;
+  return { ...v, iaBase: "tutorial", equipos };
 }
 
 export function conversar(entrada: Entrada, estado: GameState, o: OpcionesConversar): Dialogo {
-  const v = vistaVisible(estado, o.tormentaActiva);
+  const visible = vistaVisible(estado, o.tormentaActiva);
+  const v = visible.iaBase === "danada" && o.averiaRevelada === false ? sinAveriaVisible(visible) : visible;
   // Texto que nadie entiende → aclaración con botones (confianza 0), nunca un silencio.
   const salida =
-    "texto" in entrada
+    "clasificacion" in entrada
+      ? entrada.clasificacion
+      : "texto" in entrada
       ? clasificarConAtajos(entrada.texto) ?? { version: "0", experto: "ia_base", accion: "fuera_de_tema", parametros: {}, confianza: 0, fuente: "regex" }
       : preguntaDelBoton(entrada.experto);
   // A Iris dañada no se le puede creer: cualquier cosa que se le pida a ella sale con su falla.

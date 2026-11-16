@@ -206,6 +206,48 @@ export function huellasBase(): Huella[] {
   ];
 }
 
+function paresCorredoresEstacion(): [ { x: number; z: number; radio: number }, { x: number; z: number; radio: number } ][] {
+  const [com, enf, lab] = POS_ESTACIONES;
+  const pares: [ { x: number; z: number; radio: number } | undefined, { x: number; z: number; radio: number } | undefined ][] = [
+    [com, enf],
+    [enf, lab],
+    [lab, decorado("cupula")],
+  ];
+  return pares.filter((par): par is [{ x: number; z: number; radio: number }, { x: number; z: number; radio: number }] => Boolean(par[0] && par[1]));
+}
+
+/**
+ * Huellas adicionales de colisión para los corredores entre estaciones, porches de las estaciones
+ * y enlace de las cúpulas (evita que el jugador atraviese los tubos sin cortar el anillo trasero ni
+ * alterar `sinSolapes.test`).
+ */
+export function huellasColisionExtra(): Huella[] {
+  const extras: Huella[] = [];
+  paresCorredoresEstacion().forEach(([a, b], idx) => {
+    const k = corredorEntre(a, b);
+    if (k) extras.push({ id: `corredor_estacion:${idx}`, x: k.x, z: k.z, ancho: ANCHO_CORREDOR, fondo: k.largo, giro: k.giro });
+  });
+  for (const e of POS_ESTACIONES) {
+    const g = alCentro(e.x, e.z);
+    extras.push({
+      id: `porche:${e.id}`,
+      x: e.x + Math.sin(g) * 2.45,
+      z: e.z + Math.cos(g) * 2.45,
+      r: 0.75,
+    });
+  }
+  const a = decorado("cupula"), b = decorado("cupula2");
+  extras.push({
+    id: "enlace_cupulas",
+    x: (a.x + b.x) / 2,
+    z: (a.z + b.z) / 2,
+    ancho: 1.5,
+    fondo: Math.hypot(b.x - a.x, b.z - a.z) * 0.65,
+    giro: Math.atan2(b.x - a.x, b.z - a.z),
+  });
+  return extras;
+}
+
 // ---------------------------------------------------------------------------------------------
 // Montaje
 // ---------------------------------------------------------------------------------------------
@@ -281,11 +323,7 @@ export function armarEdificios(m: Materiales): THREE.Group {
   );
   // Estaciones por fuera y corredores de vidrio entre edificios vecinos.
   for (const e of POS_ESTACIONES) g.add(colocar(crearEstacion(m, e.id), [e.x, 0, e.z], [0, alCentro(e.x, e.z), 0]));
-  const [com, enf, lab] = POS_ESTACIONES, hab = { x: 0, z: -10.9, radio: 1.1 };
-  type Huella = { x: number; z: number; radio: number };
-  const pares: [Huella | undefined, Huella | undefined][] = [[hab, enf], [com, enf], [enf, lab], [lab, decorado("cupula")]];
-  for (const [a, b] of pares) {
-    if (!a || !b) continue;
+  for (const [a, b] of paresCorredoresEstacion()) {
     const k = corredorEntre(a, b);
     if (k) g.add(colocar(crearCorredor(m, k.largo), [k.x, 0, k.z], [0, k.giro, 0]));
   }

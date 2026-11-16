@@ -10,7 +10,7 @@
  * la rampa, la plataforma y el límite de `TERRENO`, y después sacar al cuerpo de las cajas. El
  * llamador copia `jugador` e `iris` a los grupos de three; aquí no se reconstruye nada.
  */
-import { moverPersonaje, PASO_FISICO, resolver, subpasos, type Circulo, type Cuerpo, type Terreno } from "./fisica";
+import { moverPersonaje, PASO_FISICO, resolver, subpasos, VEL_DESPEGUE, type Circulo, type Cuerpo, type Terreno } from "./fisica";
 import { pasoGuia, type Guia, type ModoGuia, type Punto } from "./guia";
 import { planearRuta, type PuntoRuta } from "./navegacion";
 import { INICIO_JUGADOR, TERRENO, lugar, type LugarId } from "./mundo";
@@ -23,6 +23,38 @@ export const RADIO_IRIS = 0.42;
 export const VEL_JUGADOR = 2.8;
 /** Giro máximo del cuerpo hacia donde camina, rad/s. */
 const GIRO_JUGADOR = 12;
+/**
+ * Caminar fluido (A4): la velocidad se acerca a la pedida con una curva exponencial, rápida al principio y
+ * suave al final. `ACELERACION` al arrancar o acelerar y `FRENADO` al soltar o frenar, en 1/s: a 9/s llega
+ * al 90 % de la marcha en ~0,26 s; a 14/s frena al 10 % en ~0,16 s. El giro del cuerpo también se acerca
+ * con curva (`GIRO_SUAVE`, 1/s), sin pasar de `GIRO_JUGADOR`. [E] Calibrado a mano en el juego.
+ */
+export const ACELERACION = 9;
+export const FRENADO = 14;
+const GIRO_SUAVE = 16;
+/** Por debajo de esta rapidez, sin entrada, el niño queda quieto (m/s). */
+const QUIETO = 0.05;
+
+/**
+ * Acerca la velocidad actual `(vx, vz)` a la pedida `(dx, dz)` en `h` segundos, con curva exponencial.
+ * Escribe en `salida`. Frena con `FRENADO` cuando la pedida es más lenta que la actual (o cero).
+ */
+export function acercarVelocidad(vx: number, vz: number, dx: number, dz: number, h: number, salida: { x: number; z: number }): void {
+  const frena = Math.hypot(dx, dz) < Math.hypot(vx, vz) - 1e-6;
+  const a = 1 - Math.exp(-(frena ? FRENADO : ACELERACION) * h);
+  let x = vx + (dx - vx) * a;
+  let z = vz + (dz - vz) * a;
+  if (dx === 0 && dz === 0 && Math.hypot(x, z) < QUIETO) x = z = 0;
+  salida.x = x;
+  salida.z = z;
+}
+
+/** Gira con curva hacia `deseado` (rad), sin pasar de `max` en este paso. */
+function girarSuave(actual: number, deseado: number, h: number, max: number): number {
+  const d = ((((deseado - actual + Math.PI) % (Math.PI * 2)) + Math.PI * 2) % (Math.PI * 2)) - Math.PI;
+  const paso = d * (1 - Math.exp(-GIRO_SUAVE * h));
+  return actual + Math.max(-max, Math.min(max, paso));
+}
 /** Cerca de un punto de la ruta se pasa al siguiente. */
 const LLEGADA_RUTA = 0.18;
 /** Si en este tiempo la ruta no acerca al jugador al menos `AVANCE_MIN`, se abandona. */
@@ -121,13 +153,13 @@ export function coberturaCaja(k: Caja): Circulo[] {
 }
 
 /** Terreno de movimiento: rampa, plataforma y límite de `TERRENO`, con los círculos reales. */
-export function terrenoMovimiento(s: Solidos): Terreno {
-  return { limite: TERRENO.limite, rampas: TERRENO.rampas, plataformas: TERRENO.plataformas, capsulas: [], circulos: s.circulos };
+export function terrenoMovimiento(s: Solidos, limite = TERRENO.limite): Terreno {
+  return { limite, rampas: TERRENO.rampas, plataformas: TERRENO.plataformas, capsulas: [], circulos: s.circulos };
 }
 
 /** Terreno para `planearRuta`: los círculos reales más la cobertura de cada caja. */
-export function terrenoRuta(s: Solidos): Terreno {
-  return { ...terrenoMovimiento(s), circulos: [...s.circulos, ...s.cajas.flatMap(coberturaCaja)] };
+export function terrenoRuta(s: Solidos, limite = TERRENO.limite): Terreno {
+  return { ...terrenoMovimiento(s, limite), circulos: [...s.circulos, ...s.cajas.flatMap(coberturaCaja)] };
 }
 
 /** Saca un punto de todos los sólidos (círculos, cajas y límite). Sin asignaciones. */
@@ -183,6 +215,15 @@ export function direccionMundo(adelante: number, derecha: number, yaw: number, s
 
 export type TipoEventoDestino = "llego" | "cancelado" | "sin_ruta";
 
+/**
+ * Salto (A5): se agacha `ANTICIPACION` s antes de despegar y amortigua `ATERRIZAJE` s al caer. Son tiempos
+ * de animación [E]; la altura y el tiempo en el aire los ponen `VEL_DESPEGUE` y `GRAVEDAD_MARTE` (fisica.ts).
+ * Saltar mueve solo el cuerpo: nunca da ni quita recursos (este módulo no conoce el GameState).
+ */
+export const ANTICIPACION = 0.09;
+export const ATERRIZAJE = 0.18;
+export type FaseSalto = "suelo" | "anticipa" | "aire" | "aterriza";
+
 export interface OpcionesMovimiento {
   /** La ruta terminó: llegó, la canceló una entrada manual o no hay camino. */
   alDestino?: (tipo: TipoEventoDestino, lugar: LugarId) => void;
@@ -192,6 +233,8 @@ export interface OpcionesMovimiento {
   inicio?: Punto;
   /** Rumbo inicial (0 = hacia +Z). Por defecto mira hacia la base (−Z). */
   rumbo?: number;
+  /** Radio caminable máximo (por defecto `TERRENO.limite`). */
+  limite?: number;
 }
 
 export interface Movimiento {
@@ -216,6 +259,15 @@ export interface Movimiento {
   fijarBloqueado(b: boolean): void;
   /** Elige un destino y planea la ruta. `null` la suelta sin evento. Sin ruta emite `sin_ruta`. */
   irA(destino: LugarId | null): void;
+  /** Salta si está apoyado y libre. Devuelve false si no puede (en el aire, ya saltando o bloqueado). */
+  saltar(): boolean;
+  /** Fase del salto y su avance (0 a 1) para la animación. Se reemplaza en cada paso: leerlo, no guardarlo. */
+  readonly salto: Readonly<{ fase: FaseSalto; k: number }>;
+  /**
+   * Lugar al que Iris rueda delante del niño aunque él no tenga ruta (la guía de la misión, A2). Si se
+   * queda atrás, Iris espera y lo mira (`pasoGuia`). Un destino del niño (`irA`) manda sobre este.
+   */
+  guiarIrisA(lugar: LugarId | null): void;
   /** Gira el cuerpo sin moverlo (primera persona: el cuerpo mira con la cámara). */
   fijarRumbo(r: number): void;
   /** Avanza el reloj real `dt` segundos; los saltos largos se recortan con `subpasos`. */
@@ -223,13 +275,16 @@ export interface Movimiento {
 }
 
 export function crearMovimiento(solidos: Solidos, o: OpcionesMovimiento = {}): Movimiento {
-  let tMov = terrenoMovimiento(solidos);
+  const limiteMapa = o.limite ?? TERRENO.limite;
+  let tMov = terrenoMovimiento(solidos, limiteMapa);
   let tRuta: Terreno | null = null;
   let cajas = solidos.cajas;
   const inicio = o.inicio ?? INICIO_JUGADOR;
   let jugador: Cuerpo = { x: inicio.x, z: inicio.z, y: 0, vy: 0, apoyado: true };
   let rumbo = o.rumbo ?? Math.PI;
   let velocidad = 0;
+  /** Velocidad suavizada del niño (m/s, en el mundo): la que de verdad lo mueve. */
+  const vel = { x: 0, z: 0 };
   let velocidadIris = 0;
   const pi = o.iris ?? { x: inicio.x + 1.3, z: inicio.z + 0.4 };
   let iris: Guia = { x: pi.x, z: pi.z, rumbo, modo: "acompana" as ModoGuia, vel: 0 };
@@ -237,16 +292,21 @@ export function crearMovimiento(solidos: Solidos, o: OpcionesMovimiento = {}): M
   let entradaX = 0, entradaZ = 0;
   let bloqueado = false;
   let destino: LugarId | null = null;
+  let guiaIris: LugarId | null = null;
   let ruta: PuntoRuta[] = [];
   let indice = 0;
   let mejorDist = Infinity;
   let msSinAvance = 0;
   // Objetos reutilizados por los pasos (la física y la guía sí crean los suyos).
   const jugadorGuia = { x: 0, z: 0, rumbo: 0 };
+  /** Segundos que faltan para despegar (0 = no está por saltar) y desde que tocó el suelo. */
+  let anticipa = 0;
+  let aterriza = ATERRIZAJE;
+  const salto = { fase: "suelo" as FaseSalto, k: 0 };
   const destinoGuia = { x: 0, z: 0, mx: 0, mz: 0 };
   const resolverIris = (p: Punto) => resolverSolidos(p, RADIO_IRIS, tMov, cajas);
 
-  const rutaTerreno = () => (tRuta ??= terrenoRuta({ circulos: tMov.circulos, cajas }));
+  const rutaTerreno = () => (tRuta ??= terrenoRuta({ circulos: tMov.circulos, cajas }, limiteMapa));
 
   const terminar = (tipo: TipoEventoDestino) => {
     const l = destino;
@@ -290,6 +350,8 @@ export function crearMovimiento(solidos: Solidos, o: OpcionesMovimiento = {}): M
           // Al llegar mira al modelo del lugar (la consola, el módulo o el edificio).
           const l = lugar(destino);
           rumbo = Math.atan2(l.mx - jugador.x, l.mz - jugador.z);
+          // Llega al punto de uso exacto: sin inercia que lo pase de largo ni lo haga girar.
+          vel.x = vel.z = 0;
           terminar("llego");
         } else {
           // Frena en el último tramo para no pasarse del punto de uso.
@@ -310,10 +372,41 @@ export function crearMovimiento(solidos: Solidos, o: OpcionesMovimiento = {}): M
       }
     }
 
+    // Salto: termina la anticipación y despega (con movimiento reducido, sin anticipación).
+    if (anticipa > 0) {
+      anticipa -= h;
+      if (reducido || anticipa <= 1e-9) {
+        anticipa = 0;
+        jugador = { ...jugador, vy: VEL_DESPEGUE, apoyado: false };
+      }
+    }
+    const enElAire = !jugador.apoyado;
+    // Con movimiento reducido o bloqueado, sin curva: arranca y para en seco.
+    if (reducido || bloqueado) {
+      vel.x = vx;
+      vel.z = vz;
+    } else acercarVelocidad(vel.x, vel.z, vx, vz, h, vel);
+    vx = vel.x;
+    vz = vel.z;
     const x0 = jugador.x, z0 = jugador.z;
     if (vx !== 0 || vz !== 0 || !jugador.apoyado) {
       jugador = moverPersonaje(jugador, vx, vz, h, tMov, RADIO_JUGADOR);
       resolverSolidos(jugador, RADIO_JUGADOR, tMov, cajas);
+    }
+    if (enElAire && jugador.apoyado) aterriza = 0;
+    else if (aterriza < ATERRIZAJE) aterriza += h;
+    if (anticipa > 0) {
+      salto.fase = "anticipa";
+      salto.k = 1 - anticipa / ANTICIPACION;
+    } else if (!jugador.apoyado) {
+      salto.fase = "aire";
+      salto.k = 1;
+    } else if (aterriza < ATERRIZAJE) {
+      salto.fase = "aterriza";
+      salto.k = 1 - aterriza / ATERRIZAJE;
+    } else {
+      salto.fase = "suelo";
+      salto.k = 0;
     }
     const mx = jugador.x - x0, mz = jugador.z - z0;
     const recorrido = Math.hypot(mx, mz);
@@ -323,7 +416,7 @@ export function crearMovimiento(solidos: Solidos, o: OpcionesMovimiento = {}): M
       // (los empujones del contacto no lo hacen girar).
       const avanza = recorrido > 0.3 * Math.hypot(vx, vz) * h;
       const deseado = avanza ? Math.atan2(mx, mz) : Math.atan2(vx, vz);
-      rumbo = reducido ? deseado : girarHacia(rumbo, deseado, GIRO_JUGADOR * h);
+      rumbo = reducido ? deseado : girarSuave(rumbo, deseado, h, GIRO_JUGADOR * h);
     }
 
     if (!bloqueado) {
@@ -331,8 +424,9 @@ export function crearMovimiento(solidos: Solidos, o: OpcionesMovimiento = {}): M
       jugadorGuia.z = jugador.z;
       jugadorGuia.rumbo = rumbo;
       let dg: typeof destinoGuia | null = null;
-      if (destino) {
-        const l = lugar(destino);
+      const haciaIris = destino ?? guiaIris;
+      if (haciaIris) {
+        const l = lugar(haciaIris);
         destinoGuia.x = l.x;
         destinoGuia.z = l.z;
         destinoGuia.mx = l.mx;
@@ -373,7 +467,7 @@ export function crearMovimiento(solidos: Solidos, o: OpcionesMovimiento = {}): M
       return ruta;
     },
     fijarSolidos(s) {
-      tMov = terrenoMovimiento(s);
+      tMov = terrenoMovimiento(s, limiteMapa);
       cajas = s.cajas;
       tRuta = null;
       // Un módulo recién construido puede caer encima: sale por el borde más cercano.
@@ -404,6 +498,17 @@ export function crearMovimiento(solidos: Solidos, o: OpcionesMovimiento = {}): M
       }
       destino = l;
       if (!planear(l)) terminar("sin_ruta");
+    },
+    saltar() {
+      if (bloqueado || !jugador.apoyado || anticipa > 0) return false;
+      anticipa = ANTICIPACION;
+      return true;
+    },
+    get salto() {
+      return salto;
+    },
+    guiarIrisA(l) {
+      guiaIris = l;
     },
     fijarRumbo(r) {
       rumbo = r;

@@ -331,6 +331,8 @@ export function crearIris(): Iris {
     soporte.add(malla);
   }
   let actual: CaraIris = "atenta";
+  let ultimoT = -1;
+  let anguloRueda = 0;
   const soltarMateriales = retenerMateriales(grupo);
   const cara = (c: CaraIris) => {
     if (c === actual) return;
@@ -347,7 +349,14 @@ export function crearIris(): Iris {
     animar(t, o = {}) {
       const vivo = o.quieto ? 0 : 1;
       const v = o.velocidad ?? 0;
-      const giro = o.quieto ? 0 : (v * t) / RADIO;
+      const dt = ultimoT >= 0 && t > ultimoT ? Math.min(0.1, t - ultimoT) : t > 0 && ultimoT === t ? t : 0;
+      ultimoT = t;
+      if (o.quieto || (v === 0 && anguloRueda === 0)) {
+        anguloRueda = 0;
+      } else if (Math.abs(v) > 0.08) {
+        anguloRueda = (anguloRueda + (v * dt) / RADIO) % (Math.PI * 2);
+      }
+      const giro = o.quieto ? 0 : anguloRueda;
       for (const n of ["ruedaDI", "ruedaDD", "ruedaTI", "ruedaTD"] as const) huesos[n].rotation.x = giro;
       const rodando = Math.min(1, Math.abs(v));
       huesos.chasis.position.y = y0 + (Math.sin(t * 9) * 0.006 * rodando + Math.sin(t * 1.6) * 0.004 * (1 - rodando)) * vivo;

@@ -64,7 +64,7 @@ describe("Iris compañera v8: destino", () => {
   it("offline → null", () => {
     expect(guiaIrisLugar(vista({}, "offline"), 4)).toBeNull();
   });
-  it("danada guía igual que tutorial", () => {
+  it("la avería oculta no se revela antes del paso narrativo", () => {
     for (let p = 1; p <= 8; p++) expect(g(vista({}, "danada"), p)).toEqual(g(vista({}, "tutorial"), p));
     expect(g(vista(), 4)).toEqual(g(vista({}, "tutorial"), 4));
   });
@@ -83,6 +83,17 @@ describe("Iris compañera v8: gesto y cara", () => {
   });
   it("sin avería la cara es normal", () => {
     for (const n of ["tutorial", "pistas", "danada"] as const) for (let p = 1; p <= 8; p++) expect(g(vista({ energia: 5 }, n), p).cara).toBe("normal");
+  });
+  it("avería revelada: reconoce el error y no guía con falsa seguridad", () => {
+    const r = g(vista({}, "danada"), 6, true);
+    expect(r).toMatchObject({destino:"taller",experto:"ingeniera",ruta:false,gesto:"pedir_reparacion",cara:"error"});
+    expect(r.dialogo.lineas).toEqual([{clave:"agentes.iris.acompana.danada.verificar"}]);
+  });
+  it("los cuatro niveles tienen comportamientos visibles diferentes", () => {
+    expect(g(vista({}, "tutorial"),4)).toMatchObject({ruta:true,gesto:"senalar",cara:"normal"});
+    expect(g(vista({}, "pistas"),4)).toMatchObject({ruta:false,gesto:"mirar",cara:"normal"});
+    expect(g(vista({}, "danada"),6,true)).toMatchObject({ruta:false,gesto:"pedir_reparacion",cara:"error"});
+    expect(guiaIrisLugar(vista({},"offline"),4)).toBeNull();
   });
   it("briefing: explicar con cara normal", () => {
     const b = briefingIris();

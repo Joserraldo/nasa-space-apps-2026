@@ -1,0 +1,43 @@
+/* Pantalla nueva autorizada: familia de inicio/01, paneles ui/04 y botones existentes. */
+.acceso.portada { pointer-events:auto; grid-template-columns:minmax(0,1fr) minmax(0,460px); grid-template-rows:1fr auto; align-items:center; gap:var(--esp-7); padding:80px max(var(--esp-5),5vw) var(--esp-5); }
+.acceso-idiomas { position:absolute; top:var(--esp-4); right:var(--esp-4); display:flex; gap:var(--esp-2); }
+.acceso-bienvenida { max-width:500px; justify-self:center; }
+.acceso-logo { width:min(100%,330px); height:auto; margin-bottom:var(--esp-5); }
+.acceso-bienvenida h1 { font-size:clamp(26px,3vw,42px); }
+.acceso-bienvenida p { color:var(--color-lila); }
+.acceso-tripulante { text-align:center; }
+/* El niño entero de la portada, flotando despacio como en inicio/01; quieto con movimiento reducido. */
+.acceso-nino { display:inline-block; width:auto; height:min(34dvh,360px); max-width:100%; transform-origin:40% 60%; animation:acceso-flota 6s ease-in-out infinite alternate; }
+@keyframes acceso-flota { from { translate:0 0; rotate:-2deg; } to { translate:0 -10px; rotate:1.5deg; } }
+@media (prefers-reduced-motion: reduce) { .acceso-nino { animation:none; } }
+.acceso-panel { width:100%; min-width:0; color:var(--color-indigo-texto); }
+.acceso-panel .pf-cuerpo { display:grid; gap:var(--esp-3); }
+.acceso-invitado, .acceso-sesion { display:grid; gap:var(--esp-3); text-align:center; }
+.acceso-invitado .fb-caja, .acceso-formulario > .fb-caja { width:100%; }
+.acceso-invitado .fb, .acceso-formulario > .fb-caja .fb { width:100%; }
+.acceso-invitado p, .acceso-privacidad { margin:0; font-size:15px; }
+.acceso-separador { display:flex; align-items:center; gap:var(--esp-3); font-size:14px; }
+.acceso-separador::before, .acceso-separador::after { content:''; height:1px; background:var(--color-ciruela); flex:1; opacity:.3; }
+.acceso-modos { display:flex; flex-wrap:wrap; justify-content:center; gap:var(--esp-2); }
+.acceso-formulario { display:grid; gap:var(--esp-2); }
+.acceso-formulario > label { font-weight:var(--tipo-peso-etiqueta); }
+.acceso-formulario > input { min-width:0; width:100%; min-height:48px; background:var(--color-marfil); }
+.acceso-ayuda { margin:0 0 var(--esp-2); font-size:14px; }
+.acceso-ver { display:flex; align-items:center; min-height:44px; gap:var(--esp-2); font-size:15px; }
+.acceso-ver input { width:22px; height:22px; accent-color:var(--color-ciruela); }
+.acceso-error { margin:0; color:var(--color-error); font-weight:var(--tipo-peso-etiqueta); }
+.acceso-privacidad { text-align:center; }
+.acceso-aviso { grid-column:1 / -1; justify-self:center; margin:0; color:var(--color-lila); font-size:13px; }
+.cuenta-barra { display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:var(--esp-2); padding:var(--esp-2) var(--esp-4); background:var(--color-lila); color:var(--color-indigo-texto); }
+.cuenta-barra p { margin:0; font-size:14px; }
+/* Escritorio: el formulario puede ser más alto que la pantalla; la bienvenida con el niño queda arriba y a la vista. */
+@media(min-width:801px) and (min-height:501px) { .acceso-bienvenida { align-self:start; position:sticky; top:80px; } }
+@media(max-width:800px) {
+ .acceso.portada { grid-template-columns:minmax(0,460px); justify-content:center; gap:var(--esp-5); padding:76px var(--esp-4) var(--esp-5); }
+ .acceso-bienvenida { text-align:center; }
+ .acceso-logo { width:200px; margin-bottom:var(--esp-3); }
+ .acceso-tripulante { display:none; }
+ .acceso-bienvenida h1 { font-size:26px; }
+ .acceso-bienvenida p { margin-bottom:0; }
+}
+@media(max-height:500px) and (min-width:801px) { .acceso.portada { align-items:start; gap:var(--esp-5); padding-top:70px; } .acceso-tripulante { display:none; } }

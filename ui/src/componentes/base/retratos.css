@@ -4,7 +4,7 @@
 .retrato-marco { display: grid; place-items: end center; width: 124px; height: 124px; overflow: hidden; border-radius: 50%;
   background: color-mix(in srgb, var(--color-ciruela) 14%, var(--color-lila)); box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--color-ciruela) 16%, var(--color-lila)); }
 .retrato-compacto .retrato-marco { width: 80px; height: 80px; }
-.retrato-marco svg { max-width: none; flex: none; }
+.retrato-marco :is(svg, .retrato-img) { max-width: none; flex: none; }
 .retrato-nombre { font-weight: var(--tipo-peso-titulo); font-size: var(--tipo-tam-cuerpo); line-height: 1.15; }
 .retrato-especialidad { display: inline-flex; flex-wrap: nowrap; justify-content: center; align-items: center; gap: var(--esp-1); font-size: 14px; font-weight: var(--tipo-peso-etiqueta); color: var(--color-ciruela); white-space: nowrap; }
 .retrato-especialidad svg { flex: none; }
@@ -18,3 +18,14 @@
 .retrato-sel::before { inset: 3px; }
 @media (hover: hover) and (pointer: fine) { .retrato-boton:hover { --fc-fondo: var(--color-lila); } }
 @media (max-height: 480px) { .retrato-especialidad { font-size: 16px; } }
+/* Parpadeo (Retrato con parpadear): la cara de ojos cerrados encima de la expresión, recortada a los ojos con borde
+   suave; la boca y las cejas no cambian. Elipses medidas sobre las caras de 320 px de cada tripulante (centro de los
+   ojos, entre las cejas y la boca). La máscara solo usa el alfa: el color del token no se ve. */
+.retrato-parpadea { display: inline-grid; flex: none; line-height: 0; vertical-align: middle; }
+.retrato-parpadea > .retrato-img { grid-area: 1 / 1; }
+.retrato-ojos { visibility: hidden; -webkit-mask-image: var(--retrato-ojos); mask-image: var(--retrato-ojos); }
+.retrato-parpadea[data-cerrado] > .retrato-ojos { visibility: visible; }
+.retrato-parpadea[data-ojos="nino"] { --retrato-ojos: radial-gradient(ellipse 19.5% 7.4% at 62.8% 51.6%, var(--color-espacio) 75%, transparent); }
+.retrato-parpadea[data-ojos="ingeniera"] { --retrato-ojos: radial-gradient(ellipse 17.6% 6.3% at 62.2% 46.3%, var(--color-espacio) 75%, transparent); }
+.retrato-parpadea[data-ojos="doctora"] { --retrato-ojos: radial-gradient(ellipse 18.4% 7.4% at 66.6% 50%, var(--color-espacio) 75%, transparent); }
+.retrato-parpadea[data-ojos="meteorologa"] { --retrato-ojos: radial-gradient(ellipse 16% 6.6% at 65.3% 47.2%, var(--color-espacio) 75%, transparent); }

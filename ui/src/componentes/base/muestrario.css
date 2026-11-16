@@ -34,7 +34,7 @@
 @media (max-width: 560px) {
   .mu-tres .retrato-ficha { padding-inline: var(--esp-1); }
   .mu-tres .retrato-marco { width: 84px; height: 84px; }
-  .mu-tres .retrato-marco svg { width: 96px; height: 96px; }
+  .mu-tres .retrato-marco :is(svg, .retrato-img) { width: 96px; height: 96px; }
   .mu-accesos { grid-template-columns: 1fr; }
 }
 .mu-centro .fb-caja, .mu-centro .fb { max-inline-size: 100%; }
@@ -43,3 +43,10 @@
 .mu-tres .retrato-boton, .mu-tres .retrato-ficha { inline-size: 100%; box-sizing: border-box; }
 /* ?vista=hud: fondo de tokens que hace de escena marciana (cielo de Marte arriba, regolito abajo). */
 .mu-escena { position: fixed; inset: 0; background: linear-gradient(var(--color-montana-lejana) 0 30%, var(--color-regolito-claro) 30% 100%); }
+/* ?vista=globo: dos actores de muestra (el retrato hace de personaje) con su globo anclado a la cabeza. */
+.mu-actor { position: absolute; translate: -50% 0; }
+.mu-actor .globo { position: absolute; left: 50%; top: 0; }
+.mu-actor .globo[data-punta="arriba"] { top: 100%; }
+.mu-actor-iris { left: 64%; top: 46%; }
+.mu-actor-ingeniera { left: 30%; top: 22%; }
+@media (max-width: 600px) { .mu-actor-ingeniera { left: 50%; top: 14%; } .mu-actor-iris { left: 62%; top: 52%; } }

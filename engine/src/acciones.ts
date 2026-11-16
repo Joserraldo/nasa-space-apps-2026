@@ -48,6 +48,18 @@ function aplicarDeltas(
   return { ...estado, recursos, causas };
 }
 
+/**
+ * Id de efecto pendiente sin repetir: dos acciones del mismo tipo en el mismo tick (p. ej. colocar dos
+ * módulos que dan energía en el turno 0) producían el mismo id, y ui lo usa como clave de cada efecto.
+ * Determinista: la misma secuencia de acciones da los mismos ids.
+ */
+function idSinRepetir(base: string, existentes: readonly PendingEffect[], nuevos: readonly PendingEffect[]): string {
+  const usado = (id: string) => existentes.some((e) => e.id === id) || nuevos.some((e) => e.id === id);
+  let id = base;
+  for (let n = 2; usado(id); n++) id = `${base}-${n}`;
+  return id;
+}
+
 /** Costo y beneficio de una acción base, ya escalados por sus parámetros. */
 export function costoDe(accion: BaseAction, mision: Mision = MISION_JEZERO): { inmediato: Partial<Record<Resource, number>>; retrasado: Partial<Record<Resource, number>>; causaKey: string } {
   const base = COSTOS_ACCION[accion.tipo];
@@ -130,7 +142,7 @@ function ejecutarAccion(estado: GameState, accionCruda: unknown, mision: Mision,
     const paso = retrasoFijo === null ? enteroEntre(rng, retraso.min, retraso.max) : { estado: rng, entero: retrasoFijo };
     rng = paso.estado;
     nuevos.push({
-      id: `${s.tick}-${accion.tipo}-${r}`,
+      id: idSinRepetir(`${s.tick}-${accion.tipo}-${r}`, s.efectosPendientes, nuevos),
       aplicaEnTick: s.tick + paso.entero,
       recurso: r,
       delta: d,
@@ -167,7 +179,7 @@ export function encolarRetrasado(
     if (!d) continue;
     const p = enteroEntre(rng, retraso.min, retraso.max);
     rng = p.estado;
-    nuevos.push({ id: `${estado.tick}-${idBase}-${r}`, aplicaEnTick: estado.tick + p.entero, recurso: r, delta: d, origen: "decision", descripcionKey, oculto: retraso.ocultos });
+    nuevos.push({ id: idSinRepetir(`${estado.tick}-${idBase}-${r}`, estado.efectosPendientes, nuevos), aplicaEnTick: estado.tick + p.entero, recurso: r, delta: d, origen: "decision", descripcionKey, oculto: retraso.ocultos });
   }
   return { ...estado, rngEstado: rng, efectosPendientes: [...estado.efectosPendientes, ...nuevos] };
 }
