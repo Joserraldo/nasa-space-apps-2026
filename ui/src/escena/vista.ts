@@ -1,6 +1,7 @@
 import type { BaseAiLevel, Equipment, GameState } from "@solar-shield/contracts";
 import type { DestinoIris } from "@solar-shield/agents";
 import { tormentaActiva } from "@solar-shield/engine";
+import { misionActiva } from "../juego/misiones.js";
 
 /**
  * Contrato `VistaEscena` (FLUJO §3). Lo define integración (José); lo consumen
@@ -69,7 +70,7 @@ export function vistaEscena(estado: GameState, entrada: EntradaVista): VistaEsce
     fase: entrada.fase,
     modulos,
     iris: { nivel: estado.iaBase, averiada: modulos.ia_base === "averiado" },
-    tormenta: { anunciada: estado.tormenta !== null, activa: tormentaActiva(estado) },
+    tormenta: { anunciada: estado.tormenta !== null, activa: tormentaActiva(estado, misionActiva()) },
     escudoElevado:
       estado.causas.some((c) => c.descripcionKey === "causa.subir_escudo" || c.accion?.tipo === "subir_escudo") ||
       estado.efectosPendientes.some((e) => e.descripcionKey === "causa.subir_escudo"),

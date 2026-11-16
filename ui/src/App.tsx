@@ -18,7 +18,7 @@ import { Creditos } from "./componentes/Creditos.js";
 import { Transicion } from "./componentes/Transicion.js";
 import { MundoBase } from "./pantallas/MundoBase.js";
 import { MEMORIA_INICIAL, type MemoriaConversacion, type TemaPregunta } from "@solar-shield/agents";
-import { MISION_JEZERO } from "@solar-shield/missions";
+import { fijarMision, misionPorId, semillaNueva, siguienteMision } from "./juego/misiones.js";
 import { cargarAjustes, guardarAjustes, type CalidadGrafica, type CamaraJugador } from "./juego/ajustes.js";
 import { Menu } from "./componentes/Menu.js";
 import { almacenDelNavegador, cargarPartida, guardarPartida } from "./juego/guardado.js";
@@ -53,7 +53,10 @@ function Pantalla({ idioma, setIdioma, sonido, setSonido, grafica }: {
   grafica: { calidad: CalidadGrafica; movimientoReducido: boolean; onCalidad(c: CalidadGrafica): void; camara: CamaraJugador; onCamara(c: CamaraJugador): void };
 }) {
   const { t } = useT();
-  const [j, enviar] = useReducer(reducir, undefined, inicial);
+  const [j, enviar] = useReducer(reducir, undefined, () => inicial());
+  // EXPERIMENTAL: las pantallas leen la misión de la partida (juego/misiones.ts) en vez de Jezero fijo.
+  const mision = misionPorId(j.misionId);
+  fijarMision(mision);
   // Partida guardada en este navegador: habilita "Continue" en la portada.
   const [guardada, setGuardada] = useState(() => cargarPartida(almacenDelNavegador()));
   useEffect(() => {
@@ -131,7 +134,7 @@ function Pantalla({ idioma, setIdioma, sonido, setSonido, grafica }: {
   const continuar = () => { if (guardada) { tocar("confirmar", sonido); setProgreso({ conversado: true, objetivo: true }); enviar({ tipo: "restaurar", juego: guardada }); } };
 
   const reloj = enBase ? { velocidad, onPausa: () => enviar({ tipo: "pausa", pausado: !j.estado.pausado }), onVelocidad: setVelocidad } : undefined;
-  const objetivo = j.fase === "modulos" ? { labelKey: "ui.comun.hud.objetivo.modulos", vars: { n: MISION_JEZERO.modulosAColocar } }
+  const objetivo = j.fase === "modulos" ? { labelKey: "ui.comun.hud.objetivo.modulos", vars: { n: mision.modulosAColocar } }
     : { labelKey: j.fase === "tormenta" ? "ui.comun.hud.objetivo.tormenta" : "ui.comun.hud.objetivo.base" };
 
   return (
@@ -175,7 +178,12 @@ function Pantalla({ idioma, setIdioma, sonido, setSonido, grafica }: {
             {j.fase === "satelite" && <PantallaOrbita estado={j.estado} onContinuar={() => enviar({ tipo: "fase", fase: "sitio" })} />}
             {j.fase === "sitio" && <PantallaSitio estado={j.estado} onElegir={(s) => { tocar("confirmar", sonido); setEntrada("llegada"); enviar({ tipo: "sitio", sitio: s }); }} />}
             {llegando && <Llegada onSeguir={seguirLlegada} />}
-            {j.fase === "final" && <PantallaFinal estado={j.estado} onOtra={() => { setProgreso(PROGRESO_INICIAL); setMemoria(MEMORIA_INICIAL); setVistos([]); enviar({ tipo: "nueva" }); }} />}
+            {j.fase === "final" && <PantallaFinal estado={j.estado} onOtra={() => { setProgreso(PROGRESO_INICIAL); setMemoria(MEMORIA_INICIAL); setVistos([]); enviar({ tipo: "nueva" }); }}
+              onOtraSemilla={() => {
+                const otra = siguienteMision(j.misionId);
+                setProgreso(PROGRESO_INICIAL); setMemoria(MEMORIA_INICIAL); setVistos([]);
+                enviar({ tipo: "nueva", misionId: otra.id, semilla: semillaNueva(otra.id) });
+              }} />}
           </Transicion>
         )}
         {creditos && <Creditos onCerrar={() => setCreditos(false)} />}

@@ -1,6 +1,7 @@
 import { compactarCausas, modulosColocados, type PuntajeSitio } from "@solar-shield/engine";
 import { EquipmentSchema, GameStateSchema, type Equipment, type GameState } from "@solar-shield/contracts";
 import type { Fase, Juego } from "./reductor.js";
+import { misionPorId } from "./misiones.js";
 
 /** Limite de carga del Worker (`/api/progress`) definido en `infra/worker/src/cuentas.ts`. */
 export const PROGRESO_MAX_BYTES = 20_000;
@@ -16,6 +17,8 @@ export interface JuegoGuardado {
   colocados: Equipment[];
   sitio: PuntajeSitio | null;
   tormentaVista: boolean;
+  /** EXPERIMENTAL: misión de la partida; si falta, Jezero. */
+  misionId?: string;
 }
 
 export type ResultadoAuth =
@@ -69,6 +72,7 @@ export function serializarProgreso(j: Juego): JuegoGuardado | null {
     colocados: j.colocados,
     sitio: j.sitio,
     tormentaVista: j.tormentaVista,
+    misionId: j.misionId,
   });
 
   const completo = empaquetar(j.estado);
@@ -101,6 +105,7 @@ export function deserializarProgreso(crudo: unknown): Juego | null {
     ultimas: null,
     tormentaVista: Boolean(d.tormentaVista),
     registro: null,
+    misionId: misionPorId(d.misionId).id,
   };
 }
 
