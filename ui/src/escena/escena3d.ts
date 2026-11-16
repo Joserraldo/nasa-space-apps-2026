@@ -88,11 +88,12 @@ export interface Escena3D {
   dispose(): void;
 }
 
-/** DPR máximo y sombras por calidad (APLICACION §8, MARTE §5). */
+/** DPR máximo y sombras por calidad (APLICACION §8, MARTE §5). `baja` baja de 1: es el nivel al que cae la escena
+ * cuando no sostiene ~28 fps, y sin GPU el costo crece con los píxeles (medido con SwiftShader: base de 34 a ~50 fps). */
 export const AJUSTE_CALIDAD: Readonly<Record<CalidadGrafica, { dpr: number; sombra: number | null; antialias: boolean }>> = {
   alta: { dpr: 1.5, sombra: LUZ.tamanoSombra.alta, antialias: true },
   media: { dpr: 1.25, sombra: LUZ.tamanoSombra.baja, antialias: true },
-  baja: { dpr: 1, sombra: null, antialias: false },
+  baja: { dpr: 0.75, sombra: null, antialias: false },
 };
 
 const MAS_BAJA: Readonly<Record<CalidadGrafica, CalidadGrafica | null>> = { alta: "media", media: "baja", baja: null };
