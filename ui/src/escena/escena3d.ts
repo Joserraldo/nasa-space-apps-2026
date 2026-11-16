@@ -170,6 +170,11 @@ export interface OpcionesEscena3D {
   alLugarCercano?: (lugar: LugarId | null) => void;
   /** Tecla `E` (o Enter fuera de un botón) con un lugar al alcance. */
   alUsar?: (lugar: LugarId) => void;
+  /**
+   * Mirar con el mouse sin arrastrar (A12): el primer clic en el mundo bloquea el puntero (Pointer Lock) y
+   * mover el mouse gira la cámara. Avisa al cambiar. Se suelta solo con `fijarBloqueado(true)` o con Esc.
+   */
+  alPunteroBloqueado?: (bloqueado: boolean) => void;
   /** Tecla `V`: la pantalla decide la cámara y llama a `fijarCamara`. */
   alCambiarCamara?: () => void;
   /** Posición del jugador en metros de juego: al moverse (≤ 5 por segundo) y al detenerse. */
@@ -276,6 +281,8 @@ export const CAMARA_PRIMERA = { ojos: 1.08, inclinacion: 0.12, inclinacionMin: -
 
 /** Sensibilidad de giro por píxel arrastrado (ratón y dedo). */
 const GIRO_POR_PX = 0.0055;
+/** Con el puntero bloqueado (A12), cada px de mouse gira la mitad que en el arrastre: unos 360° en 2300 px. [E] */
+const FACTOR_PUNTERO_BLOQUEADO = 0.5;
 /** Seguimiento suave: constante de tiempo inversa (1/s). */
 const SEGUIMIENTO = 9;
 /** Detrás del niño: la cámara vuelve a su espalda a este ritmo (rad/s) al caminar, si nadie la giró. */
@@ -513,7 +520,7 @@ export function crearEscena3D(canvas: HTMLCanvasElement, opciones: OpcionesEscen
     zoom = 1;
     ultimoGiroManual = -Infinity;
   };
-  const entradaTactil = new EntradaTactil({ onRecentrar: recentrar, permiteZoom: () => camaraActual === "tercera" });
+  const entradaTactil = new EntradaTactil({ onRecentrar: recentrar, permiteZoom: () => camaraActual === "tercera", onSaltar: () => mov.saltar() });
 
   // --- Proximidad, posición y atributos de prueba ---
   let ultimoLugar: LugarId | null = lugarCercano(mov.jugador.x, mov.jugador.z);
@@ -630,7 +637,8 @@ export function crearEscena3D(canvas: HTMLCanvasElement, opciones: OpcionesEscen
     const k = reducido || dt <= 0 ? 1 : 1 - Math.exp(-SEGUIMIENTO * dt);
     pivote.x += (j.x - pivote.x) * k;
     pivote.z += (j.z - pivote.z) * k;
-    pivote.y += (j.y - pivote.y) * k;
+    // En el aire la cámara no sube con el niño: así el salto se ve (A5). Apoyado, sigue el relieve.
+    if (j.apoyado) pivote.y += (j.y - pivote.y) * k;
 
     const sy = Math.sin(yaw), cy = Math.cos(yaw);
     const fx = -sy, fz = -cy; // adelante de la cámara
@@ -717,6 +725,7 @@ export function crearEscena3D(canvas: HTMLCanvasElement, opciones: OpcionesEscen
     tripulacion.iris.grupo.rotation.y = iris.rumbo;
     tripulacion.actores.caminando = mov.velocidad > 0.2;
     tripulacion.actores.velocidad = mov.velocidad;
+    tripulacion.actores.salto = mov.salto;
     tripulacion.actores.velocidadIris = mov.velocidadIris;
     tripulacion.actores.modoIris = iris.modo;
 
@@ -772,6 +781,12 @@ export function crearEscena3D(canvas: HTMLCanvasElement, opciones: OpcionesEscen
     if (bloqueado) return;
     if (teclado.presionar(e.code)) return;
     if (e.repeat) return;
+    // Espacio salta (A5). Sobre un botón, el espacio es del botón.
+    if (e.code === "Space" && (e.target as HTMLElement | null)?.tagName !== "BUTTON") {
+      e.preventDefault();
+      mov.saltar();
+      return;
+    }
     if (e.code === "KeyV" || e.key === "v" || e.key === "V") {
       opciones.alCambiarCamara?.();
       return;
@@ -785,12 +800,34 @@ export function crearEscena3D(canvas: HTMLCanvasElement, opciones: OpcionesEscen
   const alSoltarTecla = (e: KeyboardEvent) => {
     teclado.soltar(e.code);
   };
+  const punteroBloqueado = () => document.pointerLockElement === canvas;
   const alApuntar = (e: PointerEvent) => {
     if (e.pointerType === "touch" || e.button !== 0) return;
+    // A12: el navegador solo bloquea el puntero tras un gesto del usuario; este clic lo es. Sin bloqueo
+    // (navegador que no lo permite, o rechazado) se sigue mirando con arrastre, como antes.
+    if (e.pointerType === "mouse" && !bloqueado && !punteroBloqueado()) {
+      try {
+        const p = canvas.requestPointerLock?.() as unknown as Promise<void> | undefined;
+        p?.catch?.(() => undefined);
+      } catch {
+        // sin Pointer Lock: queda el arrastre
+      }
+    }
+    if (punteroBloqueado()) return; // ya mira con el mouse: sin arrastre ni captura
     arrastre = { id: e.pointerId, x: e.clientX, y: e.clientY };
-    canvas.setPointerCapture?.(e.pointerId);
+    try {
+      canvas.setPointerCapture?.(e.pointerId);
+    } catch {
+      // Con el bloqueo pedido y todavía sin confirmar, el navegador puede rechazar la captura: el arrastre sigue igual.
+    }
   };
   const alMoverPuntero = (e: PointerEvent) => {
+    if (punteroBloqueado()) {
+      // Con el puntero bloqueado, mover el mouse gira la cámara sin apretar nada.
+      arrastreX += e.movementX * FACTOR_PUNTERO_BLOQUEADO;
+      arrastreY += e.movementY * FACTOR_PUNTERO_BLOQUEADO;
+      return;
+    }
     if (!arrastre || e.pointerId !== arrastre.id) return;
     arrastreX += e.clientX - arrastre.x;
     arrastreY += e.clientY - arrastre.y;
@@ -805,8 +842,20 @@ export function crearEscena3D(canvas: HTMLCanvasElement, opciones: OpcionesEscen
     e.preventDefault();
     rueda += Math.max(-1, Math.min(1, e.deltaY / 400));
   };
+  let estabaBloqueado = false;
+  const alCambiarBloqueo = () => {
+    const ahora = punteroBloqueado();
+    if (ahora === estabaBloqueado) return;
+    estabaBloqueado = ahora;
+    arrastre = null;
+    opciones.alPunteroBloqueado?.(ahora);
+  };
+  const soltarPuntero = () => {
+    if (punteroBloqueado()) document.exitPointerLock?.();
+  };
   const conEntrada = opciones.entrada !== false;
   if (conEntrada) {
+    document.addEventListener("pointerlockchange", alCambiarBloqueo);
     window.addEventListener("keydown", alBajarTecla);
     window.addEventListener("keyup", alSoltarTecla);
     window.addEventListener("blur", soltarTodo);
@@ -914,7 +963,11 @@ export function crearEscena3D(canvas: HTMLCanvasElement, opciones: OpcionesEscen
     fijarBloqueado(b) {
       if (b === bloqueado) return;
       bloqueado = b;
-      if (b) soltarTodo();
+      // Una tarjeta, un diálogo o un campo abierto suelta el puntero para que el niño pueda hacer clic.
+      if (b) {
+        soltarTodo();
+        soltarPuntero();
+      }
       mov.fijarBloqueado(b);
     },
     fijarPedido(pedido) {
@@ -956,6 +1009,8 @@ export function crearEscena3D(canvas: HTMLCanvasElement, opciones: OpcionesEscen
         window.removeEventListener("keydown", alBajarTecla);
         window.removeEventListener("keyup", alSoltarTecla);
         window.removeEventListener("blur", soltarTodo);
+        document.removeEventListener("pointerlockchange", alCambiarBloqueo);
+        soltarPuntero();
         canvas.removeEventListener("pointerdown", alApuntar);
         canvas.removeEventListener("pointermove", alMoverPuntero);
         canvas.removeEventListener("pointerup", alSoltarPuntero);
