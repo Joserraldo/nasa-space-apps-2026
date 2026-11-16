@@ -96,6 +96,11 @@ test("ruta dorada: de la órbita al resumen, en inglés", async ({ page }) => {
   await expect(page.getByText("Unofficial project, not endorsed by NASA")).toHaveCount(0);
   const crew = page.getByRole("button", { name: "Crew", exact: true });
 
+  // El niño arranca lejos de la consola: elegirla en el mapa lo lleva caminando hasta su punto de uso.
+  await page.getByRole("button", { name: "Map", exact: true }).click();
+  await page.getByRole("list", { name: "Places" }).getByRole("button", { name: /Mission control/ }).click();
+  await expect(page.getByRole("button", { name: "Wait a turn at the console" })).toBeVisible({ timeout: 20_000 });
+
   // Acercarse a un lugar nunca cobra: [E] abre el plan del lugar y "Back" no cambia nada.
   // Con el reloj en pausa, para que un turno que pase no se confunda con un cobro.
   await page.getByRole("button", { name: "Pause", exact: true }).click();
