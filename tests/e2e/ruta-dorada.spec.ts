@@ -141,17 +141,7 @@ test("ruta dorada: de la órbita al resumen, en inglés", async ({ page }) => {
   // El niño arranca lejos de la consola: elegirla en el mapa lo lleva caminando hasta su punto de uso.
   await page.getByRole("button", { name: "Map", exact: true }).click();
   await page.getByRole("list", { name: "Places" }).getByRole("button", { name: /Mission control/ }).click();
-  // TEMPORAL (diagnóstico de #406): cada 5 s, dónde está el niño y si el mundo está bloqueado mientras camina.
-  const aviso = page.getByRole("button", { name: "Wait a turn at the console" });
-  for (let i = 0; i < 12 && !(await aviso.isVisible()); i++) {
-    const d = await page.evaluate(() => {
-      const c = document.querySelector("canvas");
-      return `x=${c?.dataset.jugadorX} z=${c?.dataset.jugadorZ} cerca=${c?.dataset.lugarCercano || "-"} bloqueado=${document.querySelector(".mundo")?.getAttribute("data-bloqueado") ?? "no"}`;
-    });
-    console.log(`[camino a la consola] ${i * 5} s ${d}`);
-    await page.waitForTimeout(5000);
-  }
-  await expect(aviso).toBeVisible({ timeout: 60_000 });
+  await expect(page.getByRole("button", { name: "Wait a turn at the console" })).toBeVisible({ timeout: 60_000 });
   const energiaAntes = await page.getByRole("meter", { name: "Energy" }).getAttribute("aria-valuenow");
   await page.getByRole("button", { name: "Wait a turn at the console" }).click();
   await expect(page.getByRole("dialog")).toBeVisible();
