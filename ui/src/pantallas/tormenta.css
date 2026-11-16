@@ -110,4 +110,11 @@
    fijo encima de ellos: el niño ve qué cuesta antes de decidir. */
 @media (max-height: 500px) and (orientation: landscape) {
   .tormenta-plan-accion > .tormenta-plan-botones { position: static; padding-block: 0; }
+  /* Con 390 px de alto, en una columna Confirm cae fuera del panel: el plan pasa a dos columnas
+     (experta y frase | acción, costos y Confirm) en un panel más ancho, y todo entra sin desplazar. */
+  .tormenta-panel:has(.tormenta-plan) { inline-size: 64%; }
+  .tormenta-plan { grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr); }
+  .tormenta-plan-experta { grid-template-columns: minmax(0, 1fr); justify-items: start; }
+  .tormenta-plan-accion { grid-column: 2; grid-row: 1 / span 2; }
+  .tormenta-plan-mas { grid-column: 1; }
 }
