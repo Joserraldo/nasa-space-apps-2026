@@ -1,11 +1,20 @@
 /**
- * Frontera entre la pantalla (frentes E y F: pantallas/, componentes/) y el mundo 3D (frente A, José:
- * escena/; los frentes C y D suman sistemas con los ganchos de `escena3d.ts`). Contrato del bloque 0 de
+ * Frontera entre la pantalla y el mundo 3D. Contrato del bloque 0 de
  * `docs/referenciapau/PLAN-JUGABILIDAD.md` §2 y §3.
  *
+ * Dueños (PLAN-JUGABILIDAD §3):
+ * - Este archivo, `EscenaBase.tsx` y `escena3d.ts`: frente A (José). Nadie más los edita: si otro frente
+ *   necesita un cambio, lo pide con un issue `[bloquea frente A]`.
+ * - La pantalla que lo importa: frente E (Santiago, `pantallas/*.tsx`, `componentes/*.tsx`) y frente F
+ *   (María Paula, `componentes/base/**` y los `.css`).
+ * - Sistemas de la escena (`escena/sistemas/*.ts`, uno por archivo, cada uno de su frente): marcadores y
+ *   mapa, frente C (`mundo.ts`, `marcadores.ts`); día, luz y calidad, frente D (`cicloDia.ts`, `calidad.ts`,
+ *   `activos/**`). Se montan con los ganchos de `escena3d.ts` (`SistemaEscena`: `montar`,
+ *   `actualizar(dt, ctx)`, `dispose`) y leen lo que pide la pantalla en `ctx.pedido`.
+ * - IA y tripulación que habla: frente B (`agents/**`). Los tipos de Iris vienen de `@solar-shield/agents`.
+ *
  * Reglas:
- * - Lo escribe solo el dueño de `escena/`. La pantalla lo importa y no lo edita: si necesita algo,
- *   lo pide como cambio a este archivo.
+ * - La pantalla lo importa y no lo edita.
  * - Todo es aditivo y opcional: sin estas props, `EscenaBase` se comporta como antes.
  * - La escena nunca decide reglas: no cobra, no da recursos y no avanza la misión (MECANICAS §5).
  *   Avisa lo que hay al alcance y anima lo que la pantalla le pide.

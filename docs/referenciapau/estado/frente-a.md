@@ -1,7 +1,7 @@
 # Estado — Frente A (José)
 
 **Hecho (15 nov):**
-- A0 (PR #337): ganchos `SistemaEscena`, autocarga de `escena/sistemas/`, `fijarPedido`, `calidad.ts`. Espera fusión.
+- A0 (PR #337): ganchos `SistemaEscena`, autocarga de `escena/sistemas/`, `fijarPedido`, `calidad.ts`. Fusionado.
 - A1 (rama `feat/frente-a-A1-iris-averiada`): causa = Jezero arranca con `iaBase: "danada"` (avería guionada) y
   `objetivoDeLaBase` la daba por revelada; además el paso previo a la tormenta era el 5. Ahora `pasoDeLaBase` (4 al
   entrar) y `averiaIrisRevelada` (desde `averiaIris.pasoRevelacion`, 6). Chip: "Ask the Engineer at the workshop".
