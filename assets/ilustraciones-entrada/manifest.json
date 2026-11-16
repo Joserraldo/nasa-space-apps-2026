@@ -1,0 +1,834 @@
+{
+  "generator": "tests/capturas/ilustraciones.mjs + Pillow",
+  "formats": {
+    "avif": {
+      "quality": 92,
+      "chroma": "4:4:4",
+      "alpha": true
+    },
+    "webp": {
+      "quality": 92,
+      "alpha": true
+    }
+  },
+  "no_upscaling": true,
+  "missing_sources": [],
+  "assets": [
+    {
+      "id": "portada-nino",
+      "source_path": "tests/capturas/ilustraciones/fuente/portada-nino.png",
+      "source_sha256": "418ecd3fdbc3df06114fdd49cd71cabfad9f50c830c8e34f74ab0a387b9d8778",
+      "source_bytes": 700314,
+      "source_dimensions_px": [
+        1536,
+        1024
+      ],
+      "source_mode": "RGBA",
+      "source_has_icc": false,
+      "source_gamma": null,
+      "color_note": "source samples kept in original encoding; ICC passed through if supplied",
+      "alpha_threshold": 24,
+      "alpha_bounds_exclusive_px": [
+        450,
+        83,
+        1100,
+        926
+      ],
+      "crop_margin_px": 4,
+      "crop_box_exclusive_px": [
+        446,
+        79,
+        1104,
+        930
+      ],
+      "crop_dimensions_px": [
+        658,
+        851
+      ],
+      "outputs": [
+        {
+          "requested_width_px": 448,
+          "actual_width_px": 448,
+          "height_px": 579,
+          "upscaled": false,
+          "outputs": {
+            "avif": {
+              "path": "ui/public/ilustraciones/portada-nino-448.avif",
+              "width_px": 448,
+              "height_px": 579,
+              "bytes": 69488,
+              "sha256": "37ee395970bf522dc120d161723c2ed9b89af852d9489eacc02bee15be16ac57",
+              "quality": 92,
+              "chroma": "4:4:4",
+              "alpha_extrema_verified": [
+                0,
+                255
+              ]
+            },
+            "webp": {
+              "path": "ui/public/ilustraciones/portada-nino-448.webp",
+              "width_px": 448,
+              "height_px": 579,
+              "bytes": 57536,
+              "sha256": "04ffd5a20f1e53dea88e756af21cbbc63350339d3f930fef575451e098499aa4",
+              "quality": 92,
+              "chroma": null,
+              "alpha_extrema_verified": [
+                0,
+                255
+              ]
+            }
+          }
+        },
+        {
+          "requested_width_px": 656,
+          "actual_width_px": 656,
+          "height_px": 848,
+          "upscaled": false,
+          "outputs": {
+            "avif": {
+              "path": "ui/public/ilustraciones/portada-nino-656.avif",
+              "width_px": 656,
+              "height_px": 848,
+              "bytes": 113074,
+              "sha256": "b452dd87086fc8f61594d21f0cb3468e80d505339f217175e8fac5e1af061422",
+              "quality": 92,
+              "chroma": "4:4:4",
+              "alpha_extrema_verified": [
+                0,
+                255
+              ]
+            },
+            "webp": {
+              "path": "ui/public/ilustraciones/portada-nino-656.webp",
+              "width_px": 656,
+              "height_px": 848,
+              "bytes": 95132,
+              "sha256": "d345b9cbf4d2c65673ae8ab2a473f71095684d23567bbdf024086f15a3809340",
+              "quality": 92,
+              "chroma": null,
+              "alpha_extrema_verified": [
+                0,
+                255
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "portada-nave",
+      "source_path": "tests/capturas/ilustraciones/fuente/portada-nave.png",
+      "source_sha256": "06a87b823900e08b3167f750232c1d0d837b4b973171434afd8b77acfdfb5f27",
+      "source_bytes": 41460,
+      "source_dimensions_px": [
+        1024,
+        683
+      ],
+      "source_mode": "P",
+      "source_has_icc": false,
+      "source_gamma": null,
+      "color_note": "source samples kept in original encoding; ICC passed through if supplied",
+      "alpha_threshold": 24,
+      "alpha_bounds_exclusive_px": [
+        227,
+        103,
+        796,
+        582
+      ],
+      "crop_margin_px": 4,
+      "crop_box_exclusive_px": [
+        223,
+        99,
+        800,
+        586
+      ],
+      "crop_dimensions_px": [
+        577,
+        487
+      ],
+      "outputs": [
+        {
+          "requested_width_px": 280,
+          "actual_width_px": 280,
+          "height_px": 236,
+          "upscaled": false,
+          "outputs": {
+            "avif": {
+              "path": "ui/public/ilustraciones/portada-nave-280.avif",
+              "width_px": 280,
+              "height_px": 236,
+              "bytes": 23597,
+              "sha256": "07a019ceb5dd4e051ed7a50a1790c78719c0437acd67f486188d36f2d9518950",
+              "quality": 92,
+              "chroma": "4:4:4",
+              "alpha_extrema_verified": [
+                0,
+                255
+              ]
+            },
+            "webp": {
+              "path": "ui/public/ilustraciones/portada-nave-280.webp",
+              "width_px": 280,
+              "height_px": 236,
+              "bytes": 21102,
+              "sha256": "fb912ddf8a5a7fc22cfdbbba788b33d2e49094823b263c8382e82268d0a22e75",
+              "quality": 92,
+              "chroma": null,
+              "alpha_extrema_verified": [
+                0,
+                255
+              ]
+            }
+          }
+        },
+        {
+          "requested_width_px": 560,
+          "actual_width_px": 560,
+          "height_px": 473,
+          "upscaled": false,
+          "outputs": {
+            "avif": {
+              "path": "ui/public/ilustraciones/portada-nave-560.avif",
+              "width_px": 560,
+              "height_px": 473,
+              "bytes": 66934,
+              "sha256": "6486f2aa63c90906a2775dfbc17b9090132b16d0159b421064b59be0af5a46d3",
+              "quality": 92,
+              "chroma": "4:4:4",
+              "alpha_extrema_verified": [
+                0,
+                255
+              ]
+            },
+            "webp": {
+              "path": "ui/public/ilustraciones/portada-nave-560.webp",
+              "width_px": 560,
+              "height_px": 473,
+              "bytes": 56830,
+              "sha256": "642ac7859dcb3015d5692e41a1b203fc0b9361724f90e87558943ca0aac729a0",
+              "quality": 92,
+              "chroma": null,
+              "alpha_extrema_verified": [
+                0,
+                255
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "portada-planeta",
+      "source_path": "tests/capturas/ilustraciones/fuente/portada-planeta.png",
+      "source_sha256": "f46348654de830c8c3560dfcc21cf7eceb34ccface41ac99850743952d307cc9",
+      "source_bytes": 27095,
+      "source_dimensions_px": [
+        1024,
+        683
+      ],
+      "source_mode": "P",
+      "source_has_icc": false,
+      "source_gamma": null,
+      "color_note": "source samples kept in original encoding; ICC passed through if supplied",
+      "alpha_threshold": 24,
+      "alpha_bounds_exclusive_px": [
+        184,
+        155,
+        834,
+        508
+      ],
+      "crop_margin_px": 4,
+      "crop_box_exclusive_px": [
+        180,
+        151,
+        838,
+        512
+      ],
+      "crop_dimensions_px": [
+        658,
+        361
+      ],
+      "outputs": [
+        {
+          "requested_width_px": 200,
+          "actual_width_px": 200,
+          "height_px": 110,
+          "upscaled": false,
+          "outputs": {
+            "avif": {
+              "path": "ui/public/ilustraciones/portada-planeta-200.avif",
+              "width_px": 200,
+              "height_px": 110,
+              "bytes": 10793,
+              "sha256": "2d20d1cdae4f0f0fa99e942f120d4bda7cf9e0f686c0ef09ee1728b74ba53da5",
+              "quality": 92,
+              "chroma": "4:4:4",
+              "alpha_extrema_verified": [
+                0,
+                255
+              ]
+            },
+            "webp": {
+              "path": "ui/public/ilustraciones/portada-planeta-200.webp",
+              "width_px": 200,
+              "height_px": 110,
+              "bytes": 8732,
+              "sha256": "f45a9a358879c9b99f314a33b2b4f999e0adf7d40e7bd542c45c05b23ebc75fb",
+              "quality": 92,
+              "chroma": null,
+              "alpha_extrema_verified": [
+                0,
+                255
+              ]
+            }
+          }
+        },
+        {
+          "requested_width_px": 400,
+          "actual_width_px": 400,
+          "height_px": 219,
+          "upscaled": false,
+          "outputs": {
+            "avif": {
+              "path": "ui/public/ilustraciones/portada-planeta-400.avif",
+              "width_px": 400,
+              "height_px": 219,
+              "bytes": 26456,
+              "sha256": "25433fff279f7769005732a2dfaf05acd83c683b2aa0a7395a1c76712110cf0e",
+              "quality": 92,
+              "chroma": "4:4:4",
+              "alpha_extrema_verified": [
+                0,
+                255
+              ]
+            },
+            "webp": {
+              "path": "ui/public/ilustraciones/portada-planeta-400.webp",
+              "width_px": 400,
+              "height_px": 219,
+              "bytes": 21036,
+              "sha256": "86e978f74ca32ebf80cbf0bcd6e19d981436bba96dc7581f87357e871df79a77",
+              "quality": 92,
+              "chroma": null,
+              "alpha_extrema_verified": [
+                0,
+                255
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "portada-asteroide",
+      "source_path": "tests/capturas/ilustraciones/fuente/portada-asteroide.png",
+      "source_sha256": "9f5af8fcf44fea46c9326bcee969c721d00305b353fa763bca4dfb3346f465ff",
+      "source_bytes": 20975,
+      "source_dimensions_px": [
+        1024,
+        683
+      ],
+      "source_mode": "P",
+      "source_has_icc": false,
+      "source_gamma": null,
+      "color_note": "source samples kept in original encoding; ICC passed through if supplied",
+      "alpha_threshold": 24,
+      "alpha_bounds_exclusive_px": [
+        330,
+        156,
+        696,
+        513
+      ],
+      "crop_margin_px": 4,
+      "crop_box_exclusive_px": [
+        326,
+        152,
+        700,
+        517
+      ],
+      "crop_dimensions_px": [
+        374,
+        365
+      ],
+      "outputs": [
+        {
+          "requested_width_px": 120,
+          "actual_width_px": 120,
+          "height_px": 117,
+          "upscaled": false,
+          "outputs": {
+            "avif": {
+              "path": "ui/public/ilustraciones/portada-asteroide-120.avif",
+              "width_px": 120,
+              "height_px": 117,
+              "bytes": 7466,
+              "sha256": "ef6ca8441e5c8509826139f0a47d8074d4df1dab85c71a91847cda2cc59f5ad2",
+              "quality": 92,
+              "chroma": "4:4:4",
+              "alpha_extrema_verified": [
+                0,
+                255
+              ]
+            },
+            "webp": {
+              "path": "ui/public/ilustraciones/portada-asteroide-120.webp",
+              "width_px": 120,
+              "height_px": 117,
+              "bytes": 5656,
+              "sha256": "592449a7181849d50abf1b9815e24bd3894c05c877e9bde98a59507c38177fbf",
+              "quality": 92,
+              "chroma": null,
+              "alpha_extrema_verified": [
+                0,
+                255
+              ]
+            }
+          }
+        },
+        {
+          "requested_width_px": 240,
+          "actual_width_px": 240,
+          "height_px": 234,
+          "upscaled": false,
+          "outputs": {
+            "avif": {
+              "path": "ui/public/ilustraciones/portada-asteroide-240.avif",
+              "width_px": 240,
+              "height_px": 234,
+              "bytes": 17181,
+              "sha256": "a91c5ccb1df0b44a370d0aacab56429ecc80b089becfd67e86aeb378955759f3",
+              "quality": 92,
+              "chroma": "4:4:4",
+              "alpha_extrema_verified": [
+                0,
+                255
+              ]
+            },
+            "webp": {
+              "path": "ui/public/ilustraciones/portada-asteroide-240.webp",
+              "width_px": 240,
+              "height_px": 234,
+              "bytes": 13334,
+              "sha256": "cb8c97e810236ba63427ad0309bcb9791e3adb495e133bb3ae9a07aafcd52911",
+              "quality": 92,
+              "chroma": null,
+              "alpha_extrema_verified": [
+                0,
+                255
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "carga-nino",
+      "source_path": "tests/capturas/ilustraciones/fuente/carga-nino.png",
+      "source_sha256": "b1fc07cf8fe11f673045e97c89c7623dd4afd182ec9f0385966edbedbf4c9bd4",
+      "source_bytes": 288453,
+      "source_dimensions_px": [
+        440,
+        650
+      ],
+      "source_mode": "RGBA",
+      "source_has_icc": false,
+      "source_gamma": null,
+      "color_note": "source samples kept in original encoding; ICC passed through if supplied",
+      "alpha_threshold": 24,
+      "alpha_bounds_exclusive_px": [
+        32,
+        22,
+        413,
+        607
+      ],
+      "crop_margin_px": 4,
+      "crop_box_exclusive_px": [
+        28,
+        18,
+        417,
+        611
+      ],
+      "crop_dimensions_px": [
+        389,
+        593
+      ],
+      "outputs": [
+        {
+          "requested_width_px": 200,
+          "actual_width_px": 200,
+          "height_px": 305,
+          "upscaled": false,
+          "outputs": {
+            "avif": {
+              "path": "ui/public/ilustraciones/carga-nino-200.avif",
+              "width_px": 200,
+              "height_px": 305,
+              "bytes": 25687,
+              "sha256": "65d4c0e9f6a93b707a77e169b148408423e297df0a01569a4d9ba4a6037f4cbc",
+              "quality": 92,
+              "chroma": "4:4:4",
+              "alpha_extrema_verified": [
+                0,
+                255
+              ]
+            },
+            "webp": {
+              "path": "ui/public/ilustraciones/carga-nino-200.webp",
+              "width_px": 200,
+              "height_px": 305,
+              "bytes": 19758,
+              "sha256": "5f29ffdefc05ccee68a16866ae428dfcc0f247c88f5642db902edfed75598caf",
+              "quality": 92,
+              "chroma": null,
+              "alpha_extrema_verified": [
+                0,
+                255
+              ]
+            }
+          }
+        },
+        {
+          "requested_width_px": 384,
+          "actual_width_px": 384,
+          "height_px": 585,
+          "upscaled": false,
+          "outputs": {
+            "avif": {
+              "path": "ui/public/ilustraciones/carga-nino-384.avif",
+              "width_px": 384,
+              "height_px": 585,
+              "bytes": 55015,
+              "sha256": "33e7a8fd332ba09a8aa7841f1f0829b5c67c6309ed5a8e1cad4dc93e9f5cc5a5",
+              "quality": 92,
+              "chroma": "4:4:4",
+              "alpha_extrema_verified": [
+                0,
+                255
+              ]
+            },
+            "webp": {
+              "path": "ui/public/ilustraciones/carga-nino-384.webp",
+              "width_px": 384,
+              "height_px": 585,
+              "bytes": 42240,
+              "sha256": "2c8651bf3ecffc45272af25f35ddfc35784ad975dec57d198e10ab86f2744412",
+              "quality": 92,
+              "chroma": null,
+              "alpha_extrema_verified": [
+                0,
+                255
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "carga-panel",
+      "source_path": "tests/capturas/ilustraciones/fuente/carga-panel.png",
+      "source_sha256": "78891f4929159038cdb061094867b9fc7ab06ae1537b4773bffc399d707b5395",
+      "source_bytes": 80272,
+      "source_dimensions_px": [
+        330,
+        260
+      ],
+      "source_mode": "RGBA",
+      "source_has_icc": false,
+      "source_gamma": null,
+      "color_note": "source samples kept in original encoding; ICC passed through if supplied",
+      "alpha_threshold": 24,
+      "alpha_bounds_exclusive_px": [
+        22,
+        19,
+        298,
+        222
+      ],
+      "crop_margin_px": 4,
+      "crop_box_exclusive_px": [
+        18,
+        15,
+        302,
+        226
+      ],
+      "crop_dimensions_px": [
+        284,
+        211
+      ],
+      "outputs": [
+        {
+          "requested_width_px": 140,
+          "actual_width_px": 140,
+          "height_px": 104,
+          "upscaled": false,
+          "outputs": {
+            "avif": {
+              "path": "ui/public/ilustraciones/carga-panel-140.avif",
+              "width_px": 140,
+              "height_px": 104,
+              "bytes": 8560,
+              "sha256": "7c2c7864755e52d80b04495f396780f6f09f767a5ddf1e2d175bc058abe2be0b",
+              "quality": 92,
+              "chroma": "4:4:4",
+              "alpha_extrema_verified": [
+                0,
+                255
+              ]
+            },
+            "webp": {
+              "path": "ui/public/ilustraciones/carga-panel-140.webp",
+              "width_px": 140,
+              "height_px": 104,
+              "bytes": 6750,
+              "sha256": "812f0d1333fc6d82577a1d091182ccc845c8d79d4af100b39d6b5e82f0c313af",
+              "quality": 92,
+              "chroma": null,
+              "alpha_extrema_verified": [
+                0,
+                255
+              ]
+            }
+          }
+        },
+        {
+          "requested_width_px": 280,
+          "actual_width_px": 280,
+          "height_px": 208,
+          "upscaled": false,
+          "outputs": {
+            "avif": {
+              "path": "ui/public/ilustraciones/carga-panel-280.avif",
+              "width_px": 280,
+              "height_px": 208,
+              "bytes": 17197,
+              "sha256": "38824f58006c5879da86cd393cebd5fa51c63f302d1c682a46fd313503486e9a",
+              "quality": 92,
+              "chroma": "4:4:4",
+              "alpha_extrema_verified": [
+                0,
+                255
+              ]
+            },
+            "webp": {
+              "path": "ui/public/ilustraciones/carga-panel-280.webp",
+              "width_px": 280,
+              "height_px": 208,
+              "bytes": 14096,
+              "sha256": "69ee407f1315d420b1f2945bd9a24200dcf869bc75bd89b16934aec9056eb1be",
+              "quality": 92,
+              "chroma": null,
+              "alpha_extrema_verified": [
+                0,
+                255
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "carga-invernadero",
+      "source_path": "tests/capturas/ilustraciones/fuente/carga-invernadero.png",
+      "source_sha256": "a2d41046743b1834004bd4b56a51834769a0097bf18f6a3dc91203f46c4c1e0a",
+      "source_bytes": 89302,
+      "source_dimensions_px": [
+        330,
+        280
+      ],
+      "source_mode": "RGBA",
+      "source_has_icc": false,
+      "source_gamma": null,
+      "color_note": "source samples kept in original encoding; ICC passed through if supplied",
+      "alpha_threshold": 24,
+      "alpha_bounds_exclusive_px": [
+        23,
+        18,
+        264,
+        230
+      ],
+      "crop_margin_px": 4,
+      "crop_box_exclusive_px": [
+        19,
+        14,
+        268,
+        234
+      ],
+      "crop_dimensions_px": [
+        249,
+        220
+      ],
+      "outputs": [
+        {
+          "requested_width_px": 130,
+          "actual_width_px": 130,
+          "height_px": 115,
+          "upscaled": false,
+          "outputs": {
+            "avif": {
+              "path": "ui/public/ilustraciones/carga-invernadero-130.avif",
+              "width_px": 130,
+              "height_px": 115,
+              "bytes": 8750,
+              "sha256": "3ec50e6b29dbc405ad717e8cb0607ed3e4b53f04667806888423237298810be2",
+              "quality": 92,
+              "chroma": "4:4:4",
+              "alpha_extrema_verified": [
+                0,
+                255
+              ]
+            },
+            "webp": {
+              "path": "ui/public/ilustraciones/carga-invernadero-130.webp",
+              "width_px": 130,
+              "height_px": 115,
+              "bytes": 6778,
+              "sha256": "96e8a2cb4cf238010f4e1e5eac54e62cd3ea8ce7486429956210e38b0dfa499a",
+              "quality": 92,
+              "chroma": null,
+              "alpha_extrema_verified": [
+                0,
+                255
+              ]
+            }
+          }
+        },
+        {
+          "requested_width_px": 248,
+          "actual_width_px": 248,
+          "height_px": 219,
+          "upscaled": false,
+          "outputs": {
+            "avif": {
+              "path": "ui/public/ilustraciones/carga-invernadero-248.avif",
+              "width_px": 248,
+              "height_px": 219,
+              "bytes": 16935,
+              "sha256": "03a681ec12b867f0ea8858972dc1c31b79512351c8ca246f0cdefe1c89644dc0",
+              "quality": 92,
+              "chroma": "4:4:4",
+              "alpha_extrema_verified": [
+                0,
+                255
+              ]
+            },
+            "webp": {
+              "path": "ui/public/ilustraciones/carga-invernadero-248.webp",
+              "width_px": 248,
+              "height_px": 219,
+              "bytes": 12366,
+              "sha256": "bc564ce1143767f575249b0bb7be1161a9d7a365b65467eeb5a1939d889adf10",
+              "quality": 92,
+              "chroma": null,
+              "alpha_extrema_verified": [
+                0,
+                255
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "carga-habitat",
+      "source_path": "tests/capturas/ilustraciones/fuente/carga-habitat.png",
+      "source_sha256": "2c143ed333555a12b25b95913fb2fe0bafd282b15d069eef162c071b1839de4d",
+      "source_bytes": 120801,
+      "source_dimensions_px": [
+        430,
+        320
+      ],
+      "source_mode": "RGBA",
+      "source_has_icc": false,
+      "source_gamma": null,
+      "color_note": "source samples kept in original encoding; ICC passed through if supplied",
+      "alpha_threshold": 24,
+      "alpha_bounds_exclusive_px": [
+        9,
+        29,
+        383,
+        267
+      ],
+      "crop_margin_px": 4,
+      "crop_box_exclusive_px": [
+        5,
+        25,
+        387,
+        271
+      ],
+      "crop_dimensions_px": [
+        382,
+        246
+      ],
+      "outputs": [
+        {
+          "requested_width_px": 180,
+          "actual_width_px": 180,
+          "height_px": 116,
+          "upscaled": false,
+          "outputs": {
+            "avif": {
+              "path": "ui/public/ilustraciones/carga-habitat-180.avif",
+              "width_px": 180,
+              "height_px": 116,
+              "bytes": 10969,
+              "sha256": "32c89c6cc9a732a69af8406db4804416a8571b069dfa8f9e287ce9e91701adca",
+              "quality": 92,
+              "chroma": "4:4:4",
+              "alpha_extrema_verified": [
+                0,
+                255
+              ]
+            },
+            "webp": {
+              "path": "ui/public/ilustraciones/carga-habitat-180.webp",
+              "width_px": 180,
+              "height_px": 116,
+              "bytes": 8290,
+              "sha256": "dba1cabe84e5449243e48b7b69ba2a8b98c093defd2e9581887ab946d03d58aa",
+              "quality": 92,
+              "chroma": null,
+              "alpha_extrema_verified": [
+                0,
+                255
+              ]
+            }
+          }
+        },
+        {
+          "requested_width_px": 360,
+          "actual_width_px": 360,
+          "height_px": 232,
+          "upscaled": false,
+          "outputs": {
+            "avif": {
+              "path": "ui/public/ilustraciones/carga-habitat-360.avif",
+              "width_px": 360,
+              "height_px": 232,
+              "bytes": 23935,
+              "sha256": "8e8b9374ebbfabd6326aa30a7327b1a3e0ab1e79bd5ce5f7e01b3e863e5af283",
+              "quality": 92,
+              "chroma": "4:4:4",
+              "alpha_extrema_verified": [
+                0,
+                255
+              ]
+            },
+            "webp": {
+              "path": "ui/public/ilustraciones/carga-habitat-360.webp",
+              "width_px": 360,
+              "height_px": 232,
+              "bytes": 18048,
+              "sha256": "9154dea93b64c1c6bfad9481d28e3b4d11b2f40e9aeca828df7cd0e1e367e9b9",
+              "quality": 92,
+              "chroma": null,
+              "alpha_extrema_verified": [
+                0,
+                255
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
