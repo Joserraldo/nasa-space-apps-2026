@@ -51,21 +51,31 @@ describe("tarjeta contextual (F2, mundo/04, mundo/03, ui/01)", () => {
     expect(faseTarjeta("cerrada", "cerrar", false)).toBe("cerrada");
   });
 
-  it("con movimiento reducido se cierra enseguida y el CSS no anima", () => {
+  it("con movimiento reducido se cierra enseguida y el CSS no la desplaza", () => {
     expect(faseTarjeta("abierta", "cerrar", true)).toBe("cerrada");
     const reducido = css.match(/@media \(prefers-reduced-motion: reduce\)\s*\{([^}]*)\}/)?.[1] ?? "";
-    expect(reducido).toMatch(/\.tc\b/);
-    expect(reducido).toMatch(/animation:\s*none/);
+    for (const sel of [".tc", ".tc-cab", ".tc-cuerpo", ".tc-acciones"]) expect(reducido, sel).toContain(sel);
+    expect(reducido).toMatch(/transition:\s*none/);
   });
 
-  it("entra y sale entre 120 y 200 ms, con tokens de duración y curva", () => {
-    const entra = css.match(/animation:\s*var\(--tc-entra\)\s+var\((--dur-[a-z]+)\)\s+var\(--curva-entrada\)/)?.[1];
-    const sale = css.match(/animation:\s*var\(--tc-sale\)\s+var\((--dur-[a-z]+)\)\s+var\(--curva-salida\)/)?.[1];
+  it("entra y sale entre 120 y 200 ms con tokens, la salida es más corta y no usa la curva ease-in", () => {
+    const entra = css.match(/\.tc\s*\{[^}]*transition:\s*opacity\s+var\((--dur-[a-z]+)\)\s+var\(--curva-entrada\)/)?.[1];
+    const regla = css.match(/\.tc\[data-fase="saliendo"\]\s*\{([^}]*)\}/)?.[1] ?? "";
+    const sale = regla.match(/transition-duration:\s*var\((--dur-[a-z]+)\)/)?.[1];
     expect(entra && sale).toBeTruthy();
     for (const d of [ms(entra!), ms(sale!)]) {
       expect(d).toBeGreaterThanOrEqual(120);
       expect(d).toBeLessThanOrEqual(200);
     }
+    expect(ms(sale!)).toBeLessThan(ms(entra!));
+    expect(regla).not.toContain("--curva-salida");
+    expect(regla).toMatch(/opacity:\s*0/);
+  });
+
+  it("aparece con @starting-style (se puede interrumpir) y el contenido entra escalonado", () => {
+    expect(css).toMatch(/@starting-style\s*\{\s*\.tc\s*\{[^}]*opacity:\s*0/);
+    expect(css).toMatch(/\.tc-cuerpo\s*\{\s*transition-delay/);
+    expect(css).toMatch(/\.tc-acciones\s*\{\s*transition-delay/);
   });
 
   it("tarjetas.css solo usa tokens: sin hex, rgb ni hsl", () => {

@@ -24,7 +24,7 @@
   .decision-detalle .costos-bloque + .costos-bloque { border-left: 0; padding-left: 0; }
   .decision-detalle { gap: var(--esp-1); }
   .decision-personajes .retrato-marco { width: 56px; height: 56px; }
-  .decision-personajes .retrato-marco svg { width: 50px; height: 50px; }
+  .decision-personajes .retrato-marco :is(svg, .retrato-img) { width: 50px; height: 50px; }
   .decision-detalle .mensaje { min-height: 0; padding-block: var(--esp-1); padding-inline: var(--esp-2); }
   .decision-detalle .costos-bloque h4 { margin-block-end: var(--esp-1); font-size: 16px; }
   .decision-detalle .costos-bloque li { padding-block: 0; }

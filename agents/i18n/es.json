@@ -301,5 +301,21 @@
   "agentes.globo.danada.paso6": "Bzzt... mis números se tambalean. ¡Mira tu medidor!",
   "agentes.globo.danada.paso7": "Krrr... ¿hola, Tierra? ¿Este es el botón correcto?",
   "agentes.globo.danada.paso8": "¡Bzzt! Qué día. Mis circuitos necesitan una siesta.",
-  "agentes.globo.offline": "Zzz... cargando. ¡Esta decisión es tuya!"
+  "agentes.globo.offline": "Zzz... cargando. ¡Esta decisión es tuya!",
+  "agentes.conversacion.saludo.ingeniera": "¡Hola, comandante! ¿Revisamos la base juntos?",
+  "agentes.conversacion.saludo.doctora": "Hola, comandante. Qué bueno que pasaste.",
+  "agentes.conversacion.saludo.meteorologa": "¡Comandante! Ven a mirar el cielo conmigo.",
+  "agentes.conversacion.saludo.matematico": "Hola, comandante. ¿Hacemos la cuenta juntos?",
+  "agentes.conversacion.saludo.control_mision": "Aquí Control de Misión. Te escuchamos, comandante.",
+  "agentes.conversacion.saludo.ia_base": "¡Hola, comandante! Aquí Iris. ¿Adónde vamos ahora?",
+  "agentes.conversacion.pregunta.estado_energia": "¿Cómo va la energía?",
+  "agentes.conversacion.pregunta.reparar": "¿Puedes arreglar algo?",
+  "agentes.conversacion.pregunta.estado_salud": "¿Cómo está la tripulación?",
+  "agentes.conversacion.pregunta.explicar_dosis": "¿Qué es la radiación?",
+  "agentes.conversacion.pregunta.ir_al_refugio": "¿Vamos al refugio?",
+  "agentes.conversacion.pregunta.pronostico": "¿Viene una tormenta?",
+  "agentes.conversacion.pregunta.explicar_evento": "¿Qué fue esa luz?",
+  "agentes.conversacion.pregunta.que_pasa_si": "¿Qué pasa si...?",
+  "agentes.conversacion.pregunta.ayuda": "¿Qué hago ahora?",
+  "agentes.iris.acompana.danada.verificar": "Bzzt... verifiquemos con la Ingeniera."
 }

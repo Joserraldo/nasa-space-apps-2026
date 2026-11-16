@@ -17,10 +17,11 @@ import { Icono, type NombreIcono } from "../componentes/base/Iconos.js";
 import { Mensaje } from "../componentes/base/Piezas.js";
 import type { Persona } from "../componentes/base/Retrato.js";
 import "../componentes/base/facetas.css";
+import type { ActorId } from "../escena/frontera.js";
 import { vistaEscena, type LugarObjetivo } from "../escena/vista.js";
 import { DecisionRegistrada } from "./DecisionRegistrada.js";
-import { mundoBloqueado, objetivoDeLaBase, usoDelLugar } from "./lugares.js";
-import { useAltoHoja, useMundo, usePosicionJugador } from "./MundoBase.js";
+import { averiaIrisRevelada, mundoBloqueado, objetivoDeLaBase, usoDelLugar } from "./lugares.js";
+import { useAltoHoja, useMundo, usePosicionJugador, verboDe } from "./MundoBase.js";
 import "./base.css";
 
 /**
@@ -78,7 +79,7 @@ export function PantallaBase({ estado, colocados = [], ultimas, hud, onAccion, o
   // Una confirmación, un despacho: el doble toque o la tecla más el botón no cobran dos veces (MECANICAS §6.1).
   const confirmada = useRef(false);
   const tele = telemetriaPendiente(estado);
-  const modulos = useMemo(() => vistaEscena(estado, { fase: "base", colocados, averiaRevelada: true }).modulos, [estado, colocados]);
+  const modulos = useMemo(() => vistaEscena(estado, { fase: "base", colocados, averiaRevelada: averiaIrisRevelada(estado) }).modulos, [estado, colocados]);
 
   const hayNovedad = !!(estado.pausado && ultimas && (ultimas.malaSuerte.length > 0 || ultimas.iaCambio || ultimas.efectosLlegaron.length > 0));
   const abierto = { dialogo: dialogo !== null, plan: plan !== null, registro: registro !== null, panel: panel !== null, novedad: hayNovedad, campo: false };
@@ -176,22 +177,34 @@ export function PantallaBase({ estado, colocados = [], ultimas, hud, onAccion, o
   }
   const usar = useRef(usarLugar);
   usar.current = usarLugar;
+  /** `[E] Talk` con alguien de la tripulación: su consulta, y la escena lo gira hacia el niño. */
+  function hablarCon(a: ActorId) {
+    if (plan || registro || a === "nino") return;
+    recordarOrigen();
+    setPanel(null);
+    if (a === "iris") hablar({ experto: "ia_base" }); else preguntar(a);
+    mundo.fijarHablando(a);
+  }
+  const conActor = useRef(hablarCon);
+  conActor.current = hablarCon;
+  // E2: `[E]` llega por una sola vía (MundoBase): aquí solo se decide qué hace en E6.
   useEffect(() => {
-    mundo.fijarUso((l) => usar.current(l));
+    mundo.fijarUso((i) => {
+      if (i.tipo === "lugar") usar.current(i.lugar);
+      else if (i.tipo === "actor") conActor.current(i.actor);
+    });
     return () => mundo.fijarUso(null);
   }, [mundo.fijarUso]);
+  useEffect(() => { if (!dialogo) mundo.fijarHablando(null); }, [dialogo, mundo.fijarHablando]);
 
   // Teclado (ESCENAS §3.5): Esc cierra lo de más arriba (el panel de confirmación se cierra solo).
-  // Sin WebGL no hay escena que escuche E: la pantalla la atiende para el lugar donde está el niño.
-  const actual = useRef({ plan, hayPanel, cerrarTodo, sin3d: mundo.sin3d, cercano: mundo.cercano });
-  actual.current = { plan, hayPanel, cerrarTodo, sin3d: mundo.sin3d, cercano: mundo.cercano };
+  // `[E]` no se escucha aquí: tiene un solo manejador, en MundoBase (E2).
+  const actual = useRef({ plan, hayPanel, cerrarTodo });
+  actual.current = { plan, hayPanel, cerrarTodo };
   useEffect(() => {
     const tecla = (e: KeyboardEvent) => {
       const a = actual.current;
-      const d = e.target as HTMLElement | null;
-      if (e.key === "Escape") { if (!a.plan && a.hayPanel) a.cerrarTodo(); return; }
-      if (e.repeat || a.hayPanel || !a.sin3d || !a.cercano || (d && /^(INPUT|TEXTAREA|SELECT|BUTTON)$/.test(d.tagName))) return;
-      if (e.key === "e" || e.key === "E") usar.current(a.cercano);
+      if (e.key === "Escape" && !a.plan && a.hayPanel) a.cerrarTodo();
     };
     window.addEventListener("keydown", tecla);
     return () => window.removeEventListener("keydown", tecla);
@@ -208,14 +221,15 @@ export function PantallaBase({ estado, colocados = [], ultimas, hud, onAccion, o
         mundo={{
           onTripulacion: () => alternarPanel("tripulacion"),
           onMapa: () => alternarPanel("mapa"),
-          interaccion: uso && mundo.cercano && !hayPanel ? { labelKey: uso.labelKey, onUsar: () => usarLugar(mundo.cercano!) } : undefined,
+          interaccion: hayPanel ? undefined : mundo.interactivo?.tipo === "lugar" ? (uso ? { labelKey: uso.labelKey, onUsar: mundo.usarCercano } : undefined)
+            : mundo.interactivo ? { labelKey: `ui.interaccion.${verboDe(mundo.interactivo, "base")}`, onUsar: mundo.usarCercano } : undefined,
           camara: mundo.camara,
           onCamara: mundo.alternarCamara,
         }} />
 
       {tactil && !hayPanel && (
         <ControlesTactiles entrada={mundo.entrada} camara={mundo.camara} onCamara={mundo.alternarCamara}
-          accion={uso && mundo.cercano ? { labelKey: uso.labelKey, cortoKey: `${uso.labelKey}.corto`, icono: uso.icono, onUsar: () => usarLugar(mundo.cercano!) } : undefined} />
+          accion={uso && mundo.cercano ? { labelKey: uso.labelKey, cortoKey: `${uso.labelKey}.corto`, icono: uso.icono, onUsar: mundo.usarCercano } : undefined} />
       )}
 
       {hayPanel && (
