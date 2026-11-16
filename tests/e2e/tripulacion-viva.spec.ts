@@ -9,8 +9,12 @@ test('la tripulación recuerda, clasifica y deja botones si falla la red',async(
  await page.getByRole('button',{name:'Skip',exact:true}).click();
  await page.getByRole('button',{name:'Continue',exact:true}).click();
  await page.getByRole('button',{name:'Land here'}).first().click();
- await page.getByRole('button',{name:'Place',exact:true}).first().click();
- await page.getByRole('button',{name:'Place',exact:true}).first().click();
+ for(let i=0;i<2;i++){
+  await page.getByRole('button',{name:'Ask the Engineer',exact:true}).click();
+  await page.locator('[role="dialog"].tc ul button:not([disabled])').first().click();
+  await page.getByRole('button',{name:'Place',exact:true}).click();
+  await expect(page.locator('[role="dialog"].tc')).toHaveCount(0);
+ }
  await page.getByRole('button',{name:'Base ready. Start the clock!'}).click();
  await page.getByRole('button',{name:'Pause',exact:true}).click();
  await page.getByRole('button',{name:'Crew',exact:true}).click();
