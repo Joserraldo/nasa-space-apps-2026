@@ -45,7 +45,8 @@ function opcionesDe(estado: GameState): Opcion[] {
     { accion: { tipo: "subir_escudo", nivel: 1 }, labelKey: "ui.accion.subir_escudo", icono: "escudo" },
     { accion: { tipo: "salida_exterior", objetivo: "panel_solar" }, labelKey: "ui.accion.salida_exterior", icono: "llave" },
   ];
-  if (estado.iaBase === "danada") lista.push({ accion: { tipo: "reparar", equipo: "ia_base" }, labelKey: "ui.accion.reparar_ia", icono: "llave" });
+  // Reparar a Iris solo desde que la avería se ve (paso 6, #339): antes Iris guía como si estuviera bien.
+  if (averiaIrisRevelada(estado)) lista.push({ accion: { tipo: "reparar", equipo: "ia_base" }, labelKey: "ui.accion.reparar_ia", icono: "llave" });
   if (tormentaActiva(estado) && !telemetriaPendiente(estado)) lista.push({ accion: { tipo: "enviar_telemetria" }, labelKey: "ui.paso.7.telemetria", icono: "satelite" });
   return lista;
 }
@@ -305,7 +306,7 @@ export function PantallaBase({ estado, colocados = [], ultimas, hud, progreso = 
           ) : (
             <>
               {dialogo && (
-                <DialogoExperto d={dialogo} irisDanada={estado.iaBase === "danada"} soloTexto={plan !== null} onPlan={abrirPlan}
+                <DialogoExperto d={dialogo} irisDanada={averiaIrisRevelada(estado)} soloTexto={plan !== null} onPlan={abrirPlan}
                   onCerrar={() => { setDialogo(null); if (!panel) devolverFoco(); }}
                   onOtra={() => alternarPanel("tripulacion")} />
               )}
