@@ -9,7 +9,7 @@ import {
 // ESCENAS §3.2 y mapa-base-jezero.svg: uso x/z y centro mx/mz.
 const PLANO = [
   ["mesa", 0, 1.6, 0, 0.2], ["habitat", 0, -4.3, 0, -8],
-  ["taller", -4, 0.1, -4.8, -1.4], ["sensor", 4.2, 0.6, 4.8, -0.8],
+  ["taller", -4, 0.1, -4.8, -1.4], ["sensor", 10.8, 1, 11.7, -0.5],
   ["panel_solar", -8, -0.5, -8, -3.5], ["escudo", -4.5, -5.3, -5.4, -7.2],
   ["reciclador_agua", 4.6, -4.2, 5.4, -6.8], ["invernadero", 9, -0.4, 9, -5],
   ["antena", 9.6, 4.4, 11, 5.6], ["banco", -4.6, 4.4, -7.7, 6.7],

@@ -41,7 +41,8 @@ export const LUGARES: readonly Lugar[] = [
   { id: "mesa", x: 0, z: 1.6, radio: 1.7, mx: 0, mz: 0.2, my: 1.9 },
   { id: "habitat", x: 0, z: -4.3, radio: 2, mx: 0, mz: -8, my: 4.6, experto: "doctora" },
   { id: "taller", x: -4, z: 0.1, radio: 1.8, mx: -4.8, mz: -1.4, my: 1.7, experto: "ingeniera" },
-  { id: "sensor", x: 4.2, z: 0.6, radio: 1.8, mx: 4.8, mz: -0.8, my: 3.3, experto: "meteorologa" },
+  // Sector de ciencia al este, hacia el laboratorio de la lámina exterior/03.
+  { id: "sensor", x: 10.8, z: 1, radio: 1.8, mx: 11.7, mz: -0.5, my: 3.3, experto: "meteorologa" },
   { id: "panel_solar", x: -8, z: -0.5, radio: 2.4, mx: -8, mz: -3.5, my: 2.9, modulo: "panel_solar" },
   { id: "escudo", x: -4.5, z: -5.3, radio: 1.9, mx: -5.4, mz: -7.2, my: 2.6, modulo: "escudo" },
   { id: "reciclador_agua", x: 4.6, z: -4.2, radio: 2.1, mx: 5.4, mz: -6.8, my: 2.6, modulo: "reciclador_agua" },
@@ -120,7 +121,7 @@ export const TERRENO: Terreno = {
   circulos: [
     { x: 0, z: 0.2, r: 0.85 }, // mesa de misión
     { x: -4.8, z: -1.4, r: 0.7 }, // taller
-    { x: 4.8, z: -0.8, r: 0.45 }, // sensor de radiación
+    { x: 11.7, z: -0.5, r: 0.45 }, // sensor de radiación
     { x: 9, z: -5, r: 3.85 }, // invernadero
     { x: 11, z: 5.6, r: 0.8 }, // antena
     { x: 5.4, z: -6.8, r: 1.15 }, // reciclador
