@@ -42,6 +42,9 @@ export interface ControlesTactilesProps {
   onCamara(): void;
 }
 
+/** E9: lo que hace el botón de salto al tocarlo. Pide el salto a la escena (A5); nunca cobra. */
+export const alSaltar = (entrada: EntradaTactil) => (): void => { entrada.saltar(); };
+
 export function ControlesTactiles({ entrada, accion, camara, onCamara }: ControlesTactilesProps) {
   const { t } = useT();
   const capa = useRef<HTMLDivElement>(null);
@@ -86,6 +89,13 @@ export function ControlesTactiles({ entrada, accion, camara, onCamara }: Control
       <div className="ct-joystick" ref={base} data-activo="false" aria-hidden="true"><span className="ct-perilla" ref={perilla} /></div>
 
       <div className="ct-botones">
+        {/* E9: salto con la gravedad de Marte (A5). Solo mueve al niño, nunca cobra; en el aire o con algo
+            abierto la escena no salta. Primero, como en el muestrario de F4. */}
+        {entrada && (
+          <button type="button" className="ct-salto" aria-keyshortcuts="Space" aria-label={t("ui.comun.saltar")} onClick={alSaltar(entrada)}>
+            <span className="ct-cara"><Icono nombre="salto" tam={32} /></span>
+          </button>
+        )}
         <button type="button" className="ct-camara" aria-keyshortcuts="V" onClick={onCamara}
           aria-label={t(camara === "tercera" ? "ui.comun.hud.primera" : "ui.comun.hud.tercera")}>
           <span className="ct-cara"><span className="ct-tecla" aria-hidden="true">V</span><span aria-hidden="true">{t("ui.hud.camara.corto")}</span></span>

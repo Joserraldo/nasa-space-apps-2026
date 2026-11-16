@@ -45,4 +45,12 @@ describe("clasificarConModelo", () => {
     const r = await clasificarConModelo("x", { ...base, apiKey: "SECRETO", fetch: f });
     expect(JSON.stringify(r)).not.toContain("SECRETO");
   });
+  it("descarta cifras, fija el experto y rechaza campos adicionales del modelo", async () => {
+    const payload = {experto:"doctora",accion:"repartir_energia",parametros:{destino:"blindaje",cantidad:"999",energia:"999"},confianza:0.9};
+    const r=await clasificarConModelo("x",{...base,fetch:async()=>ok(JSON.stringify(payload))});
+    expect(r.salida).toMatchObject({experto:"ingeniera",parametros:{destino:"blindaje"}});
+    const roto=await clasificarConModelo("x",{...base,fetch:async()=>ok(JSON.stringify({...payload,respuesta:"inventada"}))});
+    expect(roto.valido).toBe(false);
+  });
+
 });

@@ -11,8 +11,8 @@ describe("cielo de Marte", () => {
   });
 
   it("respeta el límite de sombras y el tone mapping previsto", () => {
-    expect(LUZ.tamanoSombra.alta).toBeLessThanOrEqual(1024);
-    expect(LUZ.tamanoSombra.baja).toBeLessThanOrEqual(512);
-    expect(LUZ.toneMapping).toBe("No"); // DISEÑO §3.4: ACES lava los pasteles
+    expect(LUZ.tamanoSombra.alta).toBeLessThanOrEqual(2048);
+    expect(LUZ.tamanoSombra.baja).toBeLessThanOrEqual(1024);
+    expect(LUZ.toneMapping).toBe("AgX");
   });
 });

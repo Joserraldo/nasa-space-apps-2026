@@ -1,16 +1,21 @@
 import { useCallback, useEffect, useRef, useState } from "react";
+import { conversar } from "@solar-shield/agents";
 import type { Equipment, GameState, Resource } from "@solar-shield/contracts";
+import { referenciaDosis } from "@solar-shield/data";
 import { costoDe, puedeAplicar } from "@solar-shield/engine";
 import { MISION_JEZERO } from "@solar-shield/missions";
 import { useT } from "../i18n.js";
-import { ExpertPortrait } from "../componentes/base/ExpertPortrait.js";
 import { FacetButton } from "../componentes/base/FacetButton.js";
 import { Icono } from "../componentes/base/Iconos.js";
+import { Retrato } from "../componentes/base/Retrato.js";
 import { CostRow, ICONO_RECURSO, Mensaje, RECURSOS } from "../componentes/base/Piezas.js";
 import "../componentes/base/facetas.css";
+import { ListoParaExplorar } from "../componentes/ListoParaExplorar.js";
 import { TarjetaDelFlujo, useTarjetaUnica } from "../componentes/TarjetaDelFlujo.js";
+import { DialogoExperto } from "../componentes/DialogoExperto.js";
 import { LUGARES } from "../escena/mundo.js";
-import { useMundo } from "./MundoBase.js";
+import { esTeclaUsar, useMundo } from "./MundoBase.js";
+import "./base.css";
 import "./modulos.css";
 
 /**
@@ -38,11 +43,16 @@ function iconoDe(modulo: Equipment) {
 
 type Tarjeta = { tipo: "elegir" } | { tipo: "modulo"; modulo: Equipment };
 
-export function PantallaModulos({ estado, colocados, onColocar, onListo }: {
+export function PantallaModulos({ estado, colocados, onColocar, onListo, bienvenida }: {
   estado: GameState;
   colocados: Equipment[];
   onColocar: (m: Equipment) => void;
   onListo: () => void;
+  /**
+   * E8: "Ready to explore" la primera vez que el niño llega. Va dentro de esta pantalla (su capa recibe los
+   * toques) y, mientras está abierta, no se abre otra tarjeta: una a la vez (E1).
+   */
+  bienvenida?: { onExplorar(): void } | undefined;
 }) {
   const { t } = useT();
   const total = mision.modulosAColocar;
@@ -62,12 +72,54 @@ export function PantallaModulos({ estado, colocados, onColocar, onListo }: {
     botonera.current?.querySelector<HTMLElement>("button:not([disabled]):not([aria-disabled='true'])")?.focus({ preventScroll: true });
   }, []);
 
-  const { sin3d: sinGl, cercano, fijarInstalando, fijarUso, usarCercano } = useMundo();
+  const { sin3d: sinGl, cercano, interactivo, fijarBloqueado, fijarGlobo, fijarHablando, fijarInstalando, fijarObjetivo, fijarUso, usarCercano } = useMundo();
   /** Anclaje vacío al alcance en el mundo: ofrece `[E] Build` (solo con 3D). */
   const ancla = sinGl || faltan <= 0 ? null : (() => {
     const m = LUGARES.find((l) => l.id === cercano)?.modulo;
     return m && mision.modulosDisponibles.includes(m) && !colocados.includes(m) ? m : null;
   })();
+
+  const expertaCercana: "ingeniera" | "doctora" | "meteorologa" | null =
+    interactivo?.tipo === "actor" && (interactivo.actor === "ingeniera" || interactivo.actor === "doctora" || interactivo.actor === "meteorologa")
+      ? interactivo.actor
+      : cercano === "taller" ? "ingeniera" : cercano === "habitat" ? "doctora" : cercano === "sensor" ? "meteorologa" : null;
+
+  const [expertaOculta, setExpertaOculta] = useState<string | null>(null);
+  useEffect(() => {
+    if (!expertaCercana) setExpertaOculta(null);
+  }, [expertaCercana]);
+
+  const dialogoExperta = expertaCercana && !tarjeta.abierta && expertaOculta !== expertaCercana
+    ? conversar({ experto: expertaCercana }, estado, {
+        tormentaActiva: false,
+        dosisMarte: referenciaDosis("marte-superficie"),
+        vecesFallaIris: 0,
+      })
+    : null;
+
+  useEffect(() => {
+    fijarGlobo(null);
+    fijarHablando(dialogoExperta ? expertaCercana : null);
+    return () => {
+      fijarGlobo(null);
+      fijarHablando(null);
+    };
+  }, [dialogoExperta, expertaCercana, fijarGlobo, fijarHablando]);
+
+  // Siguiente hueco libre como objetivo visual en el mundo (marcador cian sobre el anclaje).
+  const siguienteModulo = mision.modulosDisponibles.find((m) => !colocados.includes(m));
+  const objetivoAncla = faltan <= 0 ? null : (elegido ?? siguienteModulo ?? null);
+  useEffect(() => {
+    const lugarAncla = objetivoAncla ? LUGARES.find((l) => l.modulo === objetivoAncla)?.id ?? null : null;
+    fijarObjetivo(lugarAncla);
+    return () => fijarObjetivo(null);
+  }, [objetivoAncla, fijarObjetivo]);
+
+  // Con una tarjeta abierta el mundo no se mueve y se libera el puntero para poder hacer clic.
+  useEffect(() => {
+    fijarBloqueado(tarjeta.abierta !== null);
+    return () => fijarBloqueado(false);
+  }, [tarjeta.abierta, fijarBloqueado]);
 
   // La escena no tiene prop de resaltado (issue para Daniel): el módulo de la tarjeta abierta y aún
   // sin colocar se ve como "instalando" (andamio teal) en su anclaje.
@@ -75,13 +127,28 @@ export function PantallaModulos({ estado, colocados, onColocar, onListo }: {
   useEffect(() => { fijarInstalando(instalando); }, [instalando, fijarInstalando]);
   useEffect(() => () => fijarInstalando(null), [fijarInstalando]);
 
-  // E2: `[E] Build` llega por la única vía de MundoBase; aquí solo se abre la tarjeta del anclaje.
-  const abrirAncla = useRef<() => void>(() => {});
-  abrirAncla.current = () => { if (ancla && !tarjeta.abierta) tarjeta.abrir({ tipo: "modulo", modulo: ancla }); };
+  // E2: `[E]` en un anclaje abre ese módulo; `[E]` junto a la Ingeniera o en cualquier punto abre la lista.
+  const abrirAccion = useRef<() => void>(() => {});
+  abrirAccion.current = () => {
+    if (tarjeta.abierta) return;
+    if (faltan <= 0) { onListo(); return; }
+    if (ancla) tarjeta.abrir({ tipo: "modulo", modulo: ancla });
+    else tarjeta.abrir({ tipo: "elegir" });
+  };
   useEffect(() => {
-    fijarUso((i) => { if (i.tipo === "lugar") abrirAncla.current(); });
+    fijarUso((i) => {
+      if (i.tipo === "lugar" || i.tipo === "actor") abrirAccion.current();
+    });
     return () => fijarUso(null);
   }, [fijarUso]);
+
+  useEffect(() => {
+    const tecla = (e: KeyboardEvent) => {
+      if (esTeclaUsar(e) && !interactivo && !cercano) abrirAccion.current();
+    };
+    window.addEventListener("keydown", tecla);
+    return () => window.removeEventListener("keydown", tecla);
+  }, [interactivo, cercano]);
 
   function colocar(m: Equipment) {
     onColocar(m);
@@ -89,13 +156,19 @@ export function PantallaModulos({ estado, colocados, onColocar, onListo }: {
     tarjeta.cerrar(); // se cierra al decidir
   }
 
+  const cercaObjetivo = Boolean(ancla || expertaCercana || cercano === "mesa" || faltan <= 0);
+  const textoInteractuar = ancla
+    ? t("ui.paso.4.construir", { moduloKey: `ui.paso.4.modulo.${ancla}` })
+    : expertaCercana
+      ? t("ui.interaccion.hablar")
+      : t("ui.interaccion.interactuar");
+
   return (
     <section className="modulos-e5" aria-labelledby="modulos-titulo">
       <div className="modulos-izq">
         <div className="fc">
           <div className="fc-cara modulos-cabeza">
             <h2 id="modulos-titulo">{t("ui.paso.4.titulo", { n: total })}</h2>
-            <p>{t("ui.paso.4.texto")}</p>
             <p className="modulos-progreso" aria-live="polite">
               {Array.from({ length: total }, (_, i) => (
                 <span key={i} className={`modulos-hueco${i < colocados.length ? " modulos-hueco-lleno" : ""}`} aria-hidden="true" />
@@ -112,23 +185,58 @@ export function PantallaModulos({ estado, colocados, onColocar, onListo }: {
 
         {sinGl && elegido && <span className="modulos-ancla" aria-hidden="true"><Icono nombre={iconoDe(elegido)} tam={48} /></span>}
 
-        <div className="modulos-base" ref={botonera}>
-          {ancla && !tarjeta.abierta && (
-            <FacetButton variant="primary" icon="check" labelKey="ui.paso.4.construir"
-              labelVars={{ moduloKey: `ui.paso.4.modulo.${ancla}` }}
-              onClick={usarCercano} />
-          )}
-          {faltan > 0 && !tarjeta.abierta && (
-            <FacetButton labelKey="ui.paso.4.preguntar" onClick={() => tarjeta.abrir({ tipo: "elegir" })} />
-          )}
-          <FacetButton variant="primary" icon="jugar" labelKey="ui.paso.4.listo" className="modulos-listo"
-            disabled={faltan > 0} disabledReasonKey="ui.paso.4.motivo.faltan" onClick={onListo} />
-        </div>
+        {!tarjeta.abierta && !bienvenida && (
+          <div className={`modulos-base${cercaObjetivo ? " modulos-boton-iluminado" : ""}`} ref={botonera}>
+            {faltan <= 0 ? (
+              <FacetButton variant="primary" icon="jugar" labelKey="ui.paso.4.listo" className="modulos-listo"
+                onClick={onListo} />
+            ) : (
+              <>
+                {ancla ? (
+                  <FacetButton variant="primary" icon="check" labelKey="ui.paso.4.construir"
+                    labelVars={{ moduloKey: `ui.paso.4.modulo.${ancla}` }}
+                    onClick={() => abrirAccion.current()} />
+                ) : (
+                  <FacetButton variant="primary" icon={expertaCercana ? "tripulacion" : "check"}
+                    labelKey="ui.paso.4.preguntar" onClick={() => tarjeta.abrir({ tipo: "elegir" })} />
+                )}
+                <FacetButton variant="primary" icon="jugar" labelKey="ui.paso.4.listo"
+                  className="modulos-listo modulos-listo-oculto"
+                  disabled disabledReasonKey="ui.paso.4.motivo.faltan" onClick={onListo} />
+              </>
+            )}
+          </div>
+        )}
       </div>
+
+      {dialogoExperta && !tarjeta.abierta && (
+        <div className="dialogo-franja-abajo">
+          <DialogoExperto d={dialogoExperta} irisDanada={false} soloTexto={false}
+            onPlan={() => tarjeta.abrir({ tipo: "elegir" })}
+            onOtra={() => tarjeta.abrir({ tipo: "elegir" })}
+            onCerrar={() => setExpertaOculta(expertaCercana)} />
+        </div>
+      )}
+
+      {!tarjeta.abierta && (
+        <div className="hud-controles-centro modulos-controles-centro">
+          <span className="hud-hint-pill" aria-hidden="true">
+            <span className="hud-kbd">✥</span>
+            <span className="hud-hint-texto">{t("ui.interaccion.mover")}</span>
+          </span>
+          <button type="button"
+            className={`hud-hint-pill hud-hint-interact${cercaObjetivo ? " hud-hint-listo" : ""}`}
+            aria-keyshortcuts="E" aria-label={textoInteractuar}
+            onClick={() => abrirAccion.current()}>
+            <span className="hud-kbd">E</span>
+            <span className="hud-hint-texto">{textoInteractuar}</span>
+          </button>
+        </div>
+      )}
 
       <TarjetaDelFlujo abierta={tarjeta.abierta !== null} onCerrar={tarjeta.cerrar} className="modulos-panel"
         contenido={mostrada?.tipo === "modulo" ? mostrada.modulo : mostrada?.tipo} onCerrada={devolverFoco}
-        figura={mostrada && <ExpertPortrait persona={mostrada.tipo === "modulo" ? expertaDe(mostrada.modulo) : "ingeniera"} compacto />}
+        figura={mostrada && <Retrato persona={mostrada.tipo === "modulo" ? expertaDe(mostrada.modulo) : "ingeniera"} expresion="feliz" tam={84} parpadear />}
         titulo={mostrada?.tipo === "modulo" ? t(`ui.paso.4.modulo.${mostrada.modulo}`) : t("ui.paso.4.titulo", { n: total })}
         bajada={mostrada && t(`ui.comun.retrato.${mostrada.tipo === "modulo" ? expertaDe(mostrada.modulo) : "ingeniera"}.nombre`)}
         acciones={mostrada?.tipo === "modulo"
@@ -165,6 +273,7 @@ export function PantallaModulos({ estado, colocados, onColocar, onListo }: {
           </>
         ) : null}
       </TarjetaDelFlujo>
+      {bienvenida && <ListoParaExplorar onExplorar={bienvenida.onExplorar} />}
     </section>
   );
 }

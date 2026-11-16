@@ -135,4 +135,11 @@ describe("base compacta sobre LUGARES (exterior/03, mapa-base-jezero.svg)", () =
         for (const c of TERRENO.circulos)
           expect(distanciaTramo(c.x, c.z, tramo[i - 1]!, tramo[i]!), `tramo ${tramo[i - 1]} → ${tramo[i]}`).toBeGreaterThan(c.r + 0.2);
   });
+
+  it("huellasColisionExtra no corta el anillo trasero detrás del hábitat (0, -12.9)", async () => {
+    const { huellasColisionExtra, distanciaAHuella } = await import("./baseExterior");
+    for (const h of huellasColisionExtra()) {
+      expect(distanciaAHuella(h, 0, -12.9), h.id).toBeGreaterThan(0.38);
+    }
+  });
 });

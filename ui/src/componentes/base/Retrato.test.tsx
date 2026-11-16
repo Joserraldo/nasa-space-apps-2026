@@ -81,6 +81,21 @@ describe("retratos de diálogo (DISEÑO §4.4)", () => {
     expect(h).toContain("retrato-check");
   });
 
+  it("parpadeo: la expresión se queda y solo se cierran los ojos, con la cara de parpadeo recortada encima", () => {
+    const css = readFileSync(new URL("./retratos.css", import.meta.url), "utf8");
+    for (const p of ["nino", "ingeniera", "doctora", "meteorologa"] as const) {
+      const h = html(<Retrato persona={p} expresion="feliz" tam={84} parpadear />);
+      expect(h).toMatch(new RegExp(`^<span class="retrato-parpadea" data-ojos="${p}" aria-hidden="true">`));
+      // La boca y las cejas son las de la expresión: la imagen de abajo no cambia al parpadear.
+      expect(h).toContain(`src="/retratos/${p}-feliz-320.webp"`);
+      expect(h).toContain(`class="retrato-img retrato-ojos"`);
+      expect(h).toContain(`src="/retratos/${p}-parpadeo-320.webp"`);
+      expect(css).toContain(`[data-ojos="${p}"] { --retrato-ojos: radial-gradient(ellipse `);
+    }
+    // Sin parpadeo sigue siendo una sola imagen.
+    expect(html(<Retrato persona="nino" expresion="feliz" />)).toMatch(/^<img /);
+  });
+
   it("retratos.css solo usa tokens", () => {
     const css = readFileSync(new URL("./retratos.css", import.meta.url), "utf8").replace(/\/\*[\s\S]*?\*\//g, "");
     expect(css).not.toMatch(/#[0-9a-fA-F]{3,8}\b|rgba?\(|hsla?\(/);

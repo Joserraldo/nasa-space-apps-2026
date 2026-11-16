@@ -5,6 +5,7 @@ import {
   RADIO_JUGADOR,
   TecladoMovimiento,
   VEL_JUGADOR,
+  acercarVelocidad,
   coberturaCaja,
   crearMovimiento,
   direccionMundo,
@@ -69,6 +70,65 @@ describe("cajas giradas (sin convertirlas en círculos)", () => {
       }
     }
     expect(Math.max(...cob.map((k2) => k2.r))).toBeLessThan(0.75);
+  });
+});
+
+describe("caminar fluido (A4)", () => {
+  const rapidez = (m: ReturnType<typeof crearMovimiento>) => m.velocidad;
+
+  it("arranca con curva: no llega a la marcha en un fotograma, sí en medio segundo", () => {
+    const m = crearMovimiento(VACIO);
+    m.fijarEntrada(0, -1);
+    m.avanzar(1 / 60);
+    const primera = rapidez(m);
+    expect(primera).toBeGreaterThan(0);
+    expect(primera).toBeLessThan(VEL_JUGADOR * 0.3);
+    segundos(m, 0.5);
+    expect(rapidez(m)).toBeGreaterThan(VEL_JUGADOR * 0.95);
+    expect(rapidez(m)).toBeLessThanOrEqual(VEL_JUGADOR + 1e-6);
+  });
+
+  it("frena con curva al soltar: para en menos de medio segundo y recorre menos de medio metro", () => {
+    const m = crearMovimiento(VACIO);
+    m.fijarEntrada(0, -1);
+    segundos(m, 1);
+    const z0 = m.jugador.z;
+    m.fijarEntrada(0, 0);
+    m.avanzar(1 / 60);
+    expect(rapidez(m)).toBeGreaterThan(VEL_JUGADOR * 0.5); // no para en seco
+    segundos(m, 0.5);
+    expect(rapidez(m)).toBe(0);
+    expect(Math.abs(m.jugador.z - z0)).toBeLessThan(0.5);
+  });
+
+  it("con movimiento reducido arranca y para en seco", () => {
+    const m = crearMovimiento(VACIO);
+    m.fijarEntrada(0, -1);
+    m.avanzar(1 / 60, true);
+    expect(rapidez(m)).toBeCloseTo(VEL_JUGADOR, 5);
+    m.fijarEntrada(0, 0);
+    m.avanzar(1 / 60, true);
+    expect(rapidez(m)).toBe(0);
+  });
+
+  it("bloquear (diálogo abierto) lo para en el acto, sin inercia", () => {
+    const m = crearMovimiento(VACIO);
+    m.fijarEntrada(0, -1);
+    segundos(m, 1);
+    m.fijarBloqueado(true);
+    const p = { x: m.jugador.x, z: m.jugador.z };
+    segundos(m, 0.5);
+    expect(m.jugador.x).toBe(p.x);
+    expect(m.jugador.z).toBe(p.z);
+  });
+
+  it("acercarVelocidad nunca se pasa de la velocidad pedida", () => {
+    const v = { x: 0, z: 0 };
+    for (let i = 0; i < 200; i++) {
+      acercarVelocidad(v.x, v.z, 2.8, 0, 1 / 60, v);
+      expect(v.x).toBeLessThanOrEqual(2.8);
+    }
+    expect(v.x).toBeCloseTo(2.8, 3);
   });
 });
 

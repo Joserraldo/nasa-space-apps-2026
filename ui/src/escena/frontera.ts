@@ -71,6 +71,11 @@ export interface AvisosEscena {
    * cambio. Convive con `onLugarCercano`, que queda por compatibilidad.
    */
   onInteractivo?: ((cerca: Interactivo | null) => void) | undefined;
+  /**
+   * `[E]` (o el botón táctil de acción) con una experta al alcance (A6): la pantalla abre la conversación con
+   * ese actor. Sin este manejador, `[E]` sigue usando el lugar cercano (`onUsar`).
+   */
+  onUsarInteractivo?: ((cerca: Interactivo) => void) | undefined;
 }
 
 /** El lugar al alcance como `Interactivo`. */
