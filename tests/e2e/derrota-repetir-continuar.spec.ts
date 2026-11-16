@@ -15,9 +15,9 @@ const TURNO_MS = 4000;
 /** E1: la tarjeta del módulo nace al preguntar a la Ingeniera; se elige el primer módulo libre y se coloca. */
 async function colocarModulo(page: Page) {
   await page.getByRole("button", { name: "Ask the Engineer" }).click();
-  await page.locator('[data-tarjeta="contextual"] ul button:not([disabled])').first().click();
+  await page.locator('[role="dialog"].tc ul button:not([disabled])').first().click();
   await page.getByRole("button", { name: "Place", exact: true }).click();
-  await expect(page.locator('[data-tarjeta="contextual"]')).toHaveCount(0);
+  await expect(page.locator('[role="dialog"].tc')).toHaveCount(0);
 }
 
 async function llegarALaBase(page: Page) {

@@ -1,4 +1,5 @@
-import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
+import { useCallback, useEffect, useRef, useState, type ComponentProps } from "react";
+import { TarjetaContextual as Presentacion } from "./base/TarjetaContextual.js";
 
 /**
  * Tarjeta contextual (PLAN-JUGABILIDAD §1 y E1; MECANICAS §4 y §6).
@@ -7,52 +8,50 @@ import { useCallback, useEffect, useRef, useState, type ReactNode } from "react"
  *   fija en la pantalla: cerrada no se dibuja.
  * - Una a la vez: `useTarjetaUnica` guarda una sola tarjeta abierta; abrir otra reemplaza a la anterior.
  * - Se cierra al decidir o con `Back`/Esc. Abrirla y cerrarla nunca cobra: la tarjeta no conoce el motor.
- * - Foco: al abrir entra al primer control de la tarjeta y al cerrar vuelve a donde estaba (invariante 3).
- *   No toca el reloj: la pausa previa se conserva.
+ * - No toca el reloj: la pausa previa se conserva.
  *
- * El aspecto lo da la clase que pase quien la usa (los estilos son del frente F).
+ * El aspecto, la entrada y la salida, y el foco que entra y vuelve son de la primitiva del frente F
+ * (`base/TarjetaContextual.tsx`, F2). Aquí solo se agrega lo del flujo: Esc cierra sin decidir y, si el contenido cambia, el foco no se pierde.
  */
-export function TarjetaContextual({ abierta, etiquetaId, onCerrar, className, children }: {
-  abierta: boolean;
-  /** `id` del título de la tarjeta, para `aria-labelledby`. */
-  etiquetaId: string;
+export function TarjetaContextual({ abierta, onCerrar, contenido, ...resto }: ComponentProps<typeof Presentacion> & {
   /** Cerrar sin decidir (Esc o `Back`): no cambia nada del juego. */
   onCerrar: () => void;
-  className?: string;
-  children: ReactNode;
+  /**
+   * Qué muestra la tarjeta (por ejemplo, el módulo elegido). Si cambia con la tarjeta abierta y el foco
+   * se perdió con el control que lo cambió, el foco vuelve a la tarjeta.
+   */
+  contenido?: string | undefined;
 }) {
-  const caja = useRef<HTMLElement>(null);
   const cerrar = useRef(onCerrar);
   cerrar.current = onCerrar;
 
   useEffect(() => {
     if (!abierta) return;
-    const origen = document.activeElement instanceof HTMLElement ? document.activeElement : null;
-    const primero = caja.current?.querySelector<HTMLElement>("button:not([disabled]), [href], input, select, textarea, [tabindex]:not([tabindex='-1'])");
-    (primero ?? caja.current)?.focus();
     function tecla(e: KeyboardEvent) {
       if (e.key === "Escape") { e.preventDefault(); cerrar.current(); }
     }
     window.addEventListener("keydown", tecla);
-    return () => {
-      window.removeEventListener("keydown", tecla);
-      if (origen?.isConnected) origen.focus();
-    };
+    return () => window.removeEventListener("keydown", tecla);
   }, [abierta]);
 
-  if (!abierta) return null;
-  return (
-    <aside ref={caja} role="dialog" aria-modal="false" aria-labelledby={etiquetaId} tabIndex={-1}
-      className={className} data-tarjeta="contextual">
-      {children}
-    </aside>
-  );
+  useEffect(() => {
+    if (!abierta) return;
+    const activo = document.activeElement;
+    if (!activo || activo === document.body) document.querySelector<HTMLElement>('[role="dialog"].tc[data-fase="abierta"]')?.focus({ preventScroll: true });
+  }, [abierta, contenido]);
+
+  return <Presentacion abierta={abierta} {...resto} />;
 }
 
-/** Una sola tarjeta abierta a la vez: abrir reemplaza; cerrar deja la pantalla libre. */
+/**
+ * Una sola tarjeta abierta a la vez: abrir reemplaza; cerrar deja la pantalla libre. `mostrada` es la
+ * última que se abrió, para que la tarjeta conserve su contenido mientras dura la salida.
+ */
 export function useTarjetaUnica<T>() {
   const [abierta, setAbierta] = useState<T | null>(null);
+  const ultima = useRef<T | null>(null);
+  if (abierta !== null) ultima.current = abierta;
   const abrir = useCallback((t: T) => setAbierta(t), []);
   const cerrar = useCallback(() => setAbierta(null), []);
-  return { abierta, abrir, cerrar } as const;
+  return { abierta, mostrada: abierta ?? ultima.current, abrir, cerrar } as const;
 }

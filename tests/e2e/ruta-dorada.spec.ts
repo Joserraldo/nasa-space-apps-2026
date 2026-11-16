@@ -81,7 +81,7 @@ test("ruta dorada: de la órbita al resumen, en inglés", async ({ page }) => {
   // una a la vez, y se cierra al decidir; Back no cobra.
   await expect(page.getByText("Costs now")).toHaveCount(0);
   const preguntar = page.getByRole("button", { name: "Ask the Engineer" });
-  const tarjeta = page.locator('[data-tarjeta="contextual"]');
+  const tarjeta = page.locator('[role="dialog"].tc');
   const colocar = page.getByRole("button", { name: "Place", exact: true });
   for (let i = 0; i < 2; i++) {
     await preguntar.click();
