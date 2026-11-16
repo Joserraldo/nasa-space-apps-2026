@@ -1,0 +1,472 @@
+[
+  {
+    "key": "en:agentes.globo.bienvenida.hola",
+    "text": "Hi! I'm Iris, your base buddy.",
+    "rows": 1
+  },
+  {
+    "key": "en:agentes.globo.bienvenida.decides",
+    "text": "Your crew helps. You decide!",
+    "rows": 1
+  },
+  {
+    "key": "en:agentes.globo.tutorial.paso1.ir",
+    "text": "Follow me to the console!",
+    "rows": 1
+  },
+  {
+    "key": "en:agentes.globo.tutorial.paso1.hacer",
+    "text": "Let's release our satellite and look first.",
+    "rows": 2
+  },
+  {
+    "key": "en:agentes.globo.tutorial.paso2.ir",
+    "text": "Stay with me at the console.",
+    "rows": 1
+  },
+  {
+    "key": "en:agentes.globo.tutorial.paso2.hacer",
+    "text": "Draw the satellite's path over the crater.",
+    "rows": 2
+  },
+  {
+    "key": "en:agentes.globo.tutorial.paso3.ir",
+    "text": "Look at the console with me.",
+    "rows": 1
+  },
+  {
+    "key": "en:agentes.globo.tutorial.paso3.hacer",
+    "text": "Compare the landing spots, then pick one.",
+    "rows": 2
+  },
+  {
+    "key": "en:agentes.globo.tutorial.paso4.ir",
+    "text": "Follow me to the workshop!",
+    "rows": 1
+  },
+  {
+    "key": "en:agentes.globo.tutorial.paso4.hacer",
+    "text": "Ask the Engineer which modules to build.",
+    "rows": 2
+  },
+  {
+    "key": "en:agentes.globo.tutorial.paso5.ir",
+    "text": "Come with me to the sensor!",
+    "rows": 1
+  },
+  {
+    "key": "en:agentes.globo.tutorial.paso5.hacer",
+    "text": "Ask the Solar expert what the Sun is doing.",
+    "rows": 2
+  },
+  {
+    "key": "en:agentes.globo.tutorial.paso6.ir",
+    "text": "Let's go to the habitat.",
+    "rows": 1
+  },
+  {
+    "key": "en:agentes.globo.tutorial.paso6.hacer",
+    "text": "Ask the Doctor, then compare and choose.",
+    "rows": 2
+  },
+  {
+    "key": "en:agentes.globo.tutorial.paso7.ir",
+    "text": "Back to the console!",
+    "rows": 1
+  },
+  {
+    "key": "en:agentes.globo.tutorial.paso7.hacer",
+    "text": "Send our news to Earth from the console.",
+    "rows": 2
+  },
+  {
+    "key": "en:agentes.globo.tutorial.paso8.ir",
+    "text": "Meet me at the console.",
+    "rows": 1
+  },
+  {
+    "key": "en:agentes.globo.tutorial.paso8.hacer",
+    "text": "Let's see what happened and why.",
+    "rows": 2
+  },
+  {
+    "key": "en:agentes.globo.bienvenida.hola",
+    "text": "Hi! I'm Iris, your base buddy.",
+    "rows": 1
+  },
+  {
+    "key": "en:agentes.globo.bienvenida.decides",
+    "text": "Your crew helps. You decide!",
+    "rows": 1
+  },
+  {
+    "key": "en:agentes.globo.pistas.paso1",
+    "text": "What could look at Mars for us from up high?",
+    "rows": 2
+  },
+  {
+    "key": "en:agentes.globo.pistas.paso2",
+    "text": "Our satellite needs a path. Where should it look?",
+    "rows": 2
+  },
+  {
+    "key": "en:agentes.globo.pistas.paso3",
+    "text": "No landing spot is perfect. What matters most to you?",
+    "rows": 2
+  },
+  {
+    "key": "en:agentes.globo.pistas.paso4",
+    "text": "Every module helps one thing. What does the base need?",
+    "rows": 2
+  },
+  {
+    "key": "en:agentes.globo.pistas.paso5",
+    "text": "The Sun is acting up... who watches the sky?",
+    "rows": 2
+  },
+  {
+    "key": "en:agentes.globo.pistas.paso6",
+    "text": "Two good plans, one choice. What does your meter say?",
+    "rows": 2
+  },
+  {
+    "key": "en:agentes.globo.pistas.paso7",
+    "text": "Earth is far away. How do we tell them we're okay?",
+    "rows": 2
+  },
+  {
+    "key": "en:agentes.globo.pistas.paso8",
+    "text": "Mission done! What changed because of your choices?",
+    "rows": 2
+  },
+  {
+    "key": "en:agentes.globo.bienvenida.hola",
+    "text": "Hi! I'm Iris, your base buddy.",
+    "rows": 1
+  },
+  {
+    "key": "en:agentes.globo.bienvenida.decides",
+    "text": "Your crew helps. You decide!",
+    "rows": 1
+  },
+  {
+    "key": "en:agentes.globo.danada.paso1",
+    "text": "Bzzt! Release the... sandwich? No. The satellite!",
+    "rows": 2
+  },
+  {
+    "key": "en:agentes.globo.danada.paso2",
+    "text": "Draw the path in a... krrr... zigzag? Hmm, not sure.",
+    "rows": 2
+  },
+  {
+    "key": "en:agentes.globo.danada.paso3",
+    "text": "Krrr... all the spots look like cookies to me today.",
+    "rows": 2
+  },
+  {
+    "key": "en:agentes.globo.danada.paso4",
+    "text": "Bzzt! I forgot my word for... those buildy things.",
+    "rows": 2
+  },
+  {
+    "key": "en:agentes.globo.danada.paso5",
+    "text": "Krrr... my screen tickles. Is the sky humming?",
+    "rows": 2
+  },
+  {
+    "key": "en:agentes.globo.danada.paso6",
+    "text": "Bzzt... my numbers feel wobbly. Check your meter!",
+    "rows": 2
+  },
+  {
+    "key": "en:agentes.globo.danada.paso7",
+    "text": "Krrr... hello, Earth? Is this the right button?",
+    "rows": 2
+  },
+  {
+    "key": "en:agentes.globo.danada.paso8",
+    "text": "Bzzt! What a day. My circuits need a nap.",
+    "rows": 2
+  },
+  {
+    "key": "en:agentes.globo.offline",
+    "text": "Zzz... charging. This one is yours to decide!",
+    "rows": 2
+  },
+  {
+    "key": "en:agentes.globo.offline",
+    "text": "Zzz... charging. This one is yours to decide!",
+    "rows": 2
+  },
+  {
+    "key": "en:agentes.globo.offline",
+    "text": "Zzz... charging. This one is yours to decide!",
+    "rows": 2
+  },
+  {
+    "key": "en:agentes.globo.offline",
+    "text": "Zzz... charging. This one is yours to decide!",
+    "rows": 2
+  },
+  {
+    "key": "en:agentes.globo.offline",
+    "text": "Zzz... charging. This one is yours to decide!",
+    "rows": 2
+  },
+  {
+    "key": "en:agentes.globo.offline",
+    "text": "Zzz... charging. This one is yours to decide!",
+    "rows": 2
+  },
+  {
+    "key": "en:agentes.globo.offline",
+    "text": "Zzz... charging. This one is yours to decide!",
+    "rows": 2
+  },
+  {
+    "key": "en:agentes.globo.offline",
+    "text": "Zzz... charging. This one is yours to decide!",
+    "rows": 2
+  },
+  {
+    "key": "en:agentes.globo.offline",
+    "text": "Zzz... charging. This one is yours to decide!",
+    "rows": 2
+  },
+  {
+    "key": "es:agentes.globo.bienvenida.hola",
+    "text": "¡Hola! Soy Iris, tu compañera de base.",
+    "rows": 2
+  },
+  {
+    "key": "es:agentes.globo.bienvenida.decides",
+    "text": "Tu tripulación ayuda. ¡Tú decides!",
+    "rows": 2
+  },
+  {
+    "key": "es:agentes.globo.tutorial.paso1.ir",
+    "text": "¡Sígueme hacia la consola!",
+    "rows": 1
+  },
+  {
+    "key": "es:agentes.globo.tutorial.paso1.hacer",
+    "text": "Soltemos el satélite para mirar primero.",
+    "rows": 2
+  },
+  {
+    "key": "es:agentes.globo.tutorial.paso2.ir",
+    "text": "Quédate conmigo en la consola.",
+    "rows": 2
+  },
+  {
+    "key": "es:agentes.globo.tutorial.paso2.hacer",
+    "text": "Dibuja el camino del satélite sobre el cráter.",
+    "rows": 2
+  },
+  {
+    "key": "es:agentes.globo.tutorial.paso3.ir",
+    "text": "Mira la consola conmigo.",
+    "rows": 1
+  },
+  {
+    "key": "es:agentes.globo.tutorial.paso3.hacer",
+    "text": "Compara los sitios y elige dónde aterrizar.",
+    "rows": 2
+  },
+  {
+    "key": "es:agentes.globo.tutorial.paso4.ir",
+    "text": "¡Sígueme hacia el taller!",
+    "rows": 1
+  },
+  {
+    "key": "es:agentes.globo.tutorial.paso4.hacer",
+    "text": "Pregúntale la Ingeniera qué módulos construir.",
+    "rows": 2
+  },
+  {
+    "key": "es:agentes.globo.tutorial.paso5.ir",
+    "text": "¡Ven conmigo hacia el sensor!",
+    "rows": 1
+  },
+  {
+    "key": "es:agentes.globo.tutorial.paso5.hacer",
+    "text": "Pregúntale la Meteoróloga qué hace el Sol.",
+    "rows": 2
+  },
+  {
+    "key": "es:agentes.globo.tutorial.paso6.ir",
+    "text": "Vamos hacia el hábitat.",
+    "rows": 1
+  },
+  {
+    "key": "es:agentes.globo.tutorial.paso6.hacer",
+    "text": "Pregúntale la Doctora; luego compara y elige.",
+    "rows": 2
+  },
+  {
+    "key": "es:agentes.globo.tutorial.paso7.ir",
+    "text": "¡Volvamos hacia la consola!",
+    "rows": 1
+  },
+  {
+    "key": "es:agentes.globo.tutorial.paso7.hacer",
+    "text": "Manda nuestras noticias a la Tierra desde la consola.",
+    "rows": 2
+  },
+  {
+    "key": "es:agentes.globo.tutorial.paso8.ir",
+    "text": "Te espero en la consola.",
+    "rows": 1
+  },
+  {
+    "key": "es:agentes.globo.tutorial.paso8.hacer",
+    "text": "Veamos qué pasó y por qué.",
+    "rows": 1
+  },
+  {
+    "key": "es:agentes.globo.bienvenida.hola",
+    "text": "¡Hola! Soy Iris, tu compañera de base.",
+    "rows": 2
+  },
+  {
+    "key": "es:agentes.globo.bienvenida.decides",
+    "text": "Tu tripulación ayuda. ¡Tú decides!",
+    "rows": 2
+  },
+  {
+    "key": "es:agentes.globo.pistas.paso1",
+    "text": "¿Qué podría mirar Marte por nosotros desde arriba?",
+    "rows": 2
+  },
+  {
+    "key": "es:agentes.globo.pistas.paso2",
+    "text": "El satélite necesita un camino. ¿Hacia dónde miramos?",
+    "rows": 2
+  },
+  {
+    "key": "es:agentes.globo.pistas.paso3",
+    "text": "Ningún sitio es perfecto. ¿Qué te importa más?",
+    "rows": 2
+  },
+  {
+    "key": "es:agentes.globo.pistas.paso4",
+    "text": "Cada módulo ayuda en algo. ¿Qué necesita la base?",
+    "rows": 2
+  },
+  {
+    "key": "es:agentes.globo.pistas.paso5",
+    "text": "El Sol anda inquieto... ¿quién vigila el cielo?",
+    "rows": 2
+  },
+  {
+    "key": "es:agentes.globo.pistas.paso6",
+    "text": "Dos buenos planes, una elección. ¿Qué dice tu medidor?",
+    "rows": 2
+  },
+  {
+    "key": "es:agentes.globo.pistas.paso7",
+    "text": "La Tierra está lejos. ¿Cómo le contamos que estamos bien?",
+    "rows": 2
+  },
+  {
+    "key": "es:agentes.globo.pistas.paso8",
+    "text": "¡Misión cumplida! ¿Qué cambió por lo que elegiste?",
+    "rows": 2
+  },
+  {
+    "key": "es:agentes.globo.bienvenida.hola",
+    "text": "¡Hola! Soy Iris, tu compañera de base.",
+    "rows": 2
+  },
+  {
+    "key": "es:agentes.globo.bienvenida.decides",
+    "text": "Tu tripulación ayuda. ¡Tú decides!",
+    "rows": 2
+  },
+  {
+    "key": "es:agentes.globo.danada.paso1",
+    "text": "¡Bzzt! Suelta el... ¿sándwich? No. ¡El satélite!",
+    "rows": 2
+  },
+  {
+    "key": "es:agentes.globo.danada.paso2",
+    "text": "Dibuja el camino en... krrr... ¿zigzag? Mmm, no sé.",
+    "rows": 2
+  },
+  {
+    "key": "es:agentes.globo.danada.paso3",
+    "text": "Krrr... hoy todos los sitios me parecen galletas.",
+    "rows": 2
+  },
+  {
+    "key": "es:agentes.globo.danada.paso4",
+    "text": "¡Bzzt! Olvidé cómo se llaman... esas cosas de armar.",
+    "rows": 2
+  },
+  {
+    "key": "es:agentes.globo.danada.paso5",
+    "text": "Krrr... mi pantalla hace cosquillas. ¿El cielo zumba?",
+    "rows": 2
+  },
+  {
+    "key": "es:agentes.globo.danada.paso6",
+    "text": "Bzzt... mis números se tambalean. ¡Mira tu medidor!",
+    "rows": 2
+  },
+  {
+    "key": "es:agentes.globo.danada.paso7",
+    "text": "Krrr... ¿hola, Tierra? ¿Este es el botón correcto?",
+    "rows": 2
+  },
+  {
+    "key": "es:agentes.globo.danada.paso8",
+    "text": "¡Bzzt! Qué día. Mis circuitos necesitan una siesta.",
+    "rows": 2
+  },
+  {
+    "key": "es:agentes.globo.offline",
+    "text": "Zzz... cargando. ¡Esta decisión es tuya!",
+    "rows": 2
+  },
+  {
+    "key": "es:agentes.globo.offline",
+    "text": "Zzz... cargando. ¡Esta decisión es tuya!",
+    "rows": 2
+  },
+  {
+    "key": "es:agentes.globo.offline",
+    "text": "Zzz... cargando. ¡Esta decisión es tuya!",
+    "rows": 2
+  },
+  {
+    "key": "es:agentes.globo.offline",
+    "text": "Zzz... cargando. ¡Esta decisión es tuya!",
+    "rows": 2
+  },
+  {
+    "key": "es:agentes.globo.offline",
+    "text": "Zzz... cargando. ¡Esta decisión es tuya!",
+    "rows": 2
+  },
+  {
+    "key": "es:agentes.globo.offline",
+    "text": "Zzz... cargando. ¡Esta decisión es tuya!",
+    "rows": 2
+  },
+  {
+    "key": "es:agentes.globo.offline",
+    "text": "Zzz... cargando. ¡Esta decisión es tuya!",
+    "rows": 2
+  },
+  {
+    "key": "es:agentes.globo.offline",
+    "text": "Zzz... cargando. ¡Esta decisión es tuya!",
+    "rows": 2
+  },
+  {
+    "key": "es:agentes.globo.offline",
+    "text": "Zzz... cargando. ¡Esta decisión es tuya!",
+    "rows": 2
+  }
+]

@@ -19,3 +19,4 @@ export { escenaTormentaLunaSur, escenaMicrometeorito, avisoControlLuna, TORMENTA
 export { guiaIrisLugar, briefingIris, type DestinoIris, type GuiaLugar, type GestoIris, type CaraIris, type BriefingIris } from "./iris-acompana.js";
 export { escenaTormentaLunaVisible, escenaAntena, tresLugares, TORMENTA_LUNA_VISIBLE, type EscenaAntena } from "./voces-luna-visible.js";
 export { sorpresaOutpost, consejosZonasNave, escenaTormentaOutpost, TORMENTA_OUTPOST, type ZonaNave } from "./voces-outpost.js";
+export { lineasGlobo, bienvenidaGlobo, PASOS_GLOBO } from "./globo.js";
