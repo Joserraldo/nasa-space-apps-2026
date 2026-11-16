@@ -10,6 +10,7 @@ import { Icono } from "../componentes/base/Iconos.js";
 import { Retrato } from "../componentes/base/Retrato.js";
 import { CostRow, ICONO_RECURSO, Mensaje, RECURSOS } from "../componentes/base/Piezas.js";
 import "../componentes/base/facetas.css";
+import { ListoParaExplorar } from "../componentes/ListoParaExplorar.js";
 import { TarjetaDelFlujo, useTarjetaUnica } from "../componentes/TarjetaDelFlujo.js";
 import { DialogoExperto } from "../componentes/DialogoExperto.js";
 import { LUGARES } from "../escena/mundo.js";
@@ -42,11 +43,16 @@ function iconoDe(modulo: Equipment) {
 
 type Tarjeta = { tipo: "elegir" } | { tipo: "modulo"; modulo: Equipment };
 
-export function PantallaModulos({ estado, colocados, onColocar, onListo }: {
+export function PantallaModulos({ estado, colocados, onColocar, onListo, bienvenida }: {
   estado: GameState;
   colocados: Equipment[];
   onColocar: (m: Equipment) => void;
   onListo: () => void;
+  /**
+   * E8: "Ready to explore" la primera vez que el niño llega. Va dentro de esta pantalla (su capa recibe los
+   * toques) y, mientras está abierta, no se abre otra tarjeta: una a la vez (E1).
+   */
+  bienvenida?: { onExplorar(): void } | undefined;
 }) {
   const { t } = useT();
   const total = mision.modulosAColocar;
@@ -179,7 +185,7 @@ export function PantallaModulos({ estado, colocados, onColocar, onListo }: {
 
         {sinGl && elegido && <span className="modulos-ancla" aria-hidden="true"><Icono nombre={iconoDe(elegido)} tam={48} /></span>}
 
-        {!tarjeta.abierta && (
+        {!tarjeta.abierta && !bienvenida && (
           <div className={`modulos-base${cercaObjetivo ? " modulos-boton-iluminado" : ""}`} ref={botonera}>
             {faltan <= 0 ? (
               <FacetButton variant="primary" icon="jugar" labelKey="ui.paso.4.listo" className="modulos-listo"
@@ -267,6 +273,7 @@ export function PantallaModulos({ estado, colocados, onColocar, onListo }: {
           </>
         ) : null}
       </TarjetaDelFlujo>
+      {bienvenida && <ListoParaExplorar onExplorar={bienvenida.onExplorar} />}
     </section>
   );
 }

@@ -1,5 +1,6 @@
 import { expect, test, type Page } from "@playwright/test";
 import { arrancarEnCalidadBaja } from "./calidad";
+import { llegarYExplorar } from "./entrada";
 
 test.beforeEach(async ({ page }) => arrancarEnCalidadBaja(page));
 
@@ -26,6 +27,7 @@ async function llegarALaBase(page: Page) {
   await page.getByRole("button", { name: "Skip", exact: true }).click();
   await page.getByRole("button", { name: "Continue" }).click();
   await page.getByRole("button", { name: "Land here" }).first().click();
+  await llegarYExplorar(page);
   await colocarModulo(page);
   await colocarModulo(page);
   await page.getByRole("button", { name: "Base ready. Start the clock!" }).click();
@@ -103,6 +105,7 @@ test("sin enviar la telemetría la base se pierde, y \"Play again\" empieza una 
   await page.getByRole("button", { name: "Skip", exact: true }).click();
   await page.getByRole("button", { name: "Continue" }).click();
   await page.getByRole("button", { name: "Land here" }).first().click();
+  await llegarYExplorar(page);
   await expect(page.getByText("Placed: 0 of 2")).toBeVisible();
   await expect(page.getByRole("button", { name: "Base ready. Start the clock!" })).toBeDisabled();
   await colocarModulo(page);
