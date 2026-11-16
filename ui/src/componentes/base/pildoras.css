@@ -15,3 +15,10 @@
   clip-path: polygon(5px 0, calc(100% - 5px) 0, 100% 5px, 100% calc(100% - 5px), calc(100% - 5px) 100%, 5px 100%, 0 calc(100% - 5px), 0 5px); }
 .pildora-tecla-accion { background: var(--color-cian); color: var(--color-indigo-texto); }
 .pildora-tecla-camara { background: var(--color-ciruela); color: var(--color-marfil); }
+
+/* Aviso [E] (mundo/01, DISEÑO §5.2): contorno cian luminoso y aparece solo con algo al alcance, subiendo
+   en --dur-realce (180 ms). Con movimiento reducido aparece quieto. */
+.pb-accion > .fc { filter: drop-shadow(0 0 6px color-mix(in srgb, var(--color-cian) 60%, transparent)) drop-shadow(0 3px 0 color-mix(in srgb, var(--color-ciruela) 28%, transparent));
+  animation: aviso-aparece var(--dur-realce) var(--curva-entrada) both; }
+@keyframes aviso-aparece { from { opacity: 0; translate: 0 8px; } }
+@media (prefers-reduced-motion: reduce) { .pb-accion > .fc { animation: none; } }

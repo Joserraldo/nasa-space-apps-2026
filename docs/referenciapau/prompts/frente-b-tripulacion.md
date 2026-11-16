@@ -13,9 +13,24 @@ pierde, se aburre o se sorprende. Otras cinco personas trabajan en paralelo.
 4. `docs/referenciapau/HISTORIA.md` y `AUDIO.md` §5 y §6 (voz).
 5. `agents/src/iris-acompana.ts` y `agents/src/index.ts`.
 
+## Láminas
+
+![Tripulación y mecánicas](../referencias/personajes/07-tripulacion-mecanicas.png)
+
+Qué mirar: la tripulación en el ciclo de decisión, con sus personalidades (B1 y B2).
+
+![Diálogo de decisión](../referencias/ui/01-dialogo-decision.png)
+
+Qué mirar: el diálogo de decisión, donde van las líneas cortas (B1).
+
+![Consulta: comparación y fuente](../referencias/ui/04-consulta-comparacion-fuente.png)
+
+Qué mirar: cómo se muestra una comparación con su fuente (B4).
+
+Todas las láminas: [docs/referenciapau/referencias/](../referencias/)
+
 ## Tus archivos (solo vos los editás)
-`agents/**`, `infra/worker/**`. En `ui/i18n/*.json` agregás claves con prefijo `agentes.*` (no borres
-claves ajenas).
+`agents/**`, `infra/worker/**`. Tus textos van en `agents/i18n/en.json` y `agents/i18n/es.json`: son tuyos y la UI ya los importa (`ui/src/i18n.ts`).
 
 ## Tus tareas, en orden
 - **B0 (bloque 0, con José):** el contrato de conversación con la tripulación en `agents/`, con tipos y

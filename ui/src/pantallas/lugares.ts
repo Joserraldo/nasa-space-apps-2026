@@ -1,6 +1,7 @@
 import { guiaIrisLugar, type Entrada } from "@solar-shield/agents";
 import type { BaseAction, GameState } from "@solar-shield/contracts";
 import { telemetriaPendiente, tormentaActiva } from "@solar-shield/engine";
+import { MISION_JEZERO } from "@solar-shield/missions";
 import type { NombreIcono } from "../componentes/base/Iconos.js";
 import type { LugarObjetivo } from "../escena/vista.js";
 import type { Vars } from "../i18n.js";
@@ -32,6 +33,8 @@ export function usoDelLugar(l: LugarObjetivo, estado: GameState): UsoLugar {
     case "habitat":
       return { accion: { tipo: "refugiarse" }, consulta: { experto: "doctora" }, labelKey: "ui.hud.usar.habitat", icono: "vida" };
     case "taller":
+      // Por ahora el taller ofrece reparar aunque la avería no se haya revelado: la e2e del respaldo 2D lo usa
+      // (issue [bloquea frente E] A1). Cuando E la cambie, pasa a `averiaIrisRevelada(estado)`.
       return estado.iaBase === "danada"
         ? { accion: { tipo: "reparar", equipo: "ia_base" }, consulta: { experto: "ingeniera" }, labelKey: "ui.hud.usar.taller_reparar", icono: "llave" }
         : { accion: null, consulta: { experto: "ingeniera" }, labelKey: "ui.hud.usar.taller", icono: "tripulacion" };
@@ -47,6 +50,25 @@ export function usoDelLugar(l: LugarObjetivo, estado: GameState): UsoLugar {
   }
 }
 
+/**
+ * Paso de la ruta de Jezero mientras el niño está en la base (MISION_JEZERO.pasos): al entrar, el 4
+ * (módulos colocados: la Ingeniera en el taller); con la tormenta encima, el 7 (enviar la telemetría);
+ * con la telemetría en camino, el 8.
+ */
+export function pasoDeLaBase(estado: GameState): number {
+  return telemetriaPendiente(estado) ? 8 : tormentaActiva(estado) ? 7 : 4;
+}
+
+/**
+ * ¿Ya se ve que Iris está averiada? La partida de Jezero arranca con `iaBase: "danada"` y el equipo
+ * `ia_base` averiado (avería guionada, `engine/src/dorada.ts`), pero la sorpresa es del paso
+ * `MISION_JEZERO.averiaIris.pasoRevelacion` (6). Antes de ese paso Iris guía como si estuviera bien:
+ * no pide reparación. El motor sigue sabiendo la verdad (MECANICAS §5).
+ */
+export function averiaIrisRevelada(estado: GameState): boolean {
+  return estado.iaBase === "danada" && pasoDeLaBase(estado) >= MISION_JEZERO.averiaIris.pasoRevelacion;
+}
+
 /** El mundo no se mueve ni se "usa" mientras haya algo abierto encima o se esté escribiendo. */
 export function mundoBloqueado(abierto: {
   dialogo: boolean; plan: boolean; registro: boolean; panel: boolean; novedad: boolean; campo: boolean;
@@ -60,8 +82,7 @@ export function mundoBloqueado(abierto: {
  * lugar que la escena y el mapa resaltan. Sin Iris (offline) vuelve al objetivo general de la fase.
  */
 export function objetivoDeLaBase(estado: GameState): { labelKey: string; vars?: Vars; lugar: LugarObjetivo | null } {
-  const paso = telemetriaPendiente(estado) ? 8 : tormentaActiva(estado) ? 7 : 5;
-  const guia = guiaIrisLugar(estado, paso, { averiaRevelada: estado.iaBase === "danada" });
+  const guia = guiaIrisLugar(estado, pasoDeLaBase(estado), { averiaRevelada: averiaIrisRevelada(estado) });
   if (!guia) return { labelKey: "ui.comun.hud.objetivo.base", lugar: null };
   const lugarKey = `agentes.iris.lugar.${guia.destino}`;
   if (guia.gesto === "pedir_reparacion") return { labelKey: "ui.hud.objetivo.averia", vars: { lugarKey }, lugar: guia.destino };
