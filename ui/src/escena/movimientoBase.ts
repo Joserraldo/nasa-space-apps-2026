@@ -23,6 +23,38 @@ export const RADIO_IRIS = 0.42;
 export const VEL_JUGADOR = 2.8;
 /** Giro máximo del cuerpo hacia donde camina, rad/s. */
 const GIRO_JUGADOR = 12;
+/**
+ * Caminar fluido (A4): la velocidad se acerca a la pedida con una curva exponencial, rápida al principio y
+ * suave al final. `ACELERACION` al arrancar o acelerar y `FRENADO` al soltar o frenar, en 1/s: a 9/s llega
+ * al 90 % de la marcha en ~0,26 s; a 14/s frena al 10 % en ~0,16 s. El giro del cuerpo también se acerca
+ * con curva (`GIRO_SUAVE`, 1/s), sin pasar de `GIRO_JUGADOR`. [E] Calibrado a mano en el juego.
+ */
+export const ACELERACION = 9;
+export const FRENADO = 14;
+const GIRO_SUAVE = 16;
+/** Por debajo de esta rapidez, sin entrada, el niño queda quieto (m/s). */
+const QUIETO = 0.05;
+
+/**
+ * Acerca la velocidad actual `(vx, vz)` a la pedida `(dx, dz)` en `h` segundos, con curva exponencial.
+ * Escribe en `salida`. Frena con `FRENADO` cuando la pedida es más lenta que la actual (o cero).
+ */
+export function acercarVelocidad(vx: number, vz: number, dx: number, dz: number, h: number, salida: { x: number; z: number }): void {
+  const frena = Math.hypot(dx, dz) < Math.hypot(vx, vz) - 1e-6;
+  const a = 1 - Math.exp(-(frena ? FRENADO : ACELERACION) * h);
+  let x = vx + (dx - vx) * a;
+  let z = vz + (dz - vz) * a;
+  if (dx === 0 && dz === 0 && Math.hypot(x, z) < QUIETO) x = z = 0;
+  salida.x = x;
+  salida.z = z;
+}
+
+/** Gira con curva hacia `deseado` (rad), sin pasar de `max` en este paso. */
+function girarSuave(actual: number, deseado: number, h: number, max: number): number {
+  const d = ((((deseado - actual + Math.PI) % (Math.PI * 2)) + Math.PI * 2) % (Math.PI * 2)) - Math.PI;
+  const paso = d * (1 - Math.exp(-GIRO_SUAVE * h));
+  return actual + Math.max(-max, Math.min(max, paso));
+}
 /** Cerca de un punto de la ruta se pasa al siguiente. */
 const LLEGADA_RUTA = 0.18;
 /** Si en este tiempo la ruta no acerca al jugador al menos `AVANCE_MIN`, se abandona. */
@@ -248,6 +280,8 @@ export function crearMovimiento(solidos: Solidos, o: OpcionesMovimiento = {}): M
   let jugador: Cuerpo = { x: inicio.x, z: inicio.z, y: 0, vy: 0, apoyado: true };
   let rumbo = o.rumbo ?? Math.PI;
   let velocidad = 0;
+  /** Velocidad suavizada del niño (m/s, en el mundo): la que de verdad lo mueve. */
+  const vel = { x: 0, z: 0 };
   let velocidadIris = 0;
   const pi = o.iris ?? { x: inicio.x + 1.3, z: inicio.z + 0.4 };
   let iris: Guia = { x: pi.x, z: pi.z, rumbo, modo: "acompana" as ModoGuia, vel: 0 };
@@ -313,6 +347,8 @@ export function crearMovimiento(solidos: Solidos, o: OpcionesMovimiento = {}): M
           // Al llegar mira al modelo del lugar (la consola, el módulo o el edificio).
           const l = lugar(destino);
           rumbo = Math.atan2(l.mx - jugador.x, l.mz - jugador.z);
+          // Llega al punto de uso exacto: sin inercia que lo pase de largo ni lo haga girar.
+          vel.x = vel.z = 0;
           terminar("llego");
         } else {
           // Frena en el último tramo para no pasarse del punto de uso.
@@ -342,6 +378,13 @@ export function crearMovimiento(solidos: Solidos, o: OpcionesMovimiento = {}): M
       }
     }
     const enElAire = !jugador.apoyado;
+    // Con movimiento reducido o bloqueado, sin curva: arranca y para en seco.
+    if (reducido || bloqueado) {
+      vel.x = vx;
+      vel.z = vz;
+    } else acercarVelocidad(vel.x, vel.z, vx, vz, h, vel);
+    vx = vel.x;
+    vz = vel.z;
     const x0 = jugador.x, z0 = jugador.z;
     if (vx !== 0 || vz !== 0 || !jugador.apoyado) {
       jugador = moverPersonaje(jugador, vx, vz, h, tMov, RADIO_JUGADOR);
@@ -370,7 +413,7 @@ export function crearMovimiento(solidos: Solidos, o: OpcionesMovimiento = {}): M
       // (los empujones del contacto no lo hacen girar).
       const avanza = recorrido > 0.3 * Math.hypot(vx, vz) * h;
       const deseado = avanza ? Math.atan2(mx, mz) : Math.atan2(vx, vz);
-      rumbo = reducido ? deseado : girarHacia(rumbo, deseado, GIRO_JUGADOR * h);
+      rumbo = reducido ? deseado : girarSuave(rumbo, deseado, h, GIRO_JUGADOR * h);
     }
 
     if (!bloqueado) {
