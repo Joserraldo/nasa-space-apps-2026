@@ -1,4 +1,4 @@
-import { useEffect, useReducer, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useReducer, useRef, useState } from "react";
 import type { Action, Equipment } from "@solar-shield/contracts";
 import { HudBase, PROGRESO_INICIAL, type ProgresoHud } from "./componentes/HudBase.js";
 import { IdiomaContext, useT, type Idioma } from "./i18n.js";
@@ -10,6 +10,7 @@ import { PantallaBase } from "./pantallas/PantallaBase.js";
 import { PantallaTormenta } from "./pantallas/PantallaTormenta.js";
 import { PreguntaDeIris } from "./componentes/PreguntaDeIris.js";
 import { Portada } from "./componentes/Portada.js";
+import "./aviso.css";
 import { Intro } from "./componentes/Intro.js";
 import { Carga } from "./componentes/Carga.js";
 import { Creditos } from "./componentes/Creditos.js";
@@ -70,6 +71,22 @@ function Pantalla({ idioma, setIdioma, sonido, setSonido, grafica }: {
   // Al encender el sonido suena una nota: el jugador oye que funciona.
   const alternarSonido = () => { tocar("toque", !sonido); setSonido(!sonido); };
   // Avisos sonoros de lo que pasa en la partida: llega la tormenta, se gana o se pierde.
+  // El aviso del pie comparte la ventana con la pantalla: su alto real se publica en --alto-barra, que portada,
+  // intro, carga, órbita, sitio y final descuentan de su alto. Así el documento no se desplaza por el aviso.
+  const raiz = useRef<HTMLDivElement>(null);
+  const pie = useRef<HTMLElement>(null);
+  useLayoutEffect(() => {
+    const caja = raiz.current;
+    if (!caja) return;
+    const aviso = pie.current;
+    if (!aviso) { caja.style.setProperty("--alto-barra", "0px"); return; }
+    const medir = () => caja.style.setProperty("--alto-barra", `${Math.ceil(aviso.getBoundingClientRect().height)}px`);
+    medir();
+    if (typeof ResizeObserver === "undefined") return;
+    const observador = new ResizeObserver(medir);
+    observador.observe(aviso);
+    return () => observador.disconnect();
+  }, [enMundo]);
   const faseAnterior = useRef(j.fase);
   useEffect(() => {
     if (faseAnterior.current === j.fase) return;
@@ -103,7 +120,7 @@ function Pantalla({ idioma, setIdioma, sonido, setSonido, grafica }: {
     : { labelKey: j.fase === "tormenta" ? "ui.comun.hud.objetivo.tormenta" : "ui.comun.hud.objetivo.base" };
 
   return (
-    <div className={enMundo ? "app app-mundo" : "app"}>
+    <div ref={raiz} className={enMundo ? "app app-mundo" : "app"}>
       {/* En la base el HUD lo pone la pantalla, que es dueña de la fila de abajo (Crew, Map, [E], [V]). */}
       {(j.fase === "modulos" || j.fase === "tormenta") && <HudBase estado={j.estado} ultimas={null} objetivo={objetivo} />}
 
@@ -146,7 +163,7 @@ function Pantalla({ idioma, setIdioma, sonido, setSonido, grafica }: {
       </main>
       {/* El aviso de proyecto no oficial va en la portada, la órbita, el sitio, los créditos y el final;
           durante el juego en la base no le quita una fila al mundo. */}
-      {!enMundo && <footer>{t("ui.aviso.nasa")}</footer>}
+      {!enMundo && <footer ref={pie} className="aviso-nasa">{t("ui.aviso.nasa")}</footer>}
     </div>
   );
 }
