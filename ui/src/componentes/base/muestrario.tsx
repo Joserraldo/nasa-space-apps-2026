@@ -12,6 +12,7 @@ import { AccesoRecurso, ChipPregunta } from "./Accesos.js";
 import { TarjetaFuenteCompacta } from "./FuenteCompacta.js";
 import { BarraSeccion, ChipPausa, PanelFacetado } from "./PanelFacetado.js";
 import { TarjetaDecision } from "./TarjetaDecision.js";
+import { TarjetaContextual, type OrigenTarjeta } from "./TarjetaContextual.js";
 
 import { EXPRESIONES, PERSONAS, Retrato } from "./Retrato.js";
 import { Carga } from "../Carga.js";
@@ -211,6 +212,29 @@ function HudEscena() {
   );
 }
 
+/**
+ * ?vista=tarjeta (&origen=lado|hoja): la tarjeta contextual de F2 sobre la escena con el HUD, como en
+ * mundo/04, mundo/03 y ui/01. `[E] Inspect` la abre y `Back` la cierra, para ver la entrada y la salida.
+ */
+function TarjetaEscena({ origen }: { origen: OrigenTarjeta }) {
+  const { t } = useT();
+  const [abierta, setAbierta] = useState(true);
+  const nada = () => {};
+  const estado = { ...partidaDorada(), recursos: { energia: 70, soporte_vital: 80, blindaje: 60 }, efectosPendientes: [] };
+  return (
+    <div className="mu-escena">
+      <HudBase estado={estado} objetivo={{ labelKey: "ui.comun.muestrario.objetivo" }} panelAbierto={abierta}
+        mundo={{ onTripulacion: nada, onMapa: nada, camara: "tercera", onCamara: nada, interaccion: abierta ? undefined : { labelKey: "ui.comun.muestrario.inspeccionar", onUsar: () => setAbierta(true) } }} />
+      <TarjetaContextual abierta={abierta} origen={origen} titulo={t("ui.comun.retrato.ingeniera.nombre")} bajada={t("ui.comun.muestrario.tarjeta.bajada")}
+        figura={<Retrato persona="ingeniera" expresion="feliz" tam={84} />} extra={<ChipPausa />}
+        acciones={<><FacetButton variant="primary" icon="check" labelKey="ui.comun.muestrario.colocar_panel" onClick={() => setAbierta(false)} /><FacetButton labelKey="ui.comun.atras" onClick={() => setAbierta(false)} /></>}>
+        <BarraSeccion tituloKey="ui.paso.4.modulo.panel_solar" />
+        <CostRow inmediato={{ energia: -6, soporte_vital: -3 }} retrasado={{ energia: 14 }} />
+      </TarjetaContextual>
+    </div>
+  );
+}
+
 /** ?vista=portada | intro | carga muestra esa pantalla a pantalla completa (para las capturas a 1024x683, 844x390 y 390x844). */
 function Raiz() {
   const params = new URLSearchParams(location.search);
@@ -228,6 +252,7 @@ function Raiz() {
         {vista === "retratos" && <Retratos />}
         {vista === "paneles" && <main className="muestrario"><PanelesE7 /></main>}
         {vista === "hud" && <HudEscena />}
+        {vista === "tarjeta" && <TarjetaEscena origen={(params.get("origen") as OrigenTarjeta | null) ?? "auto"} />}
       </IdiomaContext.Provider>
     );
   }
