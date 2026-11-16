@@ -15,6 +15,12 @@ export const PIEZAS = [
   { pieza: "portada-nave", anchos: [280, 560] },
   { pieza: "portada-planeta", anchos: [200, 400] },
   { pieza: "portada-asteroide", anchos: [120, 240] },
+  // Carga (inicio/03). Provisorias: recortadas de la lámina 03-panel-carga.png (1024 px) hasta que estén las
+  // piezas sueltas de María Paula en alta; con esas, se cambian las fuentes y se vuelve a correr el guion.
+  { pieza: "carga-nino", anchos: [200, 273] },
+  { pieza: "carga-panel", anchos: [140, 191] },
+  { pieza: "carga-invernadero", anchos: [130, 172] },
+  { pieza: "carga-habitat", anchos: [180, 260] },
 ];
 const CALIDAD = 0.82;
 const FUENTE = "tests/capturas/ilustraciones/fuente";
@@ -48,7 +54,7 @@ if (process.argv[1]?.endsWith("ilustraciones.mjs")) {
       const cw = x1 - x0 + 1, ch = y1 - y0 + 1;
       const salidas = [];
       for (const pedido of anchos) {
-        const ancho = Math.min(pedido, cw); // nunca agrandar
+        const ancho = Math.min(pedido, cw); // nunca agrandar (el nombre del archivo debe ser su ancho real)
         const alto = Math.round((ch * ancho) / cw);
         let fuente = lienzo, sx = x0, sy = y0, sw = cw, sh = ch;
         if (cw > ancho * 2) { // dos pasos al achicar mucho
