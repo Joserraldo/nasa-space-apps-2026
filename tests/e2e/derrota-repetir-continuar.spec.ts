@@ -11,7 +11,6 @@ test.beforeEach(async ({ page }) => arrancarEnCalidadBaja(page));
 
 const TURNO_MS = 4000;
 
-/** De la portada a la base viva: primer sitio y los dos primeros módulos. */
 /** E1: la tarjeta del módulo nace al preguntar a la Ingeniera; se elige el primer módulo libre y se coloca. */
 async function colocarModulo(page: Page) {
   await page.getByRole("button", { name: "Ask the Engineer" }).click();
@@ -20,6 +19,7 @@ async function colocarModulo(page: Page) {
   await expect(page.locator('[role="dialog"].tc')).toHaveCount(0);
 }
 
+/** De la portada a la base viva: primer sitio y los dos primeros módulos. */
 async function llegarALaBase(page: Page) {
   await page.getByRole("button", { name: "Start mission" }).click();
   await page.getByRole("button", { name: "Skip intro" }).click();
