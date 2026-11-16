@@ -1,7 +1,7 @@
 # Estado: Frente E (Santiago)
 
-**Actualizado:** dom 15 nov, 23:45.
+**Actualizado:** lun 16 nov, 00:50.
 
-- **Hecho:** E0, E1, E2, E3 y E7 fusionadas (más #339 en #367). E9 en PR #379 (botón táctil de salto).
-- **Sigue:** E5 (conversación larga) y E8 (flujo de entrada; A5 y A12 ya están, falta F6).
-- **Bloqueado:** E4 espera `camara` en `AjustesJugador` (#372, frente A). E6 espera A2 y A9.
+- **Hecho:** E0, E1, E2, E3, E7 y E9 fusionadas (más #339 en #367). Prueba del salto en #380. E5 en PR #389 (globo para lo corto, franja con retrato para lo largo).
+- **Sigue:** el retrato de Iris en la franja usa `averiaIrisRevelada` (hoy sale con ojos en X desde el turno 0); después E8.
+- **Bloqueado:** E4 espera `camara` en `AjustesJugador` (#372, frente A). E6 espera A2 y A9. El globo visible en el juego espera A6 (#382) y el cambio del taller del frente A.
