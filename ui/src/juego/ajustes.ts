@@ -22,6 +22,7 @@ export interface AjustesJugador {
 }
 
 export const CLAVE_AJUSTES = "solar-shield.ajustes.v2";
+const CLAVE_AJUSTES_ANTERIOR = "solar-shield.ajustes.v1";
 
 /** Lo que el navegador dice del jugador; se pasa desde afuera para poder probarlo. */
 export interface EntornoNavegador {
@@ -46,8 +47,13 @@ export function cargarAjustes(almacen: Almacen | undefined, entorno: EntornoNave
   const base = ajustesPorDefecto(entorno);
   try {
     const crudo = almacen?.getItem(CLAVE_AJUSTES);
-    if (!crudo) return base;
-    return validar(JSON.parse(crudo), base);
+    if (crudo) return validar(JSON.parse(crudo), base);
+    // Conserva "baja" explícita de v1 (p. ej. E2E sin GPU en CI o equipos lentos); "media" hereda "alta".
+    const previo = almacen?.getItem(CLAVE_AJUSTES_ANTERIOR);
+    if (!previo) return base;
+    const dato = JSON.parse(previo) as { calidad?: unknown } | null;
+    const v1 = validar(dato, base);
+    return dato?.calidad === "baja" ? v1 : { ...v1, calidad: base.calidad };
   } catch {
     return base;
   }
