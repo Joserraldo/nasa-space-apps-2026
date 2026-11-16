@@ -3,7 +3,7 @@ import { conversar, escenaTormenta, type Dialogo, type Entrada } from "@solar-sh
 import type { Equipment, GameState } from "@solar-shield/contracts";
 import { referenciaDosis } from "@solar-shield/data";
 import { costoDe, puedeAplicar, tormentaActiva } from "@solar-shield/engine";
-import { MISION_JEZERO } from "@solar-shield/missions";
+import { misionActiva } from "../juego/misiones.js";
 import { useT } from "../i18n.js";
 import { describirAccion } from "../componentes/Dialogos.js";
 import { TarjetaFuente } from "../componentes/TarjetaFuente.js";
@@ -22,9 +22,9 @@ import "./tormenta.css";
 /** Los tres expertos de ui/04 "Choose your expert" (personajes/07), en el orden de la lámina. */
 const EXPERTOS = ["ingeniera", "doctora", "meteorologa"] as const;
 type Experto = (typeof EXPERTOS)[number];
-const OPCIONES = MISION_JEZERO.dilemaPaso6.opciones;
+const opciones = () => misionActiva().dilemaPaso6.opciones;
 /** La opción que defiende cada experta; la meteoróloga no defiende ninguna, así que le toca la que nadie recomienda. */
-const opcionDe = (p: Experto) => (OPCIONES.find((o) => o.defiende === p) ?? OPCIONES.find((o) => o.defiende === null) ?? OPCIONES[0]!).id;
+const opcionDe = (p: Experto) => (opciones().find((o) => o.defiende === p) ?? opciones().find((o) => o.defiende === null) ?? opciones()[0]!).id;
 const NADA = () => undefined;
 
 /**
@@ -55,7 +55,7 @@ export function PantallaTormenta({ estado, colocados, registro, onSeguir, onDeci
   const [plan, setPlan] = useState<{ experta: Experto; opcionId: string } | null>(null);
   const [conservada, setConservada] = useState<string | undefined>(undefined);
   const [verificando, setVerificando] = useState(false);
-  const escena = useMemo(() => escenaTormenta(estado, OPCIONES), [estado.tormenta]);
+  const escena = useMemo(() => escenaTormenta(estado, opciones()), [estado.tormenta]);
   // La decisión está abierta toda la fase: el mundo se ve pero no se mueve ni se "usa".
   const { fijarBloqueado } = useMundo();
   useEffect(() => { fijarBloqueado(true); return () => fijarBloqueado(false); }, [fijarBloqueado]);
@@ -66,7 +66,7 @@ export function PantallaTormenta({ estado, colocados, registro, onSeguir, onDeci
   useAltoHoja(cara, true);
 
   function hablar(entrada: Entrada) {
-    const d = conversar(entrada, estado, { tormentaActiva: tormentaActiva(estado), dosisMarte: referenciaDosis("marte-superficie"), vecesFallaIris: fallasIris });
+    const d = conversar(entrada, estado, { tormentaActiva: tormentaActiva(estado, misionActiva()), dosisMarte: referenciaDosis("marte-superficie"), vecesFallaIris: fallasIris });
     if ("falla" in d) setFallasIris((n) => n + 1);
     setDialogo(d);
     onConverso?.();
@@ -149,8 +149,8 @@ export function PantallaTormenta({ estado, colocados, registro, onSeguir, onDeci
 
 /** Suma los números del motor: el costo de la acción y, si hay invernadero, la comida que `elegirDilema` le quita. */
 function costosDe(opcionId: string, colocados: readonly Equipment[]) {
-  const o = OPCIONES.find((x) => x.id === opcionId)!;
-  const { inmediato, retrasado } = costoDe(o.accion);
+  const o = opciones().find((x) => x.id === opcionId)!;
+  const { inmediato, retrasado } = costoDe(o.accion, misionActiva());
   if (!o.extra || (o.extraSiTiene && !colocados.includes(o.extraSiTiene))) return { o, inmediato, retrasado };
   const suma = (a: typeof inmediato, b: typeof inmediato) => ({ ...a, ...Object.fromEntries(Object.entries(b).map(([r, v]) => [r, ((a as Record<string, number>)[r] ?? 0) + v])) });
   return { o, inmediato: suma(inmediato, o.extra.inmediato), retrasado: suma(retrasado, o.extra.retrasado) };
@@ -163,7 +163,7 @@ function PlanComparado({ estado, colocados, plan, dialogo, onOtra, onVerificar, 
 }) {
   const { t } = useT();
   const { o, inmediato, retrasado } = costosDe(plan.opcionId, colocados);
-  const permiso = puedeAplicar(estado, o.accion);
+  const permiso = puedeAplicar(estado, o.accion, misionActiva());
   const linea = dialogo?.lineas[0];
   return (
     <div className="tormenta-plan">

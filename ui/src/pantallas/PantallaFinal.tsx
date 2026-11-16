@@ -4,7 +4,8 @@ import {
   datosUsados, fuenteAprobada, referenciaDosis, regionPoloNorte, tarjetasCienciaFinal, terrenoJezero, tormentasCuradas,
 } from "@solar-shield/data";
 import { modulosColocados, resumenPartida } from "@solar-shield/engine";
-import { MISION_JEZERO, TEXTOS_JEZERO, type TarjetaCiencia } from "@solar-shield/missions";
+import { TEXTOS_JEZERO, type TarjetaCiencia } from "@solar-shield/missions";
+import { misionActiva } from "../juego/misiones.js";
 import { useT } from "../i18n.js";
 import { LogoSolarShield } from "../componentes/base/LogoSolarShield.js";
 import { FacetButton } from "../componentes/base/FacetButton.js";
@@ -209,7 +210,7 @@ function TarjetasCiencia({ estado }: { estado: GameState }) {
   const tm = useTextoMision();
   const construidos = new Set(modulosColocados(estado));
   const curada = tormentasCuradas.find((x) => x.id === estado.tormenta?.id);
-  const tarjetas = MISION_JEZERO.tarjetasCiencia
+  const tarjetas = misionActiva().tarjetasCiencia
     .filter((c) => !c.modulo || construidos.has(c.modulo))
     .map((c) => ({ c, fuentes: fuentesDe(c, estado) }))
     .filter((x): x is { c: TarjetaCiencia; fuentes: Fuente[] } => x.fuentes !== null);
@@ -242,7 +243,7 @@ function TarjetasCiencia({ estado }: { estado: GameState }) {
 function PreguntaFinal() {
   const { t } = useT();
   const tm = useTextoMision();
-  const p = MISION_JEZERO.preguntaFinal;
+  const p = misionActiva().preguntaFinal;
   const [elegida, setElegida] = useState<number | null>(null);
   const bien = elegida === p.correcta;
   return (

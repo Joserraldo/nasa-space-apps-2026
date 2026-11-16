@@ -1,7 +1,7 @@
 import { guiaIrisLugar, type Entrada } from "@solar-shield/agents";
 import type { BaseAction, GameState } from "@solar-shield/contracts";
 import { telemetriaPendiente, tormentaActiva } from "@solar-shield/engine";
-import { MISION_JEZERO } from "@solar-shield/missions";
+import { misionActiva } from "../juego/misiones.js";
 import type { NombreIcono } from "../componentes/base/Iconos.js";
 import type { LugarObjetivo } from "../escena/vista.js";
 import type { Vars } from "../i18n.js";
@@ -25,7 +25,7 @@ export function usoDelLugar(l: LugarObjetivo, estado: GameState): UsoLugar {
   switch (l) {
     case "mesa": {
       // La consola de enlace: con la tormenta encima envía la telemetría; si no, se espera un turno.
-      const tele = tormentaActiva(estado) && !telemetriaPendiente(estado);
+      const tele = tormentaActiva(estado, misionActiva()) && !telemetriaPendiente(estado);
       return tele
         ? { accion: { tipo: "enviar_telemetria" }, consulta: null, labelKey: "ui.hud.usar.mesa_telemetria", icono: "satelite" }
         : { accion: { tipo: "esperar" }, consulta: null, labelKey: "ui.hud.usar.mesa", icono: "reloj" };
@@ -56,7 +56,7 @@ export function usoDelLugar(l: LugarObjetivo, estado: GameState): UsoLugar {
  * con la telemetría en camino, el 8.
  */
 export function pasoDeLaBase(estado: GameState): number {
-  return telemetriaPendiente(estado) ? 8 : tormentaActiva(estado) ? 7 : 4;
+  return telemetriaPendiente(estado) ? 8 : tormentaActiva(estado, misionActiva()) ? 7 : 4;
 }
 
 /**
@@ -66,7 +66,7 @@ export function pasoDeLaBase(estado: GameState): number {
  * no pide reparación. El motor sigue sabiendo la verdad (MECANICAS §5).
  */
 export function averiaIrisRevelada(estado: GameState): boolean {
-  return estado.iaBase === "danada" && pasoDeLaBase(estado) >= MISION_JEZERO.averiaIris.pasoRevelacion;
+  return estado.iaBase === "danada" && pasoDeLaBase(estado) >= misionActiva().averiaIris.pasoRevelacion;
 }
 
 /** El mundo no se mueve ni se "usa" mientras haya algo abierto encima o se esté escribiendo. */

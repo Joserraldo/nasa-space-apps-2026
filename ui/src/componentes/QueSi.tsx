@@ -2,6 +2,7 @@ import { useState } from "react";
 import { compararOpciones, conAvisoUsos, sinUsosMatematico, type Dialogo } from "@solar-shield/agents";
 import type { Action, BaseAction, GameState } from "@solar-shield/contracts";
 import { aplicarAccion } from "@solar-shield/engine";
+import { misionActiva } from "../juego/misiones.js";
 import { useT } from "../i18n.js";
 import { Burbuja } from "./Dialogos.js";
 
@@ -15,7 +16,7 @@ export function QueSi({ estado, opciones, onSimular }: { estado: GameState; opci
   const [d, setD] = useState<Dialogo | null>(null);
   function calcular() {
     if (estado.simulacionesRestantes === 0) return setD(sinUsosMatematico());
-    const comparacion = compararOpciones(estado, opciones.map((accion) => ({ accion, despues: aplicarAccion(estado, accion) })));
+    const comparacion = compararOpciones(estado, opciones.map((accion) => ({ accion, despues: aplicarAccion(estado, accion, misionActiva()) })));
     const restantes = estado.simulacionesRestantes === null ? null : estado.simulacionesRestantes - 1;
     setD(conAvisoUsos(comparacion, restantes));
     onSimular?.({ tipo: "simular", accion: opciones[0] as BaseAction });

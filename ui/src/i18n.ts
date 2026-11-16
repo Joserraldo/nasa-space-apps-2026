@@ -5,12 +5,18 @@ import datosEn from "../../data/i18n/en.json";
 import datosEs from "../../data/i18n/es.json";
 import uiEn from "../i18n/en.json";
 import uiEs from "../i18n/es.json";
+import { TEXTOS_JEZERO, TEXTOS_LUNA_POLO_SUR, TEXTOS_LUNA_VISIBLE, TEXTOS_MARTE_POLO_NORTE, TEXTOS_OUTPOST_SORPRESA } from "@solar-shield/missions";
+
+/** textos de todas las misiones jugables (missions/src/textos.ts). */
+const MISIONES_TXT = [TEXTOS_JEZERO, TEXTOS_LUNA_POLO_SUR, TEXTOS_LUNA_VISIBLE, TEXTOS_MARTE_POLO_NORTE, TEXTOS_OUTPOST_SORPRESA];
+const misionesEn = Object.assign({}, ...MISIONES_TXT.map((x) => x.en)) as Record<string, string>;
+const misionesEs = Object.assign({}, ...MISIONES_TXT.map((x) => x.es)) as Record<string, string>;
 
 export type Idioma = "en" | "es";
 
 const DICCIONARIOS: Record<Idioma, Record<string, string>> = {
-  en: { ...agentesEn, ...datosEn, ...uiEn },
-  es: { ...agentesEs, ...datosEs, ...uiEs },
+  en: { ...misionesEn, ...agentesEn, ...datosEn, ...uiEn },
+  es: { ...misionesEs, ...agentesEs, ...datosEs, ...uiEs },
 };
 
 export type Vars = Record<string, string | number> | undefined;

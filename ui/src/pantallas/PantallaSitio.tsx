@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
 import type { GameState } from "@solar-shield/contracts";
-import { terrenoJezero } from "@solar-shield/data";
+import { terrenoJezero, terrenoLunaPoloSur, terrenoLunaVisible, terrenoMarteNorte } from "@solar-shield/data";
 import { ordenarSitios, type PuntajeSitio } from "@solar-shield/engine";
-import { MISION_JEZERO } from "@solar-shield/missions";
+import { misionActiva } from "../juego/misiones.js";
 import urlDem from "../../../data/terreno/jezero/elevacion.bin?url";
 import { useT } from "../i18n.js";
 import { FacetButton } from "../componentes/base/FacetButton.js";
@@ -20,6 +20,24 @@ import "./sitio.css";
 const CRITERIOS = ["plano", "luz", "blindaje"] as const;
 const terreno = terrenoJezero;
 
+/** sitio que pinta la tarjeta. Sin `puntajes` (la nave de Outpost) no se muestran criterios. */
+interface SitioTarjeta { id: string; nombreKey: string; descripcionKey: string; puntajes?: { plano: number; luz: number; blindaje: number } }
+
+const TERRENOS: Record<string, { sitios: readonly SitioTarjeta[]; fuente: typeof terrenoJezero.fuente; nombreKey: string }> = {
+  "jezero": terrenoJezero,
+  "marte-norte": terrenoMarteNorte as never,
+  "luna-visible": terrenoLunaVisible as never,
+  "luna-polo-sur": terrenoLunaPoloSur as never,
+};
+
+/** Sitios de la misión activa: los del terreno de datos si existen; si no, las zonas de la misión. */
+function sitiosDeMision(): { sitios: SitioTarjeta[]; terreno: (typeof TERRENOS)[string] | null } {
+  const m = misionActiva();
+  const ter = m.terrenoId ? TERRENOS[m.terrenoId] ?? null : null;
+  const sitios = m.sitiosCandidatos.map((c) => ter?.sitios.find((x) => x.id === c.id) ?? { id: c.id, nombreKey: c.porQueKey, descripcionKey: c.porQueKey });
+  return { sitios, terreno: ter };
+}
+
 /** Posición de un sitio en el mapa, en fracción 0-1 del lienzo (oeste→este, norte→sur). */
 function enMapa(lon: number, lat: number) {
   const b = terreno.bbox;
@@ -28,7 +46,13 @@ function enMapa(lon: number, lat: number) {
 
 export function PantallaSitio({ estado, onElegir }: { estado: GameState; onElegir: (s: PuntajeSitio) => void }) {
   const { t } = useT();
-  const sitios = useMemo(() => ordenarSitios(terreno.sitios, estado.objetivo), [estado.objetivo]);
+  const deMision = useMemo(sitiosDeMision, []);
+  const esJezero = misionActiva().terrenoId === "jezero";
+  const sitios = useMemo(() => {
+    const con = deMision.sitios.filter((x) => x.puntajes) as Parameters<typeof ordenarSitios>[0];
+    const sin = deMision.sitios.filter((x) => !x.puntajes).map((x) => ({ id: x.id, nombreKey: x.nombreKey, porCriterio: { plano: 0, luz: 0, blindaje: 0 }, total: 0, rangoKey: "" }));
+    return [...ordenarSitios(con, estado.objetivo), ...sin];
+  }, [estado.objetivo, deMision]);
   const porId = useMemo(() => new Map(terreno.sitios.map((s) => [s.id, s])), []);
   const [elegido, setElegido] = useState(sitios[0]?.id ?? "");
   const lista = useRef<HTMLUListElement>(null);
@@ -69,7 +93,7 @@ export function PantallaSitio({ estado, onElegir }: { estado: GameState; onElegi
         </div>
       </div>
 
-      <div className="sitio-mapa">
+      {esJezero && <div className="sitio-mapa">
         <div className="sitio-lienzo" style={{ "--foco-x": p.x, "--foco-y": p.y } as CSSProperties}>
           <MapaJezero etiqueta={t(terreno.nombreKey)} />
           {sitios.map((s, i) => {
@@ -87,23 +111,22 @@ export function PantallaSitio({ estado, onElegir }: { estado: GameState; onElegi
           })}
         </div>
         <p className="sitio-credito">{t(terreno.fuente.nombreKey)} · {t("datos.etiqueta.curado")}</p>
-      </div>
+      </div>}
 
       <ul className="sitio-lista" ref={lista} onScroll={alDeslizar}>
         {sitios.map((s, i) => (
-          <TarjetaSitio key={s.id} n={i + 1} s={s} sel={s.id === elegido} onVer={() => setElegido(s.id)} onElegir={() => onElegir(s)} />
+          <TarjetaSitio key={s.id} n={i + 1} s={s} crudo={deMision.sitios.find((x) => x.id === s.id)!} sel={s.id === elegido} onVer={() => setElegido(s.id)} onElegir={() => onElegir(s)} />
         ))}
-        <li className="sitio-fuente"><FuenteTerreno fuente={terreno.fuente} /></li>
+        {deMision.terreno && <li className="sitio-fuente"><FuenteTerreno fuente={deMision.terreno.fuente} /></li>}
       </ul>
     </section>
   );
 }
 
 /** Una tarjeta de sitio: criterios del dato, puntaje del motor y costo de aterrizaje de la misión. */
-function TarjetaSitio({ n, s, sel, onVer, onElegir }: { n: number; s: PuntajeSitio; sel: boolean; onVer: () => void; onElegir: () => void }) {
+function TarjetaSitio({ n, s, crudo, sel, onVer, onElegir }: { n: number; s: PuntajeSitio; crudo: SitioTarjeta; sel: boolean; onVer: () => void; onElegir: () => void }) {
   const { t } = useT();
-  const crudo = terreno.sitios.find((c) => c.id === s.id)!;
-  const costo = MISION_JEZERO.sitiosCandidatos.find((c) => c.id === s.id)?.aterrizaje;
+  const costo = misionActiva().sitiosCandidatos.find((c) => c.id === s.id)?.aterrizaje;
   const idTitulo = `sitio-${s.id}`;
   return (
     <li className={`fc sitio-item${sel ? " sitio-item-sel" : ""}`} data-sitio={s.id} onClick={onVer} onFocus={onVer}>
@@ -112,10 +135,10 @@ function TarjetaSitio({ n, s, sel, onVer, onElegir }: { n: number; s: PuntajeSit
           <span className="sitio-num" aria-hidden="true">{n}</span>
           <h3 id={idTitulo}>{t(s.nombreKey)}</h3>
         </header>
-        <p className="sitio-desc">{t(crudo.descripcionKey)}</p>
-        <ul className="sitio-criterios">
+        {crudo.descripcionKey !== s.nombreKey && <p className="sitio-desc">{t(crudo.descripcionKey)}</p>}
+        {crudo.puntajes && <><ul className="sitio-criterios">
           {CRITERIOS.map((c) => {
-            const v = Math.round(crudo.puntajes[c] * 100);
+            const v = Math.round(crudo.puntajes![c] * 100);
             return (
               <li key={c}>
                 <span>{t(`ui.paso.3.criterio.${c}`)}</span>
@@ -129,7 +152,7 @@ function TarjetaSitio({ n, s, sel, onVer, onElegir }: { n: number; s: PuntajeSit
           <span>{t("ui.paso.3.total")}</span>
           <strong>{Math.round(s.total * 100)}</strong>
           <span className="sitio-rango">{t(s.rangoKey)}</span>
-        </p>
+        </p></>}
         {costo && <CostRow inmediato={costo.inmediato} retrasado={costo.retrasado} />}
         <FacetButton variant="primary" labelKey="ui.paso.3.elegir" icon="jugar" className="sitio-aterrizar" onClick={onElegir} />
       </article>
