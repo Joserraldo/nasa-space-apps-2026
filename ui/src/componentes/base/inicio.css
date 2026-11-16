@@ -27,16 +27,37 @@
   pointer-events: none;
 }
 .portada > * { pointer-events: auto; }
-/* Respaldo 2D del fondo (cajas de DISEÑO §6 en % del lienzo): niño 49,18,31,57 · planeta 79,15,16,14 · asteroide 39,7,10,13. */
-.portada > .portada-fondo { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
-.portada-nino { position: absolute; left: 52%; top: 18%; width: 31%; animation: portada-flota 6s ease-in-out infinite; }
-.portada-nino svg { width: 100%; height: auto; transform: rotate(-4deg); }
-.portada-planeta { position: absolute; left: 80%; top: 13%; width: 15%; height: auto; }
-.portada-asteroide { position: absolute; left: 40%; top: 8%; width: 6%; aspect-ratio: 1; background: var(--color-montana-lejana);
-  clip-path: polygon(30% 0, 75% 6%, 100% 40%, 88% 82%, 50% 100%, 12% 86%, 0 46%); animation: portada-deriva 8s ease-in-out infinite; }
-@keyframes portada-flota { 50% { transform: translateY(-6px) rotate(1deg); } }
-@keyframes portada-deriva { 50% { transform: translate(4px, 2px); } }
-@media (prefers-reduced-motion: reduce) { .portada-nino, .portada-asteroide { animation: none; } }
+/* Fondo ilustrado (FondoPortada: ilustraciones 2D de María Paula, inicio/01). Cajas en % de la portada,
+   medidas sobre la lámina: niño 50,15,30 · nave 77,62,27 · planeta 79,14,15 · asteroide 39,7,9 · roca 41,81,9.
+   Va detrás del menú y del logo, que suben a su propia capa. */
+.portada > .portada-fondo { position: absolute; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+.portada > :not(.portada-fondo, .portada-prefs, .oculto-visual) { position: relative; z-index: 1; }
+.portada > .portada-prefs { z-index: 1; }
+.portada-fondo .ilu { position: absolute; height: auto; max-width: none; user-select: none; -webkit-user-drag: none; }
+
+/* Movimiento (impeccable animate, registro de marca; review-animations): una sola entrada escalonada
+   (700 ms, desaceleración) y después un flotar lento y continuo. Solo translate, rotate, scale y opacity:
+   la entrada usa scale y opacity y el flotar translate y rotate, así no se pisan. */
+.portada-asteroide { left: 39%; top: 7%; width: 9%;
+  animation: ilu-entra 700ms var(--curva-entrada) both, ilu-gira 60s linear 700ms infinite; }
+.portada-roca { left: 41%; top: 81%; width: 9%;
+  animation: ilu-entra 700ms var(--curva-entrada) 120ms both, ilu-gira 90s linear 820ms infinite reverse; }
+.portada-planeta { left: 79%; top: 14%; width: 15%;
+  animation: ilu-entra 700ms var(--curva-entrada) 80ms both, ilu-planeta 11s ease-in-out 780ms infinite alternate; }
+.portada-nave { left: 77%; top: 62%; width: 27%;
+  animation: ilu-entra 700ms var(--curva-entrada) 160ms both, ilu-nave 7s ease-in-out 860ms infinite alternate; }
+.portada-nino { left: 50%; top: 15%; width: 30%; transform-origin: 40% 60%;
+  animation: ilu-entra 700ms var(--curva-entrada) 240ms both, ilu-flota 6s ease-in-out 940ms infinite alternate; }
+.portada-cable { position: absolute; inset: 0; width: 100%; height: 100%; animation: ilu-aparece 600ms var(--curva-entrada) 600ms both; }
+.portada-cable path { fill: none; stroke: color-mix(in srgb, var(--color-lila) 70%, var(--color-marfil)); stroke-width: 3px; stroke-linecap: round; vector-effect: non-scaling-stroke; }
+
+@keyframes ilu-entra { from { opacity: 0; scale: .92; } }
+@keyframes ilu-aparece { from { opacity: 0; } }
+@keyframes ilu-flota { from { translate: 0 0; rotate: -2deg; } to { translate: 0 -12px; rotate: 1.5deg; } }
+@keyframes ilu-nave { to { translate: 0 -6px; } }
+@keyframes ilu-planeta { from { translate: 0 0; rotate: -3deg; } to { translate: 0 -8px; rotate: 3deg; } }
+@keyframes ilu-gira { to { rotate: 360deg; } }
+@media (prefers-reduced-motion: reduce) { .portada-fondo .ilu, .portada-cable { animation: none; } }
 .portada-marca { grid-column: 1; grid-row: 1 / 3; display: flex; flex-direction: column; align-items: flex-start; gap: var(--esp-2); max-width: 31vw; }
 .portada-logo { width: 100%; max-width: 460px; height: auto; }
 .portada-subtitulo {
@@ -64,9 +85,12 @@
   .portada-menu { grid-row: auto; margin-top: 0; gap: var(--esp-3); max-width: 420px; }
   .portada-creditos { grid-row: auto; margin-top: 0; }
   .portada .fb-menu { --fb-alto: 56px; font-size: var(--tipo-tam-subtitulo); }
-  /* Celular: el niño queda detrás, a la derecha y más chico, sin tapar el menú. */
+  /* Celular: el niño queda detrás, a la derecha y más chico, con la nave asomando abajo; sin asteroides
+     ni cable para no cargar la pantalla. */
   .portada-nino { left: auto; right: -6%; top: auto; bottom: 4%; width: 46%; opacity: 0.9; }
-  .portada-asteroide { display: none; }
+  .portada-nave { left: auto; right: -12%; top: auto; bottom: -8%; width: 34%; }
+  .portada-planeta { left: auto; right: 4%; top: 14%; width: 22%; }
+  .portada-asteroide, .portada-roca, .portada-cable { display: none; }
 }
 /* Celular vertical: las preferencias bajan de línea dentro de la pantalla, alineadas a la derecha. */
 @media (max-width: 599px) {
@@ -84,6 +108,9 @@
   .portada-creditos { grid-column: 1; grid-row: 3; }
   .portada .fb-menu { --fb-alto: 48px; }
   .portada-lema { font-size: var(--tipo-tam-cuerpo); }
+  /* El menú ocupa la columna derecha: el niño se asoma chico en el borde, sin nave ni planeta. */
+  .portada-nino { right: -2%; bottom: -10%; width: 18%; opacity: 1; }
+  .portada-nave, .portada-planeta { display: none; }
 }
 
 /* ---------- Intro (inicio/02) ----------
@@ -219,6 +246,3 @@
 
 @media (prefers-reduced-motion: reduce) { .intro-vineta, .carga-puntos i { animation: none; } .carga-puntos i { opacity: 0.8; } }
 /* En inicio/01 el planeta del fondo es violeta (no Marte): se recolorea solo aquí. */
-.portada-planeta polygon:first-child { fill: var(--color-montana-lejana); }
-.portada-planeta polygon:nth-child(2) { fill: var(--color-ciruela-traje); }
-.portada-planeta polygon:nth-child(3) { stroke: var(--color-cian); }
