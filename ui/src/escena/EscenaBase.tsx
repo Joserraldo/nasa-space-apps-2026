@@ -63,9 +63,13 @@ export type EventoDestino = Readonly<{ tipo: "llego" | "cancelado" | "sin_ruta";
 /**
  * Monta la escena 3D en un <canvas> que ocupa su contenedor.
  *
- * PROVISIONAL hasta que Camilo integre navegación y joystick: el jugador está fijo en la mesa;
- * `onLugarCercano` se emite al montar con el lugar al alcance del foco de la cámara, y `onUsar`
- * se dispara con la tecla E (o Enter) cuando hay un lugar cerca y el foco no está en un campo.
+ * El niño camina con `WASD`/flechas (relativo a la cámara), el joystick de `EntradaTactil` o el
+ * destino del mapa; `E` (o Enter fuera de un botón) usa el lugar al alcance; `V` pide cambiar de
+ * cámara. `onLugarCercano` se emite al montar y cada vez que cambia el lugar al alcance.
+ * `destino`: la escena planea al cambiar la prop; al terminar (`onDestino`) la pantalla debería
+ * volverla a `null` para poder pedir de nuevo el mismo lugar.
+ * Atributos de prueba en el canvas: `data-jugador-x`, `data-jugador-z`, `data-camara` y
+ * `data-lugar-cercano`, con la cadencia de `onPosicion`.
  */
 export function EscenaBase(props: EscenaBaseProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -85,6 +89,11 @@ export function EscenaBase(props: EscenaBaseProps) {
         movimientoReducido: p.movimientoReducido,
         alPerderContexto: () => actuales.current.onWebGLPerdido(),
         alExceso: (nivel) => actuales.current.onCalidad(nivel),
+        alLugarCercano: (l) => actuales.current.onLugarCercano(l),
+        alUsar: (l) => actuales.current.onUsar(l),
+        alCambiarCamara: () => actuales.current.onCambiarCamara?.(),
+        alPosicion: (pos) => actuales.current.onPosicion?.(pos),
+        alDestino: (tipo, lugar) => actuales.current.onDestino?.({ tipo, lugar }),
       });
     } catch {
       // WebGL puede fallar al crear el contexto, antes de que exista el evento de pérdida.
@@ -94,27 +103,21 @@ export function EscenaBase(props: EscenaBaseProps) {
     }
     escenaRef.current = escena;
     escena.fijarCamara(p.camara);
+    escena.fijarBloqueado(p.bloqueado ?? false);
     escena.actualizar(p.vista, p.eventos);
+    escena.fijarDestino(p.destino ?? null);
 
     const medir = () => escena.redimensionar(canvas.clientWidth, canvas.clientHeight);
     medir();
     const observador = new ResizeObserver(medir);
     observador.observe(canvas);
 
-    const cercano = escena.lugarCercano();
-    actuales.current.onLugarCercano(cercano);
-
-    const alTecla = (e: KeyboardEvent) => {
-      if (e.repeat || (e.key !== "e" && e.key !== "E" && e.key !== "Enter")) return;
-      const destino = e.target as HTMLElement | null;
-      if (destino && (destino.isContentEditable || /^(INPUT|TEXTAREA|SELECT|BUTTON)$/.test(destino.tagName))) return;
-      const l = escena.lugarCercano();
-      if (l) actuales.current.onUsar(l);
-    };
-    window.addEventListener("keydown", alTecla);
+    actuales.current.onLugarCercano(escena.lugarCercano());
+    actuales.current.onPosicion?.(escena.posicionJugador());
+    actuales.current.onEntradaTactil?.(escena.entradaTactil);
 
     return () => {
-      window.removeEventListener("keydown", alTecla);
+      actuales.current.onEntradaTactil?.(null);
       observador.disconnect();
       escena.dispose();
       escenaRef.current = null;
@@ -137,6 +140,15 @@ export function EscenaBase(props: EscenaBaseProps) {
     escenaRef.current?.fijarMovimientoReducido(props.movimientoReducido);
   }, [props.movimientoReducido]);
 
+  useEffect(() => {
+    escenaRef.current?.fijarDestino(props.destino ?? null);
+  }, [props.destino]);
+
+  useEffect(() => {
+    escenaRef.current?.fijarBloqueado(props.bloqueado ?? false);
+  }, [props.bloqueado]);
+
   // Decorativo para lectores de pantalla: la lista accesible de lugares lee la misma tabla LUGARES.
-  return <canvas ref={canvasRef} aria-hidden="true" style={{ display: "block", width: "100%", height: "100%" }} />;
+  // `touch-action: none`: los gestos son del juego, la página no se desplaza ni hace zoom.
+  return <canvas ref={canvasRef} aria-hidden="true" style={{ display: "block", width: "100%", height: "100%", touchAction: "none" }} />;
 }
