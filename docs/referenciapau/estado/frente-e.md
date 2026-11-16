@@ -1,8 +1,7 @@
 # Estado: Frente E (Santiago)
 
-**Actualizado:** dom 15 nov, 21:08.
+**Actualizado:** dom 15 nov, 22:00.
 
-- **Hecho:** E0 parcial (#332 fusionado). E1 en PR borrador: `TarjetaContextual` (una a la vez, foco que entra y vuelve, Esc y Back no cobran) y E5 sin lista ni panel fijos: la tarjeta nace en un anclaje vacío (`[E] Build`) o al preguntar a la Ingeniera.
-- **Sigue:** E2 (una sola vía para `[E]` con `onInteractivo`), después E3 y E4.
-- **E0:** A0 de José en #337, verificado (typecheck, 907 pruebas, semilla dorada 16/16, build, 5/5 e2e) y combina con E1; falta que Santiago lo fusione.
-- **Bloqueado:** E1 espera F2 (estilo de la tarjeta, sin PR): va con el estilo actual.
+- **Hecho:** E0 (#332 y A0 #337 fusionados). E1 (#335) lista para revisión: usa la primitiva de F2 (#341), foco que no se pierde al elegir ni al cerrar, capturas en `ui/capturas/E1/`. E2 en PR borrador #346 (una sola vía para `[E]`).
+- **Sigue:** E3 (HUD progresivo), después E4. E2 sale de borrador cuando entre E1.
+- **Bloqueado:** E1 necesita revisión de otra persona y aprobación visual del frente F. Actores y puertas en el mundo esperan A6 y A8.
