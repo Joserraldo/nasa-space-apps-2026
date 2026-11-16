@@ -1,0 +1,42 @@
+/*
+ * Globo sobre quien habla (F4; personajes/07 panel 02). Solo tokens. Marfil con borde lila oscuro,
+ * esquinas recortadas y un piquito centrado hacia el actor. Aparece en --dur-realce (180 ms) creciendo
+ * desde la punta; con movimiento reducido aparece quieto. A lo sumo dos renglones en 390 px (B1).
+ */
+.globo {
+  --gl-ch: var(--chaflan-chico);
+  --gl-punta: 10px;
+  --gl-ancho-punta: 10px;
+  --gl-borde: color-mix(in srgb, var(--color-ciruela) 28%, var(--color-marfil));
+  inline-size: max-content; max-inline-size: min(280px, 72vw);
+  translate: -50% -100%; transform-origin: 50% 100%;
+  filter: drop-shadow(0 3px 0 color-mix(in srgb, var(--color-ciruela) 24%, transparent));
+  pointer-events: none;
+  animation: globo-aparece var(--dur-realce) var(--curva-entrada) both;
+}
+.globo[data-punta="arriba"] { translate: -50% 0; transform-origin: 50% 0; }
+.globo[data-tono="aviso"] { --gl-borde: var(--color-ambar); }
+
+.globo-cara {
+  --gl-forma: polygon(var(--gl-ch) 0, calc(100% - var(--gl-ch)) 0, 100% var(--gl-ch),
+    100% calc(100% - var(--gl-punta) - var(--gl-ch)), calc(100% - var(--gl-ch)) calc(100% - var(--gl-punta)),
+    calc(50% + var(--gl-ancho-punta)) calc(100% - var(--gl-punta)), 50% 100%, calc(50% - var(--gl-ancho-punta)) calc(100% - var(--gl-punta)),
+    var(--gl-ch) calc(100% - var(--gl-punta)), 0 calc(100% - var(--gl-punta) - var(--gl-ch)), 0 var(--gl-ch));
+  position: relative; isolation: isolate; margin: 0;
+  padding: var(--esp-2) var(--esp-4) calc(var(--esp-2) + var(--gl-punta));
+  clip-path: var(--gl-forma); background: var(--gl-borde);
+  color: var(--color-indigo-texto); font-size: 17px; font-weight: var(--tipo-peso-etiqueta); line-height: 1.3; text-align: center; text-wrap: balance;
+}
+.globo-cara::before { content: ""; position: absolute; inset: 2px; z-index: -1; clip-path: var(--gl-forma); background: var(--color-marfil); }
+.globo[data-tono="aviso"] .globo-cara::before { background: var(--color-aviso-fondo); }
+
+/* Punta arriba (cuelga debajo de un retrato, como la lámina): el piquito sale del borde de arriba. */
+.globo[data-punta="arriba"] .globo-cara {
+  --gl-forma: polygon(var(--gl-ch) var(--gl-punta), calc(50% - var(--gl-ancho-punta)) var(--gl-punta), 50% 0, calc(50% + var(--gl-ancho-punta)) var(--gl-punta),
+    calc(100% - var(--gl-ch)) var(--gl-punta), 100% calc(var(--gl-punta) + var(--gl-ch)), 100% calc(100% - var(--gl-ch)), calc(100% - var(--gl-ch)) 100%,
+    var(--gl-ch) 100%, 0 calc(100% - var(--gl-ch)), 0 calc(var(--gl-punta) + var(--gl-ch)));
+  padding: calc(var(--esp-2) + var(--gl-punta)) var(--esp-4) var(--esp-2);
+}
+
+@keyframes globo-aparece { from { opacity: 0; scale: .9; } }
+@media (prefers-reduced-motion: reduce) { .globo { animation: none; } }

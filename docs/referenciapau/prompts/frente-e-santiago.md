@@ -15,6 +15,26 @@ fusiona los PR de todos. Otras cinco personas trabajan en paralelo.
    (composición; el personaje es el niño B, no la capibara), `inicio/01` a `03`, `ui/01`, `ui/04`.
 5. `ui/src/escena/frontera.ts` (lo importás, no lo editás).
 
+## Láminas
+
+![Flujo de entrada, carga, órbita y explorar](../referencias/inicio/04-flujo-entrada-carga-orbita-explorar.png)
+
+Qué mirar: composición y orden; el personaje es el niño B, no la capibara.
+
+![Panel de carga](../referencias/inicio/03-panel-carga.png)
+
+Qué mirar: el panel de carga (E8).
+
+![Diálogo de decisión](../referencias/ui/01-dialogo-decision.png)
+
+Qué mirar: la tarjeta de decisión (E1).
+
+![Consulta: comparación y fuente](../referencias/ui/04-consulta-comparacion-fuente.png)
+
+Qué mirar: la consulta con comparación y fuente (E5).
+
+Todas las láminas: [docs/referenciapau/referencias/](../referencias/)
+
 ## Tus archivos (solo vos los editás)
 `ui/src/App.tsx`, los `.tsx` de `ui/src/pantallas/` (salvo `lugares.ts` y `PantallaSitio.tsx`), los `.tsx`
 de `ui/src/componentes/` (salvo `base/` y `Mapa.tsx`), `tests/e2e/**`, `.github/workflows/**`. Los `.css`
