@@ -30,7 +30,7 @@
 /* Respaldo 2D del fondo (cajas de DISEÑO §6 en % del lienzo): niño 49,18,31,57 · planeta 79,15,16,14 · asteroide 39,7,10,13. */
 .portada > .portada-fondo { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
 .portada-nino { position: absolute; left: 52%; top: 18%; width: 31%; animation: portada-flota 6s ease-in-out infinite; }
-.portada-nino svg { width: 100%; height: auto; transform: rotate(-4deg); }
+.portada-nino :is(svg, .retrato-img) { width: 100%; height: auto; transform: rotate(-4deg); }
 .portada-planeta { position: absolute; left: 80%; top: 13%; width: 15%; height: auto; }
 .portada-asteroide { position: absolute; left: 40%; top: 8%; width: 6%; aspect-ratio: 1; background: var(--color-montana-lejana);
   clip-path: polygon(30% 0, 75% 6%, 100% 40%, 88% 82%, 50% 100%, 12% 86%, 0 46%); animation: portada-deriva 8s ease-in-out infinite; }
@@ -140,9 +140,9 @@
 
 /* Personajes: el niño adelante a la izquierda; la tripulación detrás de la mesa en la viñeta 3. */
 .intro-protagonista { position: absolute; z-index: 2; left: 2%; bottom: 14%; }
-.intro-protagonista svg { width: clamp(120px, 24vw, 230px); height: auto; }
+.intro-protagonista :is(svg, .retrato-img) { width: clamp(120px, 24vw, 230px); height: auto; }
 .intro-mesa { position: absolute; z-index: 1; left: 26%; right: 4%; bottom: 20%; display: flex; justify-content: space-around; align-items: flex-end; }
-.intro-mesa svg { width: clamp(70px, 13vw, 128px); height: auto; }
+.intro-mesa :is(svg, .retrato-img) { width: clamp(70px, 13vw, 128px); height: auto; }
 .intro-mesa-tapa { position: absolute; left: 4%; right: 18%; bottom: -6%; height: 22%; background: var(--color-traje-marfil);
   clip-path: polygon(6% 0, 94% 0, 100% 50%, 94% 100%, 6% 100%, 0 50%); box-shadow: inset 0 -6px 0 var(--color-lila); }
 .intro-consola { position: absolute; z-index: 1; right: 6%; bottom: 20%; display: flex; gap: var(--esp-3); padding: var(--esp-3);
@@ -198,10 +198,10 @@
   clip-path: polygon(14px 0, calc(100% - 14px) 0, 100% 14px, 100% calc(100% - 14px), calc(100% - 14px) 100%, 14px 100%, 0 calc(100% - 14px), 0 14px); }
 .carga-panel { width: min(100%, 640px); }
 .carga-nino { position: absolute; left: 3%; bottom: var(--esp-4); }
-.carga-nino svg { width: clamp(180px, 26vw, 280px); height: auto; }
+.carga-nino :is(svg, .retrato-img) { width: clamp(180px, 26vw, 280px); height: auto; }
 /* Pantalla ancha: el niño a la izquierda y el panel corrido a la derecha (inicio/03). */
 @media (min-width: 900px) { .carga-panel { justify-self: end; margin-right: 5%; width: min(60%, 640px); } }
-@media (max-width: 899px) { .carga-nino { position: static; order: -1; } .carga-nino svg { width: 120px; height: 120px; } }
+@media (max-width: 899px) { .carga-nino { position: static; order: -1; } .carga-nino :is(svg, .retrato-img) { width: 120px; height: 120px; } }
 .carga-cara { --fc-ch: var(--chaflan-grande); display: grid; justify-items: center; gap: var(--esp-3); padding: var(--esp-5) var(--esp-5) var(--esp-4); text-align: center; }
 .carga-cara h2 { margin: 0; font-size: var(--tipo-tam-titulo-grande); }
 .carga-puntos { display: inline-flex; gap: var(--esp-3); }

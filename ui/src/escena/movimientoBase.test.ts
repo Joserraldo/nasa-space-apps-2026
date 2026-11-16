@@ -16,6 +16,7 @@ import {
   type TipoEventoDestino,
 } from "./movimientoBase";
 import { solidosBase } from "./escena3d";
+import { DISTANCIA_ESPERA } from "./guia";
 
 const VACIO: Solidos = { circulos: [], cajas: [] };
 const segundos = (m: ReturnType<typeof crearMovimiento>, s: number) => {
@@ -192,6 +193,28 @@ describe("rutas e Iris sobre los sólidos reales", () => {
     expect(maxIris).toBeGreaterThan(0.5);
     // Guía hasta el panel: termina cerca de su puesto, a un costado del punto de uso.
     expect(Math.hypot(m.iris.x - lugar("panel_solar").x, m.iris.z - lugar("panel_solar").z)).toBeLessThan(2.5);
+  });
+
+  it("A2: Iris rueda delante del niño hacia el objetivo sin moverlo, y lo espera si se queda atrás", () => {
+    const m = crearMovimiento(solidos);
+    const inicio = { x: m.jugador.x, z: m.jugador.z };
+    const taller = lugar("taller");
+    const distIris = () => Math.hypot(m.iris.x - taller.x, m.iris.z - taller.z);
+    const antes = distIris();
+    m.guiarIrisA("taller");
+    segundos(m, 6);
+    // El niño no se movió: Iris no camina por él (no tiene ruta ni destino propio).
+    expect(m.jugador.x).toBeCloseTo(inicio.x, 6);
+    expect(m.jugador.z).toBeCloseTo(inicio.z, 6);
+    expect(m.destino).toBeNull();
+    // Iris avanzó hacia el taller, pero sin alejarse más de la distancia de espera (más su margen).
+    expect(distIris()).toBeLessThan(antes);
+    expect(Math.hypot(m.iris.x - inicio.x, m.iris.z - inicio.z)).toBeLessThan(DISTANCIA_ESPERA + 1);
+    expect(["guia", "espera", "llego"]).toContain(m.iris.modo);
+    // Sin guía vuelve a acompañar.
+    m.guiarIrisA(null);
+    segundos(m, 3);
+    expect(m.iris.modo).toBe("acompana");
   });
 
   it("la entrada manual cancela la ruta y emite cancelado una sola vez", () => {
