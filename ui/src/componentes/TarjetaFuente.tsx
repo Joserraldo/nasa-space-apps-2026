@@ -25,12 +25,12 @@ function Enlace({ url }: { url: string }) {
   );
 }
 
-export function TarjetaFuente({ fuente }: { fuente: SourceCard }) {
+export function TarjetaFuente({ fuente, titulo = true }: { fuente: SourceCard; /** `false` si un encabezado de afuera ya dice "de dónde salen estos datos". */ titulo?: boolean }) {
   const { t } = useT();
   return (
     <div className="fc fuente">
       <div className="fc-cara fc-chico fc-lila fuente-cara">
-        <p className="fuente-titulo"><strong>{t("ui.fuente.titulo")}</strong></p>
+        {titulo && <p className="fuente-titulo"><strong>{t("ui.fuente.titulo")}</strong></p>}
         <p className="fuente-nombre">{t(fuente.nombreKey)}{fuente.dueno ? ` · ${fuente.dueno}` : ""} <Etiqueta estado={fuente.estadoDato} /></p>
         <p className="fuente-meta">
           {fuente.idFuente && <span>{t("ui.fuente.id", { id: fuente.idFuente })}</span>}
@@ -43,12 +43,12 @@ export function TarjetaFuente({ fuente }: { fuente: SourceCard }) {
 }
 
 /** Fuente de un terreno (Mars Trek, Moon Trek): varias URLs, sin id de evento y a veces con datos derivados. */
-export function FuenteTerreno({ fuente }: { fuente: { nombreKey: string; dueno?: string; consultadoEl: string; urls: string[]; estadoDato?: "curado" | "mock"; derivadoKey?: string } }) {
+export function FuenteTerreno({ fuente, titulo = true }: { titulo?: boolean; fuente: { nombreKey: string; dueno?: string; consultadoEl: string; urls: string[]; estadoDato?: "curado" | "mock"; derivadoKey?: string } }) {
   const { t } = useT();
   return (
     <div className="fc fuente">
       <div className="fc-cara fc-chico fc-lila fuente-cara">
-        <p className="fuente-titulo"><strong>{t("ui.fuente.titulo")}</strong></p>
+        {titulo && <p className="fuente-titulo"><strong>{t("ui.fuente.titulo")}</strong></p>}
         <p className="fuente-nombre">{t(fuente.nombreKey)}{fuente.dueno ? ` · ${fuente.dueno}` : ""} <Etiqueta estado={fuente.estadoDato} /></p>
         {fuente.derivadoKey && <p className="fuente-meta">{t(fuente.derivadoKey)}</p>}
         <p className="fuente-meta"><span>{t("ui.fuente.consultado", { fecha: fuente.consultadoEl.slice(0, 10) })}</span></p>
