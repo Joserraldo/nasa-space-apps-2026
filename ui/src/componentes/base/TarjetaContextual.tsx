@@ -12,8 +12,8 @@ import "./tarjetas.css";
  * - `hoja`: hoja inferior a todo el ancho, como en el celular vertical.
  * - `auto` (por defecto): `hoja` en pantallas angostas y verticales, `lado` en el resto (lo decide el CSS).
  *
- * Entra en 180 ms (`--dur-realce`) y sale en 140 ms (`--dur-cerrar`). Con movimiento reducido aparece y
- * se va sin desplazarse. Al abrir lleva el foco a la tarjeta y al cerrarse lo devuelve adonde estaba.
+ * Entra en 180 ms (`--dur-realce`) y sale en 140 ms (`--dur-cerrar`), con transiciones que se pueden
+ * interrumpir (reabrir mientras sale no salta). Con movimiento reducido aparece y se va sin desplazarse. Al abrir lleva el foco a la tarjeta y al cerrarse lo devuelve adonde estaba.
  * No cobra ni decide nada: los botones que recibe en `acciones` son de la pantalla.
  */
 export type OrigenTarjeta = "auto" | "lado" | "hoja";
@@ -32,7 +32,7 @@ export function faseTarjeta(fase: FaseTarjeta, evento: EventoTarjeta, reducido: 
   return fase === "saliendo" ? "cerrada" : fase;
 }
 
-/** Respaldo por si el navegador no avisa el final de la salida (pestaña oculta, animación cortada). */
+/** Respaldo por si el navegador no avisa el final de la salida (pestaña oculta, transición cortada). */
 const SALIDA_MAXIMA_MS = 400;
 
 function movimientoReducido(): boolean {
@@ -94,7 +94,7 @@ export function TarjetaContextual({ abierta, titulo, figura, bajada, extra, acci
   return (
     <section ref={caja} role="dialog" aria-modal="false" aria-labelledby={id} tabIndex={-1}
       className={`fc tc${className ? ` ${className}` : ""}`} data-origen={origen} data-fase={fase}
-      onAnimationEnd={(e) => { if (e.target === e.currentTarget) mandar("fin"); }}>
+      onTransitionEnd={(e) => { if (e.target === e.currentTarget && e.propertyName === "opacity") mandar("fin"); }}>
       <div className="fc-cara tc-cara">
         <header className="tc-cab">
           {figura && <div className="tc-figura" aria-hidden="true">{figura}</div>}

@@ -34,7 +34,7 @@
 @media (max-width: 560px) {
   .mu-tres .retrato-ficha { padding-inline: var(--esp-1); }
   .mu-tres .retrato-marco { width: 84px; height: 84px; }
-  .mu-tres .retrato-marco svg { width: 96px; height: 96px; }
+  .mu-tres .retrato-marco :is(svg, .retrato-img) { width: 96px; height: 96px; }
   .mu-accesos { grid-template-columns: 1fr; }
 }
 .mu-centro .fb-caja, .mu-centro .fb { max-inline-size: 100%; }
