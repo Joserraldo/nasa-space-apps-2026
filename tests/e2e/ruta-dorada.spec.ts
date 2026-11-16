@@ -74,13 +74,23 @@ test("ruta dorada: de la órbita al resumen, en inglés", async ({ page }) => {
 
   // Paso 4: colocar 2 módulos, cada uno con costo ahora y beneficio después.
   await expect(page.getByRole("heading", { name: "Place 2 modules" })).toBeVisible();
-  await expect(page.getByText("Costs now").first()).toBeVisible();
   await expect(page.getByRole("meter", { name: "Energy" })).toBeVisible();
   const listo = page.getByRole("button", { name: "Base ready. Start the clock!" });
   await expect(listo).toBeDisabled();
+  // E1: sin lista ni panel fijos. La tarjeta nace al preguntar a la Ingeniera (o en un anclaje con [E]),
+  // una a la vez, y se cierra al decidir; Back no cobra.
+  await expect(page.getByText("Costs now")).toHaveCount(0);
+  const preguntar = page.getByRole("button", { name: "Ask the Engineer" });
+  const tarjeta = page.locator('[role="dialog"].tc');
   const colocar = page.getByRole("button", { name: "Place", exact: true });
-  await colocar.first().click();
-  await colocar.first().click(); // el primero ya quedó con "✓"; el siguiente "Place" es otro módulo
+  for (let i = 0; i < 2; i++) {
+    await preguntar.click();
+    await expect(tarjeta).toHaveCount(1);
+    await tarjeta.locator("ul button:not([disabled])").first().click();
+    await expect(page.getByText("Costs now").first()).toBeVisible();
+    await colocar.click();
+    await expect(tarjeta).toHaveCount(0); // se cierra al decidir
+  }
   await expect(listo).toBeEnabled();
   // Mundo compartido (E5 a E7): se marca el canvas de E5 y tiene que ser el mismo nodo en la base y la tormenta.
   await expect(page.locator("canvas")).toHaveCount(1);

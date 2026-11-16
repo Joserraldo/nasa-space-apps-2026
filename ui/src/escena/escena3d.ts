@@ -14,7 +14,8 @@ import type { EventoFeedback } from "../juego/eventos";
 import { CLARO, MALLA_JEZERO, ROCAS_PRIMER_PLANO, armarEscena, huellasRocas, radioRoca, rejillaJezero, type EscenaArmada } from "./armado";
 import { AJUSTE_CALIDAD, MAS_BAJA } from "./calidad";
 import type { Cielo } from "./cielo";
-import type { PedidoEscena } from "./frontera";
+import type { ActorId, PedidoEscena } from "./frontera";
+import { irisGuiaAlObjetivo } from "../juego/pedidoEscena";
 import { crearMateriales, type Materiales } from "./materiales";
 import { liberarCache, liberarEscena, liberarMateriales } from "./liberar";
 import { crearContorno } from "./contorno";
@@ -59,6 +60,8 @@ export interface ContextoSistema {
   readonly vista: VistaEscena | null;
   /** Lo último que pidió la pantalla (`objetivo`, `iris`, `globo`, `hablando`, `sala`). */
   readonly pedido: PedidoEscena;
+  /** Grupos de los actores en escena (el niño es `nino`), para anclar globos o mirar hacia ellos. Solo lectura. */
+  readonly actores: Readonly<Partial<Record<ActorId, THREE.Object3D>>>;
   /** Posición (metros de juego) y rumbo (rad) del niño en este fotograma. */
   readonly jugador: Readonly<{ x: number; z: number; rumbo: number }>;
   /** Marca de tiempo del fotograma (ms, `performance.now`). */
@@ -469,6 +472,7 @@ export function crearEscena3D(canvas: HTMLCanvasElement, opciones: OpcionesEscen
     reducido,
     vista: null,
     pedido: {},
+    actores: { nino: tripulacion.jugador.grupo, ingeniera: tripulacion.ingeniera.grupo, iris: tripulacion.iris.grupo },
     jugador: jugadorCtx,
     ahora: 0,
   };
@@ -914,6 +918,9 @@ export function crearEscena3D(canvas: HTMLCanvasElement, opciones: OpcionesEscen
     },
     fijarPedido(pedido) {
       ctx.pedido = pedido;
+      // A2: Iris rueda delante del niño hacia el objetivo cuando señala; en `pistas` solo acompaña.
+      mov.guiarIrisA(irisGuiaAlObjetivo(pedido) ? pedido.objetivo!.lugar : null);
+      tripulacion.actores.errorIris = pedido.iris?.cara === "error";
     },
     agregarSistema(s) {
       if (liberada) return () => undefined;

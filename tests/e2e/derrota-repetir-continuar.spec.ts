@@ -11,6 +11,14 @@ test.beforeEach(async ({ page }) => arrancarEnCalidadBaja(page));
 
 const TURNO_MS = 4000;
 
+/** E1: la tarjeta del módulo nace al preguntar a la Ingeniera; se elige el primer módulo libre y se coloca. */
+async function colocarModulo(page: Page) {
+  await page.getByRole("button", { name: "Ask the Engineer" }).click();
+  await page.locator('[role="dialog"].tc ul button:not([disabled])').first().click();
+  await page.getByRole("button", { name: "Place", exact: true }).click();
+  await expect(page.locator('[role="dialog"].tc')).toHaveCount(0);
+}
+
 /** De la portada a la base viva: primer sitio y los dos primeros módulos. */
 async function llegarALaBase(page: Page) {
   await page.getByRole("button", { name: "Start mission" }).click();
@@ -18,9 +26,8 @@ async function llegarALaBase(page: Page) {
   await page.getByRole("button", { name: "Skip", exact: true }).click();
   await page.getByRole("button", { name: "Continue" }).click();
   await page.getByRole("button", { name: "Land here" }).first().click();
-  const colocar = page.getByRole("button", { name: "Place", exact: true });
-  await colocar.first().click();
-  await colocar.first().click();
+  await colocarModulo(page);
+  await colocarModulo(page);
   await page.getByRole("button", { name: "Base ready. Start the clock!" }).click();
   await primeraConversacion(page);
 }
@@ -98,8 +105,8 @@ test("sin enviar la telemetría la base se pierde, y \"Play again\" empieza una 
   await page.getByRole("button", { name: "Land here" }).first().click();
   await expect(page.getByText("Placed: 0 of 2")).toBeVisible();
   await expect(page.getByRole("button", { name: "Base ready. Start the clock!" })).toBeDisabled();
-  await page.getByRole("button", { name: "Place", exact: true }).first().click();
-  await page.getByRole("button", { name: "Place", exact: true }).first().click();
+  await colocarModulo(page);
+  await colocarModulo(page);
   await page.getByRole("button", { name: "Base ready. Start the clock!" }).click();
   // Partida nueva, HUD nuevo: Crew vuelve a esperar la primera conversación.
   await primeraConversacion(page);
@@ -160,9 +167,10 @@ test("perder WebGL deja la misma partida en el respaldo 2D, y el mapa lleva al n
 
   // Sin escena que camine, el mapa deja al niño en el lugar elegido y [E] ofrece lo que se hace allí.
   await page.getByRole("button", { name: "Map", exact: true }).click();
-  await page.getByRole("list", { name: "Places" }).getByRole("button", { name: /^Workshop/ }).click();
-  await expect(page.getByRole("button", { name: "Repair Iris in the workshop" })).toBeVisible();
-  await page.getByRole("button", { name: "Repair Iris in the workshop" }).click();
+  // La consola, no el taller: reparar a Iris solo se ofrece desde el paso 6, cuando se revela la avería (#339).
+  await page.getByRole("list", { name: "Places" }).getByRole("button", { name: /^Mission control/ }).click();
+  await expect(page.getByRole("button", { name: "Wait a turn at the console" })).toBeVisible();
+  await page.getByRole("button", { name: "Wait a turn at the console" }).click();
   await expect(page.getByRole("dialog")).toBeVisible();
   await page.getByRole("dialog").getByRole("button", { name: "Back" }).click();
   expect(await energia(page)).toBe(energiaAntes);
