@@ -353,7 +353,6 @@
   "ui.tormenta.pregunta.proteger": "¿Qué necesita protección?",
   "ui.tormenta.pregunta.sensor": "¿Qué muestra el sensor?",
   "ui.tormenta.verFuente": "Ver fuente",
-  "ui.tormenta.acceso": "{recurso} {valor}",
   "ui.comun.acceso_recurso": "{recurso} {valor}",
   "ui.comun.fuente.compacta": "{dueno} / {tipo}",
   "ui.comun.fuente.archivado": "Evento archivado",
@@ -392,5 +391,7 @@
   "ui.base.consulta": "Habla con tu tripulación",
   "ui.hud.objetivo.ir": "Ve a {lugarKey}",
   "ui.hud.objetivo.experto": "Pregunta {expertoKey} en {lugarKey}",
-  "ui.hud.objetivo.averia": "Iris necesita una reparación en {lugarKey}"
+  "ui.hud.objetivo.averia": "Iris necesita una reparación en {lugarKey}",
+  "ui.final.investigacion": "Investigación espacial real",
+  "ui.final.investigacion.texto": "Los científicos estudian plantas, huesos, músculos y radiación en el espacio. Abre un estudio para ver qué descubrieron."
 }

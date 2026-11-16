@@ -126,3 +126,4 @@
   .tormenta-plan-accion { grid-column: 2; grid-row: 1 / span 2; }
   .tormenta-plan-mas { grid-column: 1; }
 }
+.tormenta-medicion { display: flex; align-items: flex-start; gap: var(--esp-2); margin: 0; font-weight: var(--tipo-peso-etiqueta); }

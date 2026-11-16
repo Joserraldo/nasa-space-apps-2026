@@ -1,7 +1,9 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { conversarConRed, CURIOSIDADES_MARTE, curiosidadMarte, interlocutorDe, MEMORIA_INICIAL, reaccionTripulacion, type Dialogo, type EntradaConversacion, type MemoriaConversacion, type MomentoCuriosidad, type OpcionConversacion } from "@solar-shield/agents";
 import type { Action, BaseAction, Equipment, GameState } from "@solar-shield/contracts";
-import { referenciaDosis } from "@solar-shield/data";
+import { FUENTE_DISTANCIA, referenciaDosis } from "@solar-shield/data";
+import type { SourceCard } from "@solar-shield/contracts";
+import { TarjetaFuente } from "../componentes/TarjetaFuente.js";
 import { telemetriaPendiente, tormentaActiva, type Novedades } from "@solar-shield/engine";
 import { useT } from "../i18n.js";
 import { describirAccion } from "../componentes/Dialogos.js";
@@ -55,6 +57,19 @@ const signo = (n: number) => (n > 0 ? `+${n}` : `${n}`);
 
 /** Qué ocupa el panel cuando no hay una decisión: la tripulación (con las acciones) o el mapa. */
 type Panel = "tripulacion" | "mapa" | null;
+
+/**
+ * #137: de dónde sale "3 a 22 minutos" (data/src/comunicaciones.ts): distancias mínima y máxima Tierra–Marte
+ * de la ficha de Marte de NASA NSSDC y la velocidad de la luz. Misma cita que agents usa para el año marciano.
+ */
+const FUENTE_RETRASO: SourceCard = {
+  nombreKey: "fuente.nssdc",
+  url: FUENTE_DISTANCIA,
+  idFuente: "marsfact-distancia",
+  consultadoEl: "2026-11-14",
+  dueno: "NASA NSSDC",
+  estadoDato: "curado",
+};
 
 export function PantallaBase({ estado, colocados = [], ultimas, hud, progreso = PROGRESO_INICIAL, onProgreso, memoria = MEMORIA_INICIAL, onMemoria, vistos = [], onVisto, onAccion, onReanudar }: {
   estado: GameState;
@@ -427,7 +442,14 @@ export function PantallaBase({ estado, colocados = [], ultimas, hud, progreso = 
                         <li key={o.labelKey} data-accion={o.labelKey}><FacetButton icon={o.icono} labelKey={o.labelKey} onClick={() => abrirPlan(o.accion)} /></li>
                       ))}
                     </ul>
-                    {tele && <Mensaje tipo="pendiente" tituloKey="ui.paso.7.llegando" vars={{ ticks: tele.ticksRestantes }} />}
+                    {tele && <Mensaje tipo="pendiente" tituloKey="ui.paso.7.llegando" detalleKey="datos.comunicaciones.retraso" vars={{ ticks: tele.ticksRestantes }} />}
+                    {tele && (
+                      <details className="base-fuente-retraso">
+                        <summary>{t("ui.fuente.titulo")}</summary>
+                        <p>{t("datos.comunicaciones.derivado")}</p>
+                        <TarjetaFuente fuente={FUENTE_RETRASO} titulo={false} />
+                      </details>
+                    )}
                   </div></section>
 
                   <section className="fc"><div className="fc-cara base-bloque">

@@ -75,6 +75,10 @@ export function PantallaFinal({ estado, onOtra, onOtraSemilla }: {
           <TarjetasCiencia estado={estado} />
         </Panel>
 
+        <Panel tituloKey="ui.final.investigacion" heading className="final-investigacion">
+          <Investigacion />
+        </Panel>
+
         <Panel tituloKey="ui.final.pregunta.titulo" className="final-pregunta">
           <PreguntaFinal />
         </Panel>
@@ -263,6 +267,33 @@ function PreguntaFinal() {
           {p.fuenteKey === "fuente.nasa.bitflip" && <TarjetaFuente fuente={fuenteAprobada("bitFlip")} />}
         </div>
       )}
+    </>
+  );
+}
+
+/**
+ * #137: estudios reales de NASA OSDR y de la Agencia Espacial Canadiense (`tarjetasCienciaFinal` de data/).
+ * Plegados para no cargar el final: el niño abre el que le interesa. Cada uno con su fuente; los de la CSA,
+ * con su crédito obligatorio ("© Canadian Space Agency") y sin logo.
+ */
+function Investigacion() {
+  const { t } = useT();
+  const tarjetas = tarjetasCienciaFinal();
+  return (
+    <>
+      <p className="final-sub">{t("ui.final.investigacion.texto")}</p>
+      <ul className="final-tarjetas">
+        {tarjetas.map((c) => (
+          <li key={c.id} className="fc">
+            <details className="fc-cara fc-chico final-tarjeta final-plegable final-estudio">
+              <summary>{t(c.tituloKey)}</summary>
+              <p>{t(c.textoKey)}</p>
+              {c.creditoKey && <p className="final-credito">{t(c.creditoKey)}</p>}
+              <TarjetaFuente fuente={c.fuente} />
+            </details>
+          </li>
+        ))}
+      </ul>
     </>
   );
 }
