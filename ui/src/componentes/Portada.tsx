@@ -1,14 +1,13 @@
 import type { Idioma } from "../i18n.js";
 import { useT } from "../i18n.js";
 import { FacetButton } from "./base/FacetButton.js";
-import { Icono } from "./base/Iconos.js";
 import { LogoSolarShield } from "./base/LogoSolarShield.js";
-import { Retrato } from "./base/Retrato.js";
+import { FondoPortada } from "./base/FondoPortada.js";
 import "./base/inicio.css";
 
 /**
  * Portada DOM (inicio/01, DISEÑO §6): logo, subtítulo, menú y preferencias. El fondo con el niño,
- * la nave y los planetas es la capa 3D de María Paula (`escena/activos/portada.ts`) y va DETRÁS:
+ * la nave y los planetas son las ilustraciones 2D de María Paula (`base/FondoPortada.tsx`) y van DETRÁS:
  * esta capa deja libre la mitad derecha y no captura clics fuera de sus botones.
  * Sin guardado válido, "Continue" queda no disponible con el motivo escrito.
  */
@@ -19,8 +18,7 @@ export interface PortadaProps {
   onSonido(): void;
   puedeContinuar: boolean;
   /**
-   * Respaldo 2D de la escena de fondo (niño flotando y planeta, capas 1 y 4 de DISEÑO §6) mientras no
-   * exista la capa 3D de María Paula. Cuando la capa 3D se monte detrás, se pasa false.
+   * Ilustraciones originales de la portada. Se puede ocultar el fondo en vistas de revisión.
    */
   fondo2D?: boolean;
   onEmpezar(): void;
@@ -35,13 +33,7 @@ export function Portada({ idioma, onIdioma, sonido, onSonido, puedeContinuar, on
   return (
     <section className="portada" aria-labelledby="portada-titulo">
       <h1 id="portada-titulo" className="oculto-visual">{t("ui.portada.logo")}</h1>
-      {fondo2D && (
-        <div className="portada-fondo" aria-hidden="true">
-          <Icono nombre="planeta" tam={140} className="portada-planeta" />
-          <span className="portada-asteroide" />
-          <span className="portada-nino"><Retrato persona="nino" expresion="feliz" tam={360} parpadear /></span>
-        </div>
-      )}
+      {fondo2D && <FondoPortada />}
 
       <div className="portada-prefs" role="group" aria-label={t("ui.portada.preferencias")}>
         <div className="portada-idiomas" role="group" aria-label={t("ui.portada.idioma")}>

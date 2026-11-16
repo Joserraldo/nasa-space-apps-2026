@@ -153,9 +153,10 @@ export function PantallaBase({ estado, colocados = [], ultimas, hud, progreso = 
     const d = conversar(entrada, estado, { tormentaActiva: tormentaActiva(estado), dosisMarte: referenciaDosis("marte-superficie"), vecesFallaIris: fallasIris });
     if ("falla" in d) setFallasIris((n) => n + 1);
     const actor = actorDeExperto(d.experto);
-    if (desdeMundo && actor && !mundo.sin3d && formaDeDialogo(d) === "globo") {
+    const texto = d.lineas.map((l) => t(l.clave, l.vars)).join(" ");
+    if (desdeMundo && actor && !mundo.sin3d && formaDeDialogo(d, texto) === "globo") {
       setDialogo(null);
-      setCorto((c) => ({ actor, experto: d.experto, texto: d.lineas.map((l) => t(l.clave, l.vars)).join(" "), n: (c?.n ?? 0) + 1 }));
+      setCorto((c) => ({ actor, experto: d.experto, texto, n: (c?.n ?? 0) + 1 }));
     } else {
       setCorto(null);
       setDialogo(d);

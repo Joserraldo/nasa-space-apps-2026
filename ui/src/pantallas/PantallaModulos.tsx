@@ -3,9 +3,9 @@ import type { Equipment, GameState, Resource } from "@solar-shield/contracts";
 import { costoDe, puedeAplicar } from "@solar-shield/engine";
 import { MISION_JEZERO } from "@solar-shield/missions";
 import { useT } from "../i18n.js";
-import { ExpertPortrait } from "../componentes/base/ExpertPortrait.js";
 import { FacetButton } from "../componentes/base/FacetButton.js";
 import { Icono } from "../componentes/base/Iconos.js";
+import { Retrato } from "../componentes/base/Retrato.js";
 import { CostRow, ICONO_RECURSO, Mensaje, RECURSOS } from "../componentes/base/Piezas.js";
 import "../componentes/base/facetas.css";
 import { TarjetaDelFlujo, useTarjetaUnica } from "../componentes/TarjetaDelFlujo.js";
@@ -128,7 +128,7 @@ export function PantallaModulos({ estado, colocados, onColocar, onListo }: {
 
       <TarjetaDelFlujo abierta={tarjeta.abierta !== null} onCerrar={tarjeta.cerrar} className="modulos-panel"
         contenido={mostrada?.tipo === "modulo" ? mostrada.modulo : mostrada?.tipo} onCerrada={devolverFoco}
-        figura={mostrada && <ExpertPortrait persona={mostrada.tipo === "modulo" ? expertaDe(mostrada.modulo) : "ingeniera"} compacto />}
+        figura={mostrada && <Retrato persona={mostrada.tipo === "modulo" ? expertaDe(mostrada.modulo) : "ingeniera"} expresion="feliz" tam={84} parpadear />}
         titulo={mostrada?.tipo === "modulo" ? t(`ui.paso.4.modulo.${mostrada.modulo}`) : t("ui.paso.4.titulo", { n: total })}
         bajada={mostrada && t(`ui.comun.retrato.${mostrada.tipo === "modulo" ? expertaDe(mostrada.modulo) : "ingeniera"}.nombre`)}
         acciones={mostrada?.tipo === "modulo"
