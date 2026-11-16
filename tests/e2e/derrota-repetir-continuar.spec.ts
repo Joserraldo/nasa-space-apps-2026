@@ -93,6 +93,9 @@ test("\"Continue\" recupera la partida guardada después de recargar la página"
   await page.goto("/");
   await expect(page.getByRole("button", { name: "Continue" })).toHaveAttribute("aria-disabled", "true");
   await llegarALaBase(page);
+  // En pausa antes de leer: la pausa también se guarda, y así ningún turno cambia la energía entre la
+  // lectura, la recarga y "Continue" (en CI, sin GPU, ese tramo puede tardar más que un turno).
+  await page.getByRole("button", { name: "Pause", exact: true }).click();
   const energiaAntes = await energia(page);
 
   await page.reload();
