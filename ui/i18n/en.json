@@ -399,5 +399,10 @@
   "ui.misiones.lugar.espacio": "Deep space",
   "ui.misiones.ganada": "Completed!",
   "ui.misiones.jugar": "Play this mission",
-  "ui.misiones.volver": "Back"
+  "ui.misiones.volver": "Back",
+  "ui.guia.titulo": "Mission guide",
+  "ui.guia.paso": "Step {n} of {total}",
+  "ui.guia.ver": "See all steps",
+  "ui.guia.ocultar": "Hide steps",
+  "ui.guia.hecho": "done"
 }
