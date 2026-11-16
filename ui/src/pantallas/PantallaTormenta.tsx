@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { conversar, escenaTormenta, type Dialogo, type Entrada } from "@solar-shield/agents";
+import { conversar, escenaTormenta, escenaTormentaLunaSur, escenaTormentaLunaVisible, escenaTormentaOutpost, escenaTormentaPoloNorte, type Dialogo, type Entrada } from "@solar-shield/agents";
 import type { Equipment, GameState } from "@solar-shield/contracts";
 import { referenciaDosis } from "@solar-shield/data";
 import { costoDe, puedeAplicar, tormentaActiva } from "@solar-shield/engine";
@@ -23,6 +23,15 @@ import "./tormenta.css";
 const EXPERTOS = ["ingeniera", "doctora", "meteorologa"] as const;
 type Experto = (typeof EXPERTOS)[number];
 const opciones = () => misionActiva().dilemaPaso6.opciones;
+
+/** la escena de la tormenta con las voces de la misión activa (agents/voces-*.ts). */
+const ESCENA_DE_MISION: Record<string, typeof escenaTormenta> = {
+  "luna-polo-sur": escenaTormentaLunaSur,
+  "luna-lado-visible": escenaTormentaLunaVisible,
+  "outpost-sorpresa": escenaTormentaOutpost,
+  "marte-polo-norte": (v, dilema) => escenaTormentaPoloNorte(v, dilema),
+};
+const escenaDeMision: typeof escenaTormenta = (v, dilema, medicion) => (ESCENA_DE_MISION[misionActiva().id] ?? escenaTormenta)(v, dilema, medicion);
 /** La opción que defiende cada experta; la meteoróloga no defiende ninguna, así que le toca la que nadie recomienda. */
 const opcionDe = (p: Experto) => (opciones().find((o) => o.defiende === p) ?? opciones().find((o) => o.defiende === null) ?? opciones()[0]!).id;
 const NADA = () => undefined;
@@ -55,7 +64,7 @@ export function PantallaTormenta({ estado, colocados, registro, onSeguir, onDeci
   const [plan, setPlan] = useState<{ experta: Experto; opcionId: string } | null>(null);
   const [conservada, setConservada] = useState<string | undefined>(undefined);
   const [verificando, setVerificando] = useState(false);
-  const escena = useMemo(() => escenaTormenta(estado, opciones()), [estado.tormenta]);
+  const escena = useMemo(() => escenaDeMision(estado, opciones()), [estado.tormenta]);
   // La decisión está abierta toda la fase: el mundo se ve pero no se mueve ni se "usa".
   const { fijarBloqueado } = useMundo();
   useEffect(() => { fijarBloqueado(true); return () => fijarBloqueado(false); }, [fijarBloqueado]);
