@@ -33,6 +33,7 @@ test("ruta dorada: de la órbita al resumen, en inglés", async ({ page }) => {
 
   await page.clock.install();
   await page.goto("/");
+  await page.getByRole("button",{name:"Play as guest",exact:true}).click();
 
   // E0 Portada (inicio/01): logo oficial, inglés base y aviso de que no es oficial de NASA.
   await expect(page.getByRole("img", { name: "Solar Shield" })).toBeVisible();

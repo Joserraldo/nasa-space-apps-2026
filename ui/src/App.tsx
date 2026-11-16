@@ -17,8 +17,12 @@ import { Transicion } from "./componentes/Transicion.js";
 import { MundoBase } from "./pantallas/MundoBase.js";
 import type { TemaPregunta } from "@solar-shield/agents";
 import { MISION_JEZERO } from "@solar-shield/missions";
+import { Acceso, type SesionJugador } from "./componentes/Acceso.js";
+import { cerrarSesionCuenta } from "./juego/cuenta.js";
+import { useProgresoCuenta } from "./juego/useProgresoCuenta.js";
+import { FacetButton } from "./componentes/base/FacetButton.js";
 import { cargarAjustes, guardarAjustes, type CalidadGrafica } from "./juego/ajustes.js";
-import { almacenDelNavegador, cargarPartida, guardarPartida } from "./juego/guardado.js";
+import { almacenDelNavegador } from "./juego/guardado.js";
 import { inicial, reducir } from "./juego/reductor.js";
 import { tocar } from "./juego/sonido.js";
 
@@ -26,6 +30,7 @@ import { tocar } from "./juego/sonido.js";
 const TEMAS_IRIS: readonly Equipment[] = ["panel_solar", "reciclador_agua", "invernadero", "escudo"];
 
 export function App() {
+  const [sesion, setSesion] = useState<SesionJugador|null>(null);
   // Idioma y sonido se recuerdan en el navegador (juego/ajustes.ts); inglés es la base.
   const [ajustes, setAjustes] = useState(() => cargarAjustes(almacenDelNavegador(), {
     idiomaNavegador: navigator.language,
@@ -34,15 +39,16 @@ export function App() {
   useEffect(() => { guardarAjustes(almacenDelNavegador(), ajustes); }, [ajustes]);
   return (
     <IdiomaContext.Provider value={ajustes.idioma}>
-      <Pantalla idioma={ajustes.idioma} setIdioma={(idioma) => setAjustes((a) => ({ ...a, idioma }))}
+      {sesion === null ? <Acceso idioma={ajustes.idioma} onIdioma={idioma=>setAjustes(a=>({...a,idioma}))} onEntrar={setSesion} /> : <Pantalla key={sesion.usuario??"invitado"} sesion={sesion} onSalir={()=>setSesion(null)} idioma={ajustes.idioma} setIdioma={(idioma) => setAjustes((a) => ({ ...a, idioma }))}
         sonido={ajustes.sonido} setSonido={(sonido) => setAjustes((a) => ({ ...a, sonido }))}
         grafica={{ calidad: ajustes.calidad, movimientoReducido: ajustes.movimientoReducido,
-          onCalidad: (calidad) => setAjustes((a) => (a.calidad === calidad ? a : { ...a, calidad })) }} />
+          onCalidad: (calidad) => setAjustes((a) => (a.calidad === calidad ? a : { ...a, calidad })) }} />}
     </IdiomaContext.Provider>
   );
 }
 
-function Pantalla({ idioma, setIdioma, sonido, setSonido, grafica }: {
+function Pantalla({ sesion, onSalir, idioma, setIdioma, sonido, setSonido, grafica }: {
+  sesion: SesionJugador; onSalir(): void;
   idioma: Idioma; setIdioma: (i: Idioma) => void;
   sonido: boolean; setSonido: (s: boolean) => void;
   /** Ajustes guardados de la escena: la calidad que propone la escena se recuerda. */
@@ -50,12 +56,29 @@ function Pantalla({ idioma, setIdioma, sonido, setSonido, grafica }: {
 }) {
   const { t } = useT();
   const [j, enviar] = useReducer(reducir, undefined, inicial);
-  // Partida guardada en este navegador: habilita "Continue" en la portada.
-  const [guardada, setGuardada] = useState(() => cargarPartida(almacenDelNavegador()));
-  useEffect(() => {
-    guardarPartida(almacenDelNavegador(), j);
-    if (j.fase === "inicio") setGuardada(cargarPartida(almacenDelNavegador()));
-  }, [j]);
+  // La cuenta carga desde D1. El invitado mantiene su partida solo durante esta visita.
+  const [guardada, setGuardada] = useState(sesion.progreso);
+  const {estado:estadoGuardado,guardar} = useProgresoCuenta(sesion.usuario,j);
+  const [errorSalir,setErrorSalir] = useState(false);
+  const [saliendo,setSaliendo] = useState(false);
+  useEffect(()=>{if(j.fase==='final')setGuardada(null);},[j.fase]);
+  useEffect(()=>{
+    if(sesion.usuario || j.fase==='inicio' || j.fase==='final')return;
+    const avisar=(e:BeforeUnloadEvent)=>{e.preventDefault();e.returnValue='';};
+    window.addEventListener('beforeunload',avisar);
+    return ()=>window.removeEventListener('beforeunload',avisar);
+  },[sesion.usuario,j.fase]);
+  const salir=async()=>{
+    if(saliendo)return;
+    if(!sesion.usuario && j.fase!=='inicio' && j.fase!=='final' && !window.confirm(t('ui.cuenta.invitado.salir')))return;
+    setErrorSalir(false);
+    setSaliendo(true);
+    if(sesion.usuario){
+      if(!await guardar()){setSaliendo(false);return;}
+      if(!await cerrarSesionCuenta()){setErrorSalir(true);setSaliendo(false);return;}
+    }
+    onSalir();
+  };
   const [velocidad, setVelocidad] = useState(1);
   const enBase = j.fase === "base";
   // E5 a E7 comparten un solo mundo 3D (MundoBase): cambiar de fase no vuelve a montar la escena.
@@ -100,6 +123,12 @@ function Pantalla({ idioma, setIdioma, sonido, setSonido, grafica }: {
 
   return (
     <div className={enMundo ? "app app-mundo" : "app"}>
+      <aside className="cuenta-barra" aria-label={t('ui.cuenta.panel')}>
+        <p>{sesion.usuario?t('ui.cuenta.bienvenida',{usuario:sesion.usuario}):t('ui.cuenta.invitado.activo')}</p>
+        {sesion.usuario && <p role="status" aria-label={t("ui.cuenta.guardado.etiqueta")}>{t(estadoGuardado)}</p>}
+        {errorSalir && <p role="alert">{t("ui.cuenta.error.salir")}</p>}
+        <FacetButton labelKey={sesion.usuario?'ui.cuenta.salir':'ui.cuenta.volver'} busy={saliendo} onClick={()=>void salir()} />
+      </aside>
       {/* En la base el HUD lo pone la pantalla, que es dueña de la fila de abajo (Crew, Map, [E], [V]). */}
       {(j.fase === "modulos" || j.fase === "tormenta") && <HudBase estado={j.estado} ultimas={null} objetivo={objetivo} />}
 
