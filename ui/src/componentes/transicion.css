@@ -1,0 +1,6 @@
+/* Transición corta entre pantallas: fundido con los tokens; nada con movimiento reducido. */
+.transicion { animation: transicion-entra var(--dur-aparecer) var(--curva-entrada) both; }
+/* El título recibe el foco al cambiar de pantalla para que el lector lo anuncie; no es un control. */
+.transicion [tabindex="-1"]:focus { outline: none; box-shadow: none; }
+@keyframes transicion-entra { from { opacity: 0; } to { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .transicion { animation: none; } }

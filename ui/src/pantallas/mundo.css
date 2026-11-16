@@ -1,0 +1,16 @@
+/*
+ * Mundo compartido de E5 a E7: la escena llena la pantalla detrás de todas las capas (mundo/01).
+ * El cielo lo pinta la escena (caramelo de Marte); el respaldo 2D usa lila. Solo tokens.
+ */
+.mundo { position: fixed; inset: 0; overflow: hidden; color: var(--color-indigo-texto); }
+.mundo-escena { position: absolute; inset: 0; z-index: 0; }
+.mundo-escena canvas { display: block; inline-size: 100%; block-size: 100%; touch-action: none; }
+.mundo-hueco { position: absolute; inset: 0; background: var(--color-lila); }
+/* Las pantallas E5 a E7 son capas sobre la escena: no capturan el puntero salvo en sus paneles. */
+.mundo > .transicion { position: absolute; inset: 0; z-index: 1; pointer-events: none; }
+
+/* Celular vertical con una hoja abierta: el mundo ocupa solo lo que queda encima de la hoja, así la
+   cámara encuadra la base y el niño a la vista en vez de dejarlos detrás de la decisión. */
+@media (orientation: portrait) and (max-width: 700px) {
+  .mundo:has(.base-panel, .tormenta-panel) .mundo-escena { inset-block-end: var(--hoja-alto, 50dvh); }
+}

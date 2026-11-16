@@ -22,6 +22,7 @@ import { aplicarEstado, armarAnclajes, armarModulo, type ModuloArmado } from "./
 export { PLAZA, CAMINO, CAMINOS, BALIZAS, geometriaCaminos, posicionesBalizas } from "./activos/caminos";
 import { chocaConBase, posicionesBalizas, sobreCamino } from "./activos/caminos";
 import { LUGARES } from "./mundo";
+import { crearTripulacionBase, type TripulacionBase } from "./tripulacionBase";
 export { fusionar } from "./activos/fusionar";
 import {
   ESCALA_VERTICAL_POR_DEFECTO,
@@ -33,6 +34,7 @@ import {
   crearRocas,
   crearTerreno,
   instanciarRocas,
+  instanciarRocasAltas,
   leerDem,
   rocasBasalticas,
   submuestrear,
@@ -125,10 +127,10 @@ const rocasGrandesPorRejilla = new WeakMap<Rejilla, TransformacionRoca[]>();
  * círculos de colisión en `TERRENO` (mundo.ts) con `radioRocaPrimerPlano`. [E]
  */
 export const ROCAS_PRIMER_PLANO: readonly TransformacionRoca[] = [
-  { posicion: [-3.1, 0, 2.6], escala: [1.4, 0.6, 0.85], rotacion: [0.04, 0.6, -0.03] }, // grande, abajo a la izquierda
-  { posicion: [2.2, 0, 3.6], escala: [1.4, 0.6, 0.85], rotacion: [-0.03, 2.1, 0.04] }, // grande, abajo a la derecha
-  { posicion: [-5.6, 0, 1.6], escala: [0.5, 0.6, 0.48], rotacion: [0.05, 0.3, 0] },
-  { posicion: [7.2, 0, 3.4], escala: [0.5, 0.55, 0.5], rotacion: [0, 1.4, 0.03] },
+  { posicion: [-6.5, 0, 1.5], escala: [0.75, 1.5, 0.7], rotacion: [0.02, 0.6, -0.03] }, // grande y alta, esquina inferior izquierda
+  { posicion: [2.4, 0, 3.1], escala: [0.75, 1.7, 0.72], rotacion: [-0.02, 2.1, 0.03] }, // grande y alta, esquina inferior derecha
+  { posicion: [-4.2, 0, 2.1], escala: [0.5, 0.7, 0.48], rotacion: [0.05, 0.3, 0] },
+  { posicion: [7.2, 0, 3.4], escala: [0.5, 0.6, 0.5], rotacion: [0, 1.4, 0.03] },
 ];
 
 /** Huella en planta de una roca de primer plano. */
@@ -155,6 +157,7 @@ export function rocaPrimerPlanoLibre(x: number, z: number, radio: number): boole
 
 export interface EscenaArmada {
   escena: THREE.Scene;
+  tripulacion: TripulacionBase;
   cielo: Cielo;
   modulos: Readonly<Record<ModuloBase, ModuloArmado>>;
   /** Grupo del terreno y las rocas (vacío hasta `ponerTerreno`). */
@@ -183,6 +186,8 @@ export function armarEscena(
 ): EscenaArmada {
   const escena = new THREE.Scene();
   escena.name = "Exterior_Jezero";
+  const tripulacion = crearTripulacionBase();
+  escena.add(tripulacion.grupo);
   const cielo = crearCielo(escena, "dia", calidad);
   const terreno = new THREE.Group();
   terreno.name = "Terrain_Group";
@@ -190,16 +195,18 @@ export function armarEscena(
   base.name = "Base";
   const modulos = Object.fromEntries(MODULOS_BASE.map((id) => [id, armarModulo(materiales, id)])) as Record<ModuloBase, ModuloArmado>;
   // Las rocas de primer plano están dentro del claro llano (y = 0): no esperan al DEM.
-  const primerPlano = instanciarRocas(materiales, ROCAS_PRIMER_PLANO, "Rocks_Basalt_Foreground");
+  const primerPlano = instanciarRocasAltas(materiales, ROCAS_PRIMER_PLANO, "Rocks_Basalt_Foreground");
   base.add(armarAnclajes(materiales), armarKit(materiales), armarEdificios(materiales), primerPlano, ...MODULOS_BASE.map((id) => modulos[id].raiz));
   escena.add(terreno, base, crearMontanas(materiales));
 
   const armada: EscenaArmada = {
     escena,
+    tripulacion,
     cielo,
     modulos,
     terreno,
     aplicarVista(v) {
+      tripulacion.aplicarVista(v);
       for (const id of MODULOS_BASE) aplicarEstado(modulos[id], v.modulos[id]);
     },
     ponerTerreno(r) {
@@ -222,6 +229,7 @@ export function armarEscena(
       modulos[id].pulso = ahora;
     },
     animar(ahora, reducido) {
+      tripulacion.animar(ahora, reducido);
       for (const id of MODULOS_BASE) {
         const mod = modulos[id];
         if (mod.inicio < 0) mod.inicio = ahora;
@@ -239,6 +247,7 @@ export function armarEscena(
       }
     },
     liberar() {
+      tripulacion.liberar();
       cielo.quitar();
       liberarEscena(escena);
     },

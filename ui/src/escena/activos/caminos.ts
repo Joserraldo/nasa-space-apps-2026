@@ -21,6 +21,8 @@ export const distanciaPlaza = (x: number, z: number) => Math.hypot(Math.max(PLAZ
  */
 export const CAMINO = {
   ancho: 0.95,
+  /** Camino ancho del jugador (primer plano a consola), `mundo/01`: losa de borde a borde. */
+  anchoTroncal: 1.5,
   bordillo: 0.08,
   juntas: 1.0,
   altoLosa: 0.05,
@@ -41,6 +43,30 @@ function plazaHacia(id: LugarId): P2 {
 }
 
 /**
+ * Camino ancho (`mundo/01`): desde el primer plano, entre las dos rocas grandes de abajo, hasta la
+ * plataforma de la consola de la mesa, de donde salen los anillos A y B. Una sola cinta continua;
+ * el ramal del banco se une a ella en su codo (-1,6; 6,5).
+ */
+/** Camino ancho (`mundo/01`): del primer plano a la plataforma de la consola de la mesa, de donde salen los anillos A y B. */
+export const TRONCAL: readonly (readonly P2[])[] = [
+  [[-2.4, 11.0], [-1.6, 6.5], [-0.45, 3.9], [-0.45, PLAZA.z1 + 0.2]],
+  // Ramal ancho del anillo al pie de la torre de control.
+  [[-9.6, -11.9], [-11.5, -16.6]],
+];
+/**
+ * Anillo EXTERIOR continuo (`exterior/03`): rodea toda la base por dentro del círculo caminable,
+ * delante de la torre, las cúpulas y las plataformas del decorado (que están fuera). Cerrado: el
+ * último punto repite el primero. Sus codos dejan libres los sólidos de `TERRENO`, el banco y la antena. [E]
+ */
+export const ANILLO: readonly P2[] = [
+  [0, -12.9], [5.5, -12.6], [10.8, -11.4], [13.4, -8.2], [14.5, -3.6], [14.9, 1.6], [14.6, 6.4], [11.8, 9.9], [6, 11.0],
+  [-2.4, 11.0], [-11.6, 8.6], [-13.6, 3.6], [-13.2, -0.5], [-13.4, -5.0], [-12.6, -9.0], [-9.6, -11.9], [-5, -12.9], [0, -12.9],
+];
+/** Semiancho extra del camino ancho respecto de los demás. */
+const EXTRA_TRONCAL = (CAMINO.anchoTroncal - CAMINO.ancho) / 2;
+const semianchoDe = (tramo: readonly P2[]) => CAMINO.ancho / 2 + (TRONCAL.includes(tramo) ? EXTRA_TRONCAL : 0);
+
+/**
  * Red de caminos de `mapa-base-jezero.svg` (ESCENAS §3.2), con extremos en los puestos de `LUGARES`:
  * anillo A (oeste) `mesa → taller → escudo → habitat → mesa` con `taller → panel_solar` (entre el
  * panel y el escudo están los cuatro soportes de paneles: no cabe un tramo recto); anillo B (este)
@@ -53,7 +79,6 @@ function plazaHacia(id: LugarId): P2 {
  * - `antena → plaza` sube por el norte y deja libre la esquina inferior derecha del encuadre para una roca grande.
  */
 export const CAMINOS: readonly (readonly P2[])[] = [
-  [plazaHacia("taller"), en("taller"), [-5.0, 0.4], en("panel_solar")],
   [en("taller"), [-2.9, -1.2], en("escudo")],
   [en("escudo"), en("habitat"), plazaHacia("habitat")],
   [plazaHacia("sensor"), en("sensor")],
@@ -61,7 +86,11 @@ export const CAMINOS: readonly (readonly P2[])[] = [
   [en("invernadero"), [10.6, 2.0], en("antena")],
   [en("antena"), [8.4, 1.8], plazaHacia("antena")],
   [en("banco"), [-1.6, 6.5]],
-  [[-0.5, 3.0], [-1.6, 6.5], [-2.4, 10]],
+  [en("invernadero"), [12.4, 0.9], [14.9, 1.6]],
+  // De la consola a la torre: por el taller y el panel solar hasta el anillo (estrecho: entre la roca y la consola del taller).
+  [plazaHacia("taller"), en("taller"), [-5.0, 0.4], en("panel_solar"), [-13.2, -0.5]],
+  ANILLO,
+  ...TRONCAL,
 ];
 
 /** Distancia de un punto al eje de un segmento. */
@@ -73,8 +102,10 @@ export function distanciaTramo(x: number, z: number, a: P2, b: P2): number {
 
 /** (x, z) cae sobre la losa o el bordillo de algún camino, ampliado `margen`. */
 export function sobreCamino(x: number, z: number, margen = 0): boolean {
-  const r = CAMINO.ancho / 2 + CAMINO.bordillo + margen;
-  return CAMINOS.some(tramo => tramo.some((a, i) => i > 0 && distanciaTramo(x, z, tramo[i - 1]!, a) < r));
+  return CAMINOS.some(tramo => {
+    const r = semianchoDe(tramo) + CAMINO.bordillo + margen;
+    return tramo.some((a, i) => i > 0 && distanciaTramo(x, z, tramo[i - 1]!, a) < r);
+  });
 }
 
 // ---------------------------------------------------------------------------------------------
@@ -108,17 +139,23 @@ function huellas(w: number): P2[][] {
 }
 
 /** `huellas` de una red cualquiera (así se prueba con codos sintéticos). */
-export function huellasDe(red: readonly (readonly P2[])[], w: number): P2[][] {
+export function huellasDe(red: readonly (readonly P2[])[], base: number): P2[][] {
   const salida: P2[][] = [];
   for (const tramo of red) {
-    for (let i = 0; i < tramo.length; i++) {
+    const w = base + (TRONCAL.includes(tramo) ? EXTRA_TRONCAL : 0);
+    const n = tramo.length;
+    const cerrado = n > 3 && tramo[0]![0] === tramo[n - 1]![0] && tramo[0]![1] === tramo[n - 1]![1] && !esLugar(tramo[0]!);
+    for (let i = 0; i < n; i++) {
       const v = tramo[i]!;
-      const u = i > 0 ? unitario(tramo[i - 1]!, v) : unitario(v, tramo[1]!);
+      const u = i > 0 ? unitario(tramo[i - 1]!, v) : unitario(cerrado ? tramo[n - 2]! : v, cerrado ? v : tramo[1]!);
       if (i > 0) {
         const a = tramo[i - 1]!;
         salida.push([[a[0] - u[1] * w, a[1] + u[0] * w], [v[0] - u[1] * w, v[1] + u[0] * w], [v[0] + u[1] * w, v[1] - u[0] * w], [a[0] + u[1] * w, a[1] - u[0] * w]]);
       }
-      if (i === 0 || i === tramo.length - 1 || esLugar(v)) {
+      if (cerrado && i === n - 1) continue; // repite el vértice 0: su codo ya se hizo
+      if ((!cerrado && (i === 0 || i === n - 1)) || esLugar(v)) {
+        // Un extremo que cae sobre otro tramo (ramal que se une a un camino) no lleva rellano: ya está dentro de su cinta.
+        if (!esLugar(v) && red.some(o => o !== tramo && o.some((p, k) => k > 0 && distanciaTramo(v[0], v[1], o[k - 1]!, p) < 1e-6))) continue;
         salida.push(octogono(v, w, u));
         continue;
       }
@@ -146,14 +183,14 @@ export function huellasDe(red: readonly (readonly P2[])[], w: number): P2[][] {
 }
 
 /** Tramos rectos sin repetir (dos anillos pueden compartir uno). */
-function segmentos(): [P2, P2][] {
+function segmentos(): [P2, P2, number][] {
   const vistos = new Set<string>();
-  const salida: [P2, P2][] = [];
+  const salida: [P2, P2, number][] = [];
   for (const tramo of CAMINOS)
     for (let i = 1; i < tramo.length; i++) {
       const a = tramo[i - 1]!, b = tramo[i]!;
       const clave = [a.join(","), b.join(",")].sort().join("|");
-      if (!vistos.has(clave)) salida.push([a, b]);
+      if (!vistos.has(clave)) salida.push([a, b, semianchoDe(tramo)]);
       vistos.add(clave);
     }
   return salida;
@@ -168,13 +205,13 @@ const plaza = (m = 0): P2[] => [[PLAZA.x0 - m, PLAZA.z0 - m], [PLAZA.x1 + m, PLA
  * esquinas dentro de la losa (`losas`), para que ninguna quede encima de otra ni asome fuera.
  */
 function juntas(m: MallaPavimento, color: THREE.Color, losas: readonly Franja[]): void {
-  const r = CAMINO.ancho / 2, ancho = 0.04, y = CAMINO.altoLosa + 0.004;
+  const ancho = 0.04, y = CAMINO.altoLosa + 0.004;
   const arriba = new THREE.Vector3(0, 1, 0);
   const segs = segmentos();
   const libre = (x: number, z: number, propio: number) =>
     distanciaPlaza(x, z) > 0.1
-    && segs.every(([a, b], k) => k === propio || distanciaTramo(x, z, a, b) > r + CAMINO.bordillo + 0.05);
-  segs.forEach(([a, b], k) => {
+    && segs.every(([a, b, rr], k) => k === propio || distanciaTramo(x, z, a, b) > rr + CAMINO.bordillo + 0.05);
+  segs.forEach(([a, b, r], k) => {
     const largo = Math.hypot(b[0] - a[0], b[1] - a[1]);
     const u = unitario(a, b), n: P2 = [-u[1] * r, u[0] * r];
     const pasos = Math.floor(largo / CAMINO.juntas);
@@ -241,8 +278,9 @@ export function geometriaCaminos(): THREE.BufferGeometry {
 // Balizas
 // ---------------------------------------------------------------------------------------------
 
-/** Separación entre balizas a lo largo del camino y distancia al eje. [E] */
-export const BALIZAS = { cada: 5, aparte: 1.1 } as const;
+/** Balizas: `n` en el anillo y `troncal` en el camino ancho (total máx. de la prueba escena3d.test.ts: 12) y distancia de cada una al eje. [E] */
+export const BALIZAS = { n: 4, fase: 0.1, aparte: 0.95, troncal: 8, pasoTroncal: 1.7, aparteTroncal: 1.15 } as const;
+const ANILLO_CENTRO: P2 = [1.5, -1.0];
 
 /** Choca con un sólido de `TERRENO`, el banco o la plaza (con `margen`). */
 export function chocaConBase(x: number, z: number, margen: number): boolean {
@@ -252,26 +290,55 @@ export function chocaConBase(x: number, z: number, margen: number): boolean {
   return distanciaPlaza(x, z) < margen;
 }
 
-/** Balizas a los lados de los caminos, alternando lado, sin caer sobre módulos ni la plaza. */
+/**
+ * Balizas del anillo exterior: `BALIZAS.n` repartidas a distancia uniforme a lo largo de su
+ * perímetro, en el borde interior (el exterior queda libre para el decorado). Sin caer sobre
+ * módulos, la plataforma ni otro camino.
+ */
 export function posicionesBalizas(): P2[] {
+  const n = ANILLO.length;
+  const largos = ANILLO.slice(1).map((p, k) => Math.hypot(p[0] - ANILLO[k]![0], p[1] - ANILLO[k]![1]));
+  const total = largos.reduce((a, b) => a + b, 0);
   const salida: P2[] = [];
-  for (const tramo of CAMINOS) {
-    let lado = -1; // alterna dentro de cada tramo: añadir o quitar uno no mueve las balizas de los demás
-    let recorrido = 0; // metros ya recorridos del tramo hasta el inicio del segmento
-    let siguiente = BALIZAS.cada / 2;
-    for (let k = 0; k < tramo.length - 1; k++) {
-      const [x0, z0] = tramo[k]!, [x1, z1] = tramo[k + 1]!;
-      const largo = Math.hypot(x1 - x0, z1 - z0);
-      const ux = (x1 - x0) / largo, uz = (z1 - z0) / largo;
-      for (; siguiente < recorrido + largo; siguiente += BALIZAS.cada) {
-        const t = siguiente - recorrido;
-        lado = -lado;
-        const x = x0 + ux * t - uz * BALIZAS.aparte * lado, z = z0 + uz * t + ux * BALIZAS.aparte * lado;
-        if (chocaConBase(x, z, 0.6) || sobreCamino(x, z, 0.25) || salida.some(([bx, bz]) => Math.hypot(bx - x, bz - z) < 2.0)) continue;
-        salida.push([x, z]);
-      }
-      recorrido += largo;
+  for (let j = 0; j < BALIZAS.n; j++) {
+    let d = ((j + BALIZAS.fase) * total) / BALIZAS.n;
+    let k = 0;
+    while (k < n - 2 && d > largos[k]!) d -= largos[k++]!;
+    const a = ANILLO[k]!, b = ANILLO[k + 1]!, t = d / largos[k]!;
+    const ux = (b[0] - a[0]) / largos[k]!, uz = (b[1] - a[1]) / largos[k]!;
+    const x0 = a[0] + (b[0] - a[0]) * t, z0 = a[1] + (b[1] - a[1]) * t;
+    // Normal hacia el centro del anillo.
+    let nx = -uz, nz = ux;
+    if (nx * (ANILLO_CENTRO[0] - x0) + nz * (ANILLO_CENTRO[1] - z0) < 0) { nx = -nx; nz = -nz; }
+    const x = x0 + nx * BALIZAS.aparte, z = z0 + nz * BALIZAS.aparte;
+    if (chocaConBase(x, z, 0.6) || sobreCamino(x, z, 0.25)) continue;
+    salida.push([x, z]);
+  }
+  const ancho = balizasTroncal();
+  return [...ancho, ...salida.filter(([x, z]) => ancho.every(([a, b]) => Math.hypot(x - a, z - b) > 1.2))];
+}
+
+/**
+ * Balizas del camino ancho (`mundo/01`): alternadas a izquierda y derecha, una cada `pasoTroncal`
+ * metros desde la entrada del primer plano hacia la torre, justo fuera de la cinta.
+ */
+function balizasTroncal(): P2[] {
+  const salida: P2[] = [];
+  let lado = 1;
+  for (const tramo of TRONCAL) {
+   let resto = 1.2;
+   if (tramo !== TRONCAL[0]) lado = -1;
+   for (let k = 0; k < tramo.length - 1 && salida.length < BALIZAS.troncal; k++) {
+    const a = tramo[k]!, b = tramo[k + 1]!, l = Math.hypot(b[0] - a[0], b[1] - a[1]);
+    const ux = (b[0] - a[0]) / l, uz = (b[1] - a[1]) / l;
+    for (let d = resto; d < Math.min(l - 0.3, tramo === TRONCAL[0] ? 99 : 2.6) && salida.length < BALIZAS.troncal; d += BALIZAS.pasoTroncal) {
+      const x = a[0] + ux * d - uz * lado * BALIZAS.aparteTroncal, z = a[1] + uz * d + ux * lado * BALIZAS.aparteTroncal;
+      lado = -lado;
+      if (chocaConBase(x, z, 0.6) || sobreCamino(x, z, 0.25)) continue;
+      salida.push([x, z]);
+      resto = d + BALIZAS.pasoTroncal - l;
     }
+   }
   }
   return salida;
 }

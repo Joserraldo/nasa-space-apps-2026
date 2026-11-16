@@ -12,24 +12,19 @@
   grid-template-columns: minmax(0, 1fr) minmax(300px, 40%);
   align-items: stretch;
   gap: var(--esp-5);
-  min-block-size: calc(100dvh - 72px);
-  background: var(--color-marfil);
+  position: absolute; inset: 0; overflow-y: auto; pointer-events: none;
   color: var(--color-indigo-texto);
 }
+/* Capa sobre el mundo compartido: solo las fichas y el panel reciben el puntero. */
+.modulos-e5 :is(.fc, button) { pointer-events: auto; }
 
 .modulos-izq {
+  padding-block-start: var(--hud-reserva-izq, 0px);
   display: grid; grid-template-columns: minmax(0, 1fr); grid-template-rows: auto auto 1fr auto;
   gap: var(--esp-4); min-inline-size: 0;
 }
 .modulos-base { display: flex; }
 
-/* ---- Mundo: la escena detrás de la lista (mundo/01); sin WebGL, respaldo 2D ---- */
-.modulos-mundo {
-  position: absolute; inset: 0; z-index: 0; overflow: hidden; background: var(--color-lila);
-}
-.modulos-e5 > :not(.modulos-mundo) { position: relative; z-index: 1; }
-.modulos-mundo canvas { position: absolute; inset: 0; }
-.modulos-mundo-2d { position: absolute; inset: 0; }
 .modulos-ancla {
   justify-self: center; align-self: center; display: grid; place-items: center; inline-size: 96px; block-size: 96px; background: var(--color-cian);
   clip-path: polygon(30% 0, 70% 0, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0 70%, 0 30%);
@@ -66,14 +61,14 @@
 .modulos-ficha-nombre { font-weight: var(--tipo-peso-titulo); font-size: var(--tipo-tam-cuerpo); }
 .modulos-ficha-estado {
   grid-column: 1 / -1; display: inline-flex; align-items: center; gap: var(--esp-1);
-  font-size: 15px; font-weight: var(--tipo-peso-etiqueta); color: var(--color-exito);
+  font-size: 16px; font-weight: var(--tipo-peso-etiqueta); color: var(--color-exito);
 }
 .modulos-ficha-sel .modulos-ficha-estado { color: var(--color-indigo-texto); }
 
 .modulos-listo { justify-self: start; }
 
 /* ---- Panel de decisión (ui/01) ---- */
-.modulos-panel { position: sticky; inset-block-start: var(--esp-3); min-inline-size: 0; }
+.modulos-panel { position: sticky; inset-block-start: max(var(--esp-3), var(--hud-reserva-der, 0px)); margin-block-start: var(--hud-reserva-der, 0px); min-inline-size: 0; }
 .modulos-panel-cara {
   display: grid; gap: var(--esp-3); padding: var(--esp-4) var(--esp-5);
   max-block-size: calc(100dvh - 2 * var(--esp-3)); overflow-y: auto; overscroll-behavior: contain;
@@ -89,21 +84,24 @@
 .modulos-acciones { display: flex; flex-wrap: wrap; gap: var(--esp-2); }
 .modulos-colocar { flex: 1 1 auto; }
 .modulos-panel-cuerpo { display: contents; }
+/* Con `display: contents` sus hijos quedan bajo el fondo de la tarjeta si no se elevan como los demás. */
+.modulos-panel-cuerpo > * { position: relative; }
 .modulos-experta { display: none; }
 .modulos-colocar .fb { inline-size: 100%; }
 
 /* ---- Celular horizontal (844 x 390): panel al 40 % con desplazamiento interno ---- */
 @media (max-height: 500px) and (orientation: landscape) {
-  .modulos-e5 { grid-template-columns: minmax(0, 1fr) 40%; gap: var(--esp-3); padding-block: var(--esp-2); min-block-size: calc(100dvh - 56px); }
+  .modulos-e5 { grid-template-columns: minmax(0, 1fr) 40%; gap: var(--esp-3); padding-block: var(--esp-2); }
   .modulos-ancla { display: none; }
-  .modulos-e5 { align-items: start; min-block-size: 0; }
-  .modulos-izq { grid-template-rows: auto auto auto; gap: var(--esp-2); }
+  .modulos-e5 { align-items: start; }
+  /* El HUD compacto es una sola fila: la lista empieza debajo de toda la fila, no solo de su izquierda. */
+  .modulos-izq { grid-template-rows: auto auto auto; gap: var(--esp-2); padding-block-start: var(--hud-reserva, 0px); }
   .modulos-cabeza { padding: var(--esp-1) var(--esp-4); gap: 0; }
   .modulos-cabeza h2 { font-size: var(--tipo-tam-subtitulo); }
   .modulos-cabeza p:not(.modulos-progreso) { display: none; }
   .modulos-lista { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--esp-2); }
   .modulos-ficha-cara { grid-template-columns: auto minmax(0, 1fr); gap: 0 var(--esp-2); }
-  .modulos-ficha-nombre { font-size: 15px; line-height: 1.15; }
+  .modulos-ficha-nombre { font-size: 16px; line-height: 1.15; }
   .modulos-panel-cara { display: flex; flex-direction: column; overflow: hidden; }
   .modulos-panel-cuerpo { min-block-size: 0; overflow-y: auto; overscroll-behavior: contain; display: grid; gap: var(--esp-2); }
   .modulos-panel-desc { display: none; }
@@ -116,13 +114,13 @@
   .modulos-panel-cab h3 { grid-column: 2; align-self: end; }
   .modulos-experta { grid-column: 2; align-self: start; }
   .modulos-panel-cab .retrato-ficha { padding: 0; min-width: 0; inline-size: 44px; }
-  .modulos-experta { display: block; font-size: 14px; font-weight: var(--tipo-peso-etiqueta); }
+  .modulos-experta { display: block; font-size: 16px; font-weight: var(--tipo-peso-etiqueta); }
   .modulos-ficha-cara { padding: var(--esp-2) var(--esp-3); min-block-size: 48px; }
   .modulos-panel-cara { padding: var(--esp-3) var(--esp-4); gap: var(--esp-2); max-block-size: calc(100dvh - 88px); }
   .modulos-panel-cab h3 { font-size: var(--tipo-tam-subtitulo); }
 }
 
-/* ---- Celular vertical (390 x 844): lo tapa el aviso de girar; si no, una columna ---- */
+/* ---- Celular vertical (390 x 844): una columna que se desplaza sobre el mundo ---- */
 @media (orientation: portrait) and (max-width: 700px) {
   .modulos-e5 { grid-template-columns: minmax(0, 1fr); gap: var(--esp-3);
     padding-inline: max(var(--esp-4), env(safe-area-inset-left)) max(var(--esp-4), env(safe-area-inset-right)); }
@@ -136,4 +134,41 @@
 
 @media (prefers-reduced-motion: reduce) {
   .modulos-ficha-cara { transition: none; }
+}
+
+/* Celular vertical: una columna, debajo de todas las píldoras del HUD. */
+@media (orientation: portrait) and (max-width: 700px) {
+  .modulos-izq { padding-block-start: var(--hud-reserva, 0px); }
+  .modulos-panel { margin-block-start: 0; inset-block-start: var(--esp-3); }
+}
+
+/* Vertical: la columna se desplaza, así que la capa entera recibe el dedo (en E5 no se camina con toque). */
+@media (orientation: portrait) and (max-width: 700px) {
+  .modulos-e5 { pointer-events: auto; }
+}
+
+/* Celular vertical (problema 9): el mundo se ve en el medio. Arriba, título y progreso; las fichas en una
+   fila que se desliza; abajo, el panel como hoja de hasta ~45 % del alto con "Place" siempre a la vista. */
+@media (orientation: portrait) and (max-width: 700px) {
+  .modulos-e5 { display: flex; flex-direction: column; gap: var(--esp-2); overflow: hidden; pointer-events: none;
+    padding-block-start: calc(max(var(--esp-3), env(safe-area-inset-top)) + var(--hud-reserva, 0px)); }
+  .modulos-izq { display: contents; }
+  .modulos-cabeza { padding: var(--esp-2) var(--esp-4); gap: var(--esp-1); }
+  .modulos-cabeza h2 { font-size: var(--tipo-tam-subtitulo); }
+  .modulos-cabeza > p:not(.modulos-progreso) { display: none; }
+  .modulos-lista { display: flex; flex-wrap: nowrap; overflow-x: auto; overscroll-behavior-x: contain;
+    scroll-snap-type: x proximity; padding-block: 3px; pointer-events: auto;
+    /* Desvanecido a la derecha: avisa que hay más fichas al deslizar. */
+    mask-image: linear-gradient(to right, #000 82%, transparent); padding-inline-end: 15%; }
+  .modulos-lista > li { flex: 0 0 auto; scroll-snap-align: start; }
+  .modulos-ficha-cara { min-block-size: 48px; padding: var(--esp-2) var(--esp-3); white-space: nowrap; }
+  .modulos-panel { order: 10; margin-block-start: auto; position: static; }
+  .modulos-panel-cara { display: flex; flex-direction: column; overflow: hidden; max-block-size: 45dvh; }
+  .modulos-panel-cuerpo { min-block-size: 0; overflow-y: auto; overscroll-behavior: contain; display: grid; gap: var(--esp-2); }
+  .modulos-acciones { flex: none; flex-wrap: nowrap; }
+  .modulos-panel-cab .retrato-marco, .modulos-panel-cab .retrato-compacto .retrato-marco { width: 48px; height: 48px; }
+  .modulos-panel-cab .retrato-marco svg { inline-size: 44px; block-size: 44px; }
+  .modulos-panel-cab .retrato-nombre { display: none; }
+  .modulos-panel-cab h3 { font-size: var(--tipo-tam-subtitulo); }
+  .modulos-base { order: 11; }
 }

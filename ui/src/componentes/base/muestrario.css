@@ -41,3 +41,5 @@
 .mu-centro .fb-texto { white-space: normal; text-align: center; font-size: 16px; line-height: 1.1; }
 .mu-centro > .fc, .mu-centro .retrato-ficha { inline-size: 100%; min-width: 0; box-sizing: border-box; }
 .mu-tres .retrato-boton, .mu-tres .retrato-ficha { inline-size: 100%; box-sizing: border-box; }
+/* ?vista=hud: fondo de tokens que hace de escena marciana (cielo de Marte arriba, regolito abajo). */
+.mu-escena { position: fixed; inset: 0; background: linear-gradient(var(--color-montana-lejana) 0 30%, var(--color-regolito-claro) 30% 100%); }

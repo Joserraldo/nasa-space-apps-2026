@@ -24,6 +24,8 @@ export interface Juego {
   sitio: PuntajeSitio | null;
   ultimas: Novedades | null;
   tormentaVista: boolean;
+  /** El estado de antes de la decisión de la tormenta: mientras exista se muestra "Decision recorded" (ui/04 panel 04). */
+  registro: GameState | null;
 }
 
 export type Evento =
@@ -33,13 +35,14 @@ export type Evento =
   | { tipo: "accion"; accion: Action }
   | { tipo: "acciones"; acciones: Action[] }
   | { tipo: "dilema"; opcionId: string; previas?: Action[] | undefined }
+  | { tipo: "seguir" }
   | { tipo: "tick" }
   | { tipo: "pausa"; pausado: boolean }
   | { tipo: "sitio"; sitio: PuntajeSitio }
   | { tipo: "modulo"; modulo: Equipment };
 
 export function inicial(): Juego {
-  return { fase: "inicio", estado: partidaDorada(), colocados: [], sitio: null, ultimas: null, tormentaVista: false };
+  return { fase: "inicio", estado: partidaDorada(), colocados: [], sitio: null, ultimas: null, tormentaVista: false, registro: null };
 }
 
 /**
@@ -85,8 +88,11 @@ export function reducir(j: Juego, e: Evento): Juego {
       let s = j.estado;
       for (const a of e.previas ?? []) s = aplicarAccion(s, a);
       const estado = elegirDilema(s, e.opcionId);
-      return estado === s ? j : { ...j, estado: pausar(estado, false), fase: "base" };
+      // La tormenta sigue en pantalla con "Decision recorded" hasta que el jugador pulse "Return to exploration".
+      return estado === s ? j : { ...j, estado, registro: j.estado };
     }
+    case "seguir":
+      return { ...j, estado: pausar(j.estado, false), registro: null, fase: "base" };
     case "pausa":
       return { ...j, estado: pausar(j.estado, e.pausado) };
     case "tick": {

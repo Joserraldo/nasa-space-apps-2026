@@ -1,16 +1,81 @@
-/* HUD de mundo/01 (DISEÑO §5.2): placas separadas arriba a la derecha; día, turno y reloj a la izquierda.
-   Solo tokens; la escala la pone HudBase con `zoom` (ESCENAS §2.7). */
+/* HUD de mundo/01 (DISEÑO §5.2): sin franja; píldoras flotando sobre la escena. Solo tokens.
+   La capa cubre la pantalla y no captura el puntero; solo las píldoras reciben clics.
+   La escala la pone HudBase con `zoom` (nunca menos de 1, para que el texto no baje de 16 px). */
 .hud-base {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: var(--esp-2) var(--esp-3);
-  padding: max(var(--esp-2), env(safe-area-inset-top)) max(var(--esp-3), env(safe-area-inset-right)) var(--esp-2) max(var(--esp-3), env(safe-area-inset-left));
+  position: fixed; inset: 0; z-index: 5; pointer-events: none; display: flex; flex-direction: column; justify-content: space-between;
+  padding: max(var(--esp-3), env(safe-area-inset-top)) max(var(--esp-3), env(safe-area-inset-right)) max(var(--esp-3), env(safe-area-inset-bottom)) max(var(--esp-3), env(safe-area-inset-left));
   color: var(--color-indigo-texto);
 }
-.hud-reloj, .hud-placas { display: flex; flex-wrap: wrap; align-items: center; gap: var(--esp-2); }
-.hud-placas { justify-content: flex-end; margin-left: auto; }
-.hud-placas .placa { min-width: 128px; }
-.hud-dia { margin: 0; padding: var(--esp-2) var(--esp-4); min-height: 48px; display: flex; align-items: center; gap: var(--esp-1); font-weight: var(--tipo-peso-etiqueta); font-variant-numeric: tabular-nums; }
-.hud-reloj .fb { min-height: 48px; }
+.hud-base :is(.fc, button) { pointer-events: auto; }
+.hud-arriba { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start; gap: var(--esp-2) var(--esp-3); }
+.hud-izq, .hud-placas { display: flex; flex-wrap: wrap; align-items: flex-start; gap: var(--esp-2); }
+.hud-der { display: grid; justify-items: end; gap: var(--esp-2); margin-left: auto; max-inline-size: 100%; }
+.hud-placas { justify-content: flex-end; gap: var(--esp-2) var(--esp-3); }
+.hud-dia { font-variant-numeric: tabular-nums; }
+.hud-izq .pb { min-height: 36px; }
+.placa-nombre-corto { display: none; }
+
+.hud-abajo { position: relative; display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: var(--esp-2); margin-block-end: 0; }
+.hud-abajo-izq { display: flex; gap: var(--esp-2); }
+.hud-centro { position: absolute; inset-inline: 0; margin-inline: auto; inline-size: max-content; justify-content: center; }
+
+/* Con un panel abierto (a la derecha en escritorio y apaisado) la acción y la cámara le ceden el sitio. */
+.hud-con-panel :is(.hud-centro, .hud-camara) { display: none; }
+
+/* Con controles táctiles: Crew y Map junto a la pista del joystick (112 px + margen). */
+.hud-tactil .hud-abajo { justify-content: flex-start; padding-inline-start: calc(112px + var(--esp-3)); }
+
+/* ---- Celular (apaisado y vertical): una sola fila compacta como la lámina de celular ---- */
+@media (max-height: 500px), (max-width: 700px) {
+  .hud-arriba { flex-wrap: nowrap; align-items: center; gap: var(--esp-1); }
+  .hud-der { order: 1; display: flex; align-items: center; gap: var(--esp-1); margin-left: 0; min-inline-size: 0; }
+  .hud-izq { order: 2; margin-left: auto; flex-wrap: nowrap; gap: var(--esp-1); }
+  .hud-placas { flex-wrap: nowrap; gap: var(--esp-1); }
+  .hud-dia, .hud-velocidad { display: none; }
+  .hud-izq .pb-texto { display: none; }
+  .hud-izq .pildora { padding-inline: 12px; }
+  .placa-nombre { display: none; }
+  .placa-nombre-corto { display: inline; }
+  .hud-placas .pildora { gap: 4px; padding-inline: 12px; font-size: 16px; }
+  .hud-placas .pildora svg { inline-size: 18px; block-size: 18px; }
+  /* Los avisos bajo cada placa siguen para el lector; a la vista ocuparían una segunda fila. */
+  .hud-placas .placa-capa { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .pildora-objetivo, .pildora-objetivo .pildora { font-size: 16px; }
+  .pildora-objetivo .pildora { padding-inline: 12px 16px; }
+  .pildora-objetivo .pildora-anillo { inline-size: 20px; block-size: 20px; border-width: 3px; }
+}
+
+/* Vertical: la lámina no lleva objetivo en la fila; queda para el lector de pantalla. */
+@media (orientation: portrait) and (max-width: 700px) {
+  .hud-der > .pildora-objetivo { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .hud-con-panel .hud-abajo { display: none; }
+  /* Crew y Map en botones cuadrados de icono sobre texto, como la lámina. */
+  .hud-tactil .hud-abajo-izq .pildora { flex-direction: column; justify-content: center; gap: 2px; min-height: 64px; padding: var(--esp-1) var(--esp-3);
+    --fc-forma: polygon(10px 0, calc(100% - 10px) 0, 100% 10px, 100% calc(100% - 10px), calc(100% - 10px) 100%, 10px 100%, 0 calc(100% - 10px), 0 10px); font-size: 16px; }
+}
+
+/* Vertical estrecho (390 px): la fila de tres recursos más la pausa tiene que entrar sin cortarse. */
+@media (orientation: portrait) and (max-width: 440px) {
+  .hud-base { padding-inline: max(var(--esp-2), env(safe-area-inset-left)) max(var(--esp-2), env(safe-area-inset-right)); }
+  .hud-arriba, .hud-der, .hud-placas, .hud-izq { gap: 3px; }
+  .hud-placas .pildora, .hud-izq .pildora {
+    --fc-forma: polygon(9px 0, calc(100% - 9px) 0, 100% 50%, calc(100% - 9px) 100%, 9px 100%, 0 50%);
+    gap: 3px; padding-inline: 10px;
+  }
+  .hud-placas .pildora svg { inline-size: 16px; block-size: 16px; }
+}
+
+/* Celular apaisado: el objetivo largo de Iris se recorta con puntos suspensivos para no partir la fila
+   (el texto completo sigue en el estado que oye el lector). */
+@media (max-height: 500px), (max-width: 700px) {
+  .hud-arriba, .hud-der { min-inline-size: 0; }
+  .hud-der > .pildora-objetivo { flex: 0 1 auto; min-inline-size: 0; }
+  .pildora-objetivo > .fc, .pildora-objetivo .pildora { display: flex; max-inline-size: 100%; }
+  .pildora-objetivo .pildora > span:last-child { flex: 0 1 auto; min-inline-size: 0; overflow: hidden; text-overflow: ellipsis; }
+}
+
+/* Vertical: Crew y Map sobre la pista del joystick, para que nombres largos ("Tripulación") no
+   choquen con el botón de acción de la derecha. */
+@media (orientation: portrait) and (max-width: 700px) {
+  .hud-tactil .hud-abajo { padding-inline-start: 0; margin-block-end: calc(112px + var(--esp-2)); }
+}

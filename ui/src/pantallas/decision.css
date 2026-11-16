@@ -19,13 +19,13 @@
   .decision { gap: var(--esp-2); grid-template-columns: minmax(0, 2fr) minmax(0, 7fr); }
   .decision-personajes { grid-template-columns: 1fr; gap: var(--esp-1); }
   .decision-detalle .mensaje-titulo { font-size: 16px; line-height: 1.1; }
-  .decision-detalle .mensaje-detalle { font-size: 13px; }
+  .decision-detalle .mensaje-detalle { font-size: 16px; }
   .decision-detalle .costos { grid-template-columns: 1fr; }
   .decision-detalle .costos-bloque + .costos-bloque { border-left: 0; padding-left: 0; }
   .decision-detalle { gap: var(--esp-1); }
   .decision-personajes .retrato-marco { width: 56px; height: 56px; }
   .decision-personajes .retrato-marco svg { width: 50px; height: 50px; }
   .decision-detalle .mensaje { min-height: 0; padding-block: var(--esp-1); padding-inline: var(--esp-2); }
-  .decision-detalle .costos-bloque h4 { margin-block-end: var(--esp-1); font-size: 13px; }
+  .decision-detalle .costos-bloque h4 { margin-block-end: var(--esp-1); font-size: 16px; }
   .decision-detalle .costos-bloque li { padding-block: 0; }
 }

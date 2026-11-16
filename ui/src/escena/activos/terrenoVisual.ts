@@ -137,6 +137,14 @@ function geometriaRoca(): THREE.BufferGeometry {
   return trozoFacetado(new THREE.DodecahedronGeometry(1, 0), SEMILLA_FORMA_ROCA, 0.72, 1.12, 0.42, 0.22);
 }
 
+/**
+ * Roca alta de primer plano (`mundo/01`): dodecaedro más anguloso, de cima alta casi sin aplanar y
+ * base poco hundida, para que se lea entera en las esquinas. 36 caras, geometría propia.
+ */
+function geometriaRocaAlta(): THREE.BufferGeometry {
+  return trozoFacetado(new THREE.DodecahedronGeometry(1, 0), SEMILLA_FORMA_ROCA + 7, 0.62, 1.2, 1.25, 0.12);
+}
+
 /** Piedrita maestra de la gravilla: octaedro desplazado y aplanado (8 caras). */
 function geometriaGravilla(): THREE.BufferGeometry {
   const geo = trozoFacetado(new THREE.OctahedronGeometry(1, 0), SEMILLA_FORMA_GRAVILLA, 0.75, 1.15, 0.3, 0.1);
@@ -163,6 +171,11 @@ export function crearRocas(
 /** Rocas ya colocadas en UN `InstancedMesh` con la roca maestra de la caché (1 draw call + sombra). */
 export function instanciarRocas(materiales: Materiales, rocas: readonly TransformacionRoca[], nombre = "Rocks_Basalt"): THREE.InstancedMesh {
   return instanciar(geometriaBase("roca-basalto",geometriaRoca), materiales, rocas, nombre);
+}
+
+/** Rocas altas y angulosas de primer plano en UN `InstancedMesh` (ver `geometriaRocaAlta`). */
+export function instanciarRocasAltas(materiales: Materiales, rocas: readonly TransformacionRoca[], nombre = "Rocks_Basalt_Tall"): THREE.InstancedMesh {
+  return instanciar(geometriaBase("roca-basalto-alta", geometriaRocaAlta), materiales, rocas, nombre);
 }
 
 /**
@@ -346,5 +359,80 @@ export function crearMontanas(materiales: Materiales, o: OpcionesMontanas = MONT
   malla.name = "Mountains_Far";
   malla.castShadow = false;
   malla.receiveShadow = false;
+  return malla;
+}
+
+// ---------------------------------------------------------------------------------------------
+// Lomas: montículos facetados (antena parabólica y base de montaña, lámina `mundo/01`)
+// ---------------------------------------------------------------------------------------------
+
+/** Loma: centro en planta, radio en el suelo, altura de la cima sobre y = 0 y semilla de su forma. */
+export interface Loma {
+  readonly x: number;
+  readonly z: number;
+  readonly radio: number;
+  readonly alto: number;
+  readonly semilla: number;
+  /** Mezcla hacia `regolito-claro` (0 a 1): más claro se lee mejor contra el suelo. */
+  readonly tono?: number;
+}
+
+/** Lados de cada anillo de una loma. */
+const LADOS_LOMA = 10;
+/** Cuánto se hunde el pie de la loma bajo y = 0: así no queda hueco con el terreno. */
+const PIE_LOMA = -4;
+
+/**
+ * Lomas en UNA malla (1 draw call + su sombra): cada una son cuatro anillos irregulares
+ * (pie hundido, base, hombro, cima plana) unidos en caras planas, pintadas por normal como las rocas.
+ */
+export function crearLomas(materiales: Materiales, lomas: readonly Loma[]): THREE.Mesh {
+  const pos: number[] = [];
+  const claro = colorToken("regolito-claro");
+  const pálido = colorToken("regolito-claro").lerp(colorToken("marfil"), 0.55);
+  const tramos: [number, number, number][] = []; // [primer vértice, último, tono]
+  for (const l of lomas) {
+    const desde = pos.length / 3;
+    const azar = aleatorio(l.semilla);
+    // [radio relativo, altura relativa] de cada anillo, del pie a la cima.
+    const perfil: [number, number][] = [[1.12, PIE_LOMA / l.alto], [1, 0], [0.62, 0.62], [0.3, 1]];
+    const anillos = perfil.map(([r, h]) => {
+      const pts: number[][] = [];
+      for (let i = 0; i < LADOS_LOMA; i++) {
+        const a = (i / LADOS_LOMA) * Math.PI * 2;
+        const rr = l.radio * r * (0.85 + azar() * 0.3);
+        pts.push([l.x + Math.cos(a) * rr, h * l.alto + (h > 0 && h < 1 ? (azar() - 0.5) * 0.12 * l.alto : 0), l.z + Math.sin(a) * rr]);
+      }
+      return pts;
+    });
+    const tri = (a: number[], b: number[], c: number[]) => pos.push(...a, ...b, ...c);
+    for (let k = 0; k < anillos.length - 1; k++)
+      for (let i = 0; i < LADOS_LOMA; i++) {
+        const j = (i + 1) % LADOS_LOMA;
+        const a = anillos[k]!, b = anillos[k + 1]!;
+        tri(a[i]!, b[i]!, b[j]!);
+        tri(a[i]!, b[j]!, a[j]!);
+      }
+    const cima = anillos[anillos.length - 1]!;
+    const centro = [l.x, l.alto, l.z];
+    for (let i = 0; i < LADOS_LOMA; i++) tri(centro, cima[i]!, cima[(i + 1) % LADOS_LOMA]!);
+    tramos.push([desde, pos.length / 3, l.tono ?? 0]);
+  }
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute("position", new THREE.Float32BufferAttribute(pos, 3));
+  geo.computeVertexNormals();
+  pintarPorNormal(geo, colorToken("regolito-medio").lerp(claro, 0.5), colorToken("roca-basalto").lerp(claro, 0.35), colorToken("roca-basalto"), 77, 0.25);
+  const color = geo.getAttribute("color");
+  const c = new THREE.Color();
+  for (const [a, b, t] of tramos)
+    for (let v = a; v < b; v++) {
+      c.setRGB(color.getX(v), color.getY(v), color.getZ(v)).lerp(pálido, t);
+      color.setXYZ(v, c.r, c.g, c.b);
+    }
+  geo.computeBoundingSphere();
+  const malla = new THREE.Mesh(geo, materiales.Rock);
+  malla.name = "Mounds";
+  malla.castShadow = true;
+  malla.receiveShadow = true;
   return malla;
 }

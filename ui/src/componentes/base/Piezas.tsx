@@ -10,7 +10,7 @@ import "./facetas.css";
  */
 
 export const RECURSOS: readonly Resource[] = ["energia", "soporte_vital", "blindaje"];
-export const ICONO_RECURSO: Record<Resource, NombreIcono> = { energia: "energia", soporte_vital: "vida", blindaje: "escudo" };
+export const ICONO_RECURSO: Record<Resource, NombreIcono> = { energia: "energia", soporte_vital: "pulmones", blindaje: "escudo" };
 /**
  * Por debajo de esto el recurso está bajo: se dice con icono y texto, no solo con color.
  * Es el mismo umbral de peligro que usa el motor (design/ia.ts), para que la placa y Iris coincidan.
@@ -36,19 +36,25 @@ export function ResourcePlaque({ recurso, value, pending = [], feedback = [] }: 
   const llegando = pending.filter((p) => p.recurso === recurso && !p.oculto).reduce((s, p) => s + p.delta, 0);
   const bajo = v < UMBRAL_BAJO;
   return (
-    <div className="fc">
-      <div className="fc-cara placa" role="meter" aria-valuemin={0} aria-valuemax={100} aria-valuenow={v} aria-label={nombre}
-        aria-valuetext={bajo ? t("ui.comun.recurso.valor_bajo", { valor: v }) : String(v)}>
-        <Icono nombre={ICONO_RECURSO[recurso]} tam={30} />
-        <span className="placa-texto"><span className="placa-nombre">{nombre}</span><span className="placa-valor">{v}</span></span>
-        <span className="placa-capa" aria-live="polite">
-          {bajo && <span className="placa-bajo"><Icono nombre="aviso" tam={16} />{t("ui.comun.recurso.bajo")}</span>}
-          {feedback.map((f) => (
-            <span key={f.id} className={`placa-delta delta ${f.delta < 0 ? "delta-menos" : "delta-mas"}`}>{signo(f.delta)} {t(f.causaKey)}</span>
-          ))}
-          {llegando !== 0 && <span>{t("ui.comun.recurso.llegando", { delta: signo(llegando) })}</span>}
-        </span>
+    <div className="placa-conj">
+      <div className="fc">
+        <div className={`fc-cara pildora placa${bajo ? " placa-baja" : ""}`} role="meter" aria-valuemin={0} aria-valuemax={100} aria-valuenow={v} aria-label={nombre}
+          aria-valuetext={bajo ? t("ui.comun.recurso.valor_bajo", { valor: v }) : String(v)}>
+          <Icono nombre={ICONO_RECURSO[recurso]} tam={22} />
+          {/* Nombre completo en escritorio; en el HUD compacto del celular, el corto ("Life"). El lector oye `aria-label`. */}
+          <span className="placa-nombre">{nombre}</span>
+          <span className="placa-nombre-corto" aria-hidden="true">{t(`ui.recurso.${recurso}.corto`)}</span>
+          <span className="placa-valor">{v}</span>
+        </div>
       </div>
+      {/* Línea chica bajo la píldora, solo mientras haya algo que decir (aviso, cambio o pendiente). */}
+      <span className="placa-capa" aria-live="polite">
+        {bajo && <span className="placa-bajo"><Icono nombre="aviso" tam={16} />{t("ui.comun.recurso.bajo")}</span>}
+        {feedback.map((f) => (
+          <span key={f.id} className={`placa-delta delta ${f.delta < 0 ? "delta-menos" : "delta-mas"}`}>{signo(f.delta)} {t(f.causaKey)}</span>
+        ))}
+        {llegando !== 0 && <span>{t("ui.comun.recurso.llegando", { delta: signo(llegando) })}</span>}
+      </span>
     </div>
   );
 }
