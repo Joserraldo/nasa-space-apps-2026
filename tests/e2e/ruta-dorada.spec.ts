@@ -108,6 +108,8 @@ test("ruta dorada: de la órbita al resumen, en inglés", async ({ page }) => {
   }
   await expect(page.getByText("Unofficial project, not endorsed by NASA")).toHaveCount(0);
   const crew = page.getByRole("button", { name: "Crew", exact: true });
+  // A2 + #344: la guía de Iris llega a la escena; su globo sobre el rover dice adónde ir (el taller).
+  await expect(page.locator('.globo-escena[data-actor="iris"]')).toContainText("workshop");
   // E3, HUD progresivo: al entrar a la base no se ve Crew (llega con la primera conversación); Map y
   // Pause sí, porque ya hay un objetivo.
   await expect(crew).toHaveCount(0);
