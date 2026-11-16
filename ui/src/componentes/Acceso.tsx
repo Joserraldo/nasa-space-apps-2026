@@ -5,11 +5,12 @@ import type { Juego } from '../juego/reductor.js';
 import { FacetButton } from './base/FacetButton.js';
 import { PanelFacetado } from './base/PanelFacetado.js';
 import { LogoSolarShield } from './base/LogoSolarShield.js';
-import { Retrato } from './base/Retrato.js';
 import './base/inicio.css';
 import './acceso.css';
 
 export interface SesionJugador { usuario: string | null; progreso: Juego | null }
+const BASE = import.meta.env.BASE_URL;
+
 export function Acceso({ idioma, onIdioma, onEntrar }: {idioma: Idioma; onIdioma(i: Idioma): void; onEntrar(sesion: SesionJugador): void}) {
   const { t } = useT();
   const [modo, setModo] = useState<'login'|'register'>('login');
@@ -63,7 +64,14 @@ export function Acceso({ idioma, onIdioma, onEntrar }: {idioma: Idioma; onIdioma
         <LogoSolarShield className="acceso-logo" />
         <h1 id="acceso-titulo">{t('ui.cuenta.titulo')}</h1>
         <p>{t('ui.cuenta.subtitulo')}</p>
-        <div className="acceso-tripulante" aria-hidden="true"><Retrato persona="nino" expresion="feliz" tam={240} /></div>
+        {/* El niño entero, flotando y saludando: la misma ilustración de María Paula que la portada (inicio/01). */}
+        <div className="acceso-tripulante" aria-hidden="true">
+          <picture>
+            <source type="image/avif" srcSet={[448, 656].map((a) => `${BASE}ilustraciones/portada-nino-${a}.avif ${a}w`).join(", ")} sizes="(max-height: 760px) 220px, 300px" />
+            <img className="acceso-nino" src={`${BASE}ilustraciones/portada-nino-656.webp`} srcSet={[448, 656].map((a) => `${BASE}ilustraciones/portada-nino-${a}.webp ${a}w`).join(", ")}
+              sizes="(max-height: 760px) 220px, 300px" width={656} height={848} alt="" decoding="async" draggable={false} />
+          </picture>
+        </div>
       </section>
       <PanelFacetado tituloKey="ui.cuenta.panel" className="acceso-panel">
         <div className="acceso-invitado">

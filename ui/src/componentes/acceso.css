@@ -6,6 +6,10 @@
 .acceso-bienvenida h1 { font-size:clamp(26px,3vw,42px); }
 .acceso-bienvenida p { color:var(--color-lila); }
 .acceso-tripulante { text-align:center; }
+/* El niño entero de la portada, flotando despacio como en inicio/01; quieto con movimiento reducido. */
+.acceso-nino { display:inline-block; width:auto; height:min(34dvh,360px); max-width:100%; transform-origin:40% 60%; animation:acceso-flota 6s ease-in-out infinite alternate; }
+@keyframes acceso-flota { from { translate:0 0; rotate:-2deg; } to { translate:0 -10px; rotate:1.5deg; } }
+@media (prefers-reduced-motion: reduce) { .acceso-nino { animation:none; } }
 .acceso-panel { width:100%; min-width:0; color:var(--color-indigo-texto); }
 .acceso-panel .pf-cuerpo { display:grid; gap:var(--esp-3); }
 .acceso-invitado, .acceso-sesion { display:grid; gap:var(--esp-3); text-align:center; }
@@ -26,6 +30,8 @@
 .acceso-aviso { grid-column:1 / -1; justify-self:center; margin:0; color:var(--color-lila); font-size:13px; }
 .cuenta-barra { display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:var(--esp-2); padding:var(--esp-2) var(--esp-4); background:var(--color-lila); color:var(--color-indigo-texto); }
 .cuenta-barra p { margin:0; font-size:14px; }
+/* Escritorio: el formulario puede ser más alto que la pantalla; la bienvenida con el niño queda arriba y a la vista. */
+@media(min-width:801px) and (min-height:501px) { .acceso-bienvenida { align-self:start; position:sticky; top:80px; } }
 @media(max-width:800px) {
  .acceso.portada { grid-template-columns:minmax(0,460px); justify-content:center; gap:var(--esp-5); padding:76px var(--esp-4) var(--esp-5); }
  .acceso-bienvenida { text-align:center; }
