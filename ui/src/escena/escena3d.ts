@@ -170,6 +170,11 @@ export interface OpcionesEscena3D {
   alLugarCercano?: (lugar: LugarId | null) => void;
   /** Tecla `E` (o Enter fuera de un botón) con un lugar al alcance. */
   alUsar?: (lugar: LugarId) => void;
+  /**
+   * Mirar con el mouse sin arrastrar (A12): el primer clic en el mundo bloquea el puntero (Pointer Lock) y
+   * mover el mouse gira la cámara. Avisa al cambiar. Se suelta solo con `fijarBloqueado(true)` o con Esc.
+   */
+  alPunteroBloqueado?: (bloqueado: boolean) => void;
   /** Tecla `V`: la pantalla decide la cámara y llama a `fijarCamara`. */
   alCambiarCamara?: () => void;
   /** Posición del jugador en metros de juego: al moverse (≤ 5 por segundo) y al detenerse. */
@@ -276,6 +281,8 @@ export const CAMARA_PRIMERA = { ojos: 1.08, inclinacion: 0.12, inclinacionMin: -
 
 /** Sensibilidad de giro por píxel arrastrado (ratón y dedo). */
 const GIRO_POR_PX = 0.0055;
+/** Con el puntero bloqueado (A12), cada px de mouse gira la mitad que en el arrastre: unos 360° en 2300 px. [E] */
+const FACTOR_PUNTERO_BLOQUEADO = 0.5;
 /** Seguimiento suave: constante de tiempo inversa (1/s). */
 const SEGUIMIENTO = 9;
 /** Detrás del niño: la cámara vuelve a su espalda a este ritmo (rad/s) al caminar, si nadie la giró. */
@@ -389,6 +396,70 @@ const suave = (p: number) => p * p * (3 - 2 * p);
  * Pose de la tercera persona sin obstáculos ni suavizado: posición y punto de mira para el niño en
  * (px, py, pz), con la cámara mirando hacia `yaw` (0 = hacia −Z). Escribe en `pos` y `mira`.
  */
+/**
+ * Cámara sin zooms raros (A13). Ritmos en 1/s de las curvas exponenciales [E]:
+ * - `encuadre`: la distancia y la inclinación pedidas (aspecto del lienzo, rueda, pellizco) se alcanzan con
+ *   curva, no de golpe: abrir un panel o el mapa cambia el aspecto y antes saltaba el encuadre.
+ * - `subir`: la cámara sube sobre un obstáculo con curva rápida; `bajar` vuelve con curva lenta.
+ * - `alejar`: al liberarse de un choque la cámara se aleja con curva. Acercarse por un choque es inmediato
+ *   pero continuo: nunca más cerca que el tope libre, medido con bisección (sin escalones de 1/16).
+ */
+export const RITMO_CAMARA = { encuadre: 6, subir: 20, bajar: 4, alejar: 4 } as const;
+
+/**
+ * Distancia libre a lo largo de un rayo de largo `d`: busca el primer tramo tapado entre `n` y lo refina
+ * con `iter` bisecciones (precisión d / n / 2^iter). `tapa(t)` dice si el punto a distancia `t` choca.
+ */
+export function distanciaLibreRayo(d: number, tapa: (t: number) => boolean, minimo: number, n = 16, iter = 6): number {
+  for (let i = 1; i <= n; i++) {
+    if (!tapa((i / n) * d)) continue;
+    let lo = ((i - 1) / n) * d, hi = (i / n) * d;
+    for (let k = 0; k < iter; k++) {
+      const m = (lo + hi) / 2;
+      if (tapa(m)) hi = m;
+      else lo = m;
+    }
+    return Math.max(minimo, lo);
+  }
+  return d;
+}
+
+/** Acerca `actual` a `meta` con curva exponencial de ritmo `k` (1/s). */
+export function curva(actual: number, meta: number, k: number, dt: number): number {
+  return actual + (meta - actual) * (1 - Math.exp(-k * Math.max(0, dt)));
+}
+
+/**
+ * Siguiente distancia de la cámara. La meta es `min(deseada, tope)`: se aleja hacia ella con curva (sin
+ * pasarla, así no hay sierra contra la pared) y, si el tope libre baja, se acerca en el acto: es el único
+ * salto permitido, un choque. Con movimiento reducido o sin valor previo (`actual` < 0), va directo.
+ */
+export function siguienteDistancia(estado: DistanciaCamara, deseada: number, tope: number, dt: number, reducido: boolean): void {
+  const meta = Math.min(deseada, tope);
+  if (estado.d < 0 || reducido) {
+    estado.d = meta;
+    estado.espera = 0;
+    return;
+  }
+  if (meta < estado.d - 1e-4) {
+    // Choque: se acerca en el acto y no vuelve a alejarse hasta que el espacio siga libre un rato.
+    if (tope < deseada) estado.espera = ESPERA_TRAS_CHOQUE;
+    estado.d = meta;
+    return;
+  }
+  estado.espera = Math.max(0, estado.espera - Math.max(0, dt));
+  if (estado.espera > 0) return;
+  estado.d = curva(estado.d, meta, RITMO_CAMARA.alejar, dt);
+}
+
+/** Distancia de la cámara al pivote (`d`, -1 sin valor) y cuánto falta para poder alejarse tras un choque (s). */
+export interface DistanciaCamara {
+  d: number;
+  espera: number;
+}
+/** Tras un choque, la cámara espera esto antes de alejarse: sin esto, al rozar un borde se aleja y vuelve a chocar. [E] */
+export const ESPERA_TRAS_CHOQUE = 0.4;
+
 export function poseTercera(
   px: number, py: number, pz: number, yaw: number, inclinacion: number, distancia: number,
   adelante: number, hombro: number, pos: THREE.Vector3, mira: THREE.Vector3,
@@ -492,8 +563,11 @@ export function crearEscena3D(canvas: HTMLCanvasElement, opciones: OpcionesEscen
   let ultimoGiroManual = -Infinity;
   const pivote = new THREE.Vector3(jugadorInicial.x, 0, jugadorInicial.z);
   /** Distancia efectiva tras la colisión: se acerca de golpe y se aleja suave. */
-  let distanciaEfectiva = -1;
+  const distanciaCamara: DistanciaCamara = { d: -1, espera: 0 };
   let inclinacionEfectiva = -1;
+  /** Encuadre pedido, suavizado (A13): distancia e inclinación sin obstáculos. -1 = todavía sin valor. */
+  let distanciaEncuadre = -1;
+  let inclinacionEncuadre = -1;
   const posTercera = new THREE.Vector3();
   const miraTercera = new THREE.Vector3();
   const posPrimera = new THREE.Vector3();
@@ -513,7 +587,7 @@ export function crearEscena3D(canvas: HTMLCanvasElement, opciones: OpcionesEscen
     zoom = 1;
     ultimoGiroManual = -Infinity;
   };
-  const entradaTactil = new EntradaTactil({ onRecentrar: recentrar, permiteZoom: () => camaraActual === "tercera" });
+  const entradaTactil = new EntradaTactil({ onRecentrar: recentrar, permiteZoom: () => camaraActual === "tercera", onSaltar: () => mov.saltar() });
 
   // --- Proximidad, posición y atributos de prueba ---
   let ultimoLugar: LugarId | null = lugarCercano(mov.jugador.x, mov.jugador.z);
@@ -569,15 +643,7 @@ export function crearEscena3D(canvas: HTMLCanvasElement, opciones: OpcionesEscen
 
   /** Acorta la distancia si entre el pivote y la cámara hay un obstáculo más alto que el rayo. */
   function distanciaLibre(px: number, pz: number, dx: number, dz: number, alturaPivote: number, dy: number, d: number): number {
-    const n = 16;
-    for (let i = 1; i <= n; i++) {
-      const t = (i / n) * d;
-      const y = alturaPivote + dy * t;
-      if (tapaCamara(px + dx * t, y, pz + dz * t, CAMARA_TERCERA.margenColision, obstaculos)) {
-        return Math.max(CAMARA_TERCERA.distanciaColision, ((i - 1) / n) * d);
-      }
-    }
-    return d;
+    return distanciaLibreRayo(d, (t) => tapaCamara(px + dx * t, alturaPivote + dy * t, pz + dz * t, CAMARA_TERCERA.margenColision, obstaculos), CAMARA_TERCERA.distanciaColision);
   }
 
   function moverCamara(dt: number, ahora: number): void {
@@ -602,8 +668,15 @@ export function crearEscena3D(canvas: HTMLCanvasElement, opciones: OpcionesEscen
     encuadreTercera(camara.aspect, encuadre);
     // El arrastre vertical queda dentro de los límites de inclinación del encuadre actual.
     ajusteInclinacion = Math.min(CAMARA_TERCERA.inclinacionMax - encuadre.inclinacion, Math.max(CAMARA_TERCERA.inclinacionMin - encuadre.inclinacion, ajusteInclinacion));
-    const inclinacion = encuadre.inclinacion + ajusteInclinacion;
-    const distancia = encuadre.distancia * zoom;
+    // El encuadre pedido cambia con el aspecto (al abrir un panel o el mapa), la rueda o el pellizco: se
+    // alcanza con curva para que no haya zoom de golpe (A13). El arrastre vertical sigue directo.
+    const metaDistancia = encuadre.distancia * zoom;
+    const metaInclinacion = encuadre.inclinacion;
+    const directo = distanciaEncuadre < 0 || reducido;
+    distanciaEncuadre = directo ? metaDistancia : curva(distanciaEncuadre, metaDistancia, RITMO_CAMARA.encuadre, dt);
+    inclinacionEncuadre = directo ? metaInclinacion : curva(inclinacionEncuadre, metaInclinacion, RITMO_CAMARA.encuadre, dt);
+    const inclinacion = inclinacionEncuadre + ajusteInclinacion;
+    const distancia = distanciaEncuadre;
 
     const j = mov.jugador;
     // La cámara vuelve sola a la espalda del niño cuando se le pide ir hacia delante (o sigue una
@@ -630,7 +703,8 @@ export function crearEscena3D(canvas: HTMLCanvasElement, opciones: OpcionesEscen
     const k = reducido || dt <= 0 ? 1 : 1 - Math.exp(-SEGUIMIENTO * dt);
     pivote.x += (j.x - pivote.x) * k;
     pivote.z += (j.z - pivote.z) * k;
-    pivote.y += (j.y - pivote.y) * k;
+    // En el aire la cámara no sube con el niño: así el salto se ve (A5). Apoyado, sigue el relieve.
+    if (j.apoyado) pivote.y += (j.y - pivote.y) * k;
 
     const sy = Math.sin(yaw), cy = Math.cos(yaw);
     const fx = -sy, fz = -cy; // adelante de la cámara
@@ -641,19 +715,24 @@ export function crearEscena3D(canvas: HTMLCanvasElement, opciones: OpcionesEscen
     // Si algo tapa la cámara, primero sube por encima (más inclinación); si no alcanza, se acerca.
     let inc = inclinacion;
     let libre = distanciaLibre(bx, bz, -fx * Math.cos(inc), -fz * Math.cos(inc), by, Math.sin(inc), distancia);
+    // Si ninguna altura despeja del todo, se queda con la que más espacio deja (A13): antes volvía a la
+    // inclinación base y, al caminar, la meta saltaba entre "subida" y "baja" (zoom que va y viene).
     for (let paso = 1; paso <= PASOS_SUBIDA && libre < distancia; paso++) {
       const otra = Math.min(CAMARA_TERCERA.inclinacionMax, inclinacion + paso * SUBIDA_POR_PASO);
       const l = distanciaLibre(bx, bz, -fx * Math.cos(otra), -fz * Math.cos(otra), by, Math.sin(otra), distancia);
-      if (l >= distancia) {
+      if (l > libre + 0.05) {
         inc = otra;
         libre = l;
       }
     }
-    const suaviza = (actual: number, meta: number, sube: boolean) =>
-      actual < 0 || sube || reducido ? meta : actual + (meta - actual) * (1 - Math.exp(-4 * dt));
-    inclinacionEfectiva = suaviza(inclinacionEfectiva, inc, inc > inclinacionEfectiva);
-    distanciaEfectiva = suaviza(distanciaEfectiva, libre, libre < distanciaEfectiva);
-    const d = distanciaEfectiva;
+    // La inclinación sube y baja con curva (antes subía de golpe en escalones). La distancia se mide de nuevo
+    // con la inclinación que de verdad tiene la cámara, así nunca queda dentro de un sólido mientras sube.
+    if (inclinacionEfectiva < 0 || reducido) inclinacionEfectiva = inc;
+    else inclinacionEfectiva = curva(inclinacionEfectiva, inc, inc > inclinacionEfectiva ? RITMO_CAMARA.subir : RITMO_CAMARA.bajar, dt);
+    const ce = Math.cos(inclinacionEfectiva);
+    const tope = inclinacionEfectiva === inc ? libre : distanciaLibre(bx, bz, -fx * ce, -fz * ce, by, Math.sin(inclinacionEfectiva), distancia);
+    siguienteDistancia(distanciaCamara, distancia, tope, dt, reducido);
+    const d = distanciaCamara.d;
 
     // Con la cámara subida o acercada, la mirada se acerca para que el niño siga en el mismo lugar
     // del cuadro (mismo ángulo entre el niño y el centro que en el encuadre sin obstáculos).
@@ -716,6 +795,8 @@ export function crearEscena3D(canvas: HTMLCanvasElement, opciones: OpcionesEscen
     tripulacion.iris.grupo.position.set(iris.x, 0, iris.z);
     tripulacion.iris.grupo.rotation.y = iris.rumbo;
     tripulacion.actores.caminando = mov.velocidad > 0.2;
+    tripulacion.actores.velocidad = mov.velocidad;
+    tripulacion.actores.salto = mov.salto;
     tripulacion.actores.velocidadIris = mov.velocidadIris;
     tripulacion.actores.modoIris = iris.modo;
 
@@ -771,6 +852,12 @@ export function crearEscena3D(canvas: HTMLCanvasElement, opciones: OpcionesEscen
     if (bloqueado) return;
     if (teclado.presionar(e.code)) return;
     if (e.repeat) return;
+    // Espacio salta (A5). Sobre un botón, el espacio es del botón.
+    if (e.code === "Space" && (e.target as HTMLElement | null)?.tagName !== "BUTTON") {
+      e.preventDefault();
+      mov.saltar();
+      return;
+    }
     if (e.code === "KeyV" || e.key === "v" || e.key === "V") {
       opciones.alCambiarCamara?.();
       return;
@@ -784,12 +871,34 @@ export function crearEscena3D(canvas: HTMLCanvasElement, opciones: OpcionesEscen
   const alSoltarTecla = (e: KeyboardEvent) => {
     teclado.soltar(e.code);
   };
+  const punteroBloqueado = () => document.pointerLockElement === canvas;
   const alApuntar = (e: PointerEvent) => {
     if (e.pointerType === "touch" || e.button !== 0) return;
+    // A12: el navegador solo bloquea el puntero tras un gesto del usuario; este clic lo es. Sin bloqueo
+    // (navegador que no lo permite, o rechazado) se sigue mirando con arrastre, como antes.
+    if (e.pointerType === "mouse" && !bloqueado && !punteroBloqueado()) {
+      try {
+        const p = canvas.requestPointerLock?.() as unknown as Promise<void> | undefined;
+        p?.catch?.(() => undefined);
+      } catch {
+        // sin Pointer Lock: queda el arrastre
+      }
+    }
+    if (punteroBloqueado()) return; // ya mira con el mouse: sin arrastre ni captura
     arrastre = { id: e.pointerId, x: e.clientX, y: e.clientY };
-    canvas.setPointerCapture?.(e.pointerId);
+    try {
+      canvas.setPointerCapture?.(e.pointerId);
+    } catch {
+      // Con el bloqueo pedido y todavía sin confirmar, el navegador puede rechazar la captura: el arrastre sigue igual.
+    }
   };
   const alMoverPuntero = (e: PointerEvent) => {
+    if (punteroBloqueado()) {
+      // Con el puntero bloqueado, mover el mouse gira la cámara sin apretar nada.
+      arrastreX += e.movementX * FACTOR_PUNTERO_BLOQUEADO;
+      arrastreY += e.movementY * FACTOR_PUNTERO_BLOQUEADO;
+      return;
+    }
     if (!arrastre || e.pointerId !== arrastre.id) return;
     arrastreX += e.clientX - arrastre.x;
     arrastreY += e.clientY - arrastre.y;
@@ -804,8 +913,20 @@ export function crearEscena3D(canvas: HTMLCanvasElement, opciones: OpcionesEscen
     e.preventDefault();
     rueda += Math.max(-1, Math.min(1, e.deltaY / 400));
   };
+  let estabaBloqueado = false;
+  const alCambiarBloqueo = () => {
+    const ahora = punteroBloqueado();
+    if (ahora === estabaBloqueado) return;
+    estabaBloqueado = ahora;
+    arrastre = null;
+    opciones.alPunteroBloqueado?.(ahora);
+  };
+  const soltarPuntero = () => {
+    if (punteroBloqueado()) document.exitPointerLock?.();
+  };
   const conEntrada = opciones.entrada !== false;
   if (conEntrada) {
+    document.addEventListener("pointerlockchange", alCambiarBloqueo);
     window.addEventListener("keydown", alBajarTecla);
     window.addEventListener("keyup", alSoltarTecla);
     window.addEventListener("blur", soltarTodo);
@@ -913,7 +1034,11 @@ export function crearEscena3D(canvas: HTMLCanvasElement, opciones: OpcionesEscen
     fijarBloqueado(b) {
       if (b === bloqueado) return;
       bloqueado = b;
-      if (b) soltarTodo();
+      // Una tarjeta, un diálogo o un campo abierto suelta el puntero para que el niño pueda hacer clic.
+      if (b) {
+        soltarTodo();
+        soltarPuntero();
+      }
       mov.fijarBloqueado(b);
     },
     fijarPedido(pedido) {
@@ -955,6 +1080,8 @@ export function crearEscena3D(canvas: HTMLCanvasElement, opciones: OpcionesEscen
         window.removeEventListener("keydown", alBajarTecla);
         window.removeEventListener("keyup", alSoltarTecla);
         window.removeEventListener("blur", soltarTodo);
+        document.removeEventListener("pointerlockchange", alCambiarBloqueo);
+        soltarPuntero();
         canvas.removeEventListener("pointerdown", alApuntar);
         canvas.removeEventListener("pointermove", alMoverPuntero);
         canvas.removeEventListener("pointerup", alSoltarPuntero);

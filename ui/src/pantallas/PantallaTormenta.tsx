@@ -44,7 +44,9 @@ const NADA = () => undefined;
  * expertas que se contradicen (las del dilema: Ingeniera y Doctora), la tarjeta de la fuente NASA y
  * dos preguntas cuyas respuestas son líneas reales de `escenaTormenta`. "Back" vuelve al panel b.
  */
-export function PantallaTormenta({ estado, colocados, registro, onSeguir, onDecidir }: { estado: GameState; colocados: readonly Equipment[]; registro?: GameState | null; onSeguir?: () => void; onDecidir?: (previas: [], opcionId: string) => void }) {
+export function PantallaTormenta({ estado, colocados, registro, onSeguir, onDecidir, onConverso }: { estado: GameState; colocados: readonly Equipment[]; registro?: GameState | null; onSeguir?: () => void; onDecidir?: (previas: [], opcionId: string) => void;
+  /** Hablar con una experta cuenta como la primera conversación del HUD progresivo (E3). */
+  onConverso?: () => void }) {
   const { t } = useT();
   const [dialogo, setDialogo] = useState<Dialogo | null>(null);
   const [elegido, setElegido] = useState<string | null>(null);
@@ -67,6 +69,7 @@ export function PantallaTormenta({ estado, colocados, registro, onSeguir, onDeci
     const d = conversar(entrada, estado, { tormentaActiva: tormentaActiva(estado), dosisMarte: referenciaDosis("marte-superficie"), vecesFallaIris: fallasIris });
     if ("falla" in d) setFallasIris((n) => n + 1);
     setDialogo(d);
+    onConverso?.();
   }
   /** Pasa al panel b: si ya hay una acción (venimos de "Ask another expert") se conserva. */
   function comparar(p: Experto) { setPlan({ experta: p, opcionId: conservada ?? opcionDe(p) }); setConservada(undefined); }

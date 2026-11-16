@@ -7,7 +7,8 @@ import { useT } from "../i18n.js";
 import { describirAccion } from "../componentes/Dialogos.js";
 import { DialogoExperto } from "../componentes/DialogoExperto.js";
 import { ControlesTactiles, useModoTactil } from "../componentes/ControlesTactiles.js";
-import { HudBase, type HudBaseProps } from "../componentes/HudBase.js";
+import { HudBase, hudVisible, PROGRESO_INICIAL, type HudBaseProps, type ProgresoHud } from "../componentes/HudBase.js";
+import { MISION_JEZERO } from "@solar-shield/missions";
 import { Mapa } from "../componentes/Mapa.js";
 import { Polvo } from "../componentes/Polvo.js";
 import { ConfirmarAccion } from "../componentes/base/ConfirmarAccion.js";
@@ -17,10 +18,11 @@ import { Icono, type NombreIcono } from "../componentes/base/Iconos.js";
 import { Mensaje } from "../componentes/base/Piezas.js";
 import type { Persona } from "../componentes/base/Retrato.js";
 import "../componentes/base/facetas.css";
+import type { ActorId } from "../escena/frontera.js";
 import { vistaEscena, type LugarObjetivo } from "../escena/vista.js";
 import { DecisionRegistrada } from "./DecisionRegistrada.js";
 import { averiaIrisRevelada, mundoBloqueado, objetivoDeLaBase, usoDelLugar } from "./lugares.js";
-import { useAltoHoja, useMundo, usePosicionJugador } from "./MundoBase.js";
+import { useAltoHoja, useMundo, usePosicionJugador, verboDe } from "./MundoBase.js";
 import "./base.css";
 
 /**
@@ -53,12 +55,15 @@ const signo = (n: number) => (n > 0 ? `+${n}` : `${n}`);
 /** Qué ocupa el panel cuando no hay una decisión: la tripulación (con las acciones) o el mapa. */
 type Panel = "tripulacion" | "mapa" | null;
 
-export function PantallaBase({ estado, colocados = [], ultimas, hud, onAccion, onReanudar }: {
+export function PantallaBase({ estado, colocados = [], ultimas, hud, progreso = PROGRESO_INICIAL, onProgreso, onAccion, onReanudar }: {
   estado: GameState;
   colocados?: readonly Equipment[];
   ultimas: Novedades | null;
   /** Reloj del HUD, que pone App; el objetivo (guía de Iris) y la fila de abajo los pone esta pantalla. */
   hud: Pick<HudBaseProps, "reloj">;
+  /** Qué partes del HUD ya aparecieron en esta partida (E3); lo guarda App para que sobreviva a la tormenta. */
+  progreso?: ProgresoHud;
+  onProgreso?(p: Partial<ProgresoHud>): void;
   onAccion(a: Action): void;
   onReanudar(): void;
 }) {
@@ -88,6 +93,9 @@ export function PantallaBase({ estado, colocados = [], ultimas, hud, onAccion, o
   const objetivo = useMemo(() => objetivoDeLaBase(estado), [estado]);
   useEffect(() => { mundo.fijarObjetivo(objetivo.lugar); }, [objetivo.lugar, mundo.fijarObjetivo]);
   useEffect(() => () => mundo.fijarObjetivo(null), [mundo.fijarObjetivo]);
+  // E3: `Map` llega con el primer objetivo que marca un lugar.
+  useEffect(() => { if (objetivo.lugar && !progreso.objetivo) onProgreso?.({ objetivo: true }); }, [objetivo.lugar, progreso.objetivo]);
+  const visible = hudVisible({ progreso, sin3d: mundo.sin3d, modulosListos: colocados.length >= MISION_JEZERO.modulosAColocar });
 
   // El mundo no se mueve ni se "usa" con algo abierto encima (frontera A/B: prop `bloqueado`).
   useEffect(() => { mundo.fijarBloqueado(hayPanel); }, [hayPanel, mundo.fijarBloqueado]);
@@ -139,6 +147,8 @@ export function PantallaBase({ estado, colocados = [], ultimas, hud, onAccion, o
     const d = conversar(entrada, estado, { tormentaActiva: tormentaActiva(estado), dosisMarte: referenciaDosis("marte-superficie"), vecesFallaIris: fallasIris });
     if ("falla" in d) setFallasIris((n) => n + 1);
     setDialogo(d);
+    // E3: la primera conversación con la tripulación trae `Crew` al HUD.
+    if (!progreso.conversado) onProgreso?.({ conversado: true });
   }
   function preguntar(id: GameState["tripulacion"][number]["id"]) {
     setPreguntada(id);
@@ -176,22 +186,34 @@ export function PantallaBase({ estado, colocados = [], ultimas, hud, onAccion, o
   }
   const usar = useRef(usarLugar);
   usar.current = usarLugar;
+  /** `[E] Talk` con alguien de la tripulación: su consulta, y la escena lo gira hacia el niño. */
+  function hablarCon(a: ActorId) {
+    if (plan || registro || a === "nino") return;
+    recordarOrigen();
+    setPanel(null);
+    if (a === "iris") hablar({ experto: "ia_base" }); else preguntar(a);
+    mundo.fijarHablando(a);
+  }
+  const conActor = useRef(hablarCon);
+  conActor.current = hablarCon;
+  // E2: `[E]` llega por una sola vía (MundoBase): aquí solo se decide qué hace en E6.
   useEffect(() => {
-    mundo.fijarUso((l) => usar.current(l));
+    mundo.fijarUso((i) => {
+      if (i.tipo === "lugar") usar.current(i.lugar);
+      else if (i.tipo === "actor") conActor.current(i.actor);
+    });
     return () => mundo.fijarUso(null);
   }, [mundo.fijarUso]);
+  useEffect(() => { if (!dialogo) mundo.fijarHablando(null); }, [dialogo, mundo.fijarHablando]);
 
   // Teclado (ESCENAS §3.5): Esc cierra lo de más arriba (el panel de confirmación se cierra solo).
-  // Sin WebGL no hay escena que escuche E: la pantalla la atiende para el lugar donde está el niño.
-  const actual = useRef({ plan, hayPanel, cerrarTodo, sin3d: mundo.sin3d, cercano: mundo.cercano });
-  actual.current = { plan, hayPanel, cerrarTodo, sin3d: mundo.sin3d, cercano: mundo.cercano };
+  // `[E]` no se escucha aquí: tiene un solo manejador, en MundoBase (E2).
+  const actual = useRef({ plan, hayPanel, cerrarTodo });
+  actual.current = { plan, hayPanel, cerrarTodo };
   useEffect(() => {
     const tecla = (e: KeyboardEvent) => {
       const a = actual.current;
-      const d = e.target as HTMLElement | null;
-      if (e.key === "Escape") { if (!a.plan && a.hayPanel) a.cerrarTodo(); return; }
-      if (e.repeat || a.hayPanel || !a.sin3d || !a.cercano || (d && /^(INPUT|TEXTAREA|SELECT|BUTTON)$/.test(d.tagName))) return;
-      if (e.key === "e" || e.key === "E") usar.current(a.cercano);
+      if (e.key === "Escape" && !a.plan && a.hayPanel) a.cerrarTodo();
     };
     window.addEventListener("keydown", tecla);
     return () => window.removeEventListener("keydown", tecla);
@@ -204,18 +226,19 @@ export function PantallaBase({ estado, colocados = [], ultimas, hud, onAccion, o
 
   return (
     <section className={`base-e6${hayPanel ? " base-e6-con-panel" : ""}`} aria-label={t("ui.hud.titulo")}>
-      <HudBase estado={estado} ultimas={ultimas} reloj={hud.reloj} objetivo={{ labelKey: objetivo.labelKey, vars: objetivo.vars }} tactil={tactil} panelAbierto={hayPanel}
+      <HudBase estado={estado} ultimas={ultimas} reloj={hud.reloj} objetivo={{ labelKey: objetivo.labelKey, vars: objetivo.vars }} tactil={tactil} panelAbierto={hayPanel} visible={visible}
         mundo={{
           onTripulacion: () => alternarPanel("tripulacion"),
           onMapa: () => alternarPanel("mapa"),
-          interaccion: uso && mundo.cercano && !hayPanel ? { labelKey: uso.labelKey, onUsar: () => usarLugar(mundo.cercano!) } : undefined,
+          interaccion: hayPanel ? undefined : mundo.interactivo?.tipo === "lugar" ? (uso ? { labelKey: uso.labelKey, onUsar: mundo.usarCercano } : undefined)
+            : mundo.interactivo ? { labelKey: `ui.interaccion.${verboDe(mundo.interactivo, "base")}`, onUsar: mundo.usarCercano } : undefined,
           camara: mundo.camara,
           onCamara: mundo.alternarCamara,
         }} />
 
       {tactil && !hayPanel && (
         <ControlesTactiles entrada={mundo.entrada} camara={mundo.camara} onCamara={mundo.alternarCamara}
-          accion={uso && mundo.cercano ? { labelKey: uso.labelKey, cortoKey: `${uso.labelKey}.corto`, icono: uso.icono, onUsar: () => usarLugar(mundo.cercano!) } : undefined} />
+          accion={uso && mundo.cercano ? { labelKey: uso.labelKey, cortoKey: `${uso.labelKey}.corto`, icono: uso.icono, onUsar: mundo.usarCercano } : undefined} />
       )}
 
       {hayPanel && (

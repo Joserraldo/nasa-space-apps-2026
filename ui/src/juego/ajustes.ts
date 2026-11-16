@@ -9,12 +9,16 @@ import type { Idioma } from "../i18n";
  * valores por defecto y el juego sigue.
  */
 export type CalidadGrafica = "alta" | "media" | "baja";
+/** Cámara del mundo: tercera persona (detrás del niño) o primera (sus ojos). Igual que `CamaraEscena`. */
+export type CamaraJugador = "tercera" | "primera";
 
 export interface AjustesJugador {
   idioma: Idioma;
   sonido: boolean;
   movimientoReducido: boolean;
   calidad: CalidadGrafica;
+  /** Cámara elegida en el menú o con `V` (#372). Cambiarla no toca la partida. */
+  camara: CamaraJugador;
 }
 
 export const CLAVE_AJUSTES = "solar-shield.ajustes.v1";
@@ -34,6 +38,7 @@ export function ajustesPorDefecto(entorno: EntornoNavegador = {}): AjustesJugado
     sonido: true,
     movimientoReducido: entorno.prefiereMovimientoReducido ?? false,
     calidad: "media",
+    camara: "tercera",
   };
 }
 
@@ -65,5 +70,6 @@ function validar(dato: unknown, base: AjustesJugador): AjustesJugador {
     sonido: typeof d.sonido === "boolean" ? d.sonido : base.sonido,
     movimientoReducido: typeof d.movimientoReducido === "boolean" ? d.movimientoReducido : base.movimientoReducido,
     calidad: d.calidad === "alta" || d.calidad === "media" || d.calidad === "baja" ? d.calidad : base.calidad,
+    camara: d.camara === "tercera" || d.camara === "primera" ? d.camara : base.camara,
   };
 }

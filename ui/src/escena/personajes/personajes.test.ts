@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import { describe, expect, it } from "vitest";
-import { animar, GESTOS } from "./animaciones.js";
+import { animar, cadenciaCaminar, GESTOS } from "./animaciones.js";
 import { EXPRESIONES } from "./cabeza.js";
 import { NINO_B } from "./cuerpo.js";
 import { FICHAS, type IdPersonaje } from "./fichas.js";
@@ -269,5 +269,51 @@ describe("continuación de gestos y accesibilidad", () => {
     animar(m, "observar", 0.2);
     expect(m.huesos.catalejo.scale.x).toBe(1);
     m.liberar();
+  });
+});
+
+describe("paso según la rapidez (A4)", () => {
+  const rot = (pj: ReturnType<typeof crearPersonaje>) => HUESOS.map((n) => pj.huesos[n].rotation.toArray().slice(0, 3).join(","));
+
+  it("la cadencia crece con la rapidez y queda acotada", () => {
+    expect(cadenciaCaminar(0)).toBeCloseTo(4.5);
+    expect(cadenciaCaminar(1)).toBeCloseTo(10);
+    expect(cadenciaCaminar(0.5)).toBeGreaterThan(cadenciaCaminar(0.2));
+    expect(cadenciaCaminar(5)).toBe(cadenciaCaminar(1));
+    expect(cadenciaCaminar(-1)).toBe(cadenciaCaminar(0));
+  });
+
+  it("sin fase ni ritmo el paso es el de siempre (las expertas no cambian)", () => {
+    const a = crearPersonaje("nino"), b = crearPersonaje("nino");
+    animar(a, "caminar", 0.37);
+    animar(b, "caminar", 0.37, { fase: 0.37 * 6.2 });
+    expect(rot(b)).toEqual(rot(a));
+  });
+
+  it("a la marcha el paso es más largo que al arrancar, y con movimiento reducido queda la pose clave", () => {
+    const pj = crearPersonaje("nino");
+    const fase = Math.PI / 2;
+    animar(pj, "caminar", 0, { fase, ritmo: 0 });
+    const corto = Math.abs(pj.huesos.musloI.rotation.x);
+    animar(pj, "caminar", 0, { fase, ritmo: 1 });
+    const largo = Math.abs(pj.huesos.musloI.rotation.x);
+    expect(largo).toBeGreaterThan(corto * 1.4);
+    animar(pj, "caminar", 0, { fase, ritmo: 1, quieto: true });
+    expect(pj.huesos.musloI.rotation.x).toBeCloseTo(0, 6);
+  });
+});
+
+describe("capa de salto (A5)", () => {
+  it("se agacha al anticipar, recoge las piernas en el aire y con movimiento reducido no agrega nada", () => {
+    const pj = crearPersonaje("nino");
+    animar(pj, "reposo", 0, { quieto: true });
+    const pelvis = pj.huesos.pelvis.position.y;
+    const rodilla = pj.huesos.espinillaI.rotation.x;
+    animar(pj, "reposo", 0, { quieto: true, salto: { fase: "anticipa", k: 1 } });
+    expect(pj.huesos.pelvis.position.y).toBeCloseTo(pelvis, 6);
+    animar(pj, "reposo", 0, { salto: { fase: "anticipa", k: 1 } });
+    expect(pj.huesos.pelvis.position.y).toBeLessThan(pelvis - 0.03);
+    animar(pj, "reposo", 0, { salto: { fase: "aire", k: 1 } });
+    expect(pj.huesos.espinillaI.rotation.x).toBeGreaterThan(rodilla + 0.4);
   });
 });

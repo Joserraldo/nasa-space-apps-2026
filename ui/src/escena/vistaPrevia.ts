@@ -12,7 +12,11 @@
 import type { CalidadGrafica } from "../juego/ajustes";
 import { COLORES, conAlfa } from "../estilos/tokens";
 import { traducir, type Idioma, type Vars } from "../i18n";
+import * as THREE from "three";
+import { crearCorredorInterior, zonaCorredor } from "./activos/interiores/corredor";
+import { fusionar } from "./activos/fusionar";
 import { crearEscena3D } from "./escena3d";
+import { colorToken, crearMateriales } from "./materiales";
 import { LUGARES, type LugarId } from "./mundo";
 import { prefiereMenosMovimiento } from "./soporte";
 import type { VistaEscena } from "./vista";
@@ -107,4 +111,58 @@ function montar(): void {
   }
 }
 
-if (parametros.get("montar") !== "0") montar();
+/**
+ * `?sala=corredor` (D5): el corredor de conexión solo, en su propia vista, con la cámara a la altura de
+ * los ojos del niño en la entrada, mirando al fondo como la lámina `exterior/01`. Luz provisional de
+ * interior (la definitiva va con A8). Con `?medir=1` muestra fps, draw calls y triángulos.
+ */
+function montarCorredor(): void {
+  const canvas = document.getElementById("escena") as HTMLCanvasElement;
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: calidad !== "baja" });
+  renderer.setPixelRatio(Math.min(globalThis.devicePixelRatio || 1, calidad === "alta" ? 1.5 : 1));
+  const escena = new THREE.Scene();
+  escena.background = colorToken("lila");
+  const zona = zonaCorredor();
+  const corredor = fusionar(crearCorredorInterior(crearMateriales()), "Sala_Corredor");
+  escena.add(corredor, new THREE.HemisphereLight(colorToken("marfil"), colorToken("lila"), 2.4));
+  const luz = new THREE.DirectionalLight(colorToken("aviso-fondo"), 1.2);
+  luz.position.set(0.5, 3, zona.entrada.z);
+  luz.target.position.set(0, 0, 0);
+  escena.add(luz, luz.target);
+  const camara = new THREE.PerspectiveCamera(62, 1, 0.1, 60);
+  camara.position.set(zona.entrada.x, 1.35, zona.entrada.z + 0.6);
+  camara.lookAt(0, 1.2, 0);
+  const ajustar = () => {
+    renderer.setSize(innerWidth, innerHeight, false);
+    camara.aspect = innerWidth / innerHeight;
+    camara.updateProjectionMatrix();
+  };
+  ajustar();
+  addEventListener("resize", ajustar);
+  const tiempos: number[] = [];
+  let recuadro: HTMLDivElement | null = null;
+  if (parametros.get("medir") === "1") {
+    recuadro = document.createElement("div");
+    recuadro.setAttribute("role", "status");
+    recuadro.style.cssText = `position:fixed;top:8px;left:8px;padding:8px 10px;border-radius:8px;font:12px/1.5 monospace;background:${conAlfa("espacio", 0.85)};color:${COLORES.marfil}`;
+    document.body.appendChild(recuadro);
+  }
+  const cuadro = (ahora: number) => {
+    renderer.render(escena, camara);
+    tiempos.push(ahora);
+    while (tiempos.length && ahora - tiempos[0]! > 5000) tiempos.shift();
+    if (recuadro && tiempos.length > 1) {
+      const fps = ((tiempos.length - 1) * 1000) / (ahora - tiempos[0]!);
+      recuadro.innerHTML = [
+        `${t("ui.medir.fps_prom")}: ${Math.round(fps)}`,
+        `${t("ui.medir.draw_calls")}: ${renderer.info.render.calls}`,
+        `${t("ui.medir.triangulos")}: ${renderer.info.render.triangles}`,
+      ].join("<br>");
+    }
+    requestAnimationFrame(cuadro);
+  };
+  requestAnimationFrame(cuadro);
+}
+
+if (parametros.get("sala") === "corredor") montarCorredor();
+else if (parametros.get("montar") !== "0") montar();

@@ -47,6 +47,25 @@ export interface OpcionesGesto {
   quieto?: boolean | undefined;
   /** Expresión base cuando el gesto no impone una. */
   expresion?: Expresion | undefined;
+  /**
+   * Salto encima del gesto (A5): `anticipa` se agacha (k de 0 a 1), `aire` recoge las piernas y sube los
+   * brazos, `aterriza` amortigua (k de 1 a 0). Con `quieto`, sin capa de salto.
+   */
+  salto?: Readonly<{ fase: "suelo" | "anticipa" | "aire" | "aterriza"; k: number }> | undefined;
+  /** `caminar`: fase del ciclo de pasos (rad), acumulada con `cadenciaCaminar`. Sin ella, `t · 6,2`. */
+  fase?: number | undefined;
+  /** `caminar`: rapidez relativa a la marcha (0 a 1): pasos más largos cuanto más rápido. Sin ella, 1. */
+  ritmo?: number | undefined;
+}
+
+/**
+ * Cadencia del ciclo de pasos (rad/s) para una rapidez relativa `ritmo` (0 a 1): de 4,5 al arrancar a 10 a
+ * la marcha (unos 3 pasos por segundo). Los pies del niño avanzan ~0,11 m por paso (medido en el esqueleto),
+ * así que a 2,8 m/s todavía resbalan: ver el PR de A4. [E]
+ */
+export function cadenciaCaminar(ritmo: number): number {
+  const r = Math.max(0, Math.min(1, ritmo));
+  return 4.5 + 5.5 * r;
 }
 
 const HABLA: Expresion[] = ["hablaCerrada", "hablaAbierta", "hablaRedonda", "hablaAbierta", "hablaCerrada", "hablaRedonda"];
@@ -90,13 +109,15 @@ export function animar(pj: Personaje, gesto: Gesto, t: number, o: OpcionesGesto 
       break;
 
     case "caminar": {
-      const f = t * 6.2;
-      const paso = Math.sin(f);
+      const f = o.quieto ? 0 : (o.fase ?? t * 6.2);
+      // Amplitud según la rapidez: 0,75 al arrancar, 1,25 a la marcha; sin `ritmo`, 1 (el paso de siempre).
+      const amp = o.ritmo === undefined ? 1 : 0.75 + 0.5 * Math.max(0, Math.min(1, o.ritmo));
+      const paso = Math.sin(f) * amp;
       // El muslo va al frente con X negativo; la rodilla flexiona mientras la pierna pasa hacia delante.
       h.musloI.rotation.x = -paso * 0.4;
       h.musloD.rotation.x = paso * 0.4;
-      h.espinillaI.rotation.x = Math.max(0, Math.cos(f)) * 0.7 + 0.04;
-      h.espinillaD.rotation.x = Math.max(0, -Math.cos(f)) * 0.7 + 0.04;
+      h.espinillaI.rotation.x = Math.max(0, Math.cos(f)) * 0.7 * amp + 0.04;
+      h.espinillaD.rotation.x = Math.max(0, -Math.cos(f)) * 0.7 * amp + 0.04;
       h.pieI.rotation.x = Math.max(0, paso) * -0.22;
       h.pieD.rotation.x = Math.max(0, -paso) * -0.22;
       // Brazos en contrafase con las piernas.
@@ -215,8 +236,41 @@ export function animar(pj: Personaje, gesto: Gesto, t: number, o: OpcionesGesto 
     }
   }
 
+  if (o.salto && !o.quieto) expresion = capaSalto(pj, o.salto, expresion);
+
   const impuesta = expresion !== "neutral" && expresion !== (o.expresion ?? "neutral");
   if (!o.quieto && !impuesta && parpadea(t, desfase)) expresion = "parpadeo";
   else if (!o.quieto && expresion === "feliz" && parpadea(t, desfase + 1.3)) expresion = "parpadeo";
   pj.expresion(expresion);
+}
+
+/** Capa de salto sobre la pose del gesto: suma rotaciones, no reemplaza el gesto. Devuelve la expresión. */
+function capaSalto(pj: Personaje, s: NonNullable<OpcionesGesto["salto"]>, expresion: Expresion): Expresion {
+  const h = pj.huesos;
+  const k = Math.max(0, Math.min(1, s.k));
+  if (s.fase === "anticipa" || s.fase === "aterriza") {
+    // Agachado: rodillas al frente, pelvis abajo, torso inclinado y brazos atrás para tomar impulso.
+    h.pelvis.position.y -= 0.05 * k;
+    h.musloI.rotation.x -= 0.55 * k;
+    h.musloD.rotation.x -= 0.55 * k;
+    h.espinillaI.rotation.x += 0.95 * k;
+    h.espinillaD.rotation.x += 0.95 * k;
+    h.pieI.rotation.x -= 0.4 * k;
+    h.pieD.rotation.x -= 0.4 * k;
+    h.torso.rotation.x += 0.18 * k;
+    h.brazoI.rotation.x += 0.45 * k;
+    h.brazoD.rotation.x += 0.45 * k;
+    return expresion;
+  }
+  if (s.fase === "aire") {
+    // En el aire: piernas recogidas y brazos arriba; cara de sorpresa feliz (en Marte se sube mucho).
+    h.musloI.rotation.x -= 0.35;
+    h.musloD.rotation.x -= 0.25;
+    h.espinillaI.rotation.x += 0.6;
+    h.espinillaD.rotation.x += 0.45;
+    h.brazoI.rotation.z += 0.7;
+    h.brazoD.rotation.z -= 0.7;
+    return "feliz";
+  }
+  return expresion;
 }
