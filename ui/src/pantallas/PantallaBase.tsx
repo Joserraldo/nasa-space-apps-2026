@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { conversarConRed, interlocutorDe, MEMORIA_INICIAL, reaccionTripulacion, type Dialogo, type EntradaConversacion, type MemoriaConversacion, type OpcionConversacion } from "@solar-shield/agents";
+import { conversarConRed, CURIOSIDADES_MARTE, curiosidadMarte, interlocutorDe, MEMORIA_INICIAL, reaccionTripulacion, type Dialogo, type EntradaConversacion, type MemoriaConversacion, type MomentoCuriosidad, type OpcionConversacion } from "@solar-shield/agents";
 import type { Action, BaseAction, Equipment, GameState } from "@solar-shield/contracts";
 import { referenciaDosis } from "@solar-shield/data";
 import { telemetriaPendiente, tormentaActiva, type Novedades } from "@solar-shield/engine";
@@ -56,7 +56,7 @@ const signo = (n: number) => (n > 0 ? `+${n}` : `${n}`);
 /** Qué ocupa el panel cuando no hay una decisión: la tripulación (con las acciones) o el mapa. */
 type Panel = "tripulacion" | "mapa" | null;
 
-export function PantallaBase({ estado, colocados = [], ultimas, hud, progreso = PROGRESO_INICIAL, onProgreso, memoria = MEMORIA_INICIAL, onMemoria, onAccion, onReanudar }: {
+export function PantallaBase({ estado, colocados = [], ultimas, hud, progreso = PROGRESO_INICIAL, onProgreso, memoria = MEMORIA_INICIAL, onMemoria, vistos = [], onVisto, onAccion, onReanudar }: {
   estado: GameState;
   colocados?: readonly Equipment[];
   ultimas: Novedades | null;
@@ -68,6 +68,9 @@ export function PantallaBase({ estado, colocados = [], ultimas, hud, progreso = 
   /** Lo que la tripulación recuerda de esta partida (frente B, #377). Lo guarda App; solo sale texto. */
   memoria?: MemoriaConversacion;
   onMemoria?(m: MemoriaConversacion): void;
+  /** Curiosidades de Marte ya contadas en esta partida (B4): cada una sale una sola vez. Las guarda App. */
+  vistos?: readonly string[];
+  onVisto?(id: string): void;
   onAccion(a: Action): void;
   onReanudar(): void;
 }) {
@@ -139,6 +142,31 @@ export function PantallaBase({ estado, colocados = [], ultimas, hud, progreso = 
   function cerrarPlan() {
     setPlan(null);
     devolverFoco();
+  }
+  /**
+   * B4: momentos que de verdad están ocurriendo en la partida o en la escena. Una curiosidad solo se ofrece
+   * en su momento real; las de cosas que la escena no muestra (atardecer, remolinos, lunas, MOXIE) no.
+   */
+  function momentosReales(): MomentoCuriosidad[] {
+    const m: MomentoCuriosidad[] = ["llegada"];
+    if (tormentaActiva(estado)) m.push("radiacion");
+    if (tele) m.push("telemetria");
+    if (ultimas?.malaSuerte.some((c) => c.descripcionKey === "mala_suerte.tormenta_polvo")) m.push("polvo");
+    if (mundo.cercano === "habitat") m.push("habitat");
+    return m;
+  }
+  /** La curiosidad que puede contar quien habla ahora, si su momento es real y todavía no la contó. */
+  const curiosidadDe = (experto: string) => {
+    const reales = momentosReales();
+    const dato = CURIOSIDADES_MARTE.find((c) => c.experto === experto && reales.includes(c.momento) && !vistos.includes(c.id));
+    return dato ? curiosidadMarte(dato.momento, vistos) : null;
+  };
+  /** Cuenta la curiosidad en la franja, con su tarjeta de fuente NASA (dato curado, no en vivo). */
+  function contarCuriosidad(c: { id: string; dialogo: Dialogo }) {
+    solicitud.current++;
+    setOcupado(false);
+    onVisto?.(c.id);
+    setDialogo(c.dialogo);
   }
   /** Deja de esperar la respuesta en curso (cerrar, abrir otro panel o decidir). No cambia nada del juego. */
   function soltarCharla() {
@@ -372,14 +400,19 @@ export function PantallaBase({ estado, colocados = [], ultimas, hud, progreso = 
                   onOtra={() => alternarPanel("tripulacion")} />
               )}
               {/* #377: botones para seguir hablando; funcionan sin modelo y nunca aplican una acción. */}
-              {dialogo && !plan && opciones.length > 0 && (
-                <div className="fila" role="group" aria-label={t("ui.base.charla.opciones")} aria-busy={ocupado}>
-                  {opciones.map((o) => (
-                    <FacetButton key={`${o.entrada.con}-${o.entrada.pregunta ?? ""}`} labelKey={o.etiqueta.clave} labelVars={o.etiqueta.vars}
-                      disabled={ocupado} onClick={() => void hablar(o.entrada)} />
-                  ))}
-                </div>
-              )}
+              {dialogo && !plan && opciones.length > 0 && (() => {
+                const dato = curiosidadDe(dialogo.experto);
+                return (
+                  <div className="fila" role="group" aria-label={t("ui.base.charla.opciones")} aria-busy={ocupado}>
+                    {opciones.map((o) => (
+                      <FacetButton key={`${o.entrada.con}-${o.entrada.pregunta ?? ""}`} labelKey={o.etiqueta.clave} labelVars={o.etiqueta.vars}
+                        disabled={ocupado} onClick={() => void hablar(o.entrada)} />
+                    ))}
+                    {/* B4: un dato de Marte de quien habla, solo en su momento real y una vez por partida. */}
+                    {dato && <FacetButton icon="sol" labelKey={`ui.curiosidad.${dato.id}`} disabled={ocupado} onClick={() => contarCuriosidad(dato)} />}
+                  </div>
+                );
+              })()}
               {plan ? (
                 <ConfirmarAccion estado={estado} accion={plan} onCancelar={cerrarPlan} onConfirmar={confirmar} />
               ) : panel === "mapa" ? (

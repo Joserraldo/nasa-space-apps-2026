@@ -27,6 +27,10 @@ async function avanzarHasta(page: Page, listo: () => Promise<boolean>, maxTurnos
 }
 
 test("ruta dorada: de la órbita al resumen, en inglés", async ({ page }) => {
+  // Recorre la misión entera con la escena 3D: en CI (sin GPU, dos trabajadores) tarda cerca de 90 s, el
+  // límite general, y se pasaba según la carga de la otra prueba. Mismo margen que "seguir a Iris". Las
+  // esperas de cada paso no cambian.
+  test.setTimeout(180_000);
   const errores: string[] = [];
   page.on("pageerror", (e) => errores.push(e.message));
   page.on("console", (m) => m.type() === "error" && errores.push(m.text()));

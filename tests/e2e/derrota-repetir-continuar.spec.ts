@@ -229,5 +229,18 @@ test("la tripulación conversa con el modelo y, sin red, deja preguntas que func
   await boton.click();
   await expect(franja).not.toHaveText(antes);
   expect(await energia(page)).toBe(energiaAntes);
+
+  // B4: al llegar a la base, Iris tiene un dato de Marte con su fuente NASA (curado, no en vivo), una sola vez.
+  await page.keyboard.press("Escape");
+  await page.getByRole("button", { name: "Map", exact: true }).click();
+  await page.getByRole("list", { name: "Places" }).getByRole("button", { name: /^Antenna/ }).click();
+  await page.getByRole("button", { name: /Ask Iris about this place/ }).first().click({ timeout: 60_000 });
+  const dato = seguir.getByRole("button", { name: "Tell me about a day on Mars" });
+  await dato.click();
+  await expect(franja).toContainText("sol");
+  await expect(franja.getByRole("link").first()).toHaveAttribute("href", /science\.nasa\.gov/);
+  await expect(franja).toContainText("Real curated data, not live");
+  await expect(dato).toHaveCount(0);
+  expect(await energia(page)).toBe(energiaAntes);
   expect(errores, `errores de consola: ${errores.join(" | ")}`).toEqual([]);
 });
