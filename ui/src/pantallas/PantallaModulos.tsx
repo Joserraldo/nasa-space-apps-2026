@@ -8,7 +8,7 @@ import { FacetButton } from "../componentes/base/FacetButton.js";
 import { Icono } from "../componentes/base/Iconos.js";
 import { CostRow, ICONO_RECURSO, Mensaje, RECURSOS } from "../componentes/base/Piezas.js";
 import "../componentes/base/facetas.css";
-import { TarjetaContextual, useTarjetaUnica } from "../componentes/TarjetaContextual.js";
+import { TarjetaDelFlujo, useTarjetaUnica } from "../componentes/TarjetaDelFlujo.js";
 import { LUGARES } from "../escena/mundo.js";
 import { useMundo } from "./MundoBase.js";
 import "./modulos.css";
@@ -131,7 +131,7 @@ export function PantallaModulos({ estado, colocados, onColocar, onListo }: {
         </div>
       </div>
 
-      <TarjetaContextual abierta={tarjeta.abierta !== null} onCerrar={tarjeta.cerrar} className="modulos-panel"
+      <TarjetaDelFlujo abierta={tarjeta.abierta !== null} onCerrar={tarjeta.cerrar} className="modulos-panel"
         contenido={mostrada?.tipo === "modulo" ? mostrada.modulo : mostrada?.tipo} onCerrada={devolverFoco}
         figura={mostrada && <ExpertPortrait persona={mostrada.tipo === "modulo" ? expertaDe(mostrada.modulo) : "ingeniera"} compacto />}
         titulo={mostrada?.tipo === "modulo" ? t(`ui.paso.4.modulo.${mostrada.modulo}`) : t("ui.paso.4.titulo", { n: total })}
@@ -169,7 +169,7 @@ export function PantallaModulos({ estado, colocados, onColocar, onListo }: {
             </ul>
           </>
         ) : null}
-      </TarjetaContextual>
+      </TarjetaDelFlujo>
     </section>
   );
 }

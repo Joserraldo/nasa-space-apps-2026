@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState, type ComponentProps } from "r
 import { TarjetaContextual as Presentacion } from "./base/TarjetaContextual.js";
 
 /**
- * Tarjeta contextual (PLAN-JUGABILIDAD §1 y E1; MECANICAS §4 y §6).
+ * Tarjeta del flujo: el contenedor de la tarjeta contextual (PLAN-JUGABILIDAD §1 y E1; MECANICAS §4 y §6).
  *
  * - Nace de un evento del mundo (llegar a un anclaje, `[E]`, hablar con la tripulación) y no está
  *   fija en la pantalla: cerrada no se dibuja.
@@ -13,7 +13,7 @@ import { TarjetaContextual as Presentacion } from "./base/TarjetaContextual.js";
  * El aspecto, la entrada y la salida, y el foco que entra y vuelve son de la primitiva del frente F
  * (`base/TarjetaContextual.tsx`, F2). Aquí solo se agrega lo del flujo: Esc cierra sin decidir y, si el contenido cambia, el foco no se pierde.
  */
-export function TarjetaContextual({ abierta, onCerrar, contenido, ...resto }: ComponentProps<typeof Presentacion> & {
+export function TarjetaDelFlujo({ abierta, onCerrar, contenido, ...resto }: ComponentProps<typeof Presentacion> & {
   /** Cerrar sin decidir (Esc o `Back`): no cambia nada del juego. */
   onCerrar: () => void;
   /**
