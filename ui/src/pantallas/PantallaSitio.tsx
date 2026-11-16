@@ -85,7 +85,7 @@ export function PantallaSitio({ estado, onElegir }: { estado: GameState; onElegi
   }
 
   return (
-    <section className="sitio" aria-labelledby="sitio-titulo">
+    <section className={esJezero ? "sitio" : "sitio sitio-sin-mapa"} aria-labelledby="sitio-titulo">
       <div className="fc sitio-cabeza">
         <div className="fc-cara sitio-cabeza-cara">
           <h2 id="sitio-titulo">{t("ui.paso.3.titulo")}</h2>

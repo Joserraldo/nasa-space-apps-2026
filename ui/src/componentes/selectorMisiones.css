@@ -1,0 +1,26 @@
+/* EXPERIMENTAL: pantalla "Choose your mission" (familia de tarjetas de la pantalla final). */
+.misiones {
+  box-sizing: border-box;
+  min-block-size: calc(100dvh - var(--alto-barra, 0px));
+  padding: max(var(--esp-5), env(safe-area-inset-top)) max(var(--esp-4), env(safe-area-inset-right))
+    var(--esp-6) max(var(--esp-4), env(safe-area-inset-left));
+  background: var(--color-lila);
+  color: var(--color-indigo-texto);
+  overflow-x: clip;
+}
+.misiones-pagina { display: grid; gap: var(--esp-5); max-inline-size: 1200px; margin-inline: auto; }
+.misiones-cabeza { padding: var(--esp-5); }
+.misiones-cabeza h2 { margin: 0 0 var(--esp-2); }
+.misiones-cabeza p { margin: 0; }
+.misiones-lista {
+  list-style: none; margin: 0; padding: 0;
+  display: grid; gap: var(--esp-4); grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr));
+}
+.misiones-tarjeta { display: grid; gap: var(--esp-3); grid-template-rows: auto 1fr auto auto; block-size: 100%; box-sizing: border-box; padding: var(--esp-5) var(--esp-4); }
+.misiones-tarjeta h3 { margin: 0; font-size: 22px; }
+.misiones-lugar, .misiones-ganada { display: flex; align-items: center; gap: var(--esp-2); margin: 0; font-weight: var(--tipo-peso-etiqueta); }
+.misiones-ganada { color: var(--color-exito-texto, #1F7A3A); }
+[data-lugar="luna"] .misiones-tarjeta { --fc-fondo: #ECEBF1; }
+[data-lugar="espacio"] .misiones-tarjeta { --fc-fondo: #E6E4F2; }
+.misiones-tarjeta .fb-caja { display: block; max-inline-size: 100%; min-inline-size: 0; }
+.misiones-tarjeta .fb { inline-size: 100%; max-inline-size: 100%; box-sizing: border-box; font-size: 18px; --fb-punta: 14px; padding-inline: var(--esp-4); }

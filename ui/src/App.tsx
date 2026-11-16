@@ -15,10 +15,13 @@ import { Intro } from "./componentes/Intro.js";
 import { Carga } from "./componentes/Carga.js";
 import { Llegada } from "./componentes/Llegada.js";
 import { Creditos } from "./componentes/Creditos.js";
+import { SelectorMisiones } from "./componentes/SelectorMisiones.js";
 import { Transicion } from "./componentes/Transicion.js";
 import { MundoBase } from "./pantallas/MundoBase.js";
 import { MEMORIA_INICIAL, type MemoriaConversacion, type TemaPregunta } from "@solar-shield/agents";
-import { fijarMision, misionPorId, semillaNueva, siguienteMision } from "./juego/misiones.js";
+import { fijarMision, misionPorId, semillaNueva } from "./juego/misiones.js";
+import { SEMILLA_DORADA } from "@solar-shield/engine";
+import { MISION_JEZERO } from "@solar-shield/missions";
 import { cargarAjustes, guardarAjustes, type CalidadGrafica, type CamaraJugador } from "./juego/ajustes.js";
 import { Menu } from "./componentes/Menu.js";
 import { almacenDelNavegador, cargarPartida, guardarPartida } from "./juego/guardado.js";
@@ -81,7 +84,12 @@ function Pantalla({ idioma, setIdioma, sonido, setSonido, grafica }: {
   const seguirLlegada = useCallback(() => setEntrada((e) => (e === "llegada" ? "listo" : e)), []);
   const enMundo = (j.fase === "modulos" && !llegando) || enBase || j.fase === "tormenta";
   // Inicio en tres momentos (ESCENAS E0 a E2): portada, intro de 4 viñetas y carga. Después, la órbita.
-  const [inicio, setInicio] = useState<"portada" | "intro" | "carga">("portada");
+  const [inicio, setInicio] = useState<"portada" | "misiones" | "intro" | "carga">("portada");
+  // EXPERIMENTAL: misiones ganadas en esta visita (se marcan en "Choose your mission").
+  const [ganadas, setGanadas] = useState<ReadonlySet<string>>(() => new Set());
+  // Al volver a "inicio" desde el final: "Play again" va directo a la intro y "Choose another mission"
+  // al selector; desde otro sitio, la portada.
+  const alVolverAInicio = useRef<"portada" | "misiones" | "intro">("portada");
   const [creditos, setCreditos] = useState(false);
   // E4: el menú se abre desde "Settings" en la portada y desde "Menu" en el HUD. No toca la partida.
   const [menu, setMenu] = useState(false);
@@ -111,8 +119,19 @@ function Pantalla({ idioma, setIdioma, sonido, setSonido, grafica }: {
     faseAnterior.current = j.fase;
     if (j.fase === "tormenta") tocar("alerta", sonido);
     else if (j.fase === "final") tocar(j.estado.resultado === "exito" ? "exito" : "fallo", sonido);
+    if (j.fase === "final" && j.estado.resultado === "exito") setGanadas((g) => (g.has(j.misionId) ? g : new Set([...g, j.misionId])));
   }, [j.fase, j.estado.resultado, sonido]);
-  useEffect(() => { if (j.fase === "inicio") setInicio("portada"); }, [j.fase]);
+  useEffect(() => {
+    if (j.fase !== "inicio") return;
+    setInicio(alVolverAInicio.current);
+    alVolverAInicio.current = "portada";
+  }, [j.fase]);
+  /** Elegida en el selector: partida nueva de esa misión (Jezero con su semilla dorada) y a la intro. */
+  const elegirMision = (id: string) => {
+    tocar("confirmar", sonido);
+    enviar({ tipo: "nueva", misionId: id, semilla: id === MISION_JEZERO.id ? SEMILLA_DORADA : semillaNueva(id) });
+    setInicio("intro");
+  };
   const empezarMision = () => { setProgreso(PROGRESO_INICIAL); setMemoria(MEMORIA_INICIAL); setVistos([]); enviar({ tipo: "fase", fase: "satelite" }); };
   // La carga es un respiro corto entre la intro y la órbita; se puede saltar con "Skip".
   useEffect(() => {
@@ -171,18 +190,19 @@ function Pantalla({ idioma, setIdioma, sonido, setSonido, grafica }: {
           <Transicion clave={j.fase === "inicio" ? inicio : j.fase}>
             {j.fase === "inicio" && inicio === "portada" && (
               <Portada idioma={idioma} onIdioma={setIdioma} sonido={sonido} onSonido={alternarSonido}
-                puedeContinuar={guardada !== null} onEmpezar={() => setInicio("intro")} onContinuar={continuar} onAjustes={abrirMenu} onCreditos={() => setCreditos(true)} />
+                puedeContinuar={guardada !== null} onEmpezar={() => setInicio("misiones")} onContinuar={continuar} onAjustes={abrirMenu} onCreditos={() => setCreditos(true)} />
             )}
+            {j.fase === "inicio" && inicio === "misiones" && <SelectorMisiones ganadas={ganadas} onElegir={elegirMision} onVolver={() => setInicio("portada")} />}
             {j.fase === "inicio" && inicio === "intro" && <Intro onTerminar={() => setInicio("carga")} />}
             {j.fase === "inicio" && inicio === "carga" && <Carga consejo={0} sonido={sonido} onSonido={alternarSonido} onSaltar={empezarMision} />}
             {j.fase === "satelite" && <PantallaOrbita estado={j.estado} onContinuar={() => enviar({ tipo: "fase", fase: "sitio" })} />}
             {j.fase === "sitio" && <PantallaSitio estado={j.estado} onElegir={(s) => { tocar("confirmar", sonido); setEntrada("llegada"); enviar({ tipo: "sitio", sitio: s }); }} />}
             {llegando && <Llegada onSeguir={seguirLlegada} />}
-            {j.fase === "final" && <PantallaFinal estado={j.estado} onOtra={() => { setProgreso(PROGRESO_INICIAL); setMemoria(MEMORIA_INICIAL); setVistos([]); enviar({ tipo: "nueva" }); }}
+            {j.fase === "final" && <PantallaFinal estado={j.estado} onOtra={() => { setProgreso(PROGRESO_INICIAL); setMemoria(MEMORIA_INICIAL); setVistos([]); alVolverAInicio.current = "intro"; enviar({ tipo: "nueva" }); }}
               onOtraSemilla={() => {
-                const otra = siguienteMision(j.misionId);
                 setProgreso(PROGRESO_INICIAL); setMemoria(MEMORIA_INICIAL); setVistos([]);
-                enviar({ tipo: "nueva", misionId: otra.id, semilla: semillaNueva(otra.id) });
+                alVolverAInicio.current = "misiones";
+                enviar({ tipo: "nueva" });
               }} />}
           </Transicion>
         )}
