@@ -1,0 +1,58 @@
+/*
+ * Controles táctiles (ESCENAS §3.5): familia de ui/03 (chaflán, marfil, cian = se puede usar).
+ * La capa cubre el mundo bajo el HUD; `touch-action: none` para que la página no se desplace ni haga
+ * zoom. Solo tokens.
+ */
+.ct { position: absolute; inset: 0; z-index: 2; touch-action: none; -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
+
+/* Base octogonal de 112 px, marfil al 70 % con borde lila; perilla cian de 48 px. */
+.ct-pista, .ct-joystick {
+  position: absolute; inline-size: 112px; block-size: 112px; display: grid; place-items: center; pointer-events: none;
+  background: var(--color-lila);
+  clip-path: polygon(30% 0, 70% 0, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0 70%, 0 30%);
+}
+.ct-pista::before, .ct-joystick::before {
+  content: ""; position: absolute; inset: 3px; background: color-mix(in srgb, var(--color-marfil) 70%, transparent);
+  clip-path: inherit;
+}
+.ct-pista { left: max(var(--esp-3), env(safe-area-inset-left)); bottom: max(var(--esp-3), env(safe-area-inset-bottom)); opacity: .55; }
+.ct-joystick { left: 0; top: 0; opacity: 0; transition: opacity 150ms var(--curva-salida); will-change: transform; }
+.ct-joystick[data-activo="true"] { opacity: 1; transition: none; }
+.ct:has(.ct-joystick[data-activo="true"]) .ct-pista { opacity: 0; }
+.ct-perilla { position: relative; inline-size: 48px; block-size: 48px; border-radius: 50%; background: var(--color-cian);
+  box-shadow: inset 0 0 0 3px var(--color-marfil), 0 2px 0 color-mix(in srgb, var(--color-ciruela) 40%, transparent); will-change: transform; }
+.ct-perilla-pista { opacity: .8; }
+
+/* Botones a la derecha: cámara 48 px y acción 72 px; capturan su toque. */
+.ct-botones {
+  position: absolute; right: max(var(--esp-3), env(safe-area-inset-right)); bottom: max(var(--esp-3), env(safe-area-inset-bottom));
+  display: flex; align-items: flex-end; gap: var(--esp-3);
+}
+.ct-botones button { appearance: none; border: 0; padding: 0; background: none; color: var(--color-indigo-texto); touch-action: manipulation; cursor: pointer; }
+.ct-cara {
+  display: flex; align-items: center; justify-content: center; gap: var(--esp-2); block-size: 100%;
+  background: var(--color-marfil); font-weight: var(--tipo-peso-titulo); font-size: 16px;
+  box-shadow: inset 0 0 0 var(--borde-fino) var(--color-lila);
+  clip-path: polygon(14px 0, calc(100% - 14px) 0, 100% 50%, calc(100% - 14px) 100%, 14px 100%, 0 50%);
+  padding-inline: 22px;
+}
+.ct-camara { min-block-size: 48px; block-size: 48px; min-inline-size: 48px; }
+.ct-accion { min-block-size: 72px; block-size: 72px; min-inline-size: 72px; }
+.ct-accion .ct-cara { background: var(--color-cian); font-size: 20px; padding-inline: 26px; }
+.ct-botones button:active .ct-cara { transform: scale(.96); }
+.ct-botones button:focus-visible { outline: var(--foco-ancho) solid var(--color-cian); outline-offset: var(--foco-separacion); }
+.ct-tecla { display: inline-grid; place-items: center; inline-size: 26px; block-size: 26px; background: var(--color-ciruela); color: var(--color-marfil); font-size: 16px;
+  clip-path: polygon(5px 0, calc(100% - 5px) 0, 100% 5px, 100% calc(100% - 5px), calc(100% - 5px) 100%, 5px 100%, 0 calc(100% - 5px), 0 5px); }
+
+/* Vertical: cámara encima de la acción, para dejar sitio a Crew y Map junto al joystick. */
+@media (orientation: portrait) {
+  .ct-botones { flex-direction: column; align-items: flex-end; }
+}
+@media (prefers-reduced-motion: reduce) { .ct-joystick { transition: none; } }
+
+/* Vertical: acción con el icono sobre el verbo, como la lámina ("Inspect" con su lupa). */
+@media (orientation: portrait) {
+  .ct-accion .ct-cara { flex-direction: column; gap: 2px; padding-inline: var(--esp-4); font-size: 18px;
+    clip-path: polygon(12px 0, calc(100% - 12px) 0, 100% 12px, 100% calc(100% - 12px), calc(100% - 12px) 100%, 12px 100%, 0 calc(100% - 12px), 0 12px); }
+  .ct-accion { block-size: 80px; }
+}

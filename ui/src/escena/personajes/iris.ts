@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import { retenerMateriales } from "./recursos";
 import type { V3 } from "./malla.js";
 import { Superficie, type Pesos, type Topologia } from "./superficie.js";
 
@@ -330,6 +331,7 @@ export function crearIris(): Iris {
     soporte.add(malla);
   }
   let actual: CaraIris = "atenta";
+  const soltarMateriales = retenerMateriales(grupo);
   const cara = (c: CaraIris) => {
     if (c === actual) return;
     caras.get(actual)!.visible = false;
@@ -370,6 +372,7 @@ export function crearIris(): Iris {
     liberar() {
       if (liberado) return;
       liberado = true;
+      soltarMateriales();
       esqueleto.dispose();
       geometria.dispose();
       caras.forEach((c) => c.geometry.dispose());

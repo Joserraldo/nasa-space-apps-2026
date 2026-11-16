@@ -1,24 +1,20 @@
-import { useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import type { Equipment, GameState, Resource } from "@solar-shield/contracts";
 import { costoDe, puedeAplicar } from "@solar-shield/engine";
 import { MISION_JEZERO } from "@solar-shield/missions";
 import { useT } from "../i18n.js";
-import { EscenaBase } from "../escena/EscenaBase.js";
-import { hayGraficos3D, prefiereMenosMovimiento } from "../escena/soporte.js";
-import { vistaEscena } from "../escena/vista.js";
-import { cargarAjustes } from "../juego/ajustes.js";
-import type { EventoFeedback } from "../juego/eventos.js";
 import { ExpertPortrait } from "../componentes/base/ExpertPortrait.js";
 import { FacetButton } from "../componentes/base/FacetButton.js";
 import { Icono } from "../componentes/base/Iconos.js";
 import { CostRow, ICONO_RECURSO, Mensaje, RECURSOS } from "../componentes/base/Piezas.js";
 import "../componentes/base/facetas.css";
+import { useMundo } from "./MundoBase.js";
 import "./modulos.css";
 
 /**
- * E5, paso 4 (ESCENAS §2.7, fila "E5 a E7"; MECANICAS §3.2). La base de Jezero (`EscenaBase`) va
- * detrás, como la consola de `mundo/01`; sin WebGL queda un respaldo 2D con el módulo elegido en
- * cian. Encima, la lista de módulos con la familia de `ui/03` y, a la derecha, el panel de decisión
+ * E5, paso 4 (ESCENAS §2.7, fila "E5 a E7"; MECANICAS §3.2). Capa sobre el mundo compartido
+ * (`MundoBase`, la misma escena que sigue en E6 y E7); sin WebGL queda el respaldo 2D con el módulo
+ * elegido en cian. Encima, la lista de módulos con la familia de `ui/03` y, a la derecha, el panel de decisión
  * (panel 02 de `ui/04`): nombre, `Costs now` / `Later` y la
  * acción principal. Costo y beneficio salen de `costoDe` (motor + misión); si el motor no deja
  * colocar, `puedeAplicar` da el motivo escrito. El reductor vuelve a comprobar antes de marcar
@@ -26,8 +22,6 @@ import "./modulos.css";
  */
 
 const mision = MISION_JEZERO;
-const SIN_EVENTOS: readonly EventoFeedback[] = [];
-const sinEfecto = () => undefined;
 /** Quién aconseja cada módulo (sin mapeo en agents/): el escudo es protección de la tripulación; el resto, la Ingeniera. */
 const expertaDe = (m: Equipment) => (m === "escudo" ? "doctora" : "ingeniera") as "doctora" | "ingeniera";
 const accionDe = (modulo: Equipment) => ({ tipo: "colocar_modulo", modulo }) as const;
@@ -52,15 +46,14 @@ export function PantallaModulos({ estado, colocados, onColocar, onListo }: {
   const [elegido, setElegido] = useState<Equipment>(mision.modulosDisponibles[0]!);
   const [ultimo, setUltimo] = useState<Equipment | null>(null);
 
-  const [sinGl, setSinGl] = useState(() => !hayGraficos3D());
-  const [ajustes] = useState(() => cargarAjustes(typeof localStorage === "undefined" ? undefined : localStorage,
-    { prefiereMovimientoReducido: prefiereMenosMovimiento() }));
+  const { sin3d: sinGl, fijarInstalando } = useMundo();
   const [abierto, setAbierto] = useState(true);
   const puesto = colocados.includes(elegido);
   // La escena no tiene prop de resaltado (issue para Daniel): el módulo elegido y aún sin colocar
   // se ve como "instalando" (andamio teal) en su anclaje; cuando exista la prop, se reemplaza.
-  const vista = useMemo(() => vistaEscena(estado, { fase: "modulos", colocados, instalando: puesto || !abierto ? null : elegido }),
-    [estado, colocados, elegido, puesto, abierto]);
+  const instalando = puesto || !abierto ? null : elegido;
+  useEffect(() => { fijarInstalando(instalando); }, [instalando, fijarInstalando]);
+  useEffect(() => () => fijarInstalando(null), [fijarInstalando]);
   const { inmediato, retrasado } = costoDe(accionDe(elegido), mision);
   const permiso = puedeAplicar(estado, accionDe(elegido), mision);
   const motivoKey = permiso.ok ? undefined
@@ -79,15 +72,6 @@ export function PantallaModulos({ estado, colocados, onColocar, onListo }: {
 
   return (
     <section className="modulos-e5" aria-labelledby="modulos-titulo">
-      <div className="modulos-mundo" data-escena="modulos" aria-hidden="true">
-        {sinGl ? (
-          <span className="modulos-mundo-2d" />
-        ) : (
-          <EscenaBase vista={vista} eventos={SIN_EVENTOS} calidad={ajustes.calidad} camara="tercera"
-            movimientoReducido={ajustes.movimientoReducido} onLugarCercano={sinEfecto} onUsar={sinEfecto}
-            onCalidad={sinEfecto} onWebGLPerdido={() => setSinGl(true)} />
-        )}
-      </div>
       <div className="modulos-izq">
         <div className="fc">
           <div className="fc-cara modulos-cabeza">

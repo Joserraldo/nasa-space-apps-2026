@@ -39,14 +39,16 @@ export interface PildoraBotonProps {
 
 export function PildoraBoton({ labelKey, labelVars, icon, tecla, onClick, className }: PildoraBotonProps) {
   const { t } = useT();
+  const etiqueta = t(labelKey, labelVars);
+  // El nombre completo va en `aria-label`: en el HUD compacto del celular el texto se esconde y queda el icono.
   return (
     <button type="button" className={`pb${tecla?.tono === "accion" ? " pb-accion" : ""}${className ? ` ${className}` : ""}`}
-      aria-keyshortcuts={tecla?.letra} onClick={onClick}>
+      aria-keyshortcuts={tecla?.letra} aria-label={etiqueta} onClick={onClick}>
       <span className="fc">
         <span className="fc-cara pildora">
           {icon && <Icono nombre={icon} tam={22} />}
           {tecla && <span className={`pildora-tecla pildora-tecla-${tecla.tono}`} aria-hidden="true">{tecla.letra}</span>}
-          <span>{t(labelKey, labelVars)}</span>
+          <span className="pb-texto" aria-hidden="true">{etiqueta}</span>
         </span>
       </span>
     </button>
