@@ -24,7 +24,8 @@ export function preguntaDelBoton(experto: Expert | "ia_base"): ClassifierOutput 
   return { version: "0", experto, accion: PREGUNTA_DEL_BOTON[experto], parametros: {}, confianza: 1, fuente: "boton" };
 }
 
-export type Entrada = { texto: string } | { experto: Expert | "ia_base" };
+/** `clasificacion`: ya clasificada por el contrato de conversación (`conversacion.ts`). */
+export type Entrada = { texto: string } | { experto: Expert | "ia_base" } | { clasificacion: ClassifierOutput };
 
 export interface OpcionesConversar {
   /** `tormentaActiva(estado)` del motor: antes del paso 5 nadie habla de la tormenta. */
@@ -38,7 +39,9 @@ export function conversar(entrada: Entrada, estado: GameState, o: OpcionesConver
   const v = vistaVisible(estado, o.tormentaActiva);
   // Texto que nadie entiende → aclaración con botones (confianza 0), nunca un silencio.
   const salida =
-    "texto" in entrada
+    "clasificacion" in entrada
+      ? entrada.clasificacion
+      : "texto" in entrada
       ? clasificarConAtajos(entrada.texto) ?? { version: "0", experto: "ia_base", accion: "fuera_de_tema", parametros: {}, confianza: 0, fuente: "regex" }
       : preguntaDelBoton(entrada.experto);
   // A Iris dañada no se le puede creer: cualquier cosa que se le pida a ella sale con su falla.
