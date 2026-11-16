@@ -17,6 +17,10 @@ test('la tripulación recuerda, clasifica y deja botones si falla la red',async(
  }
  await page.getByRole('button',{name:'Base ready. Start the clock!'}).click();
  await page.getByRole('button',{name:'Pause',exact:true}).click();
+ await page.getByRole('button',{name:'Map',exact:true}).click();
+ await page.getByRole('list',{name:'Places'}).getByRole('button',{name:/Radiation sensor/}).click();
+ await page.getByRole('button',{name:'Ask the Solar Meteorologist'}).click({timeout:60000});
+ await page.keyboard.press('Escape');
  await page.getByRole('button',{name:'Crew',exact:true}).click();
  await page.locator('.base-expertos button').first().click();
  await expect(page.locator('.dialogo-experto')).toContainText('You chose');

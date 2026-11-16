@@ -29,7 +29,23 @@ async function llegarALaBase(page: Page) {
   await colocarModulo(page);
   await colocarModulo(page);
   await page.getByRole("button", { name: "Base ready. Start the clock!" }).click();
-  await expect(page.getByRole("button", { name: "Crew", exact: true })).toBeVisible();
+  await primeraConversacion(page);
+}
+
+/**
+ * E3, HUD progresivo: Crew llega con la primera conversación. Con el reloj en pausa (CI no tiene GPU y
+ * la caminata es lenta), el niño va al sensor y habla con la Meteoróloga.
+ */
+async function primeraConversacion(page: Page) {
+  const crew = page.getByRole("button", { name: "Crew", exact: true });
+  await expect(crew).toHaveCount(0);
+  await page.getByRole("button", { name: "Pause", exact: true }).click();
+  await page.getByRole("button", { name: "Map", exact: true }).click();
+  await page.getByRole("list", { name: "Places" }).getByRole("button", { name: /Radiation sensor/ }).click();
+  await page.getByRole("button", { name: "Ask the Solar Meteorologist" }).click({ timeout: 60_000 });
+  await expect(crew).toBeVisible();
+  await page.keyboard.press("Escape");
+  await page.getByRole("button", { name: "Resume", exact: true }).click();
 }
 
 /** Crew abre el panel de decisión con las acciones, la tripulación y el registro. */
@@ -92,6 +108,8 @@ test("sin enviar la telemetría la base se pierde, y \"Play again\" empieza una 
   await colocarModulo(page);
   await colocarModulo(page);
   await page.getByRole("button", { name: "Base ready. Start the clock!" }).click();
+  // Partida nueva, HUD nuevo: Crew vuelve a esperar la primera conversación.
+  await primeraConversacion(page);
   await abrirTripulacion(page);
   expect(await energia(page)).toBe(energiaInicial);
 
@@ -158,8 +176,8 @@ test("perder WebGL deja la misma partida en el respaldo 2D, y el mapa lleva al n
 
   await page.getByRole("button", { name: "Map", exact: true }).click();
   await page.getByRole("list", { name: "Places" }).getByRole("button", { name: /^Workshop/ }).click();
-  await expect(page.getByRole("button", { name: "Talk", exact: true })).toBeVisible();
-  await page.getByRole("button", { name: "Talk", exact: true }).click();
+  await expect(page.getByRole("button", { name: /Ask the Engineer/ })).toBeVisible();
+  await page.getByRole("button", { name: /Ask the Engineer/ }).click();
   await expect(page.getByRole("heading",{name:"Engineer",exact:true})).toBeVisible();
   await page.getByRole("button",{name:"Close",exact:true}).click();
   expect(await energia(page)).toBe(energiaAntes);

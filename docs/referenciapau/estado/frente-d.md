@@ -1,15 +1,15 @@
 # Estado del Frente D (Daniel)
 
-Actualizado: 15 nov 2026, iteración 7 del loop.
+Actualizado: 15 nov 2026, iteración 9 del loop.
 
 **Hecho**
-- D2 (#350): fusionado. Sombra del Sol que sigue al niño y sombra de contacto.
+- D2 (#350) y D4 (#371): fusionados. `media` de 15 a 35-36 fps sin GPU.
 - D1 (#342, borrador): hábitat y antena con los pedidos de F3 corregidos. Espera la revisión de F3 y a C2.
-- D4 (#371): `media` pasa a DPR 1, sin antialias y sombra simple (`sistemas/filtroSombra.ts`). Sin GPU, escala 1,25: `media` de 15 a 35-36 fps; `alta` y `baja` sin cambio.
+- D5 parte 1 (#376): corredor de conexión como `exterior/01` en `activos/interiores/corredor.ts`, con zona caminable y entrada para A8. Vista previa `/escena.html?sala=corredor`. 6 draw calls, 1 878 triángulos.
 
 **Sigue**
-- D5: corredor de conexión como `exterior/01` (interior propio; José lo conecta en A8).
+- D5 parte 2: taller (estación 05) y después hábitat (06 a 08).
 
 **Bloqueado**
 - C2 sin PR (bloquea cerrar D1).
-- Push forzado bloqueado en mi entorno: integro develop con merge.
+- A8 (José) conecta el corredor al juego; las puertas exteriores dependen de C2.

@@ -1,6 +1,8 @@
 import type { ActorId } from "./frontera.js";
 import * as THREE from "three";
 import { animar, crearIris, crearPersonaje, type CaraIris, type Gesto, type OpcionesIris } from "./personajes";
+import { cadenciaCaminar } from "./personajes/animaciones";
+import { VEL_JUGADOR } from "./movimientoBase";
 import type { ModoGuia } from "./guia";
 import type { FaseSalto } from "./movimientoBase";
 import { ANCLAJES_EXPERTAS, DOCK_IRIS, INICIO_JUGADOR } from "./mundo";
@@ -48,13 +50,14 @@ export function crearTripulacionBase() {
   grupo.add(jugador.grupo, ingeniera.grupo, doctora.grupo, meteorologa.grupo, iris.grupo);
   // Objetos reutilizados en cada frame.
   const gesto = { quieto: true };
-  /** Opciones del niño: las del resto más la capa de salto (A5). */
-  const gestoNino: { quieto: boolean; salto: { fase: FaseSalto; k: number } } = { quieto: true, salto: { fase: "suelo", k: 0 } };
+  /** Opciones del niño: paso según la rapidez (A4) y capa de salto (A5). */
+  const gestoNino: { quieto: boolean; fase: number; ritmo: number; salto: { fase: FaseSalto; k: number } } = { quieto: true, fase: 0, ritmo: 0, salto: { fase: "suelo", k: 0 } };
   const rover: OpcionesIris = { quieto: true, velocidad: 0, averiada: false, cara: "atenta" };
   /** Lo escribe la escena en cada fotograma, después de mover a los actores (`errorIris`, al cambiar el pedido). */
-  const actores = { caminando: false, salto: { fase: "suelo", k: 0 } as Readonly<{ fase: FaseSalto; k: number }>, velocidadIris: 0, modoIris: "acompana" as ModoGuia, hablando: null as ActorId|null, errorIris: false };
+  const actores = { caminando: false, velocidad: 0, salto: { fase: "suelo", k: 0 } as Readonly<{ fase: FaseSalto; k: number }>, velocidadIris: 0, modoIris: "acompana" as ModoGuia, hablando: null as ActorId|null, errorIris: false };
   const expertas=[ingeniera,doctora,meteorologa];
   const extraExpertas=[doctora,meteorologa];
+
 
   let apagada = false;
   let atendiendoDesde = -1;
@@ -69,7 +72,10 @@ export function crearTripulacionBase() {
     ultimoMs = ahoraMs;
 
     // El niño camina con el gesto de caminar; quieto, en reposo (con movimiento reducido, la pose clave).
+    // La cadencia y el largo del paso siguen a la rapidez real: arranca y frena con pasos cortos (A4).
     gestoNino.quieto = reducido;
+    gestoNino.ritmo = Math.min(1, actores.velocidad / VEL_JUGADOR);
+    gestoNino.fase = actores.caminando ? (gestoNino.fase + cadenciaCaminar(gestoNino.ritmo) * dt) % (Math.PI * 2) : 0;
     gestoNino.salto.fase = actores.salto.fase;
     gestoNino.salto.k = actores.salto.k;
     animar(jugador, actores.caminando ? "caminar" : "reposo", t, gestoNino);
