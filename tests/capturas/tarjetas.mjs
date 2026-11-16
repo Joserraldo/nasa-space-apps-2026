@@ -56,7 +56,7 @@ const medir = (page) => page.evaluate(() => {
     pisaPlacasDelHud: placas.some(pisa),
     desborde: d.scrollWidth > innerWidth || d.scrollHeight > innerHeight,
     focoEnLaTarjeta: !!tc && document.activeElement === tc,
-    animaciones: tc ? tc.getAnimations().map((a) => ({ nombre: a.animationName, ms: a.effect.getTiming().duration })) : [],
+    animaciones: tc ? tc.getAnimations().map((a) => ({ nombre: a.animationName ?? a.transitionProperty, ms: a.effect.getTiming().duration, curva: a.effect.getTiming().easing })) : [],
   };
 });
 
@@ -73,8 +73,14 @@ for (const t of TAMANOS) {
   await page.goto(URL_VISTA);
   await page.waitForSelector('.tc[data-fase="abierta"]');
   fila.entrada = await medir(page);
-  // Medir con la entrada terminada: con la página cargando, 400 ms fijos no alcanzan y la caja sale corrida.
-  await page.waitForFunction(() => document.querySelector(".tc")?.getAnimations().every((a) => a.playState === "finished"));
+  // Medir con la entrada terminada (opacidad 1 y sin desplazamiento): con la página cargando, 400 ms fijos no
+  // alcanzan, y justo al montar la transición todavía no figura en getAnimations().
+  await page.waitForFunction(() => {
+    const tc = document.querySelector(".tc");
+    if (!tc) return false;
+    const s = getComputedStyle(tc);
+    return s.opacity === "1" && (s.transform === "none" || s.transform === "matrix(1, 0, 0, 1, 0, 0)");
+  });
   await page.waitForTimeout(100);
   fila.abierta = await medir(page);
   await page.screenshot({ path: join(salida, `tarjeta-abierta-${etiqueta}.png`) });
