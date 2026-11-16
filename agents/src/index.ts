@@ -22,3 +22,4 @@ export { sorpresaOutpost, consejosZonasNave, escenaTormentaOutpost, TORMENTA_OUT
 export { lineasGlobo, bienvenidaGlobo, PASOS_GLOBO } from "./globo.js";
 export { turno, pedidoAlModelo, validarClasificacion, recuerdosDe, opcionesDe, actorDe, interlocutorDe, MEMORIA_INICIAL, PREGUNTAS_DE, MAX_CARACTERES_PEDIDO, type Interlocutor, type ActorConversacion, type EntradaConversacion, type PedidoModelo, type Recuerdo, type MemoriaConversacion, type OpcionConversacion, type RespuestaConversacion, type OpcionesTurno } from "./conversacion.js";
 export { conversarConRed, type OpcionesConversacionRed } from "./conversacion-red.js";
+export { reaccionTripulacion, comentarRecuerdo, lineaDeRecuerdo, esComentarista, type Comentarista, type VistaRecuerdos, type ComentarioRecuerdo } from "./recuerdos.js";
