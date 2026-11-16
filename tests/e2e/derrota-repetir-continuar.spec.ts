@@ -1,6 +1,6 @@
 import { expect, test, type Page } from "@playwright/test";
 import { arrancarEnCalidadBaja } from "./calidad";
-import { llegarYExplorar } from "./entrada";
+import { llegarYExplorar, elegirJezero } from "./entrada";
 
 test.beforeEach(async ({ page }) => arrancarEnCalidadBaja(page));
 
@@ -23,6 +23,7 @@ async function colocarModulo(page: Page) {
 /** De la portada a la base viva: primer sitio y los dos primeros módulos. */
 async function llegarALaBase(page: Page) {
   await page.getByRole("button", { name: "Start mission" }).click();
+  await elegirJezero(page);
   await page.getByRole("button", { name: "Skip intro" }).click();
   await page.getByRole("button", { name: "Skip", exact: true }).click();
   await page.getByRole("button", { name: "Continue" }).click();
@@ -94,13 +95,10 @@ test("sin enviar la telemetría la base se pierde, y \"Play again\" empieza una 
   await expect(derrota).toBeVisible();
   await expect(page.getByRole("heading", { name: "What happened and why" })).toBeVisible();
 
-  // Volver a jugar: portada, sin partida que continuar (la terminada no se guarda).
+  // Volver a jugar: la misma misión, directo a la intro (sin pasar por la portada ni el selector).
   await page.getByRole("button", { name: "Play again" }).click();
-  await expect(page.getByRole("button", { name: "Start mission" })).toBeVisible();
-  await expect(page.getByRole("button", { name: "Continue" })).toHaveAttribute("aria-disabled", "true");
 
   // La segunda partida arranca de cero: mismos recursos iniciales y ningún módulo colocado.
-  await page.getByRole("button", { name: "Start mission" }).click();
   await page.getByRole("button", { name: "Skip intro" }).click();
   await page.getByRole("button", { name: "Skip", exact: true }).click();
   await page.getByRole("button", { name: "Continue" }).click();
