@@ -24,7 +24,7 @@ describe("contrato de conversación: lo que ve el modelo", () => {
 describe("contrato de conversación: JSON estricto del modelo", () => {
   const modelo = (resto: object) => ({ version: "0", confianza: 0.9, fuente: "modelo", parametros: {}, ...resto });
   it("lo que no valida es el respaldo de confianza 0, sin lanzar", () => {
-    for (const roto of [null, "hola", 42, {}, modelo({ experto: "ingeniera", accion: "bailar" }), modelo({ experto: "ingeniera", accion: "reparar", confianza: 7 })]) {
+    for (const roto of [null, "hola", 42, {}, modelo({ experto: "ia_base", accion: "ayuda", respuesta: "texto extra" }), modelo({ experto: "ingeniera", accion: "bailar" }), modelo({ experto: "ingeniera", accion: "reparar", confianza: 7 })]) {
       expect(validarClasificacion(roto)).toMatchObject({ accion: "fuera_de_tema", confianza: 0 });
     }
   });

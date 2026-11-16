@@ -86,10 +86,9 @@ function parametrosCerrados(accion: ClassifierIntent, p: Record<string, string>)
  * código (`EXPERTO_DE`) y de `parametros` solo pasan valores de enum: una cifra del modelo no llega al juego.
  */
 export function validarClasificacion(json: unknown): ClassifierOutput {
-  const p = ClassifierOutputSchema.safeParse(json);
+  const p = ClassifierOutputSchema.strict().safeParse(json);
   if (!p.success) return CLASSIFIER_FALLBACK;
   const s = p.data;
-  if (s.fuente !== "modelo") return s;
   return { ...s, experto: EXPERTO_DE[s.accion], parametros: parametrosCerrados(s.accion, s.parametros) };
 }
 
@@ -123,7 +122,7 @@ export interface MemoriaConversacion {
   hablados: Interlocutor[];
   /** Última pregunta entendida, para "otra vez". */
   ultima: { con: Interlocutor; pregunta: ClassifierIntent } | null;
-  /** Ticks de los recuerdos que cada quien ya comentó, para no repetirse (B2). */
+  /** Índices de los recuerdos que cada quien ya comentó, para no repetirse (B2). */
   comentados: Partial<Record<Interlocutor, number[]>>;
 }
 
@@ -168,6 +167,8 @@ export interface RespuestaConversacion {
 export interface OpcionesTurno extends OpcionesConversar {
   /** Respuesta de /api/clasificar ya pasada por `validarClasificacion`. Ausente: sin modelo. */
   clasificacion?: ClassifierOutput;
+  /** Reacción local opcional de B2. Nunca cruza al modelo ni reemplaza una alerta. */
+  reaccion?: (quien: Interlocutor, estado: GameState, memoria: MemoriaConversacion) => { linea: Linea; comentados: MemoriaConversacion["comentados"] } | null;
 }
 
 const ACLARA: readonly Interlocutor[] = ["ingeniera", "doctora", "meteorologa", "ia_base"];
@@ -192,12 +193,14 @@ function clasificar(entrada: EntradaConversacion, memoria: MemoriaConversacion, 
  */
 export function turno(entrada: EntradaConversacion, estado: GameState, memoria: MemoriaConversacion, o: OpcionesTurno): RespuestaConversacion {
   const s = clasificar(entrada, memoria, o);
-  const dialogo: Dialogo = s
+  let dialogo: Dialogo = s
     ? conversar({ clasificacion: s }, estado, o)
     : { experto: (entrada as { con: Interlocutor }).con, prioridad: "charla", lineas: [{ clave: `agentes.conversacion.saludo.${(entrada as { con: Interlocutor }).con}` }] };
   const habla = dialogo.experto;
   // PLAN §2.3: bajo el umbral el personaje pregunta; eso no cuenta como entendido ni se recuerda.
   const entendido = !s || (s.confianza >= CONFIDENCE_THRESHOLD && s.accion !== "fuera_de_tema");
+  const reaccion = entendido && dialogo.prioridad !== "alerta" ? o.reaccion?.(habla, estado, memoria) : null;
+  if (reaccion) dialogo = { ...dialogo, lineas: [reaccion.linea, ...dialogo.lineas] };
   return {
     habla,
     actor: actorDe(habla),
@@ -210,7 +213,7 @@ export function turno(entrada: EntradaConversacion, estado: GameState, memoria: 
       turnos: memoria.turnos + 1,
       hablados: memoria.hablados.includes(habla) ? memoria.hablados : [...memoria.hablados, habla],
       ultima: s && entendido && s.accion !== "saludo" ? { con: s.experto, pregunta: s.accion } : memoria.ultima,
-      comentados: memoria.comentados,
+      comentados: reaccion?.comentados ?? memoria.comentados,
     },
   };
 }
