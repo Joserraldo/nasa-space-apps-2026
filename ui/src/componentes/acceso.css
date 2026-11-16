@@ -1,6 +1,12 @@
 /* Pantalla nueva autorizada: familia de inicio/01, paneles ui/04 y botones existentes. */
 .acceso.portada { pointer-events:auto; grid-template-columns:minmax(0,1fr) minmax(0,460px); grid-template-rows:1fr auto; align-items:center; gap:var(--esp-7); padding:80px max(var(--esp-5),5vw) var(--esp-5); }
-.acceso-idiomas { position:absolute; top:var(--esp-4); right:var(--esp-4); display:flex; gap:var(--esp-2); }
+/* Ubicación explícita: `.portada > :not(...)` de inicio.css pone position:relative a todos los hijos y
+   tiene más peso que una clase sola; sin esto los idiomas caían dentro de la grilla y todo se corría. */
+.acceso.portada { overflow:visible; grid-template-columns:minmax(0,560px) minmax(0,460px); justify-content:center; column-gap:clamp(32px,7vw,140px); }
+.acceso.portada > .acceso-idiomas { position:absolute; top:var(--esp-4); right:var(--esp-4); z-index:2; display:flex; gap:var(--esp-2); }
+.acceso.portada > .acceso-bienvenida { grid-column:1; grid-row:1; }
+.acceso.portada > .acceso-panel { grid-column:2; grid-row:1; }
+.acceso.portada > .acceso-aviso { grid-column:1 / -1; grid-row:2; }
 .acceso-bienvenida { max-width:500px; justify-self:center; }
 .acceso-logo { width:min(100%,330px); height:auto; margin-bottom:var(--esp-5); }
 .acceso-bienvenida h1 { font-size:clamp(26px,3vw,42px); }
@@ -33,7 +39,10 @@
 /* Escritorio: el formulario puede ser más alto que la pantalla; la bienvenida con el niño queda arriba y a la vista. */
 @media(min-width:801px) and (min-height:501px) { .acceso-bienvenida { align-self:start; position:sticky; top:80px; } }
 @media(max-width:800px) {
- .acceso.portada { grid-template-columns:minmax(0,460px); justify-content:center; gap:var(--esp-5); padding:76px var(--esp-4) var(--esp-5); }
+ .acceso.portada { grid-template-columns:minmax(0,460px); grid-template-rows:auto auto auto; justify-content:center; gap:var(--esp-5); padding:76px var(--esp-4) var(--esp-5); }
+ .acceso.portada > .acceso-bienvenida { grid-column:1; grid-row:1; }
+ .acceso.portada > .acceso-panel { grid-column:1; grid-row:2; }
+ .acceso.portada > .acceso-aviso { grid-column:1; grid-row:3; }
  .acceso-bienvenida { text-align:center; }
  .acceso-logo { width:200px; margin-bottom:var(--esp-3); }
  .acceso-tripulante { display:none; }
@@ -41,3 +50,13 @@
  .acceso-bienvenida p { margin-bottom:0; }
 }
 @media(max-height:500px) and (min-width:801px) { .acceso.portada { align-items:start; gap:var(--esp-5); padding-top:70px; } .acceso-tripulante { display:none; } }
+/* Celular horizontal (ancho ≤ 800 y poca altura): dos columnas como en escritorio, logo chico a la
+   izquierda y el formulario a la derecha, así "Play as guest" queda a la vista sin desplazar. */
+@media(max-width:800px) and (max-height:500px) and (orientation:landscape) {
+ .acceso.portada { grid-template-columns:minmax(0,1fr) minmax(0,400px); grid-template-rows:auto auto; align-items:start; column-gap:var(--esp-5); padding:76px var(--esp-4) var(--esp-4); }
+ .acceso.portada > .acceso-bienvenida { grid-column:1; grid-row:1; text-align:left; align-self:start; padding-top:var(--esp-4); }
+ .acceso.portada > .acceso-panel { grid-column:2; grid-row:1; }
+ .acceso.portada > .acceso-aviso { grid-column:1 / -1; grid-row:2; }
+ .acceso-logo { width:min(100%,180px); }
+ .acceso-bienvenida h1 { font-size:22px; }
+}
