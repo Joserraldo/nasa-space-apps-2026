@@ -34,8 +34,9 @@
   .hud-dia, .hud-velocidad { display: none; }
   .hud-izq .pb-texto { display: none; }
   .hud-izq .pildora { padding-inline: 12px; }
-  .placa-nombre { display: none; }
-  .placa-nombre-corto { display: inline; }
+  /* Solo en el HUD: fuera de él (las placas de la órbita) el nombre completo tiene que seguir a la vista. */
+  .hud-placas .placa-nombre { display: none; }
+  .hud-placas .placa-nombre-corto { display: inline; }
   .hud-placas .pildora { gap: 4px; padding-inline: 12px; font-size: 16px; }
   .hud-placas .pildora svg { inline-size: 18px; block-size: 18px; }
   /* Los avisos bajo cada placa siguen para el lector; a la vista ocuparían una segunda fila. */

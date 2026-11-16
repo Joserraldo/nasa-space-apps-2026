@@ -41,10 +41,23 @@
 .orbita-tarjeta { padding: var(--esp-4) var(--esp-5); }
 .orbita-tarjeta p { margin: 0; }
 .orbita-placas { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--esp-2); }
-.orbita-placas .placa { grid-template-columns: auto 1fr; padding-block-end: var(--esp-3); }
+/* Placa como la de ui/05 ("02 HUD"): icono grande a la izquierda y, a su derecha, el nombre arriba y el
+   valor grande abajo; debajo, el aviso de bajo (si hay) y la barra. Faltaba `display: grid` y todo caía en
+   una línea ("Battery100%" pegado y el icono suelto arriba). */
+/* Las tres del mismo alto aunque un nombre ocupe dos renglones ("Satellite shield"); la barra, siempre al pie. */
+.orbita-placas > .fc { display: grid; }
+.orbita-placas .placa {
+  display: grid; grid-template-columns: auto minmax(0, 1fr); grid-template-rows: 1fr; align-items: center; column-gap: var(--esp-2);
+  padding: var(--esp-2) var(--esp-3) var(--esp-3);
+}
+.orbita-placas .placa > svg { flex: none; }
+.orbita-placas .placa-texto { display: grid; justify-items: center; gap: 2px; min-inline-size: 0; text-align: center; }
+.orbita-placas .placa-nombre { font-size: 16px; font-weight: var(--tipo-peso-etiqueta); line-height: 1.15; text-wrap: balance; }
+.orbita-placas .placa-valor { font-size: var(--tipo-tam-subtitulo); font-weight: var(--tipo-peso-titulo); line-height: 1.1; }
+.orbita-placas .placa-capa { grid-column: 1 / -1; margin-block-start: var(--esp-1); }
 
 .orbita-pista {
-  grid-column: 1 / -1; display: block; block-size: 8px; margin-block-start: var(--esp-2);
+  grid-column: 1 / -1; align-self: end; display: block; block-size: 8px; margin-block-start: var(--esp-2);
   background: var(--color-deshabilitado);
   clip-path: polygon(4px 0, 100% 0, calc(100% - 4px) 100%, 0 100%);
 }
@@ -65,6 +78,7 @@
   .orbita-tarjeta { padding: var(--esp-3) var(--esp-4); }
   .orbita-tarjeta h2 { font-size: var(--tipo-tam-subtitulo); margin-block-end: var(--esp-1); }
   .orbita-placas .placa { min-height: 0; padding-block: var(--esp-1) var(--esp-2); }
+  .orbita-placas .placa-valor { font-size: var(--tipo-tam-cuerpo); }
   .orbita-linea .retrato, .orbita-linea svg:first-child { inline-size: 44px; block-size: 44px; }
 }
 
