@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 
 /**
- * Retratos de diálogo en SVG facetado (DISEÑO §4.4, láminas personajes/02, 04, 06, 09 y 07):
- * la MISMA identidad que el personaje 3D, con las ocho expresiones de las láminas. Solo polígonos y
- * colores de tokens. Una cara nunca reemplaza una cifra: el retrato es decorativo (`aria-hidden`),
+ * Retratos de diálogo (DISEÑO §4.4, F1). Los cuatro tripulantes usan las caras de la alternativa B
+ * (láminas de expresiones de María Paula), cortadas y optimizadas por `tests/capturas/retratos.mjs` en
+ * WebP de 160 y 320 px: el navegador baja solo el ancho que necesita el tamaño en pantalla. Iris, que no
+ * tiene lámina, y cualquier retrato cuya imagen no cargue usan el SVG facetado de abajo (solo polígonos
+ * y colores de tokens). Una cara nunca reemplaza una cifra: el retrato es decorativo (`aria-hidden`),
  * el nombre y el texto van al lado.
  */
 
@@ -246,7 +248,7 @@ function useParpadeo(activo: boolean): boolean {
   return cerrado;
 }
 
-export function Retrato({ persona, expresion = "neutral", danada = false, tam = 96, parpadear = false, className }: {
+type PropsRetrato = {
   persona: Persona;
   expresion?: Expresion;
   /** Solo Iris: ojos con falla y pantalla con interferencia (está dañada por la radiación). */
@@ -254,11 +256,43 @@ export function Retrato({ persona, expresion = "neutral", danada = false, tam = 
   tam?: number;
   parpadear?: boolean;
   className?: string | undefined;
-}) {
+};
+
+/** El retrato en SVG facetado: Iris siempre, y respaldo de los humanos si su imagen no carga. */
+export function RetratoSvg({ persona, expresion = "neutral", danada = false, tam = 96, parpadear = false, className }: PropsRetrato) {
   const cerrado = useParpadeo(parpadear && expresion !== "parpadeo");
   return (
     <svg className={className} width={tam} height={tam} viewBox="0 0 200 200" aria-hidden="true" focusable="false" data-persona={persona} data-expresion={expresion}>
       {persona === "ia_base" ? <Iris e={expresion} cerrar={cerrado} danada={danada} /> : <Humano persona={persona} e={expresion} cerrar={cerrado} />}
     </svg>
+  );
+}
+
+/** Anchos en los que `tests/capturas/retratos.mjs` escribe cada cara. */
+export const ANCHOS_RETRATO = [160, 320] as const;
+
+/** Ruta de una cara B dentro de `ui/public/` (con la base de Vite delante). */
+export function rutaRetratoB(persona: Rol, e: Expresion, ancho: (typeof ANCHOS_RETRATO)[number]): string {
+  return `${import.meta.env.BASE_URL}retratos/${persona}-${e}-${ancho}.webp`;
+}
+const srcSetB = (persona: Rol, e: Expresion) => ANCHOS_RETRATO.map((a) => `${rutaRetratoB(persona, e, a)} ${a}w`).join(", ");
+
+export function Retrato({ persona, expresion = "neutral", danada = false, tam = 96, parpadear = false, className }: PropsRetrato) {
+  const [falla, setFalla] = useState(false);
+  const rol = persona === "ia_base" || falla ? null : persona;
+  const cerrado = useParpadeo(rol !== null && parpadear && expresion !== "parpadeo");
+  // La cara de parpadeo se baja antes, para que el primer parpadeo no quede en blanco.
+  useEffect(() => {
+    if (!rol || !parpadear || typeof Image === "undefined") return;
+    const img = new Image();
+    img.sizes = `${tam}px`;
+    img.srcset = srcSetB(rol, "parpadeo");
+  }, [rol, parpadear, tam]);
+  if (!rol) return <RetratoSvg persona={persona} expresion={expresion} danada={danada} tam={tam} parpadear={parpadear} className={className} />;
+  const e = cerrado ? "parpadeo" : expresion;
+  return (
+    <img className={`retrato-img${className ? ` ${className}` : ""}`} src={rutaRetratoB(rol, e, 320)} srcSet={srcSetB(rol, e)} sizes={`${tam}px`}
+      width={tam} height={tam} alt="" aria-hidden="true" decoding="async" draggable={false} data-persona={persona} data-expresion={expresion}
+      onError={() => setFalla(true)} />
   );
 }
