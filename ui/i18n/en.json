@@ -44,6 +44,8 @@
   "ui.paso.4.progreso": "Placed: {n} of {total}",
   "ui.paso.4.puesto": "{moduloKey} placed",
   "ui.paso.4.motivo.faltan": "Place your modules first",
+  "ui.paso.4.preguntar": "Ask the Engineer",
+  "ui.paso.4.construir": "Build: {moduloKey}",
   "ui.paso.4.motivo.lleno": "You already placed all your modules",
   "ui.paso.7.telemetria": "Send telemetry to Earth",
   "ui.paso.7.enviada": "Telemetry sent. Earth will answer in {ticks} turns (light takes time to travel).",
