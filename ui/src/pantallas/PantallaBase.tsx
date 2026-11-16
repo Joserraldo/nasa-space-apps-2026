@@ -61,7 +61,7 @@ export function PantallaBase({ estado, colocados = [], ultimas, hud, progreso = 
   colocados?: readonly Equipment[];
   ultimas: Novedades | null;
   /** Reloj del HUD, que pone App; el objetivo (guía de Iris) y la fila de abajo los pone esta pantalla. */
-  hud: Pick<HudBaseProps, "reloj">;
+  hud: Pick<HudBaseProps, "reloj" | "onMenu">;
   /** Qué partes del HUD ya aparecieron en esta partida (E3); lo guarda App para que sobreviva a la tormenta. */
   progreso?: ProgresoHud;
   onProgreso?(p: Partial<ProgresoHud>): void;
@@ -338,7 +338,7 @@ export function PantallaBase({ estado, colocados = [], ultimas, hud, progreso = 
       <p className="oculto-visual" role="status" aria-live="polite">
         {corto ? t("ui.base.globo.lector", { quien: t(`agentes.titulo.${corto.experto}`), texto: corto.texto }) : ""}
       </p>
-      <HudBase estado={estado} ultimas={ultimas} reloj={hud.reloj} objetivo={{ labelKey: objetivo.labelKey, vars: objetivo.vars }} tactil={tactil} panelAbierto={hayPanel} visible={visible}
+      <HudBase estado={estado} ultimas={ultimas} reloj={hud.reloj} onMenu={hud.onMenu} objetivo={{ labelKey: objetivo.labelKey, vars: objetivo.vars }} tactil={tactil} panelAbierto={hayPanel} visible={visible}
         mundo={{
           onTripulacion: () => alternarPanel("tripulacion"),
           onMapa: () => alternarPanel("mapa"),
