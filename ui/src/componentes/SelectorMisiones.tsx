@@ -9,8 +9,10 @@ import "./selectorMisiones.css";
  * "Choose your mission". Sale al pulsar "Start mission" en la portada y al terminar una
  * partida. Muestra las misiones del motor con su lugar y marca las que el niño ya ganó en esta visita.
  */
-export function SelectorMisiones({ ganadas, onElegir, onVolver }: {
+export function SelectorMisiones({ ganadas, onElegir, onVolver, reto }: {
   ganadas: ReadonlySet<string>;
+  /** Reto del día (engine/reto.ts): misma fecha, misma partida para todo un salón. */
+  reto?: { fecha: string; onJugar(): void } | undefined;
   onElegir(misionId: string): void;
   onVolver(): void;
 }) {
@@ -24,6 +26,17 @@ export function SelectorMisiones({ ganadas, onElegir, onVolver }: {
             <p>{t("ui.misiones.texto")}</p>
           </div>
         </div>
+        {reto && (
+          <div className="fc">
+            <div className="fc-cara misiones-reto">
+              <div>
+                <h3>{t("ui.misiones.reto.titulo")}</h3>
+                <p>{t("ui.misiones.reto.texto", { fecha: reto.fecha })}</p>
+              </div>
+              <FacetButton variant="primary" icon="sol" labelKey="ui.misiones.reto.jugar" onClick={reto.onJugar} />
+            </div>
+          </div>
+        )}
         <ul className="misiones-lista">
           {MISIONES.map((m) => {
             const lugar = m.sitio.startsWith("luna") ? "luna" : m.sitio.startsWith("marte") ? "marte" : "espacio";

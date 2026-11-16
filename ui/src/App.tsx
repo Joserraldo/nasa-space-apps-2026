@@ -24,13 +24,19 @@ import { Transicion } from "./componentes/Transicion.js";
 import { MundoBase } from "./pantallas/MundoBase.js";
 import { MEMORIA_INICIAL, type MemoriaConversacion, type TemaPregunta } from "@solar-shield/agents";
 import { fijarMision, misionPorId, semillaNueva } from "./juego/misiones.js";
-import { SEMILLA_DORADA } from "@solar-shield/engine";
+import { SEMILLA_DORADA, semillaDelDia } from "@solar-shield/engine";
 import { MISION_JEZERO } from "@solar-shield/missions";
 import { cargarAjustes, guardarAjustes, type CalidadGrafica, type CamaraJugador } from "./juego/ajustes.js";
 import { Menu } from "./componentes/Menu.js";
 import { almacenDelNavegador, cargarPartida, guardarPartida } from "./juego/guardado.js";
 import { inicial, reducir } from "./juego/reductor.js";
 import { tocar } from "./juego/sonido.js";
+
+/** Fecha local AAAA-MM-DD para el reto del día (el motor nunca lee el reloj). */
+function fechaLocal(): string {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+}
 
 /** Módulos que tienen pregunta de Iris nivel 2 al colocarlos. */
 const TEMAS_IRIS: readonly Equipment[] = ["panel_solar", "reciclador_agua", "invernadero", "escudo"];
@@ -220,7 +226,12 @@ function Pantalla({ idioma, setIdioma, sonido, setSonido, grafica }: {
               <Portada idioma={idioma} onIdioma={setIdioma} sonido={sonido} onSonido={alternarSonido}
                 puedeContinuar={guardada !== null} onEmpezar={() => setInicio("misiones")} onContinuar={continuar} onAjustes={abrirMenu} onCreditos={() => setCreditos(true)} />
             )}
-            {j.fase === "inicio" && inicio === "misiones" && <SelectorMisiones ganadas={ganadas} onElegir={elegirMision} onVolver={() => setInicio("portada")} />}
+            {j.fase === "inicio" && inicio === "misiones" && <SelectorMisiones ganadas={ganadas} onElegir={elegirMision} onVolver={() => setInicio("portada")}
+              reto={{ fecha: fechaLocal(), onJugar: () => {
+                tocar("confirmar", sonido);
+                enviar({ tipo: "nueva", misionId: MISION_JEZERO.id, semilla: semillaDelDia(fechaLocal()) });
+                setInicio("intro");
+              } }} />}
             {j.fase === "inicio" && inicio === "intro" && <Intro onTerminar={() => setInicio("carga")} />}
             {j.fase === "inicio" && inicio === "carga" && <Carga consejo={0} sonido={sonido} onSonido={alternarSonido} onSaltar={empezarMision} />}
             {j.fase === "satelite" && <PantallaOrbita estado={j.estado} onContinuar={() => enviar({ tipo: "fase", fase: "sitio" })} />}

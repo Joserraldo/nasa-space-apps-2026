@@ -420,5 +420,10 @@
   "ui.radio.bajo.blindaje": "Shielding is down to {valor}. The crew is less protected from radiation!",
   "ui.radio.control.telemetria": "Mission Control here. Messages take a long time to reach Earth. Send your data early!",
   "ui.radio.control.enviada": "Mission Control: your data is on its way. It reaches Earth in {turnos} turns. Hold on!",
-  "ui.radio.nombre.control_mision": "Mission Control"
+  "ui.radio.nombre.control_mision": "Mission Control",
+  "ui.paso.3.consejos": "What your crew thinks",
+  "ui.misiones.reto.titulo": "Today's challenge",
+  "ui.misiones.reto.texto": "Jezero, {fecha}. Everyone who plays today gets the same mission: compare your score with your class!",
+  "ui.misiones.reto.jugar": "Play today's challenge",
+  "ui.final.dificil": "Your closest call: {recursoKey} dropped to {valor}."
 }
