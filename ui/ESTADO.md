@@ -37,9 +37,9 @@ Una sección por persona, máximo 5 líneas, y nadie edita la de otro (FLUJO §8
 - Bloqueo: #269 (E6 con escena y HUD de mundo/01) espera la pila de Daniel (#247 en conflicto); resaltado del anclaje en E5 espera a Daniel (#279); Map no mueve al niño (Camilo).
 
 ## Interfaz (Jaime)
-**Rama:** feat/jaime-login-invitado · **PR:** en preparación hacia develop · **Tokens:** amarillo
+**Rama:** feat/jaime-login-invitado · **PR:** #363 hacia develop · **Tokens:** amarillo
 - Hecho: acceso EN/ES con invitado directo, login/registro sin correo, carga y guardado automático de cuenta, cierre de sesión confirmado.
-- Verificado: npm ci, typecheck, vitest (929 pruebas), build; nueve e2e preparados para CI.
+- Verificado: npm ci, typecheck, vitest (929 pruebas), build; ocho e2e correctos en CI; selector exacto de Back corregido para la novena.
 - Sigue: revisión visual de María Paula y CI/e2e del PR; se autorizó usar la familia existente sin lámina propia de login.
 - Bloqueo: navegador local denegado por permiso guardado; sin capturas ni prueba del proveedor D1 desplegado en esta sesión.
 
