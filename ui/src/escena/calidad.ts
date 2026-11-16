@@ -22,7 +22,7 @@ export const AJUSTE_CALIDAD: Readonly<
   Record<CalidadGrafica, { dpr: number; sombra: number | null; antialias: boolean; filtroSombra: FiltroSombra | null }>
 > = {
   alta: { dpr: 1.5, sombra: LUZ.tamanoSombra.alta, antialias: true, filtroSombra: "suave" },
-  media: { dpr: 1, sombra: LUZ.tamanoSombra.baja, antialias: false, filtroSombra: "simple" },
+  media: { dpr: 1.25, sombra: LUZ.tamanoSombra.baja, antialias: true, filtroSombra: "suave" },
   baja: { dpr: 0.75, sombra: null, antialias: false, filtroSombra: null },
 };
 

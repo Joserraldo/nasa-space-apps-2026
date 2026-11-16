@@ -95,6 +95,8 @@ export function PantallaTormenta({ estado, colocados, registro, onSeguir, onDeci
           : plan && verificando && escena ? <Verificar estado={estado} dialogos={escena.dialogos} onAtras={() => setVerificando(false)} />
           : plan ? <PlanComparado estado={estado} colocados={colocados} plan={plan} dialogo={escena?.dialogos.find((d) => d.experto === plan.experta)}
             onVerificar={() => setVerificando(true)} onOtra={() => { setConservada(plan.opcionId); setElegido(null); setPlan(null); }} onAtras={() => { setConservada(undefined); setElegido(null); setPlan(null); }} onDecidir={onDecidir} /> : <>
+          <p className="tormenta-guia">{t("ui.tormenta.guia")}</p>
+
           <ul className="tormenta-expertos">
             {EXPERTOS.map((p) => (
               <li key={p}>
@@ -110,11 +112,32 @@ export function PantallaTormenta({ estado, colocados, registro, onSeguir, onDeci
             <FacetButton type="submit" icon="avion_papel" labelKey="ui.tripulacion.enviar" onClick={NADA} />
           </form>
 
+          <ul className="tormenta-preguntas" aria-label={t("ui.base.charla.opciones")}>
+            <li><ChipPregunta icono="escudo" labelKey="ui.tormenta.pregunta.proteger" onClick={() => { setElegido(null); hablar({ texto: t("ui.tormenta.pregunta.proteger") }); }} /></li>
+            <li><ChipPregunta icono="sol" labelKey="ui.tormenta.pregunta.sensor" onClick={() => { setElegido(null); hablar({ texto: t("ui.tormenta.pregunta.sensor") }); }} /></li>
+          </ul>
+
           {dialogo && (
-            <div className="tormenta-respuesta" role="status" aria-live="polite">
-              <h3>{t(`agentes.titulo.${dialogo.experto}`)}</h3>
-              {dialogo.lineas.map((l, i) => <p key={i}>{t(l.clave, l.vars)}</p>)}
-              {dialogo.fuente && <TarjetaFuente fuente={dialogo.fuente} />}
+            <div className="fc">
+              <div className="fc-cara tormenta-respuesta" role="status" aria-live="polite">
+                <h3>{t(`agentes.titulo.${dialogo.experto}`)}</h3>
+                {dialogo.experto === "ia_base" && <p className="tormenta-respuesta-aviso">{t("ui.tormenta.irisAviso")}</p>}
+                {dialogo.lineas.map((l, i) => <p key={i}>{t(l.clave, l.vars)}</p>)}
+                {dialogo.fuente && <TarjetaFuente fuente={dialogo.fuente} />}
+                <div className="tormenta-respuesta-acciones">
+                  {EXPERTOS.includes(dialogo.experto as Experto) ? (
+                    <FacetButton variant="primary" icon="escudo" labelKey="ui.tormenta.comparar"
+                      onClick={() => { const exp = dialogo.experto as Experto; setElegido(exp); comparar(exp); }} />
+                  ) : (
+                    <>
+                      <FacetButton variant="primary" icon="escudo" labelKey="ui.accion.subir_escudo"
+                        onClick={() => { setElegido("ingeniera"); hablar({ experto: "ingeniera" }); comparar("ingeniera"); }} />
+                      <FacetButton icon="vida" labelKey="ui.accion.refugiarse"
+                        onClick={() => { setElegido("doctora"); hablar({ experto: "doctora" }); comparar("doctora"); }} />
+                    </>
+                  )}
+                </div>
+              </div>
             </div>
           )}
           </>}

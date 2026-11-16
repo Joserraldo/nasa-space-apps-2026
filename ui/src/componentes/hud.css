@@ -19,6 +19,63 @@
 .hud-abajo-izq { display: flex; gap: var(--esp-2); }
 .hud-centro { position: absolute; inset-inline: 0; margin-inline: auto; inline-size: max-content; justify-content: center; }
 
+.hud-controles-centro {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  pointer-events: auto;
+}
+.hud-hint-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(20, 22, 34, 0.9);
+  color: #ffffff;
+  border: 1.5px solid rgba(255, 255, 255, 0.14);
+  border-radius: 14px;
+  padding: 7px 16px 7px 10px;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.28);
+  user-select: none;
+}
+button.hud-hint-interact {
+  cursor: pointer;
+  pointer-events: auto;
+  transition: transform 140ms ease, border-color 160ms ease, box-shadow 160ms ease, background 160ms ease;
+}
+button.hud-hint-interact:hover {
+  border-color: rgba(63, 216, 255, 0.7);
+  transform: translateY(-1px);
+}
+button.hud-hint-interact:active {
+  transform: translateY(1px);
+}
+button.hud-hint-listo {
+  border-color: #3fd8ff;
+  box-shadow: 0 0 18px rgba(63, 216, 255, 0.48), 0 8px 20px rgba(0, 0, 0, 0.32);
+}
+button.hud-hint-listo .hud-kbd {
+  background: #3fd8ff;
+  color: #141622;
+}
+.hud-kbd {
+  display: inline-grid;
+  place-items: center;
+  min-width: 28px;
+  height: 26px;
+  padding-inline: 8px;
+  background: #f4efe6;
+  color: #141622;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 900;
+  line-height: 1;
+}
+
 /* Con un panel abierto (a la derecha en escritorio y apaisado) la acción y la cámara le ceden el sitio. */
 .hud-con-panel :is(.hud-centro, .hud-camara) { display: none; }
 

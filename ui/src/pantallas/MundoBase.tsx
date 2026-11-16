@@ -221,7 +221,7 @@ export function MundoBase({ fase, estado, colocados, calidad, movimientoReducido
               onUsar={usarDe}
               sala={sala}
               hablando={hablando}
-              objetivo={guia?.objetivo ?? null}
+              objetivo={guia?.objetivo ?? (lugarObjetivo ? { lugar: lugarObjetivo, ruta: false } : null)}
               iris={guia?.iris ?? null}
               // Un globo a la vez: el de una conversación corta (E5) pasa delante del de la guía, y mientras
               // alguien habla en una charla la guía calla. Al terminar, vuelve el de Iris.
