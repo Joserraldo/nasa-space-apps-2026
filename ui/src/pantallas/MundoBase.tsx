@@ -211,7 +211,7 @@ export function MundoBase({ fase, estado, colocados, calidad, movimientoReducido
   }), [sin3d, cercano, interactivo, sala, usarCercano, camara, alternarCamara, destino, irA, entrada, movimientoReducido, fijarUso]);
 
   return (
-    <div className="mundo" data-fase={fase}>
+    <div className="mundo" data-fase={fase} data-bloqueado={bloqueado || undefined}>
       <div className="mundo-escena" aria-hidden="true">
         {sin3d ? <div className="mundo-hueco" data-escena={fase} /> : (
           <Suspense fallback={<div className="mundo-hueco" data-escena={fase} />}>
