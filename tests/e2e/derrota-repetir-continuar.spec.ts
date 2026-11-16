@@ -149,9 +149,10 @@ test("perder WebGL deja la misma partida en el respaldo 2D, y el mapa lleva al n
 
   // Sin escena que camine, el mapa deja al niño en el lugar elegido y [E] ofrece lo que se hace allí.
   await page.getByRole("button", { name: "Map", exact: true }).click();
-  await page.getByRole("list", { name: "Places" }).getByRole("button", { name: /^Workshop/ }).click();
-  await expect(page.getByRole("button", { name: "Repair Iris in the workshop" })).toBeVisible();
-  await page.getByRole("button", { name: "Repair Iris in the workshop" }).click();
+  // La consola, no el taller: reparar a Iris solo se ofrece desde el paso 6, cuando se revela la avería (#339).
+  await page.getByRole("list", { name: "Places" }).getByRole("button", { name: /^Mission control/ }).click();
+  await expect(page.getByRole("button", { name: "Wait a turn at the console" })).toBeVisible();
+  await page.getByRole("button", { name: "Wait a turn at the console" }).click();
   await expect(page.getByRole("dialog")).toBeVisible();
   await page.getByRole("dialog").getByRole("button", { name: "Back" }).click();
   expect(await energia(page)).toBe(energiaAntes);
