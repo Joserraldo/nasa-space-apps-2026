@@ -15,6 +15,9 @@ import { TarjetaDecision } from "./TarjetaDecision.js";
 import { TarjetaContextual, type OrigenTarjeta } from "./TarjetaContextual.js";
 
 import { EXPRESIONES, PERSONAS, Retrato } from "./Retrato.js";
+import { Globo } from "./Globo.js";
+import { Icono } from "./Iconos.js";
+import { useModoTactil } from "../ControlesTactiles.js";
 import { Carga } from "../Carga.js";
 import { DatosUsados } from "../DatosUsados.js";
 import { Glosario, Termino } from "../Glosario.js";
@@ -199,6 +202,42 @@ function Muestrario() {
   );
 }
 
+/**
+ * ?vista=globo: el globo sobre quien habla (personajes/07), el aviso [E] de mundo/01 y, en táctil, la
+ * acción de mundo/03 con el botón de salto que usará E9. Usar el aviso lo esconde y vuelve a aparecer.
+ */
+function GloboEscena() {
+  const { t } = useT();
+  const tactil = useModoTactil();
+  const [cerca, setCerca] = useState(true);
+  const nada = () => {};
+  const usar = () => { setCerca(false); window.setTimeout(() => setCerca(true), 800); };
+  const estado = { ...partidaDorada(), recursos: { energia: 70, soporte_vital: 80, blindaje: 60 }, efectosPendientes: [] };
+  return (
+    <div className="mu-escena">
+      <HudBase estado={estado} tactil={tactil} objetivo={{ labelKey: "ui.comun.muestrario.objetivo" }}
+        mundo={{ onTripulacion: nada, onMapa: nada, camara: "tercera", onCamara: nada, interaccion: cerca ? { labelKey: "ui.comun.muestrario.inspeccionar", onUsar: usar } : undefined }} />
+      <div className="mu-actor mu-actor-iris">
+        <Retrato persona="ia_base" tam={96} />
+        <Globo texto={t("ui.comun.muestrario.globo.texto")} quien={t("ui.comun.retrato.ia_base.nombre")} />
+      </div>
+      <div className="mu-actor mu-actor-ingeniera">
+        <Retrato persona="ingeniera" tam={96} />
+        <Globo punta="arriba" tono="aviso" texto={t("ui.comun.muestrario.globo.aviso")} quien={t("ui.comun.retrato.ingeniera.nombre")} />
+      </div>
+      {tactil && (
+        <div className="ct">
+          <div className="ct-botones">
+            <button type="button" className="ct-salto" aria-label={t("ui.comun.saltar")}><span className="ct-cara"><Icono nombre="salto" tam={32} /></span></button>
+            <button type="button" className="ct-camara" aria-label={t("ui.comun.hud.primera")}><span className="ct-cara"><span className="ct-tecla" aria-hidden="true">V</span><span aria-hidden="true">{t("ui.hud.camara.corto")}</span></span></button>
+            {cerca && <button type="button" className="ct-accion" aria-label={t("ui.comun.muestrario.inspeccionar")} onClick={usar}><span className="ct-cara"><Icono nombre="llave" tam={28} /><span aria-hidden="true">{t("ui.hud.usar.panel_solar.corto")}</span></span></button>}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 /** ?vista=hud: el HUD completo de mundo/01 sobre un fondo marciano de tokens, para la captura al lado de la lámina. */
 function HudEscena() {
   const { t } = useT();
@@ -249,6 +288,7 @@ function Raiz() {
         {vista === "portada" && <Portada idioma={idioma} onIdioma={setIdioma} sonido={sonido} onSonido={() => setSonido(!sonido)} puedeContinuar={params.has("guardado")} onEmpezar={nada} onContinuar={nada} onAjustes={nada} onCreditos={nada} />}
         {vista === "intro" && <Intro inicial={n} onTerminar={nada} />}
         {vista === "carga" && <Carga consejo={n} sonido={sonido} onSonido={() => setSonido(!sonido)} />}
+        {vista === "globo" && <GloboEscena />}
         {vista === "retratos" && <Retratos />}
         {vista === "paneles" && <main className="muestrario"><PanelesE7 /></main>}
         {vista === "hud" && <HudEscena />}
