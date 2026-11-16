@@ -1,4 +1,5 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+import { useT } from "../i18n";
 import type { CalidadGrafica } from "../juego/ajustes";
 import type { EventoFeedback } from "../juego/eventos";
 import { crearEscena3D, type CamaraEscena, type Escena3D } from "./escena3d";
@@ -85,6 +86,9 @@ export type EventoDestino = Readonly<{ tipo: "llego" | "cancelado" | "sin_ruta";
  */
 export function EscenaBase(props: EscenaBaseProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const { t } = useT();
+  const [punteroBloqueado, setPunteroBloqueado] = useState(false);
+  const [mouse] = useState(() => typeof matchMedia === "function" && matchMedia("(pointer: fine)").matches);
   const escenaRef = useRef<Escena3D | null>(null);
   // Siempre las últimas props para los callbacks, sin recrear la escena.
   const actuales = useRef(props);
@@ -109,6 +113,7 @@ export function EscenaBase(props: EscenaBaseProps) {
         alCambiarCamara: () => actuales.current.onCambiarCamara?.(),
         alPosicion: (pos) => actuales.current.onPosicion?.(pos),
         alDestino: (tipo, lugar) => actuales.current.onDestino?.({ tipo, lugar }),
+        alPunteroBloqueado: setPunteroBloqueado,
       });
     } catch {
       // WebGL puede fallar al crear el contexto, antes de que exista el evento de pérdida.
@@ -172,5 +177,18 @@ export function EscenaBase(props: EscenaBaseProps) {
 
   // Decorativo para lectores de pantalla: la lista accesible de lugares lee la misma tabla LUGARES.
   // `touch-action: none`: los gestos son del juego, la página no se desplaza ni hace zoom.
-  return <canvas ref={canvasRef} aria-hidden="true" style={{ display: "block", width: "100%", height: "100%", touchAction: "none" }} />;
+  // A12: con mouse, mientras el puntero esté libre y el mundo no esté bloqueado, un aviso dice cómo mirar.
+  // Usa la cara facetada de la base (F); no captura clics (el clic va al canvas y bloquea el puntero).
+  const avisoMirar = mouse && !punteroBloqueado && !props.bloqueado;
+  return (
+    <>
+      <canvas ref={canvasRef} aria-hidden="true" style={{ display: "block", width: "100%", height: "100%", touchAction: "none" }} />
+      {avisoMirar && (
+        <div className="fc-cara fc-chico aviso-mirar" data-aviso="mirar"
+          style={{ position: "absolute", left: "50%", top: "22%", transform: "translateX(-50%)", padding: "0.4rem 0.9rem", pointerEvents: "none", whiteSpace: "nowrap" }}>
+          <span>{t("ui.escena.mirar")}</span>
+        </div>
+      )}
+    </>
+  );
 }

@@ -281,6 +281,7 @@
   "ui.mapa.lugar.banco": "Experiment bench",
   "ui.tormenta.elegir": "Choose your expert",
   "ui.tormenta.acceso": "{recurso} {valor}",
+  "ui.escena.mirar": "Click to look around · Esc frees the mouse",
   "ui.medir.fps_prom": "FPS avg (5 s)",
   "ui.medir.fps_min": "FPS min",
   "ui.medir.draw_calls": "Draw calls",
