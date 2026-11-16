@@ -96,14 +96,14 @@ test("ruta dorada: de la órbita al resumen, en inglés", async ({ page }) => {
   await expect(page.getByText("Unofficial project, not endorsed by NASA")).toHaveCount(0);
   const crew = page.getByRole("button", { name: "Crew", exact: true });
 
+  // Acercarse a un lugar nunca cobra: [E] abre el plan del lugar y "Back" no cambia nada.
+  // Con el reloj en pausa ANTES de caminar: sin GPU (CI) la caminata es lenta y, con el reloj andando,
+  // llegaría la tormenta del turno 3 antes que el niño a la consola. La pausa no frena la caminata.
+  await page.getByRole("button", { name: "Pause", exact: true }).click();
   // El niño arranca lejos de la consola: elegirla en el mapa lo lleva caminando hasta su punto de uso.
   await page.getByRole("button", { name: "Map", exact: true }).click();
   await page.getByRole("list", { name: "Places" }).getByRole("button", { name: /Mission control/ }).click();
-  await expect(page.getByRole("button", { name: "Wait a turn at the console" })).toBeVisible({ timeout: 20_000 });
-
-  // Acercarse a un lugar nunca cobra: [E] abre el plan del lugar y "Back" no cambia nada.
-  // Con el reloj en pausa, para que un turno que pase no se confunda con un cobro.
-  await page.getByRole("button", { name: "Pause", exact: true }).click();
+  await expect(page.getByRole("button", { name: "Wait a turn at the console" })).toBeVisible({ timeout: 60_000 });
   const energiaAntes = await page.getByRole("meter", { name: "Energy" }).getAttribute("aria-valuenow");
   await page.getByRole("button", { name: "Wait a turn at the console" }).click();
   await expect(page.getByRole("dialog")).toBeVisible();
