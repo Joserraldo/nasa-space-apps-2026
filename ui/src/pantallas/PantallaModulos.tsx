@@ -62,7 +62,7 @@ export function PantallaModulos({ estado, colocados, onColocar, onListo }: {
     botonera.current?.querySelector<HTMLElement>("button:not([disabled]):not([aria-disabled='true'])")?.focus({ preventScroll: true });
   }, []);
 
-  const { sin3d: sinGl, cercano, fijarInstalando } = useMundo();
+  const { sin3d: sinGl, cercano, fijarInstalando, fijarUso, usarCercano } = useMundo();
   /** Anclaje vacío al alcance en el mundo: ofrece `[E] Build` (solo con 3D). */
   const ancla = sinGl || faltan <= 0 ? null : (() => {
     const m = LUGARES.find((l) => l.id === cercano)?.modulo;
@@ -75,18 +75,13 @@ export function PantallaModulos({ estado, colocados, onColocar, onListo }: {
   useEffect(() => { fijarInstalando(instalando); }, [instalando, fijarInstalando]);
   useEffect(() => () => fijarInstalando(null), [fijarInstalando]);
 
-  // [E] en un anclaje vacío abre su tarjeta (E2 unificará este manejador con el de E6).
+  // E2: `[E] Build` llega por la única vía de MundoBase; aquí solo se abre la tarjeta del anclaje.
   const abrirAncla = useRef<() => void>(() => {});
   abrirAncla.current = () => { if (ancla && !tarjeta.abierta) tarjeta.abrir({ tipo: "modulo", modulo: ancla }); };
   useEffect(() => {
-    function tecla(e: KeyboardEvent) {
-      const d = document.activeElement;
-      if (e.repeat || (d && /^(INPUT|TEXTAREA|SELECT)$/.test(d.tagName))) return;
-      if (e.key === "e" || e.key === "E") abrirAncla.current();
-    }
-    window.addEventListener("keydown", tecla);
-    return () => window.removeEventListener("keydown", tecla);
-  }, []);
+    fijarUso((i) => { if (i.tipo === "lugar") abrirAncla.current(); });
+    return () => fijarUso(null);
+  }, [fijarUso]);
 
   function colocar(m: Equipment) {
     onColocar(m);
@@ -121,7 +116,7 @@ export function PantallaModulos({ estado, colocados, onColocar, onListo }: {
           {ancla && !tarjeta.abierta && (
             <FacetButton variant="primary" icon="check" labelKey="ui.paso.4.construir"
               labelVars={{ moduloKey: `ui.paso.4.modulo.${ancla}` }}
-              onClick={() => tarjeta.abrir({ tipo: "modulo", modulo: ancla })} />
+              onClick={usarCercano} />
           )}
           {faltan > 0 && !tarjeta.abierta && (
             <FacetButton labelKey="ui.paso.4.preguntar" onClick={() => tarjeta.abrir({ tipo: "elegir" })} />

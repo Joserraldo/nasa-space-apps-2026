@@ -29,7 +29,15 @@ export class EntradaTactil {
   private distanciaPinza = 0;
   private ultimoToque: { x: number; y: number; tiempo: number } | null = null;
 
-  constructor(private readonly opciones: { onRecentrar(): void; permiteZoom(): boolean }) {}
+  constructor(private readonly opciones: { onRecentrar(): void; permiteZoom(): boolean; onSaltar?(): boolean }) {}
+
+  /**
+   * Botón táctil de saltar (48 px, lo dibuja la pantalla, frente E): pide el salto a la escena. Devuelve
+   * false si no se pudo (en el aire o con algo abierto). Nunca cobra: saltar solo mueve al niño (A5).
+   */
+  saltar(): boolean {
+    return this.opciones.onSaltar?.() ?? false;
+  }
 
   iniciar(id: number, x: number, y: number, zona: ZonaTactil, ahoraMs: number): boolean {
     if (this.buscar(id) || (zona === "mover" ? this.movimiento : this.miradaA && this.miradaB)) return false;
