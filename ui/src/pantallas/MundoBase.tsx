@@ -115,18 +115,25 @@ const esCampo = (el: EventTarget | null) =>
  * vuelven al inicio al cambiar de fase. Las pantallas son capas encima (`children`) y hablan con
  * la escena por `useMundo()`. `calidad` y movimiento reducido vienen de los ajustes guardados.
  */
-export function MundoBase({ fase, estado, colocados, calidad, movimientoReducido, onCalidad, children }: {
+export function MundoBase({ fase, estado, colocados, calidad, movimientoReducido, onCalidad, camara: camaraAjuste, onCamara, bloqueadoFuera = false, children }: {
   fase: FaseMundo;
   estado: GameState;
   colocados: readonly Equipment[];
   calidad: CalidadGrafica;
   movimientoReducido: boolean;
   onCalidad(c: CalidadGrafica): void;
+  /** E4: la cámara es un ajuste guardado (App). Sin ella, el mundo la lleva por su cuenta (muestrario). */
+  camara?: CamaraEscena | undefined;
+  onCamara?: ((c: CamaraEscena) => void) | undefined;
+  /** Algo encima del mundo que no es una pantalla (el menú): el niño no se mueve ni usa nada. */
+  bloqueadoFuera?: boolean | undefined;
   children: ReactNode;
 }) {
   const [sin3d, setSin3d] = useState(() => !hayGraficos3D());
   const [cercano, setCercano] = useState<LugarObjetivo | null>(null);
-  const [camara, setCamara] = useState<CamaraEscena>("tercera");
+  const [camaraPropia, setCamaraPropia] = useState<CamaraEscena>("tercera");
+  const camara = camaraAjuste ?? camaraPropia;
+  const fijarCamara = onCamara ?? setCamaraPropia;
   const [destino, setDestino] = useState<LugarObjetivo | null>(null);
   const [entrada, setEntrada] = useState<EntradaTactil | null>(null);
   const [posicion, setPosicion] = useState<PosicionJugador>(INICIO_JUGADOR);
@@ -152,7 +159,7 @@ export function MundoBase({ fase, estado, colocados, calidad, movimientoReducido
       document.removeEventListener("focusout", sale);
     };
   }, []);
-  const bloqueado = bloqueadoCapa || campo;
+  const bloqueado = bloqueadoCapa || campo || bloqueadoFuera;
 
   const fv = faseVista(fase, estado);
   const vista = useMemo(() => vistaEscena(estado, { fase: fv, colocados, instalando: fase === "modulos" ? instalando : null, averiaRevelada: fase !== "modulos" && averiaIrisRevelada(estado) }),
@@ -171,7 +178,8 @@ export function MundoBase({ fase, estado, colocados, calidad, movimientoReducido
     return ev;
   }, [estado]);
 
-  const alternarCamara = useCallback(() => setCamara((c) => (c === "tercera" ? "primera" : "tercera")), []);
+  // `V`, el botón del HUD y el menú cambian el mismo ajuste (E4).
+  const alternarCamara = useCallback(() => fijarCamara(camara === "tercera" ? "primera" : "tercera"), [camara, fijarCamara]);
   const fijarUso = useCallback((fn: ((i: Interactivo) => void) | null) => { uso.current = fn; }, []);
   // Sin WebGL la escena no avisa: lo que hay al alcance es el lugar donde el mapa dejó al niño.
   const interactivo = sin3d ? interactivoDeLugar(cercano) : alcance;
@@ -221,7 +229,7 @@ export function MundoBase({ fase, estado, colocados, calidad, movimientoReducido
               onUsar={usarDe}
               sala={sala}
               hablando={hablando}
-              objetivo={guia?.objetivo ?? null}
+              objetivo={guia?.objetivo ?? (lugarObjetivo ? { lugar: lugarObjetivo, ruta: false } : null)}
               iris={guia?.iris ?? null}
               // Un globo a la vez: el de una conversación corta (E5) pasa delante del de la guía, y mientras
               // alguien habla en una charla la guía calla. Al terminar, vuelve el de Iris.

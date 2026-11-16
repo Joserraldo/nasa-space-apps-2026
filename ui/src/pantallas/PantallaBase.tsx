@@ -61,7 +61,7 @@ export function PantallaBase({ estado, colocados = [], ultimas, hud, progreso = 
   colocados?: readonly Equipment[];
   ultimas: Novedades | null;
   /** Reloj del HUD, que pone App; el objetivo (guía de Iris) y la fila de abajo los pone esta pantalla. */
-  hud: Pick<HudBaseProps, "reloj">;
+  hud: Pick<HudBaseProps, "reloj" | "onMenu">;
   /** Qué partes del HUD ya aparecieron en esta partida (E3); lo guarda App para que sobreviva a la tormenta. */
   progreso?: ProgresoHud;
   onProgreso?(p: Partial<ProgresoHud>): void;
@@ -103,7 +103,8 @@ export function PantallaBase({ estado, colocados = [], ultimas, hud, progreso = 
   const modulos = useMemo(() => vistaEscena(estado, { fase: "base", colocados, averiaRevelada: averiaIrisRevelada(estado) }).modulos, [estado, colocados]);
 
   const hayNovedad = !!(estado.pausado && ultimas && (ultimas.malaSuerte.length > 0 || ultimas.iaCambio || ultimas.efectosLlegaron.length > 0));
-  const abierto = { dialogo: dialogo !== null, plan: plan !== null, registro: registro !== null, panel: panel !== null, novedad: hayNovedad, campo: false };
+  const esFranjaAbajo = dialogo !== null && !plan && !registro && !panel && !hayNovedad;
+  const abierto = { dialogo: dialogo !== null && !esFranjaAbajo, plan: plan !== null, registro: registro !== null, panel: panel !== null, novedad: hayNovedad, campo: false };
   const hayPanel = mundoBloqueado(abierto);
   useAltoHoja(hoja, hayPanel);
   // Objetivo de Iris: texto de la píldora del HUD y lugar resaltado en la escena y el mapa.
@@ -299,12 +300,12 @@ export function PantallaBase({ estado, colocados = [], ultimas, hud, progreso = 
 
   // Teclado (ESCENAS §3.5): Esc cierra lo de más arriba (el panel de confirmación se cierra solo).
   // `[E]` no se escucha aquí: tiene un solo manejador, en MundoBase (E2).
-  const actual = useRef({ plan, hayPanel, cerrarTodo });
-  actual.current = { plan, hayPanel, cerrarTodo };
+  const actual = useRef({ plan, hayPanel, esFranjaAbajo, cerrarTodo });
+  actual.current = { plan, hayPanel, esFranjaAbajo, cerrarTodo };
   useEffect(() => {
     const tecla = (e: KeyboardEvent) => {
       const a = actual.current;
-      if (e.key === "Escape" && !a.plan && a.hayPanel) a.cerrarTodo();
+      if (e.key === "Escape" && !a.plan && (a.hayPanel || a.esFranjaAbajo)) a.cerrarTodo();
     };
     window.addEventListener("keydown", tecla);
     return () => window.removeEventListener("keydown", tecla);
@@ -315,18 +316,40 @@ export function PantallaBase({ estado, colocados = [], ultimas, hud, progreso = 
   const cerrable = (panel !== null || dialogo !== null) && !plan && !registro;
   const tituloHoja = registro ? "ui.decision.titulo" : plan ? "ui.decision.panel" : panel === "mapa" ? "ui.mapa.titulo" : panel === "tripulacion" ? "ui.tripulacion.titulo" : "ui.base.consulta";
 
+  function renderOpcionesCharla(extra = "") {
+    if (!dialogo || plan) return null;
+    const dato = curiosidadDe(dialogo.experto);
+    if (opciones.length === 0 && !dato) return null;
+    return (
+      <div className={`fila${extra ? ` ${extra}` : ""}`} role="group" aria-label={t("ui.base.charla.opciones")} aria-busy={ocupado}>
+        {opciones.map((o) => (
+          <FacetButton key={`${o.entrada.con}-${o.entrada.pregunta ?? ""}`} labelKey={o.etiqueta.clave} labelVars={o.etiqueta.vars}
+            disabled={ocupado} onClick={() => void hablar(o.entrada)} />
+        ))}
+        {/* B4: un dato de Marte de quien habla, solo en su momento real y una vez por partida. */}
+        {dato && <FacetButton icon="sol" labelKey={`ui.curiosidad.${dato.id}`} disabled={ocupado} onClick={() => contarCuriosidad(dato)} />}
+      </div>
+    );
+  }
+
   return (
     <section className={`base-e6${hayPanel ? " base-e6-con-panel" : ""}`} aria-label={t("ui.hud.titulo")}>
       {/* E5: el globo vive en la escena (oculta para el lector de pantalla); aquí se anuncia la misma línea. */}
       <p className="oculto-visual" role="status" aria-live="polite">
         {corto ? t("ui.base.globo.lector", { quien: t(`agentes.titulo.${corto.experto}`), texto: corto.texto }) : ""}
       </p>
-      <HudBase estado={estado} ultimas={ultimas} reloj={hud.reloj} objetivo={{ labelKey: objetivo.labelKey, vars: objetivo.vars }} tactil={tactil} panelAbierto={hayPanel} visible={visible}
+      <HudBase estado={estado} ultimas={ultimas} reloj={hud.reloj} onMenu={hud.onMenu} objetivo={{ labelKey: objetivo.labelKey, vars: objetivo.vars }} tactil={tactil} panelAbierto={hayPanel} visible={visible}
         mundo={{
           onTripulacion: () => alternarPanel("tripulacion"),
           onMapa: () => alternarPanel("mapa"),
           interaccion: hayPanel ? undefined : mundo.interactivo?.tipo === "lugar" ? (uso ? { labelKey: uso.labelKey, onUsar: mundo.usarCercano } : undefined)
             : mundo.interactivo ? { labelKey: `ui.interaccion.${verboDe(mundo.interactivo, "base")}`, onUsar: mundo.usarCercano } : undefined,
+          onInteractuar: () => {
+            if (hayPanel) return;
+            if (mundo.interactivo) mundo.usarCercano();
+            else if (objetivo.lugar) mundo.irA(objetivo.lugar);
+            else alternarPanel("tripulacion");
+          },
           camara: mundo.camara,
           onCamara: mundo.alternarCamara,
         }} />
@@ -334,6 +357,15 @@ export function PantallaBase({ estado, colocados = [], ultimas, hud, progreso = 
       {tactil && !hayPanel && (
         <ControlesTactiles entrada={mundo.entrada} camara={mundo.camara} onCamara={mundo.alternarCamara}
           accion={uso && mundo.cercano ? { labelKey: uso.labelKey, cortoKey: `${uso.labelKey}.corto`, icono: uso.icono, onUsar: mundo.usarCercano } : undefined} />
+      )}
+
+      {esFranjaAbajo && dialogo && (
+        <div className="dialogo-franja-abajo">
+          <DialogoExperto d={dialogo} irisDanada={averiaIrisRevelada(estado)} soloTexto={false} onPlan={abrirPlan}
+            onCerrar={() => { soltarCharla(); setDialogo(null); devolverFoco(); }}
+            onOtra={() => alternarPanel("tripulacion")} />
+          {renderOpcionesCharla("dialogo-franja-opciones")}
+        </div>
       )}
 
       {hayPanel && (
@@ -376,20 +408,8 @@ export function PantallaBase({ estado, colocados = [], ultimas, hud, progreso = 
                   onCerrar={() => { soltarCharla(); setDialogo(null); if (!panel) devolverFoco(); }}
                   onOtra={() => alternarPanel("tripulacion")} />
               )}
-              {/* #377: botones para seguir hablando; funcionan sin modelo y nunca aplican una acción. */}
-              {dialogo && !plan && opciones.length > 0 && (() => {
-                const dato = curiosidadDe(dialogo.experto);
-                return (
-                  <div className="fila" role="group" aria-label={t("ui.base.charla.opciones")} aria-busy={ocupado}>
-                    {opciones.map((o) => (
-                      <FacetButton key={`${o.entrada.con}-${o.entrada.pregunta ?? ""}`} labelKey={o.etiqueta.clave} labelVars={o.etiqueta.vars}
-                        disabled={ocupado} onClick={() => void hablar(o.entrada)} />
-                    ))}
-                    {/* B4: un dato de Marte de quien habla, solo en su momento real y una vez por partida. */}
-                    {dato && <FacetButton icon="sol" labelKey={`ui.curiosidad.${dato.id}`} disabled={ocupado} onClick={() => contarCuriosidad(dato)} />}
-                  </div>
-                );
-              })()}
+              {/* #377 y B4: botones para seguir hablando y curiosidad real; funcionan sin modelo y nunca aplican una acción. */}
+              {renderOpcionesCharla()}
               {plan ? (
                 <ConfirmarAccion estado={estado} accion={plan} onCancelar={cerrarPlan} onConfirmar={confirmar} />
               ) : panel === "mapa" ? (
@@ -410,10 +430,11 @@ export function PantallaBase({ estado, colocados = [], ultimas, hud, progreso = 
 
                   <section className="fc"><div className="fc-cara base-bloque">
                     <h2>{t("ui.tripulacion.titulo")}</h2>
+                    <p className="base-ayuda">{t("ui.base.tripulacion.guia")}</p>
                     <ul className="base-expertos">
                       {disponibles.map((m) => (
                         <li key={m.id}>
-                          <ExpertPortrait persona={m.id as Persona} compacto seleccionado={preguntada === m.id} onElegir={() => preguntar(m.id)} />
+                          <ExpertPortrait persona={m.id as Persona} seleccionado={preguntada === m.id} onElegir={() => { preguntar(m.id); hoja.current?.scrollTo?.({ top: 0 }); }} />
                         </li>
                       ))}
                     </ul>
@@ -422,9 +443,21 @@ export function PantallaBase({ estado, colocados = [], ultimas, hud, progreso = 
                       <input id="base-campo" type="text" value={texto} onChange={(e) => setTexto(e.target.value)} placeholder={t("ui.base.tripulacion.campo")} />
                       <FacetButton type="submit" labelKey="ui.tripulacion.enviar" busy={ocupado} onClick={() => undefined} />
                     </form>
+                    <div className="base-chips" role="group" aria-label={t("ui.base.consulta")}>
+                      {(
+                        [
+                          { con: "ingeniera", labelKey: "ui.base.tripulacion.chip.energia", queryKey: "ui.base.tripulacion.chip.energia_q" },
+                          { con: "doctora", labelKey: "ui.base.tripulacion.chip.salud", queryKey: "ui.base.tripulacion.chip.salud_q" },
+                          { con: "meteorologa", labelKey: "ui.base.tripulacion.chip.tormenta", queryKey: "ui.base.tripulacion.chip.tormenta_q" },
+                        ] as const
+                      ).map((q) => (
+                        <FacetButton key={q.labelKey} labelKey={q.labelKey} disabled={ocupado}
+                          onClick={() => { setPreguntada(q.con); void hablar({ via: "texto", con: q.con, texto: t(q.queryKey) }); hoja.current?.scrollTo?.({ top: 0 }); }} />
+                      ))}
+                    </div>
                   </div></section>
 
-                  <details className="fc base-registro"><summary className="fc-cara fc-chico">{t("ui.paso.8.titulo")}</summary>
+                  <details className="fc base-registro"><summary className="fc-cara fc-chico"><span>{t("ui.paso.8.titulo")}</span></summary>
                     <ul>
                       {[...estado.causas].reverse().slice(0, 30).map((c, i) => (
                         <li key={i}>

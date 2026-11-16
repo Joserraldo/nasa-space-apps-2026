@@ -117,7 +117,7 @@ export function EscenaBase(props: EscenaBaseProps) {
           if (usar) usar(i);
           // Sin `onUsarInteractivo`, se avisa por `onUsar` con la estación de la experta: la pantalla (E2) decide
           // con el último `onInteractivo`, que ya es el actor, así una sola tecla abre una sola conversación.
-          else if (i.tipo === "actor" && i.actor in ANCLAJES_EXPERTAS) actuales.current.onUsar(ANCLAJES_EXPERTAS[i.actor as ExpertaBase].lugarId);
+          else if (i.tipo === "actor") actuales.current.onUsar(i.actor in ANCLAJES_EXPERTAS ? ANCLAJES_EXPERTAS[i.actor as ExpertaBase].lugarId : "taller");
           else return false;
           return true;
         },
@@ -193,7 +193,7 @@ export function EscenaBase(props: EscenaBaseProps) {
   // El globo usa la cara facetada de la base (F); el sistema lo mueve sobre la cabeza de quien habla.
   // A12: con mouse, mientras el puntero esté libre y el mundo no esté bloqueado, un aviso dice cómo mirar.
   // Usa la misma cara facetada; no captura clics (el clic va al canvas y bloquea el puntero).
-  const avisoMirar = mouse && !punteroBloqueado && !props.bloqueado;
+  const avisoMirar = props.camara === "primera" && mouse && !punteroBloqueado && !props.bloqueado;
   return (
     <>
       <canvas ref={canvasRef} aria-hidden="true" style={{ display: "block", width: "100%", height: "100%", touchAction: "none" }} />
@@ -245,8 +245,9 @@ function crearSistemaGlobo(canvas: HTMLCanvasElement, ref: React.RefObject<HTMLD
         if (p.z < 1 && Math.abs(p.x) <= 1 && Math.abs(p.y) <= 1) {
           // Centrado sobre el actor, pero sin salirse del cuadro (celular vertical).
           const medio = div.offsetWidth / 2 + 8;
+          const altoMin = (div.offsetHeight || 64) + 64;
           const x = Math.round(Math.min(Math.max(((p.x + 1) / 2) * canvas.clientWidth, medio), canvas.clientWidth - medio));
-          const y = Math.round(((1 - p.y) / 2) * canvas.clientHeight);
+          const y = Math.round(Math.max(altoMin, Math.min(canvas.clientHeight - 96, ((1 - p.y) / 2) * canvas.clientHeight)));
           estilo = `translate(${x}px, ${y}px) translate(-50%, -100%)`;
         }
       }

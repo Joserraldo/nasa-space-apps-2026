@@ -48,4 +48,14 @@ describe("ajustes del jugador", () => {
     expect(() => guardarAjustes(roto, ajustesPorDefecto())).not.toThrow();
     expect(cargarAjustes(undefined)).toEqual(ajustesPorDefecto());
   });
+
+  it("respeta calidad baja explícita de v1 (E2E/sin GPU) y promueve media a alta", () => {
+    const baja = almacenEnMemoria();
+    baja.setItem("solar-shield.ajustes.v1", JSON.stringify({ calidad: "baja" }));
+    expect(cargarAjustes(baja).calidad).toBe("baja");
+
+    const media = almacenEnMemoria();
+    media.setItem("solar-shield.ajustes.v1", JSON.stringify({ calidad: "media", sonido: false }));
+    expect(cargarAjustes(media)).toEqual({ ...ajustesPorDefecto(), sonido: false, calidad: "alta" });
+  });
 });

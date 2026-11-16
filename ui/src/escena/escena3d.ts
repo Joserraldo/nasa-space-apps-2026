@@ -13,7 +13,7 @@ import type { CalidadGrafica } from "../juego/ajustes";
 import type { EventoFeedback } from "../juego/eventos";
 import { CLARO, MALLA_JEZERO, ROCAS_PRIMER_PLANO, armarEscena, huellasRocas, radioRoca, rejillaJezero, type EscenaArmada } from "./armado";
 import { AJUSTE_CALIDAD, MAS_BAJA } from "./calidad";
-import type { Cielo } from "./cielo";
+import { LUZ, type Cielo } from "./cielo";
 import type { ActorId, Interactivo, PedidoEscena } from "./frontera";
 import { irisGuiaAlObjetivo } from "../juego/pedidoEscena";
 import { crearMateriales, type Materiales } from "./materiales";
@@ -25,7 +25,7 @@ import { EXPERTAS_BASE } from "./tripulacionBase";
 import type { EstadoModulo, VistaEscena } from "./vista";
 import { MODULOS_BASE, type ModuloBase } from "./activos/modulos";
 import { PRESUPUESTO, aplanarClaro, contarRender, type CuentaRender } from "./activos/terreno";
-import { huellasBase } from "./activos/baseExterior";
+import { huellasBase, huellasColisionExtra } from "./activos/baseExterior";
 import { huellasModulos } from "./activos/modulosArmados";
 import { EntradaTactil, type DeltaCamaraTactil } from "./entradaTactil";
 import {
@@ -250,22 +250,22 @@ export const CAMARAS: Readonly<Record<CamaraEscena, { pos: [number, number, numb
  * Calibrado con capturas en 1440×900, 1024×683, 844×390 y 390×844. [E]
  */
 export const CAMARA_TERCERA = {
-  apaisado: { distancia: 3.27, inclinacion: 0.41, adelante: 4.1, hombro: 0.8 },
-  vertical: { distancia: 3.46, inclinacion: 0.46, adelante: 8.1, hombro: 0 },
+  apaisado: { distancia: 5.8, inclinacion: 0.44, adelante: 3.2, hombro: 0.35 },
+  vertical: { distancia: 6.2, inclinacion: 0.48, adelante: 6.0, hombro: 0 },
   /** Aspecto del encuadre vertical de referencia (390×844). */
   aspectoVertical: 390 / 844,
   /** Rueda y pellizco: factor sobre la distancia del encuadre. */
-  zoomMin: 0.7,
-  zoomMax: 2.2,
+  zoomMin: 0.55,
+  zoomMax: 1.8,
   /** Arrastre vertical: inclinación final permitida (rad). */
   inclinacionMin: 0.08,
   inclinacionMax: 1.0,
   pivote: 1.0,
   alturaMira: 0.55,
-  /** Distancia mínima a la que la cámara se acerca para no quedar dentro de un sólido. */
-  distanciaColision: 1.2,
-  /** Margen de la cámara contra las huellas (pantallas inclinadas y aleros salen de la huella). */
-  margenColision: 0.45,
+  /** Distancia mínima a la que la cámara se acerca para no quedar dentro de un sólido ni pegada al casco. */
+  distanciaColision: 2.8,
+  /** Margen de la cámara contra las huellas de edificios altos. */
+  margenColision: 0.2,
 } as const;
 
 export interface Encuadre {
@@ -306,6 +306,7 @@ const MS_POSICION = 200;
 
 /** Campo visual vertical base (grados) de la tercera persona, válido hasta `ASPECTO_BASE`. */
 const FOV_TERCERA = 60;
+const FOV_JUEGO_TERCERA = 45;
 const ASPECTO_BASE = 1.5;
 const FOV_MAXIMO = 90;
 
@@ -314,11 +315,11 @@ const FOV_MAXIMO = 90;
  * en cuadros más altos que 3:2 se abre (con tope) para que el hábitat y la consola sigan dentro.
  * En primera persona no se adapta (70°).
  */
-export function fovParaAspecto(camara: CamaraEscena, aspecto: number): number {
+export function fovParaAspecto(camara: CamaraEscena, aspecto: number, base = FOV_TERCERA): number {
   if (camara === "primera") return 70;
-  if (!(aspecto > 0)) return FOV_TERCERA;
+  if (!(aspecto > 0)) return base;
   const k = Math.max(1, ASPECTO_BASE / aspecto) ** 0.6;
-  const fov = 2 * Math.atan(Math.tan((FOV_TERCERA * Math.PI) / 360) * k) * (180 / Math.PI);
+  const fov = 2 * Math.atan(Math.tan((base * Math.PI) / 360) * k) * (180 / Math.PI);
   return Math.min(FOV_MAXIMO, fov);
 }
 
@@ -328,7 +329,7 @@ const MS_CAMARA = 300;
 const MS_FOTOGRAMA_LENTO = 36;
 
 /** A esta distancia (m) de una experta, `[E]` es hablarle (A6). Mayor que su radio sólido más el del niño. [E] */
-export const DISTANCIA_HABLAR = 1.8;
+export const DISTANCIA_HABLAR = 2.8;
 
 /**
  * Lo que hay al alcance del niño (A6): una experta si está a `DISTANCIA_HABLAR` o menos y más cerca que el
@@ -351,8 +352,14 @@ export function interactivoCercano(x: number, z: number): Interactivo | null {
   return l ? { tipo: "lugar", lugar: l } : null;
 }
 
-const mismoInteractivo = (a: Interactivo | null, b: Interactivo | null): boolean =>
-  a === b || (!!a && !!b && JSON.stringify(a) === JSON.stringify(b));
+const mismoInteractivo = (a: Interactivo | null, b: Interactivo | null): boolean => {
+  if (a === b) return true;
+  if (!a || !b || a.tipo !== b.tipo) return false;
+  if (a.tipo === "lugar" && b.tipo === "lugar") return a.lugar === b.lugar;
+  if (a.tipo === "actor" && b.tipo === "actor") return a.actor === b.actor;
+  if (a.tipo === "puerta" && b.tipo === "puerta") return a.sala === b.sala && a.entrar === b.entrar;
+  return false;
+};
 
 /** Módulos que existen en el mundo (y por eso chocan): todo menos ausente. */
 const CONSTRUIDO: Readonly<Record<EstadoModulo, boolean>> = { ausente: false, instalando: true, funcionando: true, averiado: true };
@@ -366,6 +373,7 @@ export function solidosBase(modulos: Partial<Record<ModuloBase, EstadoModulo>>, 
   const primerPlano = ROCAS_PRIMER_PLANO.map((r) => ({ x: r.posicion[0], z: r.posicion[2], r: radioRoca(r) }));
   const huellas: HuellaPlanta[] = [
     ...huellasBase(),
+    ...huellasColisionExtra(),
     ...huellasModulos().filter((h) => {
       const id = h.id.slice("modulo:".length) as ModuloBase;
       const e = modulos[id];
@@ -404,18 +412,19 @@ function altoDeHuella(id: string): number {
   return 9;
 }
 
-/** Obstáculos de la cámara con los mismos módulos construidos y rocas que `solidosBase`. */
+/** Obstáculos de la cámara: solo edificios altos y módulos grandes (sin consolas ni balizas bajas que provoquen zooms bruscos). */
 export function obstaculosCamara(modulos: Partial<Record<ModuloBase, EstadoModulo>>, rocas: readonly (HuellaPlanta & { id?: string })[] | null): ObstaculoCamara[] {
-  const primerPlano = ROCAS_PRIMER_PLANO.map((r, i) => ({ id: `roca_primer_plano:${i}`, x: r.posicion[0], z: r.posicion[2], r: radioRoca(r) }));
+  const esBajo = (id = "") =>
+    id.startsWith("consola:") || id.startsWith("panel_mesa:") || id.startsWith("baliza:") || id.startsWith("roca_primer_plano:");
   const huellas: (HuellaPlanta & { id?: string })[] = [
-    ...huellasBase(),
+    ...huellasBase().filter((h) => !esBajo(h.id)),
     ...huellasModulos().filter((h) => {
       const e = modulos[h.id.slice("modulo:".length) as ModuloBase];
       return e !== undefined && CONSTRUIDO[e];
     }),
-    ...(rocas ?? primerPlano),
+    ...(rocas ?? []).filter((h) => !esBajo(h.id)),
   ];
-  return huellas.map((h) => ({ ...h, alto: altoDeHuella(h.id ?? "roca") }));
+  return huellas.map((h) => ({ ...h, alto: altoDeHuella(h.id ?? "roca") })).filter((o) => o.alto >= 2.8);
 }
 
 /** ¿El punto (con margen) cae dentro de un obstáculo más alto que `y`? */
@@ -536,7 +545,7 @@ export function crearEscena3D(canvas: HTMLCanvasElement, opciones: OpcionesEscen
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: AJUSTE_CALIDAD[calidad].antialias, powerPreference: "high-performance" });
   const materiales: Materiales = crearMateriales();
   const armada: EscenaArmada = armarEscena(materiales, null, null, calidad === "alta" ? "alta" : "baja");
-  armada.cielo.aplicarRenderer(renderer);
+  armada.cielo.aplicarRenderer(renderer, calidad !== "baja");
   const { tripulacion } = armada;
 
   // --- Movimiento: el niño, Iris y los sólidos reales ---
@@ -550,6 +559,7 @@ export function crearEscena3D(canvas: HTMLCanvasElement, opciones: OpcionesEscen
     inicio: { x: jugadorInicial.x, z: jugadorInicial.z },
     rumbo: tripulacion.jugador.grupo.rotation.y,
     iris: { x: irisInicial.x, z: irisInicial.z },
+    limite: 32,
     alDestino: (tipo, l) => {
       // Al llegar, la cámara se pone a la espalda del niño, que mira al lugar.
       if (tipo === "llego" && camaraActual === "tercera") yawLlegada = mov.rumbo - Math.PI;
@@ -562,7 +572,7 @@ export function crearEscena3D(canvas: HTMLCanvasElement, opciones: OpcionesEscen
   let bloqueado = false;
 
   // --- Cámara ---
-  const camara = new THREE.PerspectiveCamera(FOV_TERCERA, 1, 0.1, 600);
+  const camara = new THREE.PerspectiveCamera(FOV_JUEGO_TERCERA, 1, 0.1, 600);
   const contorno = crearContorno(materiales);
   const guantes = crearGuantes(materiales);
   armada.escena.add(contorno.malla, camara);
@@ -658,12 +668,21 @@ export function crearEscena3D(canvas: HTMLCanvasElement, opciones: OpcionesEscen
   function aplicarCalidad(nivel: CalidadGrafica): void {
     const a = AJUSTE_CALIDAD[nivel];
     renderer.setPixelRatio(Math.min(globalThis.devicePixelRatio || 1, a.dpr));
+    const tono = nivel === "baja" ? THREE.NoToneMapping : THREE.AgXToneMapping;
+    const exp = nivel === "baja" ? 1 : LUZ.exposicion;
+    let recompilar = false;
+    if (renderer.toneMapping !== tono || renderer.toneMappingExposure !== exp) {
+      renderer.toneMapping = tono;
+      renderer.toneMappingExposure = exp;
+      recompilar = true;
+    }
     const sol = armada.cielo.sol;
     const conSombra = a.sombra !== null;
     if (renderer.shadowMap.enabled !== conSombra) {
       renderer.shadowMap.enabled = conSombra;
-      for (const m of Object.values(materiales)) m.needsUpdate = true;
+      recompilar = true;
     }
+    if (recompilar) for (const m of Object.values(materiales)) m.needsUpdate = true;
     sol.castShadow = conSombra;
     if (a.sombra !== null && sol.shadow.mapSize.x !== a.sombra) {
       sol.shadow.mapSize.set(a.sombra, a.sombra);
@@ -773,8 +792,9 @@ export function crearEscena3D(canvas: HTMLCanvasElement, opciones: OpcionesEscen
     // con la inclinación que de verdad tiene la cámara, así nunca queda dentro de un sólido mientras sube.
     if (inclinacionEfectiva < 0 || reducido) inclinacionEfectiva = inc;
     else inclinacionEfectiva = curva(inclinacionEfectiva, inc, inc > inclinacionEfectiva ? RITMO_CAMARA.subir : RITMO_CAMARA.bajar, dt);
-    const ce = Math.cos(inclinacionEfectiva);
-    const tope = inclinacionEfectiva === inc ? libre : distanciaLibre(bx, bz, -fx * ce, -fz * ce, by, Math.sin(inclinacionEfectiva), distancia);
+    const tope = distanciaCamara.d > 0 && !reducido
+      ? Math.max(CAMARA_TERCERA.distanciaColision, curva(distanciaCamara.d, libre, 8, dt))
+      : libre;
     siguienteDistancia(distanciaCamara, distancia, tope, dt, reducido);
     const d = distanciaCamara.d;
 
@@ -925,9 +945,9 @@ export function crearEscena3D(canvas: HTMLCanvasElement, opciones: OpcionesEscen
   const punteroBloqueado = () => document.pointerLockElement === canvas;
   const alApuntar = (e: PointerEvent) => {
     if (e.pointerType === "touch" || e.button !== 0) return;
-    // A12: el navegador solo bloquea el puntero tras un gesto del usuario; este clic lo es. Sin bloqueo
-    // (navegador que no lo permite, o rechazado) se sigue mirando con arrastre, como antes.
-    if (e.pointerType === "mouse" && !bloqueado && !punteroBloqueado()) {
+    // En tercera persona se mira arrastrando para que el cursor quede siempre libre sobre los botones del HUD.
+    // Solo en primera persona se pide Pointer Lock tras un clic.
+    if (camaraActual === "primera" && e.pointerType === "mouse" && !bloqueado && !punteroBloqueado()) {
       try {
         const p = canvas.requestPointerLock?.() as unknown as Promise<void> | undefined;
         p?.catch?.(() => undefined);
@@ -1063,7 +1083,7 @@ export function crearEscena3D(canvas: HTMLCanvasElement, opciones: OpcionesEscen
       camaraActual = c;
       mezclaDesde = mezcla;
       inicioCamara = performance.now();
-      camara.fov = fovParaAspecto(c, camara.aspect);
+      camara.fov = fovParaAspecto(c, camara.aspect, FOV_JUEGO_TERCERA);
       camara.updateProjectionMatrix();
       if (c === "primera") {
         inclinacionPrimera = CAMARA_PRIMERA.inclinacion;
@@ -1073,6 +1093,7 @@ export function crearEscena3D(canvas: HTMLCanvasElement, opciones: OpcionesEscen
     },
     fijarCalidad(nivel) {
       calidad = nivel;
+      ctx.calidad = nivel;
       medidor?.reiniciar();
       aplicarCalidad(nivel);
     },
@@ -1106,7 +1127,7 @@ export function crearEscena3D(canvas: HTMLCanvasElement, opciones: OpcionesEscen
       if (ancho <= 0 || alto <= 0) return;
       renderer.setSize(ancho, alto, false);
       camara.aspect = ancho / alto;
-      camara.fov = fovParaAspecto(camaraActual, camara.aspect);
+      camara.fov = fovParaAspecto(camaraActual, camara.aspect, FOV_JUEGO_TERCERA);
       camara.updateProjectionMatrix();
       guantes.anclar(camara.aspect, 70);
     },

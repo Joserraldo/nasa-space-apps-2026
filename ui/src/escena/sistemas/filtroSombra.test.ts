@@ -12,24 +12,24 @@ function ctxFalso(calidad: "alta" | "media" | "baja", tipo: THREE.ShadowMapType 
 }
 
 describe("filtro de sombra por calidad (D4)", () => {
-  it("alta suave, media simple y baja sin tocar (no tiene sombras)", () => {
+  it("alta y media suaves, y baja sin tocar (no tiene sombras)", () => {
     expect(tipoSombra("alta")).toBe(THREE.PCFSoftShadowMap);
-    expect(tipoSombra("media")).toBe(THREE.BasicShadowMap);
+    expect(tipoSombra("media")).toBe(THREE.PCFSoftShadowMap);
     expect(tipoSombra("baja")).toBeNull();
     expect(AJUSTE_CALIDAD.baja.sombra).toBeNull();
   });
 
-  it("media sigue teniendo sombra del Sol y cuesta menos por píxel que alta", () => {
+  it("media sigue teniendo sombra del Sol y menor DPR que alta", () => {
     expect(AJUSTE_CALIDAD.media.sombra).not.toBeNull();
     expect(AJUSTE_CALIDAD.media.dpr).toBeLessThan(AJUSTE_CALIDAD.alta.dpr);
-    expect(AJUSTE_CALIDAD.media.antialias).toBe(false);
+    expect(AJUSTE_CALIDAD.media.antialias).toBe(true);
   });
 
   it("al cambiar el filtro marca los materiales para recompilar, y solo una vez", () => {
-    const c = ctxFalso("media");
+    const c = ctxFalso("media", THREE.BasicShadowMap);
     const v = c.material.version;
     expect(aplicarFiltro(c)).toBe(true);
-    expect(c.renderer.shadowMap.type).toBe(THREE.BasicShadowMap);
+    expect(c.renderer.shadowMap.type).toBe(THREE.PCFSoftShadowMap);
     expect(c.material.version).toBe(v + 1);
     expect(aplicarFiltro(c)).toBe(false);
     expect(c.material.version).toBe(v + 1);

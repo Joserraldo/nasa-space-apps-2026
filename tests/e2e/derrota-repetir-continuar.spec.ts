@@ -247,3 +247,45 @@ test("la tripulación conversa con el modelo y, sin red, deja preguntas que func
   expect(await energia(page)).toBe(energiaAntes);
   expect(errores, `errores de consola: ${errores.join(" | ")}`).toEqual([]);
 });
+
+/**
+ * E4 (invariante 4): cambiar la cámara desde el menú no toca la partida ni la pausa; `V` cambia el mismo
+ * ajuste, y la elección se guarda en el navegador y vuelve con "Continue".
+ */
+test("cambiar la cámara desde el menú conserva la partida y se recuerda al recargar", async ({ page }) => {
+  await page.clock.install();
+  await page.goto("/");
+  await llegarALaBase(page);
+  await page.getByRole("button", { name: "Pause", exact: true }).click();
+  const energiaAntes = await energia(page);
+  const lienzo = page.locator("canvas");
+  await expect(lienzo).toHaveAttribute("data-camara", "tercera");
+
+  const abrir = page.getByRole("button", { name: "Menu", exact: true });
+  await abrir.click();
+  const menu = page.getByRole("dialog", { name: "Settings" });
+  await expect(menu).toBeVisible();
+  await menu.getByRole("button", { name: "First person" }).click();
+  await expect(lienzo).toHaveAttribute("data-camara", "primera");
+  await page.keyboard.press("Escape");
+  await expect(menu).toHaveCount(0);
+  await expect(abrir).toBeFocused();
+  expect(await energia(page)).toBe(energiaAntes);
+  await expect(page.getByRole("button", { name: "Resume", exact: true })).toBeVisible();
+
+  // V cambia el mismo ajuste: el menú lo muestra al volver a abrirlo.
+  // Sin clic en la escena: en CI ese clic toma el puntero (mirar con el mouse, A12) y el siguiente clic
+  // en el HUD no llega. V funciona con el foco en cualquier lado.
+  await page.evaluate(() => (document.activeElement as HTMLElement | null)?.blur());
+  await page.keyboard.press("v");
+  await expect(lienzo).toHaveAttribute("data-camara", "tercera");
+  await abrir.click();
+  await expect(menu.getByRole("button", { name: "Third person" })).toHaveAttribute("aria-pressed", "true");
+  await menu.getByRole("button", { name: "First person" }).click();
+  await menu.getByRole("button", { name: "Close", exact: true }).click();
+
+  await page.reload();
+  await page.getByRole("button", { name: "Continue" }).click();
+  await expect(page.locator("canvas")).toHaveAttribute("data-camara", "primera");
+  expect(await energia(page)).toBe(energiaAntes);
+});

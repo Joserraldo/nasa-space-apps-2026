@@ -33,6 +33,16 @@ describe("vistaEscena", () => {
     expect(v.tormenta.activa).toBe(estado.tormenta !== null);
     expect(v.iris.averiada).toBe(true);
     expect(v.lugarObjetivo).toBe("sensor");
+    expect(v.escudoElevado).toBe(false);
+  });
+
+  it("marca escudoElevado cuando existe causa de subir_escudo", () => {
+    const estado = partidaDorada();
+    const conEscudo = {
+      ...estado,
+      causas: [...estado.causas, { tick: estado.tick, origen: "decision" as const, descripcionKey: "causa.subir_escudo" }],
+    };
+    expect(vistaEscena(conEscudo, { fase: "base", colocados: [] }).escudoElevado).toBe(true);
   });
 
   it("es pura: no muta el estado", () => {
