@@ -6,7 +6,7 @@
  */
 .orbita {
   /* El aviso de proyecto no oficial (pie de la app, una línea) queda debajo sin forzar desplazamiento. */
-  min-height: calc(100dvh - 26px);
+  min-height: calc(100dvh - var(--alto-barra, 26px));
   box-sizing: border-box;
   padding: max(var(--esp-5), env(safe-area-inset-top)) max(var(--esp-5), env(safe-area-inset-right))
     max(var(--esp-5), env(safe-area-inset-bottom)) max(var(--esp-5), env(safe-area-inset-left));
@@ -37,7 +37,7 @@
 .orbita-escena {
   position: relative; container-type: inline-size; aspect-ratio: 930 / 596;
   /* Ancho limitado por el alto disponible para que Marte nunca se corte ni empuje el panel. */
-  inline-size: min(100%, calc((100dvh - 190px) * 930 / 596));
+  inline-size: min(100%, calc((100dvh - var(--alto-barra, 26px) - 164px) * 930 / 596));
 }
 .orbita-escena > * { position: absolute; }
 .orbita-trazo { inset: 0; inline-size: 100%; block-size: 100%; overflow: visible; pointer-events: none; }
@@ -70,7 +70,7 @@
 /* ---- Columna derecha: placas, consejos, altitud y botón ---- */
 .orbita-panel {
   display: flex; flex-direction: column; gap: var(--esp-4); min-width: 0; justify-content: space-between;
-  max-block-size: calc(100dvh - 26px - 2 * var(--esp-5));
+  max-block-size: calc(100dvh - var(--alto-barra, 26px) - 2 * var(--esp-5));
 }
 .orbita-placas { container-type: inline-size; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--esp-3); }
 .orbita-placas > .fc { display: grid; }
@@ -146,10 +146,10 @@
 /* ---- Pantallas bajas (1024 x 683, 1280 x 600): todo se compacta para que entre sin desplazar ---- */
 @media (max-height: 760px) {
   .orbita { gap: var(--esp-4); padding-block: var(--esp-3); }
-  .orbita-panel { gap: var(--esp-3); max-block-size: calc(100dvh - 26px - 2 * var(--esp-3)); }
+  .orbita-panel { gap: var(--esp-3); max-block-size: calc(100dvh - var(--alto-barra, 26px) - 2 * var(--esp-3)); }
   .orbita-titulo { padding: var(--esp-1) var(--esp-5); }
   .orbita-titulo h2 { font-size: var(--tipo-tam-titulo-grande); }
-  .orbita-escena { inline-size: min(100%, calc((100dvh - 150px) * 930 / 596)); }
+  .orbita-escena { inline-size: min(100%, calc((100dvh - var(--alto-barra, 26px) - 124px) * 930 / 596)); }
   .orbita-linea-grande { gap: var(--esp-4); padding: var(--esp-3) var(--esp-4); }
   .orbita-linea-grande .orbita-retrato :is(img, svg) { inline-size: 88px; block-size: 88px; }
   .orbita-linea-grande .orbita-nombre { font-size: var(--tipo-tam-dialogo); margin-block-end: 0; }
@@ -166,12 +166,12 @@
 /* ---- Celular apaisado y pantallas muy bajas (844 x 390, 640 x 360): Marte chico, panel con consejos desplazables ---- */
 @media (max-height: 500px) {
   .orbita { grid-template-columns: minmax(0, 38%) minmax(0, 1fr); gap: var(--esp-3); padding-block: var(--esp-2); }
-  .orbita-panel { gap: var(--esp-2); max-block-size: calc(100dvh - 26px - 2 * var(--esp-2)); }
+  .orbita-panel { gap: var(--esp-2); max-block-size: calc(100dvh - var(--alto-barra, 26px) - 2 * var(--esp-2)); }
   .orbita-izq { gap: var(--esp-2); }
   .orbita-titulo { --fc-ch: var(--chaflan); padding: 2px var(--esp-3); }
   .orbita-titulo h2 { font-size: var(--tipo-tam-dialogo); }
   .orbita-paso { font-size: 14px; padding-inline: var(--esp-3); }
-  .orbita-escena { inline-size: min(100%, calc((100dvh - 110px) * 930 / 596)); }
+  .orbita-escena { inline-size: min(100%, calc((100dvh - var(--alto-barra, 26px) - 84px) * 930 / 596)); }
   /* Placa horizontal compacta: icono, separador y nombre sobre valor, aunque el panel mida menos de 600 px. */
   .orbita-placas .placa { grid-template-columns: auto minmax(0, 1fr); grid-template-rows: 1fr auto auto; padding: var(--esp-1) var(--esp-2); }
   .orbita-placas .placa-icono { padding-inline-end: var(--esp-1); margin-inline-end: var(--esp-1); border-inline-end: var(--borde-fino) solid color-mix(in srgb, var(--color-ciruela) 35%, transparent); align-self: stretch; }
@@ -190,8 +190,14 @@
   .orbita-seguir .fb { --fb-alto: var(--toque-minimo); font-size: var(--tipo-tam-dialogo); }
 }
 
+/* Celular apaisado angosto (568 x 320): menos margen y Marte un poco más chico, para que entren las tres placas. */
+@media (max-height: 500px) and (max-width: 639px) {
+  .orbita { grid-template-columns: minmax(0, 33%) minmax(0, 1fr); padding-inline: var(--esp-3); }
+  .orbita-placas .placa-nombre { font-size: 12px; }
+}
+
 /* ---- Vertical (celular y tableta): Marte arriba y el panel debajo; la pantalla se desplaza hacia abajo ---- */
-@media (orientation: portrait), (max-width: 639px) {
+@media (orientation: portrait), (max-width: 639px) and (min-height: 501px) {
   .orbita { grid-template-columns: minmax(0, 1fr); align-content: start; gap: var(--esp-4); padding: var(--esp-3); }
   .orbita-cielo { flex: none; }
   .orbita-escena { inline-size: min(100%, 640px); }
@@ -209,7 +215,7 @@
 }
 /* Tableta vertical: Marte se achica lo justo para que el botón de seguir entre en la primera pantalla. */
 @media (orientation: portrait) and (min-width: 700px) {
-  .orbita-escena { inline-size: min(100%, 640px, max(320px, calc((100dvh - 700px) * 930 / 596))); }
+  .orbita-escena { inline-size: min(100%, 640px, max(320px, calc((100dvh - var(--alto-barra, 26px) - 674px) * 930 / 596))); }
 }
 @media (orientation: portrait) and (max-width: 639px) {
   .orbita-titulo h2 { font-size: var(--tipo-tam-titulo); }
