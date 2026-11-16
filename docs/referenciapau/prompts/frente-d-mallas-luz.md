@@ -14,6 +14,42 @@ el niño entra. Otras cinco personas trabajan en paralelo.
    `estaciones/01` a `08`, `mundo/01` y `mundo/02`.
 5. `ui/src/escena/armado.ts`, `ui/src/escena/cielo.ts` y `ui/src/escena/activos/`.
 
+## Láminas
+
+![Corredores y conexiones](../referencias/exterior/01-corredores-conexiones.png)
+
+Qué mirar: corredores y conexiones entre salas (D5).
+
+![Organización exterior](../referencias/exterior/03-exterior-organizacion.png)
+
+Qué mirar: la organización de la base (D1 y la distribución de C2).
+
+![Panorama de estaciones y piezas](../referencias/estaciones/00-panorama-estaciones-y-piezas.png)
+
+Qué mirar: las estaciones y sus piezas en conjunto.
+
+![Ingeniería](../referencias/estaciones/05-ingenieria.png)
+
+Qué mirar: el taller, estación 05 (D5).
+
+![Enfermería](../referencias/estaciones/06-enfermeria.png)
+
+Qué mirar: la enfermería, estación 06 (D5).
+
+![Descanso y comedor](../referencias/estaciones/07-descanso-comedor.png)
+
+Qué mirar: el descanso y el comedor, estación 07 (D5).
+
+![Refugio](../referencias/estaciones/08-refugio.png)
+
+Qué mirar: el refugio, estación 08 (D5).
+
+![Exterior, tercera persona](../referencias/mundo/01-exterior-tercera-persona.png)
+
+Qué mirar: luz, color y cielo del exterior (D3).
+
+Todas las láminas: [docs/referenciapau/referencias/](../referencias/)
+
 ## Tus archivos (solo vos los editás)
 `ui/src/escena/activos/**` (salvo `caminos.ts`), `ui/src/escena/armado.ts`, `ui/src/escena/cielo.ts`,
 `ui/src/escena/calidad.ts` (después de A0), `ui/src/escena/cicloDia.ts` (nuevo), y la malla de los
