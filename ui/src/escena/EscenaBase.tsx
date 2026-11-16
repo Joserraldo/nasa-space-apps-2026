@@ -5,8 +5,9 @@ import type { CalidadGrafica } from "../juego/ajustes";
 import type { EventoFeedback } from "../juego/eventos";
 import { crearEscena3D, type CamaraEscena, type Escena3D, type SistemaEscena } from "./escena3d";
 import type { EntradaTactil } from "./entradaTactil";
-import { interactivoDeLugar, type ActorId, type AvisosEscena, type PedidoEscena } from "./frontera";
+import type { ActorId, AvisosEscena, Interactivo, PedidoEscena } from "./frontera";
 import type { LugarObjetivo, VistaEscena } from "./vista";
+import { ANCLAJES_EXPERTAS, type ExpertaBase } from "./mundo";
 
 export type { CamaraEscena } from "./escena3d";
 
@@ -16,7 +17,8 @@ export type { CamaraEscena } from "./escena3d";
  */
 /**
  * `PedidoEscena` y `AvisosEscena` (frontera.ts, PLAN-JUGABILIDAD §3) suman las props del bloque 0.
- * Estado: `onInteractivo` emite lugares; actores (A6), puertas y `sala` (A8), `objetivo` (A2 + marcador C4),
+ * Estado: `onInteractivo` emite lugares y expertas (A6; `[E]` con una experta va a `onUsarInteractivo`);
+ * puertas y `sala` (A8), `objetivo` (A2 + marcador C4),
  * `iris` y `globo` (A2) y `hablando` (A7) se aceptan y llegan a los sistemas en `ctx.pedido` (A0), pero la
  * escena todavía no los dibuja.
  */
@@ -107,9 +109,17 @@ export function EscenaBase(props: EscenaBaseProps) {
         movimientoReducido: p.movimientoReducido,
         alPerderContexto: () => actuales.current.onWebGLPerdido(),
         alExceso: (nivel) => actuales.current.onCalidad(nivel),
-        alLugarCercano: (l) => {
-          actuales.current.onLugarCercano(l);
-          actuales.current.onInteractivo?.(interactivoDeLugar(l));
+        alLugarCercano: (l) => actuales.current.onLugarCercano(l),
+        // A6: lugar o experta al alcance; [E] con una experta va a `onUsarInteractivo` si la pantalla lo pasa.
+        alInteractivo: (i) => actuales.current.onInteractivo?.(i),
+        alUsarInteractivo: (i: Interactivo) => {
+          const usar = actuales.current.onUsarInteractivo;
+          if (usar) usar(i);
+          // Sin `onUsarInteractivo`, se avisa por `onUsar` con la estación de la experta: la pantalla (E2) decide
+          // con el último `onInteractivo`, que ya es el actor, así una sola tecla abre una sola conversación.
+          else if (i.tipo === "actor" && i.actor in ANCLAJES_EXPERTAS) actuales.current.onUsar(ANCLAJES_EXPERTAS[i.actor as ExpertaBase].lugarId);
+          else return false;
+          return true;
         },
         alUsar: (l) => actuales.current.onUsar(l),
         alCambiarCamara: () => actuales.current.onCambiarCamara?.(),
@@ -138,7 +148,7 @@ export function EscenaBase(props: EscenaBaseProps) {
 
     const cercano = escena.lugarCercano();
     actuales.current.onLugarCercano(cercano);
-    actuales.current.onInteractivo?.(interactivoDeLugar(cercano));
+    actuales.current.onInteractivo?.(escena.interactivo());
     actuales.current.onPosicion?.(escena.posicionJugador());
     actuales.current.onEntradaTactil?.(escena.entradaTactil);
 

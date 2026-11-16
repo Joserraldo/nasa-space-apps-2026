@@ -14,13 +14,14 @@ import type { EventoFeedback } from "../juego/eventos";
 import { CLARO, MALLA_JEZERO, ROCAS_PRIMER_PLANO, armarEscena, huellasRocas, radioRoca, rejillaJezero, type EscenaArmada } from "./armado";
 import { AJUSTE_CALIDAD, MAS_BAJA } from "./calidad";
 import type { Cielo } from "./cielo";
-import type { ActorId, PedidoEscena } from "./frontera";
+import type { ActorId, Interactivo, PedidoEscena } from "./frontera";
 import { irisGuiaAlObjetivo } from "../juego/pedidoEscena";
 import { crearMateriales, type Materiales } from "./materiales";
 import { liberarCache, liberarEscena, liberarMateriales } from "./liberar";
 import { crearContorno } from "./contorno";
 import { crearGuantes } from "./guantes";
-import { ANCLAJES_EXPERTAS, RADIO_EXPERTA, lugar, lugarCercano, type LugarId } from "./mundo";
+import { ANCLAJES_EXPERTAS, RADIO_EXPERTA, lugar, lugarCercano, type ExpertaBase, type LugarId } from "./mundo";
+import { EXPERTAS_BASE } from "./tripulacionBase";
 import type { EstadoModulo, VistaEscena } from "./vista";
 import { MODULOS_BASE, type ModuloBase } from "./activos/modulos";
 import { PRESUPUESTO, aplanarClaro, contarRender, type CuentaRender } from "./activos/terreno";
@@ -168,6 +169,13 @@ export interface OpcionesEscena3D {
   entrada?: boolean;
   /** El lugar al alcance cambió (incluye volver a null). */
   alLugarCercano?: (lugar: LugarId | null) => void;
+  /** Cambió lo que hay al alcance: lugar o experta (A6). Se emite al montar y en cada cambio. */
+  alInteractivo?: (cerca: Interactivo | null) => void;
+  /**
+   * Tecla `E` con una experta al alcance (A6). Devuelve true si la pantalla la atendió; si no (o si falta),
+   * `E` sigue usando el lugar cercano como antes.
+   */
+  alUsarInteractivo?: (cerca: Interactivo) => boolean;
   /** Tecla `E` (o Enter fuera de un botón) con un lugar al alcance. */
   alUsar?: (lugar: LugarId) => void;
   /**
@@ -207,6 +215,8 @@ export interface Escena3D {
   contar(): CuentaRender;
   /** Contadores del renderer y FPS dibujados; null si no se activó la medición. */
   medicion(): (MedicionRender & { calidad: CalidadGrafica }) | null;
+  /** Lugar o experta al alcance de la posición actual del jugador (A6). */
+  interactivo(): Interactivo | null;
   /** Lugar al alcance de la posición actual del jugador. */
   lugarCercano(): LugarId | null;
   /** Posición actual del jugador (metros de juego). */
@@ -317,6 +327,33 @@ const MS_CAMARA = 300;
 /** Fotograma lento sostenido: por encima de esto (≈ 28 fps) se propone bajar la calidad. */
 const MS_FOTOGRAMA_LENTO = 36;
 
+/** A esta distancia (m) de una experta, `[E]` es hablarle (A6). Mayor que su radio sólido más el del niño. [E] */
+export const DISTANCIA_HABLAR = 1.8;
+
+/**
+ * Lo que hay al alcance del niño (A6): una experta si está a `DISTANCIA_HABLAR` o menos y más cerca que el
+ * punto de uso del lugar; si no, el lugar. Iris no cuenta: acompaña al niño y siempre estaría al alcance.
+ */
+export function interactivoCercano(x: number, z: number): Interactivo | null {
+  const l = lugarCercano(x, z);
+  const dLugar = l ? Math.hypot(x - lugar(l).x, z - lugar(l).z) : Infinity;
+  let actor: ExpertaBase | null = null;
+  let dActor = DISTANCIA_HABLAR;
+  for (const id of EXPERTAS_BASE) {
+    const a = ANCLAJES_EXPERTAS[id];
+    const d = Math.hypot(x - a.x, z - a.z);
+    if (d <= dActor) {
+      actor = id;
+      dActor = d;
+    }
+  }
+  if (actor && dActor < dLugar) return { tipo: "actor", actor };
+  return l ? { tipo: "lugar", lugar: l } : null;
+}
+
+const mismoInteractivo = (a: Interactivo | null, b: Interactivo | null): boolean =>
+  a === b || (!!a && !!b && JSON.stringify(a) === JSON.stringify(b));
+
 /** Módulos que existen en el mundo (y por eso chocan): todo menos ausente. */
 const CONSTRUIDO: Readonly<Record<EstadoModulo, boolean>> = { ausente: false, instalando: true, funcionando: true, averiado: true };
 
@@ -326,7 +363,6 @@ const CONSTRUIDO: Readonly<Record<EstadoModulo, boolean>> = { ausente: false, in
  * Las cajas siguen siendo cajas (no se aproximan por círculos).
  */
 export function solidosBase(modulos: Partial<Record<ModuloBase, EstadoModulo>>, rocas: readonly HuellaPlanta[] | null): Solidos {
-  const ingeniera = ANCLAJES_EXPERTAS.ingeniera;
   const primerPlano = ROCAS_PRIMER_PLANO.map((r) => ({ x: r.posicion[0], z: r.posicion[2], r: radioRoca(r) }));
   const huellas: HuellaPlanta[] = [
     ...huellasBase(),
@@ -336,7 +372,8 @@ export function solidosBase(modulos: Partial<Record<ModuloBase, EstadoModulo>>, 
       return e !== undefined && CONSTRUIDO[e];
     }),
     ...(rocas ?? primerPlano),
-    { x: ingeniera.x, z: ingeniera.z, r: RADIO_EXPERTA },
+    // Las tres expertas son sólidas (A6): el niño no las atraviesa.
+    ...EXPERTAS_BASE.map((id) => ({ x: ANCLAJES_EXPERTAS[id].x, z: ANCLAJES_EXPERTAS[id].z, r: RADIO_EXPERTA })),
   ];
   return solidosDeHuellas(huellas);
 }
@@ -543,7 +580,13 @@ export function crearEscena3D(canvas: HTMLCanvasElement, opciones: OpcionesEscen
     reducido,
     vista: null,
     pedido: {},
-    actores: { nino: tripulacion.jugador.grupo, ingeniera: tripulacion.ingeniera.grupo, iris: tripulacion.iris.grupo },
+    actores: {
+      nino: tripulacion.jugador.grupo,
+      ingeniera: tripulacion.ingeniera.grupo,
+      doctora: tripulacion.doctora.grupo,
+      meteorologa: tripulacion.meteorologa.grupo,
+      iris: tripulacion.iris.grupo,
+    },
     jugador: jugadorCtx,
     ahora: 0,
   };
@@ -591,6 +634,7 @@ export function crearEscena3D(canvas: HTMLCanvasElement, opciones: OpcionesEscen
 
   // --- Proximidad, posición y atributos de prueba ---
   let ultimoLugar: LugarId | null = lugarCercano(mov.jugador.x, mov.jugador.z);
+  let ultimoInteractivo: Interactivo | null = interactivoCercano(mov.jugador.x, mov.jugador.z);
   contorno.colocar(ultimoLugar);
   let ultimaPosicion = -Infinity;
   let caminaba = false;
@@ -800,6 +844,11 @@ export function crearEscena3D(canvas: HTMLCanvasElement, opciones: OpcionesEscen
     tripulacion.actores.velocidadIris = mov.velocidadIris;
     tripulacion.actores.modoIris = iris.modo;
 
+    const i = interactivoCercano(j.x, j.z);
+    if (!mismoInteractivo(i, ultimoInteractivo)) {
+      ultimoInteractivo = i;
+      opciones.alInteractivo?.(i);
+    }
     const l = lugarCercano(j.x, j.z);
     if (l !== ultimoLugar) {
       ultimoLugar = l;
@@ -865,6 +914,8 @@ export function crearEscena3D(canvas: HTMLCanvasElement, opciones: OpcionesEscen
     const usar = e.key === "e" || e.key === "E" || e.code === "KeyE";
     // Enter sobre un botón es del botón; E siempre es "usar".
     if (!usar && !(e.key === "Enter" && (e.target as HTMLElement | null)?.tagName !== "BUTTON")) return;
+    const i = interactivoCercano(mov.jugador.x, mov.jugador.z);
+    if (i?.tipo === "actor" && opciones.alUsarInteractivo?.(i)) return;
     const l = lugarCercano(mov.jugador.x, mov.jugador.z);
     if (l) opciones.alUsar?.(l);
   };
@@ -1067,6 +1118,9 @@ export function crearEscena3D(canvas: HTMLCanvasElement, opciones: OpcionesEscen
     },
     lugarCercano() {
       return lugarCercano(mov.jugador.x, mov.jugador.z);
+    },
+    interactivo() {
+      return interactivoCercano(mov.jugador.x, mov.jugador.z);
     },
     posicionJugador() {
       return { x: mov.jugador.x, z: mov.jugador.z };
