@@ -8,7 +8,7 @@ import { describirAccion } from "../componentes/Dialogos.js";
 import { actorDeExperto, DialogoExperto, duracionGlobo, formaDeDialogo } from "../componentes/DialogoExperto.js";
 import { ControlesTactiles, useModoTactil } from "../componentes/ControlesTactiles.js";
 import { HudBase, hudVisible, PROGRESO_INICIAL, type HudBaseProps, type ProgresoHud } from "../componentes/HudBase.js";
-import { MISION_JEZERO } from "@solar-shield/missions";
+import { misionActiva } from "../juego/misiones.js";
 import { Mapa } from "../componentes/Mapa.js";
 import { Polvo } from "../componentes/Polvo.js";
 import { ConfirmarAccion } from "../componentes/base/ConfirmarAccion.js";
@@ -47,7 +47,7 @@ function opcionesDe(estado: GameState): Opcion[] {
   ];
   // Reparar a Iris solo desde que la avería se ve (paso 6, #339): antes Iris guía como si estuviera bien.
   if (averiaIrisRevelada(estado)) lista.push({ accion: { tipo: "reparar", equipo: "ia_base" }, labelKey: "ui.accion.reparar_ia", icono: "llave" });
-  if (tormentaActiva(estado) && !telemetriaPendiente(estado)) lista.push({ accion: { tipo: "enviar_telemetria" }, labelKey: "ui.paso.7.telemetria", icono: "satelite" });
+  if (tormentaActiva(estado, misionActiva()) && !telemetriaPendiente(estado)) lista.push({ accion: { tipo: "enviar_telemetria" }, labelKey: "ui.paso.7.telemetria", icono: "satelite" });
   return lista;
 }
 
@@ -113,7 +113,7 @@ export function PantallaBase({ estado, colocados = [], ultimas, hud, progreso = 
   useEffect(() => () => mundo.fijarObjetivo(null), [mundo.fijarObjetivo]);
   // E3: `Map` llega con el primer objetivo que marca un lugar.
   useEffect(() => { if (objetivo.lugar && !progreso.objetivo) onProgreso?.({ objetivo: true }); }, [objetivo.lugar, progreso.objetivo]);
-  const visible = hudVisible({ progreso, sin3d: mundo.sin3d, modulosListos: colocados.length >= MISION_JEZERO.modulosAColocar });
+  const visible = hudVisible({ progreso, sin3d: mundo.sin3d, modulosListos: colocados.length >= misionActiva().modulosAColocar });
 
   // El mundo no se mueve ni se "usa" con algo abierto encima (frontera A/B: prop `bloqueado`).
   useEffect(() => { mundo.fijarBloqueado(hayPanel); }, [hayPanel, mundo.fijarBloqueado]);
@@ -149,7 +149,7 @@ export function PantallaBase({ estado, colocados = [], ultimas, hud, progreso = 
    */
   function momentosReales(): MomentoCuriosidad[] {
     const m: MomentoCuriosidad[] = ["llegada"];
-    if (tormentaActiva(estado)) m.push("radiacion");
+    if (tormentaActiva(estado, misionActiva())) m.push("radiacion");
     if (tele) m.push("telemetria");
     if (ultimas?.malaSuerte.some((c) => c.descripcionKey === "mala_suerte.tormenta_polvo")) m.push("polvo");
     if (mundo.cercano === "habitat") m.push("habitat");
@@ -201,7 +201,7 @@ export function PantallaBase({ estado, colocados = [], ultimas, hud, progreso = 
     const n = ++solicitud.current;
     setOcupado(true);
     const r = await conversarConRed(entrada, estado, memoriaActual.current, {
-      tormentaActiva: tormentaActiva(estado), dosisMarte: referenciaDosis("marte-superficie"), vecesFallaIris: fallasIris, reaccion: reaccionTripulacion,
+      tormentaActiva: tormentaActiva(estado, misionActiva()), dosisMarte: referenciaDosis("marte-superficie"), vecesFallaIris: fallasIris, reaccion: reaccionTripulacion,
     });
     if (n !== solicitud.current) return;
     setOcupado(false);

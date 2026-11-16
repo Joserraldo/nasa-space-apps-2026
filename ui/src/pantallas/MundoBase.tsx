@@ -10,6 +10,7 @@ import { hayGraficos3D } from "../escena/soporte.js";
 import { vistaEscena, type FaseVista, type LugarObjetivo } from "../escena/vista.js";
 import type { CalidadGrafica } from "../juego/ajustes.js";
 import { eventosDeTick } from "../juego/eventos.js";
+import { misionActiva } from "../juego/misiones.js";
 import { pedidoDeGuia } from "../juego/pedidoEscena.js";
 import { traducir, useT } from "../i18n.js";
 import { averiaIrisRevelada, pasoDeLaBase } from "./lugares.js";
@@ -89,7 +90,7 @@ export function useAltoHoja(hoja: RefObject<HTMLElement>, abierta: boolean) {
 /** Fase que ve la escena: la tormenta se ve también en la base mientras dure. */
 export function faseVista(fase: FaseMundo, estado: GameState): FaseVista {
   if (fase === "modulos") return "modulos";
-  return fase === "tormenta" || tormentaActiva(estado) ? "tormenta" : "base";
+  return fase === "tormenta" || tormentaActiva(estado, misionActiva()) ? "tormenta" : "base";
 }
 
 /** Verbo de `[E]` para lo que hay al alcance (E2). Acercarse solo nombra el verbo: nunca cobra. */
@@ -173,7 +174,7 @@ export function MundoBase({ fase, estado, colocados, calidad, movimientoReducido
   // Eventos del último tick: se comparan el estado anterior y el actual (una vez por tick).
   const previo = useRef(estado);
   const eventos = useMemo(() => {
-    const ev = previo.current.tick === estado.tick ? [] : eventosDeTick(previo.current, estado);
+    const ev = previo.current.tick === estado.tick ? [] : eventosDeTick(previo.current, estado, misionActiva());
     previo.current = estado;
     return ev;
   }, [estado]);

@@ -1,7 +1,8 @@
 import { useEffect, useRef } from "react";
 import type { BaseAction, GameState } from "@solar-shield/contracts";
 import { costoDe, puedeAplicar } from "@solar-shield/engine";
-import { MISION_JEZERO, type Mision } from "@solar-shield/missions";
+import type { Mision } from "@solar-shield/missions";
+import { misionActiva } from "../../juego/misiones.js";
 import { useT } from "../../i18n.js";
 import { describirAccion } from "../Dialogos.js";
 import { FacetButton } from "./FacetButton.js";
@@ -23,7 +24,7 @@ export interface ConfirmarAccionProps {
   onConfirmar(accion: BaseAction): void;
 }
 
-export function ConfirmarAccion({ estado, accion, mision = MISION_JEZERO, onCancelar, onConfirmar }: ConfirmarAccionProps) {
+export function ConfirmarAccion({ estado, accion, mision = misionActiva(), onCancelar, onConfirmar }: ConfirmarAccionProps) {
   const { t } = useT();
   const panel = useRef<HTMLDivElement>(null);
   const { inmediato, retrasado } = costoDe(accion, mision);

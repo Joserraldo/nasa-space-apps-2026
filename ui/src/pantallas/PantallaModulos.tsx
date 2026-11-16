@@ -3,7 +3,7 @@ import { conversar } from "@solar-shield/agents";
 import type { Equipment, GameState, Resource } from "@solar-shield/contracts";
 import { referenciaDosis } from "@solar-shield/data";
 import { costoDe, puedeAplicar } from "@solar-shield/engine";
-import { MISION_JEZERO } from "@solar-shield/missions";
+import { misionActiva } from "../juego/misiones.js";
 import { useT } from "../i18n.js";
 import { FacetButton } from "../componentes/base/FacetButton.js";
 import { Icono } from "../componentes/base/Iconos.js";
@@ -28,14 +28,13 @@ import "./modulos.css";
  * un módulo como colocado. Reemplaza a `ColocarModulos.tsx` (FLUJO §2.3).
  */
 
-const mision = MISION_JEZERO;
 /** Quién aconseja cada módulo (sin mapeo en agents/): el escudo es protección de la tripulación; el resto, la Ingeniera. */
 const expertaDe = (m: Equipment) => (m === "escudo" ? "doctora" : "ingeniera") as "doctora" | "ingeniera";
 const accionDe = (modulo: Equipment) => ({ tipo: "colocar_modulo", modulo }) as const;
 
 /** Icono del recurso que más sube el módulo, leído de su beneficio (sin dibujos inventados). */
 function iconoDe(modulo: Equipment) {
-  const { retrasado } = costoDe(accionDe(modulo), mision);
+  const { retrasado } = costoDe(accionDe(modulo), misionActiva());
   let mejor: Resource = "energia";
   for (const r of RECURSOS) if ((retrasado[r] ?? 0) > (retrasado[mejor] ?? 0)) mejor = r;
   return ICONO_RECURSO[mejor];
@@ -55,7 +54,7 @@ export function PantallaModulos({ estado, colocados, onColocar, onListo, bienven
   bienvenida?: { onExplorar(): void } | undefined;
 }) {
   const { t } = useT();
-  const total = mision.modulosAColocar;
+  const total = misionActiva().modulosAColocar;
   const faltan = total - colocados.length;
   const [ultimo, setUltimo] = useState<Equipment | null>(null);
   // E1: ninguna tarjeta fija. Aparece al llegar a un anclaje vacío ([E] Build) o al preguntar a la
@@ -76,7 +75,7 @@ export function PantallaModulos({ estado, colocados, onColocar, onListo, bienven
   /** Anclaje vacío al alcance en el mundo: ofrece `[E] Build` (solo con 3D). */
   const ancla = sinGl || faltan <= 0 ? null : (() => {
     const m = LUGARES.find((l) => l.id === cercano)?.modulo;
-    return m && mision.modulosDisponibles.includes(m) && !colocados.includes(m) ? m : null;
+    return m && misionActiva().modulosDisponibles.includes(m) && !colocados.includes(m) ? m : null;
   })();
 
   const expertaCercana: "ingeniera" | "doctora" | "meteorologa" | null =
@@ -107,7 +106,7 @@ export function PantallaModulos({ estado, colocados, onColocar, onListo, bienven
   }, [dialogoExperta, expertaCercana, fijarGlobo, fijarHablando]);
 
   // Siguiente hueco libre como objetivo visual en el mundo (marcador cian sobre el anclaje).
-  const siguienteModulo = mision.modulosDisponibles.find((m) => !colocados.includes(m));
+  const siguienteModulo = misionActiva().modulosDisponibles.find((m) => !colocados.includes(m));
   const objetivoAncla = faltan <= 0 ? null : (elegido ?? siguienteModulo ?? null);
   useEffect(() => {
     const lugarAncla = objetivoAncla ? LUGARES.find((l) => l.modulo === objetivoAncla)?.id ?? null : null;
@@ -246,13 +245,13 @@ export function PantallaModulos({ estado, colocados, onColocar, onListo, bienven
         {mostrada?.tipo === "modulo" ? (
           <>
             <p className="modulos-panel-desc">{t(`agentes.iris.sistema.${mostrada.modulo}`)}</p>
-            <CostRow {...costoDe(accionDe(mostrada.modulo), mision)} />
+            <CostRow {...costoDe(accionDe(mostrada.modulo), misionActiva())} />
           </>
         ) : mostrada ? (
           <>
             <p className="modulos-panel-desc">{t("ui.paso.4.elige")}</p>
             <ul className="modulos-lista" aria-label={t("ui.paso.4.lista")}>
-              {mision.modulosDisponibles.map((m) => {
+              {misionActiva().modulosDisponibles.map((m) => {
                 const listo = colocados.includes(m);
                 return (
                   <li key={m}>
@@ -287,7 +286,7 @@ function AccionesModulo({ estado, modulo, faltan, colocado, onColocar, onAtras }
   onColocar: () => void;
   onAtras: () => void;
 }) {
-  const permiso = puedeAplicar(estado, accionDe(modulo), mision);
+  const permiso = puedeAplicar(estado, accionDe(modulo), misionActiva());
   const motivoKey = permiso.ok ? undefined
     : faltan <= 0 ? "ui.paso.4.motivo.lleno"
       : `ui.comun.motivo.${permiso.motivo}${permiso.recurso ? `.${permiso.recurso}` : ""}`;
