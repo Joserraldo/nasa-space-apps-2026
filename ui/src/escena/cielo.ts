@@ -148,8 +148,49 @@ export const RADIO_HALO = 0.2;
  * Antes: sol 2,8 y hemisférica 0,9 con ACES, que lavaba el suelo. [E] a aprobar por María Paula.
  */
 export const INTENSIDAD = { sol: 2.6, hemisferica: 1.55 } as const;
-/** Media caja de la cámara de sombras alrededor de la base. [E] */
+/** Media caja de la cámara de sombras alrededor de la base, cuando nada la mueve. [E] */
 const CAJA_SOMBRA = 40;
+/** Distancia del Sol al centro de la caja de sombra (m); el rango de profundidad va de 100 a 200. [E] */
+const DISTANCIA_SOL = 150;
+
+/**
+ * Cámara de sombra que sigue al niño (D2, #24): con la caja fija de 80 m, 512 px en `media` daban
+ * 16 cm por píxel y el niño casi no proyectaba sombra. Media caja por calidad y cuánto se adelanta
+ * el centro hacia donde mira la cámara. [E]
+ */
+export const SOMBRA_SEGUIDA = { mediaCaja: { alta: 20, media: 16, baja: 16 }, adelante: 6 } as const;
+
+const rotLuz = new THREE.Matrix4();
+const ejeX = new THREE.Vector3();
+const ejeY = new THREE.Vector3();
+const ejeZ = new THREE.Vector3();
+const DIR_SOL = new THREE.Vector3(...LUZ.direccionSol);
+rotLuz.lookAt(DIR_SOL, new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, 1, 0)).extractBasis(ejeX, ejeY, ejeZ);
+
+/**
+ * Centro de la caja de sombra para un punto del suelo, ajustado a la grilla de píxeles de sombra en
+ * el plano de la luz: así la caja se mueve de a un píxel entero y los bordes de sombra no tiemblan.
+ */
+export function centroSombra(x: number, z: number, mediaCaja: number, lado: number, destino = new THREE.Vector3()): THREE.Vector3 {
+  const paso = (2 * mediaCaja) / lado;
+  const p = new THREE.Vector3(x, 0, z);
+  const u = Math.round(p.dot(ejeX) / paso) * paso;
+  const v = Math.round(p.dot(ejeY) / paso) * paso;
+  const w = p.dot(ejeZ);
+  return destino.copy(ejeX).multiplyScalar(u).addScaledVector(ejeY, v).addScaledVector(ejeZ, w);
+}
+
+/** Mueve el Sol y su blanco para que la caja de sombra (media caja `mediaCaja`) quede centrada en `centro`. */
+export function seguirConSombra(sol: THREE.DirectionalLight, centro: THREE.Vector3, mediaCaja: number): void {
+  const cam = sol.shadow.camera;
+  if (cam.right !== mediaCaja) {
+    cam.left = -mediaCaja; cam.right = mediaCaja; cam.top = mediaCaja; cam.bottom = -mediaCaja;
+    cam.updateProjectionMatrix();
+  }
+  sol.target.position.copy(centro);
+  sol.position.copy(centro).addScaledVector(DIR_SOL, DISTANCIA_SOL);
+  sol.target.updateMatrixWorld();
+}
 
 /** Lo mínimo del renderer que toca el cielo (así se prueba sin WebGL). */
 export type RendererCielo = Pick<THREE.WebGLRenderer, "toneMapping" | "toneMappingExposure" | "shadowMap">;
@@ -210,14 +251,15 @@ export function crearCielo(escena: THREE.Scene, ambiente: Ambiente = "dia", cali
   const sol = new THREE.DirectionalLight(new THREE.Color(LUZ.colorSol), INTENSIDAD.sol);
   sol.name = "Light_Sun";
   const [dx, dy, dz] = LUZ.direccionSol;
-  sol.position.set(dx * 150, dy * 150, dz * 150);
+  sol.position.set(dx * DISTANCIA_SOL, dy * DISTANCIA_SOL, dz * DISTANCIA_SOL);
   sol.castShadow = true;
   const lado = LUZ.tamanoSombra[calidad];
   sol.shadow.mapSize.set(lado, lado);
   const cam = sol.shadow.camera;
   cam.left = -CAJA_SOMBRA; cam.right = CAJA_SOMBRA; cam.top = CAJA_SOMBRA; cam.bottom = -CAJA_SOMBRA;
-  cam.near = 1; cam.far = 320;
-  sol.shadow.bias = -0.0005;
+  // Rango de profundidad justo (antes 1 a 320): el mismo sesgo despega menos la sombra del pie.
+  cam.near = DISTANCIA_SOL - 50; cam.far = DISTANCIA_SOL + 50;
+  sol.shadow.bias = -0.0003;
   sol.shadow.normalBias = 0.02;
 
   const fondoAnterior = escena.background;

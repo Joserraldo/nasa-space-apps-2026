@@ -4,7 +4,7 @@
 .retrato-marco { display: grid; place-items: end center; width: 124px; height: 124px; overflow: hidden; border-radius: 50%;
   background: color-mix(in srgb, var(--color-ciruela) 14%, var(--color-lila)); box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--color-ciruela) 16%, var(--color-lila)); }
 .retrato-compacto .retrato-marco { width: 80px; height: 80px; }
-.retrato-marco svg { max-width: none; flex: none; }
+.retrato-marco :is(svg, .retrato-img) { max-width: none; flex: none; }
 .retrato-nombre { font-weight: var(--tipo-peso-titulo); font-size: var(--tipo-tam-cuerpo); line-height: 1.15; }
 .retrato-especialidad { display: inline-flex; flex-wrap: nowrap; justify-content: center; align-items: center; gap: var(--esp-1); font-size: 14px; font-weight: var(--tipo-peso-etiqueta); color: var(--color-ciruela); white-space: nowrap; }
 .retrato-especialidad svg { flex: none; }

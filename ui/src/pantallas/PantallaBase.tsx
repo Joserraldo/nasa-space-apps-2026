@@ -19,7 +19,7 @@ import type { Persona } from "../componentes/base/Retrato.js";
 import "../componentes/base/facetas.css";
 import { vistaEscena, type LugarObjetivo } from "../escena/vista.js";
 import { DecisionRegistrada } from "./DecisionRegistrada.js";
-import { mundoBloqueado, objetivoDeLaBase, usoDelLugar } from "./lugares.js";
+import { averiaIrisRevelada, mundoBloqueado, objetivoDeLaBase, usoDelLugar } from "./lugares.js";
 import { useAltoHoja, useMundo, usePosicionJugador } from "./MundoBase.js";
 import "./base.css";
 
@@ -88,7 +88,7 @@ export function PantallaBase({ memoria = MEMORIA_INICIAL, vistos = [], onConvers
   // Una confirmación, un despacho: el doble toque o la tecla más el botón no cobran dos veces (MECANICAS §6.1).
   const confirmada = useRef(false);
   const tele = telemetriaPendiente(estado);
-  const modulos = useMemo(() => vistaEscena(estado, { fase: "base", colocados, averiaRevelada: true }).modulos, [estado, colocados]);
+  const modulos = useMemo(() => vistaEscena(estado, { fase: "base", colocados, averiaRevelada: averiaIrisRevelada(estado) }).modulos, [estado, colocados]);
 
   const hayNovedad = !!(estado.pausado && ultimas && (ultimas.malaSuerte.length > 0 || ultimas.iaCambio || ultimas.efectosLlegaron.length > 0));
   const abierto = { dialogo: dialogo !== null, plan: plan !== null, registro: registro !== null, panel: panel !== null, novedad: hayNovedad, campo: false };

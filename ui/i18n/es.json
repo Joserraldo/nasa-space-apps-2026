@@ -44,6 +44,8 @@
   "ui.paso.4.progreso": "Colocados: {n} de {total}",
   "ui.paso.4.puesto": "{moduloKey}: colocado",
   "ui.paso.4.motivo.faltan": "Primero coloca tus módulos",
+  "ui.paso.4.preguntar": "Preguntar a la Ingeniera",
+  "ui.paso.4.construir": "Construir: {moduloKey}",
   "ui.paso.4.motivo.lleno": "Ya colocaste todos tus módulos",
   "ui.paso.7.telemetria": "Enviar telemetría a la Tierra",
   "ui.paso.7.enviada": "Telemetría enviada. La Tierra responderá en {ticks} turnos (la luz tarda en viajar).",

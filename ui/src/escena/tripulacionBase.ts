@@ -51,6 +51,7 @@ export function crearTripulacionBase() {
   /** Lo escribe la escena en cada fotograma, después de mover a los actores (`errorIris`, al cambiar el pedido). */
   const actores = { caminando: false, velocidadIris: 0, modoIris: "acompana" as ModoGuia, hablando: null as ActorId|null, errorIris: false };
   const expertas=[ingeniera,doctora,meteorologa];
+  const extraExpertas=[doctora,meteorologa];
   let apagada = false;
   let atendiendoDesde = -1;
   let ultimoMs = -1;
@@ -79,7 +80,7 @@ export function crearTripulacionBase() {
     ingeniera.grupo.rotation.y = reducido ? deseado : girarHacia(ingeniera.grupo.rotation.y, deseado, GIRO_INGENIERA * dt);
     animar(ingeniera, g, t, gesto);
 
-    for(const modelo of [doctora,meteorologa]){
+    for(const modelo of extraExpertas){
       const q=modelo.grupo.position,p=jugador.grupo.position;
       const cerca=Math.hypot(p.x-q.x,p.z-q.z)<=DISTANCIA_ATENCION || (modelo===doctora?actores.hablando==="doctora":actores.hablando==="meteorologa");
       if(cerca)modelo.grupo.rotation.y=girarHacia(modelo.grupo.rotation.y,Math.atan2(p.x-q.x,p.z-q.z),reducido?Math.PI*2:GIRO_INGENIERA*dt);
