@@ -316,6 +316,22 @@ export function PantallaBase({ estado, colocados = [], ultimas, hud, progreso = 
   const cerrable = (panel !== null || dialogo !== null) && !plan && !registro;
   const tituloHoja = registro ? "ui.decision.titulo" : plan ? "ui.decision.panel" : panel === "mapa" ? "ui.mapa.titulo" : panel === "tripulacion" ? "ui.tripulacion.titulo" : "ui.base.consulta";
 
+  function renderOpcionesCharla(extra = "") {
+    if (!dialogo || plan) return null;
+    const dato = curiosidadDe(dialogo.experto);
+    if (opciones.length === 0 && !dato) return null;
+    return (
+      <div className={`fila${extra ? ` ${extra}` : ""}`} role="group" aria-label={t("ui.base.charla.opciones")} aria-busy={ocupado}>
+        {opciones.map((o) => (
+          <FacetButton key={`${o.entrada.con}-${o.entrada.pregunta ?? ""}`} labelKey={o.etiqueta.clave} labelVars={o.etiqueta.vars}
+            disabled={ocupado} onClick={() => void hablar(o.entrada)} />
+        ))}
+        {/* B4: un dato de Marte de quien habla, solo en su momento real y una vez por partida. */}
+        {dato && <FacetButton icon="sol" labelKey={`ui.curiosidad.${dato.id}`} disabled={ocupado} onClick={() => contarCuriosidad(dato)} />}
+      </div>
+    );
+  }
+
   return (
     <section className={`base-e6${hayPanel ? " base-e6-con-panel" : ""}`} aria-label={t("ui.hud.titulo")}>
       {/* E5: el globo vive en la escena (oculta para el lector de pantalla); aquí se anuncia la misma línea. */}
@@ -348,14 +364,7 @@ export function PantallaBase({ estado, colocados = [], ultimas, hud, progreso = 
           <DialogoExperto d={dialogo} irisDanada={averiaIrisRevelada(estado)} soloTexto={false} onPlan={abrirPlan}
             onCerrar={() => { soltarCharla(); setDialogo(null); devolverFoco(); }}
             onOtra={() => alternarPanel("tripulacion")} />
-          {!plan && opciones.length > 0 && (
-            <div className="fila dialogo-franja-opciones" role="group" aria-label={t("ui.base.charla.opciones")} aria-busy={ocupado}>
-              {opciones.map((o) => (
-                <FacetButton key={`${o.entrada.con}-${o.entrada.pregunta ?? ""}`} labelKey={o.etiqueta.clave} labelVars={o.etiqueta.vars}
-                  disabled={ocupado} onClick={() => void hablar(o.entrada)} />
-              ))}
-            </div>
-          )}
+          {renderOpcionesCharla("dialogo-franja-opciones")}
         </div>
       )}
 
@@ -399,20 +408,8 @@ export function PantallaBase({ estado, colocados = [], ultimas, hud, progreso = 
                   onCerrar={() => { soltarCharla(); setDialogo(null); if (!panel) devolverFoco(); }}
                   onOtra={() => alternarPanel("tripulacion")} />
               )}
-              {/* #377: botones para seguir hablando; funcionan sin modelo y nunca aplican una acción. */}
-              {dialogo && !plan && opciones.length > 0 && (() => {
-                const dato = curiosidadDe(dialogo.experto);
-                return (
-                  <div className="fila" role="group" aria-label={t("ui.base.charla.opciones")} aria-busy={ocupado}>
-                    {opciones.map((o) => (
-                      <FacetButton key={`${o.entrada.con}-${o.entrada.pregunta ?? ""}`} labelKey={o.etiqueta.clave} labelVars={o.etiqueta.vars}
-                        disabled={ocupado} onClick={() => void hablar(o.entrada)} />
-                    ))}
-                    {/* B4: un dato de Marte de quien habla, solo en su momento real y una vez por partida. */}
-                    {dato && <FacetButton icon="sol" labelKey={`ui.curiosidad.${dato.id}`} disabled={ocupado} onClick={() => contarCuriosidad(dato)} />}
-                  </div>
-                );
-              })()}
+              {/* #377 y B4: botones para seguir hablando y curiosidad real; funcionan sin modelo y nunca aplican una acción. */}
+              {renderOpcionesCharla()}
               {plan ? (
                 <ConfirmarAccion estado={estado} accion={plan} onCancelar={cerrarPlan} onConfirmar={confirmar} />
               ) : panel === "mapa" ? (
@@ -446,7 +443,7 @@ export function PantallaBase({ estado, colocados = [], ultimas, hud, progreso = 
                       <input id="base-campo" type="text" value={texto} onChange={(e) => setTexto(e.target.value)} placeholder={t("ui.base.tripulacion.campo")} />
                       <FacetButton type="submit" labelKey="ui.tripulacion.enviar" busy={ocupado} onClick={() => undefined} />
                     </form>
-                    <div className="base-chips" role="group" aria-label={t("ui.base.charla.opciones")}>
+                    <div className="base-chips" role="group" aria-label={t("ui.base.consulta")}>
                       {(
                         [
                           { con: "ingeniera", labelKey: "ui.base.tripulacion.chip.energia", queryKey: "ui.base.tripulacion.chip.energia_q" },
