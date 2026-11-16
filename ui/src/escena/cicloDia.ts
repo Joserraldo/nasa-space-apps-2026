@@ -18,7 +18,7 @@ import { INTENSIDAD, LUZ, PALETA_CIELO } from "./cielo";
 
 /** Duración del sol en horas (NSSDC). [V] */
 export const DURACION_SOL_H = 24.6597;
-/** Altura máxima del Sol al mediodía (rad). Jezero está a 18,4° N; valor de juego. [E] */
+/** Altura máxima del Sol al mediodía (rad). Valor de juego, sin latitud ni estación. [E] */
 export const ELEVACION_MAXIMA = THREE.MathUtils.degToRad(45);
 /** El Sol nunca baja de acá: sin noche jugable. [E] */
 export const ELEVACION_MINIMA = THREE.MathUtils.degToRad(5);
