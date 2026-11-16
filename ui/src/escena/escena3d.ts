@@ -12,7 +12,9 @@ import urlDem from "../../../data/terreno/jezero/elevacion.bin?url";
 import type { CalidadGrafica } from "../juego/ajustes";
 import type { EventoFeedback } from "../juego/eventos";
 import { CLARO, MALLA_JEZERO, ROCAS_PRIMER_PLANO, armarEscena, huellasRocas, radioRoca, rejillaJezero, type EscenaArmada } from "./armado";
-import { LUZ } from "./cielo";
+import { AJUSTE_CALIDAD, MAS_BAJA } from "./calidad";
+import type { Cielo } from "./cielo";
+import type { PedidoEscena } from "./frontera";
 import { crearMateriales, type Materiales } from "./materiales";
 import { liberarCache, liberarEscena, liberarMateriales } from "./liberar";
 import { crearContorno } from "./contorno";
@@ -40,6 +42,116 @@ import { crearMedidorRender, type MedicionRender } from "./medicion";
 
 export type CamaraEscena = "tercera" | "primera";
 
+/**
+ * Lo que un sistema de la escena puede leer y usar (bloque 0 de PLAN-JUGABILIDAD §2). Es un solo
+ * objeto que la escena reescribe en cada fotograma: léanlo dentro de `montar`/`actualizar`, no lo
+ * guarden por partes.
+ */
+export interface ContextoSistema {
+  readonly escena: THREE.Scene;
+  readonly camara: THREE.PerspectiveCamera;
+  readonly renderer: THREE.WebGLRenderer;
+  readonly materiales: Materiales;
+  readonly cielo: Cielo;
+  readonly calidad: CalidadGrafica;
+  readonly reducido: boolean;
+  /** Última vista del motor (`null` hasta el primer `actualizar`). Solo lectura: la escena no decide reglas. */
+  readonly vista: VistaEscena | null;
+  /** Lo último que pidió la pantalla (`objetivo`, `iris`, `globo`, `hablando`, `sala`). */
+  readonly pedido: PedidoEscena;
+  /** Posición (metros de juego) y rumbo (rad) del niño en este fotograma. */
+  readonly jugador: Readonly<{ x: number; z: number; rumbo: number }>;
+  /** Marca de tiempo del fotograma (ms, `performance.now`). */
+  readonly ahora: number;
+}
+
+/**
+ * Un sistema que se suma a la escena sin editar `escena3d.ts`: marcadores (frente C), ciclo de día
+ * (frente D), etc. `montar` se llama una vez, `actualizar` en cada fotograma antes del render, y
+ * `dispose` al quitarlo o al liberar la escena (libera lo que creó; materiales compartidos no).
+ * Si un sistema lanza, la escena lo desmonta y sigue: nunca tumba el bucle.
+ * Lo que agregue a `ctx.escena` cuenta en el presupuesto de la vista (80 draw calls, 80 000 triángulos).
+ */
+export interface SistemaEscena {
+  readonly id: string;
+  montar(ctx: ContextoSistema): void;
+  actualizar(dt: number, ctx: ContextoSistema): void;
+  dispose(): void;
+}
+
+/**
+ * Sistemas que se montan solos: cada archivo de `escena/sistemas/` (uno por frente y por sistema)
+ * exporta `crearSistema(): SistemaEscena`. Así C y D suman el suyo sin editar este archivo ni
+ * `EscenaBase.tsx`. Las pruebas (`*.test.ts`) quedan fuera.
+ */
+const MODULOS_SISTEMA = import.meta.glob<{ crearSistema?: () => SistemaEscena }>(["./sistemas/*.ts", "!./sistemas/*.test.ts"], { eager: true });
+
+/** Sistemas automáticos de `escena/sistemas/`, en orden de nombre de archivo. */
+export function sistemasAutomaticos(): SistemaEscena[] {
+  return Object.keys(MODULOS_SISTEMA)
+    .sort()
+    .flatMap((ruta) => {
+      const crear = MODULOS_SISTEMA[ruta]?.crearSistema;
+      return crear ? [crear()] : [];
+    });
+}
+
+/**
+ * Lista de sistemas montados con errores aislados. Sin WebGL: la escena le pasa el contexto.
+ * `alFallar` recibe el sistema que lanzó (ya desmontado).
+ */
+export function crearRegistroSistemas(ctx: ContextoSistema, alFallar: (id: string, error: unknown) => void = avisarFallo) {
+  const montados: SistemaEscena[] = [];
+  const quitar = (s: SistemaEscena): void => {
+    const i = montados.indexOf(s);
+    if (i < 0) return;
+    montados.splice(i, 1);
+    try {
+      s.dispose();
+    } catch (e) {
+      alFallar(s.id, e);
+    }
+  };
+  return {
+    agregar(s: SistemaEscena): () => void {
+      if (montados.some((m) => m.id === s.id)) throw new Error(`Sistema repetido: ${s.id}`);
+      try {
+        s.montar(ctx);
+      } catch (e) {
+        alFallar(s.id, e);
+        try {
+          s.dispose();
+        } catch {
+          // ya avisado
+        }
+        return () => undefined;
+      }
+      montados.push(s);
+      return () => quitar(s);
+    },
+    actualizar(dt: number): void {
+      for (const s of [...montados]) {
+        try {
+          s.actualizar(dt, ctx);
+        } catch (e) {
+          alFallar(s.id, e);
+          quitar(s);
+        }
+      }
+    },
+    ids(): string[] {
+      return montados.map((s) => s.id);
+    },
+    dispose(): void {
+      for (const s of [...montados].reverse()) quitar(s);
+    },
+  };
+}
+
+function avisarFallo(id: string, error: unknown): void {
+  console.error(`[escena] el sistema "${id}" falló y se desmontó`, error);
+}
+
 export interface OpcionesEscena3D {
   /** Activa muestras del render para diagnóstico; desactivado en el juego por defecto. */
   medir?: boolean;
@@ -61,6 +173,10 @@ export interface OpcionesEscena3D {
   alPosicion?: (posicion: { x: number; z: number }) => void;
   /** La ruta al destino terminó. */
   alDestino?: (tipo: TipoEventoDestino, lugar: LugarId) => void;
+  /** Sistemas extra (p. ej. prototipos en `vistaPrevia.ts`), además de los de `escena/sistemas/`. */
+  sistemas?: readonly SistemaEscena[];
+  /** `false`: no monta los de `escena/sistemas/` (pruebas). Por defecto, sí. */
+  sistemasAutomaticos?: boolean;
 }
 
 export interface Escena3D {
@@ -72,6 +188,10 @@ export interface Escena3D {
   fijarDestino(destino: LugarId | null): void;
   /** Diálogo, panel o campo abierto: sin caminar ni usar; se sueltan teclas y joystick. */
   fijarBloqueado(bloqueado: boolean): void;
+  /** Lo que pide la pantalla (frontera.ts). Los sistemas lo leen en `ctx.pedido`. */
+  fijarPedido(pedido: PedidoEscena): void;
+  /** Monta un sistema y devuelve cómo quitarlo. Lanza si ya hay uno con el mismo `id`. */
+  agregarSistema(sistema: SistemaEscena): () => void;
   /** Gestos táctiles de esta escena; la capa táctil de la pantalla le pasa los punteros. */
   readonly entradaTactil: EntradaTactil;
   redimensionar(ancho: number, alto: number): void;
@@ -87,16 +207,6 @@ export interface Escena3D {
   listo: Promise<void>;
   dispose(): void;
 }
-
-/** DPR máximo y sombras por calidad (APLICACION §8, MARTE §5). `baja` baja de 1: es el nivel al que cae la escena
- * cuando no sostiene ~28 fps, y sin GPU el costo crece con los píxeles (medido con SwiftShader: base de 34 a ~50 fps). */
-export const AJUSTE_CALIDAD: Readonly<Record<CalidadGrafica, { dpr: number; sombra: number | null; antialias: boolean }>> = {
-  alta: { dpr: 1.5, sombra: LUZ.tamanoSombra.alta, antialias: true },
-  media: { dpr: 1.25, sombra: LUZ.tamanoSombra.baja, antialias: true },
-  baja: { dpr: 0.75, sombra: null, antialias: false },
-};
-
-const MAS_BAJA: Readonly<Record<CalidadGrafica, CalidadGrafica | null>> = { alta: "media", media: "baja", baja: null };
 
 /** Punto de uso de la mesa: solo para el encuadre de referencia `CAMARAS` (pruebas de composición). */
 const FOCO = { x: lugar("mesa").x, z: lugar("mesa").z } as const;
@@ -346,6 +456,23 @@ export function crearEscena3D(canvas: HTMLCanvasElement, opciones: OpcionesEscen
   const guantes = crearGuantes(materiales);
   armada.escena.add(contorno.malla, camara);
   camara.add(guantes.raiz);
+
+  // --- Sistemas (ganchos del bloque 0): un contexto reutilizado y errores aislados ---
+  const jugadorCtx = { x: mov.jugador.x, z: mov.jugador.z, rumbo: mov.rumbo };
+  const ctx: { -readonly [K in keyof ContextoSistema]: ContextoSistema[K] } = {
+    escena: armada.escena,
+    camara,
+    renderer,
+    materiales,
+    cielo: armada.cielo,
+    calidad,
+    reducido,
+    vista: null,
+    pedido: {},
+    jugador: jugadorCtx,
+    ahora: 0,
+  };
+  const sistemas = crearRegistroSistemas(ctx);
   let camaraActual: CamaraEscena = "tercera";
   /** 0 = tercera persona, 1 = primera; se anima entre `mezclaDesde` y el destino. */
   let mezcla = 0;
@@ -601,6 +728,13 @@ export function crearEscena3D(canvas: HTMLCanvasElement, opciones: OpcionesEscen
 
     moverCamara(dt, ahora);
     armada.animar(ahora, reducido);
+    jugadorCtx.x = j.x;
+    jugadorCtx.z = j.z;
+    jugadorCtx.rumbo = mov.rumbo;
+    ctx.ahora = ahora;
+    ctx.calidad = calidad;
+    ctx.reducido = reducido;
+    sistemas.actualizar(dt);
     renderer.render(armada.escena, camara);
 
     const info = renderer.info.render;
@@ -707,6 +841,8 @@ export function crearEscena3D(canvas: HTMLCanvasElement, opciones: OpcionesEscen
   // Primer encuadre sin interpolar.
   inicioCamara = -Infinity;
   moverCamara(0, 0);
+  const iniciales = [...(opciones.sistemasAutomaticos === false ? [] : sistemasAutomaticos()), ...(opciones.sistemas ?? [])];
+  for (const s of iniciales) sistemas.agregar(s);
   if (!document.hidden) arrancar();
 
   const listo = fetch(urlDem)
@@ -730,6 +866,7 @@ export function crearEscena3D(canvas: HTMLCanvasElement, opciones: OpcionesEscen
     entradaTactil,
     actualizar(vista, eventos) {
       armada.aplicarVista(vista);
+      ctx.vista = vista;
       let cambio = false;
       for (const id of MODULOS_BASE) {
         const antes = modulosVistos[id];
@@ -775,6 +912,13 @@ export function crearEscena3D(canvas: HTMLCanvasElement, opciones: OpcionesEscen
       if (b) soltarTodo();
       mov.fijarBloqueado(b);
     },
+    fijarPedido(pedido) {
+      ctx.pedido = pedido;
+    },
+    agregarSistema(s) {
+      if (liberada) return () => undefined;
+      return sistemas.agregar(s);
+    },
     redimensionar(ancho, alto) {
       if (ancho <= 0 || alto <= 0) return;
       renderer.setSize(ancho, alto, false);
@@ -813,6 +957,7 @@ export function crearEscena3D(canvas: HTMLCanvasElement, opciones: OpcionesEscen
       canvas.removeEventListener("webglcontextlost", alPerder);
       canvas.removeEventListener("webglcontextrestored", alRecuperar);
       document.removeEventListener("visibilitychange", alVisibilidad);
+      sistemas.dispose();
       armada.liberar();
       liberarEscena(armada.escena, { compartidos: true });
       liberarMateriales(Object.values(materiales));
