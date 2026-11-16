@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { conversar, type Dialogo, type Entrada } from "@solar-shield/agents";
+import { turno, actorDe, conversarConRed, reaccionTripulacion, MEMORIA_INICIAL, curiosidadMarte, type MomentoCuriosidad, type MemoriaConversacion, type OpcionConversacion, type RespuestaConversacion, type EntradaConversacion, type Dialogo, type Entrada } from "@solar-shield/agents";
 import type { Action, BaseAction, Equipment, GameState } from "@solar-shield/contracts";
 import { referenciaDosis } from "@solar-shield/data";
 import { telemetriaPendiente, tormentaActiva, type Novedades } from "@solar-shield/engine";
@@ -53,7 +53,10 @@ const signo = (n: number) => (n > 0 ? `+${n}` : `${n}`);
 /** Qué ocupa el panel cuando no hay una decisión: la tripulación (con las acciones) o el mapa. */
 type Panel = "tripulacion" | "mapa" | null;
 
-export function PantallaBase({ estado, colocados = [], ultimas, hud, onAccion, onReanudar }: {
+export function PantallaBase({ memoria = MEMORIA_INICIAL, vistos = [], onConversacion, estado, colocados = [], ultimas, hud, onAccion, onReanudar }: {
+  memoria?: MemoriaConversacion;
+  vistos?: string[];
+  onConversacion?(memoria: MemoriaConversacion, vistos: string[]): void;
   estado: GameState;
   colocados?: readonly Equipment[];
   ultimas: Novedades | null;
@@ -69,6 +72,13 @@ export function PantallaBase({ estado, colocados = [], ultimas, hud, onAccion, o
   const [dialogo, setDialogo] = useState<Dialogo | null>(null);
   const [panel, setPanel] = useState<Panel>(null);
   const [preguntada, setPreguntada] = useState<string | null>(null);
+  const [ocupado, setOcupado] = useState(false);
+  const [opcionesCharla,setOpcionesCharla] = useState<OpcionConversacion[]>([]);
+  const estadoActual=useRef(estado);estadoActual.current=estado;
+  const solicitud = useRef(0);
+  const memoriaActual = useRef(memoria);
+  memoriaActual.current = memoria;
+  useEffect(()=>()=>{++solicitud.current;},[]);
   const [texto, setTexto] = useState("");
   const [fallasIris, setFallasIris] = useState(0);
   // Panel 04 "Decision recorded": `antes` es el estado al confirmar; `despues` se toma en el render que ya trae la acción aplicada.
@@ -118,6 +128,7 @@ export function PantallaBase({ estado, colocados = [], ultimas, hud, onAccion, o
     devolverFoco();
   }
   function confirmar(a: BaseAction) {
+    ++solicitud.current;setOcupado(false);mundo.fijarCharla(null);
     if (confirmada.current) return;
     confirmada.current = true;
     setRegistro({ antes: estado, despues: null });
@@ -135,10 +146,29 @@ export function PantallaBase({ estado, colocados = [], ultimas, hud, onAccion, o
     if (registro && !registro.despues && estado !== registro.antes) { setRegistro({ antes: registro.antes, despues: estado }); hoja.current?.scrollTo({ top: 0 }); }
   }, [estado, registro]);
 
+  async function conversarEntrada(entrada: EntradaConversacion) {
+    const n=++solicitud.current;
+    setOcupado(true);
+    let r=await conversarConRed(entrada,estado,memoriaActual.current,{tormentaActiva:tormentaActiva(estado),dosisMarte:referenciaDosis("marte-superficie"),vecesFallaIris:fallasIris,reaccion:reaccionTripulacion});
+    if(n!==solicitud.current)return;
+    if(estadoActual.current!==estado)r=turno({via:"texto",texto:""},estadoActual.current,memoriaActual.current,{tormentaActiva:tormentaActiva(estadoActual.current)});
+    memoriaActual.current=r.memoria;
+    onConversacion?.(r.memoria,vistos);
+    if("falla" in r.dialogo)setFallasIris(v=>v+1);
+    setDialogo(r.dialogo);setOpcionesCharla(r.opciones);setOcupado(false);
+    mundo.fijarCharla(r);
+  }
   function hablar(entrada: Entrada) {
-    const d = conversar(entrada, estado, { tormentaActiva: tormentaActiva(estado), dosisMarte: referenciaDosis("marte-superficie"), vecesFallaIris: fallasIris });
-    if ("falla" in d) setFallasIris((n) => n + 1);
-    setDialogo(d);
+    if("texto" in entrada) void conversarEntrada({via:"texto",texto:entrada.texto});
+    else if("experto" in entrada) void conversarEntrada({via:"boton",con:entrada.experto});
+  }
+  function curiosidad(momento: MomentoCuriosidad) {
+    ++solicitud.current;setOcupado(false);setOpcionesCharla([]);
+    const r=curiosidadMarte(momento,vistos);
+    if(!r)return;
+    onConversacion?.(memoriaActual.current,[...vistos,r.id]);
+    setDialogo(r.dialogo);
+    mundo.fijarCharla({actor:actorDe(r.dialogo.experto),globo:{clave:"agentes.curiosidad.ver_fuente"}});
   }
   function preguntar(id: GameState["tripulacion"][number]["id"]) {
     setPreguntada(id);
@@ -152,6 +182,7 @@ export function PantallaBase({ estado, colocados = [], ultimas, hud, onAccion, o
   }
   /** Cierra la consulta y el panel (no hay decisión abierta: no cambia nada del motor). */
   function cerrarTodo() {
+    ++solicitud.current;setOcupado(false);mundo.fijarCharla(null);
     setDialogo(null);
     setPanel(null);
     devolverFoco();
@@ -159,6 +190,7 @@ export function PantallaBase({ estado, colocados = [], ultimas, hud, onAccion, o
   function alternarPanel(p: Exclude<Panel, null>) {
     if (panel === p && !dialogo) { cerrarTodo(); return; }
     recordarOrigen();
+    ++solicitud.current;setOcupado(false);mundo.fijarCharla(null);
     setDialogo(null);
     setPanel(p);
     requestAnimationFrame(() => hoja.current?.querySelector<HTMLElement>("h2, button")?.focus());
@@ -167,6 +199,8 @@ export function PantallaBase({ estado, colocados = [], ultimas, hud, onAccion, o
   /** "Usar" un lugar (E de la escena, aviso [E] o botón de acción táctil): abre su plan y su consulta. */
   function usarLugar(l: LugarObjetivo) {
     if (plan || registro) return;
+    const experta=({taller:'ingeniera',habitat:'doctora',sensor:'meteorologa'} as const)[l as 'taller'|'habitat'|'sensor'];
+    if(experta){recordarOrigen();setPanel('tripulacion');void conversarEntrada({via:'acercarse',con:experta});return;}
     const uso = usoDelLugar(l, estado);
     recordarOrigen();
     setPanel(null);
@@ -198,6 +232,7 @@ export function PantallaBase({ estado, colocados = [], ultimas, hud, onAccion, o
   }, []);
 
   const uso = mundo.cercano ? usoDelLugar(mundo.cercano, estado) : null;
+  const consultaCercana=mundo.cercano && ["taller","habitat","sensor"].includes(mundo.cercano);
   const disponibles = estado.tripulacion.filter((m) => m.disponible);
   const cerrable = (panel !== null || dialogo !== null) && !plan && !registro;
   const tituloHoja = registro ? "ui.decision.titulo" : plan ? "ui.decision.panel" : panel === "mapa" ? "ui.mapa.titulo" : panel === "tripulacion" ? "ui.tripulacion.titulo" : "ui.base.consulta";
@@ -208,14 +243,14 @@ export function PantallaBase({ estado, colocados = [], ultimas, hud, onAccion, o
         mundo={{
           onTripulacion: () => alternarPanel("tripulacion"),
           onMapa: () => alternarPanel("mapa"),
-          interaccion: uso && mundo.cercano && !hayPanel ? { labelKey: uso.labelKey, onUsar: () => usarLugar(mundo.cercano!) } : undefined,
+          interaccion: uso && mundo.cercano && !hayPanel ? { labelKey: consultaCercana?"ui.tripulacion.hablar":uso.labelKey, onUsar: () => usarLugar(mundo.cercano!) } : undefined,
           camara: mundo.camara,
           onCamara: mundo.alternarCamara,
         }} />
 
       {tactil && !hayPanel && (
         <ControlesTactiles entrada={mundo.entrada} camara={mundo.camara} onCamara={mundo.alternarCamara}
-          accion={uso && mundo.cercano ? { labelKey: uso.labelKey, cortoKey: `${uso.labelKey}.corto`, icono: uso.icono, onUsar: () => usarLugar(mundo.cercano!) } : undefined} />
+          accion={uso && mundo.cercano ? { labelKey: consultaCercana?"ui.tripulacion.hablar":uso.labelKey, cortoKey: consultaCercana?"ui.tripulacion.hablar":`${uso.labelKey}.corto`, icono: uso.icono, onUsar: () => usarLugar(mundo.cercano!) } : undefined} />
       )}
 
       {hayPanel && (
@@ -238,7 +273,7 @@ export function PantallaBase({ estado, colocados = [], ultimas, hud, onAccion, o
                   vars={{ causaKey: c.descripcionKey, delta: c.delta !== undefined ? signo(c.delta) : "" }} />
               ))}
               {ultimas.malaSuerte.some((c) => c.descripcionKey === "mala_suerte.tormenta_polvo") && (
-                <div className="base-polvo"><Polvo estado={estado} onAccion={onAccion} onElegir={(a) => { onAccion(a); onReanudar(); }} /></div>
+                <div className="base-polvo">{curiosidadMarte("polvo",vistos) && <FacetButton labelKey="ui.curiosidad.polvo" onClick={()=>curiosidad("polvo")} />}<Polvo estado={estado} onAccion={onAccion} onElegir={(a) => { onAccion(a); onReanudar(); }} /></div>
               )}
               <FacetButton variant="primary" icon="jugar" labelKey="ui.reanudar" onClick={onReanudar} />
             </div></section>
@@ -255,9 +290,12 @@ export function PantallaBase({ estado, colocados = [], ultimas, hud, onAccion, o
             <>
               {dialogo && (
                 <DialogoExperto d={dialogo} irisDanada={estado.iaBase === "danada"} soloTexto={plan !== null} onPlan={abrirPlan}
-                  onCerrar={() => { setDialogo(null); if (!panel) devolverFoco(); }}
+                  onCerrar={() => { ++solicitud.current;setOcupado(false);mundo.fijarCharla(null);setDialogo(null); if (!panel) devolverFoco(); }}
                   onOtra={() => alternarPanel("tripulacion")} />
               )}
+              {dialogo && opcionesCharla.length>0 && <div className="fila" aria-label={t("ui.tripulacion.titulo")}>
+                {opcionesCharla.map(o=><FacetButton key={o.etiqueta.clave} labelKey={o.etiqueta.clave} onClick={()=>void conversarEntrada(o.entrada)} />)}
+              </div>}
               {plan ? (
                 <ConfirmarAccion estado={estado} accion={plan} onCancelar={cerrarPlan} onConfirmar={confirmar} />
               ) : panel === "mapa" ? (
@@ -285,10 +323,18 @@ export function PantallaBase({ estado, colocados = [], ultimas, hud, onAccion, o
                         </li>
                       ))}
                     </ul>
+                    <div className="fila">
+                      {(["llegada","suelo","lunas","remolino","atardecer","habitat","oxigeno"] as const).map(m=>{
+                        const r=curiosidadMarte(m,vistos);
+                        return r ? <FacetButton key={m} labelKey={`ui.curiosidad.${m}`} onClick={()=>curiosidad(m)} /> : null;
+                      })}
+                      {tormentaActiva(estado) && curiosidadMarte("radiacion",vistos) && <FacetButton labelKey="ui.curiosidad.radiacion" onClick={()=>curiosidad("radiacion")} />}
+                      {tele && curiosidadMarte("telemetria",vistos) && <FacetButton labelKey="ui.curiosidad.telemetria" onClick={()=>curiosidad("telemetria")} />}
+                    </div>
                     <form className="base-preguntar" onSubmit={enviarTexto}>
                       <label className="oculto-visual" htmlFor="base-campo">{t("ui.base.tripulacion.campo")}</label>
-                      <input id="base-campo" type="text" value={texto} onChange={(e) => setTexto(e.target.value)} placeholder={t("ui.base.tripulacion.campo")} />
-                      <FacetButton type="submit" labelKey="ui.tripulacion.enviar" onClick={() => undefined} />
+                      <input id="base-campo" type="text" value={texto} onChange={(e) => setTexto(e.target.value)} maxLength={200} placeholder={t("ui.base.tripulacion.campo")} />
+                      <FacetButton type="submit" labelKey="ui.tripulacion.enviar" busy={ocupado} onClick={() => undefined} />
                     </form>
                   </div></section>
 

@@ -37,11 +37,11 @@ Una sección por persona, máximo 5 líneas, y nadie edita la de otro (FLUJO §8
 - Bloqueo: #269 (E6 con escena y HUD de mundo/01) espera la pila de Daniel (#247 en conflicto); resaltado del anclaje en E5 espera a Daniel (#279); Map no mueve al niño (Camilo).
 
 ## Interfaz (Jaime)
-**Rama:** docs/fichas-fidelidad-220 y fix/ui-* · **PR:** #317 (fichas de #220), #318, #319 y #320 hacia develop · **Tokens:** verde
-- Hecho: repaso de fidelidad de lo fusionado en #220 (cierre-fidelidad, tarea 4): captura al lado de la lámina de cada pieza en `pr-fichas-220/`, con su ficha en el PR.
-- Hecho: arreglos de las 3 piezas que más se alejaban: intro (#318), carga (#319) y portada en 844x390 (#320).
-- Sigue: tarjeta de fuente de una línea como `ui/03` (cuarta en la lista); ConfirmarAccion con la imagen de la pieza.
-- Bloqueo: esperan a María Paula (#220) color de costos, interruptor Voice, tokens PERSONAJES y estilo de los retratos.
+**Rama:** feat/jaime-tripulacion-integrada · **PR:** borrador en preparación · **Tokens:** amarillo
+- Hecho: conversación asíncrona, recuerdos guardados, globos B1/A2, tres expertas y curiosidades con fuente; login #363 separado.
+- Verificado: typecheck, suite 982 pruebas, presupuesto de cinco módulos 79 llamadas / 74 126 triángulos; build.
+- Sigue: CI de integración, capturas y revisión de A/E/Paula. B0 #334 pasó a Ready for review con CI verde; no se fusionó.
+- Bloqueo: navegador deniega apertura y lectura de localhost; B5 no se jugó. Mantener borradores y el orden indicado por Santiago.
 
 ## Fidelidad
 Una línea por pieza (FLUJO §4 y §8). Estados: `sin empezar`, `en PR #n`, `aprobada`. Solo María Paula marca `aprobada`, después de comparar la captura con la lámina.

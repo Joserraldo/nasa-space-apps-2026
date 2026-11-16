@@ -298,7 +298,6 @@
   "ui.tormenta.pregunta.proteger": "What needs protection?",
   "ui.tormenta.pregunta.sensor": "What does the sensor show?",
   "ui.tormenta.verFuente": "View source",
-  "ui.tormenta.acceso": "{recurso} {valor}",
   "ui.comun.acceso_recurso": "{recurso} {valor}",
   "ui.comun.fuente.compacta": "{dueno} / {tipo}",
   "ui.comun.fuente.archivado": "Archived event",
@@ -337,5 +336,16 @@
   "ui.base.consulta": "Talk with your crew",
   "ui.hud.objetivo.ir": "Go to {lugarKey}",
   "ui.hud.objetivo.experto": "Ask {expertoKey} at {lugarKey}",
-  "ui.hud.objetivo.averia": "Iris needs a repair at {lugarKey}"
+  "ui.hud.objetivo.averia": "Iris needs a repair at {lugarKey}",
+  "ui.curiosidad.suelo": "Why is Mars red?",
+  "ui.curiosidad.lunas": "Mars moons",
+  "ui.curiosidad.remolino": "Dust whirlwinds",
+  "ui.curiosidad.atardecer": "Blue sunsets",
+  "ui.curiosidad.habitat": "Practice Mars homes",
+  "ui.curiosidad.oxigeno": "Making oxygen",
+  "ui.curiosidad.radiacion": "What did RAD measure?",
+  "ui.curiosidad.telemetria": "Why does Earth take time?",
+  "ui.curiosidad.polvo": "About Martian dust",
+  "ui.tripulacion.hablar": "Talk",
+  "ui.curiosidad.llegada": "A day on Mars"
 }

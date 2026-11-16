@@ -1,3 +1,7 @@
+import { guiaIrisLugar, lineasGlobo, bienvenidaGlobo, type RespuestaConversacion } from "@solar-shield/agents";
+import { useT } from "../i18n.js";
+import { pedidoDeGuia } from "../juego/pedidoEscena.js";
+import { pasoDeLaBase, averiaIrisRevelada } from "./lugares.js";
 import { createContext, lazy, Suspense, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode, type RefObject } from "react";
 import type { Equipment, GameState } from "@solar-shield/contracts";
 import { tormentaActiva } from "@solar-shield/engine";
@@ -40,12 +44,13 @@ export interface Mundo {
   fijarUso(fn: ((l: LugarObjetivo) => void) | null): void;
   /** Lugar adonde guía Iris ahora: la escena lo resalta (`VistaEscena.lugarObjetivo`). */
   fijarObjetivo(l: LugarObjetivo | null): void;
+  fijarCharla(r: Pick<RespuestaConversacion,"actor"|"globo"> | null): void;
 }
 
 const NADA = () => undefined;
 const MUNDO_VACIO: Mundo = {
   sin3d: true, cercano: null, camara: "tercera", alternarCamara: NADA, destino: null, irA: NADA, entrada: null,
-  movimientoReducido: true, fijarBloqueado: NADA, fijarInstalando: NADA, fijarUso: NADA, fijarObjetivo: NADA,
+  movimientoReducido: true, fijarBloqueado: NADA, fijarInstalando: NADA, fijarUso: NADA, fijarObjetivo: NADA, fijarCharla:NADA,
 };
 const MundoContexto = createContext<Mundo>(MUNDO_VACIO);
 /** Aparte: cambia hasta 5 veces por segundo y solo lo lee el mapa. */
@@ -95,6 +100,9 @@ export function MundoBase({ fase, estado, colocados, calidad, movimientoReducido
   onCalidad(c: CalidadGrafica): void;
   children: ReactNode;
 }) {
+  const {t}=useT();
+  const [charla,setCharla]=useState<Pick<RespuestaConversacion,"actor"|"globo">|null>(null);
+  const [lineaGlobo,setLineaGlobo]=useState(0);
   const [sin3d, setSin3d] = useState(() => !hayGraficos3D());
   const [cercano, setCercano] = useState<LugarObjetivo | null>(null);
   const [camara, setCamara] = useState<CamaraEscena>("tercera");
@@ -121,6 +129,17 @@ export function MundoBase({ fase, estado, colocados, calidad, movimientoReducido
   }, []);
   const bloqueado = bloqueadoCapa || campo;
 
+  const paso=fase==='modulos'?4:fase==='tormenta'?6:pasoDeLaBase(estado);
+  const revelada=averiaIrisRevelada(estado)||fase==='tormenta';
+  const nivel=estado.iaBase==='danada'&&!revelada?'tutorial':estado.iaBase;
+  const guia=guiaIrisLugar({...estado,iaBase:nivel},paso,{averiaRevelada:revelada});
+  const lineas=lineasGlobo(paso,nivel);
+  useEffect(()=>{setLineaGlobo(0);const id=setInterval(()=>setLineaGlobo(n=>n+1),5000);return()=>clearInterval(id);},[paso,nivel]);
+  const pedido=pedidoDeGuia(guia,t);
+  const bienvenida=bienvenidaGlobo(nivel);
+  const linea=paso===4 && lineaGlobo<bienvenida.length ? bienvenida[lineaGlobo] : lineas[Math.max(0,lineaGlobo-(paso===4?bienvenida.length:0))%Math.max(1,lineas.length)];
+  if(linea && pedido.globo)pedido.globo={actor:'iris',texto:t(linea.clave,linea.vars)};
+  if(charla?.actor){pedido.hablando=charla.actor;if(charla.globo)pedido.globo={actor:charla.actor,texto:t(charla.globo.clave,charla.globo.vars)};}
   const fv = faseVista(fase, estado);
   const vista = useMemo(() => vistaEscena(estado, { fase: fv, colocados, instalando: fase === "modulos" ? instalando : null, averiaRevelada: fase !== "modulos", lugarObjetivo }),
     [estado, colocados, fv, fase, instalando, lugarObjetivo]);
@@ -143,7 +162,7 @@ export function MundoBase({ fase, estado, colocados, calidad, movimientoReducido
   }, [sin3d]);
   const mundo = useMemo<Mundo>(() => ({
     sin3d, cercano, camara, alternarCamara, destino, irA, entrada, movimientoReducido,
-    fijarBloqueado: setBloqueadoCapa, fijarInstalando: setInstalando, fijarUso, fijarObjetivo: setLugarObjetivo,
+    fijarBloqueado: setBloqueadoCapa, fijarInstalando: setInstalando, fijarUso, fijarObjetivo: setLugarObjetivo, fijarCharla:setCharla,
   }), [sin3d, cercano, camara, alternarCamara, destino, irA, entrada, movimientoReducido, fijarUso]);
 
   return (
@@ -151,7 +170,7 @@ export function MundoBase({ fase, estado, colocados, calidad, movimientoReducido
       <div className="mundo-escena" aria-hidden="true">
         {sin3d ? <div className="mundo-hueco" data-escena={fase} /> : (
           <Suspense fallback={<div className="mundo-hueco" data-escena={fase} />}>
-            <EscenaBase vista={vista} eventos={eventos} calidad={calidad} camara={camara} movimientoReducido={movimientoReducido}
+            <EscenaBase {...pedido} vista={vista} eventos={eventos} calidad={calidad} camara={camara} movimientoReducido={movimientoReducido}
               onLugarCercano={setCercano}
               onUsar={(l) => { if (!bloqueado) uso.current?.(l); }}
               onCalidad={onCalidad}

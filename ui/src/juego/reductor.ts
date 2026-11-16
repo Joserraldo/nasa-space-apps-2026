@@ -1,3 +1,4 @@
+import type { MemoriaConversacion } from "@solar-shield/agents";
 import type { Action, Equipment, GameState } from "@solar-shield/contracts";
 import {
   aplicarAccion,
@@ -18,6 +19,8 @@ export type Fase = "inicio" | "satelite" | "sitio" | "modulos" | "base" | "torme
 
 /** Estado de orquestación de la pantalla. Los recursos y el resultado viven en `estado` (motor). */
 export interface Juego {
+  conversacion?: MemoriaConversacion;
+  curiosidades?: string[];
   fase: Fase;
   estado: GameState;
   colocados: Equipment[];
@@ -29,6 +32,7 @@ export interface Juego {
 }
 
 export type Evento =
+  | { tipo: "charla"; memoria: MemoriaConversacion; vistos?: string[] }
   | { tipo: "nueva" }
   | { tipo: "restaurar"; juego: Juego }
   | { tipo: "fase"; fase: Fase }
@@ -59,6 +63,7 @@ export function puedeColocar(j: Juego, modulo: Equipment): boolean {
 
 export function reducir(j: Juego, e: Evento): Juego {
   switch (e.tipo) {
+    case "charla": return { ...j, conversacion: e.memoria, curiosidades: e.vistos ?? j.curiosidades ?? [] };
     case "nueva":
       return inicial();
     case "restaurar":

@@ -15,7 +15,7 @@ import { Carga } from "./componentes/Carga.js";
 import { Creditos } from "./componentes/Creditos.js";
 import { Transicion } from "./componentes/Transicion.js";
 import { MundoBase } from "./pantallas/MundoBase.js";
-import type { TemaPregunta } from "@solar-shield/agents";
+import { MEMORIA_INICIAL, type TemaPregunta } from "@solar-shield/agents";
 import { MISION_JEZERO } from "@solar-shield/missions";
 import { cargarAjustes, guardarAjustes, type CalidadGrafica } from "./juego/ajustes.js";
 import { almacenDelNavegador, cargarPartida, guardarPartida } from "./juego/guardado.js";
@@ -119,7 +119,7 @@ function Pantalla({ idioma, setIdioma, sonido, setSonido, grafica }: {
                   onDecidir={(previas, opcionId) => { tocar("confirmar", sonido); enviar({ tipo: "dilema", previas, opcionId }); }} />
               )}
               {enBase && (
-                <PantallaBase estado={j.estado} colocados={j.colocados} ultimas={j.ultimas} hud={{ reloj }}
+                <PantallaBase memoria={j.conversacion??MEMORIA_INICIAL} vistos={j.curiosidades??[]} onConversacion={(memoria,vistos)=>enviar({tipo:"charla",memoria,vistos})} estado={j.estado} colocados={j.colocados} ultimas={j.ultimas} hud={{ reloj }}
                   onAccion={accion} onReanudar={() => enviar({ tipo: "pausa", pausado: false })} />
               )}
             </Transicion>

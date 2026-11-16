@@ -1,3 +1,4 @@
+import type { ActorId } from "./frontera.js";
 import * as THREE from "three";
 import { animar, crearIris, crearPersonaje, type CaraIris, type Gesto, type OpcionesIris } from "./personajes";
 import type { ModoGuia } from "./guia";
@@ -28,6 +29,12 @@ export function crearTripulacionBase() {
   grupo.name = "Tripulacion_Base";
   const jugador = crearPersonaje("nino");
   const ingeniera = crearPersonaje("ingeniera");
+  const doctora=crearPersonaje('doctora');
+  const meteorologa=crearPersonaje('meteorologa');
+  for(const [id,modelo] of [['doctora',doctora],['meteorologa',meteorologa]] as const){
+    const a=ANCLAJES_EXPERTAS[id];modelo.grupo.position.set(a.x,a.y,a.z);
+    modelo.grupo.rotation.y=Math.atan2(INICIO_JUGADOR.x-a.x,INICIO_JUGADOR.z-a.z);
+  }
   const iris = crearIris();
   jugador.grupo.position.set(INICIO_JUGADOR.x, 0, INICIO_JUGADOR.z);
   jugador.grupo.rotation.y = Math.PI;
@@ -37,12 +44,13 @@ export function crearTripulacionBase() {
   ingeniera.grupo.rotation.y = rumboIngeniera;
   iris.grupo.position.set(DOCK_IRIS.x, DOCK_IRIS.y, DOCK_IRIS.z);
   iris.grupo.rotation.y = Math.atan2(INICIO_JUGADOR.x - DOCK_IRIS.x, INICIO_JUGADOR.z - DOCK_IRIS.z);
-  grupo.add(jugador.grupo, ingeniera.grupo, iris.grupo);
+  grupo.add(jugador.grupo, ingeniera.grupo, doctora.grupo, meteorologa.grupo, iris.grupo);
   // Objetos reutilizados en cada frame.
   const gesto = { quieto: true };
   const rover: OpcionesIris = { quieto: true, velocidad: 0, averiada: false, cara: "atenta" };
-  /** Lo escribe la escena en cada fotograma, después de mover a los actores. */
-  const actores = { caminando: false, velocidadIris: 0, modoIris: "acompana" as ModoGuia };
+  /** Lo escribe la escena en cada fotograma, después de mover a los actores (`errorIris`, al cambiar el pedido). */
+  const actores = { caminando: false, velocidadIris: 0, modoIris: "acompana" as ModoGuia, hablando: null as ActorId|null, errorIris: false };
+  const expertas=[ingeniera,doctora,meteorologa];
   let apagada = false;
   let atendiendoDesde = -1;
   let ultimoMs = -1;
@@ -63,7 +71,7 @@ export function crearTripulacionBase() {
     const cerca = Math.hypot(p.x - q.x, p.z - q.z) <= DISTANCIA_ATENCION;
     let g: Gesto = "reposo";
     let deseado = rumboIngeniera;
-    if (cerca) {
+    if (cerca || actores.hablando === "ingeniera") {
       if (atendiendoDesde < 0) atendiendoDesde = ahoraMs;
       g = ahoraMs - atendiendoDesde < MS_SALUDO ? "saludar" : "explicar";
       deseado = Math.atan2(p.x - q.x, p.z - q.z);
@@ -71,14 +79,35 @@ export function crearTripulacionBase() {
     ingeniera.grupo.rotation.y = reducido ? deseado : girarHacia(ingeniera.grupo.rotation.y, deseado, GIRO_INGENIERA * dt);
     animar(ingeniera, g, t, gesto);
 
+    for(const modelo of [doctora,meteorologa]){
+      const q=modelo.grupo.position,p=jugador.grupo.position;
+      const cerca=Math.hypot(p.x-q.x,p.z-q.z)<=DISTANCIA_ATENCION || (modelo===doctora?actores.hablando==="doctora":actores.hablando==="meteorologa");
+      if(cerca)modelo.grupo.rotation.y=girarHacia(modelo.grupo.rotation.y,Math.atan2(p.x-q.x,p.z-q.z),reducido?Math.PI*2:GIRO_INGENIERA*dt);
+      animar(modelo,cerca?'explicar':'reposo',t,gesto);
+    }
+    // Detalle de rostro y vidrio solo en la experta más cercana. Las tres siluetas siguen presentes.
+    // Limita transparencias y expresiones costosas, sin cambiar geometrías, anclajes ni el motor.
+    const pJugador=jugador.grupo.position;
+    let detalle=expertas[0]!;
+    for(const modelo of expertas) if(modelo.grupo.position.distanceToSquared(pJugador)<detalle.grupo.position.distanceToSquared(pJugador))detalle=modelo;
+    const hablando=actores.hablando;
+    if(hablando==="ingeniera")detalle=ingeniera;
+    else if(hablando==="doctora")detalle=doctora;
+    else if(hablando==="meteorologa")detalle=meteorologa;
+    for(const modelo of expertas){
+      modelo.rostro.grupo.visible=modelo===detalle;
+      const casco=modelo.grupo.getObjectByName('casco');if(casco)casco.visible=modelo===detalle;
+      const cuerpo=modelo.grupo.getObjectByName('cuerpo') as THREE.Mesh|undefined;if(cuerpo)cuerpo.castShadow=modelo===detalle;
+    }
     // Iris: ruedas con su rapidez real y cara según lo que hace.
     rover.velocidad = actores.velocidadIris;
-    if (!apagada) rover.cara = CARA_GUIA[actores.modoIris];
+    // La guía pide cara de error (avería revelada): la muestra aunque la vista todavía no la marque averiada.
+    if (!apagada) rover.cara = actores.errorIris ? "error" : CARA_GUIA[actores.modoIris];
     iris.animar(t, rover);
   };
   animarTripulacion(0, true);
   return {
-    grupo, jugador, ingeniera, iris, actores,
+    grupo, jugador, ingeniera, doctora, meteorologa, iris, actores,
     aplicarVista(vista: VistaEscena) {
       apagada = vista.iris.nivel === "offline";
       rover.averiada = !apagada && vista.iris.averiada;
@@ -92,6 +121,8 @@ export function crearTripulacionBase() {
       grupo.removeFromParent();
       jugador.liberar();
       ingeniera.liberar();
+      doctora.liberar();
+      meteorologa.liberar();
       iris.liberar();
     },
   };

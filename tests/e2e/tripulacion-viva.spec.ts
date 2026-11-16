@@ -1,0 +1,36 @@
+import {expect,test} from '@playwright/test';
+import {arrancarEnCalidadBaja} from './calidad';
+test.beforeEach(async({page})=>arrancarEnCalidadBaja(page));
+test('la tripulación recuerda, clasifica y deja botones si falla la red',async({page})=>{
+ await page.clock.install();
+ await page.goto('/');
+ await page.getByRole('button',{name:'Start mission',exact:true}).click();
+ await page.getByRole('button',{name:'Skip intro'}).click();
+ await page.getByRole('button',{name:'Skip',exact:true}).click();
+ await page.getByRole('button',{name:'Continue',exact:true}).click();
+ await page.getByRole('button',{name:'Land here'}).first().click();
+ await page.getByRole('button',{name:'Place',exact:true}).first().click();
+ await page.getByRole('button',{name:'Place',exact:true}).first().click();
+ await page.getByRole('button',{name:'Base ready. Start the clock!'}).click();
+ await page.getByRole('button',{name:'Pause',exact:true}).click();
+ await page.getByRole('button',{name:'Crew',exact:true}).click();
+ await page.locator('.base-expertos button').first().click();
+ await expect(page.locator('.dialogo-experto')).toContainText('You chose');
+ await page.route('**/api/clasificar',async r=>{
+  expect(r.request().postDataJSON()).toEqual({texto:'my tummy feels funny'});
+  await r.fulfill({json:{version:'0',fuente:'modelo',experto:'ingeniera',accion:'estado_salud',parametros:{dosis:'999'},confianza:0.9}});
+ });
+ await page.getByLabel(/Ask your crew/).fill('my tummy feels funny');
+ await page.getByRole('button',{name:'Send',exact:true}).click();
+ await expect(page.locator('.dialogo-experto h3')).toContainText('Doctor');
+ await expect(page.locator('.dialogo-experto')).not.toContainText('999');
+ await page.unroute('**/api/clasificar');
+ await page.route('**/api/clasificar',r=>r.fulfill({status:503,json:{error:'offline'}}));
+ await page.getByLabel(/Ask your crew/).fill('blablabla');
+ await page.getByRole('button',{name:'Send',exact:true}).click();
+ await expect(page.locator('.dialogo-experto')).toBeVisible();
+ await expect(page.getByRole('button',{name:'What should I do?',exact:true})).toBeVisible();
+ await page.getByRole('button',{name:'Why is Mars red?',exact:true}).click();
+ await expect(page.locator('.dialogo-experto')).toContainText('rust');
+ await expect(page.locator('.dialogo-experto a').first()).toHaveAttribute('href',/science\.nasa\.gov/);
+});

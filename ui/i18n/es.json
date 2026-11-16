@@ -298,7 +298,6 @@
   "ui.tormenta.pregunta.proteger": "¿Qué necesita protección?",
   "ui.tormenta.pregunta.sensor": "¿Qué muestra el sensor?",
   "ui.tormenta.verFuente": "Ver fuente",
-  "ui.tormenta.acceso": "{recurso} {valor}",
   "ui.comun.acceso_recurso": "{recurso} {valor}",
   "ui.comun.fuente.compacta": "{dueno} / {tipo}",
   "ui.comun.fuente.archivado": "Evento archivado",
@@ -337,5 +336,16 @@
   "ui.base.consulta": "Habla con tu tripulación",
   "ui.hud.objetivo.ir": "Ve a {lugarKey}",
   "ui.hud.objetivo.experto": "Pregunta {expertoKey} en {lugarKey}",
-  "ui.hud.objetivo.averia": "Iris necesita una reparación en {lugarKey}"
+  "ui.hud.objetivo.averia": "Iris necesita una reparación en {lugarKey}",
+  "ui.curiosidad.suelo": "¿Por qué Marte es rojo?",
+  "ui.curiosidad.lunas": "Lunas de Marte",
+  "ui.curiosidad.remolino": "Remolinos de polvo",
+  "ui.curiosidad.atardecer": "Atardeceres azules",
+  "ui.curiosidad.habitat": "Casas de práctica para Marte",
+  "ui.curiosidad.oxigeno": "Producir oxígeno",
+  "ui.curiosidad.radiacion": "¿Qué midió RAD?",
+  "ui.curiosidad.telemetria": "¿Por qué tarda la Tierra?",
+  "ui.curiosidad.polvo": "Sobre el polvo marciano",
+  "ui.tripulacion.hablar": "Hablar",
+  "ui.curiosidad.llegada": "Un día en Marte"
 }

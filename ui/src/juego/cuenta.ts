@@ -1,3 +1,4 @@
+import { validarMemoriaConversacion, CURIOSIDADES_MARTE, type MemoriaConversacion } from "@solar-shield/agents";
 import { compactarCausas, modulosColocados, type PuntajeSitio } from "@solar-shield/engine";
 import { EquipmentSchema, GameStateSchema, type Equipment, type GameState } from "@solar-shield/contracts";
 import type { Fase, Juego } from "./reductor.js";
@@ -10,6 +11,8 @@ const FASES_VALIDAS: readonly Fase[] = ["inicio", "satelite", "sitio", "modulos"
 const SESION_PISTA_KEY = "ss_sesion_activa";
 
 export interface JuegoGuardado {
+  conversacion?: MemoriaConversacion;
+  curiosidades?: string[];
   v: 1;
   fase: Fase;
   estado: GameState;
@@ -63,6 +66,8 @@ export function marcarPistaSesion(activa: boolean): void {
  */
 export function serializarProgreso(j: Juego): JuegoGuardado | null {
   const empaquetar = (estado: GameState): JuegoGuardado => ({
+    ...(j.conversacion ? {conversacion:j.conversacion} : {}),
+    ...(j.curiosidades ? {curiosidades:j.curiosidades} : {}),
     v: 1,
     fase: j.fase,
     estado,
@@ -93,6 +98,8 @@ export function deserializarProgreso(crudo: unknown): Juego | null {
   const sitio = d.sitio ?? null;
   if (sitio !== null && !esPuntajeSitio(sitio)) return null;
   return {
+    ...(validarMemoriaConversacion(d.conversacion) ? {conversacion:validarMemoriaConversacion(d.conversacion)!} : {}),
+    curiosidades: Array.isArray(d.curiosidades) ? d.curiosidades.filter(id=>CURIOSIDADES_MARTE.some(c=>c.id===id)) : [],
     fase: d.fase,
     estado: est.data,
     // Los módulos salen del estado (fuente de verdad del motor), no de la lista guardada.

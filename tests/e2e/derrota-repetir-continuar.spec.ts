@@ -143,9 +143,9 @@ test("perder WebGL deja la misma partida en el respaldo 2D, y el mapa lleva al n
   // Sin escena que camine, el mapa deja al niño en el lugar elegido y [E] ofrece lo que se hace allí.
   await page.getByRole("button", { name: "Map", exact: true }).click();
   await page.getByRole("list", { name: "Places" }).getByRole("button", { name: /^Workshop/ }).click();
-  await expect(page.getByRole("button", { name: "Repair Iris in the workshop" })).toBeVisible();
-  await page.getByRole("button", { name: "Repair Iris in the workshop" }).click();
-  await expect(page.getByRole("dialog")).toBeVisible();
-  await page.getByRole("dialog").getByRole("button", { name: "Back" }).click();
+  await expect(page.getByRole("button", { name: "Talk", exact: true })).toBeVisible();
+  await page.getByRole("button", { name: "Talk", exact: true }).click();
+  await expect(page.getByRole("heading",{name:"Engineer",exact:true})).toBeVisible();
+  await page.getByRole("button",{name:"Close",exact:true}).click();
   expect(await energia(page)).toBe(energiaAntes);
 });

@@ -46,11 +46,12 @@ const REGLAS: { accion: ClassifierIntent; re: RegExp }[] = [
   { accion: "reparar", re: /\b(arregl\w*|repar\w*|compon\w*|fix\w*|repair\w*)\b/ },
   { accion: "ir_al_refugio", re: /\b(escond\w*|refugio|cueva|corran|hide|shelter|bunker|take cover)\b/ },
   { accion: "explicar_dosis", re: /\b(dosis|radiacion|radiation|dose)\b/ },
+  { accion: "estado_salud", re: /\b(tengo miedo|estoy asustad\w*|estamos a salvo|estamos bien|are we safe|are we ok|is everyone ok|i am scared|im scared|i'm scared|i'm afraid)\b/ },
   { accion: "estado_salud", re: /\b(estamos bien|como estan|salud|enferm\w*|duele|how are|health|sick|hurts?)\b/ },
   { accion: "explicar_evento", re: /\b(que fue|que era|que es esa|que es ese|what was|what is that)\b/ },
   { accion: "pronostico", re: /\b(tormenta|llamarada|viene|llega|sol|storm|flare|coming|sun)\b/ },
   { accion: "estado_energia", re: /\b(cuanta|cuanto|bateria|energia|how much|battery|power|energy)\b/ },
-  { accion: "ayuda", re: /\b(ayuda|no se que|que hago|help|don't know|dont know|what do i do)\b/ },
+  { accion: "ayuda", re: /\b(ayuda|no entiendo|no se|que tengo que hacer|que hago|a donde voy|help|i dont get it|i don't get it|idk|where do i go|don't know|dont know|what do i do)\b/ },
   { accion: "repetir", re: /\b(otra vez|repite|de nuevo|again|repeat)\b/ },
   { accion: "saludo", re: /\b(hola|buenas|hello|hi|hey)\b/ },
 ];
