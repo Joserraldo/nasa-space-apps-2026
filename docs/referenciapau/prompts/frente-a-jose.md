@@ -13,6 +13,26 @@ en paralelo; vos sos dueño del archivo central de la escena.
 4. `docs/referenciapau/ESCENAS.md` §3 (mundo abierto, controles) y §4 (estaciones).
 5. `ui/src/escena/frontera.ts` (el contrato con la pantalla: ahora sos su dueño).
 
+## Láminas
+
+![Corredores y conexiones](../referencias/exterior/01-corredores-conexiones.png)
+
+Qué mirar: el interior al entrar a una sala.
+
+![Exterior, tercera persona](../referencias/mundo/01-exterior-tercera-persona.png)
+
+Qué mirar: la cámara en tercera persona.
+
+![Exterior, primera persona](../referencias/mundo/02-exterior-primera-persona.png)
+
+Qué mirar: la cámara en primera persona.
+
+![Tripulación y mecánicas](../referencias/personajes/07-tripulacion-mecanicas.png)
+
+Qué mirar: el ciclo de decisión con la tripulación.
+
+Todas las láminas: [docs/referenciapau/referencias/](../referencias/)
+
 ## Tus archivos (solo vos los editás)
 `engine/`, `missions/`, `ui/src/juego/**`, `ui/src/pantallas/lugares.ts`, y en `ui/src/escena/`:
 `escena3d.ts`, `EscenaBase.tsx`, `frontera.ts`, `movimientoBase.ts`, `fisica.ts`, `navegacion.ts`,

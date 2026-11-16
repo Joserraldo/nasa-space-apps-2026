@@ -13,6 +13,32 @@ las láminas. Otras cinco personas trabajan en paralelo.
    niño B, la capibara está descartada), `inicio/01` a `03`, `ui/`, `personajes/`.
 5. `ui/src/escena/frontera.ts` (`CARAS_RETRATO_*` y `rutaRetrato`) y `ui/src/componentes/base/Retrato.tsx`.
 
+## Láminas
+
+![Flujo de entrada, carga, órbita y explorar](../referencias/inicio/04-flujo-entrada-carga-orbita-explorar.png)
+
+Qué mirar: composición y orden; el personaje es el niño B, no la capibara.
+
+![Inicio actualizado](../referencias/inicio/01-inicio-actualizado.png)
+
+Qué mirar: la pantalla de inicio actualizada (F6).
+
+![Intro en cuatro momentos](../referencias/inicio/02-intro-cuatro-momentos.png)
+
+Qué mirar: los cuatro momentos de la intro.
+
+![Panel de carga](../referencias/inicio/03-panel-carga.png)
+
+Qué mirar: el panel de carga (F6).
+
+![Variantes facetadas](../referencias/ui/03-variantes-facetadas.png)
+
+Qué mirar: las variantes facetadas de la interfaz (F1 y F2).
+
+Personajes: [personajes/](../referencias/personajes/)
+
+Todas las láminas: [docs/referenciapau/referencias/](../referencias/)
+
 ## Tus archivos (solo vos los editás)
 `ui/src/componentes/base/**`, todos los `.css` de `ui/src` (salvo `Mapa.css` y `sitio.css`, que son del
 frente C), `tests/capturas/**`, `ui/public/retratos/**`.
