@@ -1,15 +1,15 @@
 # Estado del frente F (María Paula): UI visual, retratos B y fidelidad
 
-**Actualizado:** 15 nov 2026, iteración 2 del loop.
+**Actualizado:** 15 nov 2026, iteración 3 del loop.
 
 **Hecho**
-- F2 (#341): `TarjetaContextual` + `tarjetas.css`: lado bajo el HUD y hoja inferior en celular vertical; entra 180 ms, sale 140 ms; quieta con movimiento reducido. Esperando revisión.
-- F4 (#343): `Globo` (personajes/07), aviso `[E]` con contorno cian (mundo/01), acción táctil como mundo/03, `.ct-salto` e icono `salto` para E9. Esperando revisión.
+- F2 (#341): `TarjetaContextual` de presentación + `tarjetas.css`. Esperando revisión. En #335 (E1) le propuse a Santiago usarla dentro de su contenedor con `enfocar={false}`.
+- F4 (#343): `Globo`, aviso `[E]` con contorno cian, acción táctil como mundo/03, `.ct-salto`. Esperando revisión.
+- F3, D1 (#342): revisado contra `mundo/01` con la vista del hábitat de cerca. No aprobado todavía: falta el vano octogonal hundido con marco y las dos franjas cian a los lados de la puerta. Ventanas, costillas y mejillas aprobadas. Evidencia en la rama `evidencias/frente-f-f3-d1`.
 
 **Sigue**
-- F3 en cuanto aparezcan los PR de C2, C3 y D1 (hoy no hay ninguno).
-- F6 (pantallas de entrada según `inicio/04`, con el niño B).
+- Volver a revisar D1 cuando Daniel corrija; C2 y C3 cuando abran PR.
 
 **Bloqueado / en pausa**
-- F1 en pausa por pedido de María Paula: los retratos deben usar los personajes 3D reales con su recorte, no PNG; espera su definición.
-- #323 (borrador, cambios pedidos): toca `App.tsx`, `tests/e2e` y pantallas ya borradas; no es del frente F. Decide un humano si se cierra.
+- F1 y F6 en pausa: llevan al niño B y María Paula pidió esperar su idea de personajes.
+- #323 (borrador, cambios pedidos): no es del frente F; decide un humano si se cierra.
