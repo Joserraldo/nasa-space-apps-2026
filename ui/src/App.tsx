@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useReducer, useRef, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useReducer, useRef, useState } from "react";
 import type { Action, Equipment } from "@solar-shield/contracts";
 import { HudBase, PROGRESO_INICIAL, type ProgresoHud } from "./componentes/HudBase.js";
 import { IdiomaContext, useT, type Idioma } from "./i18n.js";
@@ -18,7 +18,8 @@ import { Transicion } from "./componentes/Transicion.js";
 import { MundoBase } from "./pantallas/MundoBase.js";
 import { MEMORIA_INICIAL, type MemoriaConversacion, type TemaPregunta } from "@solar-shield/agents";
 import { MISION_JEZERO } from "@solar-shield/missions";
-import { cargarAjustes, guardarAjustes, type CalidadGrafica } from "./juego/ajustes.js";
+import { cargarAjustes, guardarAjustes, type CalidadGrafica, type CamaraJugador } from "./juego/ajustes.js";
+import { Menu } from "./componentes/Menu.js";
 import { almacenDelNavegador, cargarPartida, guardarPartida } from "./juego/guardado.js";
 import { inicial, reducir } from "./juego/reductor.js";
 import { tocar } from "./juego/sonido.js";
@@ -38,7 +39,8 @@ export function App() {
       <Pantalla idioma={ajustes.idioma} setIdioma={(idioma) => setAjustes((a) => ({ ...a, idioma }))}
         sonido={ajustes.sonido} setSonido={(sonido) => setAjustes((a) => ({ ...a, sonido }))}
         grafica={{ calidad: ajustes.calidad, movimientoReducido: ajustes.movimientoReducido,
-          onCalidad: (calidad) => setAjustes((a) => (a.calidad === calidad ? a : { ...a, calidad })) }} />
+          onCalidad: (calidad) => setAjustes((a) => (a.calidad === calidad ? a : { ...a, calidad })),
+          camara: ajustes.camara, onCamara: (camara) => setAjustes((a) => (a.camara === camara ? a : { ...a, camara })) }} />
     </IdiomaContext.Provider>
   );
 }
@@ -47,7 +49,7 @@ function Pantalla({ idioma, setIdioma, sonido, setSonido, grafica }: {
   idioma: Idioma; setIdioma: (i: Idioma) => void;
   sonido: boolean; setSonido: (s: boolean) => void;
   /** Ajustes guardados de la escena: la calidad que propone la escena se recuerda. */
-  grafica: { calidad: CalidadGrafica; movimientoReducido: boolean; onCalidad(c: CalidadGrafica): void };
+  grafica: { calidad: CalidadGrafica; movimientoReducido: boolean; onCalidad(c: CalidadGrafica): void; camara: CamaraJugador; onCamara(c: CamaraJugador): void };
 }) {
   const { t } = useT();
   const [j, enviar] = useReducer(reducir, undefined, inicial);
@@ -71,6 +73,9 @@ function Pantalla({ idioma, setIdioma, sonido, setSonido, grafica }: {
   // Inicio en tres momentos (ESCENAS E0 a E2): portada, intro de 4 viñetas y carga. Después, la órbita.
   const [inicio, setInicio] = useState<"portada" | "intro" | "carga">("portada");
   const [creditos, setCreditos] = useState(false);
+  // E4: el menú se abre desde "Settings" en la portada y desde "Menu" en el HUD. No toca la partida.
+  const [menu, setMenu] = useState(false);
+  const abrirMenu = useCallback(() => setMenu(true), []);
   // Al encender el sonido suena una nota: el jugador oye que funciona.
   const alternarSonido = () => { tocar("toque", !sonido); setSonido(!sonido); };
   // Avisos sonoros de lo que pasa en la partida: llega la tormenta, se gana o se pierde.
@@ -125,12 +130,13 @@ function Pantalla({ idioma, setIdioma, sonido, setSonido, grafica }: {
   return (
     <div ref={raiz} className={enMundo ? "app app-mundo" : "app"}>
       {/* En la base el HUD lo pone la pantalla, que es dueña de la fila de abajo (Crew, Map, [E], [V]). */}
-      {(j.fase === "modulos" || j.fase === "tormenta") && <HudBase estado={j.estado} ultimas={null} objetivo={objetivo} />}
+      {(j.fase === "modulos" || j.fase === "tormenta") && <HudBase estado={j.estado} ultimas={null} objetivo={objetivo} onMenu={abrirMenu} />}
 
       <main>
         {enMundo ? (
           <MundoBase fase={j.fase as "modulos" | "base" | "tormenta"} estado={j.estado} colocados={j.colocados}
-            calidad={grafica.calidad} movimientoReducido={grafica.movimientoReducido} onCalidad={grafica.onCalidad}>
+            calidad={grafica.calidad} movimientoReducido={grafica.movimientoReducido} onCalidad={grafica.onCalidad}
+            camara={grafica.camara} onCamara={grafica.onCamara} bloqueadoFuera={menu}>
             <Transicion clave={j.fase}>
               {j.fase === "modulos" && (
                 <>
@@ -144,7 +150,7 @@ function Pantalla({ idioma, setIdioma, sonido, setSonido, grafica }: {
                   onConverso={() => avanzarHud({ conversado: true })} />
               )}
               {enBase && (
-                <PantallaBase estado={j.estado} colocados={j.colocados} ultimas={j.ultimas} hud={{ reloj }} progreso={progreso} onProgreso={avanzarHud} memoria={memoria} onMemoria={setMemoria}
+                <PantallaBase estado={j.estado} colocados={j.colocados} ultimas={j.ultimas} hud={{ reloj, onMenu: abrirMenu }} progreso={progreso} onProgreso={avanzarHud} memoria={memoria} onMemoria={setMemoria}
                   onAccion={accion} onReanudar={() => enviar({ tipo: "pausa", pausado: false })} />
               )}
             </Transicion>
@@ -153,7 +159,7 @@ function Pantalla({ idioma, setIdioma, sonido, setSonido, grafica }: {
           <Transicion clave={j.fase === "inicio" ? inicio : j.fase}>
             {j.fase === "inicio" && inicio === "portada" && (
               <Portada idioma={idioma} onIdioma={setIdioma} sonido={sonido} onSonido={alternarSonido}
-                puedeContinuar={guardada !== null} onEmpezar={() => setInicio("intro")} onContinuar={continuar} onCreditos={() => setCreditos(true)} />
+                puedeContinuar={guardada !== null} onEmpezar={() => setInicio("intro")} onContinuar={continuar} onAjustes={abrirMenu} onCreditos={() => setCreditos(true)} />
             )}
             {j.fase === "inicio" && inicio === "intro" && <Intro onTerminar={() => setInicio("carga")} />}
             {j.fase === "inicio" && inicio === "carga" && <Carga consejo={0} sonido={sonido} onSonido={alternarSonido} onSaltar={empezarMision} />}
@@ -163,6 +169,10 @@ function Pantalla({ idioma, setIdioma, sonido, setSonido, grafica }: {
           </Transicion>
         )}
         {creditos && <Creditos onCerrar={() => setCreditos(false)} />}
+        {menu && (
+          <Menu camara={grafica.camara} onCamara={grafica.onCamara} calidad={grafica.calidad} onCalidad={grafica.onCalidad}
+            sonido={sonido} onSonido={alternarSonido} idioma={idioma} onIdioma={setIdioma} onCerrar={() => setMenu(false)} />
+        )}
       </main>
       {/* El aviso de proyecto no oficial va en la portada, la órbita, el sitio, los créditos y el final;
           durante el juego en la base no le quita una fila al mundo. */}

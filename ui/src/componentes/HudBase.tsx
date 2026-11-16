@@ -118,11 +118,13 @@ export interface HudBaseProps {
   tactil?: boolean | undefined;
   /** Hay un panel de decisión o consulta abierto: la fila de abajo cede su sitio al panel. */
   panelAbierto?: boolean | undefined;
+  /** E4: abre el menú (cámara, calidad, sonido e idioma). Siempre visible, como la pausa. */
+  onMenu?: (() => void) | undefined;
   /** Qué partes ya aparecieron (E3, `hudVisible`). Sin este dato se ve todo, como en el muestrario. */
   visible?: HudVisible | undefined;
 }
 
-export function HudBase({ estado, ultimas, reloj, objetivo, mundo, tactil = false, panelAbierto = false, visible = TODO_VISIBLE }: HudBaseProps) {
+export function HudBase({ estado, ultimas, reloj, objetivo, mundo, tactil = false, panelAbierto = false, onMenu, visible = TODO_VISIBLE }: HudBaseProps) {
   const { t } = useT();
   const escala = useEscalaHud();
   const capa = useRef<HTMLElement>(null);
@@ -130,6 +132,9 @@ export function HudBase({ estado, ultimas, reloj, objetivo, mundo, tactil = fals
   const der = useRef<HTMLDivElement>(null);
   useReserva(capa, izq, der);
   const cambios = ultimas ? [...ultimas.efectosLlegaron, ...ultimas.malaSuerte] : [];
+  // E4: en celular la fila de arriba es una sola y con la pausa no entra otro botón (390x844 tapaba la
+  // pausa). Con controles táctiles y fila de abajo, el menú va abajo, junto a Crew y Map.
+  const menuAbajo = tactil && !!mundo;
   const siguiente = (v: number) => VELOCIDADES[(VELOCIDADES.indexOf(v as (typeof VELOCIDADES)[number]) + 1) % VELOCIDADES.length]!;
   return (
     <section ref={capa} className={`hud-base${tactil ? " hud-tactil" : ""}${panelAbierto ? " hud-con-panel" : ""}`} aria-label={t("ui.hud.titulo")} style={{ zoom: escala }}>
@@ -142,6 +147,7 @@ export function HudBase({ estado, ultimas, reloj, objetivo, mundo, tactil = fals
               {visible.velocidad && <PildoraBoton className="hud-velocidad" labelKey="ui.hud.velocidad" labelVars={{ v: reloj.velocidad }} icon="reloj" onClick={() => reloj.onVelocidad(siguiente(reloj.velocidad))} />}
             </>
           )}
+          {onMenu && !menuAbajo && <PildoraBoton className="hud-menu" labelKey="ui.menu.abrir" icon="engranaje" onClick={onMenu} />}
         </div>
         <div className="hud-der" ref={der}>
           <div className="hud-placas">
@@ -158,6 +164,7 @@ export function HudBase({ estado, ultimas, reloj, objetivo, mundo, tactil = fals
           <div className="hud-abajo-izq">
             {visible.crew && <PildoraBoton labelKey="ui.comun.tripulacion" icon="tripulacion" onClick={mundo.onTripulacion} />}
             {visible.mapa && <PildoraBoton labelKey="ui.comun.mapa" icon="mapa" onClick={mundo.onMapa} />}
+            {onMenu && menuAbajo && <PildoraBoton className="hud-menu" labelKey="ui.menu.abrir" icon="engranaje" onClick={onMenu} />}
           </div>
           {!tactil && mundo.interaccion && <PildoraBoton className="hud-centro" labelKey={mundo.interaccion.labelKey} tecla={{ letra: "E", tono: "accion" }} onClick={mundo.interaccion.onUsar} />}
           {!tactil && <PildoraBoton className="hud-camara" labelKey={mundo.camara === "tercera" ? "ui.comun.hud.primera" : "ui.comun.hud.tercera"} tecla={{ letra: "V", tono: "camara" }} onClick={mundo.onCamara} />}
