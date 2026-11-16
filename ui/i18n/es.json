@@ -357,7 +357,7 @@
   "ui.cuenta.continuar": "Cargar mi progreso",
   "ui.cuenta.otra": "Usar otra cuenta",
   "ui.cuenta.bienvenida": "Tripulante: {usuario}",
-  "ui.cuenta.privacidad": "No pedimos correo ni nombre real. Tu cuenta guarda el progreso de la misión.",
+  "ui.cuenta.privacidad": "No pedimos correo ni nombre real. Tu cuenta guarda el progreso de la misión. Si eres menor de edad, juega con la autorización de una persona adulta responsable.",
   "ui.cuenta.invitado.activo": "Invitado · el progreso dura esta visita",
   "ui.cuenta.invitado.salir": "Si sales, perderás el progreso de invitado. ¿Quieres salir?",
   "ui.cuenta.salir": "Cerrar sesión",

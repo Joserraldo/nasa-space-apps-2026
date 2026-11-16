@@ -357,7 +357,7 @@
   "ui.cuenta.continuar": "Load my progress",
   "ui.cuenta.otra": "Use another account",
   "ui.cuenta.bienvenida": "Crew member: {usuario}",
-  "ui.cuenta.privacidad": "No email or real name needed. Your account saves your mission progress.",
+  "ui.cuenta.privacidad": "No email or real name needed. Your account saves your mission progress. If you are under 18, play with permission from a responsible adult.",
   "ui.cuenta.invitado.activo": "Guest · progress lasts for this visit",
   "ui.cuenta.invitado.salir": "If you leave, your guest progress will be lost. Leave anyway?",
   "ui.cuenta.salir": "Log out",
