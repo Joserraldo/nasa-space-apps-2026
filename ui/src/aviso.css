@@ -1,0 +1,10 @@
+/* Aviso de proyecto no oficial al pie de las pantallas fuera del mundo (App.tsx). Una franja fina y centrada; su
+   alto real lo mide App.tsx y lo publica en --alto-barra. Estos valores solo rigen hasta la primera medición. */
+.app { --alto-barra: 0px; }
+.app:not(.app-mundo) { --alto-barra: 30px; }
+@media (max-width: 599px) { .app:not(.app-mundo) { --alto-barra: 48px; } }
+.aviso-nasa {
+  padding: var(--esp-1) var(--esp-3);
+  font-size: 14px; line-height: 1.35; text-align: center; text-wrap: balance;
+  color: var(--color-indigo-texto); background: var(--color-marfil);
+}

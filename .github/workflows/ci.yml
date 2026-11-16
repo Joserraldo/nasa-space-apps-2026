@@ -69,8 +69,10 @@ jobs:
         run: npx playwright install-deps chromium
 
       # Sin E2E_BASE_URL, playwright.config.ts levanta el servidor de Vite de ui/.
+      # Un trabajador: sin GPU la escena 3D se dibuja en la CPU, y dos recorridos largos a la vez (ruta dorada y
+      # "Play again") se quitaban tiempo y caían en puntos distintos según la carga del equipo (#406).
       - name: E2E (ruta dorada contra Vite)
-        run: npm run e2e
+        run: npm run e2e -- --workers=1
 
       - name: Reporte si falla
         if: failure()

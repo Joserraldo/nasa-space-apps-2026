@@ -13,18 +13,19 @@ import type { CalidadGrafica } from "../juego/ajustes";
 import type { EventoFeedback } from "../juego/eventos";
 import { CLARO, MALLA_JEZERO, ROCAS_PRIMER_PLANO, armarEscena, huellasRocas, radioRoca, rejillaJezero, type EscenaArmada } from "./armado";
 import { AJUSTE_CALIDAD, MAS_BAJA } from "./calidad";
-import type { Cielo } from "./cielo";
-import type { ActorId, PedidoEscena } from "./frontera";
+import { LUZ, type Cielo } from "./cielo";
+import type { ActorId, Interactivo, PedidoEscena } from "./frontera";
 import { irisGuiaAlObjetivo } from "../juego/pedidoEscena";
 import { crearMateriales, type Materiales } from "./materiales";
 import { liberarCache, liberarEscena, liberarMateriales } from "./liberar";
 import { crearContorno } from "./contorno";
 import { crearGuantes } from "./guantes";
-import { ANCLAJES_EXPERTAS, RADIO_EXPERTA, lugar, lugarCercano, type LugarId } from "./mundo";
+import { ANCLAJES_EXPERTAS, RADIO_EXPERTA, lugar, lugarCercano, type ExpertaBase, type LugarId } from "./mundo";
+import { EXPERTAS_BASE } from "./tripulacionBase";
 import type { EstadoModulo, VistaEscena } from "./vista";
 import { MODULOS_BASE, type ModuloBase } from "./activos/modulos";
 import { PRESUPUESTO, aplanarClaro, contarRender, type CuentaRender } from "./activos/terreno";
-import { huellasBase } from "./activos/baseExterior";
+import { huellasBase, huellasColisionExtra } from "./activos/baseExterior";
 import { huellasModulos } from "./activos/modulosArmados";
 import { EntradaTactil, type DeltaCamaraTactil } from "./entradaTactil";
 import {
@@ -168,6 +169,13 @@ export interface OpcionesEscena3D {
   entrada?: boolean;
   /** El lugar al alcance cambió (incluye volver a null). */
   alLugarCercano?: (lugar: LugarId | null) => void;
+  /** Cambió lo que hay al alcance: lugar o experta (A6). Se emite al montar y en cada cambio. */
+  alInteractivo?: (cerca: Interactivo | null) => void;
+  /**
+   * Tecla `E` con una experta al alcance (A6). Devuelve true si la pantalla la atendió; si no (o si falta),
+   * `E` sigue usando el lugar cercano como antes.
+   */
+  alUsarInteractivo?: (cerca: Interactivo) => boolean;
   /** Tecla `E` (o Enter fuera de un botón) con un lugar al alcance. */
   alUsar?: (lugar: LugarId) => void;
   /**
@@ -207,6 +215,8 @@ export interface Escena3D {
   contar(): CuentaRender;
   /** Contadores del renderer y FPS dibujados; null si no se activó la medición. */
   medicion(): (MedicionRender & { calidad: CalidadGrafica }) | null;
+  /** Lugar o experta al alcance de la posición actual del jugador (A6). */
+  interactivo(): Interactivo | null;
   /** Lugar al alcance de la posición actual del jugador. */
   lugarCercano(): LugarId | null;
   /** Posición actual del jugador (metros de juego). */
@@ -240,22 +250,22 @@ export const CAMARAS: Readonly<Record<CamaraEscena, { pos: [number, number, numb
  * Calibrado con capturas en 1440×900, 1024×683, 844×390 y 390×844. [E]
  */
 export const CAMARA_TERCERA = {
-  apaisado: { distancia: 3.27, inclinacion: 0.41, adelante: 4.1, hombro: 0.8 },
-  vertical: { distancia: 3.46, inclinacion: 0.46, adelante: 8.1, hombro: 0 },
+  apaisado: { distancia: 5.8, inclinacion: 0.44, adelante: 3.2, hombro: 0.35 },
+  vertical: { distancia: 6.2, inclinacion: 0.48, adelante: 6.0, hombro: 0 },
   /** Aspecto del encuadre vertical de referencia (390×844). */
   aspectoVertical: 390 / 844,
   /** Rueda y pellizco: factor sobre la distancia del encuadre. */
-  zoomMin: 0.7,
-  zoomMax: 2.2,
+  zoomMin: 0.55,
+  zoomMax: 1.8,
   /** Arrastre vertical: inclinación final permitida (rad). */
   inclinacionMin: 0.08,
   inclinacionMax: 1.0,
   pivote: 1.0,
   alturaMira: 0.55,
-  /** Distancia mínima a la que la cámara se acerca para no quedar dentro de un sólido. */
-  distanciaColision: 1.2,
-  /** Margen de la cámara contra las huellas (pantallas inclinadas y aleros salen de la huella). */
-  margenColision: 0.45,
+  /** Distancia mínima a la que la cámara se acerca para no quedar dentro de un sólido ni pegada al casco. */
+  distanciaColision: 2.8,
+  /** Margen de la cámara contra las huellas de edificios altos. */
+  margenColision: 0.2,
 } as const;
 
 export interface Encuadre {
@@ -296,6 +306,7 @@ const MS_POSICION = 200;
 
 /** Campo visual vertical base (grados) de la tercera persona, válido hasta `ASPECTO_BASE`. */
 const FOV_TERCERA = 60;
+const FOV_JUEGO_TERCERA = 45;
 const ASPECTO_BASE = 1.5;
 const FOV_MAXIMO = 90;
 
@@ -304,11 +315,11 @@ const FOV_MAXIMO = 90;
  * en cuadros más altos que 3:2 se abre (con tope) para que el hábitat y la consola sigan dentro.
  * En primera persona no se adapta (70°).
  */
-export function fovParaAspecto(camara: CamaraEscena, aspecto: number): number {
+export function fovParaAspecto(camara: CamaraEscena, aspecto: number, base = FOV_TERCERA): number {
   if (camara === "primera") return 70;
-  if (!(aspecto > 0)) return FOV_TERCERA;
+  if (!(aspecto > 0)) return base;
   const k = Math.max(1, ASPECTO_BASE / aspecto) ** 0.6;
-  const fov = 2 * Math.atan(Math.tan((FOV_TERCERA * Math.PI) / 360) * k) * (180 / Math.PI);
+  const fov = 2 * Math.atan(Math.tan((base * Math.PI) / 360) * k) * (180 / Math.PI);
   return Math.min(FOV_MAXIMO, fov);
 }
 
@@ -316,6 +327,39 @@ export function fovParaAspecto(camara: CamaraEscena, aspecto: number): number {
 const MS_CAMARA = 300;
 /** Fotograma lento sostenido: por encima de esto (≈ 28 fps) se propone bajar la calidad. */
 const MS_FOTOGRAMA_LENTO = 36;
+
+/** A esta distancia (m) de una experta, `[E]` es hablarle (A6). Mayor que su radio sólido más el del niño. [E] */
+export const DISTANCIA_HABLAR = 2.8;
+
+/**
+ * Lo que hay al alcance del niño (A6): una experta si está a `DISTANCIA_HABLAR` o menos y más cerca que el
+ * punto de uso del lugar; si no, el lugar. Iris no cuenta: acompaña al niño y siempre estaría al alcance.
+ */
+export function interactivoCercano(x: number, z: number): Interactivo | null {
+  const l = lugarCercano(x, z);
+  const dLugar = l ? Math.hypot(x - lugar(l).x, z - lugar(l).z) : Infinity;
+  let actor: ExpertaBase | null = null;
+  let dActor = DISTANCIA_HABLAR;
+  for (const id of EXPERTAS_BASE) {
+    const a = ANCLAJES_EXPERTAS[id];
+    const d = Math.hypot(x - a.x, z - a.z);
+    if (d <= dActor) {
+      actor = id;
+      dActor = d;
+    }
+  }
+  if (actor && dActor < dLugar) return { tipo: "actor", actor };
+  return l ? { tipo: "lugar", lugar: l } : null;
+}
+
+const mismoInteractivo = (a: Interactivo | null, b: Interactivo | null): boolean => {
+  if (a === b) return true;
+  if (!a || !b || a.tipo !== b.tipo) return false;
+  if (a.tipo === "lugar" && b.tipo === "lugar") return a.lugar === b.lugar;
+  if (a.tipo === "actor" && b.tipo === "actor") return a.actor === b.actor;
+  if (a.tipo === "puerta" && b.tipo === "puerta") return a.sala === b.sala && a.entrar === b.entrar;
+  return false;
+};
 
 /** Módulos que existen en el mundo (y por eso chocan): todo menos ausente. */
 const CONSTRUIDO: Readonly<Record<EstadoModulo, boolean>> = { ausente: false, instalando: true, funcionando: true, averiado: true };
@@ -326,17 +370,18 @@ const CONSTRUIDO: Readonly<Record<EstadoModulo, boolean>> = { ausente: false, in
  * Las cajas siguen siendo cajas (no se aproximan por círculos).
  */
 export function solidosBase(modulos: Partial<Record<ModuloBase, EstadoModulo>>, rocas: readonly HuellaPlanta[] | null): Solidos {
-  const ingeniera = ANCLAJES_EXPERTAS.ingeniera;
   const primerPlano = ROCAS_PRIMER_PLANO.map((r) => ({ x: r.posicion[0], z: r.posicion[2], r: radioRoca(r) }));
   const huellas: HuellaPlanta[] = [
     ...huellasBase(),
+    ...huellasColisionExtra(),
     ...huellasModulos().filter((h) => {
       const id = h.id.slice("modulo:".length) as ModuloBase;
       const e = modulos[id];
       return e !== undefined && CONSTRUIDO[e];
     }),
     ...(rocas ?? primerPlano),
-    { x: ingeniera.x, z: ingeniera.z, r: RADIO_EXPERTA },
+    // Las tres expertas son sólidas (A6): el niño no las atraviesa.
+    ...EXPERTAS_BASE.map((id) => ({ x: ANCLAJES_EXPERTAS[id].x, z: ANCLAJES_EXPERTAS[id].z, r: RADIO_EXPERTA })),
   ];
   return solidosDeHuellas(huellas);
 }
@@ -367,18 +412,19 @@ function altoDeHuella(id: string): number {
   return 9;
 }
 
-/** Obstáculos de la cámara con los mismos módulos construidos y rocas que `solidosBase`. */
+/** Obstáculos de la cámara: solo edificios altos y módulos grandes (sin consolas ni balizas bajas que provoquen zooms bruscos). */
 export function obstaculosCamara(modulos: Partial<Record<ModuloBase, EstadoModulo>>, rocas: readonly (HuellaPlanta & { id?: string })[] | null): ObstaculoCamara[] {
-  const primerPlano = ROCAS_PRIMER_PLANO.map((r, i) => ({ id: `roca_primer_plano:${i}`, x: r.posicion[0], z: r.posicion[2], r: radioRoca(r) }));
+  const esBajo = (id = "") =>
+    id.startsWith("consola:") || id.startsWith("panel_mesa:") || id.startsWith("baliza:") || id.startsWith("roca_primer_plano:");
   const huellas: (HuellaPlanta & { id?: string })[] = [
-    ...huellasBase(),
+    ...huellasBase().filter((h) => !esBajo(h.id)),
     ...huellasModulos().filter((h) => {
       const e = modulos[h.id.slice("modulo:".length) as ModuloBase];
       return e !== undefined && CONSTRUIDO[e];
     }),
-    ...(rocas ?? primerPlano),
+    ...(rocas ?? []).filter((h) => !esBajo(h.id)),
   ];
-  return huellas.map((h) => ({ ...h, alto: altoDeHuella(h.id ?? "roca") }));
+  return huellas.map((h) => ({ ...h, alto: altoDeHuella(h.id ?? "roca") })).filter((o) => o.alto >= 2.8);
 }
 
 /** ¿El punto (con margen) cae dentro de un obstáculo más alto que `y`? */
@@ -396,6 +442,70 @@ const suave = (p: number) => p * p * (3 - 2 * p);
  * Pose de la tercera persona sin obstáculos ni suavizado: posición y punto de mira para el niño en
  * (px, py, pz), con la cámara mirando hacia `yaw` (0 = hacia −Z). Escribe en `pos` y `mira`.
  */
+/**
+ * Cámara sin zooms raros (A13). Ritmos en 1/s de las curvas exponenciales [E]:
+ * - `encuadre`: la distancia y la inclinación pedidas (aspecto del lienzo, rueda, pellizco) se alcanzan con
+ *   curva, no de golpe: abrir un panel o el mapa cambia el aspecto y antes saltaba el encuadre.
+ * - `subir`: la cámara sube sobre un obstáculo con curva rápida; `bajar` vuelve con curva lenta.
+ * - `alejar`: al liberarse de un choque la cámara se aleja con curva. Acercarse por un choque es inmediato
+ *   pero continuo: nunca más cerca que el tope libre, medido con bisección (sin escalones de 1/16).
+ */
+export const RITMO_CAMARA = { encuadre: 6, subir: 20, bajar: 4, alejar: 4 } as const;
+
+/**
+ * Distancia libre a lo largo de un rayo de largo `d`: busca el primer tramo tapado entre `n` y lo refina
+ * con `iter` bisecciones (precisión d / n / 2^iter). `tapa(t)` dice si el punto a distancia `t` choca.
+ */
+export function distanciaLibreRayo(d: number, tapa: (t: number) => boolean, minimo: number, n = 16, iter = 6): number {
+  for (let i = 1; i <= n; i++) {
+    if (!tapa((i / n) * d)) continue;
+    let lo = ((i - 1) / n) * d, hi = (i / n) * d;
+    for (let k = 0; k < iter; k++) {
+      const m = (lo + hi) / 2;
+      if (tapa(m)) hi = m;
+      else lo = m;
+    }
+    return Math.max(minimo, lo);
+  }
+  return d;
+}
+
+/** Acerca `actual` a `meta` con curva exponencial de ritmo `k` (1/s). */
+export function curva(actual: number, meta: number, k: number, dt: number): number {
+  return actual + (meta - actual) * (1 - Math.exp(-k * Math.max(0, dt)));
+}
+
+/**
+ * Siguiente distancia de la cámara. La meta es `min(deseada, tope)`: se aleja hacia ella con curva (sin
+ * pasarla, así no hay sierra contra la pared) y, si el tope libre baja, se acerca en el acto: es el único
+ * salto permitido, un choque. Con movimiento reducido o sin valor previo (`actual` < 0), va directo.
+ */
+export function siguienteDistancia(estado: DistanciaCamara, deseada: number, tope: number, dt: number, reducido: boolean): void {
+  const meta = Math.min(deseada, tope);
+  if (estado.d < 0 || reducido) {
+    estado.d = meta;
+    estado.espera = 0;
+    return;
+  }
+  if (meta < estado.d - 1e-4) {
+    // Choque: se acerca en el acto y no vuelve a alejarse hasta que el espacio siga libre un rato.
+    if (tope < deseada) estado.espera = ESPERA_TRAS_CHOQUE;
+    estado.d = meta;
+    return;
+  }
+  estado.espera = Math.max(0, estado.espera - Math.max(0, dt));
+  if (estado.espera > 0) return;
+  estado.d = curva(estado.d, meta, RITMO_CAMARA.alejar, dt);
+}
+
+/** Distancia de la cámara al pivote (`d`, -1 sin valor) y cuánto falta para poder alejarse tras un choque (s). */
+export interface DistanciaCamara {
+  d: number;
+  espera: number;
+}
+/** Tras un choque, la cámara espera esto antes de alejarse: sin esto, al rozar un borde se aleja y vuelve a chocar. [E] */
+export const ESPERA_TRAS_CHOQUE = 0.4;
+
 export function poseTercera(
   px: number, py: number, pz: number, yaw: number, inclinacion: number, distancia: number,
   adelante: number, hombro: number, pos: THREE.Vector3, mira: THREE.Vector3,
@@ -435,7 +545,7 @@ export function crearEscena3D(canvas: HTMLCanvasElement, opciones: OpcionesEscen
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: AJUSTE_CALIDAD[calidad].antialias, powerPreference: "high-performance" });
   const materiales: Materiales = crearMateriales();
   const armada: EscenaArmada = armarEscena(materiales, null, null, calidad === "alta" ? "alta" : "baja");
-  armada.cielo.aplicarRenderer(renderer);
+  armada.cielo.aplicarRenderer(renderer, calidad !== "baja");
   const { tripulacion } = armada;
 
   // --- Movimiento: el niño, Iris y los sólidos reales ---
@@ -449,6 +559,7 @@ export function crearEscena3D(canvas: HTMLCanvasElement, opciones: OpcionesEscen
     inicio: { x: jugadorInicial.x, z: jugadorInicial.z },
     rumbo: tripulacion.jugador.grupo.rotation.y,
     iris: { x: irisInicial.x, z: irisInicial.z },
+    limite: 32,
     alDestino: (tipo, l) => {
       // Al llegar, la cámara se pone a la espalda del niño, que mira al lugar.
       if (tipo === "llego" && camaraActual === "tercera") yawLlegada = mov.rumbo - Math.PI;
@@ -461,7 +572,7 @@ export function crearEscena3D(canvas: HTMLCanvasElement, opciones: OpcionesEscen
   let bloqueado = false;
 
   // --- Cámara ---
-  const camara = new THREE.PerspectiveCamera(FOV_TERCERA, 1, 0.1, 600);
+  const camara = new THREE.PerspectiveCamera(FOV_JUEGO_TERCERA, 1, 0.1, 600);
   const contorno = crearContorno(materiales);
   const guantes = crearGuantes(materiales);
   armada.escena.add(contorno.malla, camara);
@@ -479,7 +590,13 @@ export function crearEscena3D(canvas: HTMLCanvasElement, opciones: OpcionesEscen
     reducido,
     vista: null,
     pedido: {},
-    actores: { nino: tripulacion.jugador.grupo, ingeniera: tripulacion.ingeniera.grupo, iris: tripulacion.iris.grupo },
+    actores: {
+      nino: tripulacion.jugador.grupo,
+      ingeniera: tripulacion.ingeniera.grupo,
+      doctora: tripulacion.doctora.grupo,
+      meteorologa: tripulacion.meteorologa.grupo,
+      iris: tripulacion.iris.grupo,
+    },
     jugador: jugadorCtx,
     ahora: 0,
   };
@@ -499,8 +616,11 @@ export function crearEscena3D(canvas: HTMLCanvasElement, opciones: OpcionesEscen
   let ultimoGiroManual = -Infinity;
   const pivote = new THREE.Vector3(jugadorInicial.x, 0, jugadorInicial.z);
   /** Distancia efectiva tras la colisión: se acerca de golpe y se aleja suave. */
-  let distanciaEfectiva = -1;
+  const distanciaCamara: DistanciaCamara = { d: -1, espera: 0 };
   let inclinacionEfectiva = -1;
+  /** Encuadre pedido, suavizado (A13): distancia e inclinación sin obstáculos. -1 = todavía sin valor. */
+  let distanciaEncuadre = -1;
+  let inclinacionEncuadre = -1;
   const posTercera = new THREE.Vector3();
   const miraTercera = new THREE.Vector3();
   const posPrimera = new THREE.Vector3();
@@ -524,6 +644,7 @@ export function crearEscena3D(canvas: HTMLCanvasElement, opciones: OpcionesEscen
 
   // --- Proximidad, posición y atributos de prueba ---
   let ultimoLugar: LugarId | null = lugarCercano(mov.jugador.x, mov.jugador.z);
+  let ultimoInteractivo: Interactivo | null = interactivoCercano(mov.jugador.x, mov.jugador.z);
   contorno.colocar(ultimoLugar);
   let ultimaPosicion = -Infinity;
   let caminaba = false;
@@ -547,12 +668,21 @@ export function crearEscena3D(canvas: HTMLCanvasElement, opciones: OpcionesEscen
   function aplicarCalidad(nivel: CalidadGrafica): void {
     const a = AJUSTE_CALIDAD[nivel];
     renderer.setPixelRatio(Math.min(globalThis.devicePixelRatio || 1, a.dpr));
+    const tono = nivel === "baja" ? THREE.NoToneMapping : THREE.AgXToneMapping;
+    const exp = nivel === "baja" ? 1 : LUZ.exposicion;
+    let recompilar = false;
+    if (renderer.toneMapping !== tono || renderer.toneMappingExposure !== exp) {
+      renderer.toneMapping = tono;
+      renderer.toneMappingExposure = exp;
+      recompilar = true;
+    }
     const sol = armada.cielo.sol;
     const conSombra = a.sombra !== null;
     if (renderer.shadowMap.enabled !== conSombra) {
       renderer.shadowMap.enabled = conSombra;
-      for (const m of Object.values(materiales)) m.needsUpdate = true;
+      recompilar = true;
     }
+    if (recompilar) for (const m of Object.values(materiales)) m.needsUpdate = true;
     sol.castShadow = conSombra;
     if (a.sombra !== null && sol.shadow.mapSize.x !== a.sombra) {
       sol.shadow.mapSize.set(a.sombra, a.sombra);
@@ -576,15 +706,7 @@ export function crearEscena3D(canvas: HTMLCanvasElement, opciones: OpcionesEscen
 
   /** Acorta la distancia si entre el pivote y la cámara hay un obstáculo más alto que el rayo. */
   function distanciaLibre(px: number, pz: number, dx: number, dz: number, alturaPivote: number, dy: number, d: number): number {
-    const n = 16;
-    for (let i = 1; i <= n; i++) {
-      const t = (i / n) * d;
-      const y = alturaPivote + dy * t;
-      if (tapaCamara(px + dx * t, y, pz + dz * t, CAMARA_TERCERA.margenColision, obstaculos)) {
-        return Math.max(CAMARA_TERCERA.distanciaColision, ((i - 1) / n) * d);
-      }
-    }
-    return d;
+    return distanciaLibreRayo(d, (t) => tapaCamara(px + dx * t, alturaPivote + dy * t, pz + dz * t, CAMARA_TERCERA.margenColision, obstaculos), CAMARA_TERCERA.distanciaColision);
   }
 
   function moverCamara(dt: number, ahora: number): void {
@@ -609,8 +731,15 @@ export function crearEscena3D(canvas: HTMLCanvasElement, opciones: OpcionesEscen
     encuadreTercera(camara.aspect, encuadre);
     // El arrastre vertical queda dentro de los límites de inclinación del encuadre actual.
     ajusteInclinacion = Math.min(CAMARA_TERCERA.inclinacionMax - encuadre.inclinacion, Math.max(CAMARA_TERCERA.inclinacionMin - encuadre.inclinacion, ajusteInclinacion));
-    const inclinacion = encuadre.inclinacion + ajusteInclinacion;
-    const distancia = encuadre.distancia * zoom;
+    // El encuadre pedido cambia con el aspecto (al abrir un panel o el mapa), la rueda o el pellizco: se
+    // alcanza con curva para que no haya zoom de golpe (A13). El arrastre vertical sigue directo.
+    const metaDistancia = encuadre.distancia * zoom;
+    const metaInclinacion = encuadre.inclinacion;
+    const directo = distanciaEncuadre < 0 || reducido;
+    distanciaEncuadre = directo ? metaDistancia : curva(distanciaEncuadre, metaDistancia, RITMO_CAMARA.encuadre, dt);
+    inclinacionEncuadre = directo ? metaInclinacion : curva(inclinacionEncuadre, metaInclinacion, RITMO_CAMARA.encuadre, dt);
+    const inclinacion = inclinacionEncuadre + ajusteInclinacion;
+    const distancia = distanciaEncuadre;
 
     const j = mov.jugador;
     // La cámara vuelve sola a la espalda del niño cuando se le pide ir hacia delante (o sigue una
@@ -649,19 +778,25 @@ export function crearEscena3D(canvas: HTMLCanvasElement, opciones: OpcionesEscen
     // Si algo tapa la cámara, primero sube por encima (más inclinación); si no alcanza, se acerca.
     let inc = inclinacion;
     let libre = distanciaLibre(bx, bz, -fx * Math.cos(inc), -fz * Math.cos(inc), by, Math.sin(inc), distancia);
+    // Si ninguna altura despeja del todo, se queda con la que más espacio deja (A13): antes volvía a la
+    // inclinación base y, al caminar, la meta saltaba entre "subida" y "baja" (zoom que va y viene).
     for (let paso = 1; paso <= PASOS_SUBIDA && libre < distancia; paso++) {
       const otra = Math.min(CAMARA_TERCERA.inclinacionMax, inclinacion + paso * SUBIDA_POR_PASO);
       const l = distanciaLibre(bx, bz, -fx * Math.cos(otra), -fz * Math.cos(otra), by, Math.sin(otra), distancia);
-      if (l >= distancia) {
+      if (l > libre + 0.05) {
         inc = otra;
         libre = l;
       }
     }
-    const suaviza = (actual: number, meta: number, sube: boolean) =>
-      actual < 0 || sube || reducido ? meta : actual + (meta - actual) * (1 - Math.exp(-4 * dt));
-    inclinacionEfectiva = suaviza(inclinacionEfectiva, inc, inc > inclinacionEfectiva);
-    distanciaEfectiva = suaviza(distanciaEfectiva, libre, libre < distanciaEfectiva);
-    const d = distanciaEfectiva;
+    // La inclinación sube y baja con curva (antes subía de golpe en escalones). La distancia se mide de nuevo
+    // con la inclinación que de verdad tiene la cámara, así nunca queda dentro de un sólido mientras sube.
+    if (inclinacionEfectiva < 0 || reducido) inclinacionEfectiva = inc;
+    else inclinacionEfectiva = curva(inclinacionEfectiva, inc, inc > inclinacionEfectiva ? RITMO_CAMARA.subir : RITMO_CAMARA.bajar, dt);
+    const tope = distanciaCamara.d > 0 && !reducido
+      ? Math.max(CAMARA_TERCERA.distanciaColision, curva(distanciaCamara.d, libre, 8, dt))
+      : libre;
+    siguienteDistancia(distanciaCamara, distancia, tope, dt, reducido);
+    const d = distanciaCamara.d;
 
     // Con la cámara subida o acercada, la mirada se acerca para que el niño siga en el mismo lugar
     // del cuadro (mismo ángulo entre el niño y el centro que en el encuadre sin obstáculos).
@@ -724,10 +859,16 @@ export function crearEscena3D(canvas: HTMLCanvasElement, opciones: OpcionesEscen
     tripulacion.iris.grupo.position.set(iris.x, 0, iris.z);
     tripulacion.iris.grupo.rotation.y = iris.rumbo;
     tripulacion.actores.caminando = mov.velocidad > 0.2;
+    tripulacion.actores.velocidad = mov.velocidad;
     tripulacion.actores.salto = mov.salto;
     tripulacion.actores.velocidadIris = mov.velocidadIris;
     tripulacion.actores.modoIris = iris.modo;
 
+    const i = interactivoCercano(j.x, j.z);
+    if (!mismoInteractivo(i, ultimoInteractivo)) {
+      ultimoInteractivo = i;
+      opciones.alInteractivo?.(i);
+    }
     const l = lugarCercano(j.x, j.z);
     if (l !== ultimoLugar) {
       ultimoLugar = l;
@@ -793,6 +934,8 @@ export function crearEscena3D(canvas: HTMLCanvasElement, opciones: OpcionesEscen
     const usar = e.key === "e" || e.key === "E" || e.code === "KeyE";
     // Enter sobre un botón es del botón; E siempre es "usar".
     if (!usar && !(e.key === "Enter" && (e.target as HTMLElement | null)?.tagName !== "BUTTON")) return;
+    const i = interactivoCercano(mov.jugador.x, mov.jugador.z);
+    if (i?.tipo === "actor" && opciones.alUsarInteractivo?.(i)) return;
     const l = lugarCercano(mov.jugador.x, mov.jugador.z);
     if (l) opciones.alUsar?.(l);
   };
@@ -802,9 +945,9 @@ export function crearEscena3D(canvas: HTMLCanvasElement, opciones: OpcionesEscen
   const punteroBloqueado = () => document.pointerLockElement === canvas;
   const alApuntar = (e: PointerEvent) => {
     if (e.pointerType === "touch" || e.button !== 0) return;
-    // A12: el navegador solo bloquea el puntero tras un gesto del usuario; este clic lo es. Sin bloqueo
-    // (navegador que no lo permite, o rechazado) se sigue mirando con arrastre, como antes.
-    if (e.pointerType === "mouse" && !bloqueado && !punteroBloqueado()) {
+    // En tercera persona se mira arrastrando para que el cursor quede siempre libre sobre los botones del HUD.
+    // Solo en primera persona se pide Pointer Lock tras un clic.
+    if (camaraActual === "primera" && e.pointerType === "mouse" && !bloqueado && !punteroBloqueado()) {
       try {
         const p = canvas.requestPointerLock?.() as unknown as Promise<void> | undefined;
         p?.catch?.(() => undefined);
@@ -940,7 +1083,7 @@ export function crearEscena3D(canvas: HTMLCanvasElement, opciones: OpcionesEscen
       camaraActual = c;
       mezclaDesde = mezcla;
       inicioCamara = performance.now();
-      camara.fov = fovParaAspecto(c, camara.aspect);
+      camara.fov = fovParaAspecto(c, camara.aspect, FOV_JUEGO_TERCERA);
       camara.updateProjectionMatrix();
       if (c === "primera") {
         inclinacionPrimera = CAMARA_PRIMERA.inclinacion;
@@ -950,6 +1093,7 @@ export function crearEscena3D(canvas: HTMLCanvasElement, opciones: OpcionesEscen
     },
     fijarCalidad(nivel) {
       calidad = nivel;
+      ctx.calidad = nivel;
       medidor?.reiniciar();
       aplicarCalidad(nivel);
     },
@@ -983,7 +1127,7 @@ export function crearEscena3D(canvas: HTMLCanvasElement, opciones: OpcionesEscen
       if (ancho <= 0 || alto <= 0) return;
       renderer.setSize(ancho, alto, false);
       camara.aspect = ancho / alto;
-      camara.fov = fovParaAspecto(camaraActual, camara.aspect);
+      camara.fov = fovParaAspecto(camaraActual, camara.aspect, FOV_JUEGO_TERCERA);
       camara.updateProjectionMatrix();
       guantes.anclar(camara.aspect, 70);
     },
@@ -995,6 +1139,9 @@ export function crearEscena3D(canvas: HTMLCanvasElement, opciones: OpcionesEscen
     },
     lugarCercano() {
       return lugarCercano(mov.jugador.x, mov.jugador.z);
+    },
+    interactivo() {
+      return interactivoCercano(mov.jugador.x, mov.jugador.z);
     },
     posicionJugador() {
       return { x: mov.jugador.x, z: mov.jugador.z };

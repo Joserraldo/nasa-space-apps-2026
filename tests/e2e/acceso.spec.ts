@@ -48,7 +48,8 @@ test('crear cuenta guarda la misión y recupera la opción Continuar',async({pag
   await page.reload();
   await page.getByRole('button',{name:'Load my progress',exact:true}).click();
   await page.getByRole('button',{name:'Continue',exact:true}).click();
-  await expect(page.getByRole('heading',{name:'The ship releases the satellite'})).toBeVisible();
+  // Con E8 en develop, saltar la intro lleva directo a la órbita (ui/05).
+  await expect(page.getByRole('heading',{name:'Observe Mars'})).toBeVisible();
 });
 
 test('acceso bilingüe cabe en celular y conserva el invitado visible',async({page})=>{

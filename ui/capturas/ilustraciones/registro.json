@@ -1,0 +1,324 @@
+[
+  {
+    "pantalla": "portada",
+    "ventana": "1440x900",
+    "errores": [],
+    "desborde": false,
+    "alto": 900,
+    "choques": [],
+    "imagenes": [
+      {
+        "clase": "ilu portada-asteroide",
+        "archivo": "portada-asteroide-240.avif",
+        "ancho": 137,
+        "alto": 134
+      },
+      {
+        "clase": "ilu portada-roca",
+        "archivo": "portada-asteroide-240.avif",
+        "ancho": 134,
+        "alto": 131
+      },
+      {
+        "clase": "ilu portada-planeta",
+        "archivo": "portada-planeta-400.avif",
+        "ancho": 222,
+        "alto": 129
+      },
+      {
+        "clase": "ilu portada-nave",
+        "archivo": "portada-nave-560.avif",
+        "ancho": 387,
+        "alto": 327
+      },
+      {
+        "clase": "ilu portada-nino",
+        "archivo": "portada-nino-448.avif",
+        "ancho": 448,
+        "alto": 570
+      }
+    ]
+  },
+  {
+    "pantalla": "carga",
+    "ventana": "1440x900",
+    "errores": [],
+    "desborde": false,
+    "alto": 900,
+    "choques": [],
+    "imagenes": [
+      {
+        "clase": "ilu carga-modulo-img",
+        "archivo": "carga-panel-280.avif",
+        "ancho": 153,
+        "alto": 114
+      },
+      {
+        "clase": "ilu carga-modulo-img",
+        "archivo": "carga-invernadero-248.avif",
+        "ancho": 140,
+        "alto": 124
+      },
+      {
+        "clase": "ilu carga-modulo-img",
+        "archivo": "carga-habitat-360.avif",
+        "ancho": 204,
+        "alto": 132
+      },
+      {
+        "clase": "ilu carga-nino",
+        "archivo": "carga-nino-384.avif",
+        "ancho": 340,
+        "alto": 518
+      }
+    ]
+  },
+  {
+    "pantalla": "portada",
+    "ventana": "1024x683",
+    "errores": [],
+    "desborde": false,
+    "alto": 683,
+    "choques": [],
+    "imagenes": [
+      {
+        "clase": "ilu portada-asteroide",
+        "archivo": "portada-asteroide-120.avif",
+        "ancho": 98,
+        "alto": 96
+      },
+      {
+        "clase": "ilu portada-roca",
+        "archivo": "portada-asteroide-120.avif",
+        "ancho": 95,
+        "alto": 93
+      },
+      {
+        "clase": "ilu portada-planeta",
+        "archivo": "portada-planeta-200.avif",
+        "ancho": 158,
+        "alto": 92
+      },
+      {
+        "clase": "ilu portada-nave",
+        "archivo": "portada-nave-280.avif",
+        "ancho": 276,
+        "alto": 233
+      },
+      {
+        "clase": "ilu portada-nino",
+        "archivo": "portada-nino-448.avif",
+        "ancho": 320,
+        "alto": 407
+      }
+    ]
+  },
+  {
+    "pantalla": "carga",
+    "ventana": "1024x683",
+    "errores": [],
+    "desborde": false,
+    "alto": 683,
+    "choques": [],
+    "imagenes": [
+      {
+        "clase": "ilu carga-modulo-img",
+        "archivo": "carga-panel-280.avif",
+        "ancho": 116,
+        "alto": 86
+      },
+      {
+        "clase": "ilu carga-modulo-img",
+        "archivo": "carga-invernadero-248.avif",
+        "ancho": 107,
+        "alto": 94
+      },
+      {
+        "clase": "ilu carga-modulo-img",
+        "archivo": "carga-habitat-180.avif",
+        "ancho": 155,
+        "alto": 100
+      },
+      {
+        "clase": "ilu carga-nino",
+        "archivo": "carga-nino-384.avif",
+        "ancho": 246,
+        "alto": 374
+      }
+    ]
+  },
+  {
+    "pantalla": "portada",
+    "ventana": "844x390",
+    "errores": [],
+    "desborde": false,
+    "alto": 390,
+    "choques": [],
+    "imagenes": [
+      {
+        "clase": "ilu portada-nino",
+        "archivo": "portada-nino-448.avif",
+        "ancho": 204,
+        "alto": 259
+      }
+    ]
+  },
+  {
+    "pantalla": "carga",
+    "ventana": "844x390",
+    "errores": [],
+    "desborde": false,
+    "alto": 390,
+    "choques": [],
+    "imagenes": [
+      {
+        "clase": "ilu carga-modulo-img",
+        "archivo": "carga-panel-280.avif",
+        "ancho": 64,
+        "alto": 48
+      },
+      {
+        "clase": "ilu carga-modulo-img",
+        "archivo": "carga-invernadero-248.avif",
+        "ancho": 58,
+        "alto": 51
+      },
+      {
+        "clase": "ilu carga-modulo-img",
+        "archivo": "carga-habitat-360.avif",
+        "ancho": 86,
+        "alto": 55
+      },
+      {
+        "clase": "ilu carga-nino",
+        "archivo": "carga-nino-200.avif",
+        "ancho": 177,
+        "alto": 270
+      }
+    ]
+  },
+  {
+    "pantalla": "portada",
+    "ventana": "390x844",
+    "errores": [],
+    "desborde": false,
+    "alto": 844,
+    "choques": [],
+    "imagenes": [
+      {
+        "clase": "ilu portada-planeta",
+        "archivo": "portada-planeta-200.avif",
+        "ancho": 88,
+        "alto": 52
+      },
+      {
+        "clase": "ilu portada-nave",
+        "archivo": "portada-nave-280.avif",
+        "ancho": 145,
+        "alto": 122
+      },
+      {
+        "clase": "ilu portada-nino",
+        "archivo": "portada-nino-448.avif",
+        "ancho": 168,
+        "alto": 214
+      }
+    ]
+  },
+  {
+    "pantalla": "carga",
+    "ventana": "390x844",
+    "errores": [],
+    "desborde": false,
+    "alto": 844,
+    "choques": [],
+    "imagenes": [
+      {
+        "clase": "ilu carga-modulo-img",
+        "archivo": "carga-panel-140.avif",
+        "ancho": 78,
+        "alto": 58
+      },
+      {
+        "clase": "ilu carga-modulo-img",
+        "archivo": "carga-invernadero-130.avif",
+        "ancho": 70,
+        "alto": 62
+      },
+      {
+        "clase": "ilu carga-modulo-img",
+        "archivo": "carga-habitat-180.avif",
+        "ancho": 105,
+        "alto": 68
+      },
+      {
+        "clase": "ilu carga-nino",
+        "archivo": "carga-nino-200.avif",
+        "ancho": 160,
+        "alto": 244
+      }
+    ]
+  },
+  {
+    "pantalla": "portada",
+    "ventana": "768x1024",
+    "errores": [],
+    "desborde": false,
+    "alto": 1024,
+    "choques": [],
+    "imagenes": [
+      {
+        "clase": "ilu portada-planeta",
+        "archivo": "portada-planeta-200.avif",
+        "ancho": 174,
+        "alto": 102
+      },
+      {
+        "clase": "ilu portada-nave",
+        "archivo": "portada-nave-560.avif",
+        "ancho": 209,
+        "alto": 177
+      },
+      {
+        "clase": "ilu portada-nino",
+        "archivo": "portada-nino-656.avif",
+        "ancho": 242,
+        "alto": 308
+      }
+    ]
+  },
+  {
+    "pantalla": "carga",
+    "ventana": "768x1024",
+    "errores": [],
+    "desborde": false,
+    "alto": 1024,
+    "choques": [],
+    "imagenes": [
+      {
+        "clase": "ilu carga-modulo-img",
+        "archivo": "carga-panel-280.avif",
+        "ancho": 150,
+        "alto": 111
+      },
+      {
+        "clase": "ilu carga-modulo-img",
+        "archivo": "carga-invernadero-248.avif",
+        "ancho": 136,
+        "alto": 120
+      },
+      {
+        "clase": "ilu carga-modulo-img",
+        "archivo": "carga-habitat-360.avif",
+        "ancho": 204,
+        "alto": 131
+      },
+      {
+        "clase": "ilu carga-nino",
+        "archivo": "carga-nino-200.avif",
+        "ancho": 223,
+        "alto": 340
+      }
+    ]
+  }
+]

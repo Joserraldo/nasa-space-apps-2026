@@ -1,13 +1,15 @@
-# Estado — Frente B (tripulación viva, IA y jugador de prueba)
-**Actualizado:** 15 nov 2026
-
-## Hecho
-- B0: contrato de conversación en `agents/src/conversacion.ts`, con pruebas. PR #334 en borrador: CI en verde, falta la revisión de José (frente A).
-
-## Sigue
-- En curso, cada una en su rama y con PR borrador: B1 (líneas del globo), B2 (la tripulación recuerda, depende de #334), B3 (conversación en el mundo, lado de agentes y Worker, depende de #334), B4 (datos de Marte con fuente) y B5 (diario del jugador, encuentro 1).
-
-## Bloqueado
-- B6 (niveles de Iris en su comportamiento) espera A2 fusionada: su "hecho cuando" son capturas en la escena.
-- B3 en el mundo espera A6 (expertas en escena) y E2 (`[E] Talk`); mientras tanto, el campo `Ask your crew...`.
-- Evaluación con el modelo real: sin clave en esta máquina.
+# Estado — Frente B
+**Actualizado:** 15 nov 2026 · Responsable: Jaime
+- #334 B0 listo para revisión, CI verde; sin merge del agente.
+- #370 integración lista para revisión de María Paula y José, sin conflictos; no publicada.
+- Conecta B1 globos, B2 recuerdos persistidos, B3 clasificador/botones, B4 fuentes y B6 comportamiento en escena.
+- Incluye develop con A2/E1, retratos y sombras ya aprobados por el equipo.
+- CI #370: 992 pruebas y seis e2e aprobadas; typecheck y build correctos.
+- Cinco módulos: 79 llamadas y 74 126 triángulos, liberación de recursos verificada.
+- Usuario probó localmente: valoración positiva, sin errores reportados; duración no indicada.
+- B5 #362 registra el reporte; no se certifican diez minutos ni se inventan hallazgos.
+- Pendiente: capturas formales B6 y revisión visual; navegador del agente deniega apertura/lectura.
+- #354–#358 conservan entregas originales; #370 las integra para revisión, B0 primero.
+- #363 separado y en borrador: correo/confirmación del adulto es propuesta pendiente, no se recoge correo.
+- Nunca se hizo merge, force push ni push a main/develop.
+Tokens: amarillo

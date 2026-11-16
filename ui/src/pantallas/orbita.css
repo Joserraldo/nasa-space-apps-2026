@@ -1,16 +1,19 @@
 /*
- * E3 Órbita (ESCENAS §2.4 y §2.7). Solo tokens: fondo espacial de la portada, Marte facetado y
- * la familia de tarjetas y placas de DISEÑO §5. Sombras teñidas de ciruela, nunca negras (§3.4).
+ * E3 Órbita (ESCENAS §2.4), rehecha desde la lámina ui/05. Solo tokens: fondo espacial de la portada,
+ * Marte ilustrado con su órbita y la familia de tarjetas y placas de DISEÑO §5. Sombras teñidas de
+ * ciruela, nunca negras (§3.4). Escritorio y apaisado: Marte a la izquierda y el panel a la derecha.
+ * Vertical: Marte arriba y el panel debajo, con desplazamiento vertical de la pantalla.
  */
 .orbita {
-  min-height: 100dvh;
+  /* El aviso de proyecto no oficial (pie de la app, una línea) queda debajo sin forzar desplazamiento. */
+  min-height: calc(100dvh - var(--alto-barra, 26px));
   box-sizing: border-box;
   padding: max(var(--esp-5), env(safe-area-inset-top)) max(var(--esp-5), env(safe-area-inset-right))
     max(var(--esp-5), env(safe-area-inset-bottom)) max(var(--esp-5), env(safe-area-inset-left));
   display: grid;
-  grid-template-columns: 1fr minmax(320px, 42%);
+  grid-template-columns: minmax(0, 1fr) minmax(340px, 44%);
   gap: var(--esp-5);
-  align-items: center;
+  align-items: stretch;
   background-color: var(--color-espacio);
   background-image:
     radial-gradient(1.5px 1.5px at 22% 18%, color-mix(in srgb, var(--color-marfil) 70%, transparent) 50%, transparent 51%),
@@ -20,62 +23,205 @@
     radial-gradient(1px 1px at 8% 92%, color-mix(in srgb, var(--color-marfil) 45%, transparent) 50%, transparent 51%);
 }
 
-.orbita-cielo { display: grid; place-items: center; min-height: 0; }
-.orbita-marte { inline-size: min(100%, 72vh); block-size: auto; overflow: visible; }
-
-.orbita-planeta polygon { stroke: var(--color-roca-basalto); stroke-width: 1; stroke-linejoin: round; }
-.f-claro { fill: var(--color-regolito-claro); }
-.f-medio { fill: var(--color-regolito-medio); }
-.f-roca { fill: var(--color-roca-basalto); }
-.f-sombra { fill: var(--color-montana-lejana); }
-.f-jezero { fill: var(--color-sombra-suelo); stroke: var(--color-cian) !important; stroke-width: 2 !important; }
-.orbita-ruta { fill: none; stroke: color-mix(in srgb, var(--color-lila) 60%, transparent); stroke-width: 2; stroke-dasharray: 6 8; }
-.f-satelite { fill: var(--color-marfil); stroke: var(--color-ciruela); stroke-width: 2; }
-.f-panel { fill: var(--color-cian); stroke: var(--color-ciruela); stroke-width: 2; }
-
-/* El panel cabe en la pantalla: los consejos se desplazan por dentro y el botón queda siempre a la vista. */
-.orbita-panel {
-  display: grid; grid-template-rows: auto auto minmax(0, 1fr) auto; gap: var(--esp-3); min-width: 0;
-  max-block-size: calc(100dvh - 2 * var(--esp-5) - var(--alto-barra, 0px)); align-self: center;
+/* ---- Columna izquierda: chips y escena ---- */
+.orbita-izq { display: flex; flex-direction: column; gap: var(--esp-4); min-width: 0; min-height: 0; }
+.orbita-cab { display: flex; flex-wrap: wrap; align-items: center; gap: var(--esp-3); }
+.orbita-titulo { --fc-ch: var(--chaflan-grande); padding: var(--esp-2) var(--esp-6); }
+.orbita-titulo h2 { margin: 0; font-size: clamp(var(--tipo-tam-titulo), 3.2vw, 48px); font-weight: var(--tipo-peso-portada); line-height: 1.1; white-space: nowrap; }
+.orbita-paso {
+  --fc-fondo: color-mix(in srgb, var(--color-lila) 78%, var(--color-montana-lejana)); padding: var(--esp-1) var(--esp-5);
+  font-size: var(--tipo-tam-dialogo); font-weight: var(--tipo-peso-portada); letter-spacing: 0.06em; white-space: nowrap;
 }
-.orbita-tarjeta { padding: var(--esp-4) var(--esp-5); }
-.orbita-tarjeta p { margin: 0; }
-.orbita-placas { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--esp-2); }
-.orbita-placas .placa { grid-template-columns: auto 1fr; padding-block-end: var(--esp-3); }
+
+.orbita-cielo { flex: 1; min-height: 0; display: grid; place-items: center; }
+.orbita-escena {
+  position: relative; container-type: inline-size; aspect-ratio: 930 / 596;
+  /* Ancho limitado por el alto disponible para que Marte nunca se corte ni empuje el panel. */
+  inline-size: min(100%, calc((100dvh - var(--alto-barra, 26px) - 164px) * 930 / 596));
+}
+.orbita-escena > * { position: absolute; }
+.orbita-trazo { inset: 0; inline-size: 100%; block-size: 100%; overflow: visible; pointer-events: none; }
+.orbita-trazo path { fill: none; stroke: var(--color-lila); stroke-width: 3px; stroke-dasharray: 12 12; vector-effect: non-scaling-stroke; }
+.orbita-trazo-fondo path { opacity: 0.55; }
+.orbita-trazo-frente path { opacity: 0.95; }
+.orbita-trazo-fondo { z-index: 0; }
+.orbita-marte { z-index: 1; inset-inline-start: 16.99%; inset-block-start: 1.68%; inline-size: 58.92%; }
+.orbita-trazo-frente { z-index: 2; }
+.orbita-satelite { z-index: 3; inset-inline-start: 75.27%; inset-block-start: 31.88%; inline-size: 19.14%; animation: orbita-recorre 24s linear infinite; }
+.orbita-img { display: block; inline-size: 100%; block-size: auto; }
+
+/* El satélite va y viene sobre un tramo de la elipse de la órbita (puntos calculados de la elipse del trazo). */
+@keyframes orbita-recorre {
+  0.00% { translate: 0cqw 0cqw; }
+  8.33% { translate: -1.3cqw 1.84cqw; }
+  16.67% { translate: -2.51cqw 3.21cqw; }
+  25.00% { translate: -3cqw 3.71cqw; }
+  33.33% { translate: -2.51cqw 3.21cqw; }
+  41.67% { translate: -1.3cqw 1.84cqw; }
+  50.00% { translate: 0cqw 0cqw; }
+  58.33% { translate: 0.88cqw -1.8cqw; }
+  66.67% { translate: 1.26cqw -3.09cqw; }
+  75.00% { translate: 1.33cqw -3.55cqw; }
+  83.33% { translate: 1.26cqw -3.09cqw; }
+  91.67% { translate: 0.88cqw -1.8cqw; }
+  100.00% { translate: 0cqw 0cqw; }
+}
+
+/* ---- Columna derecha: placas, consejos, altitud y botón ---- */
+.orbita-panel {
+  display: flex; flex-direction: column; gap: var(--esp-4); min-width: 0; justify-content: space-between;
+  max-block-size: calc(100dvh - var(--alto-barra, 26px) - 2 * var(--esp-5));
+}
+.orbita-placas { container-type: inline-size; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--esp-3); }
+.orbita-placas > .fc { display: grid; }
+
+.orbita-placas .placa {
+  display: grid; grid-template-columns: auto minmax(0, 1fr); grid-template-rows: 1fr auto auto; align-items: center;
+  padding: var(--esp-3);
+}
+.placa-icono { display: grid; place-items: center; padding-inline-end: var(--esp-2); margin-inline-end: var(--esp-2); border-inline-end: var(--borde-fino) solid color-mix(in srgb, var(--color-ciruela) 35%, transparent); align-self: stretch; }
+.orbita-placas .placa-texto { display: grid; gap: 2px; min-inline-size: 0; }
+.orbita-placas .placa-nombre { font-size: 16px; font-weight: var(--tipo-peso-etiqueta); line-height: 1.1; overflow-wrap: break-word; }
+.orbita-placas .placa-valor { font-size: var(--tipo-tam-titulo); font-weight: var(--tipo-peso-titulo); line-height: 1.05; }
+.orbita-placas .placa-capa { grid-column: 1 / -1; }
+
+/* Panel angosto (menos de ~600 px): la placa apila icono con nombre arriba y el valor abajo, sin cortar la cifra. */
+@container (max-width: 600px) {
+  .orbita-placas { gap: var(--esp-2); }
+  .orbita-placas .placa { grid-template-columns: auto minmax(0, 1fr); grid-template-rows: auto auto auto auto; padding: var(--esp-2); column-gap: var(--esp-2); }
+  .orbita-placas .placa-icono { padding: 0; margin: 0; border: 0; align-self: center; }
+  .orbita-placas .placa-icono svg { inline-size: 26px; block-size: 26px; }
+  .orbita-placas .placa-texto { display: contents; }
+  .orbita-placas .placa-nombre { font-size: 14px; align-self: center; position: relative; }
+  .orbita-placas .placa-valor { grid-column: 1 / -1; font-size: var(--tipo-tam-subtitulo); position: relative; }
+}
+
+@container (max-width: 420px) {
+  .orbita-placas .placa { padding: var(--esp-2) 6px; column-gap: var(--esp-1); }
+  .orbita-placas .placa-icono svg { inline-size: 22px; block-size: 22px; }
+  .orbita-placas .placa-nombre { font-size: 13px; }
+}
 
 .orbita-pista {
-  grid-column: 1 / -1; display: block; block-size: 8px; margin-block-start: var(--esp-2);
+  grid-column: 1 / -1; display: block; block-size: 10px; margin-block-start: var(--esp-2);
   background: var(--color-deshabilitado);
   clip-path: polygon(4px 0, 100% 0, calc(100% - 4px) 100%, 0 100%);
 }
-.orbita-pista > span { display: block; block-size: 100%; background: var(--color-cian); transition: inline-size var(--dur-relleno) var(--curva-entrada, ease-out); }
+.orbita-pista > span { display: block; block-size: 100%; background: var(--color-cian); transition: inline-size var(--dur-relleno) var(--curva-entrada); }
 
-.orbita-consejos { list-style: none; margin: 0; padding: 0 0 var(--esp-1); overflow-y: auto; overscroll-behavior: contain; display: flex; flex-direction: column; gap: var(--esp-2); }
-.orbita-linea { --fc-fondo: var(--color-lila); display: grid; grid-template-columns: auto 1fr; gap: var(--esp-3); align-items: start; padding: var(--esp-3) var(--esp-4); }
-.orbita-linea p { margin: 0; }
-.orbita-nombre { font-weight: var(--tipo-peso-titulo); color: var(--color-ciruela); display: inline-flex; gap: var(--esp-1); align-items: center; }
+.orbita-consejos { display: flex; flex-direction: column; gap: var(--esp-3); min-height: 0; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: var(--color-ciruela) var(--color-lila); padding-block-end: var(--esp-1); }
+.orbita-consejos > .fc { flex: none; }
+.orbita-otros { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--esp-2); flex: none; }
+
+.orbita-linea { --fc-fondo: var(--color-lila); display: grid; grid-template-columns: auto minmax(0, 1fr); gap: var(--esp-4); align-items: center; padding: var(--esp-3) var(--esp-4); }
+.orbita-linea p { margin: 0; max-width: none; }
+.orbita-sin-retrato { grid-template-columns: minmax(0, 1fr); }
+.orbita-retrato { display: block; line-height: 0; }
+.orbita-retrato :is(img, svg) { display: block; inline-size: 56px; block-size: 56px; }
+.orbita-nombre { font-weight: var(--tipo-peso-titulo); color: var(--color-indigo-texto); display: inline-flex; gap: var(--esp-1); align-items: center; }
 .orbita-alerta { --fc-fondo: var(--color-aviso-fondo); }
 .orbita-alerta .orbita-nombre { color: var(--color-aviso-texto); }
 
-/* Celular horizontal (844 x 390): planeta chico a la izquierda, columna lateral con desplazamiento. */
-@media (max-height: 500px) and (orientation: landscape) {
-  .orbita { grid-template-columns: 38% 1fr; gap: var(--esp-3); padding-block: max(var(--esp-3), env(safe-area-inset-top)) max(var(--esp-3), env(safe-area-inset-bottom)); align-items: stretch; }
-  .orbita-panel { max-block-size: calc(100dvh - 2 * var(--esp-3)); }
-  .orbita-marte { inline-size: min(100%, 80dvh); }
-  .orbita-tarjeta { padding: var(--esp-3) var(--esp-4); }
-  .orbita-tarjeta h2 { font-size: var(--tipo-tam-subtitulo); margin-block-end: var(--esp-1); }
-  .orbita-placas .placa { min-height: 0; padding-block: var(--esp-1) var(--esp-2); }
-  .orbita-linea .retrato, .orbita-linea svg:first-child, .orbita-linea .retrato-img { inline-size: 44px; block-size: 44px; }
+/* Tarjetas compactas: el texto crece con la pantalla grande sin competir con la de la Ingeniera. */
+.orbita-linea:not(.orbita-linea-grande) .orbita-nombre { font-size: clamp(17px, 1.3vw, 24px); }
+.orbita-linea:not(.orbita-linea-grande) .orbita-texto p:not(.orbita-nombre) { font-size: clamp(16px, 1.2vw, 22px); line-height: 1.3; }
+.orbita-linea:not(.orbita-linea-grande) .orbita-retrato :is(img, svg) { inline-size: clamp(56px, 4.5vw, 80px); block-size: clamp(56px, 4.5vw, 80px); }
+
+/* La Ingeniera: tarjeta grande de la lámina, retrato a la izquierda, nombre grande y sus líneas. */
+.orbita-linea-grande { --fc-ch: var(--chaflan-grande); gap: var(--esp-5); padding: var(--esp-4) var(--esp-5); }
+.orbita-linea-grande .orbita-retrato :is(img, svg) { inline-size: clamp(96px, 11vw, 160px); block-size: clamp(96px, 11vw, 160px); }
+.orbita-linea-grande .orbita-nombre { font-size: clamp(var(--tipo-tam-subtitulo), 2.1vw, 32px); margin-block-end: var(--esp-2); }
+.orbita-linea-grande .orbita-texto p:not(.orbita-nombre) { font-size: clamp(var(--tipo-tam-cuerpo), 1.7vw, 26px); line-height: 1.3; }
+.orbita-linea-grande .orbita-texto p + p { margin-block-start: var(--esp-2); }
+
+.orbita-pie { display: grid; gap: var(--esp-4); justify-items: center; }
+.orbita-altitud .fc-cara { padding: var(--esp-2) var(--esp-6); font-size: var(--tipo-tam-subtitulo); font-weight: var(--tipo-peso-etiqueta); white-space: nowrap; text-align: center; }
+.orbita-seguir { display: grid; justify-items: center; inline-size: 100%; }
+.orbita-seguir .fb-caja, .orbita-seguir .fb { inline-size: min(100%, 420px); }
+.orbita-seguir .fb { --fb-alto: 72px; --fb-punta: 22px; --fb-borde: var(--color-cian); font-size: var(--tipo-tam-titulo); }
+/* Borde cian grueso con brillo, como en la lámina. */
+.orbita-seguir .fb-caja { filter: drop-shadow(0 0 10px color-mix(in srgb, var(--color-cian) 70%, transparent)); }
+.orbita-seguir .fb-superficie::before { inset: 4px; }
+
+/* ---- Pantallas bajas (1024 x 683, 1280 x 600): todo se compacta para que entre sin desplazar ---- */
+@media (max-height: 760px) {
+  .orbita { gap: var(--esp-4); padding-block: var(--esp-3); }
+  .orbita-panel { gap: var(--esp-3); max-block-size: calc(100dvh - var(--alto-barra, 26px) - 2 * var(--esp-3)); }
+  .orbita-titulo { padding: var(--esp-1) var(--esp-5); }
+  .orbita-titulo h2 { font-size: var(--tipo-tam-titulo-grande); }
+  .orbita-escena { inline-size: min(100%, calc((100dvh - var(--alto-barra, 26px) - 124px) * 930 / 596)); }
+  .orbita-linea-grande { gap: var(--esp-4); padding: var(--esp-3) var(--esp-4); }
+  .orbita-linea-grande .orbita-retrato :is(img, svg) { inline-size: 88px; block-size: 88px; }
+  .orbita-linea-grande .orbita-nombre { font-size: var(--tipo-tam-dialogo); margin-block-end: 0; }
+  .orbita-linea-grande .orbita-texto p:not(.orbita-nombre) { font-size: var(--tipo-tam-cuerpo); line-height: 1.25; }
+  .orbita-linea { padding: var(--esp-2) var(--esp-3); }
+  .orbita-linea:not(.orbita-linea-grande) .orbita-nombre { font-size: 17px; }
+  .orbita-linea:not(.orbita-linea-grande) .orbita-texto p:not(.orbita-nombre) { font-size: 16px; line-height: 1.25; }
+  .orbita-linea:not(.orbita-linea-grande) .orbita-retrato :is(img, svg) { inline-size: 44px; block-size: 44px; }
+  .orbita-pie { gap: var(--esp-2); }
+  .orbita-altitud .fc-cara { padding: var(--esp-1) var(--esp-5); font-size: var(--tipo-tam-dialogo); }
+  .orbita-seguir .fb { --fb-alto: 56px; font-size: var(--tipo-tam-subtitulo); }
 }
 
-/* Vertical: el aviso de girar el teléfono tapa esta fase (juego/orientacion.ts); esto es el respaldo. */
-@media (orientation: portrait) and (max-width: 700px) {
-  .orbita { grid-template-columns: 1fr; align-items: start; }
-  .orbita-marte { inline-size: min(70%, 260px); }
-  .orbita-placas { grid-template-columns: 1fr; }
-  .orbita-panel { max-block-size: none; }
+/* ---- Celular apaisado y pantallas muy bajas (844 x 390, 640 x 360): Marte chico, panel con consejos desplazables ---- */
+@media (max-height: 500px) {
+  .orbita { grid-template-columns: minmax(0, 38%) minmax(0, 1fr); gap: var(--esp-3); padding-block: var(--esp-2); }
+  .orbita-panel { gap: var(--esp-2); max-block-size: calc(100dvh - var(--alto-barra, 26px) - 2 * var(--esp-2)); }
+  .orbita-izq { gap: var(--esp-2); }
+  .orbita-titulo { --fc-ch: var(--chaflan); padding: 2px var(--esp-3); }
+  .orbita-titulo h2 { font-size: var(--tipo-tam-dialogo); }
+  .orbita-paso { font-size: 14px; padding-inline: var(--esp-3); }
+  .orbita-escena { inline-size: min(100%, calc((100dvh - var(--alto-barra, 26px) - 84px) * 930 / 596)); }
+  /* Placa horizontal compacta: icono, separador y nombre sobre valor, aunque el panel mida menos de 600 px. */
+  .orbita-placas .placa { grid-template-columns: auto minmax(0, 1fr); grid-template-rows: 1fr auto auto; padding: var(--esp-1) var(--esp-2); }
+  .orbita-placas .placa-icono { padding-inline-end: var(--esp-1); margin-inline-end: var(--esp-1); border-inline-end: var(--borde-fino) solid color-mix(in srgb, var(--color-ciruela) 35%, transparent); align-self: stretch; }
+  .orbita-placas .placa-icono svg { inline-size: 24px; block-size: 24px; }
+  .orbita-placas .placa-texto { display: grid; gap: 0; }
+  .orbita-placas .placa-nombre { font-size: 13px; }
+  .orbita-placas .placa-valor { grid-column: auto; font-size: var(--tipo-tam-dialogo); }
+  .orbita-pista { block-size: 6px; margin-block-start: var(--esp-1); }
+  .orbita-linea-grande { gap: var(--esp-3); padding: var(--esp-2) var(--esp-3); }
+  .orbita-linea-grande .orbita-retrato :is(img, svg) { inline-size: 64px; block-size: 64px; }
+  .orbita-linea-grande .orbita-nombre, .orbita-linea:not(.orbita-linea-grande) .orbita-nombre { font-size: 16px; }
+  .orbita-linea-grande .orbita-texto p:not(.orbita-nombre), .orbita-linea:not(.orbita-linea-grande) .orbita-texto p:not(.orbita-nombre) { font-size: 14px; }
+  .orbita-linea:not(.orbita-linea-grande) .orbita-retrato :is(img, svg) { inline-size: 36px; block-size: 36px; }
+  .orbita-pie { grid-template-columns: auto 1fr; gap: var(--esp-3); align-items: center; }
+  .orbita-altitud .fc-cara { font-size: 16px; padding: var(--esp-1) var(--esp-3); }
+  .orbita-seguir .fb { --fb-alto: var(--toque-minimo); font-size: var(--tipo-tam-dialogo); }
+}
+
+/* Celular apaisado angosto (568 x 320): menos margen y Marte un poco más chico, para que entren las tres placas. */
+@media (max-height: 500px) and (max-width: 639px) {
+  .orbita { grid-template-columns: minmax(0, 33%) minmax(0, 1fr); padding-inline: var(--esp-3); }
+  .orbita-placas .placa-nombre { font-size: 12px; }
+}
+
+/* ---- Vertical (celular y tableta): Marte arriba y el panel debajo; la pantalla se desplaza hacia abajo ---- */
+@media (orientation: portrait), (max-width: 639px) and (min-height: 501px) {
+  .orbita { grid-template-columns: minmax(0, 1fr); align-content: start; gap: var(--esp-4); padding: var(--esp-3); }
+  .orbita-cielo { flex: none; }
+  .orbita-escena { inline-size: min(100%, 640px); }
+  .orbita-titulo { padding: var(--esp-1) var(--esp-5); }
+  .orbita-titulo h2 { font-size: var(--tipo-tam-titulo-grande); }
+  .orbita-panel { max-block-size: none; gap: var(--esp-3); inline-size: min(100%, 640px); justify-self: center; }
+  .orbita-consejos { overflow: visible; }
+  .orbita-linea-grande { gap: var(--esp-4); padding: var(--esp-3) var(--esp-4); }
+  .orbita-linea-grande .orbita-retrato :is(img, svg) { inline-size: 96px; block-size: 96px; }
+  .orbita-linea-grande .orbita-nombre { font-size: var(--tipo-tam-subtitulo); margin-block-end: var(--esp-1); }
+  .orbita-linea-grande .orbita-texto p:not(.orbita-nombre) { font-size: var(--tipo-tam-cuerpo); }
+  .orbita-linea:not(.orbita-linea-grande) .orbita-retrato :is(img, svg) { inline-size: 48px; block-size: 48px; }
+  .orbita-linea:not(.orbita-linea-grande) .orbita-texto p:not(.orbita-nombre) { font-size: 16px; line-height: 1.3; }
+  .orbita-pie { grid-template-columns: none; }
+}
+/* Tableta vertical: Marte se achica lo justo para que el botón de seguir entre en la primera pantalla. */
+@media (orientation: portrait) and (min-width: 700px) {
+  .orbita-escena { inline-size: min(100%, 640px, max(320px, calc((100dvh - var(--alto-barra, 26px) - 674px) * 930 / 596))); }
+}
+@media (orientation: portrait) and (max-width: 639px) {
+  .orbita-titulo h2 { font-size: var(--tipo-tam-titulo); }
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .orbita-satelite { animation: none; }
   .orbita-pista > span { transition: none; }
 }

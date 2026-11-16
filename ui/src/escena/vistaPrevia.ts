@@ -12,7 +12,13 @@
 import type { CalidadGrafica } from "../juego/ajustes";
 import { COLORES, conAlfa } from "../estilos/tokens";
 import { traducir, type Idioma, type Vars } from "../i18n";
+import * as THREE from "three";
+import { crearCorredorInterior, zonaCorredor } from "./activos/interiores/corredor";
+import { crearHabitatInterior } from "./activos/interiores/habitat";
+import { crearTaller } from "./activos/interiores/taller";
+import { fusionar } from "./activos/fusionar";
 import { crearEscena3D } from "./escena3d";
+import { colorToken, crearMateriales } from "./materiales";
 import { LUGARES, type LugarId } from "./mundo";
 import { prefiereMenosMovimiento } from "./soporte";
 import type { VistaEscena } from "./vista";
@@ -35,6 +41,9 @@ const VISTA_EJEMPLO: VistaEscena = {
 };
 
 const parametros = new URLSearchParams(location.search);
+// `?fase=tormenta|final` (D3): ver la luz de la tarde o del atardecer.
+const fasePedida = parametros.get("fase");
+if (fasePedida === "tormenta" || fasePedida === "final") VISTA_EJEMPLO.fase = fasePedida;
 if (parametros.get("modulos") === "todos") {
   for (const id of ["panel_solar", "antena", "reciclador_agua", "escudo", "invernadero"] as const) VISTA_EJEMPLO.modulos[id] = "funcionando";
 }
@@ -107,4 +116,75 @@ function montar(): void {
   }
 }
 
-if (parametros.get("montar") !== "0") montar();
+/** Cómo se ve cada sala en la vista previa: qué se arma, dónde va la cámara y la luz cálida. */
+const SALAS_PREVIA = {
+  // Corredor desde la entrada, a la altura de los ojos del niño, mirando al fondo como `exterior/01`.
+  corredor: () => {
+    const zona = zonaCorredor();
+    return {
+      raiz: crearCorredorInterior(crearMateriales()),
+      camara: [zona.entrada.x, 1.35, zona.entrada.z + 0.6] as const,
+      mira: [0, 1.2, 0] as const,
+      luz: [0.5, 3, zona.entrada.z] as const,
+    };
+  },
+  // Taller en corte, como la lámina `estaciones/05`: desde el frente abierto, arriba y a la izquierda.
+  taller: () => ({ raiz: crearTaller(crearMateriales()), camara: [-2.5, 5.2, 7.5] as const, mira: [0.4, 0.8, -0.6] as const, luz: [-2, 6, 4] as const }),
+  // Hábitat en corte, como las láminas `estaciones/06` y `07`.
+  habitat: () => ({ raiz: crearHabitatInterior(crearMateriales()), camara: [-2.5, 5.4, 8] as const, mira: [0.3, 0.8, -0.5] as const, luz: [-2, 6, 4] as const }),
+} as const;
+
+/**
+ * `?sala=corredor|taller|habitat` (D5): una sala sola, en su propia vista, con la cámara de `SALAS_PREVIA`. Luz
+ * provisional de interior (la definitiva va con A8). Con `?medir=1` muestra fps, draw calls y triángulos.
+ */
+function montarSala(sala: keyof typeof SALAS_PREVIA): void {
+  const canvas = document.getElementById("escena") as HTMLCanvasElement;
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: calidad !== "baja" });
+  renderer.setPixelRatio(Math.min(globalThis.devicePixelRatio || 1, calidad === "alta" ? 1.5 : 1));
+  const escena = new THREE.Scene();
+  escena.background = colorToken("lila");
+  const cfg = SALAS_PREVIA[sala]();
+  escena.add(fusionar(cfg.raiz, `Sala_${sala}`), new THREE.HemisphereLight(colorToken("marfil"), colorToken("lila"), 2.4));
+  const luz = new THREE.DirectionalLight(colorToken("aviso-fondo"), 1.2);
+  luz.position.set(cfg.luz[0], cfg.luz[1], cfg.luz[2]);
+  luz.target.position.set(0, 0, 0);
+  escena.add(luz, luz.target);
+  const camara = new THREE.PerspectiveCamera(sala === "corredor" ? 62 : 45, 1, 0.1, 60);
+  camara.position.set(cfg.camara[0], cfg.camara[1], cfg.camara[2]);
+  camara.lookAt(cfg.mira[0], cfg.mira[1], cfg.mira[2]);
+  const ajustar = () => {
+    renderer.setSize(innerWidth, innerHeight, false);
+    camara.aspect = innerWidth / innerHeight;
+    camara.updateProjectionMatrix();
+  };
+  ajustar();
+  addEventListener("resize", ajustar);
+  const tiempos: number[] = [];
+  let recuadro: HTMLDivElement | null = null;
+  if (parametros.get("medir") === "1") {
+    recuadro = document.createElement("div");
+    recuadro.setAttribute("role", "status");
+    recuadro.style.cssText = `position:fixed;top:8px;left:8px;padding:8px 10px;border-radius:8px;font:12px/1.5 monospace;background:${conAlfa("espacio", 0.85)};color:${COLORES.marfil}`;
+    document.body.appendChild(recuadro);
+  }
+  const cuadro = (ahora: number) => {
+    renderer.render(escena, camara);
+    tiempos.push(ahora);
+    while (tiempos.length && ahora - tiempos[0]! > 5000) tiempos.shift();
+    if (recuadro && tiempos.length > 1) {
+      const fps = ((tiempos.length - 1) * 1000) / (ahora - tiempos[0]!);
+      recuadro.innerHTML = [
+        `${t("ui.medir.fps_prom")}: ${Math.round(fps)}`,
+        `${t("ui.medir.draw_calls")}: ${renderer.info.render.calls}`,
+        `${t("ui.medir.triangulos")}: ${renderer.info.render.triangles}`,
+      ].join("<br>");
+    }
+    requestAnimationFrame(cuadro);
+  };
+  requestAnimationFrame(cuadro);
+}
+
+const salaPedida = parametros.get("sala");
+if (salaPedida === "corredor" || salaPedida === "taller" || salaPedida === "habitat") montarSala(salaPedida);
+else if (parametros.get("montar") !== "0") montar();
