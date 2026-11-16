@@ -220,15 +220,57 @@
   clip-path: polygon(16px 0, 100% 0, 100% calc(100% - 16px), calc(100% - 16px) 100%, 0 100%, 0 16px); }
 .carga-logo { display: block; width: 180px; height: auto; }
 .carga-sonido { position: absolute; top: var(--esp-4); right: var(--esp-4); }
-.carga-iconos { display: flex; gap: var(--esp-6); }
-.carga-icono { display: grid; place-items: center; width: 64px; height: 64px; background: var(--color-marfil);
+.carga-icono { display: grid; place-items: center; width: 56px; height: 56px; background: var(--color-marfil);
   clip-path: polygon(14px 0, calc(100% - 14px) 0, 100% 14px, 100% calc(100% - 14px), calc(100% - 14px) 100%, 14px 100%, 0 calc(100% - 14px), 0 14px); }
 .carga-panel { width: min(100%, 640px); }
-.carga-nino { position: absolute; left: 3%; bottom: var(--esp-4); }
-.carga-nino svg { width: clamp(180px, 26vw, 280px); height: auto; }
-/* Pantalla ancha: el niño a la izquierda y el panel corrido a la derecha (inicio/03). */
-@media (min-width: 900px) { .carga-panel { justify-self: end; margin-right: 5%; width: min(60%, 640px); } }
-@media (max-width: 899px) { .carga-nino { position: static; order: -1; } .carga-nino svg { width: 120px; height: 120px; } }
+
+/* Escena ilustrada (EscenaCarga, ilustraciones 2D de María Paula): los tres módulos en fila con su insignia,
+   sobre una órbita, encima del panel; el niño abajo a la izquierda (inicio/03). */
+.carga-escena { display: grid; justify-items: center; width: 100%; }
+.carga-modulos { position: relative; display: flex; justify-content: space-around; align-items: flex-end; gap: var(--esp-4); width: 100%; padding-block: var(--esp-2) var(--esp-3); }
+.carga-orbita { position: absolute; left: -4%; top: 18%; width: 108%; height: 86%; overflow: visible; }
+.carga-orbita ellipse { fill: none; stroke: color-mix(in srgb, var(--color-marfil) 75%, transparent); stroke-width: 2px; vector-effect: non-scaling-stroke; stroke-dasharray: 100; }
+.carga-modulo { position: relative; display: grid; justify-items: center; gap: var(--esp-2); }
+.carga-modulo-img { height: auto; max-width: none; }
+.carga-modulo:nth-of-type(1) .carga-modulo-img { width: clamp(80px, 12vw, 191px); }
+.carga-modulo:nth-of-type(2) .carga-modulo-img { width: clamp(74px, 11vw, 172px); }
+.carga-modulo:nth-of-type(3) .carga-modulo-img { width: clamp(108px, 16vw, 260px); }
+.carga-nino { position: absolute; left: 2%; bottom: 5%; width: clamp(150px, 24vw, 340px); height: auto; max-width: none; transform-origin: 50% 100%; }
+
+/* Movimiento (impeccable animate; review-animations): la órbita se dibuja una vez, los módulos aparecen de a
+   uno (cada 300 ms) con su insignia después, y al final todo respira con un vaivén lento. La carga dura 1,8 s
+   (App.tsx): a los 1,65 s la base ya está completa y se ve entera antes de pasar a la órbita. Entrada con
+   scale y opacity, vaivén con translate: no se pisan. Quieto con movimiento reducido. */
+.carga-orbita ellipse { animation: carga-orbita 1.2s var(--curva-entrada) 100ms both; }
+.carga-modulo { --carga-retraso: 150ms;
+  animation: carga-aparece 450ms var(--curva-entrada) var(--carga-retraso) both, carga-vaiven 3.4s ease-in-out calc(var(--carga-retraso) + 450ms) infinite alternate; }
+.carga-modulo:nth-of-type(2) { --carga-retraso: 450ms; }
+.carga-modulo:nth-of-type(3) { --carga-retraso: 750ms; }
+.carga-modulo .carga-icono { animation: carga-insignia 300ms var(--curva-entrada) calc(var(--carga-retraso) + 600ms) both; }
+.carga-nino { animation: carga-aparece 500ms var(--curva-entrada) both, carga-respira 3s ease-in-out 500ms infinite alternate; }
+@keyframes carga-orbita { from { stroke-dashoffset: 100; } }
+@keyframes carga-aparece { from { opacity: 0; scale: .9; } }
+@keyframes carga-insignia { from { opacity: 0; scale: .8; } }
+@keyframes carga-vaiven { to { translate: 0 -4px; } }
+@keyframes carga-respira { to { translate: 0 -5px; } }
+
+/* Pantalla ancha: el niño a la izquierda y la escena y el panel corridos a la derecha (inicio/03). */
+@media (min-width: 900px) { .carga-panel, .carga-escena { justify-self: end; margin-right: 5%; width: min(60%, 640px); } }
+@media (max-width: 899px) {
+  .carga-nino { position: static; order: -1; width: 110px; }
+  .carga-modulo .carga-icono { width: 44px; height: 44px; }
+}
+/* Celular apaisado: poca altura; solo los módulos chicos al lado del logo, sin niño ni insignias, para que
+   el panel tenga lugar. */
+@media (max-height: 500px) {
+  .carga { padding-top: var(--esp-4); gap: var(--esp-3); }
+  .carga-marca { padding: var(--esp-2) var(--esp-3); }
+  .carga-logo { width: 120px; }
+  .carga-escena { padding-inline: 170px 200px; box-sizing: border-box; }
+  .carga-nino, .carga-modulo .carga-icono, .carga-orbita { display: none; }
+  .carga-modulo:nth-of-type(n) .carga-modulo-img { width: 72px; }
+  .carga-modulo:nth-of-type(3) .carga-modulo-img { width: 96px; }
+}
 .carga-cara { --fc-ch: var(--chaflan-grande); display: grid; justify-items: center; gap: var(--esp-3); padding: var(--esp-5) var(--esp-5) var(--esp-4); text-align: center; }
 .carga-cara h2 { margin: 0; font-size: var(--tipo-tam-titulo-grande); }
 .carga-puntos { display: inline-flex; gap: var(--esp-3); }
@@ -242,7 +284,7 @@
 .carga-consejo p { margin: 0; font-weight: var(--tipo-peso-titulo); font-size: var(--tipo-tam-dialogo); }
 .carga-chip { flex: none; padding: 2px var(--esp-3); font-style: italic; font-weight: var(--tipo-peso-portada); letter-spacing: 0.06em; text-transform: uppercase; font-size: 15px; background: var(--color-cian);
   clip-path: polygon(8px 0, calc(100% - 8px) 0, 100% 50%, calc(100% - 8px) 100%, 8px 100%, 0 50%); }
-@media (max-width: 560px) { .carga-consejo { flex-direction: column; text-align: center; } .carga-iconos { gap: var(--esp-4); } }
+@media (max-width: 560px) { .carga-consejo { flex-direction: column; text-align: center; } .carga-modulos { gap: var(--esp-2); } }
 
-@media (prefers-reduced-motion: reduce) { .intro-vineta, .carga-puntos i { animation: none; } .carga-puntos i { opacity: 0.8; } }
+@media (prefers-reduced-motion: reduce) { .intro-vineta, .carga-puntos i, .carga-modulo, .carga-modulo .carga-icono, .carga-nino, .carga-orbita ellipse { animation: none; } .carga-puntos i { opacity: 0.8; } }
 /* En inicio/01 el planeta del fondo es violeta (no Marte): se recolorea solo aquí. */

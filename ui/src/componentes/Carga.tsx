@@ -1,8 +1,7 @@
 import { useT } from "../i18n.js";
 import { FacetButton } from "./base/FacetButton.js";
-import { Icono } from "./base/Iconos.js";
 import { LogoSolarShield } from "./base/LogoSolarShield.js";
-import { Retrato } from "./base/Retrato.js";
+import { EscenaCarga } from "./base/EscenaCarga.js";
 import "./base/inicio.css";
 
 /**
@@ -29,11 +28,8 @@ export function Carga({ consejo = 0, sonido, onSonido, onSaltar }: {
           <FacetButton labelKey={sonido ? "ui.portada.sonido_on" : "ui.portada.sonido_off"} icon={sonido ? "sonido_on" : "sonido_off"} onClick={onSonido} />
         </div>
       )}
-      <div className="carga-iconos" aria-hidden="true">
-        {(["energia", "pulmones", "escudo"] as const).map((ic) => <span key={ic} className="carga-icono"><Icono nombre={ic} tam={40} /></span>)}
-      </div>
-      {/* El niño mira la tableta mientras se prepara la misión (inicio/03). */}
-      <div className="carga-nino" aria-hidden="true"><Retrato persona="nino" expresion="feliz" tam={200} parpadear /></div>
+      {/* El niño mira la tableta mientras la base se arma, módulo por módulo (inicio/03). */}
+      <EscenaCarga />
       <div className="fc carga-panel">
         <div className="fc-cara carga-cara">
           <h2 id="carga-titulo">{t("ui.carga.titulo")}</h2>
