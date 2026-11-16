@@ -83,7 +83,7 @@ export function DialogoExperto({ d, irisDanada, soloTexto = false, onPlan, onOtr
             <FacetButton variant="primary" icon="check" labelKey="ui.base.dialogo.plan" labelVars={{ plan: describirAccion(plan, t) }}
               onClick={() => onPlan(plan)} />
           )}
-          <FacetButton icon="tripulacion" labelKey="ui.base.dialogo.otra" onClick={onOtra} />
+          <FacetButton labelKey="ui.base.dialogo.otra" onClick={onOtra} />
           <FacetButton variant={plan ? "secondary" : "primary"} labelKey="ui.continuar" onClick={onCerrar} />
         </div>}
       </div>

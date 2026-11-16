@@ -51,6 +51,8 @@
   "ui.interaccion.entrar": "Enter",
   "ui.interaccion.salir": "Exit",
   "ui.interaccion.usar": "Use",
+  "ui.interaccion.mover": "MOVE",
+  "ui.interaccion.interactuar": "INTERACT",
   "ui.paso.4.preguntar": "Ask the Engineer",
   "ui.paso.4.construir": "Build: {moduloKey}",
   "ui.paso.4.motivo.lleno": "You already placed all your modules",

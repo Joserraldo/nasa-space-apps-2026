@@ -60,12 +60,60 @@
   clip-path: polygon(30% 0, 70% 0, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0 70%, 0 30%);
 }
 .dialogo-experto-retrato :is(svg, .retrato-img) { inline-size: 64px; block-size: 64px; }
-.dialogo-experto-texto { grid-area: texto; display: grid; gap: var(--esp-1); padding-inline-start: var(--esp-3); min-inline-size: 0;
+.dialogo-experto-texto { grid-area: texto; display: grid; gap: 3px; padding-inline-start: var(--esp-3); min-inline-size: 0;
   border-inline-start: var(--borde) solid color-mix(in srgb, var(--color-ciruela) 30%, transparent); }
 .dialogo-experto-texto h3 { margin: 0; font-size: var(--tipo-tam-subtitulo); }
 .dialogo-experto-texto p { margin: 0; font-size: 17px; max-width: none; }
-.dialogo-experto-botones { grid-area: botones; display: flex; flex-wrap: wrap; justify-content: flex-end; gap: var(--esp-2); }
-.dialogo-experto-botones .fb-texto { white-space: normal; }
+.dialogo-experto-botones { grid-area: botones; display: flex; flex-wrap: wrap; justify-content: flex-end; align-items: center; gap: var(--esp-2); }
+.dialogo-experto-botones .fb-texto { white-space: nowrap; }
+
+/* Franja horizontal inferior encima de [MOVE] [TALK] (como en la lámina de diálogo de expertas). */
+.dialogo-franja-abajo {
+  position: fixed;
+  inset-inline: 24px;
+  bottom: 66px;
+  max-inline-size: 1120px;
+  margin-inline: auto;
+  z-index: 6;
+  pointer-events: auto;
+}
+.dialogo-franja-abajo .dialogo-experto-cara {
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  grid-template-areas: "retrato texto botones";
+  gap: 20px;
+  padding: 12px 24px;
+}
+.dialogo-franja-abajo .dialogo-experto-retrato {
+  inline-size: 76px;
+  block-size: 76px;
+}
+.dialogo-franja-abajo .dialogo-experto-retrato :is(svg, .retrato-img) {
+  inline-size: 68px;
+  block-size: 68px;
+}
+.dialogo-franja-abajo .dialogo-experto-botones {
+  flex-wrap: nowrap;
+  gap: 12px;
+}
+.dialogo-franja-abajo .dialogo-experto-botones .fb-superficie {
+  min-block-size: 44px;
+  padding-inline: 22px;
+}
+.dialogo-franja-abajo .dialogo-experto-botones > :last-child .fb-superficie {
+  --fc-fondo: var(--color-marfil);
+  min-block-size: 48px;
+  padding-inline: 28px;
+  font-size: 18px;
+  font-weight: 800;
+}
+@media (max-width: 780px) {
+  .dialogo-franja-abajo { inset-inline: 12px; bottom: 62px; }
+  .dialogo-franja-abajo .dialogo-experto-cara {
+    grid-template-columns: auto minmax(0, 1fr);
+    grid-template-areas: "retrato texto" "botones botones";
+    padding: 10px 16px;
+  }
+}
 
 /* Tarjeta "Decision recorded" en la columna estrecha del panel: una sola columna, personajes en fila. */
 .base-panel .decision { grid-template-columns: 1fr; gap: var(--esp-2); }

@@ -206,6 +206,49 @@ export function huellasBase(): Huella[] {
   ];
 }
 
+/**
+ * Huellas adicionales de colisión para los corredores entre estaciones, porches de las estaciones
+ * y enlace de las cúpulas (evita que el jugador atraviese los tubos o anexos traseros del hábitat
+ * sin alterar `sinSolapes.test`).
+ */
+export function huellasColisionExtra(): Huella[] {
+  const [com, enf, lab] = POS_ESTACIONES;
+  const hab = { x: 0, z: -10.9, radio: 1.1 };
+  const pares: [ { x: number; z: number; radio: number } | undefined, { x: number; z: number; radio: number } | undefined ][] = [
+    [hab, enf],
+    [com, enf],
+    [enf, lab],
+    [lab, decorado("cupula")],
+  ];
+  const extras: Huella[] = [
+    { id: "habitat:trasero", x: 0, z: -10.5, r: 1.35 },
+  ];
+  pares.forEach(([a, b], idx) => {
+    if (!a || !b) return;
+    const k = corredorEntre(a, b);
+    if (k) extras.push({ id: `corredor_estacion:${idx}`, x: k.x, z: k.z, ancho: ANCHO_CORREDOR, fondo: k.largo, giro: k.giro });
+  });
+  for (const e of POS_ESTACIONES) {
+    const g = alCentro(e.x, e.z);
+    extras.push({
+      id: `porche:${e.id}`,
+      x: e.x + Math.sin(g) * 2.3,
+      z: e.z + Math.cos(g) * 2.3,
+      r: 1.25,
+    });
+  }
+  const a = decorado("cupula"), b = decorado("cupula2");
+  extras.push({
+    id: "enlace_cupulas",
+    x: (a.x + b.x) / 2,
+    z: (a.z + b.z) / 2,
+    ancho: 1.5,
+    fondo: Math.hypot(b.x - a.x, b.z - a.z) * 0.65,
+    giro: Math.atan2(b.x - a.x, b.z - a.z),
+  });
+  return extras;
+}
+
 // ---------------------------------------------------------------------------------------------
 // Montaje
 // ---------------------------------------------------------------------------------------------

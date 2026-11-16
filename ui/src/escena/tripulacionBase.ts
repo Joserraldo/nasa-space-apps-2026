@@ -98,8 +98,8 @@ export function crearTripulacionBase() {
       animar(e.pj, g, t, gesto);
     }
 
-    // Iris: ruedas con su rapidez real y cara según lo que hace.
-    rover.velocidad = actores.velocidadIris;
+    // Iris: ruedas con su rapidez real (con umbral anti-temblor cuando está parada) y cara según lo que hace.
+    rover.velocidad = actores.velocidadIris > 0.12 ? actores.velocidadIris : 0;
     // La guía pide cara de error (avería revelada): la muestra aunque la vista todavía no la marque averiada.
     if (!apagada) rover.cara = actores.errorIris ? "error" : CARA_GUIA[actores.modoIris];
     iris.animar(t, rover);

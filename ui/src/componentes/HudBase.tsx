@@ -98,8 +98,10 @@ function useReserva(capa: RefObject<HTMLElement>, izq: RefObject<HTMLElement>, d
 export interface HudMundo {
   onTripulacion(): void;
   onMapa(): void;
-  /** Acción cercana ("Inspect controller"); sin ella no se dibuja el aviso de [E]. */
+  /** Acción cercana ("Inspect controller"); cuando no hay, se muestra [E] INTERACT. */
   interaccion?: { labelKey: string; onUsar(): void } | undefined;
+  /** Acción al pulsar [E] cuando no hay estación cercana (caminar al objetivo o abrir panel). */
+  onInteractuar?(): void;
   camara: "tercera" | "primera";
   onCamara(): void;
 }
@@ -159,7 +161,27 @@ export function HudBase({ estado, ultimas, reloj, objetivo, mundo, tactil = fals
             {visible.crew && <PildoraBoton labelKey="ui.comun.tripulacion" icon="tripulacion" onClick={mundo.onTripulacion} />}
             {visible.mapa && <PildoraBoton labelKey="ui.comun.mapa" icon="mapa" onClick={mundo.onMapa} />}
           </div>
-          {!tactil && mundo.interaccion && <PildoraBoton className="hud-centro" labelKey={mundo.interaccion.labelKey} tecla={{ letra: "E", tono: "accion" }} onClick={mundo.interaccion.onUsar} />}
+          {!tactil && (
+            <div className="hud-centro hud-controles-centro">
+              <span className="hud-hint-pill" aria-hidden="true">
+                <span className="hud-kbd">✥</span>
+                <span className="hud-hint-texto">{t("ui.interaccion.mover")}</span>
+              </span>
+              {mundo.interaccion ? (
+                <button type="button" className="hud-hint-pill hud-hint-interact hud-hint-listo"
+                  aria-keyshortcuts="E" aria-label={t(mundo.interaccion.labelKey)} onClick={mundo.interaccion.onUsar}>
+                  <span className="hud-kbd">E</span>
+                  <span className="hud-hint-texto">{t(mundo.interaccion.labelKey)}</span>
+                </button>
+              ) : (
+                <button type="button" className="hud-hint-pill hud-hint-interact"
+                  aria-keyshortcuts="E" aria-label={t("ui.interaccion.interactuar")} onClick={() => mundo.onInteractuar?.()}>
+                  <span className="hud-kbd">E</span>
+                  <span className="hud-hint-texto">{t("ui.interaccion.interactuar")}</span>
+                </button>
+              )}
+            </div>
+          )}
           {!tactil && <PildoraBoton className="hud-camara" labelKey={mundo.camara === "tercera" ? "ui.comun.hud.primera" : "ui.comun.hud.tercera"} tecla={{ letra: "V", tono: "camara" }} onClick={mundo.onCamara} />}
         </div>
       )}

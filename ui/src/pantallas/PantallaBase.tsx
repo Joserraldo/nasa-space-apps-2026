@@ -100,7 +100,8 @@ export function PantallaBase({ estado, colocados = [], ultimas, hud, progreso = 
   const modulos = useMemo(() => vistaEscena(estado, { fase: "base", colocados, averiaRevelada: averiaIrisRevelada(estado) }).modulos, [estado, colocados]);
 
   const hayNovedad = !!(estado.pausado && ultimas && (ultimas.malaSuerte.length > 0 || ultimas.iaCambio || ultimas.efectosLlegaron.length > 0));
-  const abierto = { dialogo: dialogo !== null, plan: plan !== null, registro: registro !== null, panel: panel !== null, novedad: hayNovedad, campo: false };
+  const esFranjaAbajo = dialogo !== null && !plan && !registro && !panel && !hayNovedad;
+  const abierto = { dialogo: dialogo !== null && !esFranjaAbajo, plan: plan !== null, registro: registro !== null, panel: panel !== null, novedad: hayNovedad, campo: false };
   const hayPanel = mundoBloqueado(abierto);
   useAltoHoja(hoja, hayPanel);
   // Objetivo de Iris: texto de la píldora del HUD y lugar resaltado en la escena y el mapa.
@@ -271,12 +272,12 @@ export function PantallaBase({ estado, colocados = [], ultimas, hud, progreso = 
 
   // Teclado (ESCENAS §3.5): Esc cierra lo de más arriba (el panel de confirmación se cierra solo).
   // `[E]` no se escucha aquí: tiene un solo manejador, en MundoBase (E2).
-  const actual = useRef({ plan, hayPanel, cerrarTodo });
-  actual.current = { plan, hayPanel, cerrarTodo };
+  const actual = useRef({ plan, hayPanel, esFranjaAbajo, cerrarTodo });
+  actual.current = { plan, hayPanel, esFranjaAbajo, cerrarTodo };
   useEffect(() => {
     const tecla = (e: KeyboardEvent) => {
       const a = actual.current;
-      if (e.key === "Escape" && !a.plan && a.hayPanel) a.cerrarTodo();
+      if (e.key === "Escape" && !a.plan && (a.hayPanel || a.esFranjaAbajo)) a.cerrarTodo();
     };
     window.addEventListener("keydown", tecla);
     return () => window.removeEventListener("keydown", tecla);
@@ -299,6 +300,12 @@ export function PantallaBase({ estado, colocados = [], ultimas, hud, progreso = 
           onMapa: () => alternarPanel("mapa"),
           interaccion: hayPanel ? undefined : mundo.interactivo?.tipo === "lugar" ? (uso ? { labelKey: uso.labelKey, onUsar: mundo.usarCercano } : undefined)
             : mundo.interactivo ? { labelKey: `ui.interaccion.${verboDe(mundo.interactivo, "base")}`, onUsar: mundo.usarCercano } : undefined,
+          onInteractuar: () => {
+            if (hayPanel) return;
+            if (mundo.interactivo) mundo.usarCercano();
+            else if (objetivo.lugar) mundo.irA(objetivo.lugar);
+            else alternarPanel("tripulacion");
+          },
           camara: mundo.camara,
           onCamara: mundo.alternarCamara,
         }} />
@@ -306,6 +313,22 @@ export function PantallaBase({ estado, colocados = [], ultimas, hud, progreso = 
       {tactil && !hayPanel && (
         <ControlesTactiles entrada={mundo.entrada} camara={mundo.camara} onCamara={mundo.alternarCamara}
           accion={uso && mundo.cercano ? { labelKey: uso.labelKey, cortoKey: `${uso.labelKey}.corto`, icono: uso.icono, onUsar: mundo.usarCercano } : undefined} />
+      )}
+
+      {esFranjaAbajo && dialogo && (
+        <div className="dialogo-franja-abajo">
+          <DialogoExperto d={dialogo} irisDanada={averiaIrisRevelada(estado)} soloTexto={false} onPlan={abrirPlan}
+            onCerrar={() => { soltarCharla(); setDialogo(null); devolverFoco(); }}
+            onOtra={() => alternarPanel("tripulacion")} />
+          {!plan && opciones.length > 0 && (
+            <div className="fila dialogo-franja-opciones" role="group" aria-label={t("ui.base.charla.opciones")} aria-busy={ocupado}>
+              {opciones.map((o) => (
+                <FacetButton key={`${o.entrada.con}-${o.entrada.pregunta ?? ""}`} labelKey={o.etiqueta.clave} labelVars={o.etiqueta.vars}
+                  disabled={ocupado} onClick={() => void hablar(o.entrada)} />
+              ))}
+            </div>
+          )}
+        </div>
       )}
 
       {hayPanel && (

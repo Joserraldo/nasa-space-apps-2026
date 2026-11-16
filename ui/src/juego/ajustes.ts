@@ -21,7 +21,7 @@ export interface AjustesJugador {
   camara: CamaraJugador;
 }
 
-export const CLAVE_AJUSTES = "solar-shield.ajustes.v1";
+export const CLAVE_AJUSTES = "solar-shield.ajustes.v2";
 
 /** Lo que el navegador dice del jugador; se pasa desde afuera para poder probarlo. */
 export interface EntornoNavegador {
@@ -31,13 +31,13 @@ export interface EntornoNavegador {
 
 type Almacen = Pick<Storage, "getItem" | "setItem">;
 
-/** Inglés es la base: solo arranca en español si el navegador lo pide. */
+/** Inglés es la base: solo arranca en español si el navegador lo pide. Calidad alta por defecto en computador. */
 export function ajustesPorDefecto(entorno: EntornoNavegador = {}): AjustesJugador {
   return {
     idioma: entorno.idiomaNavegador?.toLowerCase().startsWith("es") ? "es" : "en",
     sonido: true,
     movimientoReducido: entorno.prefiereMovimientoReducido ?? false,
-    calidad: "media",
+    calidad: "alta",
     camara: "tercera",
   };
 }

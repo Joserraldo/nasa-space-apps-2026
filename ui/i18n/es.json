@@ -51,6 +51,8 @@
   "ui.interaccion.entrar": "Entrar",
   "ui.interaccion.salir": "Salir",
   "ui.interaccion.usar": "Usar",
+  "ui.interaccion.mover": "MOVER",
+  "ui.interaccion.interactuar": "INTERACTUAR",
   "ui.paso.4.preguntar": "Preguntar a la Ingeniera",
   "ui.paso.4.construir": "Construir: {moduloKey}",
   "ui.paso.4.motivo.lleno": "Ya colocaste todos tus módulos",

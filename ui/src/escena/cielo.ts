@@ -49,15 +49,14 @@ export const PALETA_CIELO: Readonly<Record<Ambiente, Readonly<PaletaCielo>>> = {
 export const TAMANO_HALO: Readonly<Record<Ambiente, number>> = { dia: 1, atardecer: 2.5 };
 
 /** Tokens de DISEÑO.md §2.3 que usa la luz. */
-export const REGOLITO_MEDIO = "#B76A78";
+export const REGOLITO_MEDIO = "#9E5340";
 /** Sombras teñidas de lila, nunca negras (DISEÑO.md §2.3 `sombra-suelo`, §3.3). */
 export const SOMBRA_SUELO = "#F8B9B2";
 /**
- * Relleno de la hemisférica de día: `lila` (DISEÑO §2.1). Lo que el Sol no toca recibe sobre todo
- * este color, así las sombras del suelo leen lila como en la lámina `mundo/01` y nunca negras
- * (DISEÑO §2.3 `sombra-suelo`, §3.3 "relleno suave frío"). [E] a aprobar por María Paula.
+ * Relleno de la hemisférica de día: `lila` más saturado (cambio #1 del bloque 1) para dar contraste
+ * cálido/frío sin lavar los blancos.
  */
-export const LILA_RELLENO = "#EEE5F1";
+export const LILA_RELLENO = "#D9C6E3";
 /** Marfil de referencia para calibrar la exposición (MARTE.md §5). */
 export const MARFIL_CALIBRACION = "#F3EEE5";
 
@@ -68,30 +67,25 @@ function normalizar(v: Rgb): Rgb {
 
 /**
  * Parámetros de luz (MARTE.md §5). Convención de ejes de Three: +x derecha, +y arriba,
- * +z hacia la cámara. `direccionSol` apunta DESDE la escena HACIA el Sol (posición de la luz
- * direccional = objetivo + direccionSol * distancia): arriba a la izquierda, casi de lado, apenas
- * al frente y a ~38° de altura, así las sombras caen a la derecha y se ven desde la cámara como en
- * `mundo/01`. Antes ([-0,6, 1, 0,45], ~53°) caían cortas y detrás de cada pieza.
+ * +z hacia la cámara. `direccionSol` apunta DESDE la escena HACIA el Sol.
  */
 export const LUZ = {
   direccionSol: normalizar([-0.8, 0.65, 0.2]),
   /** Direccional: blanco cálido, más débil y blanco que en la Tierra (DISEÑO.md §3.3). [E] */
-  colorSol: "#FFF3E4",
+  colorSol: "#FFEAD2",
   /** Hemisférica: suelo = `regolito-medio` (MARTE.md §5); cielo de día = `lila` (relleno frío), al atardecer = horizonte. */
   hemisferica: {
     dia: { cielo: LILA_RELLENO, suelo: REGOLITO_MEDIO },
     atardecer: { cielo: PALETA_CIELO.atardecer.horizonte, suelo: REGOLITO_MEDIO },
   } as Readonly<Record<Ambiente, { cielo: string; suelo: string }>>,
-  /** `mapSize` de la sombra: <= 1024; 512 en calidad baja (MARTE.md §5). */
-  tamanoSombra: { alta: 1024, baja: 512 } as Readonly<Record<Calidad, number>>,
+  /** `mapSize` de la sombra: 2048 en alta y 1024 en media/baja para bordes nítidos (bloque 1). */
+  tamanoSombra: { alta: 2048, baja: 1024 } as Readonly<Record<Calidad, number>>,
   /**
-   * Nombre del tone mapping de Three (`THREE.NoToneMapping`). DISEÑO §3.4 manda sobre MARTE §5:
-   * ACES desaturaba y lavaba el regolito (salía salmón pálido); sin tone mapping cada pieza queda
-   * del color de su token y el marfil `#F3EEE5` lee marfil con la luz calibrada abajo.
+   * Tone mapping AgX (DISEÑO §3.4 permite activarlo cuando la escena se ve plana): evita quemar el
+   * marfil y recupera el volumen entre caras al sol y caras en sombra.
    */
-  toneMapping: "No" as const,
-  /** Exposición: sin tone mapping Three la ignora; se deja en 1 para que no engañe. */
-  exposicion: 1,
+  toneMapping: "AgX" as const,
+  exposicion: 1.05,
   /** Puntuales activas como máximo (pantallas, balizas, faros de Iris). */
   maxPuntuales: 2,
 } as const;
@@ -147,7 +141,7 @@ export const RADIO_HALO = 0.2;
  * token (`regolito-claro` lee naranja saturado) y en sombra ≈ 0,45, teñido de lila (DISEÑO §3.3).
  * Antes: sol 2,8 y hemisférica 0,9 con ACES, que lavaba el suelo. [E] a aprobar por María Paula.
  */
-export const INTENSIDAD = { sol: 2.6, hemisferica: 1.55 } as const;
+export const INTENSIDAD = { sol: 2.5, hemisferica: 1.0 } as const;
 /** Media caja de la cámara de sombras alrededor de la base, cuando nada la mueve. [E] */
 const CAJA_SOMBRA = 40;
 /** Distancia del Sol al centro de la caja de sombra (m); el rango de profundidad va de 100 a 200. [E] */
@@ -301,7 +295,7 @@ export function crearCielo(escena: THREE.Scene, ambiente: Ambiente = "dia", cali
     hemisferica,
     niebla,
     aplicarRenderer(renderer) {
-      renderer.toneMapping = THREE.NoToneMapping;
+      renderer.toneMapping = THREE.AgXToneMapping;
       renderer.toneMappingExposure = LUZ.exposicion;
       renderer.shadowMap.enabled = true;
       renderer.shadowMap.type = THREE.PCFSoftShadowMap;
