@@ -266,5 +266,6 @@
   "agentes.iris.pregunta.viaje_marte.a": "En el viaje, dentro de la nave",
   "agentes.iris.pregunta.viaje_marte.b": "En el suelo de Marte",
   "agentes.iris.pregunta.viaje_marte.c": "Igual en los dos",
-  "agentes.iris.pregunta.viaje_marte.porque": "En el viaje, RAD midió casi 3 veces más cada día que en el suelo."
+  "agentes.iris.pregunta.viaje_marte.porque": "En el viaje, RAD midió casi 3 veces más cada día que en el suelo.",
+  "agentes.iris.acompana.danada.verificar": "Bzzt... verifiquemos con la Ingeniera."
 }
