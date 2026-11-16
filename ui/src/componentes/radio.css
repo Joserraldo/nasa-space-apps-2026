@@ -1,0 +1,32 @@
+/* EXPERIMENTAL: canal de radio de la tripulación, abajo a la izquierda del mundo 3D. */
+.radio {
+  position: fixed; z-index: 7; inset-inline-start: max(var(--esp-3), env(safe-area-inset-left)); inset-block-end: 100px;
+  inline-size: min(360px, calc(100vw - 2 * var(--esp-3))); box-sizing: border-box; padding: var(--esp-3) var(--esp-4);
+  display: grid; gap: var(--esp-2);
+  background: var(--color-marfil); color: var(--color-indigo-texto);
+  border: 3px solid var(--color-teal);
+  clip-path: polygon(12px 0, calc(100% - 12px) 0, 100% 12px, 100% calc(100% - 12px), calc(100% - 12px) 100%, 12px 100%, 0 calc(100% - 12px), 0 12px);
+  pointer-events: auto; animation: radio-entra .25s ease-out;
+}
+.radio-alerta { border-color: var(--color-ambar, #F2A33A); }
+.radio p { margin: 0; }
+.radio-cab { display: grid; grid-template-columns: auto 1fr; align-items: center; gap: var(--esp-3); }
+.radio-retrato { display: grid; place-items: center; inline-size: 56px; block-size: 56px; border-radius: 50%; background: var(--color-lila); overflow: hidden; }
+.radio-canal { display: flex; align-items: center; gap: 4px; font-size: 12px; font-weight: var(--tipo-peso-etiqueta); text-transform: uppercase; letter-spacing: .05em; color: var(--color-ciruela); }
+.radio-nombre { font-size: 18px; font-weight: var(--tipo-peso-titulo); }
+.radio-linea { font-size: 16px; line-height: 1.35; }
+.radio-botones { display: flex; flex-wrap: wrap; align-items: center; gap: var(--esp-2); }
+.radio-boton {
+  border: 2px solid var(--color-ciruela); background: var(--color-marfil); color: var(--color-ciruela);
+  font: inherit; font-size: 15px; font-weight: var(--tipo-peso-etiqueta); padding: 6px 14px; border-radius: 999px; cursor: pointer;
+}
+.radio-hacer { background: var(--color-ciruela); color: var(--color-marfil); }
+.radio-boton:focus-visible { outline: 3px solid var(--color-cian); outline-offset: 2px; }
+.radio-mas { font-size: 13px; opacity: .75; }
+@keyframes radio-entra { from { transform: translateY(12px); opacity: 0; } to { transform: none; opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .radio { animation: none; } }
+/* Celular: arriba, debajo del HUD, para no chocar con la guía ni los controles táctiles. */
+@media (max-width: 760px), (max-height: 500px) {
+  .radio { inset-block-end: auto; inset-block-start: 64px; font-size: 14px; }
+  .radio-retrato { inline-size: 40px; block-size: 40px; }
+}

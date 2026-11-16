@@ -156,3 +156,6 @@
 
 /* EXPERIMENTAL: misiones sin mapa facetado (solo Jezero tiene DEM grande): la lista ocupa todo el ancho. */
 .sitio.sitio-sin-mapa { grid-template-columns: minmax(0, 1fr); grid-template-areas: "cabeza" "lista"; max-inline-size: 760px; margin-inline: auto; }
+.sitio-consejos { list-style: none; margin: var(--esp-3) 0 0; padding: 0; display: grid; gap: var(--esp-2); font-size: 15px; }
+.sitio-consejos li { display: grid; grid-template-columns: 38px 1fr; align-items: center; gap: var(--esp-2); }
+.sitio-consejo-retrato { inline-size: 38px; block-size: 38px; border-radius: 50%; background: var(--color-lila); display: grid; place-items: center; overflow: hidden; }

@@ -4,6 +4,8 @@ import { terrenoJezero, terrenoLunaPoloSur, terrenoLunaVisible, terrenoMarteNort
 import { ordenarSitios, type PuntajeSitio } from "@solar-shield/engine";
 import { misionActiva } from "../juego/misiones.js";
 import urlDem from "../../../data/terreno/jezero/elevacion.bin?url";
+import { consejosAterrizaje, consejosZonasNave, type Dialogo } from "@solar-shield/agents";
+import { PERSONAS, Retrato, type Persona } from "../componentes/base/Retrato.js";
 import { useT } from "../i18n.js";
 import { FacetButton } from "../componentes/base/FacetButton.js";
 import { CostRow } from "../componentes/base/Piezas.js";
@@ -54,6 +56,10 @@ export function PantallaSitio({ estado, onElegir }: { estado: GameState; onElegi
     return [...ordenarSitios(con, estado.objetivo), ...sin];
   }, [estado.objetivo, deMision]);
   const porId = useMemo(() => new Map(terreno.sitios.map((s) => [s.id, s])), []);
+  // EXPERIMENTAL: cada experto recomienda el mejor sitio en lo suyo (agents/aterrizaje.ts); en la nave, las zonas.
+  const consejos = useMemo(() => misionActiva().id === "outpost-sorpresa"
+    ? consejosZonasNave()
+    : consejosAterrizaje(deMision.sitios.filter((x) => x.puntajes) as Parameters<typeof consejosAterrizaje>[0]), [deMision]);
   const [elegido, setElegido] = useState(sitios[0]?.id ?? "");
   const lista = useRef<HTMLUListElement>(null);
   const foco = porId.get(elegido);
@@ -90,6 +96,7 @@ export function PantallaSitio({ estado, onElegir }: { estado: GameState; onElegi
         <div className="fc-cara sitio-cabeza-cara">
           <h2 id="sitio-titulo">{t("ui.paso.3.titulo")}</h2>
           <p>{t("ui.paso.3.texto")}</p>
+          <ConsejosTripulacion dialogos={consejos} />
         </div>
       </div>
 
@@ -246,5 +253,23 @@ function MapaJezero({ etiqueta }: { etiqueta: string }) {
       <rect className="t-2" width={ancho} height={alto} />
       {facetas?.map((f, i) => <polygon key={i} className={`t-${f.tono}`} points={f.puntos} />)}
     </svg>
+  );
+}
+
+/** EXPERIMENTAL: consejos de aterrizaje en una lista corta, con el retrato de quien habla. */
+function ConsejosTripulacion({ dialogos }: { dialogos: readonly Dialogo[] }) {
+  const { t } = useT();
+  if (dialogos.length === 0) return null;
+  return (
+    <ul className="sitio-consejos" aria-label={t("ui.paso.3.consejos")}>
+      {dialogos.map((d, i) => (
+        <li key={i}>
+          <span className="sitio-consejo-retrato" aria-hidden="true">
+            {(PERSONAS as readonly string[]).includes(d.experto) && <Retrato persona={d.experto as Persona} expresion="habla_abierta" tam={34} />}
+          </span>
+          <span>{d.lineas.map((l) => t(l.clave, l.vars)).join(" ")}</span>
+        </li>
+      ))}
+    </ul>
   );
 }

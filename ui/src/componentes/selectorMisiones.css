@@ -24,3 +24,6 @@
 [data-lugar="espacio"] .misiones-tarjeta { --fc-fondo: #E6E4F2; }
 .misiones-tarjeta .fb-caja { display: block; max-inline-size: 100%; min-inline-size: 0; }
 .misiones-tarjeta .fb { inline-size: 100%; max-inline-size: 100%; box-sizing: border-box; font-size: 18px; --fb-punta: 14px; padding-inline: var(--esp-4); }
+.misiones-reto { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--esp-3); padding: var(--esp-4) var(--esp-5); --fc-fondo: #FFF4D6; }
+.misiones-reto h3, .misiones-reto p { margin: 0; }
+.misiones-reto h3 { font-size: 20px; margin-block-end: 4px; }

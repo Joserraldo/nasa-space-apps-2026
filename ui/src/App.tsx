@@ -17,17 +17,26 @@ import { Llegada } from "./componentes/Llegada.js";
 import { Creditos } from "./componentes/Creditos.js";
 import { SelectorMisiones } from "./componentes/SelectorMisiones.js";
 import { GuiaMision } from "./componentes/GuiaMision.js";
+import { RadioTripulacion } from "./componentes/RadioTripulacion.js";
+import { avisosDeInicio, avisosDeRadio } from "./juego/radio.js";
+import { encolar, type Dialogo } from "@solar-shield/agents";
 import { Transicion } from "./componentes/Transicion.js";
 import { MundoBase } from "./pantallas/MundoBase.js";
 import { MEMORIA_INICIAL, type MemoriaConversacion, type TemaPregunta } from "@solar-shield/agents";
 import { fijarMision, misionPorId, semillaNueva } from "./juego/misiones.js";
-import { SEMILLA_DORADA } from "@solar-shield/engine";
+import { SEMILLA_DORADA, semillaDelDia } from "@solar-shield/engine";
 import { MISION_JEZERO } from "@solar-shield/missions";
 import { cargarAjustes, guardarAjustes, type CalidadGrafica, type CamaraJugador } from "./juego/ajustes.js";
 import { Menu } from "./componentes/Menu.js";
 import { almacenDelNavegador, cargarPartida, guardarPartida } from "./juego/guardado.js";
 import { inicial, reducir } from "./juego/reductor.js";
 import { tocar } from "./juego/sonido.js";
+
+/** Fecha local AAAA-MM-DD para el reto del día (el motor nunca lee el reloj). */
+function fechaLocal(): string {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+}
 
 /** Módulos que tienen pregunta de Iris nivel 2 al colocarlos. */
 const TEMAS_IRIS: readonly Equipment[] = ["panel_solar", "reciclador_agua", "invernadero", "escudo"];
@@ -150,6 +159,43 @@ function Pantalla({ idioma, setIdioma, sonido, setSonido, grafica }: {
 
   useEffect(() => { document.documentElement.lang = idioma; }, [idioma]);
 
+  // EXPERIMENTAL: canal de radio. Cada cambio de estado del motor dentro del mundo puede traer avisos
+  // (juego/radio.ts); al entrar a la base por primera vez, la bienvenida de la misión.
+  const [radio, setRadio] = useState<readonly Dialogo[]>([]);
+  const previoRadio = useRef<{ estado: typeof j.estado; fase: typeof j.fase } | null>(null);
+  useEffect(() => {
+    const previo = previoRadio.current;
+    previoRadio.current = { estado: j.estado, fase: j.fase };
+    const enJuego = (f: typeof j.fase) => f === "modulos" || f === "base" || f === "tormenta";
+    if (!enJuego(j.fase)) { if (j.fase !== "final") setRadio([]); return; }
+    if (!previo || !enJuego(previo.fase)) {
+      if (j.fase === "modulos" && j.colocados.length === 0) setRadio(avisosDeInicio(mision));
+      return;
+    }
+    if (previo.estado === j.estado) return;
+    const nuevos = avisosDeRadio(previo.estado, j.estado, mision);
+    if (nuevos.length) setRadio((c) => encolar(c, nuevos));
+  }, [j.estado, j.fase]);
+  // Una alerta en la base para el reloj hasta que el niño la lea; al cerrarla, el reloj sigue.
+  const pausadaPorRadio = useRef(false);
+  const verRadio = enMundo && j.fase !== "tormenta" && entrada === null && !menu;
+  useEffect(() => {
+    if (verRadio && enBase && radio[0]?.prioridad === "alerta" && !j.estado.pausado) {
+      pausadaPorRadio.current = true;
+      enviar({ tipo: "pausa", pausado: true });
+    }
+  }, [verRadio, enBase, radio, j.estado.pausado]);
+  const cerrarRadio = useCallback(() => {
+    setRadio((c) => {
+      const resto = c.slice(1);
+      if (pausadaPorRadio.current && resto[0]?.prioridad !== "alerta") {
+        pausadaPorRadio.current = false;
+        enviar({ tipo: "pausa", pausado: false });
+      }
+      return resto;
+    });
+  }, []);
+
   const accion = (a: Action) => { tocar("confirmar", sonido); enviar({ tipo: "accion", accion: a }); };
   const continuar = () => { if (guardada) { tocar("confirmar", sonido); setProgreso({ conversado: true, objetivo: true }); enviar({ tipo: "restaurar", juego: guardada }); } };
 
@@ -187,6 +233,7 @@ function Pantalla({ idioma, setIdioma, sonido, setSonido, grafica }: {
               )}
             </Transicion>
             {/* EXPERIMENTAL: guía de pasos de la misión, a la izquierda. */}
+            {verRadio && <RadioTripulacion cola={radio} onCerrar={cerrarRadio} onAccion={accion} />}
             {!menu && <GuiaMision fase={j.fase as "modulos" | "base" | "tormenta"} estado={j.estado} decidido={j.registro !== null} />}
           </MundoBase>
         ) : (
@@ -195,7 +242,12 @@ function Pantalla({ idioma, setIdioma, sonido, setSonido, grafica }: {
               <Portada idioma={idioma} onIdioma={setIdioma} sonido={sonido} onSonido={alternarSonido}
                 puedeContinuar={guardada !== null} onEmpezar={() => setInicio("misiones")} onContinuar={continuar} onAjustes={abrirMenu} onCreditos={() => setCreditos(true)} />
             )}
-            {j.fase === "inicio" && inicio === "misiones" && <SelectorMisiones ganadas={ganadas} onElegir={elegirMision} onVolver={() => setInicio("portada")} />}
+            {j.fase === "inicio" && inicio === "misiones" && <SelectorMisiones ganadas={ganadas} onElegir={elegirMision} onVolver={() => setInicio("portada")}
+              reto={{ fecha: fechaLocal(), onJugar: () => {
+                tocar("confirmar", sonido);
+                enviar({ tipo: "nueva", misionId: MISION_JEZERO.id, semilla: semillaDelDia(fechaLocal()) });
+                setInicio("intro");
+              } }} />}
             {j.fase === "inicio" && inicio === "intro" && <Intro onTerminar={() => setInicio("carga")} />}
             {j.fase === "inicio" && inicio === "carga" && <Carga consejo={0} sonido={sonido} onSonido={alternarSonido} onSaltar={empezarMision} />}
             {j.fase === "satelite" && <PantallaOrbita estado={j.estado} onContinuar={() => enviar({ tipo: "fase", fase: "sitio" })} />}
