@@ -1,14 +1,15 @@
 # Estado del frente F (María Paula): UI visual, retratos B y fidelidad
 
-**Actualizado:** 15 nov 2026, iteración 3 del loop.
+**Actualizado:** 15 nov 2026, iteración 4 del loop.
 
 **Hecho**
-- F2 (#341): `TarjetaContextual` de presentación + `tarjetas.css`. Esperando revisión. En #335 (E1) le propuse a Santiago usarla dentro de su contenedor con `enfocar={false}`.
-- F4 (#343): `Globo`, aviso `[E]` con contorno cian, acción táctil como mundo/03, `.ct-salto`. Esperando revisión.
-- F3, D1 (#342): revisado contra `mundo/01` con la vista del hábitat de cerca. No aprobado todavía: falta el vano octogonal hundido con marco y las dos franjas cian a los lados de la puerta. Ventanas, costillas y mejillas aprobadas. Evidencia en la rama `evidencias/frente-f-f3-d1`.
+- F2 (#341) y F4 (#343) fusionados en `develop`. Sobre develop: typecheck sin errores, 923 pruebas, build y los dos guiones de capturas en los 4 tamaños.
+- `tests/capturas/tarjetas.mjs` mide la tarjeta cuando termina la entrada (a 1440x900 salía corrida 24 px y daba un falso "fuera de la ventana").
+- F3, D1 (#342): hábitat no aprobado todavía (vano octogonal hundido con marco y las dos franjas cian de la puerta); antena aprobada con dos ajustes (plato más inclinado al cielo e interior lila). Evidencia en `evidencias/frente-f-f3-d1`.
 
 **Sigue**
 - Volver a revisar D1 cuando Daniel corrija; C2 y C3 cuando abran PR.
+- #335 (E1): Santiago tiene la propuesta para usar la tarjeta de F2 como presentación.
 
 **Bloqueado / en pausa**
 - F1 y F6 en pausa: llevan al niño B y María Paula pidió esperar su idea de personajes.
