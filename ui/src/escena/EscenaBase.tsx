@@ -15,7 +15,8 @@ export type { CamaraEscena } from "./escena3d";
 /**
  * `PedidoEscena` y `AvisosEscena` (frontera.ts, PLAN-JUGABILIDAD §3) suman las props del bloque 0.
  * Estado: `onInteractivo` emite lugares; actores (A6), puertas y `sala` (A8), `objetivo` (A2 + marcador C4),
- * `iris` y `globo` (A2) y `hablando` (A7) se aceptan y todavía no cambian nada en la escena.
+ * `iris` y `globo` (A2) y `hablando` (A7) se aceptan y llegan a los sistemas en `ctx.pedido` (A0), pero la
+ * escena todavía no los dibuja.
  */
 export interface EscenaBaseProps extends PedidoEscena, AvisosEscena {
   // Entrada (la escena solo lee esto, nunca GameState)
@@ -61,6 +62,11 @@ export interface EscenaBaseProps extends PedidoEscena, AvisosEscena {
    * (`iniciar`, `mover`, `terminar`, `cancelar`) y lee `estado` para dibujar el joystick.
    */
   onEntradaTactil?: ((entrada: EntradaTactil | null) => void) | undefined;
+}
+
+/** Las props de `PedidoEscena` (frontera.ts) en un objeto nuevo: los sistemas lo leen en `ctx.pedido`. */
+function pedidoDe(p: PedidoEscena): PedidoEscena {
+  return { objetivo: p.objetivo, iris: p.iris, globo: p.globo, hablando: p.hablando, sala: p.sala };
 }
 
 export type PosicionJugador = Readonly<{ x: number; z: number }>;
@@ -115,6 +121,7 @@ export function EscenaBase(props: EscenaBaseProps) {
     escena.fijarBloqueado(p.bloqueado ?? false);
     escena.actualizar(p.vista, p.eventos);
     escena.fijarDestino(p.destino ?? null);
+    escena.fijarPedido(pedidoDe(p));
 
     const medir = () => escena.redimensionar(canvas.clientWidth, canvas.clientHeight);
     medir();
@@ -158,6 +165,10 @@ export function EscenaBase(props: EscenaBaseProps) {
   useEffect(() => {
     escenaRef.current?.fijarBloqueado(props.bloqueado ?? false);
   }, [props.bloqueado]);
+
+  useEffect(() => {
+    escenaRef.current?.fijarPedido(pedidoDe(props));
+  }, [props.objetivo, props.iris, props.globo, props.hablando, props.sala]);
 
   // Decorativo para lectores de pantalla: la lista accesible de lugares lee la misma tabla LUGARES.
   // `touch-action: none`: los gestos son del juego, la página no se desplaza ni hace zoom.
