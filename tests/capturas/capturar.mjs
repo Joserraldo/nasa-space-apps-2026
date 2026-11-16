@@ -5,7 +5,8 @@
 //
 // Recorre la ruta dorada en inglés y guarda una imagen por pantalla y tamaño, más `registro.json`
 // con lo medido en cada una (canvas, desbordes, errores de consola). No es una prueba: no aprueba
-// nada, solo deja la evidencia para compararla con las láminas.
+// nada, solo deja la evidencia para compararla con las láminas. Los pasos y los nombres de los botones
+// se copian de `tests/e2e/ruta-dorada.spec.ts` (la ruta dorada); si cambia el flujo, cambia allí primero.
 import { chromium } from "@playwright/test";
 import { mkdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
@@ -113,18 +114,33 @@ for (const t of TAMANOS) {
     await page.waitForSelector("canvas");
     await page.evaluate(() => document.querySelector("canvas")?.setAttribute("data-captura", "e5"));
     await foto("e5-listo", 2500);
+    // E8: la tarjeta de bienvenida enseña los controles y se cierra con "Explore the base" (inicio/04).
+    await boton("Show controls").click();
+    await boton("Hide controls").click();
     await boton("Explore the base").click();
+    await page.getByRole("heading", { name: "Place 2 modules" }).waitFor();
     await foto("e5-modulos", 1500);
-    // E1: cada módulo se elige en la tarjeta de la Ingeniera y se coloca con "Place" (como la ruta dorada).
+    // E1: cada módulo se elige en la tarjeta de la Ingeniera y se coloca con "Place" (como la ruta dorada):
+    // una tarjeta a la vez, "Costs now" a la vista antes de decidir y la tarjeta se cierra al colocar.
     const tarjeta = page.locator('[role="dialog"].tc');
-    for (let i = 0; i < 2; i++) {
+    const pedirModulo = async () => {
       await boton("Ask the Engineer").click();
+      await tarjeta.waitFor();
       await tarjeta.locator("ul button:not([disabled])").first().click();
+      await page.getByText("Costs now").first().waitFor();
+    };
+    for (let i = 0; i < 2; i++) {
+      await pedirModulo();
       if (i === 0) await foto("e5-modulo-tarjeta", 500);
       await boton("Place", { exact: true }).click();
       await tarjeta.waitFor({ state: "detached" });
     }
     await foto("e5-modulos-colocados", 1500);
+    // El botón solo aparece habilitado cuando los 2 módulos están colocados (si no, el clic no hace nada).
+    await page.waitForFunction(() => {
+      const listo = [...document.querySelectorAll("button")].find((b) => b.textContent?.includes("Base ready"));
+      return Boolean(listo) && listo.getAttribute("aria-disabled") !== "true";
+    });
     await boton("Base ready. Start the clock!").click();
     // Pausa antes de cualquier espera: con el reloj andando llegan novedades ("Resume") que bloquean el mundo
     // y el niño ya no camina. La pausa no frena la caminata (igual que la ruta dorada).
@@ -139,8 +155,10 @@ for (const t of TAMANOS) {
     await foto("e6-base-conversacion", 800);
     await page.keyboard.press("Escape");
     await boton("Resume", { exact: true }).click();
-    // Crew abre el panel con las acciones y la tripulación.
-    await boton("Crew", { exact: true }).click();
+    // E3: Crew llega al HUD con la primera conversación; abre el panel con las acciones y la tripulación.
+    const crew = boton("Crew", { exact: true });
+    await crew.waitFor();
+    await crew.click();
     await foto("e6-base-tripulacion", 500);
     await boton("Raise the shield").click();
     await foto("e6-base-confirmar", 500);
@@ -160,10 +178,22 @@ for (const t of TAMANOS) {
     await boton("Return to exploration").click();
     await foto("e6-base-tras-tormenta", 2000);
 
-    await boton("Crew", { exact: true }).click();
+    // Paso 7: la telemetría se envía desde Crew y la respuesta de la Tierra tarda unos turnos (E6).
+    await crew.click();
     await boton(/Send telemetry to Earth/).click();
     await page.getByRole("dialog").getByRole("button", { name: "Confirm" }).click();
     await boton("Return to exploration").click();
+    await crew.click();
+    await page.getByText(/Earth's answer arrives in \d+ turns/).waitFor();
+    // Iris dañada (si sigue así tras verificar): se repara desde las acciones; si no, se cierra el panel.
+    const repararIris = boton("Repair Iris");
+    if (await repararIris.isVisible()) {
+      await repararIris.click();
+      await page.getByRole("dialog").getByRole("button", { name: "Confirm" }).click();
+      await boton("Return to exploration").click();
+    } else {
+      await boton("Close", { exact: true }).click();
+    }
     const fin = page.getByRole("heading", { name: /Mission complete!|The base could not hold/ });
     await avanzarHasta(() => fin.isVisible(), 120);
     await foto("e8-final", 800);
