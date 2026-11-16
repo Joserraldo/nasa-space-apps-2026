@@ -1,10 +1,14 @@
 # Estado — Frente A (José)
 
-**Hecho (15 nov):** A0 en rama `feat/frente-a-A0-ganchos`. Ganchos `SistemaEscena` (`montar`, `actualizar(dt, ctx)`,
-`dispose`) en `escena3d.ts`, con errores aislados; autocarga de `escena/sistemas/*.ts`; `fijarPedido` lleva
-`objetivo/iris/globo/hablando/sala` a `ctx.pedido`; `AJUSTE_CALIDAD` y `MAS_BAJA` en `escena/calidad.ts` (frente D);
-dueños en el encabezado de `frontera.ts`.
+**Hecho (15 nov):**
+- A0 fusionado (#337).
+- A1 (#340, abierto): objetivo del paso 4 en el turno 0; avería de Iris revelada desde el paso 6.
+- A2 parte 1 (rama `feat/frente-a-A2-objetivos`): `pedidoDeGuia` (juego/pedidoEscena.ts), Iris rueda delante
+  del niño hacia el objetivo (`guiarIrisA`), cara de error desde la guía, globo DOM anclado sobre el actor con un
+  sistema del gancho de A0. Probado en local conectando las props (sin commit en archivos de E).
 
-**Sigue:** A1 (Iris averiada en el turno 0), después A2.
+**Sigue:** A3 (propuesta de misión interactiva, un documento).
 
-**Bloqueado:** nada. A0 espera revisión y fusión de Santiago; C4, D3, D4, D6 y D7 lo esperan.
+**Bloqueado:**
+- #339 (E): `MundoBase.tsx` revela la avería en el turno 0; e2e del respaldo 2D espera "Repair Iris".
+- #344 (E): conectar `pedidoDeGuia` a `EscenaBase` y la e2e "seguir a Iris" (Hecho cuando de A2).
