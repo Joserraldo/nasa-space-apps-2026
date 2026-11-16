@@ -114,8 +114,8 @@ y todavía no cambia la escena.
 | E Santiago | `ui/src/App.tsx`, los `.tsx` de `pantallas/` (salvo `lugares.ts` y `PantallaSitio.tsx`), los `.tsx` de `componentes/` (salvo `base/` y `Mapa.tsx`), `tests/e2e/**`, `.github/workflows/**` |
 | F María Paula | `ui/src/componentes/base/**`, todos los `.css` de `ui/src` (salvo `Mapa.css` y `sitio.css`), `tests/capturas/**`, `ui/public/retratos/**` |
 
-**i18n** (`ui/i18n/en.json`, `es.json`): todos agregan, nadie borra claves ajenas. Cada frente usa su
-prefijo (`agentes.*` B, `ui.mapa.*` C, etc.). Inglés primero, español después.
+**i18n:** la UI usa `ui/i18n/en.json` y `es.json`: todos agregan, nadie borra claves ajenas y cada frente usa su
+prefijo (`ui.mapa.*` C, etc.). El Frente B escribe sus textos en `agents/i18n/en.json` y `es.json`, que son suyos. Inglés primero, español después.
 
 ---
 
