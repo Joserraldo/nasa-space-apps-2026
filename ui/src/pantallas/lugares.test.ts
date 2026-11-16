@@ -4,7 +4,7 @@ import { puedeAplicar } from "@solar-shield/engine";
 import { LUGARES } from "../escena/mundo.js";
 import { traducir } from "../i18n.js";
 import { inicial, reducir, type Juego } from "../juego/reductor.js";
-import { mundoBloqueado, objetivoDeLaBase, usoDelLugar } from "./lugares.js";
+import { averiaIrisRevelada, mundoBloqueado, objetivoDeLaBase, pasoDeLaBase, usoDelLugar } from "./lugares.js";
 
 /** De la portada a la base viva (sitio y dos módulos), como la ruta dorada. */
 function enBase(): Juego {
@@ -86,6 +86,23 @@ describe("objetivo de la base (guía de Iris)", () => {
         expect(texto).not.toMatch(/[{}]|ui\.|agentes\./);
       }
     }
+  });
+  it("al entrar a la base (turno 0) el objetivo es el del paso 4 y Iris no pide reparación (#15 del plan)", () => {
+    const { estado } = enBase();
+    expect(estado.tick).toBe(0);
+    expect(estado.iaBase).toBe("danada"); // avería guionada: arranca dañada, se revela en el paso 6
+    expect(pasoDeLaBase(estado)).toBe(4);
+    expect(averiaIrisRevelada(estado)).toBe(false);
+    const o = objetivoDeLaBase(estado);
+    expect(o.labelKey).toBe("ui.hud.objetivo.experto");
+    expect(o.lugar).toBe("taller");
+    expect(o.vars).toMatchObject({ expertoKey: "agentes.nombre.ingeniera" });
+  });
+  it("la avería de Iris se revela desde el paso de la misión, no antes", () => {
+    const j = conTormenta();
+    expect(pasoDeLaBase(j.estado)).toBeGreaterThanOrEqual(MISION_JEZERO.averiaIris.pasoRevelacion);
+    expect(averiaIrisRevelada(j.estado)).toBe(true);
+    expect(objetivoDeLaBase(j.estado)).toMatchObject({ labelKey: "ui.hud.objetivo.averia", lugar: "taller" });
   });
   it("sin Iris (offline) vuelve al objetivo general", () => {
     const o = objetivoDeLaBase({ ...enBase().estado, iaBase: "offline" });

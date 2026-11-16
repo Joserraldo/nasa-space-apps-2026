@@ -1,10 +1,13 @@
 # Estado — Frente A (José)
 
-**Hecho (15 nov):** A0 en rama `feat/frente-a-A0-ganchos`. Ganchos `SistemaEscena` (`montar`, `actualizar(dt, ctx)`,
-`dispose`) en `escena3d.ts`, con errores aislados; autocarga de `escena/sistemas/*.ts`; `fijarPedido` lleva
-`objetivo/iris/globo/hablando/sala` a `ctx.pedido`; `AJUSTE_CALIDAD` y `MAS_BAJA` en `escena/calidad.ts` (frente D);
-dueños en el encabezado de `frontera.ts`.
+**Hecho (15 nov):**
+- A0 (PR #337): ganchos `SistemaEscena`, autocarga de `escena/sistemas/`, `fijarPedido`, `calidad.ts`. Fusionado.
+- A1 (rama `feat/frente-a-A1-iris-averiada`): causa = Jezero arranca con `iaBase: "danada"` (avería guionada) y
+  `objetivoDeLaBase` la daba por revelada; además el paso previo a la tormenta era el 5. Ahora `pasoDeLaBase` (4 al
+  entrar) y `averiaIrisRevelada` (desde `averiaIris.pasoRevelacion`, 6). Chip: "Ask the Engineer at the workshop".
 
-**Sigue:** A1 (Iris averiada en el turno 0), después A2.
+**Sigue:** A2 (cadena de objetivos → `objetivo`, `iris`, `globo`).
 
-**Bloqueado:** nada. A0 espera revisión y fusión de Santiago; C4, D3, D4, D6 y D7 lo esperan.
+**Bloqueado:** issue #339 (E): `MundoBase.tsx:125` revela la avería al salir de `modulos` (rover con ojos en X en el
+turno 0) y la e2e del respaldo 2D espera "Repair Iris" en el turno 0. Cuando E lo cambie, el taller pasa a
+`averiaIrisRevelada`.
