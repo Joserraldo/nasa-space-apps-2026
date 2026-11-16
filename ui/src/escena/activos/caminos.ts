@@ -68,7 +68,7 @@ const semianchoDe = (tramo: readonly P2[]) => CAMINO.ancho / 2 + (TRONCAL.includ
 
 /**
  * Red de caminos de `mapa-base-jezero.svg` (ESCENAS §3.2), con extremos en los puestos de `LUGARES`:
- * anillo A (oeste) `mesa → taller → escudo → habitat → mesa` con `taller → panel_solar` (entre el
+ * anillo A (oeste) `mesa → taller → escudo → habitat → mesa`, con el ramal de taller a `panel_solar` (entre el
  * panel y el escudo están los cuatro soportes de paneles: no cabe un tramo recto); anillo B (este)
  * `mesa → sensor → reciclador_agua → invernadero → antena → mesa`, y un ramal corto al banco que
  * cuelga de la entrada desde la cámara. Los codos (únicos números a mano) dejan libres los sólidos

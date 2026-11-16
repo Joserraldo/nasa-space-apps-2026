@@ -1,13 +1,19 @@
 # Estado — Frente C
-**Actualizado:** 16 nov 2026 · **Rama:** `feat/frente-c-C1-referencias` · **PR:** [#336](https://github.com/Joserraldo/nasa-space-apps-2026/pull/336), borrador
+**Actualizado:** 15 nov 2026 · **Rama:** `feat/frente-c-C2-distribucion` · **PR:** [#374](https://github.com/Joserraldo/nasa-space-apps-2026/pull/374), borrador
 
 ## Hecho
-- C1: referencias NASA/MDRS y decisiones artísticas separadas; NASA confirma hábitat CHAPEA de 1.700 pies² y cuatro tripulantes.
-- Observaciones de Paulasaah atendidas: fuente interior corregida; estado del PR y sus verificaciones actualizado.
-- CI remoto del PR #336 pasó en el commit base; typecheck, Vitest completo y build UI locales pasaron antes de esta corrección documental.
+- C1 fusionado por #336; las observaciones de Paulasaah quedaron integradas.
+- C2: sensor y su anclaje trasladados al este en `mundo.ts`; se conservan los diez `LugarId`.
+- #374 abierto tras el primer commit `e649242` para mostrar el avance y solicitar revisión de Paula.
+- Capturas E6 generadas en 1440×900, 1024×683, 844×390 y 390×844; emulación, no prueba física.
 
-## Sigue
-- Obtener revisión de Santiago para C1; C2 depende además de su aprobación visual de María Paula y coordinación geométrica con Frente D.
+## Validación
+- Typecheck y build de UI: pasaron. Vitest: 126 archivos, 946 pruebas pasaron.
+- E2E: 4/5 pasaron; la ruta dorada agotó 90 s esperando «Repair Iris».
+- E6 renderizó el mundo 3D en Playwright; consola sin errores en las cuatro capturas.
 
-## No verificado
-- Dimensiones a escala de la ilustración de Solar Shield; es una referencia conceptual, no un plano métrico.
+## Sigue / bloqueado
+- Capturas comparativas temporales: `C:/Users/lilia/AppData/Local/Temp/solar-shield-frente-c-c2/`.
+- Faltan aprobación visual de María Paula y redistribuir edificios exteriores con Frente D.
+- Mover hábitat a z positivo falló el encuadre de tercera persona; se conservó su posición actual.
+- Tokens: 🟡
