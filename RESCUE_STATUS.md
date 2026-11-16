@@ -1,70 +1,85 @@
-# Rescue status: Solar Shield
+# Estado del rescate: Solar Shield
 
-Updated: Sun 15 Nov 2026, 18:50 (local). Worktree: `C:/Users/mpaul/Documents/ss-rescue`, local branch `main`
-(= `origin/develop` at `def6e77` + the work below). Nothing has been pushed. `[V]` = verified by
-execution in this worktree; `[NV]` = not verified.
+**Checkpoint 1.** Domingo 15 nov 2026, 19:40 (hora local). Nada se ha publicado: todo vive en este
+equipo, en ramas locales. `[V]` = comprobado ejecutando algo; `[NV]` = no comprobado.
 
-Working plan: `docs/referenciapau/PLAN-INTEGRACION-SANTIAGO-PAULA.md` (Haiku reads, Opus implements,
-Fable integrates and audits).
+Plan de trabajo: `docs/referenciapau/PLAN-INTEGRACION-SANTIAGO-PAULA.md` (Haiku lee, Opus implementa,
+Fable integra y audita; un solo escritor por archivo; máximo dos Opus a la vez).
 
-## Known issues that stay OPEN until fixed and validated on the real game
+## Cómo retomar
 
-| # | Issue | State | Evidence before |
+| Qué | Dónde |
+| --- | --- |
+| Integración (lo que se entrega) | `C:/Users/mpaul/Documents/ss-rescue`, rama local `main`, etiqueta `rescate-checkpoint-1` |
+| Flujo A, pantallas (ya integrado en `main`) | `C:/Users/mpaul/Documents/ss-rescue-a`, rama `rescate/a-pantallas` |
+| Flujo B, movimiento y cámara (en curso, sin integrar) | `C:/Users/mpaul/Documents/ss-rescue-b`, rama `rescate/b-mundo` |
+| Lote F, forma del escudo (en curso, sin integrar) | `C:/Users/mpaul/Documents/ss-rescue-f`, rama `rescate/f-fidelidad`; lo que había sin confirmar quedó en `checkpoint/1-f-wip` |
+| Capturas de evidencia | carpeta `ui/capturas/rescate/` (sin rastrear) y copia en la rama local `rescate/evidencias` |
+| Juego corriendo | configuración `rescue` de `.claude/launch.json` del checkout principal, puerto 5210 |
+
+Para seguir: revisar el informe de B y de F, fusionar `rescate/b-mundo` y `rescate/f-fidelidad` en `main`
+(`git merge --no-ff`), y probar todo junto con `npm run typecheck && npm test && npm run build`,
+`E2E_BASE_URL=http://localhost:5210 npx playwright test` y
+`node tests/capturas/capturar.mjs ui/capturas/rescate/despues http://localhost:5210`.
+
+## Problemas conocidos (siguen ABIERTOS hasta arreglarlos y validarlos en el juego real)
+
+Ninguno se cierra por tener capturas, pruebas en verde o un componente montado: cada uno se cierra con
+el par antes/después mirado junto a su lámina en 1440x900, 1024x683, 844x390 y 390x844.
+
+| # | Problema | Estado | Evidencia |
 | --- | --- | --- | --- |
-| 1 | Mobile portrait: HUD too tall, child cut off, actions outside the first screen | OPEN (workstream A in progress) | `ui/capturas/rescate/antes/e6-base-390x844.png` |
-| 2 | Camera fixed; does not follow the player; no working first/third person switch in the game | OPEN (workstream B in progress) | `ui/capturas/rescate/antes/e6-base-1024x683.png` |
-| 3 | E7: the panel covers about 62 % x 62 % of the world; resources shown twice | OPEN (workstream A in progress) | `ui/capturas/rescate/antes/e7-tormenta-1024x683.png`, `e7-plan-1024x683.png` |
-| 4 | The child is cut off at the bottom edge at every size (fixed framing) | OPEN (workstream B) | `ui/capturas/rescate/antes/e6-base-*.png` |
-| 5 | E6 layout differs from the reference: permanent 40 % side panel instead of the full-screen world with Crew, Map, `[E]`, `[V]` | OPEN (workstream A) | `ui/capturas/rescate/antes/e6-base-1024x683.png` vs `santiago/04_Jugabilidad/01_Web/01_tercera_persona.png` |
-| 6 | Shield module is modelled as a small shelter door in a rock; it does not read as a shield (spec: "carcasa de refuerzo con señal de estado, distinto de refugiarse") | OPEN (fidelity batch F, after B) | `ui/capturas/rescate/antes/escena-recorte-escudo.png` |
-| 7 | Crew stands still: only the idle gesture; Iris does not accompany | OPEN (workstream B) | same captures |
-| 8 | Engine: a resource reaching 0 beats the telemetry arriving in the same turn (`engine/src/acciones.ts:330`) | OPEN, design decision, not touched | Sonnet simulation report |
+| 1 | Celular vertical: HUD muy alto, niño cortado, acciones fuera de la primera pantalla | ABIERTO. HUD compacto y mundo a pantalla completa ya integrados `[V]`; el niño sigue en el borde inferior, tapado por los controles, hasta que entre la cámara de B | antes `antes/e6-base-390x844.png`; después `despues-a/e6-base-390x844.png` |
+| 2 | Cámara fija: no sigue al jugador; sin cambio real entre primera y tercera persona | ABIERTO. B tiene 5 commits sin integrar ni auditar | antes `antes/e6-base-1024x683.png`; `despues-b/` sin revisar |
+| 3 | E7: el panel tapaba cerca del 62 % x 62 % del mundo y repetía los tres recursos | ABIERTO, a la espera de la validación conjunta. Arreglo integrado: panel acoplado a la derecha (40 %) o hoja inferior; un solo juego de medidores. Mirado en 1024x683, 844x390 y 390x844 `[V]`; 1440x900 `[NV]` | antes `antes/e7-tormenta-1024x683.png`; después `despues-a/e7-tormenta-*.png` |
+| 4 | El niño sale cortado en el borde inferior en todos los tamaños (encuadre fijo) | ABIERTO (B) | `antes/e6-base-*.png`, `despues-a/e6-base-*.png` |
+| 5 | E6 no seguía la lámina (panel fijo del 40 %) | ABIERTO, a la espera de la validación conjunta. Integrado: mundo a pantalla completa con Crew, Map, `[E]` y `[V]`; panel solo al abrir | `despues-a/e6-base-1024x683.png` frente a `santiago/04_Jugabilidad/01_Web/01_tercera_persona.png` |
+| 6 | El módulo escudo es una puerta de refugio en una roca; no se lee como escudo | ABIERTO (lote F en curso) | `antes/escena-recorte-escudo.png` |
+| 7 | La tripulación está quieta; Iris no acompaña | ABIERTO (B) | mismas capturas |
+| 8 | Tres escenas 3D distintas (módulos, base, tormenta): cada cambio de fase reiniciaba el mundo | ABIERTO, a la espera de la validación conjunta. Integrado: un solo `MundoBase`; la prueba e2e comprueba que el canvas es el mismo nodo `[V]` | `despues-a/registro.json` |
+| 9 | E5 en celular vertical: las tarjetas tapan casi todo el mundo | ABIERTO, sin asignar (segundo lote de A) | `despues-a/e5-modulos-390x844.png` |
+| 10 | E7 en celular apaisado: para llegar a `Confirm` hay que desplazar dentro del panel | ABIERTO, sin asignar (segundo lote de A) | `despues-a/e7-plan-844x390.png` |
+| 11 | E4 en 844x390: los botones `Land here` quedan fuera de pantalla (dicho por A, `[NV]`) | ABIERTO, sin asignar | `despues-a/e4-sitio-844x390.png` |
+| 12 | Motor: un recurso en 0 gana a la telemetría que llega en el mismo turno (`engine/src/acciones.ts:330`) | ABIERTO, decisión de diseño, no se tocó | informe de simulación (Sonnet) |
+| 13 | El módulo antena queda fuera del encuadre fijo: su forma no se ha revisado | ABIERTO, depende de la cámara de B | — |
 
-A screenshot, a green test or a mounted component does not close any of these: each one closes only
-with a before/after pair looked at next to its reference, at 1440x900, 1024x683, 844x390 and 390x844.
+## Hecho e integrado en `main`
 
-## Completed
+- `[V]` Base: `origin/main` era idéntico byte a byte al commit `32ab2e9` de `develop`; `main` local = `develop` (`def6e77`) más lo de abajo.
+- `[V]` La base E6 monta la escena 3D (PR #247) y la tripulación está en la escena (PR #328).
+- `[V]` Un solo reductor del juego (`ui/src/juego/reductor.ts`); `Continue` guarda y recupera la partida; idioma y sonido se recuerdan; el interruptor de sonido suena (Web Audio, sin archivos).
+- `[V]` Flujo A: un solo mundo 3D para E5 a E7 (`ui/src/pantallas/MundoBase.tsx`), HUD de `mundo/01` con Crew, Map, `[E]` y `[V]`, panel de decisión solo al abrir, HUD compacto de una fila en celular, hoja inferior en vertical, mapa, controles táctiles, transición entre pantallas, pie fuera del juego, cada lugar con su acción (`ui/src/pantallas/lugares.ts`).
+- `[V]` Pruebas e2e: ruta dorada, derrota y volver a jugar, continuar tras recargar, idioma recordado, pérdida de WebGL con respaldo 2D.
 
-- `[V]` Baseline: `origin/main` was byte-identical to `develop` commit `32ab2e9`; local `main` = current `develop`.
-- `[V]` E6 Base now mounts the 3D scene (PR #247 integrated; before it was an empty box).
-- `[V]` Crew (child, Engineer, Iris) mounted in the shared scene (PR #328 branch integrated).
-- `[V]` One reducer for the game state (`ui/src/juego/reductor.ts`); the duplicate in `App.tsx` is gone.
-- `[V]` `Continue` on the cover works: the game in progress is saved in the browser and restored after a reload.
-- `[V]` Language and sound choice are remembered; the sound switch now produces sound (Web Audio, no files).
-- `[V]` New e2e: defeat, replay with a clean game, continue after reload, remembered language.
-- `[V]` e2e clock stepping changed to `fastForward` (with the 3D scene, `runFor` took 46 s to 84 s per test).
-- `[V]` Additive A/B interface in `EscenaBaseProps` (destination, blocked, position, camera toggle, touch input).
-- `[V]` Capture script `tests/capturas/capturar.mjs`; 60 "before" images in `ui/capturas/rescate/antes/` (untracked).
+## Pruebas ejecutadas sobre `main` con el flujo A integrado
 
-## Audits
+- `npm run typecheck`: salida 0. `npm test`: 116 archivos, 855 pruebas en verde. `npm run build`: bien.
+- `npx playwright test`: 5 en verde (26,8 s).
 
-- Engine (Sonnet, by simulation): both endings reachable; passive player loses at turn 10; golden path wins at
-  turn 5; 151 distinct end states over 160 site x module x dilemma combinations. `[NV]` by the lead.
-- Localization (Haiku): 795 keys in each language, full parity, no hard-coded text; 7 missing keys only in the
-  unused account module (`ui/src/juego/cuenta.ts`). `[NV]` by the lead.
+## Sin comprobar todavía
 
-## Tests executed (last run on `main` before the workstreams)
+- Todo lo que depende de la escena de B: caminar, que el mapa lleve al niño, la tecla V, el joystick, `bloqueado` deteniendo el mundo, el lugar cercano cambiando al moverse.
+- La ruta dorada completa en español (solo dos capturas en ES).
+- El fundido entre pantallas no se miró en movimiento; el foco se comprobó en un solo cambio.
+- Ningún celular real ni PC viejo: todo lo de celular es emulación en Chromium sin GPU.
 
-- `npm run typecheck`: exit 0. `npm test`: 112 files, 840 tests passed. `npm run build`: OK.
-- `npx playwright test`: 4 passed (13.4 s).
+## Auditorías
 
-## Deployment (read-only checks, nothing deployed)
+- Motor (Sonnet, por simulación): los dos finales se alcanzan; el jugador pasivo pierde en el turno 10; la ruta dorada gana en el turno 5; 151 estados finales distintos en 160 combinaciones. `[NV]` por quien integra.
+- Textos (Haiku): 795 claves por idioma, paridad completa, sin texto fijo en el código; 7 claves faltantes solo en el módulo de cuenta sin usar (`ui/src/juego/cuenta.ts`). `[NV]` por quien integra.
 
-- `[V]` Production `nasa-space-apps-2026.santiago031541.workers.dev`: HTTP 200, older bundle (`main` of 13:40);
-  `/api/health` reports model and database OK.
-- `[V]` Preview `nasa-space-apps-2026-preview...workers.dev`: HTTP 200, bundle identical to the local build of `develop`.
-- `[V]` `hackaton-nasa.trakatra.lat`: HTTP 200, serves the same bundle as the preview (develop), not production.
-  `[NV]` which Worker the domain is attached to (it is not in `wrangler.jsonc`; set in the dashboard).
-- `[V]` `wrangler` is not authenticated on this machine: deploys only happen through GitHub Actions on push to
-  `develop` (preview) or `main` (production). `main` is protected (required check "Tipos y tests").
+## Despliegue (solo lectura; no se desplegó nada)
 
-## Blockers
+- `[V]` Producción `nasa-space-apps-2026.santiago031541.workers.dev`: HTTP 200, paquete viejo (`main` de las 13:40); `/api/health` con modelo y base de datos bien.
+- `[V]` `hackaton-nasa.trakatra.lat`: HTTP 200, sirve el mismo paquete que el preview (`develop`), no producción. `[NV]` a qué Worker está atado (no figura en `wrangler.jsonc`).
+- `[V]` `wrangler` no tiene sesión en este equipo: solo se despliega por GitHub Actions al empujar a `develop` (preview) o a `main` (producción). La configuración del repositorio niega `gh pr merge`: la fusión la hace una persona desde la web.
 
-- Publishing: pushing to `develop` or `main` deploys. Not done; needs an explicit decision on the target.
-- A real phone and an older PC have not been tested: everything mobile here is emulation in headless Chromium.
+## Bloqueos
 
-## Next three actions
+- Publicar: empujar a `develop` o a `main` despliega. No se hizo; falta decidir el destino (lo previsto: un PR hacia `develop`).
 
-1. Audit and integrate workstream A (`rescate/a-pantallas`) and workstream B (`rescate/b-mundo`), then test both together.
-2. Fidelity batch F: shield module first, then every object reviewed from the walking camera.
-3. Full playthrough in EN and ES at the four sizes, "after" captures, then decide where to publish.
+## Próximas tres acciones
+
+1. Auditar e integrar B (`rescate/b-mundo`) y F (`rescate/f-fidelidad`); probar A + B + F juntos en el juego.
+2. Segundo lote de A (problemas 9, 10 y 11) y revisión de la forma de cada objeto con la cámara que camina.
+3. Ruta dorada en inglés y español en los cuatro tamaños, capturas de después, y abrir el PR.
