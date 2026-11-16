@@ -49,4 +49,32 @@ describe("tripulación montada en el escenario vigente", () => {
     expect(t.grupo.parent).toBeNull();
     for (const espia of liberar) expect(espia).toHaveBeenCalledTimes(1);
   });
+
+  it("el niño cambia a caminar, la Ingeniera se vuelve hacia él al acercarse e Iris pone la cara de su modo", () => {
+    const a = armarEscena(crearMateriales(), null);
+    const t = a.tripulacion;
+    const v = vistaEscena(partidaDorada(), { fase: "base", colocados: [] });
+    a.aplicarVista(v);
+    a.animar(1000, false);
+    const muslo = t.jugador.huesos.musloI.rotation.x;
+    t.actores.caminando = true;
+    a.animar(1250, false);
+    expect(t.jugador.huesos.musloI.rotation.x).not.toBe(muslo);
+
+    // Lejos: la Ingeniera conserva su rumbo; cerca: gira hacia el niño.
+    const inicial = t.ingeniera.grupo.rotation.y;
+    const q = t.ingeniera.grupo.position;
+    t.jugador.grupo.position.set(q.x + 1.5, 0, q.z);
+    for (let ms = 1300; ms < 3000; ms += 16) a.animar(ms, false);
+    expect(t.ingeniera.grupo.rotation.y).not.toBeCloseTo(inicial, 2);
+    expect(Math.cos(t.ingeniera.grupo.rotation.y - Math.PI / 2)).toBeGreaterThan(0.99);
+
+    t.actores.modoIris = "llego";
+    a.animar(3100, true);
+    expect(t.iris.grupo.getObjectByName("iris-cara-feliz")!.visible).toBe(true);
+    a.aplicarVista({ ...v, iris: { nivel: "offline", averiada: false } });
+    a.animar(3200, true);
+    expect(t.iris.grupo.getObjectByName("iris-cara-apagada")!.visible).toBe(true);
+    a.liberar();
+  });
 });
