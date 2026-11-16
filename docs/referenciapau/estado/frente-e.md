@@ -2,6 +2,6 @@
 
 **Actualizado:** lun 16 nov, 07:45.
 
-- **Hecho:** E0, E1, E2, E3, E5, E7 y E9 fusionadas (más #339, #344 con su e2e, el retrato de Iris con la avería revelada y la conversación de B en #402). Curiosidades (#377, B4) en #403. E8 (flujo de entrada de `inicio/04`) en PR.
-- **Sigue:** E6 cuando entre A9. E8 (#406) y E4 (#407) en verde esperando revisión; chocan en `App.tsx` (el segundo lo pongo al día).
-- **Bloqueado:** E4 espera `camara` en `AjustesJugador` (#372, frente A). Guardar memoria y vistos con la partida: #360 (A). Globo en celular horizontal: #390 (A). Iris habla como averiada: #401 (B). E6 espera A9.
+- **Hecho:** E0, E1, E2, E3, E5, E7 y E9 fusionadas (más #339, #344 con su e2e, el retrato de Iris, la conversación de B en #402, las curiosidades en #403 y el tiempo de la ruta dorada en #404). En PR y en verde: E8 #406 (flujo de entrada) y E4 #407 (menú).
+- **Sigue:** E6 cuando entre A9. E8 y E4 chocan en `App.tsx`: el que entre segundo lo pongo al día yo.
+- **Bloqueado:** E6 espera A9. Guardar memoria y vistos con la partida: #360 (A). Globo en celular horizontal: #390 (A). Iris habla como averiada: #401 (B).
