@@ -313,14 +313,23 @@ function antena(m: Materiales): THREE.Group {
   cabeza.add(
     parte(m, "SuitBase", plato(true), [0, 0, 0], "Antenna_Dish"),
     parte(m, "SuitBase", plato(false), [0, 0, 0], "Antenna_DishBack"),
+    // Aro grueso en el borde del plato, como en la lámina (abierto: no tapa la cara del plato).
+    parte(m, "SuitBase", geometriaBase("mod-antena-aro", () => new THREE.TorusGeometry(1.31, 0.07, 4, 12)), [0, 0, 0.42], "Antenna_DishRim"),
     colocar(parte(m, "SuitBase", tronco(0.04, 0.04, 0.95, 6), [0, 0, 0], "Antenna_Arm"), [0, 0, 0.48], [Math.PI / 2, 0, 0]),
-    parte(m, "Boots", geometriaBase("mod-antena-alim", () => new THREE.IcosahedronGeometry(0.12, 0)), [0, 0, 0.98], "Antenna_Feed"),
+    parte(m, "SuitBase", geometriaBase("mod-antena-alim", () => new THREE.IcosahedronGeometry(0.16, 0)), [0, 0, 0.98], "Antenna_Feed"),
   );
+  // Losa chaflanada vista desde arriba (esquinas verticales recortadas), apoyada en `y`.
+  const piso = (lado: number, alto: number, y: number, nombre: string) =>
+    colocar(parte(m, "SuitBase", chaflan(lado, lado, alto, lado * 0.2), [0, 0, 0], nombre), [0, y + alto / 2, 0], [-Math.PI / 2, 0, 0]);
+  // Pedestal escalonado de dos pisos y caseta (lámina `mundo/01`), en lugar de un mástil fino.
   return grupo(
     "Shape_Antenna",
-    parte(m, "SuitBase", tronco(0.75, 0.95, 0.35, 8), [0, 0.175, 0], "Antenna_Base"),
-    parte(m, "SuitBase", tronco(0.16, 0.32, 1.9, 6), [0, 1.3, 0], "Antenna_Mast"),
-    parte(m, "Accent", tronco(0.33, 0.33, 0.12, 6), [0, 0.6, 0], "Antenna_Band"),
+    parte(m, "SuitBase", tronco(0.95, 1.05, 0.3, 8), [0, 0.15, 0], "Antenna_Base"),
+    piso(1.7, 0.7, 0.3, "Antenna_Tier1"),
+    piso(1.2, 0.6, 1.0, "Antenna_Tier2"),
+    parte(m, "SuitBase", caja(0.8, 0.5, 0.8), [0, 1.85, 0], "Antenna_Housing"),
+    parte(m, "Boots", caja(0.36, 0.22, 0.03), [0, 0.68, 0.86], "Antenna_Vent1"),
+    parte(m, "Boots", caja(0.28, 0.2, 0.03), [0, 1.32, 0.61], "Antenna_Vent2"),
     parte(m, "SuitBase", caja(0.7, 0.3, 0.3), [0, 2.25, 0], "Antenna_Yoke"),
     cabeza,
   );
