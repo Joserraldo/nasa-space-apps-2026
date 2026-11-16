@@ -98,6 +98,10 @@ test("ruta dorada: de la órbita al resumen, en inglés", async ({ page }) => {
   }
   await expect(page.getByText("Unofficial project, not endorsed by NASA")).toHaveCount(0);
   const crew = page.getByRole("button", { name: "Crew", exact: true });
+  // E3, HUD progresivo: al entrar a la base no se ve Crew (llega con la primera conversación); Map y
+  // Pause sí, porque ya hay un objetivo.
+  await expect(crew).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "Map", exact: true })).toBeVisible();
 
   // Acercarse a un lugar nunca cobra: [E] abre el plan del lugar y "Back" no cambia nada.
   // Con el reloj en pausa ANTES de caminar: sin GPU (CI) la caminata es lenta y, con el reloj andando,
@@ -113,6 +117,13 @@ test("ruta dorada: de la órbita al resumen, en inglés", async ({ page }) => {
   await page.getByRole("dialog").getByRole("button", { name: "Back" }).click();
   await expect(page.getByRole("dialog")).toHaveCount(0);
   expect(await page.getByRole("meter", { name: "Energy" }).getAttribute("aria-valuenow")).toBe(energiaAntes);
+  // Primera conversación en el mundo: caminar al sensor y hablar con la Meteoróloga trae Crew al HUD (E3).
+  await expect(crew).toHaveCount(0);
+  await page.getByRole("button", { name: "Map", exact: true }).click();
+  await page.getByRole("list", { name: "Places" }).getByRole("button", { name: /Radiation sensor/ }).click();
+  await page.getByRole("button", { name: "Ask the Solar Meteorologist" }).click({ timeout: 60_000 });
+  await expect(crew).toBeVisible();
+  await page.keyboard.press("Escape");
   await page.getByRole("button", { name: "Resume", exact: true }).click();
 
   // Map abre el plano y la lista de lugares; Escape lo cierra.
