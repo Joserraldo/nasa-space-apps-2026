@@ -17,10 +17,24 @@ export const UMBRAL_OBSERVADO = 1.5;
 
 export const VERSION_REGISTRO = "0.2.0" as const;
 
-/** Hora UTC como la da DONKI: 2024-05-10T15:00Z (con o sin segundos). */
+/**
+ * ¿Existe esa fecha y hora? El patrón solo mira la forma: sin esto, "2024-13-45T99:99Z" pasaba.
+ * Se rearma la fecha en UTC y se compara: un mes 13 o un 30 de febrero cambian al normalizarse.
+ */
+export function fechaHoraUtcValida(texto: string): boolean {
+  const m = /^(\d{4})-(\d{2})-(\d{2})(?:T(\d{2}):(\d{2})(?::(\d{2}))?Z)?$/.exec(texto);
+  if (!m) return false;
+  const [a, mes, dia, h = "0", min = "0", seg = "0"] = m.slice(1).map((x) => x ?? "0") as [string, string, string, string, string, string];
+  const f = new Date(Date.UTC(+a, +mes - 1, +dia, +h, +min, +seg));
+  return f.getUTCFullYear() === +a && f.getUTCMonth() === +mes - 1 && f.getUTCDate() === +dia
+    && f.getUTCHours() === +h && f.getUTCMinutes() === +min && f.getUTCSeconds() === +seg;
+}
+
+/** Hora UTC como la da DONKI: 2024-05-10T15:00Z (con o sin segundos), y que exista en el calendario. */
 export const HoraUtc = z
   .string()
-  .regex(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(:\d{2})?Z$/, "hora UTC estilo DONKI");
+  .regex(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(:\d{2})?Z$/, "hora UTC estilo DONKI")
+  .refine(fechaHoraUtcValida, "fecha u hora que no existe");
 
 export const FaseSchema = z.object({
   tipo: SpaceWeatherKindSchema,
@@ -63,7 +77,7 @@ export const TormentaSchema = z
         fondo: z.number().positive(),
         pico: z.number().positive(),
         picoMuestra: z.number().positive(),
-        diaPico: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+        diaPico: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).refine(fechaHoraUtcValida, "fecha que no existe"),
         factor: z.number().positive(),
         url: z.string().url(),
       })
