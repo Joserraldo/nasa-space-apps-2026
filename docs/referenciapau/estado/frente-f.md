@@ -7,9 +7,9 @@
 - F3, D1 (#342): hábitat sin aprobar (puerta); antena aprobada con dos ajustes.
 
 **Sigue**
-- Ilustraciones de portada y carga (niño flotando, nave, planeta, asteroide, módulos): optimizarlas y animarlas cuando estén en disco y se decida frente al 3D de Jaime (#319, #320).
+- Después del video: portada y carga pasan a las ilustraciones 2D animadas de María Paula (decidido; detalle para Jaime en #320 y #319). Faltan guardar en disco nave, planeta, asteroide y escena de carga.
 - Revisar D1 cuando Daniel corrija; C2 y C3 cuando abran PR.
 
 **Bloqueado / en pausa**
-- F6: depende de esa decisión sobre portada y carga.
+- F6: después del video, con esas ilustraciones.
 - #323: no es del frente F; decide un humano.
