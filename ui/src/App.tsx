@@ -1,6 +1,6 @@
 import { useEffect, useReducer, useRef, useState } from "react";
 import type { Action, Equipment } from "@solar-shield/contracts";
-import { HudBase } from "./componentes/HudBase.js";
+import { HudBase, PROGRESO_INICIAL, type ProgresoHud } from "./componentes/HudBase.js";
 import { IdiomaContext, useT, type Idioma } from "./i18n.js";
 import { PantallaSitio } from "./pantallas/PantallaSitio.js";
 import { PantallaModulos } from "./pantallas/PantallaModulos.js";
@@ -57,6 +57,10 @@ function Pantalla({ idioma, setIdioma, sonido, setSonido, grafica }: {
     if (j.fase === "inicio") setGuardada(cargarPartida(almacenDelNavegador()));
   }, [j]);
   const [velocidad, setVelocidad] = useState(1);
+  // HUD progresivo (E3): qué partes ya aparecieron en esta partida. Una partida nueva empieza sin ellas;
+  // una partida retomada con "Continue" las trae todas (el niño ya las conoció).
+  const [progreso, setProgreso] = useState<ProgresoHud>(PROGRESO_INICIAL);
+  const avanzarHud = (p: Partial<ProgresoHud>) => setProgreso((a) => (Object.entries(p).every(([k, v]) => a[k as keyof ProgresoHud] === v) ? a : { ...a, ...p }));
   const enBase = j.fase === "base";
   // E5 a E7 comparten un solo mundo 3D (MundoBase): cambiar de fase no vuelve a montar la escena.
   const enMundo = j.fase === "modulos" || enBase || j.fase === "tormenta";
@@ -74,7 +78,7 @@ function Pantalla({ idioma, setIdioma, sonido, setSonido, grafica }: {
     else if (j.fase === "final") tocar(j.estado.resultado === "exito" ? "exito" : "fallo", sonido);
   }, [j.fase, j.estado.resultado, sonido]);
   useEffect(() => { if (j.fase === "inicio") setInicio("portada"); }, [j.fase]);
-  const empezarMision = () => enviar({ tipo: "fase", fase: "satelite" });
+  const empezarMision = () => { setProgreso(PROGRESO_INICIAL); enviar({ tipo: "fase", fase: "satelite" }); };
   // La carga es un respiro corto entre la intro y la órbita; se puede saltar con "Skip".
   useEffect(() => {
     if (j.fase !== "inicio" || inicio !== "carga") return;
@@ -92,7 +96,7 @@ function Pantalla({ idioma, setIdioma, sonido, setSonido, grafica }: {
   useEffect(() => { document.documentElement.lang = idioma; }, [idioma]);
 
   const accion = (a: Action) => { tocar("confirmar", sonido); enviar({ tipo: "accion", accion: a }); };
-  const continuar = () => { if (guardada) { tocar("confirmar", sonido); enviar({ tipo: "restaurar", juego: guardada }); } };
+  const continuar = () => { if (guardada) { tocar("confirmar", sonido); setProgreso({ conversado: true, objetivo: true }); enviar({ tipo: "restaurar", juego: guardada }); } };
 
   const reloj = enBase ? { velocidad, onPausa: () => enviar({ tipo: "pausa", pausado: !j.estado.pausado }), onVelocidad: setVelocidad } : undefined;
   const objetivo = j.fase === "modulos" ? { labelKey: "ui.comun.hud.objetivo.modulos", vars: { n: MISION_JEZERO.modulosAColocar } }
@@ -116,10 +120,11 @@ function Pantalla({ idioma, setIdioma, sonido, setSonido, grafica }: {
               )}
               {j.fase === "tormenta" && (
                 <PantallaTormenta estado={j.estado} colocados={j.colocados} registro={j.registro} onSeguir={() => enviar({ tipo: "seguir" })}
-                  onDecidir={(previas, opcionId) => { tocar("confirmar", sonido); enviar({ tipo: "dilema", previas, opcionId }); }} />
+                  onDecidir={(previas, opcionId) => { tocar("confirmar", sonido); enviar({ tipo: "dilema", previas, opcionId }); }}
+                  onConverso={() => avanzarHud({ conversado: true })} />
               )}
               {enBase && (
-                <PantallaBase estado={j.estado} colocados={j.colocados} ultimas={j.ultimas} hud={{ reloj }}
+                <PantallaBase estado={j.estado} colocados={j.colocados} ultimas={j.ultimas} hud={{ reloj }} progreso={progreso} onProgreso={avanzarHud}
                   onAccion={accion} onReanudar={() => enviar({ tipo: "pausa", pausado: false })} />
               )}
             </Transicion>
@@ -134,7 +139,7 @@ function Pantalla({ idioma, setIdioma, sonido, setSonido, grafica }: {
             {j.fase === "inicio" && inicio === "carga" && <Carga consejo={0} sonido={sonido} onSonido={alternarSonido} onSaltar={empezarMision} />}
             {j.fase === "satelite" && <PantallaOrbita estado={j.estado} onContinuar={() => enviar({ tipo: "fase", fase: "sitio" })} />}
             {j.fase === "sitio" && <PantallaSitio estado={j.estado} onElegir={(s) => { tocar("confirmar", sonido); enviar({ tipo: "sitio", sitio: s }); }} />}
-            {j.fase === "final" && <PantallaFinal estado={j.estado} onOtra={() => enviar({ tipo: "nueva" })} />}
+            {j.fase === "final" && <PantallaFinal estado={j.estado} onOtra={() => { setProgreso(PROGRESO_INICIAL); enviar({ tipo: "nueva" }); }} />}
           </Transicion>
         )}
         {creditos && <Creditos onCerrar={() => setCreditos(false)} />}
