@@ -353,7 +353,6 @@
   "ui.tormenta.pregunta.proteger": "What needs protection?",
   "ui.tormenta.pregunta.sensor": "What does the sensor show?",
   "ui.tormenta.verFuente": "View source",
-  "ui.tormenta.acceso": "{recurso} {valor}",
   "ui.comun.acceso_recurso": "{recurso} {valor}",
   "ui.comun.fuente.compacta": "{dueno} / {tipo}",
   "ui.comun.fuente.archivado": "Archived event",
@@ -392,5 +391,7 @@
   "ui.base.consulta": "Talk with your crew",
   "ui.hud.objetivo.ir": "Go to {lugarKey}",
   "ui.hud.objetivo.experto": "Ask {expertoKey} at {lugarKey}",
-  "ui.hud.objetivo.averia": "Iris needs a repair at {lugarKey}"
+  "ui.hud.objetivo.averia": "Iris needs a repair at {lugarKey}",
+  "ui.final.investigacion": "Real space research",
+  "ui.final.investigacion.texto": "Scientists study plants, bones, muscles and radiation in space. Open a study to see what they found."
 }

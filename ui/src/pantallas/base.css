@@ -176,3 +176,5 @@
   .base-panel .decision-detalle > .fb-caja { position: sticky; bottom: calc(-1 * var(--esp-2)); z-index: 1; padding-block: var(--esp-2); background: var(--color-marfil); }
   .base-panel .decision-detalle .fb-texto { font-size: 18px; }
 }
+.base-fuente-retraso { margin-block-start: var(--esp-2); font-size: 15px; }
+.base-fuente-retraso p { margin: var(--esp-2) 0; }

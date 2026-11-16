@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { conversar, escenaTormenta, type Dialogo, type Entrada } from "@solar-shield/agents";
 import type { Equipment, GameState } from "@solar-shield/contracts";
-import { referenciaDosis } from "@solar-shield/data";
+import { referenciaDosis, tormentasCuradas } from "@solar-shield/data";
 import { costoDe, puedeAplicar, tormentaActiva } from "@solar-shield/engine";
 import { MISION_JEZERO } from "@solar-shield/missions";
 import { useT } from "../i18n.js";
@@ -219,6 +219,7 @@ function Verificar({ estado, dialogos, onAtras }: { estado: GameState; dialogos:
       <div className="tormenta-plan-accion tormenta-verif">
         <span className="fc"><span className="fc-cara fc-chico tormenta-pieza"><span>{t("ui.tormenta.fuente")}</span></span></span>
         <TarjetaFuente fuente={fuente} />
+        <MedicionMarte estado={estado} />
         <ul className="tormenta-preguntas">
           {PREGUNTAS.map((q) => (
             <li key={q.id}><ChipPregunta icono={q.icono} labelKey={`ui.tormenta.pregunta.${q.id}`} selected={pregunta === q.id ? true : undefined} onClick={() => setPregunta(q.id)} /></li>
@@ -239,5 +240,21 @@ function Verificar({ estado, dialogos, onAtras }: { estado: GameState; dialogos:
         </div>
       </div>
     </div>
+  );
+}
+
+/**
+ * #137: la medición real en Marte (RAD de Curiosity) de la tormenta curada: la prueba más fuerte de que
+ * la tormenta es real. Solo si hubo aumento claro (factor >= 1,5), igual que en la pantalla final.
+ */
+export function MedicionMarte({ estado }: { estado: GameState }) {
+  const { t } = useT();
+  const m = tormentasCuradas.find((x) => x.id === estado.tormenta?.id)?.medicionMarte;
+  if (!m || m.factor < 1.5) return null;
+  return (
+    <p className="tormenta-medicion">
+      <Icono nombre="aviso" tam={20} />
+      <span>{t("datos.tarjeta.medicion", { pico: m.pico, dia: m.diaPico, factor: Math.round(m.factor), fondo: m.fondo })}</span>
+    </p>
   );
 }
