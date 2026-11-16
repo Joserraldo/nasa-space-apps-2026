@@ -22,6 +22,38 @@ import "./hud.css";
 
 export const VELOCIDADES = [0.5, 1, 2] as const;
 
+/** Partes del HUD que aparecen con el juego (PLAN-JUGABILIDAD §1, E3). `Pause` y los recursos, siempre. */
+export interface HudVisible {
+  crew: boolean;
+  mapa: boolean;
+  velocidad: boolean;
+}
+
+/** Lo que el niño ya vivió en esta partida y abre partes del HUD. */
+export interface ProgresoHud {
+  /** Ya habló con alguien de la tripulación (un lugar con experto, el campo de preguntas o la tormenta). */
+  conversado: boolean;
+  /** Ya vio su primer objetivo con un lugar del mundo. */
+  objetivo: boolean;
+}
+
+export const PROGRESO_INICIAL: ProgresoHud = { conversado: false, objetivo: false };
+
+/**
+ * HUD progresivo (tabla de PLAN-JUGABILIDAD §1): `Map` llega con el primer objetivo, `Crew` después de
+ * la primera conversación y la velocidad del reloj cuando los módulos ya están puestos. Sin la escena 3D
+ * (respaldo 2D) no se puede caminar hasta nadie: `Crew` y `Map` se ven siempre.
+ */
+export function hudVisible({ progreso, sin3d, modulosListos }: { progreso: ProgresoHud; sin3d: boolean; modulosListos: boolean }): HudVisible {
+  return {
+    crew: sin3d || progreso.conversado,
+    mapa: sin3d || progreso.objetivo || progreso.conversado,
+    velocidad: modulosListos,
+  };
+}
+
+const TODO_VISIBLE: HudVisible = { crew: true, mapa: true, velocidad: true };
+
 function escalaHud(): number {
   if (typeof window === "undefined") return 1;
   return Math.max(1, Math.min(window.innerWidth / 1024, window.innerHeight / 683));
@@ -86,9 +118,11 @@ export interface HudBaseProps {
   tactil?: boolean | undefined;
   /** Hay un panel de decisión o consulta abierto: la fila de abajo cede su sitio al panel. */
   panelAbierto?: boolean | undefined;
+  /** Qué partes ya aparecieron (E3, `hudVisible`). Sin este dato se ve todo, como en el muestrario. */
+  visible?: HudVisible | undefined;
 }
 
-export function HudBase({ estado, ultimas, reloj, objetivo, mundo, tactil = false, panelAbierto = false }: HudBaseProps) {
+export function HudBase({ estado, ultimas, reloj, objetivo, mundo, tactil = false, panelAbierto = false, visible = TODO_VISIBLE }: HudBaseProps) {
   const { t } = useT();
   const escala = useEscalaHud();
   const capa = useRef<HTMLElement>(null);
@@ -105,7 +139,7 @@ export function HudBase({ estado, ultimas, reloj, objetivo, mundo, tactil = fals
           {reloj && (
             <>
               <PildoraBoton className="hud-pausa" labelKey={estado.pausado ? "ui.reanudar" : "ui.pausa"} icon={estado.pausado ? "jugar" : "pausa"} onClick={reloj.onPausa} />
-              <PildoraBoton className="hud-velocidad" labelKey="ui.hud.velocidad" labelVars={{ v: reloj.velocidad }} icon="reloj" onClick={() => reloj.onVelocidad(siguiente(reloj.velocidad))} />
+              {visible.velocidad && <PildoraBoton className="hud-velocidad" labelKey="ui.hud.velocidad" labelVars={{ v: reloj.velocidad }} icon="reloj" onClick={() => reloj.onVelocidad(siguiente(reloj.velocidad))} />}
             </>
           )}
         </div>
@@ -122,8 +156,8 @@ export function HudBase({ estado, ultimas, reloj, objetivo, mundo, tactil = fals
       {mundo && (
         <div className="hud-abajo">
           <div className="hud-abajo-izq">
-            <PildoraBoton labelKey="ui.comun.tripulacion" icon="tripulacion" onClick={mundo.onTripulacion} />
-            <PildoraBoton labelKey="ui.comun.mapa" icon="mapa" onClick={mundo.onMapa} />
+            {visible.crew && <PildoraBoton labelKey="ui.comun.tripulacion" icon="tripulacion" onClick={mundo.onTripulacion} />}
+            {visible.mapa && <PildoraBoton labelKey="ui.comun.mapa" icon="mapa" onClick={mundo.onMapa} />}
           </div>
           {!tactil && mundo.interaccion && <PildoraBoton className="hud-centro" labelKey={mundo.interaccion.labelKey} tecla={{ letra: "E", tono: "accion" }} onClick={mundo.interaccion.onUsar} />}
           {!tactil && <PildoraBoton className="hud-camara" labelKey={mundo.camara === "tercera" ? "ui.comun.hud.primera" : "ui.comun.hud.tercera"} tecla={{ letra: "V", tono: "camara" }} onClick={mundo.onCamara} />}

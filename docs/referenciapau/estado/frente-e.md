@@ -1,7 +1,7 @@
 # Estado: Frente E (Santiago)
 
-**Actualizado:** dom 15 nov, 23:30.
+**Actualizado:** dom 15 nov, 23:45.
 
-- **Hecho:** E0 (#332, A0 #337 y #339 en #367, fusionados). E1 fusionada (#335). E2 (#346) sobre develop y fuera de borrador: una sola vía para `[E]` con `onInteractivo`. E3 en PR #352 (revisión CUMPLE).
-- **Sigue:** E4 (menú con cámara 1.ª/3.ª persona, calidad, sonido e idioma).
-- **Bloqueado:** E2 y E3 esperan revisión de otra persona. E3 necesita rebase sobre develop (choca con E1 en las e2e). Actores en el mundo (`[E] Talk`) esperan A6.
+- **Hecho:** E0, E1, E2, E3 y E7 fusionadas (más #339 en #367). E9 en PR #379 (botón táctil de salto).
+- **Sigue:** E5 (conversación larga) y E8 (flujo de entrada; A5 y A12 ya están, falta F6).
+- **Bloqueado:** E4 espera `camara` en `AjustesJugador` (#372, frente A). E6 espera A2 y A9.
