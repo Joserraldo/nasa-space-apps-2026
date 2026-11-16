@@ -11,6 +11,22 @@ import './acceso.css';
 export interface SesionJugador { usuario: string | null; progreso: Juego | null }
 const BASE = import.meta.env.BASE_URL;
 
+/**
+ * aria-invalid igual a lo que se ve: el borde rojo sale con :user-invalid (al salir del campo o al
+ * intentar entrar), pero eso no llega solo al lector de pantalla. Arranca en "false" y se actualiza
+ * al salir del campo, al fallar el envío y al corregir mientras escribe.
+ */
+const marcarValidez = (e: { currentTarget: HTMLInputElement }) => {
+  const campo = e.currentTarget;
+  campo.setAttribute("aria-invalid", campo.matches(":user-invalid") || (!campo.validity.valid && campo.dataset.tocado === "1") ? "true" : "false");
+};
+const validez = {
+  "aria-invalid": false as const,
+  onBlur: (e: { currentTarget: HTMLInputElement }) => { e.currentTarget.dataset.tocado = "1"; marcarValidez(e); },
+  onInvalid: (e: { currentTarget: HTMLInputElement }) => { e.currentTarget.dataset.tocado = "1"; marcarValidez(e); },
+  onInput: marcarValidez,
+};
+
 export function Acceso({ idioma, onIdioma, onEntrar }: {idioma: Idioma; onIdioma(i: Idioma): void; onEntrar(sesion: SesionJugador): void}) {
   const { t } = useT();
   const [modo, setModo] = useState<'login'|'register'>('login');
@@ -88,13 +104,21 @@ export function Acceso({ idioma, onIdioma, onEntrar }: {idioma: Idioma; onIdioma
             {(['login','register'] as const).map(m=><FacetButton key={m} labelKey={`ui.cuenta.${m}`} selected={modo===m} disabled={ocupado} onClick={()=>{setModo(m);setError(null);setClave('');setRepetida('');}} />)}
           </div>
           <form className="acceso-formulario" onSubmit={entrar} aria-busy={ocupado}>
-            <label htmlFor="cuenta-usuario">{t('ui.cuenta.usuario')}</label>
-            <input id="cuenta-usuario" name="username" autoComplete="username" autoCapitalize="none" spellCheck={false} minLength={3} maxLength={20} required value={usuario} disabled={ocupado} onChange={e=>setUsuario(e.target.value)} aria-describedby="cuenta-ayuda" />
-            <p id="cuenta-ayuda" className="acceso-ayuda">{t('ui.cuenta.usuario.ayuda')}</p>
-            <label htmlFor="cuenta-clave">{t('ui.cuenta.clave')}</label>
-            <input id="cuenta-clave" name="password" type={verClave?'text':'password'} autoComplete={modo==='register'?'new-password':'current-password'} minLength={8} maxLength={72} required value={clave} disabled={ocupado} onChange={e=>setClave(e.target.value)} aria-describedby="clave-ayuda" />
-            <p id="clave-ayuda" className="acceso-ayuda">{t('ui.cuenta.clave.ayuda')}</p>
-            {modo==='register' && <><label htmlFor="cuenta-repetida">{t('ui.cuenta.repetir')}</label><input id="cuenta-repetida" name="confirm-password" type={verClave?'text':'password'} autoComplete="new-password" minLength={8} maxLength={72} required value={repetida} disabled={ocupado} onChange={e=>setRepetida(e.target.value)} /></>}
+            {/* Pista arriba del campo: el autocompletar y el teclado del celular no la tapan (Modern Web Guidance). */}
+            <div className="acceso-campo">
+              <label htmlFor="cuenta-usuario">{t('ui.cuenta.usuario')}</label>
+              <p id="cuenta-ayuda" className="acceso-ayuda">{t('ui.cuenta.usuario.ayuda')}</p>
+              <input {...validez} id="cuenta-usuario" name="username" autoComplete="username" autoCapitalize="none" autoCorrect="off" spellCheck={false} enterKeyHint="next" minLength={3} maxLength={20} pattern="[A-Za-z0-9_]{3,20}" required value={usuario} disabled={ocupado} onChange={e=>setUsuario(e.target.value)} aria-describedby="cuenta-ayuda" />
+            </div>
+            <div className="acceso-campo">
+              <label htmlFor="cuenta-clave">{t('ui.cuenta.clave')}</label>
+              <p id="clave-ayuda" className="acceso-ayuda">{t('ui.cuenta.clave.ayuda')}</p>
+              <input {...validez} id="cuenta-clave" name="password" type={verClave?'text':'password'} autoComplete={modo==='register'?'new-password':'current-password'} enterKeyHint={modo==='register'?'next':'done'} minLength={8} maxLength={72} required value={clave} disabled={ocupado} onChange={e=>setClave(e.target.value)} aria-describedby="clave-ayuda" />
+            </div>
+            {modo==='register' && <div className="acceso-campo">
+              <label htmlFor="cuenta-repetida">{t('ui.cuenta.repetir')}</label>
+              <input {...validez} id="cuenta-repetida" name="confirm-password" type={verClave?'text':'password'} autoComplete="new-password" enterKeyHint="done" minLength={8} maxLength={72} required value={repetida} disabled={ocupado} onChange={e=>setRepetida(e.target.value)} />
+            </div>}
             <label className="acceso-ver"><input type="checkbox" checked={verClave} onChange={e=>setVerClave(e.target.checked)} />{t('ui.cuenta.ver')}</label>
             <FacetButton type="submit" variant="primary" labelKey={modo==='login'?'ui.cuenta.entrar':'ui.cuenta.crear'} busy={ocupado} onClick={()=>{}} />
           </form>
