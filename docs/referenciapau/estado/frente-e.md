@@ -1,7 +1,7 @@
 # Estado: Frente E (Santiago)
 
-**Actualizado:** dom 15 nov, 22:10.
+**Actualizado:** dom 15 nov, 23:30.
 
-- **Hecho:** E0 (#332 y A0 #337 fusionados). E1 en PR borrador #335 (tarjetas contextuales, ficha de fidelidad con ui/04 y ui/05). E2 en PR borrador: una sola vía para `[E]` en `MundoBase` con `onInteractivo` (Talk, Build, Enter/Exit, Use) y un solo manejador de teclado; PantallaBase y PantallaModulos ya no escuchan E.
-- **Sigue:** E3 (HUD progresivo), después E4.
-- **Bloqueado:** E1 espera F2 (#341, estilo de la tarjeta). E2 depende de #335. Actores y puertas en el mundo esperan A6 y A8 (la escena hoy solo avisa lugares).
+- **Hecho:** E0 (#332, A0 #337 y #339 en #367, fusionados). E1 fusionada (#335). E2 (#346) sobre develop y fuera de borrador: una sola vía para `[E]` con `onInteractivo`. E3 en PR #352 (revisión CUMPLE).
+- **Sigue:** E4 (menú con cámara 1.ª/3.ª persona, calidad, sonido e idioma).
+- **Bloqueado:** E2 y E3 esperan revisión de otra persona. E3 necesita rebase sobre develop (choca con E1 en las e2e). Actores en el mundo (`[E] Talk`) esperan A6.

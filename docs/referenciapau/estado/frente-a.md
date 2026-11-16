@@ -1,10 +1,13 @@
 # Estado — Frente A (José)
 
-**Hecho (15 nov):** A0 en rama `feat/frente-a-A0-ganchos`. Ganchos `SistemaEscena` (`montar`, `actualizar(dt, ctx)`,
-`dispose`) en `escena3d.ts`, con errores aislados; autocarga de `escena/sistemas/*.ts`; `fijarPedido` lleva
-`objetivo/iris/globo/hablando/sala` a `ctx.pedido`; `AJUSTE_CALIDAD` y `MAS_BAJA` en `escena/calidad.ts` (frente D);
-dueños en el encabezado de `frontera.ts`.
+**Hecho (15 nov):**
+- A0 fusionado (#337). A1 fusionado (#340).
+- A2 parte 1 (#345): `pedidoDeGuia`, Iris guía al objetivo, globo anclado. Espera fusión.
+- A3 (#347): `MISION-INTERACTIVA.md`. Espera aprobación de Santiago y María Paula.
 
-**Sigue:** A1 (Iris averiada en el turno 0), después A2.
+**Sigue:** A4 (caminar fluido: medir primero con `medir: true`).
 
-**Bloqueado:** nada. A0 espera revisión y fusión de Santiago; C4, D3, D4, D6 y D7 lo esperan.
+**Bloqueado:**
+- #339 y #344 (E): conectar la avería y el pedido de Iris en `MundoBase.tsx`; e2e "seguir a Iris". Al
+  conectarlo, rehacer las capturas de A2 desde la rama.
+- A9 espera A3 aprobada y E1.

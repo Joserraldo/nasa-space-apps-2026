@@ -9,6 +9,7 @@ import { hayGraficos3D } from "../escena/soporte.js";
 import { vistaEscena, type FaseVista, type LugarObjetivo } from "../escena/vista.js";
 import type { CalidadGrafica } from "../juego/ajustes.js";
 import { eventosDeTick } from "../juego/eventos.js";
+import { averiaIrisRevelada } from "./lugares.js";
 import "./mundo.css";
 
 // Three.js queda en un chunk aparte: no pesa en la primera carga.
@@ -148,7 +149,7 @@ export function MundoBase({ fase, estado, colocados, calidad, movimientoReducido
   const bloqueado = bloqueadoCapa || campo;
 
   const fv = faseVista(fase, estado);
-  const vista = useMemo(() => vistaEscena(estado, { fase: fv, colocados, instalando: fase === "modulos" ? instalando : null, averiaRevelada: fase !== "modulos", lugarObjetivo }),
+  const vista = useMemo(() => vistaEscena(estado, { fase: fv, colocados, instalando: fase === "modulos" ? instalando : null, averiaRevelada: fase !== "modulos" && averiaIrisRevelada(estado), lugarObjetivo }),
     [estado, colocados, fv, fase, instalando, lugarObjetivo]);
   // Eventos del último tick: se comparan el estado anterior y el actual (una vez por tick).
   const previo = useRef(estado);

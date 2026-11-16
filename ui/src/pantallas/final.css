@@ -113,7 +113,7 @@
   .final-cara { padding: var(--esp-2) var(--esp-3) var(--esp-3); gap: var(--esp-2); }
   .final-origenes { grid-template-columns: 1fr; }
   .final-origen + .final-origen { border-left: 0; padding-left: 0; border-top: var(--borde-fino) solid color-mix(in srgb, var(--color-ciruela) 30%, transparent); padding-top: var(--esp-2); }
-  .final-equipo svg:first-child { inline-size: 72px; block-size: 72px; }
+  .final-equipo :is(svg:first-child, .retrato-img) { inline-size: 72px; block-size: 72px; }
 }
 
 /* Celular vertical (390 x 844) y pantallas angostas: una columna con desplazamiento. */

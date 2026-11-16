@@ -13,6 +13,22 @@ adónde ir. Otras cinco personas trabajan en paralelo.
    exterior tiene que quedar así. También `exterior/02-kit-entorno-cultivos.png`, `mundo/01` y `mundo/02`.
 5. `ui/src/escena/mundo.ts`, `ui/src/componentes/Mapa.tsx` y `ui/src/escena/navegacion.ts`.
 
+## Láminas
+
+![Organización exterior](../referencias/exterior/03-exterior-organizacion.png)
+
+**Qué mirar: la base tiene que quedar así (lámina que manda).**
+
+![Kit de entorno y cultivos](../referencias/exterior/02-kit-entorno-cultivos.png)
+
+Qué mirar: el kit del entorno y los cultivos.
+
+![Exterior, tercera persona](../referencias/mundo/01-exterior-tercera-persona.png)
+
+Qué mirar: la vista del exterior para ubicar lugares y caminos.
+
+Todas las láminas: [docs/referenciapau/referencias/](../referencias/)
+
 ## Tus archivos (solo vos los editás)
 `ui/src/escena/mundo.ts`, `ui/src/escena/activos/caminos.ts`, `ui/src/escena/marcadores.ts` (nuevo),
 `ui/src/componentes/Mapa.tsx`, `ui/src/componentes/Mapa.css`, `ui/src/pantallas/PantallaSitio.tsx`,

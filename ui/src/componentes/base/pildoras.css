@@ -4,9 +4,10 @@
 .pildora-objetivo .pildora { font-size: 18px; padding-inline: 16px 20px; gap: var(--esp-2); }
 
 /* Botón: la píldora mide 36 px y la caja táctil 44 px. El foco rodea la caja, fuera del recorte. */
-.pb { background: none; border: 0; padding: 0; min-height: var(--toque-minimo); min-width: var(--toque-minimo); display: inline-flex; align-items: center; cursor: pointer; color: var(--color-indigo-texto); }
+.pb { background: none; border: 0; padding: 0; min-height: var(--toque-minimo); min-width: var(--toque-minimo); display: inline-flex; align-items: center; cursor: pointer; color: var(--color-indigo-texto); -webkit-tap-highlight-color: transparent; }
 .pb:active .fc { transform: translateY(2px); filter: none; }
-.pb:hover .fc-cara { --fc-fondo: var(--color-lila); }
+/* Hover solo con mouse: en táctil quedaba pegado después de tocar. */
+@media (hover: hover) and (pointer: fine) { .pb:hover .fc-cara { --fc-fondo: var(--color-lila); } }
 .pb-accion .fc-cara { background: var(--color-cian); }
 .pb-accion .fc-cara { padding-inline: 28px; min-height: 48px; font-size: 19px; gap: var(--esp-3); }
 .pb-accion .pildora-tecla { inline-size: 30px; block-size: 30px; font-size: 19px; }
@@ -15,3 +16,11 @@
   clip-path: polygon(5px 0, calc(100% - 5px) 0, 100% 5px, 100% calc(100% - 5px), calc(100% - 5px) 100%, 5px 100%, 0 calc(100% - 5px), 0 5px); }
 .pildora-tecla-accion { background: var(--color-cian); color: var(--color-indigo-texto); }
 .pildora-tecla-camara { background: var(--color-ciruela); color: var(--color-marfil); }
+
+/* Aviso [E] (mundo/01, DISEÑO §5.2): contorno cian luminoso y aparece solo con algo al alcance. Se ve
+   decenas de veces por partida, así que la aparición es corta y chica (120 ms, 4 px): avisa sin distraer.
+   Con movimiento reducido aparece quieto. */
+.pb-accion > .fc { filter: drop-shadow(0 0 6px color-mix(in srgb, var(--color-cian) 60%, transparent)) drop-shadow(0 3px 0 color-mix(in srgb, var(--color-ciruela) 28%, transparent));
+  animation: aviso-aparece var(--dur-fundido) var(--curva-entrada) both; }
+@keyframes aviso-aparece { from { opacity: 0; translate: 0 4px; } }
+@media (prefers-reduced-motion: reduce) { .pb-accion > .fc { animation: none; } }

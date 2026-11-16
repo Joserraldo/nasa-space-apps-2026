@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import type { Equipment, GameState, Resource } from "@solar-shield/contracts";
 import { costoDe, puedeAplicar } from "@solar-shield/engine";
 import { MISION_JEZERO } from "@solar-shield/missions";
@@ -8,7 +8,7 @@ import { FacetButton } from "../componentes/base/FacetButton.js";
 import { Icono } from "../componentes/base/Iconos.js";
 import { CostRow, ICONO_RECURSO, Mensaje, RECURSOS } from "../componentes/base/Piezas.js";
 import "../componentes/base/facetas.css";
-import { TarjetaContextual, useTarjetaUnica } from "../componentes/TarjetaContextual.js";
+import { TarjetaDelFlujo, useTarjetaUnica } from "../componentes/TarjetaDelFlujo.js";
 import { LUGARES } from "../escena/mundo.js";
 import { useMundo } from "./MundoBase.js";
 import "./modulos.css";
@@ -52,6 +52,15 @@ export function PantallaModulos({ estado, colocados, onColocar, onListo }: {
   // Ingeniera (hasta que A6/A9 lleven esa charla al mundo); una a la vez y se cierra al decidir.
   const tarjeta = useTarjetaUnica<Tarjeta>();
   const elegido = tarjeta.abierta?.tipo === "modulo" ? tarjeta.abierta.modulo : null;
+  const mostrada = tarjeta.mostrada;
+  const botonera = useRef<HTMLDivElement>(null);
+  // El botón que abrió la tarjeta se oculta mientras está abierta: si el foco se perdió al cerrar, va al
+  // primer botón disponible de la base (invariante 3: abrir y cerrar devuelve el foco).
+  const devolverFoco = useCallback(() => {
+    const activo = document.activeElement;
+    if (activo && activo !== document.body) return;
+    botonera.current?.querySelector<HTMLElement>("button:not([disabled]):not([aria-disabled='true'])")?.focus({ preventScroll: true });
+  }, []);
 
   const { sin3d: sinGl, cercano, fijarInstalando, fijarUso, usarCercano } = useMundo();
   /** Anclaje vacío al alcance en el mundo: ofrece `[E] Build` (solo con 3D). */
@@ -103,7 +112,7 @@ export function PantallaModulos({ estado, colocados, onColocar, onListo }: {
 
         {sinGl && elegido && <span className="modulos-ancla" aria-hidden="true"><Icono nombre={iconoDe(elegido)} tam={48} /></span>}
 
-        <div className="modulos-base">
+        <div className="modulos-base" ref={botonera}>
           {ancla && !tarjeta.abierta && (
             <FacetButton variant="primary" icon="check" labelKey="ui.paso.4.construir"
               labelVars={{ moduloKey: `ui.paso.4.modulo.${ancla}` }}
@@ -117,52 +126,51 @@ export function PantallaModulos({ estado, colocados, onColocar, onListo }: {
         </div>
       </div>
 
-      <TarjetaContextual abierta={tarjeta.abierta !== null} etiquetaId="modulos-panel-titulo"
-        onCerrar={tarjeta.cerrar} className="fc modulos-panel">
-        <div className="fc-cara modulos-panel-cara">
-          {tarjeta.abierta?.tipo === "elegir" ? (
-            <>
-              <header className="modulos-panel-cab">
-                <ExpertPortrait persona="ingeniera" compacto />
-                <h3 id="modulos-panel-titulo">{t("ui.paso.4.titulo", { n: total })}</h3>
-                <span className="modulos-experta">{t("ui.comun.retrato.ingeniera.nombre")}</span>
-              </header>
-              <p className="modulos-panel-desc">{t("ui.paso.4.elige")}</p>
-              <ul className="modulos-lista" aria-label={t("ui.paso.4.lista")}>
-                {mision.modulosDisponibles.map((m) => {
-                  const listo = colocados.includes(m);
-                  return (
-                    <li key={m}>
-                      <button type="button" className={`modulos-ficha${listo ? " modulos-ficha-lista" : ""}`}
-                        disabled={listo} onClick={() => tarjeta.abrir({ tipo: "modulo", modulo: m })}>
-                        <span className="fc">
-                          <span className="fc-cara fc-chico modulos-ficha-cara">
-                            <Icono nombre={iconoDe(m)} tam={30} />
-                            <span className="modulos-ficha-nombre">{t(`ui.paso.4.modulo.${m}`)}</span>
-                            {listo && <span className="modulos-ficha-estado"><Icono nombre="check_exito" tam={18} />{t("ui.paso.4.colocado")}</span>}
-                          </span>
+      <TarjetaDelFlujo abierta={tarjeta.abierta !== null} onCerrar={tarjeta.cerrar} className="modulos-panel"
+        contenido={mostrada?.tipo === "modulo" ? mostrada.modulo : mostrada?.tipo} onCerrada={devolverFoco}
+        figura={mostrada && <ExpertPortrait persona={mostrada.tipo === "modulo" ? expertaDe(mostrada.modulo) : "ingeniera"} compacto />}
+        titulo={mostrada?.tipo === "modulo" ? t(`ui.paso.4.modulo.${mostrada.modulo}`) : t("ui.paso.4.titulo", { n: total })}
+        bajada={mostrada && t(`ui.comun.retrato.${mostrada.tipo === "modulo" ? expertaDe(mostrada.modulo) : "ingeniera"}.nombre`)}
+        acciones={mostrada?.tipo === "modulo"
+          ? <AccionesModulo key={mostrada.modulo} estado={estado} modulo={mostrada.modulo} faltan={faltan}
+              colocado={colocados.includes(mostrada.modulo)} onColocar={() => colocar(mostrada.modulo)} onAtras={tarjeta.cerrar} />
+          : <FacetButton labelKey="ui.comun.atras" onClick={tarjeta.cerrar} />}>
+        {mostrada?.tipo === "modulo" ? (
+          <>
+            <p className="modulos-panel-desc">{t(`agentes.iris.sistema.${mostrada.modulo}`)}</p>
+            <CostRow {...costoDe(accionDe(mostrada.modulo), mision)} />
+          </>
+        ) : mostrada ? (
+          <>
+            <p className="modulos-panel-desc">{t("ui.paso.4.elige")}</p>
+            <ul className="modulos-lista" aria-label={t("ui.paso.4.lista")}>
+              {mision.modulosDisponibles.map((m) => {
+                const listo = colocados.includes(m);
+                return (
+                  <li key={m}>
+                    <button type="button" className={`modulos-ficha${listo ? " modulos-ficha-lista" : ""}`}
+                      disabled={listo} onClick={() => tarjeta.abrir({ tipo: "modulo", modulo: m })}>
+                      <span className="fc">
+                        <span className="fc-cara fc-chico modulos-ficha-cara">
+                          <Icono nombre={iconoDe(m)} tam={30} />
+                          <span className="modulos-ficha-nombre">{t(`ui.paso.4.modulo.${m}`)}</span>
+                          {listo && <span className="modulos-ficha-estado"><Icono nombre="check_exito" tam={18} />{t("ui.paso.4.colocado")}</span>}
                         </span>
-                      </button>
-                    </li>
-                  );
-                })}
-              </ul>
-              <div className="modulos-acciones">
-                <FacetButton labelKey="ui.comun.atras" onClick={tarjeta.cerrar} />
-              </div>
-            </>
-          ) : elegido ? (
-            <DecisionModulo estado={estado} modulo={elegido} faltan={faltan} colocado={colocados.includes(elegido)}
-              onColocar={() => colocar(elegido)} onAtras={tarjeta.cerrar} />
-          ) : null}
-        </div>
-      </TarjetaContextual>
+                      </span>
+                    </button>
+                  </li>
+                );
+              })}
+            </ul>
+          </>
+        ) : null}
+      </TarjetaDelFlujo>
     </section>
   );
 }
 
-/** Panel 02 de `ui/04`: la experta, el costo ahora y después, y confirmar o volver. */
-function DecisionModulo({ estado, modulo, faltan, colocado, onColocar, onAtras }: {
+/** Acciones del panel 02 de `ui/04`: confirmar o volver. Se monta de nuevo con cada módulo. */
+function AccionesModulo({ estado, modulo, faltan, colocado, onColocar, onAtras }: {
   estado: GameState;
   modulo: Equipment;
   faltan: number;
@@ -170,8 +178,6 @@ function DecisionModulo({ estado, modulo, faltan, colocado, onColocar, onAtras }
   onColocar: () => void;
   onAtras: () => void;
 }) {
-  const { t } = useT();
-  const { inmediato, retrasado } = costoDe(accionDe(modulo), mision);
   const permiso = puedeAplicar(estado, accionDe(modulo), mision);
   const motivoKey = permiso.ok ? undefined
     : faltan <= 0 ? "ui.paso.4.motivo.lleno"
@@ -180,22 +186,11 @@ function DecisionModulo({ estado, modulo, faltan, colocado, onColocar, onAtras }
   const [enviado, setEnviado] = useState(false);
   return (
     <>
-      <header className="modulos-panel-cab">
-        <ExpertPortrait persona={expertaDe(modulo)} compacto />
-        <h3 id="modulos-panel-titulo">{t(`ui.paso.4.modulo.${modulo}`)}</h3>
-        <span className="modulos-experta">{t(`ui.comun.retrato.${expertaDe(modulo)}.nombre`)}</span>
-      </header>
-      <div className="modulos-panel-cuerpo">
-        <p className="modulos-panel-desc">{t(`agentes.iris.sistema.${modulo}`)}</p>
-        <CostRow inmediato={inmediato} retrasado={retrasado} />
-      </div>
-      <div className="modulos-acciones">
-        <FacetButton variant="primary" icon="check" className="modulos-colocar"
-          labelKey={colocado ? "ui.paso.4.colocado" : "ui.paso.4.colocar"} selected={colocado || undefined}
-          disabled={colocado || enviado || !permiso.ok} disabledReasonKey={motivoKey}
-          onClick={() => { if (colocado || enviado || !permiso.ok) return; setEnviado(true); onColocar(); }} />
-        <FacetButton labelKey="ui.comun.atras" onClick={onAtras} />
-      </div>
+      <FacetButton variant="primary" icon="check" className="modulos-colocar"
+        labelKey={colocado ? "ui.paso.4.colocado" : "ui.paso.4.colocar"} selected={colocado || undefined}
+        disabled={colocado || enviado || !permiso.ok} disabledReasonKey={motivoKey}
+        onClick={() => { if (colocado || enviado || !permiso.ok) return; setEnviado(true); onColocar(); }} />
+      <FacetButton labelKey="ui.comun.atras" onClick={onAtras} />
     </>
   );
 }

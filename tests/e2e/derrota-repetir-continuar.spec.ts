@@ -11,15 +11,15 @@ test.beforeEach(async ({ page }) => arrancarEnCalidadBaja(page));
 
 const TURNO_MS = 4000;
 
-/** De la portada a la base viva: primer sitio y los dos primeros módulos. */
 /** E1: la tarjeta del módulo nace al preguntar a la Ingeniera; se elige el primer módulo libre y se coloca. */
 async function colocarModulo(page: Page) {
   await page.getByRole("button", { name: "Ask the Engineer" }).click();
-  await page.locator('[data-tarjeta="contextual"] ul button:not([disabled])').first().click();
+  await page.locator('[role="dialog"].tc ul button:not([disabled])').first().click();
   await page.getByRole("button", { name: "Place", exact: true }).click();
-  await expect(page.locator('[data-tarjeta="contextual"]')).toHaveCount(0);
+  await expect(page.locator('[role="dialog"].tc')).toHaveCount(0);
 }
 
+/** De la portada a la base viva: primer sitio y los dos primeros módulos. */
 async function llegarALaBase(page: Page) {
   await page.getByRole("button", { name: "Start mission" }).click();
   await page.getByRole("button", { name: "Skip intro" }).click();
@@ -149,17 +149,17 @@ test("perder WebGL deja la misma partida en el respaldo 2D, y el mapa lleva al n
 
   // Sin escena que camine, el mapa deja al niño en el lugar elegido y [E] ofrece lo que se hace allí.
   await page.getByRole("button", { name: "Map", exact: true }).click();
-  await page.getByRole("list", { name: "Places" }).getByRole("button", { name: /^Workshop/ }).click();
-  await expect(page.getByRole("button", { name: "Repair Iris in the workshop" })).toBeVisible();
-  await page.getByRole("button", { name: "Repair Iris in the workshop" }).click();
+  // La consola, no el taller: reparar a Iris solo se ofrece desde el paso 6, cuando se revela la avería (#339).
+  await page.getByRole("list", { name: "Places" }).getByRole("button", { name: /^Mission control/ }).click();
+  await expect(page.getByRole("button", { name: "Wait a turn at the console" })).toBeVisible();
+  await page.getByRole("button", { name: "Wait a turn at the console" }).click();
   await expect(page.getByRole("dialog")).toBeVisible();
   await page.getByRole("dialog").getByRole("button", { name: "Back" }).click();
   expect(await energia(page)).toBe(energiaAntes);
 
   // E2: la tecla E va por la misma vía que el botón (un solo manejador) y abrir no cobra (invariante 1).
-  // Con la hoja abierta el mundo está bloqueado: primero se cierra, después E vuelve a abrir el plan.
-  await page.getByRole("button", { name: "Close", exact: true }).click();
-  await expect(page.getByRole("button", { name: "Repair Iris in the workshop" })).toBeVisible();
+  // Con algo abierto el mundo está bloqueado; cerrado el plan, E vuelve a abrirlo desde la consola.
+  await expect(page.getByRole("button", { name: "Wait a turn at the console" })).toBeVisible();
   // Con el reloj simulado los efectos de React esperan a que corra el tiempo (en pausa: ningún turno pasa).
   await page.clock.runFor(100);
   await page.keyboard.press("e");
