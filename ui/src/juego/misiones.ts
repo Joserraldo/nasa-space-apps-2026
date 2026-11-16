@@ -7,6 +7,7 @@ import {
   type Mision,
 } from "@solar-shield/missions";
 import { SEMILLA_DORADA } from "@solar-shield/engine";
+import { aplicarTemaMundo, temaDeMision } from "../escena/temaMundo.js";
 
 /**
  * EXPERIMENTAL: catálogo de misiones jugables desde la interfaz. Jezero va primero y es la de
@@ -48,5 +49,6 @@ export function misionDeLaUrl(): { misionId: string; semilla: string } {
  * sería lo limpio si esto pasa a producción.
  */
 let activa: Mision = MISION_JEZERO;
-export function fijarMision(m: Mision): void { activa = m; }
+/** También pinta el mundo 3D de esa misión (escena/temaMundo.ts) antes de que se monte. */
+export function fijarMision(m: Mision): void { activa = m; aplicarTemaMundo(temaDeMision(m.id)); }
 export function misionActiva(): Mision { return activa; }
