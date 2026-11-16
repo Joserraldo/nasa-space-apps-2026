@@ -94,6 +94,8 @@ export function PantallaModulos({ estado, colocados, onColocar, onListo, bienven
         tormentaActiva: false,
         dosisMarte: referenciaDosis("marte-superficie"),
         vecesFallaIris: 0,
+        // #401: colocando módulos (paso 4) la avería de Iris todavía no se revela.
+        averiaRevelada: false,
       })
     : null;
 

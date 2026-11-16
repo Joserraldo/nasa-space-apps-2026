@@ -28,4 +28,18 @@ describe("conversar: una entrada para el panel de ui", () => {
     expect(d.lineas[0]?.clave).toBe("agentes.ingeniera.reparar.ok");
     expect(d.accion).toEqual({ tipo: "reparar", equipo: "ia_base" });
   });
+  it("#401: antes de revelar la avería, Iris contesta como en el tutorial y nadie la da por rota", () => {
+    const antes = { ...o, averiaRevelada: false };
+    const d = conversar({ texto: "ayuda" }, s, antes) as { falla?: unknown; lineas: { clave: string }[] };
+    expect(d.falla).toBeUndefined();
+    expect(JSON.stringify(d.lineas)).not.toMatch(/danada|averi|falla/);
+    // La Ingeniera tampoco la reporta averiada al hablar de energía.
+    expect(JSON.stringify(conversar({ experto: "ingeniera" }, s, antes).lineas)).not.toMatch(/ia_base.*averiado/);
+    // La verdad sigue en el motor: el estado no cambia.
+    expect(s.iaBase).toBe("danada");
+  });
+  it("#401: revelada (o sin decirlo, como antes), pedirle ayuda devuelve su falla", () => {
+    const d = conversar({ texto: "ayuda" }, s, { ...o, averiaRevelada: true }) as { falla?: { forma: string } };
+    expect(d.falla?.forma).toBe("numero_falso");
+  });
 });

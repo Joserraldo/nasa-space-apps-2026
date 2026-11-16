@@ -202,6 +202,8 @@ export function PantallaBase({ estado, colocados = [], ultimas, hud, progreso = 
     setOcupado(true);
     const r = await conversarConRed(entrada, estado, memoriaActual.current, {
       tormentaActiva: tormentaActiva(estado), dosisMarte: referenciaDosis("marte-superficie"), vecesFallaIris: fallasIris, reaccion: reaccionTripulacion,
+      // #401: antes del paso de la revelación Iris habla como si estuviera bien (igual que su guía en la escena).
+      averiaRevelada: averiaIrisRevelada(estado),
     });
     if (n !== solicitud.current) return;
     setOcupado(false);
