@@ -513,7 +513,7 @@ export function crearEscena3D(canvas: HTMLCanvasElement, opciones: OpcionesEscen
     zoom = 1;
     ultimoGiroManual = -Infinity;
   };
-  const entradaTactil = new EntradaTactil({ onRecentrar: recentrar, permiteZoom: () => camaraActual === "tercera" });
+  const entradaTactil = new EntradaTactil({ onRecentrar: recentrar, permiteZoom: () => camaraActual === "tercera", onSaltar: () => mov.saltar() });
 
   // --- Proximidad, posición y atributos de prueba ---
   let ultimoLugar: LugarId | null = lugarCercano(mov.jugador.x, mov.jugador.z);
@@ -630,7 +630,8 @@ export function crearEscena3D(canvas: HTMLCanvasElement, opciones: OpcionesEscen
     const k = reducido || dt <= 0 ? 1 : 1 - Math.exp(-SEGUIMIENTO * dt);
     pivote.x += (j.x - pivote.x) * k;
     pivote.z += (j.z - pivote.z) * k;
-    pivote.y += (j.y - pivote.y) * k;
+    // En el aire la cámara no sube con el niño: así el salto se ve (A5). Apoyado, sigue el relieve.
+    if (j.apoyado) pivote.y += (j.y - pivote.y) * k;
 
     const sy = Math.sin(yaw), cy = Math.cos(yaw);
     const fx = -sy, fz = -cy; // adelante de la cámara
@@ -716,6 +717,7 @@ export function crearEscena3D(canvas: HTMLCanvasElement, opciones: OpcionesEscen
     tripulacion.iris.grupo.position.set(iris.x, 0, iris.z);
     tripulacion.iris.grupo.rotation.y = iris.rumbo;
     tripulacion.actores.caminando = mov.velocidad > 0.2;
+    tripulacion.actores.salto = mov.salto;
     tripulacion.actores.velocidadIris = mov.velocidadIris;
     tripulacion.actores.modoIris = iris.modo;
 
@@ -771,6 +773,12 @@ export function crearEscena3D(canvas: HTMLCanvasElement, opciones: OpcionesEscen
     if (bloqueado) return;
     if (teclado.presionar(e.code)) return;
     if (e.repeat) return;
+    // Espacio salta (A5). Sobre un botón, el espacio es del botón.
+    if (e.code === "Space" && (e.target as HTMLElement | null)?.tagName !== "BUTTON") {
+      e.preventDefault();
+      mov.saltar();
+      return;
+    }
     if (e.code === "KeyV" || e.key === "v" || e.key === "V") {
       opciones.alCambiarCamara?.();
       return;
