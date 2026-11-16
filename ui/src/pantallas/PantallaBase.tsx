@@ -5,7 +5,7 @@ import { referenciaDosis } from "@solar-shield/data";
 import { telemetriaPendiente, tormentaActiva, type Novedades } from "@solar-shield/engine";
 import { useT } from "../i18n.js";
 import { describirAccion } from "../componentes/Dialogos.js";
-import { DialogoExperto } from "../componentes/DialogoExperto.js";
+import { actorDeExperto, DialogoExperto, duracionGlobo, formaDeDialogo } from "../componentes/DialogoExperto.js";
 import { ControlesTactiles, useModoTactil } from "../componentes/ControlesTactiles.js";
 import { HudBase, hudVisible, PROGRESO_INICIAL, type HudBaseProps, type ProgresoHud } from "../componentes/HudBase.js";
 import { MISION_JEZERO } from "@solar-shield/missions";
@@ -72,6 +72,8 @@ export function PantallaBase({ estado, colocados = [], ultimas, hud, progreso = 
   const tactil = useModoTactil();
   const [plan, setPlan] = useState<BaseAction | null>(null);
   const [dialogo, setDialogo] = useState<Dialogo | null>(null);
+  // E5: línea corta dicha en el mundo. Va en el globo sobre quien habla y se va sola al terminar de leerse.
+  const [corto, setCorto] = useState<{ actor: ActorId; experto: string; texto: string; n: number } | null>(null);
   const [panel, setPanel] = useState<Panel>(null);
   const [preguntada, setPreguntada] = useState<string | null>(null);
   const [texto, setTexto] = useState("");
@@ -143,16 +145,27 @@ export function PantallaBase({ estado, colocados = [], ultimas, hud, progreso = 
     if (registro && !registro.despues && estado !== registro.antes) { setRegistro({ antes: registro.antes, despues: estado }); hoja.current?.scrollTo({ top: 0 }); }
   }, [estado, registro]);
 
-  function hablar(entrada: Entrada) {
+  /**
+   * `desdeMundo`: la conversación nace en el mundo (`[E]` en un lugar o un tripulante) sin una decisión
+   * abierta. Solo así, si es corta y quien habla está en escena, va al globo (E5); si no, a la franja.
+   */
+  function hablar(entrada: Entrada, desdeMundo = false) {
     const d = conversar(entrada, estado, { tormentaActiva: tormentaActiva(estado), dosisMarte: referenciaDosis("marte-superficie"), vecesFallaIris: fallasIris });
     if ("falla" in d) setFallasIris((n) => n + 1);
-    setDialogo(d);
+    const actor = actorDeExperto(d.experto);
+    if (desdeMundo && actor && !mundo.sin3d && formaDeDialogo(d) === "globo") {
+      setDialogo(null);
+      setCorto((c) => ({ actor, experto: d.experto, texto: d.lineas.map((l) => t(l.clave, l.vars)).join(" "), n: (c?.n ?? 0) + 1 }));
+    } else {
+      setCorto(null);
+      setDialogo(d);
+    }
     // E3: la primera conversación con la tripulación trae `Crew` al HUD.
     if (!progreso.conversado) onProgreso?.({ conversado: true });
   }
-  function preguntar(id: GameState["tripulacion"][number]["id"]) {
+  function preguntar(id: GameState["tripulacion"][number]["id"], desdeMundo = false) {
     setPreguntada(id);
-    hablar({ experto: id });
+    hablar({ experto: id }, desdeMundo);
   }
   function enviarTexto(ev: React.FormEvent) {
     ev.preventDefault();
@@ -180,7 +193,7 @@ export function PantallaBase({ estado, colocados = [], ultimas, hud, progreso = 
     const uso = usoDelLugar(l, estado);
     recordarOrigen();
     setPanel(null);
-    if (uso.consulta) hablar(uso.consulta); else setDialogo(null);
+    if (uso.consulta) hablar(uso.consulta, !uso.accion); else setDialogo(null);
     if (uso.accion) abrirPlan(uso.accion);
     else requestAnimationFrame(() => hoja.current?.querySelector<HTMLElement>("button")?.focus());
   }
@@ -191,7 +204,7 @@ export function PantallaBase({ estado, colocados = [], ultimas, hud, progreso = 
     if (plan || registro || a === "nino") return;
     recordarOrigen();
     setPanel(null);
-    if (a === "iris") hablar({ experto: "ia_base" }); else preguntar(a);
+    if (a === "iris") hablar({ experto: "ia_base" }, true); else preguntar(a, true);
     mundo.fijarHablando(a);
   }
   const conActor = useRef(hablarCon);
@@ -204,7 +217,17 @@ export function PantallaBase({ estado, colocados = [], ultimas, hud, progreso = 
     });
     return () => mundo.fijarUso(null);
   }, [mundo.fijarUso]);
-  useEffect(() => { if (!dialogo) mundo.fijarHablando(null); }, [dialogo, mundo.fijarHablando]);
+  useEffect(() => { if (!dialogo && !corto) mundo.fijarHablando(null); }, [dialogo, corto, mundo.fijarHablando]);
+  // E5: el globo sobre quien habla, y que se vaya solo; abrir un panel o una decisión también lo quita.
+  useEffect(() => {
+    if (!corto) { mundo.fijarGlobo(null); return; }
+    mundo.fijarGlobo({ actor: corto.actor, texto: corto.texto });
+    mundo.fijarHablando(corto.actor);
+    const id = window.setTimeout(() => setCorto(null), duracionGlobo(corto.texto));
+    return () => window.clearTimeout(id);
+  }, [corto, mundo.fijarGlobo, mundo.fijarHablando]);
+  useEffect(() => { if (hayPanel) setCorto(null); }, [hayPanel]);
+  useEffect(() => () => mundo.fijarGlobo(null), [mundo.fijarGlobo]);
 
   // Teclado (ESCENAS §3.5): Esc cierra lo de más arriba (el panel de confirmación se cierra solo).
   // `[E]` no se escucha aquí: tiene un solo manejador, en MundoBase (E2).
@@ -226,6 +249,10 @@ export function PantallaBase({ estado, colocados = [], ultimas, hud, progreso = 
 
   return (
     <section className={`base-e6${hayPanel ? " base-e6-con-panel" : ""}`} aria-label={t("ui.hud.titulo")}>
+      {/* E5: el globo vive en la escena (oculta para el lector de pantalla); aquí se anuncia la misma línea. */}
+      <p className="oculto-visual" role="status" aria-live="polite">
+        {corto ? t("ui.base.globo.lector", { quien: t(`agentes.titulo.${corto.experto}`), texto: corto.texto }) : ""}
+      </p>
       <HudBase estado={estado} ultimas={ultimas} reloj={hud.reloj} objetivo={{ labelKey: objetivo.labelKey, vars: objetivo.vars }} tactil={tactil} panelAbierto={hayPanel} visible={visible}
         mundo={{
           onTripulacion: () => alternarPanel("tripulacion"),
