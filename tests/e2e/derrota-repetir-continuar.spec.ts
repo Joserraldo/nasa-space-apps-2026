@@ -176,8 +176,9 @@ test("perder WebGL deja la misma partida en el respaldo 2D, y el mapa lleva al n
 
   await page.getByRole("button", { name: "Map", exact: true }).click();
   await page.getByRole("list", { name: "Places" }).getByRole("button", { name: /^Workshop/ }).click();
-  await expect(page.getByRole("button", { name: /Ask the Engineer/ })).toBeVisible();
-  await page.getByRole("button", { name: /Ask the Engineer/ }).click();
+  // Acercarse al taller no abre el plan de reparación: abre la consulta con la Ingeniera (INTEGRACION-FRENTE-B).
+  await expect(page.getByRole("button", { name: "Talk", exact: true })).toBeVisible();
+  await page.getByRole("button", { name: "Talk", exact: true }).click();
   await expect(page.getByRole("heading",{name:"Engineer",exact:true})).toBeVisible();
   await page.getByRole("button",{name:"Close",exact:true}).click();
   expect(await energia(page)).toBe(energiaAntes);

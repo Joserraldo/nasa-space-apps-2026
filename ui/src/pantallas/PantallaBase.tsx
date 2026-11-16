@@ -256,7 +256,10 @@ export function PantallaBase({ memoria = MEMORIA_INICIAL, vistos = [], onConvers
   }, []);
 
   const uso = mundo.cercano ? usoDelLugar(mundo.cercano, estado) : null;
-  const consultaCercana=mundo.cercano && ["taller","habitat","sensor"].includes(mundo.cercano);
+  // Acercarse al taller o al refugio abre la consulta con su experta (INTEGRACION-FRENTE-B), no el plan de
+  // acción: el aviso `[E]` dice "Talk" para no prometer la reparación o el refugio. El sensor no entra: su
+  // etiqueta ("Ask the Solar Meteorologist") ya describe la conversación y la e2e de E3 la comprueba.
+  const consultaCercana = mundo.cercano === "taller" || mundo.cercano === "habitat";
   const disponibles = estado.tripulacion.filter((m) => m.disponible);
   const cerrable = (panel !== null || dialogo !== null) && !plan && !registro;
   const tituloHoja = registro ? "ui.decision.titulo" : plan ? "ui.decision.panel" : panel === "mapa" ? "ui.mapa.titulo" : panel === "tripulacion" ? "ui.tripulacion.titulo" : "ui.base.consulta";
@@ -267,7 +270,7 @@ export function PantallaBase({ memoria = MEMORIA_INICIAL, vistos = [], onConvers
         mundo={{
           onTripulacion: () => alternarPanel("tripulacion"),
           onMapa: () => alternarPanel("mapa"),
-          interaccion: hayPanel ? undefined : mundo.interactivo?.tipo === "lugar" ? (uso ? { labelKey: uso.labelKey, onUsar: mundo.usarCercano } : undefined)
+          interaccion: hayPanel ? undefined : mundo.interactivo?.tipo === "lugar" ? (uso ? { labelKey: consultaCercana ? "ui.tripulacion.hablar" : uso.labelKey, onUsar: mundo.usarCercano } : undefined)
             : mundo.interactivo ? { labelKey: `ui.interaccion.${verboDe(mundo.interactivo, "base")}`, onUsar: mundo.usarCercano } : undefined,
 
           camara: mundo.camara,
@@ -276,7 +279,7 @@ export function PantallaBase({ memoria = MEMORIA_INICIAL, vistos = [], onConvers
 
       {tactil && !hayPanel && (
         <ControlesTactiles entrada={mundo.entrada} camara={mundo.camara} onCamara={mundo.alternarCamara}
-          accion={uso && mundo.cercano ? { labelKey: uso.labelKey, cortoKey: `${uso.labelKey}.corto`, icono: uso.icono, onUsar: mundo.usarCercano } : undefined} />
+          accion={uso && mundo.cercano ? { labelKey: consultaCercana ? "ui.tripulacion.hablar" : uso.labelKey, cortoKey: consultaCercana ? "ui.tripulacion.hablar" : `${uso.labelKey}.corto`, icono: uso.icono, onUsar: mundo.usarCercano } : undefined} />
 
       )}
 
