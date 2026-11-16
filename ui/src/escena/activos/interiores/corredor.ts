@@ -8,10 +8,10 @@
  * Ejes: el corredor va a lo largo de z, de z = 0 (puerta del fondo) a z = `largo` (entrada); piso en y = 0.
  */
 import * as THREE from "three";
-import { colorToken, geometriaBase, type Materiales } from "../../materiales";
+import { geometriaBase, type Materiales } from "../../materiales";
 import { caja, grupo, parte } from "../piezasComunes";
+import { tinte } from "./comun";
 
-type Token = Parameters<typeof colorToken>[0];
 
 /** Medidas interiores del corredor (m). [E] proporciones de la lámina. */
 /** `chaflanBajo`: paneles bajos cortos, como en la lámina, para que el piso plano sea ancho. */
@@ -23,19 +23,6 @@ export function zonaCorredor(largo: number = CORREDOR_INTERIOR.largo) {
     caminable: { x0: -0.85, x1: 0.85, z0: 0.7, z1: largo - 0.4 },
     entrada: { x: 0, z: largo - 1, rumbo: Math.PI },
   } as const;
-}
-
-/** Copia de `g` pintada con color de vértice (`a` hacia `b` en `t`), para el slot `Rock`: sin materiales nuevos. */
-function tinte(clave: string, g: THREE.BufferGeometry, a: Token, b: Token, t: number): THREE.BufferGeometry {
-  return geometriaBase(`int-tinte-${clave}-${a}-${b}-${t}`, () => {
-    const c = g.clone();
-    const color = colorToken(a).lerp(colorToken(b), t);
-    const n = c.getAttribute("position").count;
-    const col = new Float32Array(n * 3);
-    for (let i = 0; i < n; i++) col.set([color.r, color.g, color.b], i * 3);
-    c.setAttribute("color", new THREE.BufferAttribute(col, 3));
-    return c;
-  });
 }
 
 /** Vértices del octógono interior (sentido antihorario visto desde +z), piso en y = 0. */
