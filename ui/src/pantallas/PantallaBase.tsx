@@ -400,10 +400,11 @@ export function PantallaBase({ estado, colocados = [], ultimas, hud, progreso = 
 
                   <section className="fc"><div className="fc-cara base-bloque">
                     <h2>{t("ui.tripulacion.titulo")}</h2>
+                    <p className="base-ayuda">{t("ui.base.tripulacion.guia")}</p>
                     <ul className="base-expertos">
                       {disponibles.map((m) => (
                         <li key={m.id}>
-                          <ExpertPortrait persona={m.id as Persona} compacto seleccionado={preguntada === m.id} onElegir={() => preguntar(m.id)} />
+                          <ExpertPortrait persona={m.id as Persona} seleccionado={preguntada === m.id} onElegir={() => { preguntar(m.id); hoja.current?.scrollTo?.({ top: 0 }); }} />
                         </li>
                       ))}
                     </ul>
@@ -412,9 +413,21 @@ export function PantallaBase({ estado, colocados = [], ultimas, hud, progreso = 
                       <input id="base-campo" type="text" value={texto} onChange={(e) => setTexto(e.target.value)} placeholder={t("ui.base.tripulacion.campo")} />
                       <FacetButton type="submit" labelKey="ui.tripulacion.enviar" busy={ocupado} onClick={() => undefined} />
                     </form>
+                    <div className="base-chips" role="group" aria-label={t("ui.base.charla.opciones")}>
+                      {(
+                        [
+                          { con: "ingeniera", labelKey: "ui.base.tripulacion.chip.energia", queryKey: "ui.base.tripulacion.chip.energia_q" },
+                          { con: "doctora", labelKey: "ui.base.tripulacion.chip.salud", queryKey: "ui.base.tripulacion.chip.salud_q" },
+                          { con: "meteorologa", labelKey: "ui.base.tripulacion.chip.tormenta", queryKey: "ui.base.tripulacion.chip.tormenta_q" },
+                        ] as const
+                      ).map((q) => (
+                        <FacetButton key={q.labelKey} labelKey={q.labelKey} disabled={ocupado}
+                          onClick={() => { setPreguntada(q.con); void hablar({ via: "texto", con: q.con, texto: t(q.queryKey) }); hoja.current?.scrollTo?.({ top: 0 }); }} />
+                      ))}
+                    </div>
                   </div></section>
 
-                  <details className="fc base-registro"><summary className="fc-cara fc-chico">{t("ui.paso.8.titulo")}</summary>
+                  <details className="fc base-registro"><summary className="fc-cara fc-chico"><span>{t("ui.paso.8.titulo")}</span></summary>
                     <ul>
                       {[...estado.causas].reverse().slice(0, 30).map((c, i) => (
                         <li key={i}>

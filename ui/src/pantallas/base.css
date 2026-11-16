@@ -30,19 +30,27 @@
 .base-ayuda { font-size: 16px; }
 .base-acciones { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: var(--esp-2); }
 .base-acciones .fb-caja, .base-acciones .fb { inline-size: 100%; }
-.base-acciones .fb-texto { white-space: normal; }
+.base-acciones .fb { height: auto; min-height: var(--fb-alto); }
+.base-acciones .fb-superficie { min-height: var(--fb-alto); padding-block: var(--esp-2); padding-inline: calc(var(--fb-punta) + var(--esp-3)); }
+.base-acciones .fb-texto { white-space: normal; text-align: center; line-height: 1.15; }
 
 .base-expertos { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--esp-2); }
 .base-expertos .retrato-ficha { inline-size: 100%; min-width: 0; padding-inline: var(--esp-1); }
-.base-expertos .retrato-nombre { font-size: 16px; text-wrap: balance; }
-.base-expertos .retrato-especialidad { display: none; }
+.base-expertos .retrato-marco { width: 72px; height: 72px; }
+.base-expertos .retrato-marco :is(svg, .retrato-img) { width: 66px; height: 66px; }
+.base-expertos .retrato-nombre { font-size: 15px; text-wrap: balance; text-align: center; }
+.base-expertos .retrato-especialidad { display: flex; justify-content: center; flex-wrap: wrap; white-space: normal; font-size: 13px; line-height: 1.15; text-align: center; text-wrap: balance; }
 .base-preguntar { display: flex; gap: var(--esp-2); align-items: center; min-inline-size: 0; }
 .base-preguntar input { flex: 1; min-inline-size: 0; min-block-size: var(--toque-minimo); font-size: 16px; background: var(--color-marfil); border-color: color-mix(in srgb, var(--color-ciruela) 40%, transparent); }
 .base-preguntar .fb-caja { flex: none; }
+.base-chips, .dialogo-franja-opciones { display: flex; flex-wrap: wrap; gap: var(--esp-2); align-items: center; }
+.dialogo-franja-opciones { margin-top: var(--esp-2); justify-content: flex-end; }
+.base-chips .fb { height: auto; min-height: 40px; }
+.base-chips .fb-superficie { min-height: 40px; padding-block: 6px; padding-inline: 16px; font-size: 14px; }
 
 .base-registro > summary { list-style: none; cursor: pointer; padding: var(--esp-2) var(--esp-4); min-block-size: var(--toque-minimo); display: flex; align-items: center; gap: var(--esp-2); font-weight: var(--tipo-peso-etiqueta); }
 .base-registro > summary::-webkit-details-marker { display: none; }
-.base-registro > summary::after { content: ""; inline-size: 10px; block-size: 10px; margin-inline-start: auto; background: currentColor;
+.base-registro > summary::after { content: ""; position: relative; z-index: 1; inline-size: 10px; block-size: 10px; margin-inline-start: auto; background: currentColor;
   clip-path: polygon(0 20%, 100% 20%, 50% 90%); }
 .base-registro[open] > summary::after { clip-path: polygon(0 80%, 100% 80%, 50% 10%); }
 .base-registro ul { list-style: none; margin: var(--esp-2) 0 0; padding: var(--esp-2) var(--esp-3); display: grid; gap: var(--esp-1); background: var(--color-marfil); font-size: 16px; }

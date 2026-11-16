@@ -215,9 +215,11 @@ export function crearSistema(): SistemaEscena {
       const estadoEscudo = v?.modulos.escudo ?? "ausente";
       const hayTormenta = Boolean(enMision && (v?.tormenta.activa || v?.tormenta.anunciada || v?.fase === "tormenta"));
 
-      // El domo del escudo solo se despliega durante la misión cuando el módulo escudo está instalado/operativo,
-      // o cuando se previsualiza su instalación en el paso de módulos.
-      const escudoActivo = (enMision && estadoEscudo === "funcionando") || estadoEscudo === "instalando";
+      // El domo del escudo se despliega al previsualizar el módulo, cuando el módulo escudo funciona en
+      // misión o cuando la tripulación ejecuta "Subir el escudo" durante la tormenta.
+      const escudoActivo =
+        estadoEscudo === "instalando" ||
+        (enMision && (estadoEscudo === "funcionando" || Boolean(v?.escudoElevado)));
       const metaDespliegue = escudoActivo ? (hayTormenta ? 1.0 : 0.88) : 0;
 
       const paso = Math.min(0.1, Math.max(0.016, dt));
@@ -236,8 +238,8 @@ export function crearSistema(): SistemaEscena {
         aroMat.opacity = (0.45 + 0.25 * uHitActual) * despliegue;
       }
 
-      // Alerta visual para obligar/guiar a activar el escudo cuando hay tormenta
-      const mostrarAlerta = hayTormenta && !escudoActivo;
+      // Guía en el suelo solo durante exploración libre cuando la tormenta está golpeando y falta escudo
+      const mostrarAlerta = Boolean(enMision && v?.tormenta.activa && v?.fase === "base" && !escudoActivo);
       aroAlerta.visible = mostrarAlerta;
       if (mostrarAlerta) {
         const pulso = 1 + 0.18 * Math.sin(t * 6);

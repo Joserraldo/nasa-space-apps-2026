@@ -189,7 +189,7 @@ export function PantallaModulos({ estado, colocados, onColocar, onListo }: {
                 {ancla ? (
                   <FacetButton variant="primary" icon="check" labelKey="ui.paso.4.construir"
                     labelVars={{ moduloKey: `ui.paso.4.modulo.${ancla}` }}
-                    onClick={usarCercano} />
+                    onClick={() => abrirAccion.current()} />
                 ) : (
                   <FacetButton variant="primary" icon={expertaCercana ? "tripulacion" : "check"}
                     labelKey="ui.paso.4.preguntar" onClick={() => tarjeta.abrir({ tipo: "elegir" })} />
