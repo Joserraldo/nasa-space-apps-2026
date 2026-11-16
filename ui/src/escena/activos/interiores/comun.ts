@@ -1,7 +1,6 @@
 /**
  * Piezas comunes de las salas interiores (D5): tonos por color de vértice y la caja de una sala en corte
  * (piso, pared del fondo con el vano de la puerta, laterales y un tramo de pasillo detrás del vano).
- * El taller todavía tiene su copia; se unifica cuando se fusione #381.
  */
 import * as THREE from "three";
 import { colorToken, geometriaBase, type Materiales } from "../../materiales";
@@ -9,9 +8,13 @@ import { caja, chaflan, crearPuerta, grupo, parte } from "../piezasComunes";
 
 export type Token = Parameters<typeof colorToken>[0];
 
-/** Copia de `g` pintada con color de vértice (`a` hacia `b` en `t`), para el slot `Rock`: sin materiales nuevos. */
+/**
+ * Copia de `g` pintada con color de vértice (`a` hacia `b` en `t`), para el slot `Rock`: sin materiales nuevos.
+ * La caché usa el id de `g` (las geometrías del kit son únicas por forma): dos piezas con el mismo `clave` y
+ * colores pero distinta forma no se pisan. `clave` queda solo para leer el código.
+ */
 export function tinte(clave: string, g: THREE.BufferGeometry, a: Token, b: Token, t: number): THREE.BufferGeometry {
-  return geometriaBase(`int-tinte-${clave}-${a}-${b}-${t}`, () => {
+  return geometriaBase(`int-tinte-${clave}-${g.uuid}-${a}-${b}-${t}`, () => {
     const c = g.clone();
     const color = colorToken(a).lerp(colorToken(b), t);
     const n = c.getAttribute("position").count;
