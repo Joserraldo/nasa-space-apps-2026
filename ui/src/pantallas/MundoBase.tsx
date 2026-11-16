@@ -3,7 +3,7 @@ import type { Equipment, GameState } from "@solar-shield/contracts";
 import { tormentaActiva } from "@solar-shield/engine";
 import type { CamaraEscena, EventoDestino, PosicionJugador } from "../escena/EscenaBase.js";
 import type { EntradaTactil } from "../escena/entradaTactil.js";
-import { interactivoDeLugar, type ActorId, type Interactivo, type SalaId } from "../escena/frontera.js";
+import { interactivoDeLugar, type ActorId, type GloboEscena, type Interactivo, type SalaId } from "../escena/frontera.js";
 import { INICIO_JUGADOR, LUGARES, lugar } from "../escena/mundo.js";
 import { hayGraficos3D } from "../escena/soporte.js";
 import { vistaEscena, type FaseVista, type LugarObjetivo } from "../escena/vista.js";
@@ -48,13 +48,15 @@ export interface Mundo {
   fijarUso(fn: ((i: Interactivo) => void) | null): void;
   /** Quién habla en el diálogo abierto: la escena lo gira hacia el niño. */
   fijarHablando(a: ActorId | null): void;
+  /** Línea corta sobre el actor que habla (E5); `null` lo quita. El texto llega traducido. */
+  fijarGlobo(g: GloboEscena | null): void;
   /** Lugar adonde guía Iris ahora: la escena lo resalta (`VistaEscena.lugarObjetivo`). */
   fijarObjetivo(l: LugarObjetivo | null): void;
 }
 
 const NADA = () => undefined;
 const MUNDO_VACIO: Mundo = {
-  sin3d: true, cercano: null, interactivo: null, sala: "exterior", usarCercano: NADA, fijarHablando: NADA, camara: "tercera", alternarCamara: NADA, destino: null, irA: NADA, entrada: null,
+  sin3d: true, cercano: null, interactivo: null, sala: "exterior", usarCercano: NADA, fijarHablando: NADA, fijarGlobo: NADA, camara: "tercera", alternarCamara: NADA, destino: null, irA: NADA, entrada: null,
   movimientoReducido: true, fijarBloqueado: NADA, fijarInstalando: NADA, fijarUso: NADA, fijarObjetivo: NADA,
 };
 const MundoContexto = createContext<Mundo>(MUNDO_VACIO);
@@ -133,6 +135,7 @@ export function MundoBase({ fase, estado, colocados, calidad, movimientoReducido
   const [alcance, setAlcance] = useState<Interactivo | null>(null);
   const [sala, setSala] = useState<SalaId>("exterior");
   const [hablando, setHablando] = useState<ActorId | null>(null);
+  const [globo, setGlobo] = useState<GloboEscena | null>(null);
 
   // Escribir en un campo (preguntar a la tripulación) frena el mundo: las letras no lo mueven.
   useEffect(() => {
@@ -194,7 +197,7 @@ export function MundoBase({ fase, estado, colocados, calidad, movimientoReducido
     if (l) { const p = lugar(l); setPosicion({ x: p.x, z: p.z }); }
   }, [sin3d]);
   const mundo = useMemo<Mundo>(() => ({
-    sin3d, cercano, interactivo, sala, usarCercano, fijarHablando: setHablando, camara, alternarCamara, destino, irA, entrada, movimientoReducido,
+    sin3d, cercano, interactivo, sala, usarCercano, fijarHablando: setHablando, fijarGlobo: setGlobo, camara, alternarCamara, destino, irA, entrada, movimientoReducido,
     fijarBloqueado: setBloqueadoCapa, fijarInstalando: setInstalando, fijarUso, fijarObjetivo: setLugarObjetivo,
   }), [sin3d, cercano, interactivo, sala, usarCercano, camara, alternarCamara, destino, irA, entrada, movimientoReducido, fijarUso]);
 
@@ -209,6 +212,7 @@ export function MundoBase({ fase, estado, colocados, calidad, movimientoReducido
               onUsar={usarDe}
               sala={sala}
               hablando={hablando}
+              globo={globo}
               onCalidad={onCalidad}
               onWebGLPerdido={() => setSin3d(true)}
               destino={destino}
