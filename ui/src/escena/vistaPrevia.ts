@@ -14,6 +14,7 @@ import { COLORES, conAlfa } from "../estilos/tokens";
 import { traducir, type Idioma, type Vars } from "../i18n";
 import * as THREE from "three";
 import { crearCorredorInterior, zonaCorredor } from "./activos/interiores/corredor";
+import { crearHabitatInterior } from "./activos/interiores/habitat";
 import { crearTaller } from "./activos/interiores/taller";
 import { fusionar } from "./activos/fusionar";
 import { crearEscena3D } from "./escena3d";
@@ -126,10 +127,12 @@ const SALAS_PREVIA = {
   },
   // Taller en corte, como la lámina `estaciones/05`: desde el frente abierto, arriba y a la izquierda.
   taller: () => ({ raiz: crearTaller(crearMateriales()), camara: [-2.5, 5.2, 7.5] as const, mira: [0.4, 0.8, -0.6] as const, luz: [-2, 6, 4] as const }),
+  // Hábitat en corte, como las láminas `estaciones/06` y `07`.
+  habitat: () => ({ raiz: crearHabitatInterior(crearMateriales()), camara: [-2.5, 5.4, 8] as const, mira: [0.3, 0.8, -0.5] as const, luz: [-2, 6, 4] as const }),
 } as const;
 
 /**
- * `?sala=corredor|taller` (D5): una sala sola, en su propia vista, con la cámara de `SALAS_PREVIA`. Luz
+ * `?sala=corredor|taller|habitat` (D5): una sala sola, en su propia vista, con la cámara de `SALAS_PREVIA`. Luz
  * provisional de interior (la definitiva va con A8). Con `?medir=1` muestra fps, draw calls y triángulos.
  */
 function montarSala(sala: keyof typeof SALAS_PREVIA): void {
@@ -180,5 +183,5 @@ function montarSala(sala: keyof typeof SALAS_PREVIA): void {
 }
 
 const salaPedida = parametros.get("sala");
-if (salaPedida === "corredor" || salaPedida === "taller") montarSala(salaPedida);
+if (salaPedida === "corredor" || salaPedida === "taller" || salaPedida === "habitat") montarSala(salaPedida);
 else if (parametros.get("montar") !== "0") montar();

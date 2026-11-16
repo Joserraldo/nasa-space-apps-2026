@@ -57,7 +57,7 @@ test("ruta dorada: de la órbita al resumen, en inglés", async ({ page }) => {
   await page.getByRole("button", { name: "Skip", exact: true }).click();
 
   // Paso 1: la nave suelta el satélite (batería, señal, escudo del satélite).
-  await expect(page.getByRole("heading", { name: "The ship releases the satellite" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Observe Mars" })).toBeVisible();
   for (const m of ["Battery", "Signal", "Satellite shield"]) {
     await expect(page.getByRole("meter", { name: m })).toBeVisible();
   }
