@@ -3,7 +3,7 @@ import type { Cause, CauseOrigin, GameState, SourceCard } from "@solar-shield/co
 import {
   datosUsados, fuenteAprobada, referenciaDosis, regionPoloNorte, tarjetasCienciaFinal, terrenoJezero, tormentasCuradas,
 } from "@solar-shield/data";
-import { modulosColocados, resumenPartida } from "@solar-shield/engine";
+import { modulosColocados, resumenPartida, minimoHistorico } from "@solar-shield/engine";
 import { TEXTOS_JEZERO, type TarjetaCiencia } from "@solar-shield/missions";
 import { misionActiva } from "../juego/misiones.js";
 import { useT } from "../i18n.js";
@@ -53,6 +53,7 @@ export function PantallaFinal({ estado, onOtra, onOtraSemilla }: {
                 <div><dt>{t("ui.final.puntaje")}</dt><dd>{r.puntaje} <span className="final-rango">{t(r.rangoKey)}</span></dd></div>
                 <div><dt>{t("ui.final.dias")}</dt><dd>{r.dias}</dd></div>
               </dl>
+              <MomentoDificil estado={estado} />
               {r.insigniasKeys.length > 0 && (
                 <div className="final-insignias">
                   <p className="final-sub">{t("ui.final.insignias")}</p>
@@ -266,4 +267,12 @@ function PreguntaFinal() {
       )}
     </>
   );
+}
+
+/** el recurso que más cerca estuvo de cero en la partida (`minimoHistorico` del motor). */
+function MomentoDificil({ estado }: { estado: GameState }) {
+  const { t } = useT();
+  const recursos = ["energia", "soporte_vital", "blindaje"] as const;
+  const [recurso, minimo] = recursos.map((x) => [x, minimoHistorico(estado, x)] as const).sort((a, b) => a[1] - b[1])[0]!;
+  return <p className="final-dificil">{t("ui.final.dificil", { recursoKey: `ui.recurso.${recurso}`, valor: Math.round(minimo) })}</p>;
 }

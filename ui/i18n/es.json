@@ -420,5 +420,10 @@
   "ui.radio.bajo.blindaje": "El blindaje bajó a {valor}. ¡La tripulación está menos protegida de la radiación!",
   "ui.radio.control.telemetria": "Aquí Control de Misión. Los mensajes tardan mucho en llegar a la Tierra. ¡Envía tus datos pronto!",
   "ui.radio.control.enviada": "Control de Misión: tus datos van en camino. Llegan a la Tierra en {turnos} turnos. ¡Aguanta!",
-  "ui.radio.nombre.control_mision": "Control de Misión"
+  "ui.radio.nombre.control_mision": "Control de Misión",
+  "ui.paso.3.consejos": "Lo que opina tu tripulación",
+  "ui.misiones.reto.titulo": "Reto del día",
+  "ui.misiones.reto.texto": "Jezero, {fecha}. Todos los que jueguen hoy tienen la misma misión: ¡compara tu puntaje con tu clase!",
+  "ui.misiones.reto.jugar": "Jugar el reto de hoy",
+  "ui.final.dificil": "Tu momento más difícil: {recursoKey} bajó hasta {valor}."
 }
