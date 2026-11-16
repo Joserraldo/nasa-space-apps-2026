@@ -17,10 +17,20 @@ Fable integra y audita; un solo escritor por archivo; máximo dos Opus a la vez)
 | Capturas de evidencia | carpeta `ui/capturas/rescate/` (sin rastrear) y copia en la rama local `rescate/evidencias` |
 | Juego corriendo | configuración `rescue` de `.claude/launch.json` del checkout principal, puerto 5210 |
 
-Para seguir: revisar el informe de B y de F, fusionar `rescate/b-mundo` y `rescate/f-fidelidad` en `main`
-(`git merge --no-ff`), y probar todo junto con `npm run typecheck && npm test && npm run build`,
-`E2E_BASE_URL=http://localhost:5210 npx playwright test` y
-`node tests/capturas/capturar.mjs ui/capturas/rescate/despues http://localhost:5210`.
+### Checkpoint 2 (15 nov 2026): B y F integrados en `main`
+
+- `[V]` `2209757` integra B, `6276304` integra F, `e863f80` ajusta la ruta dorada: B quitó el jugador
+  fijo en la mesa, ahora el niño llega a la consola eligiéndola en el mapa.
+- `[V]` Sobre `main`: `npm run typecheck` ok; vitest 119 archivos / 897 pruebas ok; `npm run build -w ui` ok;
+  `E2E_BASE_URL=http://localhost:5210 npx playwright test` 5/5 ok.
+- `[V]` Capturas A+B+F: `ui/capturas/rescate/despues-abf` (68 imágenes, 0 errores).
+- Problemas 2, 4, 6, 7 y 13: integrados, **a la espera de validación conjunta** con Santiago (no cerrados).
+  Lectura propia de e6-base 1440 y 390: niño entero, cámara detrás, Iris y antena en cuadro. En 390x844
+  la mitad superior es cielo: la cámara podría inclinarse más hacia abajo (menor).
+- Las ramas `rescate/b-mundo` y `rescate/f-fidelidad` quedan integradas; `checkpoint/1-f-wip` NO se integró.
+
+Para seguir: validación conjunta de 1-8 y 13 con las capturas `despues-abf`; segundo lote de A (9, 10, 11);
+decidir el destino de la publicación (PR hacia `develop`).
 
 ## Problemas conocidos (siguen ABIERTOS hasta arreglarlos y validarlos en el juego real)
 
