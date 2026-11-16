@@ -47,6 +47,11 @@ export interface OpcionesGesto {
   quieto?: boolean | undefined;
   /** Expresión base cuando el gesto no impone una. */
   expresion?: Expresion | undefined;
+  /**
+   * Salto encima del gesto (A5): `anticipa` se agacha (k de 0 a 1), `aire` recoge las piernas y sube los
+   * brazos, `aterriza` amortigua (k de 1 a 0). Con `quieto`, sin capa de salto.
+   */
+  salto?: Readonly<{ fase: "suelo" | "anticipa" | "aire" | "aterriza"; k: number }> | undefined;
 }
 
 const HABLA: Expresion[] = ["hablaCerrada", "hablaAbierta", "hablaRedonda", "hablaAbierta", "hablaCerrada", "hablaRedonda"];
@@ -215,8 +220,41 @@ export function animar(pj: Personaje, gesto: Gesto, t: number, o: OpcionesGesto 
     }
   }
 
+  if (o.salto && !o.quieto) expresion = capaSalto(pj, o.salto, expresion);
+
   const impuesta = expresion !== "neutral" && expresion !== (o.expresion ?? "neutral");
   if (!o.quieto && !impuesta && parpadea(t, desfase)) expresion = "parpadeo";
   else if (!o.quieto && expresion === "feliz" && parpadea(t, desfase + 1.3)) expresion = "parpadeo";
   pj.expresion(expresion);
+}
+
+/** Capa de salto sobre la pose del gesto: suma rotaciones, no reemplaza el gesto. Devuelve la expresión. */
+function capaSalto(pj: Personaje, s: NonNullable<OpcionesGesto["salto"]>, expresion: Expresion): Expresion {
+  const h = pj.huesos;
+  const k = Math.max(0, Math.min(1, s.k));
+  if (s.fase === "anticipa" || s.fase === "aterriza") {
+    // Agachado: rodillas al frente, pelvis abajo, torso inclinado y brazos atrás para tomar impulso.
+    h.pelvis.position.y -= 0.05 * k;
+    h.musloI.rotation.x -= 0.55 * k;
+    h.musloD.rotation.x -= 0.55 * k;
+    h.espinillaI.rotation.x += 0.95 * k;
+    h.espinillaD.rotation.x += 0.95 * k;
+    h.pieI.rotation.x -= 0.4 * k;
+    h.pieD.rotation.x -= 0.4 * k;
+    h.torso.rotation.x += 0.18 * k;
+    h.brazoI.rotation.x += 0.45 * k;
+    h.brazoD.rotation.x += 0.45 * k;
+    return expresion;
+  }
+  if (s.fase === "aire") {
+    // En el aire: piernas recogidas y brazos arriba; cara de sorpresa feliz (en Marte se sube mucho).
+    h.musloI.rotation.x -= 0.35;
+    h.musloD.rotation.x -= 0.25;
+    h.espinillaI.rotation.x += 0.6;
+    h.espinillaD.rotation.x += 0.45;
+    h.brazoI.rotation.z += 0.7;
+    h.brazoD.rotation.z -= 0.7;
+    return "feliz";
+  }
+  return expresion;
 }

@@ -1,7 +1,7 @@
 # Estado: Frente E (Santiago)
 
-**Actualizado:** dom 15 nov, 23:10.
+**Actualizado:** dom 15 nov, 23:30.
 
-- **Hecho:** E0 (#332 y A0 #337 fusionados). E1 (#335): revisiones atendidas, CI verde. E2 en borrador #346 (depende de #335). E3 (#352): revisión CUMPLE. #339 en PR #367 (avería de Iris desde el paso 6 y e2e del respaldo 2D en la consola).
+- **Hecho:** E0 (#332, A0 #337 y #339 en #367, fusionados). E1 fusionada (#335). E2 (#346) sobre develop y fuera de borrador: una sola vía para `[E]` con `onInteractivo`. E3 en PR #352 (revisión CUMPLE).
 - **Sigue:** E4 (menú con cámara 1.ª/3.ª persona, calidad, sonido e idioma).
-- **Bloqueado:** E1, E3 y #367 esperan revisión de otra persona; E1 además, aprobación visual del frente F. E1, E3 y #367 tocan `derrota-repetir-continuar.spec.ts`: después de cada fusión, rebase de los otros.
+- **Bloqueado:** E2 y E3 esperan revisión de otra persona. E3 necesita rebase sobre develop (choca con E1 en las e2e). Actores en el mundo (`[E] Talk`) esperan A6.
