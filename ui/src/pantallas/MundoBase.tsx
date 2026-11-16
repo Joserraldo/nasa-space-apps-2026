@@ -12,7 +12,6 @@ import { hayGraficos3D } from "../escena/soporte.js";
 import { vistaEscena, type FaseVista, type LugarObjetivo } from "../escena/vista.js";
 import type { CalidadGrafica } from "../juego/ajustes.js";
 import { eventosDeTick } from "../juego/eventos.js";
-import { averiaIrisRevelada } from "./lugares.js";
 import "./mundo.css";
 
 // Three.js queda en un chunk aparte: no pesa en la primera carga.

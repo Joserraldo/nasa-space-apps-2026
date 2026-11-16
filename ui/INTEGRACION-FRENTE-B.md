@@ -7,7 +7,7 @@ La política de acceso de menores se discute por separado; el login permanece en
 
 - B0 #334 (contrato único, ahora Ready for review).
 - B1 #354, B2 #355, B3 #356, B4 #357 y B6 #358.
-- Código de A2 #345 para proyectar el globo y llevar el pedido de Iris a la escena.
+- A2 #345 y E1 #335 ya fusionados en develop; se conservaron sus cambios al actualizar esta rama.
 
 Esta rama NO fusiona esos PR ni autoriza su publicación. Tras su integración en develop, rebasar y revisar solo el pegamento.
 Respetar el orden de Santiago: #335 antes de E2 #346; no pasar los demás borradores a listo sin cerrar sus condiciones.

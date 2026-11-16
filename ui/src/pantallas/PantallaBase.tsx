@@ -88,6 +88,7 @@ export function PantallaBase({ memoria = MEMORIA_INICIAL, vistos = [], onConvers
   // Una confirmación, un despacho: el doble toque o la tecla más el botón no cobran dos veces (MECANICAS §6.1).
   const confirmada = useRef(false);
   const tele = telemetriaPendiente(estado);
+  const nivelIrisVisible=estado.iaBase==="danada"&&!averiaIrisRevelada(estado)?"tutorial":estado.iaBase;
   const modulos = useMemo(() => vistaEscena(estado, { fase: "base", colocados, averiaRevelada: averiaIrisRevelada(estado) }).modulos, [estado, colocados]);
 
   const hayNovedad = !!(estado.pausado && ultimas && (ultimas.malaSuerte.length > 0 || ultimas.iaCambio || ultimas.efectosLlegaron.length > 0));
@@ -149,7 +150,7 @@ export function PantallaBase({ memoria = MEMORIA_INICIAL, vistos = [], onConvers
   async function conversarEntrada(entrada: EntradaConversacion) {
     const n=++solicitud.current;
     setOcupado(true);
-    let r=await conversarConRed(entrada,estado,memoriaActual.current,{tormentaActiva:tormentaActiva(estado),dosisMarte:referenciaDosis("marte-superficie"),vecesFallaIris:fallasIris,reaccion:reaccionTripulacion});
+    let r=await conversarConRed(entrada,{...estado,iaBase:nivelIrisVisible},memoriaActual.current,{tormentaActiva:tormentaActiva(estado),dosisMarte:referenciaDosis("marte-superficie"),vecesFallaIris:fallasIris,reaccion:reaccionTripulacion});
     if(n!==solicitud.current)return;
     if(estadoActual.current!==estado)r=turno({via:"texto",texto:""},estadoActual.current,memoriaActual.current,{tormentaActiva:tormentaActiva(estadoActual.current)});
     memoriaActual.current=r.memoria;
@@ -304,7 +305,7 @@ export function PantallaBase({ memoria = MEMORIA_INICIAL, vistos = [], onConvers
                 <>
                   <section className="fc"><div className="fc-cara base-bloque">
                     <h2>{t("ui.acciones.titulo")}</h2>
-                    <p className="base-iris"><Icono nombre={estado.iaBase === "danada" ? "aviso" : "planeta"} tam={20} />{t(`ui.iris.estado.${estado.iaBase}`)}</p>
+                    <p className="base-iris"><Icono nombre={nivelIrisVisible === "danada" ? "aviso" : "planeta"} tam={20} />{t(`ui.iris.estado.${nivelIrisVisible}`)}</p>
                     <p className="base-ayuda">{t("ui.base.acciones.ayuda")}</p>
                     <ul className="base-acciones">
                       {opcionesDe(estado).map((o) => (
