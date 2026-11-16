@@ -213,6 +213,37 @@ export function EscenaBase(props: EscenaBaseProps) {
   );
 }
 
+/** Margen del globo contra los bordes y contra el HUD (px). */
+const MARGEN_GLOBO = 8;
+/** Lo que reserva abajo la fila de controles (Crew, Map, joystick) (px). */
+const RESERVA_ABAJO = 96;
+
+/** Hasta dónde llegan las píldoras del HUD (`--hud-reserva`, la publica HudBase). Sin HUD, 64 px como antes. */
+function reservaHud(): number {
+  if (typeof document === "undefined") return 64;
+  const v = parseFloat(document.documentElement.style.getPropertyValue("--hud-reserva"));
+  return Number.isFinite(v) && v > 0 ? v : 64;
+}
+
+/**
+ * Dónde va la punta de abajo del globo (#390): centrado sobre el actor, sin salirse por los costados, con su
+ * borde de arriba siempre debajo del HUD y sin tapar la fila de abajo. Si no entra en ningún lado (celular
+ * horizontal con texto largo), manda no taparse con el HUD: queda pegado debajo de él. Pura.
+ */
+export function posicionGlobo(
+  ancla: { x: number; y: number },
+  cuadro: { ancho: number; alto: number },
+  globo: { ancho: number; alto: number },
+  reservaArriba: number,
+): { x: number; y: number } {
+  const medio = globo.ancho / 2 + MARGEN_GLOBO;
+  const x = Math.min(Math.max(ancla.x, medio), cuadro.ancho - medio);
+  const minimo = reservaArriba + MARGEN_GLOBO + globo.alto;
+  const maximo = cuadro.alto - RESERVA_ABAJO;
+  const y = Math.max(minimo, Math.min(maximo, ancla.y));
+  return { x: Math.round(x), y: Math.round(y) };
+}
+
 /** Altura del ancla del globo sobre los pies de cada actor (m): por encima del casco o de la antena. [E] */
 const ALTURA_GLOBO: Readonly<Record<ActorId, number>> = { iris: 1.35, nino: 1.75, ingeniera: 2.25, doctora: 2.25, meteorologa: 2.25 };
 
@@ -243,11 +274,12 @@ function crearSistemaGlobo(canvas: HTMLCanvasElement, ref: React.RefObject<HTMLD
         p.y += ALTURA_GLOBO[g.actor];
         p.project(ctx.camara);
         if (p.z < 1 && Math.abs(p.x) <= 1 && Math.abs(p.y) <= 1) {
-          // Centrado sobre el actor, pero sin salirse del cuadro (celular vertical).
-          const medio = div.offsetWidth / 2 + 8;
-          const altoMin = (div.offsetHeight || 64) + 64;
-          const x = Math.round(Math.min(Math.max(((p.x + 1) / 2) * canvas.clientWidth, medio), canvas.clientWidth - medio));
-          const y = Math.round(Math.max(altoMin, Math.min(canvas.clientHeight - 96, ((1 - p.y) / 2) * canvas.clientHeight)));
+          const { x, y } = posicionGlobo(
+            { x: ((p.x + 1) / 2) * canvas.clientWidth, y: ((1 - p.y) / 2) * canvas.clientHeight },
+            { ancho: canvas.clientWidth, alto: canvas.clientHeight },
+            { ancho: div.offsetWidth, alto: div.offsetHeight || 64 },
+            reservaHud(),
+          );
           estilo = `translate(${x}px, ${y}px) translate(-50%, -100%)`;
         }
       }
