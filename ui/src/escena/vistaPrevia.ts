@@ -14,6 +14,7 @@ import { COLORES, conAlfa } from "../estilos/tokens";
 import { traducir, type Idioma, type Vars } from "../i18n";
 import * as THREE from "three";
 import { crearCorredorInterior, zonaCorredor } from "./activos/interiores/corredor";
+import { crearTaller } from "./activos/interiores/taller";
 import { fusionar } from "./activos/fusionar";
 import { crearEscena3D } from "./escena3d";
 import { colorToken, crearMateriales } from "./materiales";
@@ -112,26 +113,40 @@ function montar(): void {
 }
 
 /**
- * `?sala=corredor` (D5): el corredor de conexión solo, en su propia vista, con la cámara a la altura de
+ * `?sala=corredor|taller` (D5): una sala sola (el corredor o el taller), en su propia vista, con la cámara a la altura de
  * los ojos del niño en la entrada, mirando al fondo como la lámina `exterior/01`. Luz provisional de
  * interior (la definitiva va con A8). Con `?medir=1` muestra fps, draw calls y triángulos.
  */
-function montarCorredor(): void {
+/** Cómo se ve cada sala en la vista previa: qué se arma, dónde va la cámara y la luz cálida. */
+const SALAS_PREVIA = {
+  corredor: () => {
+    const zona = zonaCorredor();
+    return {
+      raiz: crearCorredorInterior(crearMateriales()),
+      camara: [zona.entrada.x, 1.35, zona.entrada.z + 0.6] as const,
+      mira: [0, 1.2, 0] as const,
+      luz: [0.5, 3, zona.entrada.z] as const,
+    };
+  },
+  // Taller en corte, como la lámina `estaciones/05`: desde el frente abierto, arriba y a la izquierda.
+  taller: () => ({ raiz: crearTaller(crearMateriales()), camara: [-2.5, 5.2, 7.5] as const, mira: [0.4, 0.8, -0.6] as const, luz: [-2, 6, 4] as const }),
+} as const;
+
+function montarSala(sala: keyof typeof SALAS_PREVIA): void {
   const canvas = document.getElementById("escena") as HTMLCanvasElement;
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: calidad !== "baja" });
   renderer.setPixelRatio(Math.min(globalThis.devicePixelRatio || 1, calidad === "alta" ? 1.5 : 1));
   const escena = new THREE.Scene();
   escena.background = colorToken("lila");
-  const zona = zonaCorredor();
-  const corredor = fusionar(crearCorredorInterior(crearMateriales()), "Sala_Corredor");
-  escena.add(corredor, new THREE.HemisphereLight(colorToken("marfil"), colorToken("lila"), 2.4));
+  const cfg = SALAS_PREVIA[sala]();
+  escena.add(fusionar(cfg.raiz, `Sala_${sala}`), new THREE.HemisphereLight(colorToken("marfil"), colorToken("lila"), 2.4));
   const luz = new THREE.DirectionalLight(colorToken("aviso-fondo"), 1.2);
-  luz.position.set(0.5, 3, zona.entrada.z);
+  luz.position.set(cfg.luz[0], cfg.luz[1], cfg.luz[2]);
   luz.target.position.set(0, 0, 0);
   escena.add(luz, luz.target);
-  const camara = new THREE.PerspectiveCamera(62, 1, 0.1, 60);
-  camara.position.set(zona.entrada.x, 1.35, zona.entrada.z + 0.6);
-  camara.lookAt(0, 1.2, 0);
+  const camara = new THREE.PerspectiveCamera(sala === "corredor" ? 62 : 45, 1, 0.1, 60);
+  camara.position.set(cfg.camara[0], cfg.camara[1], cfg.camara[2]);
+  camara.lookAt(cfg.mira[0], cfg.mira[1], cfg.mira[2]);
   const ajustar = () => {
     renderer.setSize(innerWidth, innerHeight, false);
     camara.aspect = innerWidth / innerHeight;
@@ -164,5 +179,6 @@ function montarCorredor(): void {
   requestAnimationFrame(cuadro);
 }
 
-if (parametros.get("sala") === "corredor") montarCorredor();
+const salaPedida = parametros.get("sala");
+if (salaPedida === "corredor" || salaPedida === "taller") montarSala(salaPedida);
 else if (parametros.get("montar") !== "0") montar();
