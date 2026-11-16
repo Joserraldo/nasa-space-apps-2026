@@ -281,5 +281,6 @@
   "agentes.iris.pregunta.viaje_marte.a": "On the way, inside the spaceship",
   "agentes.iris.pregunta.viaje_marte.b": "On Mars’s ground",
   "agentes.iris.pregunta.viaje_marte.c": "The same in both",
-  "agentes.iris.pregunta.viaje_marte.porque": "On the way, RAD measured almost 3 times more each day than on the ground."
+  "agentes.iris.pregunta.viaje_marte.porque": "On the way, RAD measured almost 3 times more each day than on the ground.",
+  "agentes.iris.acompana.danada.verificar": "Bzzt... let’s check with the Engineer."
 }
