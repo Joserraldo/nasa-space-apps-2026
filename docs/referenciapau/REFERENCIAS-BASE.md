@@ -10,7 +10,7 @@ Este documento separa instalaciones/análisis documentados de las decisiones de 
 
 CHAPEA es una serie de misiones análogas de larga duración en las que cuatro tripulantes viven aislados en Mars Dune Alpha, un hábitat de 1.700 pies cuadrados construido mediante impresión 3D. NASA describe el propósito como estudiar factores de salud y desempeño de la tripulación durante misiones simuladas ([NASA, CHAPEA](https://www.nasa.gov/humans-in-space/chapea/); [NASA, recorrido de la primera misión](https://www.nasa.gov/missions/voyagers-of-mars-the-first-chapea-crews-yearlong-journey/)).
 
-El resumen técnico de NASA enumera áreas internas para dormir, higiene, cocina y comedor, recreación, crecimiento de plantas, ejercicio, laboratorio/mantenimiento, teleoperación/control EVA y atención médica. También distingue el hábitat de los espacios de esclusa/nodo y de las áreas de EVA simulada ([NASA NTRS, *CHAPEA Facility Components*, pp. 10–11](https://ntrs.nasa.gov/api/citations/20220004484/downloads/Mars%20Habitats.pdf)). Es una descripción de esta instalación de investigación, no un estándar obligatorio para futuras bases.
+El memorando técnico de NASA describe Mars Dune Alpha como un hábitat impreso en 3D de 1.700 pies cuadrados para cuatro tripulantes. Enumera dormitorios privados, cocina, áreas dedicadas a medicina, recreación, ejercicio, trabajo y cultivo, un área técnica y dos baños ([NASA/TM–20240011157, sección “Crew Health & Performance Exploration Analog (CHAPEA)”](https://ntrs.nasa.gov/api/citations/20240011157/downloads/NASA%20TM20240011157.pdf?attachment=true)). Esta descripción corresponde a la instalación análoga de investigación, no a un estándar obligatorio para futuras bases. La fuente NTRS titulada *CHAPEA Facility Components* se refiere a componentes del recinto y zonas simuladas de EVA alrededor del hábitat; no se usa aquí para afirmar la distribución interior.
 
 ### MDRS (Mars Society)
 
@@ -26,7 +26,7 @@ NASA presenta su Center for Design and Space Architecture como un estudio concep
 
 | Elemento | Qué se puede afirmar | Qué no se debe inferir |
 | --- | --- | --- |
-| Mars Dune Alpha | Hábitat análogo construido para investigación CHAPEA, con espacios funcionales separados según el resumen técnico NASA. | Que sea un asentamiento marciano, una arquitectura de vuelo certificada o el único esquema correcto. |
+| Mars Dune Alpha | Hábitat análogo construido para investigación CHAPEA, con las áreas funcionales enumeradas en el memorando técnico NASA. | Que sea un asentamiento marciano, una arquitectura de vuelo certificada o el único esquema correcto. |
 | MDRS | Campus análogo operativo con hábitat y edificios auxiliares para ciencia, cultivos, observación y mantenimiento. | Que todas las futuras misiones deban usar esos edificios, túneles o escala. |
 | Diseños conceptuales NASA | NASA estudia conceptos de hábitat y arquitectura centrados en necesidades humanas mediante análisis y prototipos. | Que una ilustración conceptual sea especificación de misión o requisito real. |
 | Base permanente en Marte | Las fuentes aquí consultadas describen simulaciones y conceptos de preparación. | Que las instalaciones citadas estén en Marte o que exista hoy una base humana allí. |
@@ -48,7 +48,7 @@ Estas razones apoyan el análisis funcional de la distribución, pero no sustitu
 
 ## 5. Límites de verificación
 
-- Se verificaron las páginas enlazadas de NASA y MDRS, y el documento técnico de NASA NTRS.
+- Se abrieron las dos páginas NASA citadas para CHAPEA y el registro técnico NASA/TM–20240011157; las fuentes confirman cuatro tripulantes y 1.700 pies cuadrados. También se abrió la descripción del campus MDRS. La ficha NTRS *CHAPEA Facility Components* se revisó y quedó acotada a las zonas del recinto/EVA, sin atribuirle áreas interiores.
 - No se encontró en estas fuentes una planta universal de base marciana ni un requisito NASA que ordene energía a la izquierda, cúpula central, un anillo de caminos o un refugio abajo a la izquierda. Son decisiones de la lámina y del juego.
 - No se verificaron dimensiones de la base ficticia de Solar Shield frente a un plano NASA: `exterior/03` es una ilustración conceptual del proyecto, no un plano a escala.
 - La página de MDRS es una descripción del campus del análogo, no evidencia de que su configuración sea la configuración más reciente de todas sus instalaciones; confirmar con la Mars Society antes de reutilizar medidas concretas.

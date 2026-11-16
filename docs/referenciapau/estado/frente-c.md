@@ -1,14 +1,13 @@
 # Estado — Frente C
-**Actualizado:** 16 nov 2026 · **Rama:** `feat/frente-c-C1-referencias` · **PR:** pendiente
+**Actualizado:** 16 nov 2026 · **Rama:** `feat/frente-c-C1-referencias` · **PR:** [#336](https://github.com/Joserraldo/nasa-space-apps-2026/pull/336), borrador
 
 ## Hecho
-- C1: documento de referencias reales separado de propuestas y decisiones artísticas; fuentes NASA/MDRS enlazadas.
-- Referencia visual `exterior/03` revisada; sus posiciones no se atribuyen a NASA.
+- C1: referencias NASA/MDRS y decisiones artísticas separadas; NASA confirma hábitat CHAPEA de 1.700 pies² y cuatro tripulantes.
+- Observaciones de Paulasaah atendidas: fuente interior corregida; estado del PR y sus verificaciones actualizado.
+- CI remoto del PR #336 pasó en el commit base; typecheck, Vitest completo y build UI locales pasaron antes de esta corrección documental.
 
-## Qué sigue
-- Validar enlaces y ejecutar typecheck, Vitest completo y build de UI antes de abrir el PR borrador.
-- C2 espera C1 y aprobación de María Paula; requiere coordinar posiciones con Frente D.
+## Sigue
+- Obtener revisión de Santiago para C1; C2 depende además de su aprobación visual de María Paula y coordinación geométrica con Frente D.
 
-## Bloqueado / no verificado
-- OpenCode instalado, pero no ejecutable aquí: shim PowerShell bloqueado y log de OpenCode denegado por sandbox.
-- No se verificaron dimensiones reales de la ilustración de Solar Shield.
+## No verificado
+- Dimensiones a escala de la ilustración de Solar Shield; es una referencia conceptual, no un plano métrico.
