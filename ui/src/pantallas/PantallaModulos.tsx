@@ -8,6 +8,7 @@ import { Icono } from "../componentes/base/Iconos.js";
 import { Retrato } from "../componentes/base/Retrato.js";
 import { CostRow, ICONO_RECURSO, Mensaje, RECURSOS } from "../componentes/base/Piezas.js";
 import "../componentes/base/facetas.css";
+import { ListoParaExplorar } from "../componentes/ListoParaExplorar.js";
 import { TarjetaDelFlujo, useTarjetaUnica } from "../componentes/TarjetaDelFlujo.js";
 import { LUGARES } from "../escena/mundo.js";
 import { useMundo } from "./MundoBase.js";
@@ -38,11 +39,16 @@ function iconoDe(modulo: Equipment) {
 
 type Tarjeta = { tipo: "elegir" } | { tipo: "modulo"; modulo: Equipment };
 
-export function PantallaModulos({ estado, colocados, onColocar, onListo }: {
+export function PantallaModulos({ estado, colocados, onColocar, onListo, bienvenida }: {
   estado: GameState;
   colocados: Equipment[];
   onColocar: (m: Equipment) => void;
   onListo: () => void;
+  /**
+   * E8: "Ready to explore" la primera vez que el niño llega. Va dentro de esta pantalla (su capa recibe los
+   * toques) y, mientras está abierta, no se abre otra tarjeta: una a la vez (E1).
+   */
+  bienvenida?: { onExplorar(): void } | undefined;
 }) {
   const { t } = useT();
   const total = mision.modulosAColocar;
@@ -113,12 +119,12 @@ export function PantallaModulos({ estado, colocados, onColocar, onListo }: {
         {sinGl && elegido && <span className="modulos-ancla" aria-hidden="true"><Icono nombre={iconoDe(elegido)} tam={48} /></span>}
 
         <div className="modulos-base" ref={botonera}>
-          {ancla && !tarjeta.abierta && (
+          {ancla && !tarjeta.abierta && !bienvenida && (
             <FacetButton variant="primary" icon="check" labelKey="ui.paso.4.construir"
               labelVars={{ moduloKey: `ui.paso.4.modulo.${ancla}` }}
               onClick={usarCercano} />
           )}
-          {faltan > 0 && !tarjeta.abierta && (
+          {faltan > 0 && !tarjeta.abierta && !bienvenida && (
             <FacetButton labelKey="ui.paso.4.preguntar" onClick={() => tarjeta.abrir({ tipo: "elegir" })} />
           )}
           <FacetButton variant="primary" icon="jugar" labelKey="ui.paso.4.listo" className="modulos-listo"
@@ -165,6 +171,7 @@ export function PantallaModulos({ estado, colocados, onColocar, onListo }: {
           </>
         ) : null}
       </TarjetaDelFlujo>
+      {bienvenida && <ListoParaExplorar onExplorar={bienvenida.onExplorar} />}
     </section>
   );
 }

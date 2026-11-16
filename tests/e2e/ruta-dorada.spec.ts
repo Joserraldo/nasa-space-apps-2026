@@ -1,5 +1,6 @@
 import { expect, test, type Page } from "@playwright/test";
 import { arrancarEnCalidadBaja } from "./calidad";
+import { llegarYExplorar } from "./entrada";
 
 test.beforeEach(async ({ page }) => arrancarEnCalidadBaja(page));
 
@@ -71,6 +72,20 @@ test("ruta dorada: de la órbita al resumen, en inglés", async ({ page }) => {
   expect(await aterrizar.count()).toBeGreaterThanOrEqual(2);
   await expect(page.getByText("Sunlight").first()).toBeVisible();
   await aterrizar.first().click();
+
+  // E8 (inicio/04): llegada a Jezero con Skip y, ya en la base, "Your crew is ready" con los controles.
+  // La llegada no avanza sola: el reloj es simulado. Mientras la tarjeta está abierta, nada se mueve.
+  await expect(page.getByRole("heading", { name: "Arriving at Jezero" })).toBeVisible();
+  await page.getByRole("button", { name: "Skip", exact: true }).click();
+  await expect(page.getByRole("heading", { name: "Your crew is ready" })).toBeVisible();
+  await page.getByRole("button", { name: "Show controls" }).click();
+  for (const c of ["Move: W A S D or the arrow keys", "Jump: Space", "Talk or use: E", "Change the camera: V"]) {
+    await expect(page.getByText(c)).toBeVisible();
+  }
+  await page.getByRole("button", { name: "Hide controls" }).click();
+  await expect(page.getByText("Jump: Space")).toHaveCount(0);
+  await page.getByRole("button", { name: "Explore the base" }).click();
+  await expect(page.getByRole("heading", { name: "Your crew is ready" })).toHaveCount(0);
 
   // Paso 4: colocar 2 módulos, cada uno con costo ahora y beneficio después.
   await expect(page.getByRole("heading", { name: "Place 2 modules" })).toBeVisible();
@@ -300,6 +315,7 @@ test("seguir a Iris del paso 4 al 8 sin abrir Crew, con el mapa y la tecla E", a
   await page.getByRole("button", { name: "Skip", exact: true }).click();
   await page.getByRole("button", { name: "Continue" }).click();
   await page.getByRole("button", { name: "Land here" }).first().click();
+  await llegarYExplorar(page);
   for (let i = 0; i < 2; i++) {
     await page.getByRole("button", { name: "Ask the Engineer" }).click();
     await page.locator('[role="dialog"].tc ul button:not([disabled])').first().click();
