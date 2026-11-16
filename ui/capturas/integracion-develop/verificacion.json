@@ -1,0 +1,36 @@
+{
+  "context": "develop def6e77 + este PR + #247 aplicado solo para QA (no incluido en el diff)",
+  "results": [
+    {
+      "name": "e6-1024x683.png",
+      "width": 1024,
+      "height": 683,
+      "documentWidth": 1024,
+      "canvases": 1
+    },
+    {
+      "name": "e6-1440x900.png",
+      "width": 1440,
+      "height": 900,
+      "documentWidth": 1440,
+      "canvases": 1
+    },
+    {
+      "name": "e6-844x390.png",
+      "width": 844,
+      "height": 390,
+      "documentWidth": 844,
+      "canvases": 1
+    },
+    {
+      "name": "e6-390x844.png",
+      "width": 390,
+      "height": 844,
+      "documentWidth": 390,
+      "canvases": 1
+    }
+  ],
+  "renderer": "FPS avg (5 s): 13\nFPS min: 2\nDraw calls: 51\nTriangles: 52615\nQuality: high\nCanvas: 1024×683",
+  "errors": [],
+  "physicalDevice": false
+}

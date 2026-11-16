@@ -120,6 +120,19 @@
   .sitio-tarjeta { padding: var(--esp-3) var(--esp-4); align-content: start; }
   .sitio-tarjeta-cab h3 { font-size: var(--tipo-tam-cuerpo); }
   .sitio-desc { display: none; }
+  /* Con 390 px de alto la tarjeta entera (criterios, puntaje y "Land here") necesita más que la mitad baja:
+     el carrusel sube al 62 % (el pin elegido queda arriba) y se aprietan los espacios. */
+  .sitio-lista { block-size: 62%; }
+  .sitio-tarjeta { gap: var(--esp-1) var(--esp-4); padding-block: var(--esp-2); }
+  /* Tarjeta en dos columnas: datos del sitio | costos y "Land here". El niño ve qué cuesta antes de aterrizar. */
+  .sitio-lista > li { flex-basis: min(560px, 82vw); }
+  .sitio-tarjeta { grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); }
+  .sitio-tarjeta-cab, .sitio-criterios, .sitio-total { grid-column: 1; }
+  .sitio-tarjeta > .costos { grid-column: 2; grid-row: 1 / span 3; align-self: start; }
+  .sitio-tarjeta > .sitio-aterrizar { grid-column: 2; grid-row: 4; }
+  .sitio-total { grid-row: 3 / span 2; align-self: end; }
+  /* Respaldo si aun así no entra: el botón queda fijo abajo y lo demás se desliza detrás. */
+  .sitio-aterrizar { position: sticky; inset-block-end: 0; z-index: 1; }
 }
 
 /* ---- Celular vertical (390 x 844): mapa arriba, tarjetas debajo con desplazamiento ---- */

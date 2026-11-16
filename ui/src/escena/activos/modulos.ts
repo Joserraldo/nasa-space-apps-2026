@@ -147,18 +147,75 @@ export function geometriaMonticulo(): THREE.BufferGeometry {
   return s;
 }
 
-/** Refugio del escudo: bóveda cubierta de regolito, vestíbulo con puerta al frente y respiradero. */
+/**
+ * Silueta del icono `escudo` del HUD (componentes/base/Iconos.tsx, viewBox 24): hombros
+ * achaflanados, lados rectos y punta roma abajo. Normalizada a ancho 1 y alto 1, centrada en su caja.
+ */
+const SILUETA_ESCUDO: readonly [number, number][] = (
+  [[12, 2.5], [20, 5.2], [19.6, 12.5], [16.8, 17.6], [12, 21.2], [7.2, 17.6], [4.4, 12.5], [4, 5.2]] as const
+).map(([x, y]) => [(x - 12) / 16, (11.85 - y) / 18.7]);
+
+/** Placa con la silueta del escudo, `ancho`×`alto`, extruida `grosor` en z y centrada. */
+function placaEscudo(ancho: number, alto: number, grosor: number): THREE.BufferGeometry {
+  return geometriaBase(`mod-escudo-placa-${ancho}-${alto}-${grosor}`, () => {
+    const forma = new THREE.Shape(SILUETA_ESCUDO.map(([x, y]) => new THREE.Vector2(x * ancho, y * alto)));
+    const g = new THREE.ExtrudeGeometry(forma, { depth: grosor, bevelEnabled: false });
+    g.translate(0, 0, -grosor / 2);
+    return g;
+  });
+}
+
+/** Banda fina que sigue el borde superior (hombros y cresta) de una placa de escudo. */
+function bandaEscudo(ancho: number, alto: number, grosor: number, banda: number): THREE.BufferGeometry {
+  return geometriaBase(`mod-escudo-banda-${ancho}-${alto}-${grosor}-${banda}`, () => {
+    const [cresta, hombro] = [SILUETA_ESCUDO[0]!, SILUETA_ESCUDO[1]!];
+    const x = hombro[0] * ancho + 0.01, yh = hombro[1] * alto, yc = cresta[1] * alto;
+    const p = [[-x, yh], [0, yc], [x, yh], [x, yh - banda], [0, yc - banda], [-x, yh - banda]];
+    const g = new THREE.ExtrudeGeometry(new THREE.Shape(p.map(([a, b]) => new THREE.Vector2(a, b))), { depth: grosor, bevelEnabled: false });
+    g.translate(0, 0, -grosor / 2);
+    return g;
+  });
+}
+
+/** Inclinación hacia atrás de las placas del escudo (rad). [E] */
+const INCLINACION_ESCUDO = THREE.MathUtils.degToRad(8);
+/** Altura del apoyo de las placas: justo sobre el zócalo. [E] */
+const APOYO_ESCUDO = 0.24;
+
+/**
+ * Escudo (ESCENAS.md §3.2: carcasa de refuerzo con señal de estado; no es un refugio): placa
+ * frontal con la silueta del icono del HUD y emblema de escudos anidados, y tres placas de blindaje
+ * más bajas escalonadas hacia atrás, unidas por dos largueros. Todo dentro de la huella 2,2 × 4,0.
+ */
 function escudo(m: Materiales): THREE.Group {
-  return grupo(
-    "Shape_Shield",
-    parte(m, "Rock", geometriaBase("mod-escudo-monticulo", geometriaMonticulo), [0, 0, -0.3], "Shield_Mound"),
-    parte(m, "SuitBase", chaflan(1.6, 2.0, 1.2, 0.35), [0, 1.0, 1.25], "Shield_Vestibule"),
-    colocar(crearPuerta(m), [0, 0, 1.95], [0, 0, 0], 0.72),
-    parte(m, "Boots", caja(0.9, 1.45, 0.05), [0, 0.85, 1.9], "Shield_DoorLeaf"),
-    parte(m, "SuitBase", caja(1.9, 0.12, 0.5), [0, 0.06, 2.2], "Shield_Step"),
-    parte(m, "SuitBase", tronco(0.14, 0.18, 0.9, 8), [0.4, 2.2, -0.9], "Shield_Vent"),
-    parte(m, "Accent", caja(1.62, 0.1, 1.22), [0, 1.9, 1.25], "Shield_Band"),
+  const G = 0.22;
+  // Placa frontal: el pivote está en la punta inferior; la placa se recuesta hacia -z.
+  const frente = colocar(grupo("Shield_Front"), [0, APOYO_ESCUDO, 1.5], [-INCLINACION_ESCUDO, 0, 0]);
+  frente.add(
+    parte(m, "SuitBase", placaEscudo(1.9, 2.0, G), [0, 1.0, 0], "Shield_Face"),
+    parte(m, "Boots", placaEscudo(1.22, 1.28, 0.06), [0, 1.06, G / 2 + 0.03], "Shield_Emblem_Outer"),
+    parte(m, "Accent", placaEscudo(0.62, 0.66, 0.06), [0, 1.1, G / 2 + 0.06], "Shield_Emblem_Inner"),
   );
+  const x = grupo(
+    "Shape_Shield",
+    colocar(parte(m, "SuitBase", chaflan(2.1, 3.9, 0.22, 0.4), [0, 0, 0], "Shield_Plinth"), [0, 0.11, 0], [-Math.PI / 2, 0, 0]),
+    parte(m, "Boots", caja(0.2, 0.42, 0.34), [-0.42, 0.43, 1.5], "Shield_FootL"),
+    parte(m, "Boots", caja(0.2, 0.42, 0.34), [0.42, 0.43, 1.5], "Shield_FootR"),
+    frente,
+  );
+  // Placas de blindaje: cada una más baja que la de delante (escamas superpuestas).
+  const placas: [number, number, number][] = [[0.45, 1.85, 1.55], [-0.55, 1.75, 1.15], [-1.5, 1.6, 0.8]];
+  placas.forEach(([z, ancho, alto], i) => {
+    const p = colocar(grupo(`Shield_Armor${i}`), [0, APOYO_ESCUDO, z], [-INCLINACION_ESCUDO, 0, 0]);
+    p.add(
+      parte(m, "SuitBase", placaEscudo(ancho, alto, 0.2), [0, alto / 2, 0], `Shield_ArmorPlate${i}`),
+      parte(m, "Accent", bandaEscudo(ancho, alto, 0.23, 0.08), [0, alto / 2, 0], `Shield_ArmorBand${i}`),
+    );
+    x.add(p);
+  });
+  // Largueros laterales índigo que unen las placas desde la última hasta la frontal.
+  for (const sx of [-0.62, 0.62]) x.add(parte(m, "Boots", caja(0.12, 0.14, 3.0), [sx, 0.85, -0.1], sx < 0 ? "Shield_StrutL" : "Shield_StrutR"));
+  return x;
 }
 
 /** Reciclador: losa, dos depósitos y tuberías que los unen y bajan hacia el hábitat. */

@@ -41,7 +41,9 @@ export function ResourcePlaque({ recurso, value, pending = [], feedback = [] }: 
         <div className={`fc-cara pildora placa${bajo ? " placa-baja" : ""}`} role="meter" aria-valuemin={0} aria-valuemax={100} aria-valuenow={v} aria-label={nombre}
           aria-valuetext={bajo ? t("ui.comun.recurso.valor_bajo", { valor: v }) : String(v)}>
           <Icono nombre={ICONO_RECURSO[recurso]} tam={22} />
+          {/* Nombre completo en escritorio; en el HUD compacto del celular, el corto ("Life"). El lector oye `aria-label`. */}
           <span className="placa-nombre">{nombre}</span>
+          <span className="placa-nombre-corto" aria-hidden="true">{t(`ui.recurso.${recurso}.corto`)}</span>
           <span className="placa-valor">{v}</span>
         </div>
       </div>

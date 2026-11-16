@@ -16,9 +16,11 @@ import "./base/retratos.css";
  * propone una acción, el botón abre el panel único de confirmación (no la aplica). Si cita un dato,
  * va su tarjeta de fuente.
  */
-export function DialogoExperto({ d, irisDanada, onPlan, onOtra, onCerrar }: {
+export function DialogoExperto({ d, irisDanada, soloTexto = false, onPlan, onOtra, onCerrar }: {
   d: Dialogo;
   irisDanada: boolean;
+  /** Con el plan ya abierto debajo (lámina de tableta: la experta encima de la decisión), sin botones propios. */
+  soloTexto?: boolean;
   /** Abre `ConfirmarAccion` con la acción propuesta. */
   onPlan(a: BaseAction): void;
   onOtra(): void;
@@ -41,14 +43,14 @@ export function DialogoExperto({ d, irisDanada, onPlan, onOtra, onCerrar }: {
           {d.lineas.map((l, i) => <p key={i}>{t(l.clave, l.vars)}</p>)}
           {d.fuente && <TarjetaFuente fuente={d.fuente} />}
         </div>
-        <div className="dialogo-experto-botones">
+        {!soloTexto && <div className="dialogo-experto-botones">
           {plan && (
             <FacetButton variant="primary" icon="check" labelKey="ui.base.dialogo.plan" labelVars={{ plan: describirAccion(plan, t) }}
               onClick={() => onPlan(plan)} />
           )}
           <FacetButton icon="tripulacion" labelKey="ui.base.dialogo.otra" onClick={onOtra} />
           <FacetButton variant={plan ? "secondary" : "primary"} labelKey="ui.continuar" onClick={onCerrar} />
-        </div>
+        </div>}
       </div>
     </section>
   );

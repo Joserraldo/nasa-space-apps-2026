@@ -11,11 +11,11 @@ Una sección por persona, máximo 5 líneas, y nadie edita la de otro (FLUJO §8
 ```
 
 ## Personajes (María Paula)
-**Rama:** feat/ui-personajes-solo-b · **PR:** tras #316 fusionado · **Tokens:** amarillo
-- Hecho: #316 fusionado en `develop`; variante B consolidada como única implementación en `personaje.ts`, `cabeza.ts`, `cuerpo.ts`, `rostro.ts` e `iris.ts`, retirando la variante A y las hojas A/B temporales.
-- Verificado: 25/25 pruebas unificadas de personajes, `tsc --noEmit` sin errores, liberación idempotente de esqueleto y `userData.compartido = true` en materiales.
-- Sigue: módulo `ui/src/escena/personajes` listo para consumir en el montaje de la escena.
-- Bloqueo: ninguno.
+**Rama:** fix/ui-integracion-develop-3d · **PR:** #328 hacia develop · **Tokens:** amarillo
+- Hecho: monta niño, Ingeniera e Iris vigentes en la escena compartida; materiales por referencia y liberación de esqueletos. Plan de dos personas: Haiku lee, Opus implementa, Fable audita. No incluye la versión descartada de 5199.
+- Verificado: tipos, build y ruta dorada; prueba combinada con #247 en cuatro tamaños, capturas E6/E7 sin errores. Cinco módulos: cota de 80 llamadas/69951 triángulos; rendimiento físico pendiente.
+- Sigue: Santiago revisa/fusiona #247 y este PR; aplicar frentes A/B del plan. Movimiento, táctiles y fidelidad final no están implementados por este montaje.
+- Bloqueo: ninguno externo; todo el trabajo restante queda repartido entre Santiago y María Paula en `PLAN-INTEGRACION-SANTIAGO-PAULA.md`.
 
 ## Escenario (Daniel)
 **Rama:** feat/ui-escena-v* · **PR:** #311–#315 abiertos hacia develop (la pila #282–#310 ya entró) · **Tokens:** 🟡

@@ -100,6 +100,7 @@ export function deserializarProgreso(crudo: unknown): Juego | null {
     sitio,
     ultimas: null,
     tormentaVista: Boolean(d.tormentaVista),
+    registro: null,
   };
 }
 

@@ -1,4 +1,4 @@
-# REFERENCIAS: catálogo de las 55 láminas
+# REFERENCIAS: catálogo de las 58 láminas
 
 Todas en [`referencias/`](referencias/), PNG de 1024 px de lado mayor con paleta de 256 colores. Son **guías para reconstruir en código**, no assets del juego (excepción: el logo).
 Columnas: **Tomar** = lo que se replica con fidelidad. **Ignorar** = lo que la lámina muestra pero no se adopta (y por qué manda el texto). **Doc** = dónde se usa.
@@ -7,10 +7,12 @@ Procedencia: generadas con IA a partir de referencias de María Paula (atlas v5,
 
 ---
 
-## 1. Mundo abierto (`mundo/`, 2)
+## 1. Mundo abierto (`mundo/`, 4)
 
 | Lámina | Tomar | Ignorar | Doc |
 | --- | --- | --- | --- |
+| [`03-celular-apaisado-vertical-decision.png`](referencias/mundo/03-celular-apaisado-vertical-decision.png) | Juego horizontal y vertical, joystick, cámara y panel en pausa. | Cifras ilustrativas y parecido tipográfico como identificación de fuente. | PLAN-INTEGRACION-SANTIAGO-PAULA §4–§6 |
+| [`04-tableta-exploracion-decision.png`](referencias/mundo/04-tableta-exploracion-decision.png) | Mundo visible y panel de decisión en tableta. | No es una captura de implementación ni una medida de rendimiento. | PLAN-INTEGRACION-SANTIAGO-PAULA §4–§6 |
 | [`01-exterior-tercera-persona.png`](referencias/mundo/01-exterior-tercera-persona.png) | **La lámina más importante.** Cámara alta por detrás, escala niño/adulta/edificios, terreno de regolito y rocas, camino de baldosas con balizas, consola interactiva con contorno cian, paneles, Iris rover, torre de control, hábitat, cúpulas de invernadero, refugio cubierto de regolito, HUD completo. | **Cielo azul** (se usa el cielo de MARTE §4). Cordillera alta y cercana (se baja y aleja). La figura adulta tiene rasgos que no coinciden del todo con la Ingeniera de `personajes/01`: manda la ficha. | DISEÑO §1, §5.2 · ESCENAS §3.1 |
 | [`02-exterior-primera-persona.png`](referencias/mundo/02-exterior-primera-persona.png) | Misma escena desde los ojos del niño; guantes teal en las esquinas inferiores; letrero `[V] Third person`. | Cielo azul. No es el mismo render que `01`: fijar posiciones y cámara al implementar. | ESCENAS §3.1 |
 
@@ -43,7 +45,7 @@ Procedencia: generadas con IA a partir de referencias de María Paula (atlas v5,
 | [`09-nino-rostros.png`](referencias/personajes/09-nino-rostros.png) | 8 expresiones: neutral, happy, curious, concerned, talk closed, talk open, talk round, blink. | — | DISEÑO §4.4 |
 | [`10-nino-luz-lectura.png`](referencias/personajes/10-nino-luz-lectura.png) | El mismo niño bajo 4 ambientes: día en Marte, interior/laboratorio, atardecer exterior, alerta/refugio. Base para validar materiales y luz. | El fondo azulado del ambiente "día en Marte" no fija el color del cielo (MARTE §4). | DISEÑO §3.3 · MARTE §4 |
 
-## 4. Interfaz (`ui/`, 5)
+## 4. Interfaz (`ui/`, 6)
 
 | Lámina | Tomar | Ignorar | Doc |
 | --- | --- | --- | --- |
@@ -52,6 +54,8 @@ Procedencia: generadas con IA a partir de referencias de María Paula (atlas v5,
 | [`02-botones-crew-map.png`](referencias/ui/02-botones-crew-map.png) | Geometría exacta del botón facetado: chaflán, grosor, relieve. | — | DISEÑO §5.3 |
 | [`03-variantes-facetadas.png`](referencias/ui/03-variantes-facetadas.png) | Biblioteca completa: principal, secundario, normal, hover, pressed, focus, disabled, selected, busy, mensajes, entrada, voz, fuente, superficie oscura. | Valores `70/80/60`. El grosor del foco dibujado es demostrativo. | DISEÑO §5.3 |
 | [`04-consulta-comparacion-fuente.png`](referencias/ui/04-consulta-comparacion-fuente.png) | Organización de consulta, comparación `Costs now / Later`, fuente y confirmación única. | No reemplaza todas las pantallas ni define balance. | DISEÑO §5 · MECANICAS §4 |
+
+Referencia adicional de UI: [`05-ui-completa.png`](referencias/ui/05-ui-completa.png), biblioteca del chat con inicio, HUD, diálogo, decisión, mapa, ajustes, mensajes y fuente. Se reconstruye con componentes del juego, sin hornear texto o cifras. Procedencia de las tres incorporaciones desde `santiago`, tamaño y hashes: [santiago-referencias.json](santiago-referencias.json). Los originales permanecen intactos.
 
 ## 5. Estaciones (`estaciones/`, 16)
 
