@@ -107,7 +107,7 @@
   .modulos-panel-desc { display: none; }
   .modulos-acciones { flex: none; flex-wrap: nowrap; background: var(--fc-fondo, var(--color-marfil)); }
   .modulos-panel-cab .retrato-marco, .modulos-panel-cab .retrato-compacto .retrato-marco { width: 40px; height: 40px; }
-  .modulos-panel-cab .retrato-marco svg { inline-size: 40px; block-size: 40px; }
+  .modulos-panel-cab .retrato-marco :is(svg, .retrato-img) { inline-size: 40px; block-size: 40px; }
   .modulos-panel-cab .retrato-nombre { display: none; }
   .modulos-panel-cab { display: grid; grid-template-columns: auto minmax(0, 1fr); column-gap: var(--esp-2); row-gap: 0; align-items: center; }
   .modulos-panel-cab .fc { grid-row: 1 / span 2; }
@@ -167,7 +167,7 @@
   .modulos-panel-cuerpo { min-block-size: 0; overflow-y: auto; overscroll-behavior: contain; display: grid; gap: var(--esp-2); }
   .modulos-acciones { flex: none; flex-wrap: nowrap; }
   .modulos-panel-cab .retrato-marco, .modulos-panel-cab .retrato-compacto .retrato-marco { width: 48px; height: 48px; }
-  .modulos-panel-cab .retrato-marco svg { inline-size: 44px; block-size: 44px; }
+  .modulos-panel-cab .retrato-marco :is(svg, .retrato-img) { inline-size: 44px; block-size: 44px; }
   .modulos-panel-cab .retrato-nombre { display: none; }
   .modulos-panel-cab h3 { font-size: var(--tipo-tam-subtitulo); }
   .modulos-base { order: 11; }

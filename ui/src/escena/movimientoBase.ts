@@ -229,6 +229,11 @@ export interface Movimiento {
   saltar(): boolean;
   /** Fase del salto y su avance (0 a 1) para la animación. Se reemplaza en cada paso: leerlo, no guardarlo. */
   readonly salto: Readonly<{ fase: FaseSalto; k: number }>;
+  /**
+   * Lugar al que Iris rueda delante del niño aunque él no tenga ruta (la guía de la misión, A2). Si se
+   * queda atrás, Iris espera y lo mira (`pasoGuia`). Un destino del niño (`irA`) manda sobre este.
+   */
+  guiarIrisA(lugar: LugarId | null): void;
   /** Gira el cuerpo sin moverlo (primera persona: el cuerpo mira con la cámara). */
   fijarRumbo(r: number): void;
   /** Avanza el reloj real `dt` segundos; los saltos largos se recortan con `subpasos`. */
@@ -250,6 +255,7 @@ export function crearMovimiento(solidos: Solidos, o: OpcionesMovimiento = {}): M
   let entradaX = 0, entradaZ = 0;
   let bloqueado = false;
   let destino: LugarId | null = null;
+  let guiaIris: LugarId | null = null;
   let ruta: PuntoRuta[] = [];
   let indice = 0;
   let mejorDist = Infinity;
@@ -372,8 +378,9 @@ export function crearMovimiento(solidos: Solidos, o: OpcionesMovimiento = {}): M
       jugadorGuia.z = jugador.z;
       jugadorGuia.rumbo = rumbo;
       let dg: typeof destinoGuia | null = null;
-      if (destino) {
-        const l = lugar(destino);
+      const haciaIris = destino ?? guiaIris;
+      if (haciaIris) {
+        const l = lugar(haciaIris);
         destinoGuia.x = l.x;
         destinoGuia.z = l.z;
         destinoGuia.mx = l.mx;
@@ -453,6 +460,9 @@ export function crearMovimiento(solidos: Solidos, o: OpcionesMovimiento = {}): M
     },
     get salto() {
       return salto;
+    },
+    guiarIrisA(l) {
+      guiaIris = l;
     },
     fijarRumbo(r) {
       rumbo = r;

@@ -44,8 +44,8 @@ export function crearTripulacionBase() {
   /** Opciones del niño: las del resto más la capa de salto (A5). */
   const gestoNino: { quieto: boolean; salto: { fase: FaseSalto; k: number } } = { quieto: true, salto: { fase: "suelo", k: 0 } };
   const rover: OpcionesIris = { quieto: true, velocidad: 0, averiada: false, cara: "atenta" };
-  /** Lo escribe la escena en cada fotograma, después de mover a los actores. */
-  const actores = { caminando: false, salto: { fase: "suelo", k: 0 } as Readonly<{ fase: FaseSalto; k: number }>, velocidadIris: 0, modoIris: "acompana" as ModoGuia };
+  /** Lo escribe la escena en cada fotograma, después de mover a los actores (`errorIris`, al cambiar el pedido). */
+  const actores = { caminando: false, salto: { fase: "suelo", k: 0 } as Readonly<{ fase: FaseSalto; k: number }>, velocidadIris: 0, modoIris: "acompana" as ModoGuia, errorIris: false };
   let apagada = false;
   let atendiendoDesde = -1;
   let ultimoMs = -1;
@@ -79,7 +79,8 @@ export function crearTripulacionBase() {
 
     // Iris: ruedas con su rapidez real y cara según lo que hace.
     rover.velocidad = actores.velocidadIris;
-    if (!apagada) rover.cara = CARA_GUIA[actores.modoIris];
+    // La guía pide cara de error (avería revelada): la muestra aunque la vista todavía no la marque averiada.
+    if (!apagada) rover.cara = actores.errorIris ? "error" : CARA_GUIA[actores.modoIris];
     iris.animar(t, rover);
   };
   animarTripulacion(0, true);

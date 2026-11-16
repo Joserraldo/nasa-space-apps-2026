@@ -59,7 +59,7 @@
   grid-area: retrato; display: grid; place-items: center; inline-size: 72px; block-size: 72px; background: var(--color-marfil);
   clip-path: polygon(30% 0, 70% 0, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0 70%, 0 30%);
 }
-.dialogo-experto-retrato svg { inline-size: 64px; block-size: 64px; }
+.dialogo-experto-retrato :is(svg, .retrato-img) { inline-size: 64px; block-size: 64px; }
 .dialogo-experto-texto { grid-area: texto; display: grid; gap: var(--esp-1); padding-inline-start: var(--esp-3); min-inline-size: 0;
   border-inline-start: var(--borde) solid color-mix(in srgb, var(--color-ciruela) 30%, transparent); }
 .dialogo-experto-texto h3 { margin: 0; font-size: var(--tipo-tam-subtitulo); }
@@ -80,9 +80,9 @@
   .base-acciones { grid-template-columns: 1fr; }
   .base-iris, .base-ayuda { display: none; }
   .base-expertos .retrato-marco { width: 56px; height: 56px; }
-  .base-expertos .retrato-marco svg { width: 50px; height: 50px; }
+  .base-expertos .retrato-marco :is(svg, .retrato-img) { width: 50px; height: 50px; }
   .dialogo-experto-retrato { inline-size: 48px; block-size: 48px; }
-  .dialogo-experto-retrato svg { inline-size: 44px; block-size: 44px; }
+  .dialogo-experto-retrato :is(svg, .retrato-img) { inline-size: 44px; block-size: 44px; }
   .dialogo-experto-texto p { font-size: 16px; }
   .base-panel .decision-personajes { display: none; }
 }
@@ -99,7 +99,7 @@
   .base-acciones { grid-template-columns: 1fr 1fr; }
   .base-acciones .fb-superficie { padding-inline: var(--esp-3); }
   .base-expertos .retrato-marco { width: 64px; height: 64px; }
-  .base-expertos .retrato-marco svg { width: 58px; height: 58px; }
+  .base-expertos .retrato-marco :is(svg, .retrato-img) { width: 58px; height: 58px; }
   .base-preguntar .fb-superficie { padding-inline: var(--esp-3); }
   .base-panel .decision-personajes { display: none; }
 }

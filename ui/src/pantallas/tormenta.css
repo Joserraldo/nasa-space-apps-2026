@@ -27,7 +27,7 @@
 .tormenta-expertos .retrato-boton { inline-size: 100%; }
 .tormenta-expertos .retrato-ficha { min-width: 0; padding-inline: var(--esp-1); }
 .tormenta-expertos .retrato-marco { width: 76px; height: 76px; }
-.tormenta-expertos .retrato-marco svg { width: 70px; height: 70px; }
+.tormenta-expertos .retrato-marco :is(svg, .retrato-img) { width: 70px; height: 70px; }
 .tormenta-expertos .retrato-nombre { display: grid; place-items: center; min-block-size: 2.3em; font-size: 16px; line-height: 1.15; text-align: center; text-wrap: balance; }
 .tormenta-expertos .retrato-especialidad { justify-content: center; flex-wrap: wrap; white-space: normal; font-size: 16px; line-height: 1.15; text-align: center; text-wrap: balance; }
 .tormenta-preguntar { display: flex; gap: var(--esp-2); align-items: center; min-inline-size: 0; }
@@ -41,7 +41,7 @@
 .tormenta-plan-experta { min-inline-size: 0; display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; gap: var(--esp-2) var(--esp-3); }
 .tormenta-plan-experta .retrato-ficha { min-width: 0; padding: var(--esp-1); }
 .tormenta-plan-experta .retrato-marco { width: 64px; height: 64px; }
-.tormenta-plan-experta .retrato-marco svg { width: 58px; height: 58px; }
+.tormenta-plan-experta .retrato-marco :is(svg, .retrato-img) { width: 58px; height: 58px; }
 .tormenta-frase { margin: 0; font-style: italic; text-wrap: balance; }
 .tormenta-otra { display: block; grid-column: 1 / -1; inline-size: 100%; min-inline-size: 0; }
 .tormenta-otra .fb { inline-size: 100%; min-inline-size: 0; }
@@ -78,7 +78,7 @@
   .tormenta-panel { inline-size: 40%; }
   .tormenta-cara { gap: var(--esp-2); padding: var(--esp-2) var(--esp-3); }
   .tormenta-expertos .retrato-marco, .tormenta-plan-experta .retrato-marco { width: 52px; height: 52px; }
-  .tormenta-expertos .retrato-marco svg, .tormenta-plan-experta .retrato-marco svg { width: 48px; height: 48px; }
+  .tormenta-expertos .retrato-marco :is(svg, .retrato-img), .tormenta-plan-experta .retrato-marco :is(svg, .retrato-img) { width: 48px; height: 48px; }
   .tormenta-expertos .retrato-especialidad { display: none; }
   .tormenta-plan-botones .fb-icono { display: none; }
   .tormenta-cara .decision-personajes { display: none; }
@@ -90,7 +90,7 @@
   .tormenta-panel > .tormenta-cara { padding-inline: max(var(--esp-3), env(safe-area-inset-left)) max(var(--esp-3), env(safe-area-inset-right));
     padding-block-end: max(var(--esp-3), env(safe-area-inset-bottom)); }
   .tormenta-expertos .retrato-marco { width: 64px; height: 64px; }
-  .tormenta-expertos .retrato-marco svg { width: 58px; height: 58px; }
+  .tormenta-expertos .retrato-marco :is(svg, .retrato-img) { width: 58px; height: 58px; }
   .tormenta-expertos .retrato-especialidad { display: none; }
   .tormenta-cara .decision-personajes { display: none; }
 }
