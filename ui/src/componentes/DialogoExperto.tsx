@@ -5,9 +5,44 @@ import { describirAccion } from "./Dialogos.js";
 import { FacetButton } from "./base/FacetButton.js";
 import { Icono } from "./base/Iconos.js";
 import { PERSONAS, Retrato, type Persona } from "./base/Retrato.js";
+import type { ActorId } from "../escena/frontera.js";
 import { TarjetaFuente } from "./TarjetaFuente.js";
 import "./base/facetas.css";
 import "./base/retratos.css";
+
+/** Dónde se dice una conversación (E5): línea corta en el globo sobre el actor o franja con retrato. */
+export type FormaDialogo = "globo" | "franja";
+
+/** Letras que entran cómodas en un globo para 7 a 10 años; más que eso se lee mejor en la franja. */
+export const LETRAS_GLOBO = 100;
+
+/**
+ * E5 (PLAN-JUGABILIDAD §4): el globo es para lo corto; la franja con el retrato B, para lo largo.
+ * Va a la franja si tiene más de 2 líneas, propone una acción, cita una fuente, es una alerta o el
+ * texto ya traducido pasa de `LETRAS_GLOBO`.
+ */
+export function formaDeDialogo(d: Dialogo, texto = ""): FormaDialogo {
+  const corto = d.lineas.length <= 2 && texto.length <= LETRAS_GLOBO;
+  return corto && !d.accion && !d.fuente && d.prioridad !== "alerta" ? "globo" : "franja";
+}
+
+/**
+ * Actores montados en la escena: el globo necesita a quién anclarse. Iris y `EXPERTAS_BASE` de
+ * `escena/tripulacionBase.ts` (A6). Se copia en lugar de importarlo para no traer three.js al paquete
+ * de la interfaz; una prueba avisa si deja de coincidir.
+ */
+export const ACTORES_CON_GLOBO: readonly ActorId[] = ["iris", "ingeniera", "doctora", "meteorologa"];
+
+/** Actor de la escena que dice el diálogo, o `null` si no está en el mundo y no puede llevar globo. */
+export function actorDeExperto(experto: string): ActorId | null {
+  const actor = (experto === "ia_base" ? "iris" : experto) as ActorId;
+  return ACTORES_CON_GLOBO.includes(actor) ? actor : null;
+}
+
+/** Tiempo de lectura del globo para 7 a 10 años: 3 s más 60 ms por letra, entre 4 y 9 s. */
+export function duracionGlobo(texto: string): number {
+  return Math.min(9000, Math.max(4000, 3000 + 60 * texto.length));
+}
 
 /**
  * Diálogo de una experta en la franja inferior (ui/01 arriba; personajes/07 "Compare a plan" y

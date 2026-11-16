@@ -1,11 +1,12 @@
 import { useState } from "react";
 import type { Cause, CauseOrigin, GameState, SourceCard } from "@solar-shield/contracts";
 import {
-  fuenteAprobada, referenciaDosis, regionPoloNorte, tarjetasCienciaFinal, terrenoJezero, tormentasCuradas,
+  datosUsados, fuenteAprobada, referenciaDosis, regionPoloNorte, tarjetasCienciaFinal, terrenoJezero, tormentasCuradas,
 } from "@solar-shield/data";
 import { modulosColocados, resumenPartida } from "@solar-shield/engine";
 import { MISION_JEZERO, TEXTOS_JEZERO, type TarjetaCiencia } from "@solar-shield/missions";
 import { useT } from "../i18n.js";
+import { LogoSolarShield } from "../componentes/base/LogoSolarShield.js";
 import { FacetButton } from "../componentes/base/FacetButton.js";
 import { Icono } from "../componentes/base/Iconos.js";
 import { ICONO_RECURSO } from "../componentes/base/Piezas.js";
@@ -32,66 +33,80 @@ export function PantallaFinal({ estado, onOtra, onOtraSemilla }: {
   const r = resumenPartida(estado);
   const exito = r.resultado === "exito";
   return (
-    <section className="final" aria-labelledby="final-titulo">
-      <div className="final-rejilla">
-        <Panel n={1} tituloKey="ui.final.cab.resultado" className="final-resultado">
-          <div className="final-equipo" aria-hidden="true">
-            <figure><Retrato persona="nino" expresion={exito ? "feliz" : "preocupada"} tam={104} /><figcaption>{t("ui.comun.retrato.nino.nombre")}</figcaption></figure>
-            <figure><Retrato persona="ia_base" expresion={exito ? "feliz" : "preocupada"} danada={estado.iaBase === "danada"} tam={72} /><figcaption>{t("ui.comun.retrato.ia_base.nombre")}</figcaption></figure>
-          </div>
-          <div className="final-veredicto">
-            <h2 id="final-titulo" className={`final-mensaje ${exito ? "final-exito" : "final-fallo"}`}>
-              <Icono nombre={exito ? "check_exito" : "aviso"} tam={28} />
-              {t(exito ? "ui.final.exito" : "ui.final.fallo")}
-            </h2>
-            <dl className="final-datos">
-              <div><dt>{t("ui.final.puntaje")}</dt><dd>{r.puntaje} <span className="final-rango">{t(r.rangoKey)}</span></dd></div>
-              <div><dt>{t("ui.final.dias")}</dt><dd>{r.dias}</dd></div>
-            </dl>
-            {r.insigniasKeys.length > 0 && (
-              <div className="final-insignias">
-                <p className="final-sub">{t("ui.final.insignias")}</p>
-                <ul>{r.insigniasKeys.map((k) => <li key={k}><Icono nombre="escudo" tam={18} />{t(k)}</li>)}</ul>
+    <section className="final" aria-labelledby="final-titulo" data-resultado={exito ? "exito" : "fallo"}>
+      <div className="final-pagina">
+        <div className="fc final-hero">
+          <div className="fc-cara final-hero-cara">
+            <div className="final-equipo" aria-hidden="true">
+              <figure className="final-nino"><Retrato persona="nino" expresion={exito ? "feliz" : "preocupada"} tam={220} /><figcaption>{t("ui.comun.retrato.nino.nombre")}</figcaption></figure>
+              <figure className="final-iris"><Retrato persona="ia_base" expresion={exito ? "feliz" : "preocupada"} danada={estado.iaBase === "danada"} tam={150} /><figcaption>{t("ui.comun.retrato.ia_base.nombre")}</figcaption></figure>
+            </div>
+            <div className="final-veredicto">
+              <div className="final-marca"><LogoSolarShield className="final-logo" /></div>
+              <h2 id="final-titulo" className={`final-mensaje ${exito ? "final-exito" : "final-fallo"}`}>
+                <Icono nombre={exito ? "check_exito" : "aviso"} tam={36} />
+                {t(exito ? "ui.final.exito" : "ui.final.fallo")}
+              </h2>
+              <p className="final-animo">{t(exito ? "ui.final.animo.exito" : "ui.final.animo.fallo")}</p>
+              <dl className="final-datos">
+                <div><dt>{t("ui.final.puntaje")}</dt><dd>{r.puntaje} <span className="final-rango">{t(r.rangoKey)}</span></dd></div>
+                <div><dt>{t("ui.final.dias")}</dt><dd>{r.dias}</dd></div>
+              </dl>
+              {r.insigniasKeys.length > 0 && (
+                <div className="final-insignias">
+                  <p className="final-sub">{t("ui.final.insignias")}</p>
+                  <ul>{r.insigniasKeys.map((k) => <li key={k}><Icono nombre="escudo" tam={18} />{t(k)}</li>)}</ul>
+                </div>
+              )}
+              <div className="final-acciones">
+                <FacetButton variant="primary" labelKey="ui.final.jugar_otra" icon="jugar" onClick={onOtra} />
+                {onOtraSemilla && <FacetButton labelKey="ui.final.otra_semilla" icon="planeta" onClick={onOtraSemilla} />}
+                <p className="final-semilla">{t("ui.final.semilla", { seed: r.seed })}</p>
               </div>
-            )}
+            </div>
           </div>
-        </Panel>
+        </div>
 
-        <Panel n={2} tituloKey="ui.paso.8.titulo" heading className="final-causas">
+        <Panel tituloKey="ui.paso.8.titulo" heading className="final-causas">
           <CadenaCausas estado={estado} />
         </Panel>
 
-        <Panel n={3} tituloKey="ui.final.ciencia" heading className="final-ciencia">
+        <Panel tituloKey="ui.final.ciencia" heading className="final-ciencia">
           <TarjetasCiencia estado={estado} />
         </Panel>
 
-        <Panel n={4} tituloKey="ui.final.pregunta.titulo" className="final-pregunta">
+        <Panel tituloKey="ui.final.pregunta.titulo" className="final-pregunta">
           <PreguntaFinal />
         </Panel>
 
-        <div className="final-datos-usados"><DatosUsados /></div>
-      </div>
-
-      <div className="final-acciones">
-        <FacetButton variant="primary" labelKey="ui.final.jugar_otra" icon="jugar" onClick={onOtra} />
-        {onOtraSemilla && <FacetButton labelKey="ui.final.otra_semilla" icon="planeta" onClick={onOtraSemilla} />}
-        <p className="final-semilla">{t("ui.final.semilla", { seed: r.seed })}</p>
+        <FuentesGenerales />
       </div>
     </section>
   );
 }
 
-/** Panel de la familia `ui/04`: pestaña ciruela "0N / TÍTULO" y cara marfil. */
-function Panel({ n, tituloKey, heading = false, className, children }: {
-  n: number; tituloKey: string; heading?: boolean; className: string; children: React.ReactNode;
+/** Qué datos de NASA usamos: plegado, para que el cierre se lea sin un muro de texto. */
+function FuentesGenerales() {
+  const { t } = useT();
+  return (
+    <details className="final-plegable final-datos-usados">
+      <summary>{t(datosUsados().tituloKey)}</summary>
+      <DatosUsados titulo={false} />
+    </details>
+  );
+}
+
+/** Panel de la familia `ui/04`: pestaña ciruela con el título y cara marfil. */
+function Panel({ tituloKey, heading = false, className, children }: {
+  tituloKey: string; heading?: boolean; className: string; children: React.ReactNode;
 }) {
   const { t } = useT();
-  const id = `final-panel-${n}`;
+  const id = `final-panel-${className}`;
   const Cab = heading ? "h2" : "p";
   return (
     <section className={`fc final-panel ${className}`} aria-labelledby={heading ? id : undefined}>
       <div className="fc-cara final-cara">
-        <Cab id={id} className="final-pestana"><span aria-hidden="true">{`0${n} / `}</span>{t(tituloKey)}</Cab>
+        <Cab id={id} className="final-pestana">{t(tituloKey)}</Cab>
         <div className="final-cuerpo">{children}</div>
       </div>
     </section>
@@ -107,26 +122,24 @@ function CadenaCausas({ estado }: { estado: GameState }) {
   const total = r.danoPorOrigen.decision + r.danoPorOrigen.mala_suerte + r.danoPorOrigen.sistema;
   const pct = (o: CauseOrigin) => (total === 0 ? 0 : Math.round((r.danoPorOrigen[o] / total) * 100));
   return (
-    <>
-      <div className="final-origenes">
-        {ORIGENES_JUGADOS.map((o) => {
-          const causas = r.causasDestacadas.filter((c) => c.origen === o);
-          return (
-            <div key={o} className={`final-origen final-${o}`}>
-              <h3><Icono nombre={o === "decision" ? "tripulacion" : "sol"} tam={22} />{t(`ui.final.${o}`)}</h3>
-              <Barra valor={pct(o)} etiqueta={t("ui.final.perdido", { total: r.danoPorOrigen[o] })} />
-              {causas.length > 0
-                ? <ul className="final-lista">{causas.map((c, i) => <LineaCausa key={i} c={c} />)}</ul>
-                : <p className="final-vacio">{t("ui.final.sin_causas")}</p>}
-            </div>
-          );
-        })}
-      </div>
+    <div className="final-origenes">
+      {ORIGENES_JUGADOS.map((o) => {
+        const causas = r.causasDestacadas.filter((c) => c.origen === o);
+        return (
+          <div key={o} className={`final-origen final-${o}`}>
+            <h3><Icono nombre={o === "decision" ? "tripulacion" : "sol"} tam={24} />{t(`ui.final.${o}`)}</h3>
+            <Barra valor={pct(o)} etiqueta={t("ui.final.perdido", { total: r.danoPorOrigen[o] })} />
+            {causas.length > 0
+              ? <ul className="final-lista">{causas.map((c, i) => <LineaCausa key={i} c={c} />)}</ul>
+              : <p className="final-vacio">{t("ui.final.sin_causas")}</p>}
+          </div>
+        );
+      })}
       <div className="final-origen final-sistema">
-        <p className="final-sub">{t("ui.final.sistema")}</p>
+        <h3><Icono nombre="energia" tam={24} />{t("ui.final.sistema")}</h3>
         <Barra valor={pct("sistema")} etiqueta={t("ui.final.perdido", { total: r.danoPorOrigen.sistema })} />
       </div>
-    </>
+    </div>
   );
 }
 
@@ -212,9 +225,12 @@ function TarjetasCiencia({ estado }: { estado: GameState }) {
                 factor: Math.round(curada.medicionMarte.factor), fondo: curada.medicionMarte.fondo,
               })}</p>
             )}
-            {fuentes.map((f, i) => f.tipo === "tarjeta"
-              ? <TarjetaFuente key={i} fuente={f.fuente} />
-              : <FuenteTerreno key={i} fuente={f.fuente} />)}
+            <details className="final-plegable">
+              <summary>{t("ui.fuente.titulo")}</summary>
+              {fuentes.map((f, i) => f.tipo === "tarjeta"
+                ? <TarjetaFuente key={i} fuente={f.fuente} titulo={false} />
+                : <FuenteTerreno key={i} fuente={f.fuente} titulo={false} />)}
+            </details>
           </div>
         </li>
       ))}
