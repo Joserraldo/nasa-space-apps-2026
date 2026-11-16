@@ -19,7 +19,7 @@ describe("ajustes del jugador", () => {
 
   it("guarda y vuelve a cargar lo mismo", () => {
     const a = almacenEnMemoria();
-    const ajustes = { idioma: "es" as const, sonido: false, movimientoReducido: true, calidad: "baja" as const };
+    const ajustes = { idioma: "es" as const, sonido: false, movimientoReducido: true, calidad: "baja" as const, camara: "primera" as const };
     guardarAjustes(a, ajustes);
     expect(cargarAjustes(a)).toEqual(ajustes);
   });
@@ -30,6 +30,16 @@ describe("ajustes del jugador", () => {
     expect(cargarAjustes(a)).toEqual(ajustesPorDefecto());
     a.setItem(CLAVE_AJUSTES, JSON.stringify({ idioma: "de", sonido: false, calidad: "ultra" }));
     expect(cargarAjustes(a)).toEqual({ ...ajustesPorDefecto(), sonido: false });
+  });
+
+  it("la cámara arranca en tercera persona, se guarda y un valor desconocido vuelve al defecto (#372)", () => {
+    expect(ajustesPorDefecto().camara).toBe("tercera");
+    const a = almacenEnMemoria();
+    a.setItem(CLAVE_AJUSTES, JSON.stringify({ ...ajustesPorDefecto(), camara: "aerea" }));
+    expect(cargarAjustes(a).camara).toBe("tercera");
+    // Ajustes guardados antes de que existiera `camara`: se conservan y la cámara queda en tercera.
+    a.setItem(CLAVE_AJUSTES, JSON.stringify({ idioma: "es", sonido: false, movimientoReducido: false, calidad: "alta" }));
+    expect(cargarAjustes(a)).toEqual({ idioma: "es", sonido: false, movimientoReducido: false, calidad: "alta", camara: "tercera" });
   });
 
   it("sin almacenamiento o si falla, el juego sigue", () => {
