@@ -50,6 +50,21 @@ async function primeraConversacion(page: Page) {
   await page.getByRole("button", { name: "Resume", exact: true }).click();
 }
 
+/** Entra con una cuenta simulada (API de cuentas falsa): el progreso sobrevive a la recarga, como "Continue" pide. */
+async function entrarConCuenta(page: Page) {
+  let guardado: unknown = null;
+  await page.route("**/api/auth/login", (r) => r.fulfill({ json: { usuario: "piloto_1" } }));
+  await page.route("**/api/auth/me", (r) => r.fulfill({ json: { usuario: "piloto_1" } }));
+  await page.route("**/api/progress", async (r) => {
+    if (r.request().method() === "PUT") { guardado = r.request().postDataJSON().datos; await r.fulfill({ json: { ok: true } }); }
+    else await r.fulfill({ json: { datos: guardado } });
+  });
+  await page.goto("/");
+  await page.getByLabel("Username", { exact: true }).fill("piloto_1");
+  await page.getByLabel("Password", { exact: true }).fill("clave-prueba");
+  await page.getByRole("button", { name: "Log in and play", exact: true }).click();
+}
+
 /** Crew abre el panel de decisión con las acciones, la tripulación y el registro. */
 async function abrirTripulacion(page: Page) {
   await page.getByRole("button", { name: "Crew", exact: true }).click();
@@ -77,6 +92,7 @@ test("sin enviar la telemetría la base se pierde, y \"Play again\" empieza una 
 
   await page.clock.install();
   await page.goto("/");
+  await page.getByRole("button",{name:"Play as guest",exact:true}).click();
   await llegarALaBase(page);
   const energiaInicial = await energia(page);
 
@@ -121,7 +137,17 @@ test("sin enviar la telemetría la base se pierde, y \"Play again\" empieza una 
 
 test("\"Continue\" recupera la partida guardada después de recargar la página", async ({ page }) => {
   await page.clock.install();
-  await page.goto("/");
+  let guardado: unknown = null;
+  await page.route('**/api/auth/login',r=>r.fulfill({json:{usuario:'piloto_1'}}));
+  await page.route('**/api/auth/me',r=>r.fulfill({json:{usuario:'piloto_1'}}));
+  await page.route('**/api/progress',async r=>{
+    if(r.request().method()==='PUT'){guardado=r.request().postDataJSON().datos;await r.fulfill({json:{ok:true}});}
+    else await r.fulfill({json:{datos:guardado}});
+  });
+  await page.goto('/');
+  await page.getByLabel('Username',{exact:true}).fill('piloto_1');
+  await page.getByLabel('Password',{exact:true}).fill('clave-prueba');
+  await page.getByRole('button',{name:'Log in and play',exact:true}).click();
   await expect(page.getByRole("button", { name: "Continue" })).toHaveAttribute("aria-disabled", "true");
   await llegarALaBase(page);
   // En pausa antes de leer: la pausa también se guarda, y así ningún turno cambia la energía entre la
@@ -129,7 +155,10 @@ test("\"Continue\" recupera la partida guardada después de recargar la página"
   await page.getByRole("button", { name: "Pause", exact: true }).click();
   const energiaAntes = await energia(page);
 
+  await page.clock.fastForward(700);
+  await expect(page.getByRole("status",{name:"Account progress"})).toContainText("Progress saved");
   await page.reload();
+  await page.getByRole("button",{name:"Load my progress",exact:true}).click();
   // La portada ofrece continuar y ya no dice que falta una partida guardada.
   const continuar = page.getByRole("button", { name: "Continue" });
   await expect(continuar).not.toHaveAttribute("aria-disabled", "true");
@@ -145,16 +174,19 @@ test("\"Continue\" recupera la partida guardada después de recargar la página"
 
 test("el idioma elegido en la portada se recuerda al recargar", async ({ page }) => {
   await page.goto("/");
+  await page.getByRole("button",{name:"Play as guest",exact:true}).click();
   await expect(page.getByRole("button", { name: "Start mission" })).toBeVisible();
   await page.getByRole("button", { name: "ES", exact: true }).click();
   await expect(page.getByRole("button", { name: "Empezar misión" })).toBeVisible();
   await page.reload();
+  await page.getByRole("button",{name:"Jugar como invitado",exact:true}).click();
   await expect(page.getByRole("button", { name: "Empezar misión" })).toBeVisible();
 });
 
 test("perder WebGL deja la misma partida en el respaldo 2D, y el mapa lleva al niño a un lugar", async ({ page }) => {
   await page.clock.install();
   await page.goto("/");
+  await page.getByRole("button",{name:"Play as guest",exact:true}).click();
   await llegarALaBase(page);
   await page.getByRole("button", { name: "Pause", exact: true }).click();
   const energiaAntes = await energia(page);
@@ -199,6 +231,7 @@ test("la tripulación conversa con el modelo y, sin red, deja preguntas que func
   page.on("pageerror", (e) => errores.push(e.message));
   await page.clock.install();
   await page.goto("/");
+  await page.getByRole("button", { name: "Play as guest", exact: true }).click();
   await llegarALaBase(page);
   await page.getByRole("button", { name: "Pause", exact: true }).click();
   await abrirTripulacion(page);
@@ -254,7 +287,7 @@ test("la tripulación conversa con el modelo y, sin red, deja preguntas que func
  */
 test("cambiar la cámara desde el menú conserva la partida y se recuerda al recargar", async ({ page }) => {
   await page.clock.install();
-  await page.goto("/");
+  await entrarConCuenta(page);
   await llegarALaBase(page);
   await page.getByRole("button", { name: "Pause", exact: true }).click();
   const energiaAntes = await energia(page);
@@ -284,7 +317,11 @@ test("cambiar la cámara desde el menú conserva la partida y se recuerda al rec
   await menu.getByRole("button", { name: "First person" }).click();
   await menu.getByRole("button", { name: "Close", exact: true }).click();
 
+  // Con el login, la partida que vuelve con "Continue" es la de la cuenta: se espera a que se guarde.
+  await page.clock.fastForward(700);
+  await expect(page.getByRole("status", { name: "Account progress" })).toContainText("Progress saved");
   await page.reload();
+  await page.getByRole("button", { name: "Load my progress", exact: true }).click();
   await page.getByRole("button", { name: "Continue" }).click();
   await expect(page.locator("canvas")).toHaveAttribute("data-camara", "primera");
   expect(await energia(page)).toBe(energiaAntes);

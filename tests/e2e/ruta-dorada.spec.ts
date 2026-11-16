@@ -38,6 +38,7 @@ test("ruta dorada: de la órbita al resumen, en inglés", async ({ page }) => {
 
   await page.clock.install();
   await page.goto("/");
+  await page.getByRole("button",{name:"Play as guest",exact:true}).click();
 
   // E0 Portada (inicio/01): logo oficial, inglés base y aviso de que no es oficial de NASA.
   await expect(page.getByRole("img", { name: "Solar Shield" })).toBeVisible();
@@ -145,7 +146,7 @@ test("ruta dorada: de la órbita al resumen, en inglés", async ({ page }) => {
   const energiaAntes = await page.getByRole("meter", { name: "Energy" }).getAttribute("aria-valuenow");
   await page.getByRole("button", { name: "Wait a turn at the console" }).click();
   await expect(page.getByRole("dialog")).toBeVisible();
-  await page.getByRole("dialog").getByRole("button", { name: "Back" }).click();
+  await page.getByRole("dialog").getByRole("button", { name: "Back", exact: true }).click();
   await expect(page.getByRole("dialog")).toHaveCount(0);
   expect(await page.getByRole("meter", { name: "Energy" }).getAttribute("aria-valuenow")).toBe(energiaAntes);
   // Primera conversación en el mundo: caminar al sensor y hablar con la Meteoróloga trae Crew al HUD (E3).
@@ -196,7 +197,7 @@ test("ruta dorada: de la órbita al resumen, en inglés", async ({ page }) => {
   await expect(page.getByText("Where does this data come from?").first()).toBeVisible();
   await expect(page.getByText("Real curated data, not live").first()).toBeVisible();
   await expect(page.getByRole("link", { name: /View source/ })).toHaveAttribute("href", /ccmc\.gsfc\.nasa\.gov/);
-  await page.getByRole("button", { name: "Back" }).click();
+  await page.getByRole("button", { name: "Back", exact: true }).click();
 
   // Confirm manda la decisión al motor y aparece "Decision recorded" con lo que cobró; "Return to exploration" reanuda.
   await expect(page.getByRole("heading", { name: "Compare your plan" })).toBeVisible();
@@ -314,6 +315,7 @@ test("seguir a Iris del paso 4 al 8 sin abrir Crew, con el mapa y la tecla E", a
 
   await page.clock.install();
   await page.goto("/");
+  await page.getByRole("button",{name:"Play as guest",exact:true}).click();
   await page.getByRole("button", { name: "Start mission" }).click();
   await page.getByRole("button", { name: "Skip intro" }).click();
   await page.getByRole("button", { name: "Skip", exact: true }).click();
