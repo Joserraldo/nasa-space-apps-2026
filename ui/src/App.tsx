@@ -65,6 +65,7 @@ function Pantalla({ idioma, setIdioma, sonido, setSonido, grafica }: {
   // #377: lo que la tripulación recuerda de esta partida. Vive mientras dura la sesión; guardarlo con la
   // partida es del frente A (juego/guardado, #360). Una partida nueva empieza sin recuerdos.
   const [memoria, setMemoria] = useState<MemoriaConversacion>(MEMORIA_INICIAL);
+  const [vistos, setVistos] = useState<readonly string[]>([]);
   const avanzarHud = (p: Partial<ProgresoHud>) => setProgreso((a) => (Object.entries(p).every(([k, v]) => a[k as keyof ProgresoHud] === v) ? a : { ...a, ...p }));
   const enBase = j.fase === "base";
   // E5 a E7 comparten un solo mundo 3D (MundoBase): cambiar de fase no vuelve a montar la escena.
@@ -104,7 +105,7 @@ function Pantalla({ idioma, setIdioma, sonido, setSonido, grafica }: {
     else if (j.fase === "final") tocar(j.estado.resultado === "exito" ? "exito" : "fallo", sonido);
   }, [j.fase, j.estado.resultado, sonido]);
   useEffect(() => { if (j.fase === "inicio") setInicio("portada"); }, [j.fase]);
-  const empezarMision = () => { setProgreso(PROGRESO_INICIAL); setMemoria(MEMORIA_INICIAL); enviar({ tipo: "fase", fase: "satelite" }); };
+  const empezarMision = () => { setProgreso(PROGRESO_INICIAL); setMemoria(MEMORIA_INICIAL); setVistos([]); enviar({ tipo: "fase", fase: "satelite" }); };
   // La carga es un respiro corto entre la intro y la órbita; se puede saltar con "Skip".
   useEffect(() => {
     if (j.fase !== "inicio" || inicio !== "carga") return;
@@ -152,6 +153,7 @@ function Pantalla({ idioma, setIdioma, sonido, setSonido, grafica }: {
               )}
               {enBase && (
                 <PantallaBase estado={j.estado} colocados={j.colocados} ultimas={j.ultimas} hud={{ reloj }} progreso={progreso} onProgreso={avanzarHud} memoria={memoria} onMemoria={setMemoria}
+                  vistos={vistos} onVisto={(id) => setVistos((v) => (v.includes(id) ? v : [...v, id]))}
                   onAccion={accion} onReanudar={() => enviar({ tipo: "pausa", pausado: false })} />
               )}
             </Transicion>
@@ -167,7 +169,7 @@ function Pantalla({ idioma, setIdioma, sonido, setSonido, grafica }: {
             {j.fase === "satelite" && <PantallaOrbita estado={j.estado} onContinuar={() => enviar({ tipo: "fase", fase: "sitio" })} />}
             {j.fase === "sitio" && <PantallaSitio estado={j.estado} onElegir={(s) => { tocar("confirmar", sonido); setEntrada("llegada"); enviar({ tipo: "sitio", sitio: s }); }} />}
             {llegando && <Llegada onSeguir={seguirLlegada} />}
-            {j.fase === "final" && <PantallaFinal estado={j.estado} onOtra={() => { setProgreso(PROGRESO_INICIAL); setMemoria(MEMORIA_INICIAL); enviar({ tipo: "nueva" }); }} />}
+            {j.fase === "final" && <PantallaFinal estado={j.estado} onOtra={() => { setProgreso(PROGRESO_INICIAL); setMemoria(MEMORIA_INICIAL); setVistos([]); enviar({ tipo: "nueva" }); }} />}
           </Transicion>
         )}
         {creditos && <Creditos onCerrar={() => setCreditos(false)} />}
