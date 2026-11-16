@@ -396,6 +396,70 @@ const suave = (p: number) => p * p * (3 - 2 * p);
  * Pose de la tercera persona sin obstáculos ni suavizado: posición y punto de mira para el niño en
  * (px, py, pz), con la cámara mirando hacia `yaw` (0 = hacia −Z). Escribe en `pos` y `mira`.
  */
+/**
+ * Cámara sin zooms raros (A13). Ritmos en 1/s de las curvas exponenciales [E]:
+ * - `encuadre`: la distancia y la inclinación pedidas (aspecto del lienzo, rueda, pellizco) se alcanzan con
+ *   curva, no de golpe: abrir un panel o el mapa cambia el aspecto y antes saltaba el encuadre.
+ * - `subir`: la cámara sube sobre un obstáculo con curva rápida; `bajar` vuelve con curva lenta.
+ * - `alejar`: al liberarse de un choque la cámara se aleja con curva. Acercarse por un choque es inmediato
+ *   pero continuo: nunca más cerca que el tope libre, medido con bisección (sin escalones de 1/16).
+ */
+export const RITMO_CAMARA = { encuadre: 6, subir: 20, bajar: 4, alejar: 4 } as const;
+
+/**
+ * Distancia libre a lo largo de un rayo de largo `d`: busca el primer tramo tapado entre `n` y lo refina
+ * con `iter` bisecciones (precisión d / n / 2^iter). `tapa(t)` dice si el punto a distancia `t` choca.
+ */
+export function distanciaLibreRayo(d: number, tapa: (t: number) => boolean, minimo: number, n = 16, iter = 6): number {
+  for (let i = 1; i <= n; i++) {
+    if (!tapa((i / n) * d)) continue;
+    let lo = ((i - 1) / n) * d, hi = (i / n) * d;
+    for (let k = 0; k < iter; k++) {
+      const m = (lo + hi) / 2;
+      if (tapa(m)) hi = m;
+      else lo = m;
+    }
+    return Math.max(minimo, lo);
+  }
+  return d;
+}
+
+/** Acerca `actual` a `meta` con curva exponencial de ritmo `k` (1/s). */
+export function curva(actual: number, meta: number, k: number, dt: number): number {
+  return actual + (meta - actual) * (1 - Math.exp(-k * Math.max(0, dt)));
+}
+
+/**
+ * Siguiente distancia de la cámara. La meta es `min(deseada, tope)`: se aleja hacia ella con curva (sin
+ * pasarla, así no hay sierra contra la pared) y, si el tope libre baja, se acerca en el acto: es el único
+ * salto permitido, un choque. Con movimiento reducido o sin valor previo (`actual` < 0), va directo.
+ */
+export function siguienteDistancia(estado: DistanciaCamara, deseada: number, tope: number, dt: number, reducido: boolean): void {
+  const meta = Math.min(deseada, tope);
+  if (estado.d < 0 || reducido) {
+    estado.d = meta;
+    estado.espera = 0;
+    return;
+  }
+  if (meta < estado.d - 1e-4) {
+    // Choque: se acerca en el acto y no vuelve a alejarse hasta que el espacio siga libre un rato.
+    if (tope < deseada) estado.espera = ESPERA_TRAS_CHOQUE;
+    estado.d = meta;
+    return;
+  }
+  estado.espera = Math.max(0, estado.espera - Math.max(0, dt));
+  if (estado.espera > 0) return;
+  estado.d = curva(estado.d, meta, RITMO_CAMARA.alejar, dt);
+}
+
+/** Distancia de la cámara al pivote (`d`, -1 sin valor) y cuánto falta para poder alejarse tras un choque (s). */
+export interface DistanciaCamara {
+  d: number;
+  espera: number;
+}
+/** Tras un choque, la cámara espera esto antes de alejarse: sin esto, al rozar un borde se aleja y vuelve a chocar. [E] */
+export const ESPERA_TRAS_CHOQUE = 0.4;
+
 export function poseTercera(
   px: number, py: number, pz: number, yaw: number, inclinacion: number, distancia: number,
   adelante: number, hombro: number, pos: THREE.Vector3, mira: THREE.Vector3,
@@ -499,8 +563,11 @@ export function crearEscena3D(canvas: HTMLCanvasElement, opciones: OpcionesEscen
   let ultimoGiroManual = -Infinity;
   const pivote = new THREE.Vector3(jugadorInicial.x, 0, jugadorInicial.z);
   /** Distancia efectiva tras la colisión: se acerca de golpe y se aleja suave. */
-  let distanciaEfectiva = -1;
+  const distanciaCamara: DistanciaCamara = { d: -1, espera: 0 };
   let inclinacionEfectiva = -1;
+  /** Encuadre pedido, suavizado (A13): distancia e inclinación sin obstáculos. -1 = todavía sin valor. */
+  let distanciaEncuadre = -1;
+  let inclinacionEncuadre = -1;
   const posTercera = new THREE.Vector3();
   const miraTercera = new THREE.Vector3();
   const posPrimera = new THREE.Vector3();
@@ -576,15 +643,7 @@ export function crearEscena3D(canvas: HTMLCanvasElement, opciones: OpcionesEscen
 
   /** Acorta la distancia si entre el pivote y la cámara hay un obstáculo más alto que el rayo. */
   function distanciaLibre(px: number, pz: number, dx: number, dz: number, alturaPivote: number, dy: number, d: number): number {
-    const n = 16;
-    for (let i = 1; i <= n; i++) {
-      const t = (i / n) * d;
-      const y = alturaPivote + dy * t;
-      if (tapaCamara(px + dx * t, y, pz + dz * t, CAMARA_TERCERA.margenColision, obstaculos)) {
-        return Math.max(CAMARA_TERCERA.distanciaColision, ((i - 1) / n) * d);
-      }
-    }
-    return d;
+    return distanciaLibreRayo(d, (t) => tapaCamara(px + dx * t, alturaPivote + dy * t, pz + dz * t, CAMARA_TERCERA.margenColision, obstaculos), CAMARA_TERCERA.distanciaColision);
   }
 
   function moverCamara(dt: number, ahora: number): void {
@@ -609,8 +668,15 @@ export function crearEscena3D(canvas: HTMLCanvasElement, opciones: OpcionesEscen
     encuadreTercera(camara.aspect, encuadre);
     // El arrastre vertical queda dentro de los límites de inclinación del encuadre actual.
     ajusteInclinacion = Math.min(CAMARA_TERCERA.inclinacionMax - encuadre.inclinacion, Math.max(CAMARA_TERCERA.inclinacionMin - encuadre.inclinacion, ajusteInclinacion));
-    const inclinacion = encuadre.inclinacion + ajusteInclinacion;
-    const distancia = encuadre.distancia * zoom;
+    // El encuadre pedido cambia con el aspecto (al abrir un panel o el mapa), la rueda o el pellizco: se
+    // alcanza con curva para que no haya zoom de golpe (A13). El arrastre vertical sigue directo.
+    const metaDistancia = encuadre.distancia * zoom;
+    const metaInclinacion = encuadre.inclinacion;
+    const directo = distanciaEncuadre < 0 || reducido;
+    distanciaEncuadre = directo ? metaDistancia : curva(distanciaEncuadre, metaDistancia, RITMO_CAMARA.encuadre, dt);
+    inclinacionEncuadre = directo ? metaInclinacion : curva(inclinacionEncuadre, metaInclinacion, RITMO_CAMARA.encuadre, dt);
+    const inclinacion = inclinacionEncuadre + ajusteInclinacion;
+    const distancia = distanciaEncuadre;
 
     const j = mov.jugador;
     // La cámara vuelve sola a la espalda del niño cuando se le pide ir hacia delante (o sigue una
@@ -649,19 +715,24 @@ export function crearEscena3D(canvas: HTMLCanvasElement, opciones: OpcionesEscen
     // Si algo tapa la cámara, primero sube por encima (más inclinación); si no alcanza, se acerca.
     let inc = inclinacion;
     let libre = distanciaLibre(bx, bz, -fx * Math.cos(inc), -fz * Math.cos(inc), by, Math.sin(inc), distancia);
+    // Si ninguna altura despeja del todo, se queda con la que más espacio deja (A13): antes volvía a la
+    // inclinación base y, al caminar, la meta saltaba entre "subida" y "baja" (zoom que va y viene).
     for (let paso = 1; paso <= PASOS_SUBIDA && libre < distancia; paso++) {
       const otra = Math.min(CAMARA_TERCERA.inclinacionMax, inclinacion + paso * SUBIDA_POR_PASO);
       const l = distanciaLibre(bx, bz, -fx * Math.cos(otra), -fz * Math.cos(otra), by, Math.sin(otra), distancia);
-      if (l >= distancia) {
+      if (l > libre + 0.05) {
         inc = otra;
         libre = l;
       }
     }
-    const suaviza = (actual: number, meta: number, sube: boolean) =>
-      actual < 0 || sube || reducido ? meta : actual + (meta - actual) * (1 - Math.exp(-4 * dt));
-    inclinacionEfectiva = suaviza(inclinacionEfectiva, inc, inc > inclinacionEfectiva);
-    distanciaEfectiva = suaviza(distanciaEfectiva, libre, libre < distanciaEfectiva);
-    const d = distanciaEfectiva;
+    // La inclinación sube y baja con curva (antes subía de golpe en escalones). La distancia se mide de nuevo
+    // con la inclinación que de verdad tiene la cámara, así nunca queda dentro de un sólido mientras sube.
+    if (inclinacionEfectiva < 0 || reducido) inclinacionEfectiva = inc;
+    else inclinacionEfectiva = curva(inclinacionEfectiva, inc, inc > inclinacionEfectiva ? RITMO_CAMARA.subir : RITMO_CAMARA.bajar, dt);
+    const ce = Math.cos(inclinacionEfectiva);
+    const tope = inclinacionEfectiva === inc ? libre : distanciaLibre(bx, bz, -fx * ce, -fz * ce, by, Math.sin(inclinacionEfectiva), distancia);
+    siguienteDistancia(distanciaCamara, distancia, tope, dt, reducido);
+    const d = distanciaCamara.d;
 
     // Con la cámara subida o acercada, la mirada se acerca para que el niño siga en el mismo lugar
     // del cuadro (mismo ángulo entre el niño y el centro que en el encuadre sin obstáculos).
