@@ -47,6 +47,20 @@ export interface OpcionesGesto {
   quieto?: boolean | undefined;
   /** Expresión base cuando el gesto no impone una. */
   expresion?: Expresion | undefined;
+  /** `caminar`: fase del ciclo de pasos (rad), acumulada con `cadenciaCaminar`. Sin ella, `t · 6,2`. */
+  fase?: number | undefined;
+  /** `caminar`: rapidez relativa a la marcha (0 a 1): pasos más largos cuanto más rápido. Sin ella, 1. */
+  ritmo?: number | undefined;
+}
+
+/**
+ * Cadencia del ciclo de pasos (rad/s) para una rapidez relativa `ritmo` (0 a 1): de 4,5 al arrancar a 10 a
+ * la marcha (unos 3 pasos por segundo). Los pies del niño avanzan ~0,11 m por paso (medido en el esqueleto),
+ * así que a 2,8 m/s todavía resbalan: ver el PR de A4. [E]
+ */
+export function cadenciaCaminar(ritmo: number): number {
+  const r = Math.max(0, Math.min(1, ritmo));
+  return 4.5 + 5.5 * r;
 }
 
 const HABLA: Expresion[] = ["hablaCerrada", "hablaAbierta", "hablaRedonda", "hablaAbierta", "hablaCerrada", "hablaRedonda"];
@@ -90,13 +104,15 @@ export function animar(pj: Personaje, gesto: Gesto, t: number, o: OpcionesGesto 
       break;
 
     case "caminar": {
-      const f = t * 6.2;
-      const paso = Math.sin(f);
+      const f = o.quieto ? 0 : (o.fase ?? t * 6.2);
+      // Amplitud según la rapidez: 0,75 al arrancar, 1,25 a la marcha; sin `ritmo`, 1 (el paso de siempre).
+      const amp = o.ritmo === undefined ? 1 : 0.75 + 0.5 * Math.max(0, Math.min(1, o.ritmo));
+      const paso = Math.sin(f) * amp;
       // El muslo va al frente con X negativo; la rodilla flexiona mientras la pierna pasa hacia delante.
       h.musloI.rotation.x = -paso * 0.4;
       h.musloD.rotation.x = paso * 0.4;
-      h.espinillaI.rotation.x = Math.max(0, Math.cos(f)) * 0.7 + 0.04;
-      h.espinillaD.rotation.x = Math.max(0, -Math.cos(f)) * 0.7 + 0.04;
+      h.espinillaI.rotation.x = Math.max(0, Math.cos(f)) * 0.7 * amp + 0.04;
+      h.espinillaD.rotation.x = Math.max(0, -Math.cos(f)) * 0.7 * amp + 0.04;
       h.pieI.rotation.x = Math.max(0, paso) * -0.22;
       h.pieD.rotation.x = Math.max(0, -paso) * -0.22;
       // Brazos en contrafase con las piernas.

@@ -712,6 +712,7 @@ export function crearEscena3D(canvas: HTMLCanvasElement, opciones: OpcionesEscen
     tripulacion.iris.grupo.position.set(iris.x, 0, iris.z);
     tripulacion.iris.grupo.rotation.y = iris.rumbo;
     tripulacion.actores.caminando = mov.velocidad > 0.2;
+    tripulacion.actores.velocidad = mov.velocidad;
     tripulacion.actores.velocidadIris = mov.velocidadIris;
     tripulacion.actores.modoIris = iris.modo;
 

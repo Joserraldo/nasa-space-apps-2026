@@ -1,5 +1,7 @@
 import * as THREE from "three";
 import { animar, crearIris, crearPersonaje, type CaraIris, type Gesto, type OpcionesIris } from "./personajes";
+import { cadenciaCaminar } from "./personajes/animaciones";
+import { VEL_JUGADOR } from "./movimientoBase";
 import type { ModoGuia } from "./guia";
 import { ANCLAJES_EXPERTAS, DOCK_IRIS, INICIO_JUGADOR } from "./mundo";
 import type { VistaEscena } from "./vista";
@@ -40,9 +42,11 @@ export function crearTripulacionBase() {
   grupo.add(jugador.grupo, ingeniera.grupo, iris.grupo);
   // Objetos reutilizados en cada frame.
   const gesto = { quieto: true };
+  /** Paso del niño: fase acumulada según su rapidez, para que la cadencia siga a la velocidad (A4). */
+  const pasoNino: { quieto: boolean; fase: number; ritmo: number } = { quieto: true, fase: 0, ritmo: 0 };
   const rover: OpcionesIris = { quieto: true, velocidad: 0, averiada: false, cara: "atenta" };
   /** Lo escribe la escena en cada fotograma, después de mover a los actores. */
-  const actores = { caminando: false, velocidadIris: 0, modoIris: "acompana" as ModoGuia };
+  const actores = { caminando: false, velocidad: 0, velocidadIris: 0, modoIris: "acompana" as ModoGuia };
   let apagada = false;
   let atendiendoDesde = -1;
   let ultimoMs = -1;
@@ -56,7 +60,11 @@ export function crearTripulacionBase() {
     ultimoMs = ahoraMs;
 
     // El niño camina con el gesto de caminar; quieto, en reposo (con movimiento reducido, la pose clave).
-    animar(jugador, actores.caminando ? "caminar" : "reposo", t, gesto);
+    // La cadencia y el largo del paso siguen a la rapidez real: arranca y frena con pasos cortos.
+    pasoNino.quieto = reducido;
+    pasoNino.ritmo = Math.min(1, actores.velocidad / VEL_JUGADOR);
+    pasoNino.fase = actores.caminando ? (pasoNino.fase + cadenciaCaminar(pasoNino.ritmo) * dt) % (Math.PI * 2) : 0;
+    animar(jugador, actores.caminando ? "caminar" : "reposo", t, actores.caminando ? pasoNino : gesto);
 
     // La Ingeniera se vuelve hacia el niño si está cerca: saluda y después explica.
     const p = jugador.grupo.position, q = ingeniera.grupo.position;
