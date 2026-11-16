@@ -14,7 +14,7 @@
 }
 .tormenta-cara {
   display: grid; align-content: start; gap: var(--esp-3); padding: var(--esp-3) var(--esp-4);
-  max-block-size: 100%; overflow-y: auto; overscroll-behavior: contain; scrollbar-gutter: stable;
+  max-block-size: 100%; overflow-y: auto; overscroll-behavior: contain; scrollbar-gutter: auto;
 }
 .tormenta-cabeza { display: flex; align-items: center; justify-content: space-between; gap: var(--esp-2); flex-wrap: wrap; }
 .tormenta-cara.pf-cara { padding: 0 var(--esp-3) var(--esp-3); }
@@ -29,7 +29,7 @@
 .tormenta-expertos .retrato-marco { width: 76px; height: 76px; }
 .tormenta-expertos .retrato-marco :is(svg, .retrato-img) { width: 70px; height: 70px; }
 .tormenta-expertos .retrato-nombre { display: grid; place-items: center; min-block-size: 2.3em; font-size: 16px; line-height: 1.15; text-align: center; text-wrap: balance; }
-.tormenta-expertos .retrato-especialidad { justify-content: center; flex-wrap: wrap; white-space: normal; font-size: 16px; line-height: 1.15; text-align: center; text-wrap: balance; }
+.tormenta-expertos .retrato-especialidad { flex-direction: column; justify-content: center; flex-wrap: nowrap; white-space: normal; font-size: 16px; line-height: 1.15; text-align: center; text-wrap: balance; }
 .tormenta-preguntar { display: flex; gap: var(--esp-2); align-items: center; min-inline-size: 0; }
 .tormenta-preguntar input { flex: 1; min-inline-size: 0; min-block-size: var(--toque-minimo); font-size: 16px; background: var(--color-marfil); border-color: color-mix(in srgb, var(--color-ciruela) 40%, transparent); }
 .tormenta-preguntar .fb-caja { flex: none; }
