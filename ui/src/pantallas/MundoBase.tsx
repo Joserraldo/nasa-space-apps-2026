@@ -1,5 +1,6 @@
 import { createContext, lazy, Suspense, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode, type RefObject } from "react";
 import type { Equipment, GameState } from "@solar-shield/contracts";
+import { guiaIrisLugar } from "@solar-shield/agents";
 import { tormentaActiva } from "@solar-shield/engine";
 import type { CamaraEscena, EventoDestino, PosicionJugador } from "../escena/EscenaBase.js";
 import type { EntradaTactil } from "../escena/entradaTactil.js";
@@ -9,7 +10,9 @@ import { hayGraficos3D } from "../escena/soporte.js";
 import { vistaEscena, type FaseVista, type LugarObjetivo } from "../escena/vista.js";
 import type { CalidadGrafica } from "../juego/ajustes.js";
 import { eventosDeTick } from "../juego/eventos.js";
-import { averiaIrisRevelada } from "./lugares.js";
+import { pedidoDeGuia } from "../juego/pedidoEscena.js";
+import { traducir, useT } from "../i18n.js";
+import { averiaIrisRevelada, pasoDeLaBase } from "./lugares.js";
 import "./mundo.css";
 
 // Three.js queda en un chunk aparte: no pesa en la primera carga.
@@ -152,8 +155,14 @@ export function MundoBase({ fase, estado, colocados, calidad, movimientoReducido
   const bloqueado = bloqueadoCapa || campo;
 
   const fv = faseVista(fase, estado);
-  const vista = useMemo(() => vistaEscena(estado, { fase: fv, colocados, instalando: fase === "modulos" ? instalando : null, averiaRevelada: fase !== "modulos" && averiaIrisRevelada(estado), lugarObjetivo }),
-    [estado, colocados, fv, fase, instalando, lugarObjetivo]);
+  const vista = useMemo(() => vistaEscena(estado, { fase: fv, colocados, instalando: fase === "modulos" ? instalando : null, averiaRevelada: fase !== "modulos" && averiaIrisRevelada(estado) }),
+    [estado, colocados, fv, fase, instalando]);
+  // A2 (#344): la guía de Iris llega a la escena como pedido: destino marcado (haz, ruta y flecha), gesto
+  // y cara de Iris, y su globo. En E5 los módulos se colocan con la tarjeta: ahí Iris no guía.
+  // Depende del idioma, no de `t` (que es nuevo en cada render): la escena recibe un pedido nuevo solo si cambia.
+  const { idioma } = useT();
+  const guia = useMemo(() => (fase === "modulos" ? null
+    : pedidoDeGuia(guiaIrisLugar(estado, pasoDeLaBase(estado), { averiaRevelada: averiaIrisRevelada(estado) }), (k, v) => traducir(idioma, k, v))), [fase, estado, idioma]);
   // Eventos del último tick: se comparan el estado anterior y el actual (una vez por tick).
   const previo = useRef(estado);
   const eventos = useMemo(() => {
@@ -212,7 +221,10 @@ export function MundoBase({ fase, estado, colocados, calidad, movimientoReducido
               onUsar={usarDe}
               sala={sala}
               hablando={hablando}
-              globo={globo}
+              objetivo={guia?.objetivo ?? null}
+              iris={guia?.iris ?? null}
+              // El globo de una conversación corta (E5) pasa delante del de la guía; al irse, vuelve el de Iris.
+              globo={globo ?? guia?.globo ?? null}
               onCalidad={onCalidad}
               onWebGLPerdido={() => setSin3d(true)}
               destino={destino}

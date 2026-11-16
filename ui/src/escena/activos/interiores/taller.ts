@@ -9,10 +9,10 @@
  * Ejes: x a lo ancho (-4 a 4), z hacia la cámara (-3 fondo, +3 frente), piso en y = 0.
  */
 import * as THREE from "three";
-import { colorToken, geometriaBase, type Materiales } from "../../materiales";
-import { caja, chaflan, crearCaja, crearConsola, crearPanelSolarInclinado, crearPuerta, grupo, parte } from "../piezasComunes";
+import { geometriaBase, type Materiales } from "../../materiales";
+import { caja, chaflan, crearCaja, crearConsola, crearPanelSolarInclinado, grupo, parte } from "../piezasComunes";
+import { salaEnCorte, tinte } from "./comun";
 
-type Token = Parameters<typeof colorToken>[0];
 
 /** Medidas de la sala (m). [E] proporciones de la lámina. */
 export const TALLER = { ancho: 8, fondo: 6, alto: 3, grosor: 0.25 } as const;
@@ -37,19 +37,6 @@ export function zonaTaller() {
       { x: 3.4, z: 1.0, r: 0.6 }, // dock de Iris
     ],
   } as const;
-}
-
-/** Copia de `g` pintada con color de vértice (`a` hacia `b` en `t`), para el slot `Rock`: sin materiales nuevos. */
-function tinte(clave: string, g: THREE.BufferGeometry, a: Token, b: Token, t: number): THREE.BufferGeometry {
-  return geometriaBase(`int-tinte-${clave}-${a}-${b}-${t}`, () => {
-    const c = g.clone();
-    const color = colorToken(a).lerp(colorToken(b), t);
-    const n = c.getAttribute("position").count;
-    const col = new Float32Array(n * 3);
-    for (let i = 0; i < n; i++) col.set([color.r, color.g, color.b], i * 3);
-    c.setAttribute("color", new THREE.BufferAttribute(col, 3));
-    return c;
-  });
 }
 
 /** Estante de baterías: marco con 2 filas de 3 baterías, cada una con su tapa cian. */
@@ -106,26 +93,8 @@ function dock(m: Materiales): THREE.Group {
 
 /** Taller completo (sin fusionar: la vista de la sala lo fusiona por material). */
 export function crearTaller(m: Materiales): THREE.Group {
-  const { ancho: w, fondo: f, alto: h, grosor: g } = TALLER;
-  const raiz = grupo("Interior_Workshop");
-  const pared = tinte("pared", caja(1, 1, 1), "traje-marfil", "lila", 0.45);
-  const muro = (sx: number, sy: number, sz: number, pos: [number, number, number], nombre: string) => {
-    const p = parte(m, "Rock", pared, pos, nombre);
-    p.scale.set(sx, sy, sz);
-    return p;
-  };
-  raiz.add(
-    // Piso claro con zócalo y paredes lila marfil (lámina: sala lavanda clara).
-    parte(m, "Rock", tinte("piso", chaflan(w, f, 0.12, 0.8), "lila", "traje-marfil", 0.35), [0, -0.06, 0], "Workshop_Floor").rotateX(-Math.PI / 2),
-    // Pared del fondo en tres partes, con el vano de la puerta al corredor (x de 2,35 a 3,65, 2,05 m de alto).
-    muro(2.35 + w / 2 + g, h, g, [(-w / 2 - g + 2.35) / 2, h / 2, -f / 2 - g / 2], "Workshop_BackWall"),
-    muro(w / 2 + g - 3.65, h, g, [(3.65 + w / 2 + g) / 2, h / 2, -f / 2 - g / 2], "Workshop_BackWall"),
-    muro(1.3, h - 2.05, g, [3.0, (h + 2.05) / 2, -f / 2 - g / 2], "Workshop_BackWall"),
-    muro(g, h, f, [-w / 2 - g / 2, h / 2, 0], "Workshop_LeftWall"),
-    muro(g, h, f, [w / 2 + g / 2, h / 2, 0], "Workshop_RightWall"),
-    parte(m, "SuitBase", caja(w + 2 * g + 0.1, 0.18, g + 0.1), [0, h + 0.09, -f / 2 - g / 2], "Workshop_BackTrim"),
-    parte(m, "Accent", caja(w, 0.06, 0.03), [0, 0.18, -f / 2 + 0.02], "Workshop_Skirting"),
-  );
+  // Piso, paredes, puerta al corredor (x = 3) y tramo de pasillo detrás: la caja común de las salas.
+  const raiz = salaEnCorte(m, { ancho: TALLER.ancho, fondo: TALLER.fondo, alto: TALLER.alto, puertaX: 3.0 }, "Interior_Workshop");
   // Baldosas de luz cálida en el piso, desde la puerta hacia el centro.
   const luz = tinte("luz-piso", caja(0.45, 0.02, 0.3), "marfil", "ambar", 0.35);
   for (const [x, z] of [[2.6, -1.1], [2.0, -0.6], [1.4, -0.1], [-1.6, -1.2], [-2.2, -1.2]] as const) raiz.add(parte(m, "Rock", luz, [x, 0.01, z], "Workshop_FloorLight"));
@@ -138,18 +107,6 @@ export function crearTaller(m: Materiales): THREE.Group {
   colocar(estanteBaterias(m), -2.7, -2.65);
   colocar(crearConsola(m), -1.0, -2.45);
   colocar(banco(m), 1.2, -2.55);
-  // Puerta al corredor en la pared del fondo (vano abierto) con luces guía hacia afuera.
-  colocar(crearPuerta(m), 3.0, -3.05);
-  // Tramo de corredor detrás del vano: piso índigo con luces guía, paredes y fondo (lámina: se ve el pasillo).
-  const zc = -f / 2 - g - 1.2;
-  raiz.add(
-    parte(m, "Rock", tinte("piso-corredor", caja(1.6, 0.1, 2.4), "indigo-botas", "roca-basalto", 0.35), [3.0, -0.05, zc], "Workshop_CorridorFloor"),
-    muro(0.15, 2.4, 2.4, [2.15, 1.2, zc], "Workshop_CorridorWall"),
-    muro(0.15, 2.4, 2.4, [3.85, 1.2, zc], "Workshop_CorridorWall"),
-    muro(1.85, 2.4, 0.15, [3.0, 1.2, zc - 1.2], "Workshop_CorridorEnd"),
-    muro(1.85, 0.15, 2.4, [3.0, 2.4, zc], "Workshop_CorridorCeiling"),
-  );
-  for (const dz of [-0.8, 0, 0.8]) raiz.add(parte(m, "Rock", luz, [3.0, 0.01, zc + dz], "Workshop_CorridorLight"));
   colocar(dock(m), 3.25, 1.0);
   // Plataforma con borde cian y el panel solar en su eje (pivote `SolarTilt_Head`, lo anima A).
   const plataforma = grupo(
