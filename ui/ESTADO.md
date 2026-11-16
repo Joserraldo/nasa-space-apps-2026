@@ -37,10 +37,10 @@ Una sección por persona, máximo 5 líneas, y nadie edita la de otro (FLUJO §8
 - Bloqueo: #269 (E6 con escena y HUD de mundo/01) espera la pila de Daniel (#247 en conflicto); resaltado del anclaje en E5 espera a Daniel (#279); Map no mueve al niño (Camilo).
 
 ## Interfaz (Jaime)
-**Rama:** feat/jaime-tripulacion-integrada · **PR:** #370 borrador · **Tokens:** amarillo
+**Rama:** feat/jaime-tripulacion-integrada · **PR:** #370 listo para revisión · **Tokens:** amarillo
 - Hecho: conversación asíncrona, recuerdos guardados, globos B1/A2, tres expertas y curiosidades con fuente; login #363 separado.
 - Verificado: typecheck, suite 993 pruebas, presupuesto de cinco módulos 79 llamadas / 74 126 triángulos; build.
-- Sigue: CI de integración, capturas y revisión de A/E/Paula. B0 #334 pasó a Ready for review con CI verde; no se fusionó.
+- Sigue: CI de integración, capturas y revisión de A/E/Paula. B0 #334 fue fusionado por el equipo; CI verde.
 - Bloqueo: navegador deniega apertura y lectura de localhost; B5 no se jugó. Mantener borradores y el orden indicado por Santiago.
 
 ## Fidelidad
