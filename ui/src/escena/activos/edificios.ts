@@ -38,9 +38,20 @@ export function crearHabitat(m: Materiales, largo = LARGO_HABITAT): THREE.Group 
     parte(m, "SuitBase", caja(0.05, 1.9, 0.03), [0, 1.05, 2.31], "Habitat_DoorSeam"),
     parte(m, "SuitBase", chaflan(2.2, 0.5, 1.4, 0.15), [-1.6, 3.15, -0.2], "Habitat_RoofBox"),
     parte(m, "Accent", caja(largo, 0.12, 0.04), [0, 0.55, 1.81], "Habitat_Band"),
+    // Marco saliente de la puerta y mejillas de la escalera (lámina `mundo/01`).
+    parte(m, "SuitBase", caja(0.14, 2.0, 0.08), [-0.67, 1.05, 2.3], "Habitat_DoorJambL"),
+    parte(m, "SuitBase", caja(0.14, 2.0, 0.08), [0.67, 1.05, 2.3], "Habitat_DoorJambR"),
+    parte(m, "SuitBase", caja(1.48, 0.14, 0.08), [0, 2.07, 2.3], "Habitat_DoorLintel"),
+    parte(m, "SuitBase", caja(0.12, 0.36, 0.7), [-1.26, 0.18, 2.55], "Habitat_StepCheekL"),
+    parte(m, "SuitBase", caja(0.12, 0.36, 0.7), [1.26, 0.18, 2.55], "Habitat_StepCheekR"),
   ];
+  // Costillas que parten el casco en tramos, entre el porche y las ventanas (lámina `mundo/01`).
+  for (const dx of [-1.4, 1.4]) {
+    partes.push(girada(parte(m, "SuitBase", chaflan(3.8, 3.12, 0.18, 0.9), [dx, 1.5, 0], "Habitat_Rib"), 0, Math.PI / 2, 0));
+  }
+  // Ventanas apaisadas, más anchas que altas, como las de las láminas `mundo/01` y `exterior/03`.
   for (const dx of [-3.2, -2.55, -1.9, 1.9, 2.55, 3.2]) {
-    partes.push(parte(m, "Emissive", chaflan(0.46, 0.42, 0.04, 0.1), [dx, 1.85, 1.8], "Habitat_Window"));
+    partes.push(parte(m, "Emissive", chaflan(0.56, 0.32, 0.04, 0.06), [dx, 1.85, 1.8], "Habitat_Window"));
   }
   // Paneles solares en el techo, a la derecha de la caja de servicio.
   partes.push(...panelTecho(m, [1.4, 3.0, -0.2], 1.3, 1.0), ...panelTecho(m, [2.9, 3.0, -0.2], 1.3, 1.0));
