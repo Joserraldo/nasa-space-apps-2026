@@ -65,7 +65,7 @@
   .orbita-tarjeta { padding: var(--esp-3) var(--esp-4); }
   .orbita-tarjeta h2 { font-size: var(--tipo-tam-subtitulo); margin-block-end: var(--esp-1); }
   .orbita-placas .placa { min-height: 0; padding-block: var(--esp-1) var(--esp-2); }
-  .orbita-linea .retrato, .orbita-linea svg:first-child { inline-size: 44px; block-size: 44px; }
+  .orbita-linea .retrato, .orbita-linea svg:first-child, .orbita-linea .retrato-img { inline-size: 44px; block-size: 44px; }
 }
 
 /* Vertical: el aviso de girar el teléfono tapa esta fase (juego/orientacion.ts); esto es el respaldo. */

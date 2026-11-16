@@ -1,25 +1,39 @@
 /*
  * Tarjeta contextual (F2). Láminas: mundo/04 "Decision: world stays visible" (lado, tableta),
  * mundo/03 "Portrait: paused decision" (hoja, celular vertical) y ui/01 abajo (lado, escritorio).
- * Solo tokens. Entra en --dur-realce (180 ms) con --curva-entrada y sale en --dur-cerrar (140 ms) con
- * --curva-salida; con movimiento reducido no se desplaza. El padre posicionado es el escenario del mundo.
+ * Solo tokens. El padre posicionado es el escenario del mundo.
+ *
+ * Movimiento (revisado con impeccable animate, frontend-design y review-animations de ui-skills): entra en
+ * --dur-realce (180 ms) y sale en --dur-cerrar (140 ms, el 75 % de la entrada), las dos con --curva-entrada
+ * (desaceleración: una curva ease-in al salir hace esperar justo lo que el niño mira). Son transiciones con
+ * @starting-style y no keyframes, para que reabrirla mientras sale siga desde donde está sin saltar.
+ * Adentro, encabezado, cuerpo y acciones aparecen escalonados de a 40 ms (no todo de golpe). Con
+ * movimiento reducido aparece y se va sin desplazarse.
  */
 .tc {
   /* Debajo de lo que el HUD ocupa a la derecha (placas y chip de objetivo): HudBase publica la medida. */
   --tc-arriba: max(var(--esp-3), var(--hud-reserva-der, 64px));
   --tc-margen: max(var(--esp-4), env(safe-area-inset-right));
-  --tc-entra: tc-entra-lado;
-  --tc-sale: tc-sale-lado;
+  /* De dónde viene y adónde se va: del borde derecho; la hoja, de abajo. */
+  --tc-desde: translate(24px, 0);
+  --tc-escalon: 40ms;
   position: absolute; z-index: 6; box-sizing: border-box;
   inset-block-start: var(--tc-arriba); inset-inline-end: var(--tc-margen);
   inline-size: clamp(280px, 28vw, 380px);
   max-block-size: calc(100% - var(--tc-arriba) - var(--esp-4));
   display: flex; flex-direction: column;
-  animation: var(--tc-entra) var(--dur-realce) var(--curva-entrada) both;
+  transition: opacity var(--dur-realce) var(--curva-entrada), transform var(--dur-realce) var(--curva-entrada);
 }
+@starting-style { .tc { opacity: 0; transform: var(--tc-desde); } }
 /* Recibe el foco al abrir (no es una parada de tabulación): sin el anillo global, que la enmarcaría entera. */
 .tc:focus, .tc:focus-visible { outline: none; box-shadow: none; }
-.tc[data-fase="saliendo"] { pointer-events: none; animation: var(--tc-sale) var(--dur-cerrar) var(--curva-salida) both; }
+.tc[data-fase="saliendo"] { pointer-events: none; opacity: 0; transform: var(--tc-desde); transition-duration: var(--dur-cerrar); }
+
+/* Escalonado adentro: el encabezado, después el costo y por último los botones. */
+.tc-cab, .tc-cuerpo, .tc-acciones { transition: opacity var(--dur-realce) var(--curva-entrada), translate var(--dur-realce) var(--curva-entrada); }
+.tc-cuerpo { transition-delay: var(--tc-escalon); }
+.tc-acciones { transition-delay: calc(var(--tc-escalon) * 2); }
+@starting-style { .tc-cab, .tc-cuerpo, .tc-acciones { opacity: 0; translate: 0 6px; } }
 
 .tc-cara { --fc-ch: var(--chaflan-grande); display: flex; flex-direction: column; gap: var(--esp-3); min-block-size: 0; padding: var(--esp-3); }
 
@@ -46,13 +60,13 @@
 
 /* Hoja inferior (mundo/03): a todo el ancho, sube desde abajo y deja el mundo arriba. */
 .tc[data-origen="hoja"] {
-  --tc-entra: tc-entra-hoja; --tc-sale: tc-sale-hoja;
+  --tc-desde: translate(0, 32px);
   inset: auto max(var(--esp-2), env(safe-area-inset-right)) max(var(--esp-2), env(safe-area-inset-bottom)) max(var(--esp-2), env(safe-area-inset-left));
   inline-size: auto; max-block-size: min(62%, calc(100% - var(--tc-arriba)));
 }
 @media (max-width: 599px) and (orientation: portrait) {
   .tc[data-origen="auto"] {
-    --tc-entra: tc-entra-hoja; --tc-sale: tc-sale-hoja;
+    --tc-desde: translate(0, 32px);
     inset: auto max(var(--esp-2), env(safe-area-inset-right)) max(var(--esp-2), env(safe-area-inset-bottom)) max(var(--esp-2), env(safe-area-inset-left));
     inline-size: auto; max-block-size: min(62%, calc(100% - var(--tc-arriba)));
   }
@@ -71,9 +85,4 @@
   .tc .costos-bloque li { gap: var(--esp-2); padding-inline: 0; min-height: 24px; }
 }
 
-@keyframes tc-entra-lado { from { opacity: 0; transform: translateX(24px); } }
-@keyframes tc-sale-lado { to { opacity: 0; transform: translateX(24px); } }
-@keyframes tc-entra-hoja { from { opacity: 0; transform: translateY(32px); } }
-@keyframes tc-sale-hoja { to { opacity: 0; transform: translateY(32px); } }
-
-@media (prefers-reduced-motion: reduce) { .tc, .tc[data-fase="saliendo"] { animation: none; } }
+@media (prefers-reduced-motion: reduce) { .tc, .tc[data-fase="saliendo"], .tc-cab, .tc-cuerpo, .tc-acciones { transition: none; } }
