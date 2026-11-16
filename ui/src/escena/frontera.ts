@@ -1,6 +1,7 @@
 /**
- * Frontera entre la pantalla (Santiago: pantallas/, componentes/, juego/) y el mundo 3D (María Paula:
- * escena/). Contrato del bloque 0 de `docs/referenciapau/PLAN-JUGABILIDAD.md` §3.
+ * Frontera entre la pantalla (frentes E y F: pantallas/, componentes/) y el mundo 3D (frente A, José:
+ * escena/; los frentes C y D suman sistemas con los ganchos de `escena3d.ts`). Contrato del bloque 0 de
+ * `docs/referenciapau/PLAN-JUGABILIDAD.md` §2 y §3.
  *
  * Reglas:
  * - Lo escribe solo el dueño de `escena/`. La pantalla lo importa y no lo edita: si necesita algo,

@@ -14,8 +14,8 @@ export type { CamaraEscena } from "./escena3d";
  */
 /**
  * `PedidoEscena` y `AvisosEscena` (frontera.ts, PLAN-JUGABILIDAD §3) suman las props del bloque 0.
- * Estado: `onInteractivo` emite lugares; actores (P3), puertas y `sala` (P7), `objetivo` (P2), `iris` y
- * `globo` (P6) y `hablando` (P4) se aceptan y todavía no cambian nada en la escena.
+ * Estado: `onInteractivo` emite lugares; actores (A6), puertas y `sala` (A8), `objetivo` (A2 + marcador C4),
+ * `iris` y `globo` (A2) y `hablando` (A7) se aceptan y todavía no cambian nada en la escena.
  */
 export interface EscenaBaseProps extends PedidoEscena, AvisosEscena {
   // Entrada (la escena solo lee esto, nunca GameState)
