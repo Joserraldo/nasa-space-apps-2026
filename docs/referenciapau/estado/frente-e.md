@@ -1,7 +1,7 @@
 # Estado: Frente E (Santiago)
 
-**Actualizado:** dom 15 nov, 22:00.
+**Actualizado:** dom 15 nov, 22:35.
 
-- **Hecho:** E0 (#332 y A0 #337 fusionados). E1 (#335) lista para revisión: usa la primitiva de F2 (#341), foco que no se pierde al elegir ni al cerrar, capturas en `ui/capturas/E1/`. E2 en PR borrador #346 (una sola vía para `[E]`).
-- **Sigue:** E3 (HUD progresivo), después E4. E2 sale de borrador cuando entre E1.
-- **Bloqueado:** E1 necesita revisión de otra persona y aprobación visual del frente F. Actores y puertas en el mundo esperan A6 y A8.
+- **Hecho:** E0 (#332 y A0 #337 fusionados). E1 (#335): revisión atendida (contenedor renombrado a `TarjetaDelFlujo`, descripción al día). E2 en borrador #346 (depende de #335). E3 en PR #352 (HUD progresivo).
+- **Sigue:** issue #339 en un PR aparte (avería de Iris revelada en el paso 6 en `MundoBase`/`PantallaBase` y la e2e del taller); después E4.
+- **Bloqueado:** E1 y E3 esperan revisión de otra persona y aprobación visual del frente F. E1 y E3 tocan las mismas e2e y este archivo: el segundo que entre necesita rebase.
