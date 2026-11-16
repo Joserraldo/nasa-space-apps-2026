@@ -192,14 +192,15 @@ real y la escena corre fluida.
 
 | # | Prio | Tarea | Hecho cuando |
 | --- | --- | --- | --- |
-| E0 | P0 | Fusionar #331 (CI en verde) | `develop` con la e2e en verde |
+| E0 | P0 | Fusionar #332 (este plan y sus prompts) para que todos lean lo mismo desde `develop`, y fusionar A0 apenas pase CI | Plan en `develop`; A0 fusionado en la primera hora |
 | E1 | P0 | **Tarjetas contextuales** (#4): nacen de un evento del mundo (llegar, `[E]`, una novedad del motor), una a la vez, al costado o como hoja inferior, y se cierran al decidir. E5 deja de tener la lista y el panel fijos: aparecen al hablar con la Ingeniera o al usar un anclaje | Captura de E5 con el mundo libre; e2e de abrir y cerrar |
 | E2 | P0 | **Una sola vía para el `[E]`** con `onInteractivo`: `Talk` abre el diálogo con `hablando`, `Build` abre la tarjeta del módulo, `Enter`/`Exit` cambia `sala`. Un solo manejador de teclado | Prueba por tipo; acercarse nunca cobra (invariante 1) |
 | E3 | P0 | **HUD progresivo** según la tabla de §1 | e2e: al entrar a la base no se ve `Crew`; aparece después de la primera conversación |
 | E4 | P0 | **Menú** (#7): cámara 1.ª/3.ª persona (se guarda en ajustes; `V` y el botón siguen), calidad gráfica, sonido e idioma | e2e: cambiar la cámara desde el menú conserva la partida (invariante 4) |
-| E5 | P1 | Diálogo de la tripulación e Iris como globo o franja (estilo de F, anclaje de A) | Capturas en los 4 tamaños |
+| E5 | P1 | **Conversación larga** (más de 2 líneas u opciones) en la franja de diálogo, con el retrato B. El globo corto sobre el actor lo posiciona A (A2) y lo estiliza F (F4) | Capturas en los 4 tamaños |
 | E6 | P1 | e2e nuevas: seguir a Iris, construir caminando y que saltar no cobre (pausar el reloj antes de caminar: en CI no hay GPU) | Suite en verde en CI |
 | E7 | P2 | Quitar los emojis de `Dialogos.tsx:7` (#19) | grep sin emojis en `ui/src` |
+| E9 | P1 | Botón de salto táctil de 48 px en `ControlesTactiles.tsx`, después de A5 (estilo de F4) | Captura en 844x390; prueba de que llama al salto |
 | E8 | P1 | **Flujo de entrada** (#26) según `inicio/04-flujo-entrada-carga-orbita-explorar.png`: portada, carga con consejo, llegada en órbita ("Arriving at Jezero", con `Skip`) y **"Ready to explore"** antes de la base: "Your crew is ready", `Explore the base` y `Show controls` (mouse, teclas, salto, `E`, `V`; en celular, los gestos) | e2e del recorrido de entrada; capturas en los 4 tamaños |
 
 ### Frente F — María Paula: UI visual, personajes B en la interfaz y fidelidad
@@ -234,10 +235,52 @@ aparecen y se van con gracia; todo respeta las láminas.
 | 0 | A0, empieza A3 | B0 | acuerdo con D | acuerdo con C | E0, acuerdo con F | acuerdo con E |
 | 1 | A1, A2, A4, A5, A12, A13 | B1, B2, B5 | C1, C2 | D1, D2, D4 | E1, E2 | F1, F2 |
 | 2 | A6, A7, A8, A3 aprobada | B3, B5 | C3, C4 | D3, D5 | E3, E4, E8 | F3, F4, F6 |
-| 3 | A9, A10 | B4, B6, B5 | C5 | D6, D7 | E5, E6, E7 | F5 |
+| 3 | A9, A10 | B4, B6, B5 | C5 | D6, D7 | E5, E6, E7, E9 | F5 |
 
-**Dependencias:** C4 y D3 necesitan A0. B3 necesita B0. A9 necesita E1. E5 necesita el anclaje de A (A2) y
-el estilo de F (F4). D5 y A8 avanzan juntos.
+### Dependencias: qué espera cada tarea
+
+"Espera" quiere decir **fusionado en `develop`**, no "terminado en la rama de otro". Las tareas que no
+aparecen en la tabla no esperan a nadie y arrancan ya.
+
+| Tarea | Espera | Mientras tanto | Desbloquea |
+| --- | --- | --- | --- |
+| A0 ganchos y `calidad.ts` | — | — | C4, D3, D4, D6, D7 |
+| A2 cadena de objetivos | A1, para que el objetivo inicial sea el correcto (puede avanzar con A1 abierto) | — | C4, C6, B6, E6 |
+| A5 salto | — | — | E9 (botón táctil), E8 (`Show controls`) |
+| A7 coreografía | A6 (las cinco figuras en escena) | gestos del niño y de la Ingeniera | — |
+| A8 entrar a las salas | C2 (dónde quedan las puertas), D5 (interior), E2 (`[E] Enter`) | sala de prueba: una caja con una puerta | C3 (el mapa dice en qué sala está el niño) |
+| A9 paso 4 caminando | A3 aprobada, E1 | flujo con la lista actual | E6 |
+| A12 mirar con el mouse | — (usa `bloqueado`, que ya existe) | — | E8 (`Show controls`) |
+| B2 y B3 | B0 | líneas sin memoria | — |
+| B3 en el mundo | A6 y E2 | la conversación por el campo `Ask your crew…` que ya existe | — |
+| B4 datos de Marte | fuente verificada de cada dato | — | D6 |
+| C2 redistribuir | C1 y la aprobación de F (F3) | — | C3, D1 (ubicación), D5 y A8 (puertas) |
+| C3 mapa nuevo | C2 y F3 | boceto sobre la distribución vieja | — |
+| C4 destino en el mundo | A0 y A2 | `objetivo` fijo en `escena/vistaPrevia.ts` | — |
+| D1 mallas | C2, para ubicar los edificios | la forma de cada malla por separado | — |
+| D3 día y atardecer | A0, y la regla de la noche escrita con A | prototipo en `escena/vistaPrevia.ts` | — |
+| D4 rendimiento | A0 (`calidad.ts`) | medir y anotar | — |
+| D6 y D7 | A0 (D6 además B4) | prototipo en `escena/vistaPrevia.ts` | — |
+| E1 tarjetas contextuales | F2 (estilo) | estructura con el estilo actual | A9 |
+| E5 conversación larga | F4 | — | — |
+| E6 e2e nuevas | A2, A5, A9 | e2e de lo que ya está fusionado | — |
+| E8 flujo de entrada | F6 (visual); A5 y A12 (qué controles mostrar) | flujo con el estilo actual | — |
+| E9 botón de salto | A5 | — | — |
+| F3 aprobaciones | los PR de C2, C3 y D1 | — | la fusión de esos PR |
+
+**Si tu tarea espera a otra:**
+1. No te quedes parado: arrancá con datos falsos detrás del contrato (la columna "mientras tanto") y con
+   pruebas.
+2. Abrí el PR como borrador (`gh pr create --draft`) y escribí `Depende de #<PR>` en la descripción.
+3. Cuando la dependencia se fusiona: `git fetch origin && git rebase origin/develop`, corré todo otra vez y
+   sacá el PR de borrador (`gh pr ready`).
+4. Si no hay forma de avanzar, abrí un issue titulado `[bloquea <frente>] ...`, mencioná al dueño y pasá a
+   otra tarea de tu lista.
+
+**Orden de fusión en cada bloque** (fusiona Santiago, con squash):
+1. Contratos y ganchos: A0 y B0.
+2. C2, que mueve la base: después de fusionarlo, todos hacen rebase sobre `develop`.
+3. El resto, en el orden en que pasen CI y su aprobación (F3 para C2, C3 y D1).
 
 **Encuentro al final de cada bloque:** cada uno fusiona sus PR en `develop`. Después, B juega 10 minutos
 como un niño (B5) y todos miran el diario. Si en algún momento el niño no sabe adónde ir ni qué hacer, el
@@ -266,12 +309,8 @@ bloque no terminó aunque las pruebas pasen.
 
 ## 7. Cómo dárselo a tu agente
 
-Pegale al agente de Claude Code: §0, §1, §3, §6 y **la sección de tu frente** de §4, más esta instrucción:
-
-> Lee `CLAUDE.md`, `docs/referenciapau/MECANICAS.md`, `ESCENAS.md`, `NIVELES.md` y
-> `ui/src/escena/frontera.ts`. Trabaja solo en los archivos de tu frente (§3). Si necesitás algo de otro
-> frente, abrí un issue con `bloquea:<frente>` y seguí con otra tarea. Verificá cada afirmación antes de
-> darla por hecha.
+Cada frente tiene su prompt listo en [`prompts/`](prompts/README.md): se pega entero al empezar la sesión
+de Claude Code, desde una rama nueva sobre `origin/develop`.
 
 ## 8. Decisiones de este plan y por qué
 
