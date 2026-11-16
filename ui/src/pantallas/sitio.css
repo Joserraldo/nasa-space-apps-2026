@@ -153,3 +153,6 @@
 @media (prefers-reduced-motion: reduce) {
   .sitio-pin-cara, .sitio-lienzo { transition: none; }
 }
+
+/* misiones sin mapa facetado (solo Jezero tiene DEM grande): la lista ocupa todo el ancho. */
+.sitio.sitio-sin-mapa { grid-template-columns: minmax(0, 1fr); grid-template-areas: "cabeza" "lista"; max-inline-size: 760px; margin-inline: auto; }

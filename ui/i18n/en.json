@@ -80,7 +80,7 @@
   "ui.final.pregunta.opcion": "{texto}",
   "ui.final.pregunta.bien": "That is right!",
   "ui.final.pregunta.casi": "Not quite. Here is why:",
-  "ui.final.otra_semilla": "Try a different mission",
+  "ui.final.otra_semilla": "Choose another mission",
   "ui.final.semilla": "Mission seed: {seed}",
   "ui.fuente.titulo": "Where does this data come from?",
   "ui.fuente.consultado": "Retrieved on {fecha}",
@@ -353,7 +353,6 @@
   "ui.tormenta.pregunta.proteger": "What needs protection?",
   "ui.tormenta.pregunta.sensor": "What does the sensor show?",
   "ui.tormenta.verFuente": "View source",
-  "ui.tormenta.acceso": "{recurso} {valor}",
   "ui.comun.acceso_recurso": "{recurso} {valor}",
   "ui.comun.fuente.compacta": "{dueno} / {tipo}",
   "ui.comun.fuente.archivado": "Archived event",
@@ -392,5 +391,13 @@
   "ui.base.consulta": "Talk with your crew",
   "ui.hud.objetivo.ir": "Go to {lugarKey}",
   "ui.hud.objetivo.experto": "Ask {expertoKey} at {lugarKey}",
-  "ui.hud.objetivo.averia": "Iris needs a repair at {lugarKey}"
+  "ui.hud.objetivo.averia": "Iris needs a repair at {lugarKey}",
+  "ui.misiones.titulo": "Choose your mission",
+  "ui.misiones.texto": "Each mission has a real solar storm, its own place and its own crew choices.",
+  "ui.misiones.lugar.marte": "Mars",
+  "ui.misiones.lugar.luna": "Moon",
+  "ui.misiones.lugar.espacio": "Deep space",
+  "ui.misiones.ganada": "Completed!",
+  "ui.misiones.jugar": "Play this mission",
+  "ui.misiones.volver": "Back"
 }

@@ -1,6 +1,6 @@
 import { expect, test, type Page } from "@playwright/test";
 import { arrancarEnCalidadBaja } from "./calidad";
-import { llegarYExplorar } from "./entrada";
+import { llegarYExplorar, elegirJezero } from "./entrada";
 
 test.beforeEach(async ({ page }) => arrancarEnCalidadBaja(page));
 
@@ -54,6 +54,7 @@ test("ruta dorada: de la órbita al resumen, en inglés", async ({ page }) => {
 
   // E1 Intro (inicio/02): primera viñeta y "Skip intro" (FLUJO §7.2).
   await page.getByRole("button", { name: "Start mission" }).click();
+  await elegirJezero(page);
   await expect(page.getByRole("heading", { name: "01 / A new mission" })).toBeVisible();
   await page.getByRole("button", { name: "Skip intro" }).click();
 
@@ -315,6 +316,7 @@ test("seguir a Iris del paso 4 al 8 sin abrir Crew, con el mapa y la tecla E", a
   await page.clock.install();
   await page.goto("/");
   await page.getByRole("button", { name: "Start mission" }).click();
+  await elegirJezero(page);
   await page.getByRole("button", { name: "Skip intro" }).click();
   await page.getByRole("button", { name: "Skip", exact: true }).click();
   await page.getByRole("button", { name: "Continue" }).click();

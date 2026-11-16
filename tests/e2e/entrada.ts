@@ -13,3 +13,9 @@ export async function llegarYExplorar(page: Page) {
   await explorar.click();
   await expect(explorar).toHaveCount(0);
 }
+
+/** "Choose your mission": la ruta dorada juega Jezero (la primera tarjeta). */
+export async function elegirJezero(page: Page) {
+  await expect(page.getByRole("heading", { name: "Choose your mission" })).toBeVisible();
+  await page.locator('[data-mision="jezero-dorada"]').getByRole("button", { name: "Play this mission" }).click();
+}
