@@ -116,13 +116,13 @@
   .portada-planeta { left: auto; right: 4%; top: 14%; width: min(22%, 170px); }
   .portada-asteroide, .portada-roca { display: none; }
 }
-@container (max-height: 140px) { .portada-lienzo { display: none; } }
+@container (max-height: 112px) { .portada-lienzo { display: none; } }
 /* Celular bajo (SE y parecidos): todo un poco más compacto para que el niño tenga lugar debajo del menú. */
-@media (max-width: 599px) and (min-height: 501px) and (max-height: 740px) {
-  .portada { padding-top: 60px; row-gap: var(--esp-2); }
-  .portada-logo { width: min(58vw, 300px); }
+@media (max-width: 599px) and (min-height: 501px) and (max-height: 790px) {
+  .portada { padding-top: 56px; row-gap: var(--esp-2); }
+  .portada-logo { width: min(52vw, 300px); }
   .portada-menu { gap: var(--esp-2); }
-  .portada .fb-menu { --fb-alto: 48px; }
+  .portada .fb-menu { --fb-alto: 46px; }
 }
 /* Celular (vertical y apaisado): preferencias compactas, alineadas a la derecha y sin pisar el logo. */
 @media (max-width: 599px), (max-height: 500px) {

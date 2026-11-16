@@ -52,7 +52,7 @@ describe("ilustraciones de entrada (inicio/01 e inicio/03)", () => {
     expect(css).toMatch(/\.portada-lienzo\s*\{[^}]*aspect-ratio:\s*778\s*\/\s*751/);
     // En vertical el grupo ocupa la fila libre debajo del menú y se mide contra ella; si es muy baja, no se dibuja.
     expect(css).toMatch(/@media \(max-aspect-ratio: 1\/1\) and \(min-height: 501px\)\s*\{[^@]*\.portada > \.portada-grupo\s*\{[^}]*container-type:\s*size/);
-    expect(css).toMatch(/@container \(max-height: 140px\)\s*\{\s*\.portada-lienzo\s*\{\s*display:\s*none/);
+    expect(css).toMatch(/@container \(max-height: 112px\)\s*\{\s*\.portada-lienzo\s*\{\s*display:\s*none/);
   });
 
   it("la carga muestra el niño y los tres módulos con su insignia, como decorado", () => {
