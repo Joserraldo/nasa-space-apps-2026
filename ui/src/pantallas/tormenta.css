@@ -105,3 +105,9 @@
   }
   .tormenta-cara .decision-detalle .fb-texto { font-size: 18px; }
 }
+
+/* Apaisado bajo: el plan cabe casi entero; Confirm queda después de los costos (orden natural), no
+   fijo encima de ellos: el niño ve qué cuesta antes de decidir. */
+@media (max-height: 500px) and (orientation: landscape) {
+  .tormenta-plan-accion > .tormenta-plan-botones { position: static; padding-block: 0; }
+}
