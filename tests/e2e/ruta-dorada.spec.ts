@@ -1,4 +1,7 @@
 import { expect, test, type Page } from "@playwright/test";
+import { arrancarEnCalidadBaja } from "./calidad";
+
+test.beforeEach(async ({ page }) => arrancarEnCalidadBaja(page));
 
 /**
  * Ruta dorada (issue #41): semilla "jezero-2024-05-20", 8 pasos, en inglés (idioma base).

@@ -1,4 +1,7 @@
 import { expect, test, type Page } from "@playwright/test";
+import { arrancarEnCalidadBaja } from "./calidad";
+
+test.beforeEach(async ({ page }) => arrancarEnCalidadBaja(page));
 
 /**
  * Lo que la ruta dorada no cubre: perder, volver a jugar con una partida limpia, continuar una
