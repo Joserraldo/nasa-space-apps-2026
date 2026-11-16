@@ -271,3 +271,18 @@ describe("continuación de gestos y accesibilidad", () => {
     m.liberar();
   });
 });
+
+describe("capa de salto (A5)", () => {
+  it("se agacha al anticipar, recoge las piernas en el aire y con movimiento reducido no agrega nada", () => {
+    const pj = crearPersonaje("nino");
+    animar(pj, "reposo", 0, { quieto: true });
+    const pelvis = pj.huesos.pelvis.position.y;
+    const rodilla = pj.huesos.espinillaI.rotation.x;
+    animar(pj, "reposo", 0, { quieto: true, salto: { fase: "anticipa", k: 1 } });
+    expect(pj.huesos.pelvis.position.y).toBeCloseTo(pelvis, 6);
+    animar(pj, "reposo", 0, { salto: { fase: "anticipa", k: 1 } });
+    expect(pj.huesos.pelvis.position.y).toBeLessThan(pelvis - 0.03);
+    animar(pj, "reposo", 0, { salto: { fase: "aire", k: 1 } });
+    expect(pj.huesos.espinillaI.rotation.x).toBeGreaterThan(rodilla + 0.4);
+  });
+});

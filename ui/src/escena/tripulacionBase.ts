@@ -1,6 +1,7 @@
 import * as THREE from "three";
 import { animar, crearIris, crearPersonaje, type CaraIris, type Gesto, type OpcionesIris } from "./personajes";
 import type { ModoGuia } from "./guia";
+import type { FaseSalto } from "./movimientoBase";
 import { ANCLAJES_EXPERTAS, DOCK_IRIS, INICIO_JUGADOR } from "./mundo";
 import type { VistaEscena } from "./vista";
 
@@ -40,9 +41,11 @@ export function crearTripulacionBase() {
   grupo.add(jugador.grupo, ingeniera.grupo, iris.grupo);
   // Objetos reutilizados en cada frame.
   const gesto = { quieto: true };
+  /** Opciones del niño: las del resto más la capa de salto (A5). */
+  const gestoNino: { quieto: boolean; salto: { fase: FaseSalto; k: number } } = { quieto: true, salto: { fase: "suelo", k: 0 } };
   const rover: OpcionesIris = { quieto: true, velocidad: 0, averiada: false, cara: "atenta" };
   /** Lo escribe la escena en cada fotograma, después de mover a los actores (`errorIris`, al cambiar el pedido). */
-  const actores = { caminando: false, velocidadIris: 0, modoIris: "acompana" as ModoGuia, errorIris: false };
+  const actores = { caminando: false, salto: { fase: "suelo", k: 0 } as Readonly<{ fase: FaseSalto; k: number }>, velocidadIris: 0, modoIris: "acompana" as ModoGuia, errorIris: false };
   let apagada = false;
   let atendiendoDesde = -1;
   let ultimoMs = -1;
@@ -56,7 +59,10 @@ export function crearTripulacionBase() {
     ultimoMs = ahoraMs;
 
     // El niño camina con el gesto de caminar; quieto, en reposo (con movimiento reducido, la pose clave).
-    animar(jugador, actores.caminando ? "caminar" : "reposo", t, gesto);
+    gestoNino.quieto = reducido;
+    gestoNino.salto.fase = actores.salto.fase;
+    gestoNino.salto.k = actores.salto.k;
+    animar(jugador, actores.caminando ? "caminar" : "reposo", t, gestoNino);
 
     // La Ingeniera se vuelve hacia el niño si está cerca: saluda y después explica.
     const p = jugador.grupo.position, q = ingeniera.grupo.position;

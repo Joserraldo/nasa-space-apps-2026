@@ -16,6 +16,30 @@ export const FUENTE_GRAVEDAD = {
   consultadoEl: "2026-11-13",
 } as const;
 
+/**
+ * Salto del niño (A5). Con la misma velocidad de despegue `v`, la altura es `h = v²/2g` y el tiempo en el
+ * aire `t = 2v/g` (tiro vertical sin aire). Como g en Marte es 0,380 la terrestre, el mismo salto sube
+ * 1/0,380 ≈ 2,6 veces más alto y dura 2,6 veces más.
+ *
+ * SUPOSICIÓN DE JUEGO, no dato de NASA: elegimos que en la Tierra el niño (7 a 10 años, con traje) salta
+ * `ALTURA_SALTO_TIERRA` = 0,30 m. Esa altura no tiene fuente verificada [NV]; es una decisión de diseño. De
+ * ella sale `VEL_DESPEGUE` con la gravedad terrestre, y en Marte se usa la misma `v`: lo único que cambia
+ * entre los dos mundos es `g` (la de la ficha NSSDC de arriba).
+ */
+export const ALTURA_SALTO_TIERRA = 0.3;
+/** Velocidad vertical de despegue, m/s (≈ 2,43). Suposición de juego: ver `ALTURA_SALTO_TIERRA`. */
+export const VEL_DESPEGUE = Math.sqrt(2 * GRAVEDAD_TIERRA * ALTURA_SALTO_TIERRA);
+
+/** Altura máxima de un tiro vertical sin aire: h = v² / 2g. */
+export function alturaSalto(v: number, g: number): number {
+  return (v * v) / (2 * g);
+}
+
+/** Tiempo en el aire de un tiro vertical sin aire que cae a la misma altura: t = 2v / g. */
+export function tiempoEnElAire(v: number, g: number): number {
+  return (2 * v) / g;
+}
+
 /** Paso fijo de la física. Es otro reloj que el tick de recursos del motor. */
 export const PASO_FISICO = 1 / 60;
 export const MAX_SUBPASOS = 5;
@@ -114,13 +138,15 @@ export interface Caida {
 }
 
 /**
- * Un paso de caída libre con contacto contra el suelo (Euler semi-implícito, sin aire).
- * Vale igual para la caja y para el personaje; `g` decide en qué mundo cae.
+ * Un paso de caída libre con contacto contra el suelo, sin aire. Con g constante la cinemática es exacta
+ * (`y += vy·dt − g·dt²/2`), así que la altura y el tiempo simulados coinciden con `alturaSalto` y
+ * `tiempoEnElAire` salvo el redondeo al paso. Vale igual para la caja y para el personaje; `g` decide en qué
+ * mundo cae.
  */
 export function pasoCaida(c: Caida, suelo: number, g: number, dt: number, rebota = false): Caida {
-  if (c.apoyado && c.y <= suelo + 1e-6) return { y: suelo, vy: 0, apoyado: true };
+  if (c.apoyado && c.y <= suelo + 1e-6 && c.vy <= 0) return { y: suelo, vy: 0, apoyado: true };
+  const y = c.y + c.vy * dt - 0.5 * g * dt * dt;
   const vy = c.vy - g * dt;
-  const y = c.y + vy * dt;
   if (y > suelo) return { y, vy, apoyado: false };
   if (rebota && -vy > VEL_MIN_REBOTE) return { y: suelo, vy: -vy * REBOTE, apoyado: false };
   return { y: suelo, vy: 0, apoyado: true };
@@ -166,7 +192,8 @@ function moverPaso(
   // Si un borde alto corta el paso, desliza por el eje que sí está libre.
   const p = intento(dx, dz) ?? intento(dx, 0) ?? intento(0, dz) ?? { x: c.x, z: c.z };
   const suelo = alturaSuelo(p.x, p.z, t);
-  if (c.y <= suelo + 1e-6) return { x: p.x, z: p.z, y: suelo, vy: 0, apoyado: true };
+  // Apoyado salvo que esté despegando (vy > 0: el salto empieza desde el suelo).
+  if (c.y <= suelo + 1e-6 && c.vy <= 0) return { x: p.x, z: p.z, y: suelo, vy: 0, apoyado: true };
   const caida = pasoCaida({ y: c.y, vy: c.vy, apoyado: false }, suelo, GRAVEDAD_MARTE, dt);
   return { x: p.x, z: p.z, ...caida };
 }
