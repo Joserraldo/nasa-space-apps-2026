@@ -271,7 +271,9 @@ test("cambiar la cámara desde el menú conserva la partida y se recuerda al rec
   await expect(page.getByRole("button", { name: "Resume", exact: true })).toBeVisible();
 
   // V cambia el mismo ajuste: el menú lo muestra al volver a abrirlo.
-  await page.locator("body").click({ position: { x: 5, y: 400 } });
+  // Sin clic en la escena: en CI ese clic toma el puntero (mirar con el mouse, A12) y el siguiente clic
+  // en el HUD no llega. V funciona con el foco en cualquier lado.
+  await page.evaluate(() => (document.activeElement as HTMLElement | null)?.blur());
   await page.keyboard.press("v");
   await expect(lienzo).toHaveAttribute("data-camara", "tercera");
   await abrir.click();
