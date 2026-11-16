@@ -79,7 +79,7 @@ function planDe(v: VistaAgente, paso: number, averiaRevelada: boolean): Plan {
 /**
  * Adónde lleva Iris al niño. Prioridad: avería revelada → urgencia (fuera de tormenta) → paso de Jezero.
  * `null` = Iris offline, se queda cargando en su dock.
- * "danada" guía igual que tutorial: la falla numérica vive en iris.ts.
+ * "danada" solo guía como tutorial antes de revelar la avería; luego pide verificar sin ruta.
  */
 export function guiaIrisLugar(v: VistaAgente, paso: number, opts: { averiaRevelada?: boolean } = {}): GuiaLugar | null {
   const nivel = v.iaBase ?? "tutorial";
@@ -88,6 +88,12 @@ export function guiaIrisLugar(v: VistaAgente, paso: number, opts: { averiaRevela
   const averia = motivo === "averia";
   const cara: CaraIris = averia ? "error" : "normal";
   const conExperto = experto ? { experto } : {};
+  // La avería inicial de Jezero se oculta hasta su revelación (A1).
+  // Después Iris reconoce la falla, deja de trazar rutas y pide verificar con la Ingeniera.
+  if (nivel === "danada" && averia) {
+    return { destino, ruta: false, ...conExperto, gesto: "pedir_reparacion", cara: "error", dialogo: { experto: "ia_base", prioridad: "consejo", lineas: [{ clave: "agentes.iris.acompana.danada.verificar" }] } };
+  }
+
   if (nivel === "pistas") {
     return { destino, ruta: false, ...conExperto, gesto: averia ? "pedir_reparacion" : "mirar", cara, dialogo: { experto: "ia_base", prioridad: "charla", lineas: [{ clave: `agentes.iris.acompana.pista.${motivo}` }] } };
   }

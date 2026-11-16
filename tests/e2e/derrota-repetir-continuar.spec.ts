@@ -156,4 +156,15 @@ test("perder WebGL deja la misma partida en el respaldo 2D, y el mapa lleva al n
   await expect(page.getByRole("dialog")).toBeVisible();
   await page.getByRole("dialog").getByRole("button", { name: "Back" }).click();
   expect(await energia(page)).toBe(energiaAntes);
+
+  // E2: la tecla E va por la misma vía que el botón (un solo manejador) y abrir no cobra (invariante 1).
+  // Con algo abierto el mundo está bloqueado; cerrado el plan, E vuelve a abrirlo desde la consola.
+  await expect(page.getByRole("button", { name: "Wait a turn at the console" })).toBeVisible();
+  // Con el reloj simulado los efectos de React esperan a que corra el tiempo (en pausa: ningún turno pasa).
+  await page.clock.runFor(100);
+  await page.keyboard.press("e");
+  await expect(page.getByRole("dialog")).toHaveCount(1);
+  await page.getByRole("dialog").getByRole("button", { name: "Back" }).click();
+  await expect(page.getByRole("dialog")).toHaveCount(0);
+  expect(await energia(page)).toBe(energiaAntes);
 });

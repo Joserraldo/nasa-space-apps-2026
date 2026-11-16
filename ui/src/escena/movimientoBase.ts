@@ -10,7 +10,7 @@
  * la rampa, la plataforma y el límite de `TERRENO`, y después sacar al cuerpo de las cajas. El
  * llamador copia `jugador` e `iris` a los grupos de three; aquí no se reconstruye nada.
  */
-import { moverPersonaje, PASO_FISICO, resolver, subpasos, type Circulo, type Cuerpo, type Terreno } from "./fisica";
+import { moverPersonaje, PASO_FISICO, resolver, subpasos, VEL_DESPEGUE, type Circulo, type Cuerpo, type Terreno } from "./fisica";
 import { pasoGuia, type Guia, type ModoGuia, type Punto } from "./guia";
 import { planearRuta, type PuntoRuta } from "./navegacion";
 import { INICIO_JUGADOR, TERRENO, lugar, type LugarId } from "./mundo";
@@ -183,6 +183,15 @@ export function direccionMundo(adelante: number, derecha: number, yaw: number, s
 
 export type TipoEventoDestino = "llego" | "cancelado" | "sin_ruta";
 
+/**
+ * Salto (A5): se agacha `ANTICIPACION` s antes de despegar y amortigua `ATERRIZAJE` s al caer. Son tiempos
+ * de animación [E]; la altura y el tiempo en el aire los ponen `VEL_DESPEGUE` y `GRAVEDAD_MARTE` (fisica.ts).
+ * Saltar mueve solo el cuerpo: nunca da ni quita recursos (este módulo no conoce el GameState).
+ */
+export const ANTICIPACION = 0.09;
+export const ATERRIZAJE = 0.18;
+export type FaseSalto = "suelo" | "anticipa" | "aire" | "aterriza";
+
 export interface OpcionesMovimiento {
   /** La ruta terminó: llegó, la canceló una entrada manual o no hay camino. */
   alDestino?: (tipo: TipoEventoDestino, lugar: LugarId) => void;
@@ -216,6 +225,10 @@ export interface Movimiento {
   fijarBloqueado(b: boolean): void;
   /** Elige un destino y planea la ruta. `null` la suelta sin evento. Sin ruta emite `sin_ruta`. */
   irA(destino: LugarId | null): void;
+  /** Salta si está apoyado y libre. Devuelve false si no puede (en el aire, ya saltando o bloqueado). */
+  saltar(): boolean;
+  /** Fase del salto y su avance (0 a 1) para la animación. Se reemplaza en cada paso: leerlo, no guardarlo. */
+  readonly salto: Readonly<{ fase: FaseSalto; k: number }>;
   /**
    * Lugar al que Iris rueda delante del niño aunque él no tenga ruta (la guía de la misión, A2). Si se
    * queda atrás, Iris espera y lo mira (`pasoGuia`). Un destino del niño (`irA`) manda sobre este.
@@ -249,6 +262,10 @@ export function crearMovimiento(solidos: Solidos, o: OpcionesMovimiento = {}): M
   let msSinAvance = 0;
   // Objetos reutilizados por los pasos (la física y la guía sí crean los suyos).
   const jugadorGuia = { x: 0, z: 0, rumbo: 0 };
+  /** Segundos que faltan para despegar (0 = no está por saltar) y desde que tocó el suelo. */
+  let anticipa = 0;
+  let aterriza = ATERRIZAJE;
+  const salto = { fase: "suelo" as FaseSalto, k: 0 };
   const destinoGuia = { x: 0, z: 0, mx: 0, mz: 0 };
   const resolverIris = (p: Punto) => resolverSolidos(p, RADIO_IRIS, tMov, cajas);
 
@@ -316,10 +333,34 @@ export function crearMovimiento(solidos: Solidos, o: OpcionesMovimiento = {}): M
       }
     }
 
+    // Salto: termina la anticipación y despega (con movimiento reducido, sin anticipación).
+    if (anticipa > 0) {
+      anticipa -= h;
+      if (reducido || anticipa <= 1e-9) {
+        anticipa = 0;
+        jugador = { ...jugador, vy: VEL_DESPEGUE, apoyado: false };
+      }
+    }
+    const enElAire = !jugador.apoyado;
     const x0 = jugador.x, z0 = jugador.z;
     if (vx !== 0 || vz !== 0 || !jugador.apoyado) {
       jugador = moverPersonaje(jugador, vx, vz, h, tMov, RADIO_JUGADOR);
       resolverSolidos(jugador, RADIO_JUGADOR, tMov, cajas);
+    }
+    if (enElAire && jugador.apoyado) aterriza = 0;
+    else if (aterriza < ATERRIZAJE) aterriza += h;
+    if (anticipa > 0) {
+      salto.fase = "anticipa";
+      salto.k = 1 - anticipa / ANTICIPACION;
+    } else if (!jugador.apoyado) {
+      salto.fase = "aire";
+      salto.k = 1;
+    } else if (aterriza < ATERRIZAJE) {
+      salto.fase = "aterriza";
+      salto.k = 1 - aterriza / ATERRIZAJE;
+    } else {
+      salto.fase = "suelo";
+      salto.k = 0;
     }
     const mx = jugador.x - x0, mz = jugador.z - z0;
     const recorrido = Math.hypot(mx, mz);
@@ -411,6 +452,14 @@ export function crearMovimiento(solidos: Solidos, o: OpcionesMovimiento = {}): M
       }
       destino = l;
       if (!planear(l)) terminar("sin_ruta");
+    },
+    saltar() {
+      if (bloqueado || !jugador.apoyado || anticipa > 0) return false;
+      anticipa = ANTICIPACION;
+      return true;
+    },
+    get salto() {
+      return salto;
     },
     guiarIrisA(l) {
       guiaIris = l;
