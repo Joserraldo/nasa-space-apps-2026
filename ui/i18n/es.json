@@ -60,6 +60,8 @@
   "ui.paso.8.titulo": "Qué pasó y por qué",
   "ui.final.exito": "¡Misión cumplida!",
   "ui.final.fallo": "La base no aguantó. Veamos por qué.",
+  "ui.final.animo.exito": "La base está a salvo y la tripulación está orgullosa de ti.",
+  "ui.final.animo.fallo": "Todo explorador aprende de una tormenta como esta. ¿Listo para intentarlo otra vez?",
   "ui.final.decision": "Por tus decisiones",
   "ui.final.mala_suerte": "Mala suerte (peligros reales del espacio)",
   "ui.final.sistema": "Gastos de mantener la base",
