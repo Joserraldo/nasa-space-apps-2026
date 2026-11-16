@@ -19,6 +19,12 @@ async function llegarALaBase(page: Page) {
   await colocar.first().click();
   await colocar.first().click();
   await page.getByRole("button", { name: "Base ready. Start the clock!" }).click();
+  await expect(page.getByRole("button", { name: "Crew", exact: true })).toBeVisible();
+}
+
+/** Crew abre el panel de decisión con las acciones, la tripulación y el registro. */
+async function abrirTripulacion(page: Page) {
+  await page.getByRole("button", { name: "Crew", exact: true }).click();
   await expect(page.getByRole("heading", { name: "Actions" })).toBeVisible();
 }
 
@@ -76,7 +82,7 @@ test("sin enviar la telemetría la base se pierde, y \"Play again\" empieza una 
   await page.getByRole("button", { name: "Place", exact: true }).first().click();
   await page.getByRole("button", { name: "Place", exact: true }).first().click();
   await page.getByRole("button", { name: "Base ready. Start the clock!" }).click();
-  await expect(page.getByRole("heading", { name: "Actions" })).toBeVisible();
+  await abrirTripulacion(page);
   expect(await energia(page)).toBe(energiaInicial);
 
   expect(errores, `errores de consola: ${errores.join(" | ")}`).toEqual([]);
@@ -97,7 +103,7 @@ test("\"Continue\" recupera la partida guardada después de recargar la página"
   await continuar.click();
 
   // Vuelve a la base con los mismos recursos y la historia de la partida (el aterrizaje ya cobrado).
-  await expect(page.getByRole("heading", { name: "Actions" })).toBeVisible();
+  await abrirTripulacion(page);
   expect(await energia(page)).toBe(energiaAntes);
   await page.locator("details summary").click();
   await expect(page.getByText(/Landing at the chosen site/).first()).toBeVisible();
@@ -110,4 +116,30 @@ test("el idioma elegido en la portada se recuerda al recargar", async ({ page })
   await expect(page.getByRole("button", { name: "Empezar misión" })).toBeVisible();
   await page.reload();
   await expect(page.getByRole("button", { name: "Empezar misión" })).toBeVisible();
+});
+
+test("perder WebGL deja la misma partida en el respaldo 2D, y el mapa lleva al niño a un lugar", async ({ page }) => {
+  await page.clock.install();
+  await page.goto("/");
+  await llegarALaBase(page);
+  await page.getByRole("button", { name: "Pause", exact: true }).click();
+  const energiaAntes = await energia(page);
+
+  // Se pierde el contexto WebGL: la escena avisa y el mundo pasa al hueco 2D sin reiniciar nada.
+  await page.locator("canvas").evaluate((c: HTMLCanvasElement) => {
+    const gl = c.getContext("webgl2") ?? c.getContext("webgl");
+    gl?.getExtension("WEBGL_lose_context")?.loseContext();
+  });
+  await expect(page.locator("canvas")).toHaveCount(0);
+  await expect(page.locator(".mundo-hueco")).toHaveCount(1);
+  expect(await energia(page)).toBe(energiaAntes);
+
+  // Sin escena que camine, el mapa deja al niño en el lugar elegido y [E] ofrece lo que se hace allí.
+  await page.getByRole("button", { name: "Map", exact: true }).click();
+  await page.getByRole("list", { name: "Places" }).getByRole("button", { name: /^Workshop/ }).click();
+  await expect(page.getByRole("button", { name: "Repair Iris in the workshop" })).toBeVisible();
+  await page.getByRole("button", { name: "Repair Iris in the workshop" }).click();
+  await expect(page.getByRole("dialog")).toBeVisible();
+  await page.getByRole("dialog").getByRole("button", { name: "Back" }).click();
+  expect(await energia(page)).toBe(energiaAntes);
 });

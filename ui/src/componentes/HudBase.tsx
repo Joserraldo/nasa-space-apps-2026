@@ -14,6 +14,10 @@ import "./hud.css";
  * Mide su propia altura y la publica en `--hud-reserva-izq`, `--hud-reserva-der` y `--hud-reserva` (la mayor), para que los
  * paneles de cada pantalla empiecen debajo de las píldoras sin taparlas.
  * Escala `min(ancho/1024, alto/683)` pero nunca por debajo de 1: el texto no baja de 16 px (ESCENAS §2.7).
+ * En celular (apaisado o vertical) es una sola fila compacta, como la lámina de celular: los tres
+ * recursos con su nombre corto (el completo en `aria-label`), el objetivo en apaisado y la pausa con
+ * solo su icono; día, turno y velocidad quedan para el lector de pantalla. Con controles táctiles,
+ * `[E]` y `[V]` los dibuja `ControlesTactiles` y aquí quedan `Crew` y `Map` junto al joystick.
  */
 
 export const VELOCIDADES = [0.5, 1, 2] as const;
@@ -78,9 +82,13 @@ export interface HudBaseProps {
   objetivo?: { labelKey: string; vars?: Vars } | undefined;
   /** Fila de abajo de mundo/01. Solo la monta quien tiene el mundo y sus controles. */
   mundo?: HudMundo | undefined;
+  /** Controles táctiles a la vista: la acción y la cámara las dibuja `ControlesTactiles`. */
+  tactil?: boolean | undefined;
+  /** Hay un panel de decisión o consulta abierto: la fila de abajo cede su sitio al panel. */
+  panelAbierto?: boolean | undefined;
 }
 
-export function HudBase({ estado, ultimas, reloj, objetivo, mundo }: HudBaseProps) {
+export function HudBase({ estado, ultimas, reloj, objetivo, mundo, tactil = false, panelAbierto = false }: HudBaseProps) {
   const { t } = useT();
   const escala = useEscalaHud();
   const capa = useRef<HTMLElement>(null);
@@ -90,14 +98,14 @@ export function HudBase({ estado, ultimas, reloj, objetivo, mundo }: HudBaseProp
   const cambios = ultimas ? [...ultimas.efectosLlegaron, ...ultimas.malaSuerte] : [];
   const siguiente = (v: number) => VELOCIDADES[(VELOCIDADES.indexOf(v as (typeof VELOCIDADES)[number]) + 1) % VELOCIDADES.length]!;
   return (
-    <section ref={capa} className="hud-base" aria-label={t("ui.hud.titulo")} style={{ zoom: escala }}>
+    <section ref={capa} className={`hud-base${tactil ? " hud-tactil" : ""}${panelAbierto ? " hud-con-panel" : ""}`} aria-label={t("ui.hud.titulo")} style={{ zoom: escala }}>
       <div className="hud-arriba">
         <div className="hud-izq" ref={izq}>
           <Pildora className="hud-dia"><span>{t("ui.dia", { dia: estado.dia })}</span> <span aria-hidden="true">·</span> <span>{t("ui.tick", { tick: estado.tick })}</span></Pildora>
           {reloj && (
             <>
-              <PildoraBoton labelKey={estado.pausado ? "ui.reanudar" : "ui.pausa"} icon={estado.pausado ? "jugar" : "reloj"} onClick={reloj.onPausa} />
-              <PildoraBoton labelKey="ui.hud.velocidad" labelVars={{ v: reloj.velocidad }} icon="reloj" onClick={() => reloj.onVelocidad(siguiente(reloj.velocidad))} />
+              <PildoraBoton className="hud-pausa" labelKey={estado.pausado ? "ui.reanudar" : "ui.pausa"} icon={estado.pausado ? "jugar" : "pausa"} onClick={reloj.onPausa} />
+              <PildoraBoton className="hud-velocidad" labelKey="ui.hud.velocidad" labelVars={{ v: reloj.velocidad }} icon="reloj" onClick={() => reloj.onVelocidad(siguiente(reloj.velocidad))} />
             </>
           )}
         </div>
@@ -117,8 +125,8 @@ export function HudBase({ estado, ultimas, reloj, objetivo, mundo }: HudBaseProp
             <PildoraBoton labelKey="ui.comun.tripulacion" icon="tripulacion" onClick={mundo.onTripulacion} />
             <PildoraBoton labelKey="ui.comun.mapa" icon="mapa" onClick={mundo.onMapa} />
           </div>
-          {mundo.interaccion && <PildoraBoton className="hud-centro" labelKey={mundo.interaccion.labelKey} tecla={{ letra: "E", tono: "accion" }} onClick={mundo.interaccion.onUsar} />}
-          <PildoraBoton labelKey={mundo.camara === "tercera" ? "ui.comun.hud.primera" : "ui.comun.hud.tercera"} tecla={{ letra: "V", tono: "camara" }} onClick={mundo.onCamara} />
+          {!tactil && mundo.interaccion && <PildoraBoton className="hud-centro" labelKey={mundo.interaccion.labelKey} tecla={{ letra: "E", tono: "accion" }} onClick={mundo.interaccion.onUsar} />}
+          {!tactil && <PildoraBoton className="hud-camara" labelKey={mundo.camara === "tercera" ? "ui.comun.hud.primera" : "ui.comun.hud.tercera"} tecla={{ letra: "V", tono: "camara" }} onClick={mundo.onCamara} />}
         </div>
       )}
     </section>

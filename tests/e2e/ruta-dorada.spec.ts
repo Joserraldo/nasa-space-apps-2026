@@ -62,6 +62,8 @@ test("ruta dorada: de la órbita al resumen, en inglés", async ({ page }) => {
   // Paso 3: sitios candidatos con 3 criterios y costo visible; ninguno es perfecto.
   await page.getByRole("button", { name: "Continue" }).click();
   await expect(page.getByRole("heading", { name: "Choose where to land" })).toBeVisible();
+  // Cada cambio de pantalla deja el foco en la pantalla nueva (su título o su primer control).
+  await expect(page.locator(".transicion :focus")).toHaveCount(1);
   const aterrizar = page.getByRole("button", { name: "Land here" });
   expect(await aterrizar.count()).toBeGreaterThanOrEqual(2);
   await expect(page.getByText("Sunlight").first()).toBeVisible();
@@ -77,23 +79,59 @@ test("ruta dorada: de la órbita al resumen, en inglés", async ({ page }) => {
   await colocar.first().click();
   await colocar.first().click(); // el primero ya quedó con "✓"; el siguiente "Place" es otro módulo
   await expect(listo).toBeEnabled();
+  // Mundo compartido (E5 a E7): se marca el canvas de E5 y tiene que ser el mismo nodo en la base y la tormenta.
+  await expect(page.locator("canvas")).toHaveCount(1);
+  await page.locator("canvas").evaluate((c) => c.setAttribute("data-prueba", "mundo-e5"));
   await listo.click();
 
-  // Base viva: HUD de 3 recursos, tripulación, acciones.
+  // Base viva (lámina de juego): el mundo a pantalla completa, sin panel fijo; HUD de 3 recursos (una sola vez),
+  // Crew y Map abajo, y el aviso de NASA fuera de la partida (está en la portada y el final).
+  const canvasE5 = page.locator('canvas[data-prueba="mundo-e5"]');
+  await expect(canvasE5).toHaveCount(1);
+  await expect(page.locator("canvas")).toHaveCount(1);
+  await expect(page.getByRole("heading", { name: "Actions" })).toHaveCount(0);
+  for (const r of ["Energy", "Life support", "Shielding"]) {
+    await expect(page.getByRole("meter", { name: r })).toHaveCount(1);
+  }
+  await expect(page.getByText("Unofficial project, not endorsed by NASA")).toHaveCount(0);
+  const crew = page.getByRole("button", { name: "Crew", exact: true });
+
+  // Acercarse a un lugar nunca cobra: [E] abre el plan del lugar y "Back" no cambia nada.
+  // Con el reloj en pausa, para que un turno que pase no se confunda con un cobro.
+  await page.getByRole("button", { name: "Pause", exact: true }).click();
+  const energiaAntes = await page.getByRole("meter", { name: "Energy" }).getAttribute("aria-valuenow");
+  await page.getByRole("button", { name: "Wait a turn at the console" }).click();
+  await expect(page.getByRole("dialog")).toBeVisible();
+  await page.getByRole("dialog").getByRole("button", { name: "Back" }).click();
+  await expect(page.getByRole("dialog")).toHaveCount(0);
+  expect(await page.getByRole("meter", { name: "Energy" }).getAttribute("aria-valuenow")).toBe(energiaAntes);
+  await page.getByRole("button", { name: "Resume", exact: true }).click();
+
+  // Map abre el plano y la lista de lugares; Escape lo cierra.
+  await page.getByRole("button", { name: "Map", exact: true }).click();
+  await expect(page.getByRole("heading", { name: "Jezero base map" })).toBeVisible();
+  await expect(page.getByRole("list", { name: "Places" })).toBeVisible();
+  await page.keyboard.press("Escape");
+  await expect(page.getByRole("heading", { name: "Jezero base map" })).toHaveCount(0);
+
+  // Crew abre el panel de decisión con las acciones y la tripulación.
+  await crew.click();
   await expect(page.getByRole("heading", { name: "Actions" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Your crew" })).toBeVisible();
-  for (const r of ["Energy", "Life support", "Shielding"]) {
-    await expect(page.getByRole("meter", { name: r })).toBeVisible();
-  }
   // El aterrizaje (paso 3, aterrizar()) ya se cobró: aparece en el registro de causas.
   await page.locator("details summary").click();
   await expect(page.getByText(/Landing at the chosen site/).first()).toBeVisible();
+  await page.getByRole("button", { name: "Close", exact: true }).click();
+  await expect(page.getByRole("heading", { name: "Actions" })).toHaveCount(0);
 
   // Paso 5: llega la tormenta real del 20 may 2024, con la escena en pausa (E7, panel "Choose your expert").
   const tormenta = page.getByRole("heading", { name: "Choose your expert" });
   await avanzarHasta(page, () => tormenta.isVisible());
   await expect(tormenta).toBeVisible();
   await expect(page.getByText("Paused", { exact: true })).toBeVisible();
+  // La tormenta se ve sobre el mismo mundo y sin repetir los medidores en su panel.
+  await expect(canvasE5).toHaveCount(1);
+  await expect(page.getByRole("meter", { name: "Energy" })).toHaveCount(1);
 
   // Paso 6: la Ingeniera propone subir el escudo; "Compare your plan" muestra la acción y su costo del motor.
   await page.getByRole("button", { name: /Engineer/ }).click();
@@ -116,8 +154,12 @@ test("ruta dorada: de la órbita al resumen, en inglés", async ({ page }) => {
   await expect(page.getByRole("heading", { name: "Decision recorded" })).toBeVisible();
   await expect(page.getByText("Action confirmed")).toBeVisible();
   await page.getByRole("button", { name: "Return to exploration" }).click();
+  // De vuelta en la base, el mismo canvas: la escena no se volvió a montar.
+  await expect(canvasE5).toHaveCount(1);
+  await expect(page.locator("canvas")).toHaveCount(1);
 
   // Paso 7: la telemetría se envía y tarda en llegar.
+  await crew.click();
   const enviar = page.getByRole("button", { name: /Send telemetry to Earth/ });
   await expect(enviar).toBeVisible();
   await enviar.click();
@@ -128,6 +170,7 @@ test("ruta dorada: de la órbita al resumen, en inglés", async ({ page }) => {
   await expect(page.getByRole("heading", { name: "Decision recorded" })).toBeVisible();
   await expect(page.getByText("Action confirmed")).toBeVisible();
   await page.getByRole("button", { name: "Return to exploration" }).click();
+  await crew.click();
   await expect(page.getByText(/Earth's answer arrives in \d+ turns/)).toBeVisible();
 
   // Iris dañada (si sigue así tras verificar): se repara desde las acciones.
@@ -136,6 +179,8 @@ test("ruta dorada: de la órbita al resumen, en inglés", async ({ page }) => {
     await repararIris.click();
     await confirmar.click();
     await page.getByRole("button", { name: "Return to exploration" }).click();
+  } else {
+    await page.getByRole("button", { name: "Close", exact: true }).click();
   }
 
   // Paso 8: cadena de causas y tarjeta de ciencia.

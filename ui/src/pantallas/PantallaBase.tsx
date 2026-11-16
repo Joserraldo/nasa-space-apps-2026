@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { conversar, type Dialogo, type Entrada } from "@solar-shield/agents";
 import type { Action, BaseAction, Equipment, GameState } from "@solar-shield/contracts";
 import { referenciaDosis } from "@solar-shield/data";
@@ -6,6 +6,9 @@ import { telemetriaPendiente, tormentaActiva, type Novedades } from "@solar-shie
 import { useT } from "../i18n.js";
 import { describirAccion } from "../componentes/Dialogos.js";
 import { DialogoExperto } from "../componentes/DialogoExperto.js";
+import { ControlesTactiles, useModoTactil } from "../componentes/ControlesTactiles.js";
+import { HudBase, type HudBaseProps } from "../componentes/HudBase.js";
+import { Mapa } from "../componentes/Mapa.js";
 import { Polvo } from "../componentes/Polvo.js";
 import { ConfirmarAccion } from "../componentes/base/ConfirmarAccion.js";
 import { ExpertPortrait } from "../componentes/base/ExpertPortrait.js";
@@ -14,23 +17,21 @@ import { Icono, type NombreIcono } from "../componentes/base/Iconos.js";
 import { Mensaje } from "../componentes/base/Piezas.js";
 import type { Persona } from "../componentes/base/Retrato.js";
 import "../componentes/base/facetas.css";
-import { DecisionRegistrada } from "./DecisionRegistrada.js";
-import type { CalidadGrafica } from "../juego/ajustes.js";
-import { eventosDeTick } from "../juego/eventos.js";
 import { vistaEscena, type LugarObjetivo } from "../escena/vista.js";
+import { DecisionRegistrada } from "./DecisionRegistrada.js";
+import { mundoBloqueado, objetivoDeLaBase, usoDelLugar } from "./lugares.js";
+import { useAltoHoja, useMundo, usePosicionJugador } from "./MundoBase.js";
 import "./base.css";
 
-// Three.js queda en un chunk aparte: no pesa en la primera carga.
-const EscenaBase = lazy(() => import("../escena/EscenaBase.js").then((m) => ({ default: m.EscenaBase })));
-const HuecoEscena = () => <div className="base-escena" data-escena="base" aria-hidden="true" />;
-
 /**
- * E6, fase `base` (ESCENAS §1 y §2.7 fila "E5 a E7"; MECANICAS §4). Escrita desde `ui/01`
- * (diálogo en franja inferior + panel de decisión a la derecha), `ui/04` y `personajes/07`
- * (elegir a quién preguntar, comparar un plan, verificar la fuente). Toda acción pasa por el
- * único `ConfirmarAccion` (APLICACION §5): costos de `costoDe` y permiso de `puedeAplicar` del
- * motor con `MISION_JEZERO`. Abrir o cerrar una consulta no toca la pausa; el foco vuelve al origen.
- * Reemplaza la fase base que vivía en `App.tsx` y a `Tripulacion.tsx` (FLUJO §2.3).
+ * E6, fase `base` (ESCENAS §2.7 y §3.1–§3.5; MECANICAS §4). Capa sobre el mundo compartido
+ * (`MundoBase`): la escena llena la pantalla y encima va el HUD de `mundo/01` (recursos y objetivo
+ * arriba; `Crew` y `Map` abajo a la izquierda, la acción `[E]` al centro y la cámara `[V]` a la
+ * derecha) o, con toque, el joystick y el botón de acción de la lámina de celular. El panel de
+ * decisión NO está siempre: aparece solo con una consulta o una decisión abierta, a la derecha en
+ * escritorio y apaisado, y como hoja inferior en vertical, con el mundo visible al lado o encima.
+ * Toda acción pasa por el único `ConfirmarAccion` (APLICACION §5), con un solo despacho al motor
+ * por confirmación. Acercarse a un lugar nunca cobra: "usar" abre el plan o la consulta.
  */
 
 interface Opcion { accion: BaseAction; labelKey: string; icono: NombreIcono }
@@ -49,67 +50,80 @@ function opcionesDe(estado: GameState): Opcion[] {
 
 const signo = (n: number) => (n > 0 ? `+${n}` : `${n}`);
 
-export function PantallaBase({ estado, colocados = [], ultimas, onAccion, onReanudar }: {
+/** Qué ocupa el panel cuando no hay una decisión: la tripulación (con las acciones) o el mapa. */
+type Panel = "tripulacion" | "mapa" | null;
+
+export function PantallaBase({ estado, colocados = [], ultimas, hud, onAccion, onReanudar }: {
   estado: GameState;
   colocados?: readonly Equipment[];
   ultimas: Novedades | null;
+  /** Reloj del HUD, que pone App; el objetivo (guía de Iris) y la fila de abajo los pone esta pantalla. */
+  hud: Pick<HudBaseProps, "reloj">;
   onAccion(a: Action): void;
   onReanudar(): void;
 }) {
   const { t } = useT();
+  const mundo = useMundo();
+  const tactil = useModoTactil();
   const [plan, setPlan] = useState<BaseAction | null>(null);
   const [dialogo, setDialogo] = useState<Dialogo | null>(null);
+  const [panel, setPanel] = useState<Panel>(null);
   const [preguntada, setPreguntada] = useState<string | null>(null);
   const [texto, setTexto] = useState("");
   const [fallasIris, setFallasIris] = useState(0);
   // Panel 04 "Decision recorded": `antes` es el estado al confirmar; `despues` se toma en el render que ya trae la acción aplicada.
   const [registro, setRegistro] = useState<{ antes: GameState; despues: GameState | null } | null>(null);
   const origen = useRef<HTMLElement | null>(null);
-  const tripulacion = useRef<HTMLElement>(null);
-  const panel = useRef<HTMLElement>(null);
+  const hoja = useRef<HTMLElement>(null);
+  // Una confirmación, un despacho: el doble toque o la tecla más el botón no cobran dos veces (MECANICAS §6.1).
+  const confirmada = useRef(false);
   const tele = telemetriaPendiente(estado);
-  const [calidad, setCalidad] = useState<CalidadGrafica>("media");
-  const [sin3d, setSin3d] = useState(false);
-  const reducido = typeof matchMedia === "function" && matchMedia("(prefers-reduced-motion: reduce)").matches;
-  const vista = useMemo(() => vistaEscena(estado, { fase: tormentaActiva(estado) ? "tormenta" : "base", colocados, averiaRevelada: true }), [estado, colocados]);
-  // Eventos del último tick: se comparan el estado anterior y el actual.
-  const previo = useRef(estado);
-  const eventos = useMemo(() => {
-    const ev = previo.current.tick === estado.tick ? [] : eventosDeTick(previo.current, estado);
-    previo.current = estado;
-    return ev;
-  }, [estado]);
+  const modulos = useMemo(() => vistaEscena(estado, { fase: "base", colocados, averiaRevelada: true }).modulos, [estado, colocados]);
 
+  const hayNovedad = !!(estado.pausado && ultimas && (ultimas.malaSuerte.length > 0 || ultimas.iaCambio || ultimas.efectosLlegaron.length > 0));
+  const abierto = { dialogo: dialogo !== null, plan: plan !== null, registro: registro !== null, panel: panel !== null, novedad: hayNovedad, campo: false };
+  const hayPanel = mundoBloqueado(abierto);
+  useAltoHoja(hoja, hayPanel);
+  // Objetivo de Iris: texto de la píldora del HUD y lugar resaltado en la escena y el mapa.
+  const objetivo = useMemo(() => objetivoDeLaBase(estado), [estado]);
+  useEffect(() => { mundo.fijarObjetivo(objetivo.lugar); }, [objetivo.lugar, mundo.fijarObjetivo]);
+  useEffect(() => () => mundo.fijarObjetivo(null), [mundo.fijarObjetivo]);
+
+  // El mundo no se mueve ni se "usa" con algo abierto encima (frontera A/B: prop `bloqueado`).
+  useEffect(() => { mundo.fijarBloqueado(hayPanel); }, [hayPanel, mundo.fijarBloqueado]);
+  useEffect(() => () => mundo.fijarBloqueado(false), [mundo.fijarBloqueado]);
+
+  function recordarOrigen() {
+    const a = document.activeElement as HTMLElement | null;
+    if (a && a !== document.body && !hoja.current?.contains(a)) origen.current = a;
+  }
   /** Abre el panel de confirmación y recuerda quién lo abrió para devolverle el foco. */
   function abrirPlan(a: BaseAction) {
-    origen.current = document.activeElement as HTMLElement | null;
+    recordarOrigen();
+    confirmada.current = false;
     setPlan(a);
+  }
+  function devolverFoco() {
+    const o = origen.current;
+    requestAnimationFrame(() => {
+      // Si el panel sigue abierto, el foco queda dentro; si no, vuelve a quien lo abrió o a Crew.
+      if (hoja.current?.contains(document.activeElement)) return;
+      const destino = hoja.current?.querySelector<HTMLElement>("button")
+        ?? (o?.isConnected ? o : document.querySelector<HTMLElement>(".hud-abajo-izq button"));
+      destino?.focus();
+    });
   }
   function cerrarPlan() {
     setPlan(null);
     devolverFoco();
   }
-  function devolverFoco() {
-    const o = origen.current;
-    // La lista de acciones se desmonta mientras está el panel: se busca de nuevo el mismo botón por su acción.
-    const clave = o?.closest("li")?.dataset.accion;
-    requestAnimationFrame(() => {
-      const destino = o?.isConnected ? o
-        : (clave && document.querySelector<HTMLElement>(`.base-acciones li[data-accion="${clave}"] button`))
-          || tripulacion.current?.querySelector<HTMLElement>("button");
-      destino?.focus();
-    });
-  }
-  /** "Usar" en un lugar de la escena: solo donde ya hay una acción de la pantalla. */
-  function usarLugar(lugar: LugarObjetivo) {
-    if (lugar === "panel_solar") abrirPlan({ tipo: "salida_exterior", objetivo: "panel_solar" });
-    else if (lugar === "escudo") abrirPlan({ tipo: "subir_escudo", nivel: 1 });
-    // TODO(José): el resto de lugares (taller, banco, antena…) no tienen acción en la pantalla todavía.
-  }
   function confirmar(a: BaseAction) {
+    if (confirmada.current) return;
+    confirmada.current = true;
     setRegistro({ antes: estado, despues: null });
     onAccion(a);
-    if (dialogo?.accion === a) setDialogo(null);
+    setDialogo(null);
+    setPanel(null);
     setPlan(null);
   }
   // El reloj de la base sigue como estaba (no se pausa ni se reanuda): solo se cierra la tarjeta.
@@ -118,7 +132,7 @@ export function PantallaBase({ estado, colocados = [], ultimas, onAccion, onRean
     devolverFoco();
   }
   useEffect(() => {
-    if (registro && !registro.despues && estado !== registro.antes) { setRegistro({ antes: registro.antes, despues: estado }); panel.current?.scrollTo({ top: 0 }); }
+    if (registro && !registro.despues && estado !== registro.antes) { setRegistro({ antes: registro.antes, despues: estado }); hoja.current?.scrollTo({ top: 0 }); }
   }, [estado, registro]);
 
   function hablar(entrada: Entrada) {
@@ -136,112 +150,171 @@ export function PantallaBase({ estado, colocados = [], ultimas, onAccion, onRean
     hablar({ texto });
     setTexto("");
   }
+  /** Cierra la consulta y el panel (no hay decisión abierta: no cambia nada del motor). */
+  function cerrarTodo() {
+    setDialogo(null);
+    setPanel(null);
+    devolverFoco();
+  }
+  function alternarPanel(p: Exclude<Panel, null>) {
+    if (panel === p && !dialogo) { cerrarTodo(); return; }
+    recordarOrigen();
+    setDialogo(null);
+    setPanel(p);
+    requestAnimationFrame(() => hoja.current?.querySelector<HTMLElement>("h2, button")?.focus());
+  }
 
-  // `Escape` cierra el diálogo si no hay un panel de confirmación encima (ese se cierra solo).
+  /** "Usar" un lugar (E de la escena, aviso [E] o botón de acción táctil): abre su plan y su consulta. */
+  function usarLugar(l: LugarObjetivo) {
+    if (plan || registro) return;
+    const uso = usoDelLugar(l, estado);
+    recordarOrigen();
+    setPanel(null);
+    if (uso.consulta) hablar(uso.consulta); else setDialogo(null);
+    if (uso.accion) abrirPlan(uso.accion);
+    else requestAnimationFrame(() => hoja.current?.querySelector<HTMLElement>("button")?.focus());
+  }
+  const usar = useRef(usarLugar);
+  usar.current = usarLugar;
   useEffect(() => {
-    if (!dialogo || plan) return;
-    const tecla = (e: KeyboardEvent) => { if (e.key === "Escape") setDialogo(null); };
+    mundo.fijarUso((l) => usar.current(l));
+    return () => mundo.fijarUso(null);
+  }, [mundo.fijarUso]);
+
+  // Teclado (ESCENAS §3.5): Esc cierra lo de más arriba (el panel de confirmación se cierra solo).
+  // Sin WebGL no hay escena que escuche E: la pantalla la atiende para el lugar donde está el niño.
+  const actual = useRef({ plan, hayPanel, cerrarTodo, sin3d: mundo.sin3d, cercano: mundo.cercano });
+  actual.current = { plan, hayPanel, cerrarTodo, sin3d: mundo.sin3d, cercano: mundo.cercano };
+  useEffect(() => {
+    const tecla = (e: KeyboardEvent) => {
+      const a = actual.current;
+      const d = e.target as HTMLElement | null;
+      if (e.key === "Escape") { if (!a.plan && a.hayPanel) a.cerrarTodo(); return; }
+      if (e.repeat || a.hayPanel || !a.sin3d || !a.cercano || (d && /^(INPUT|TEXTAREA|SELECT|BUTTON)$/.test(d.tagName))) return;
+      if (e.key === "e" || e.key === "E") usar.current(a.cercano);
+    };
     window.addEventListener("keydown", tecla);
     return () => window.removeEventListener("keydown", tecla);
-  }, [dialogo, plan]);
+  }, []);
 
+  const uso = mundo.cercano ? usoDelLugar(mundo.cercano, estado) : null;
   const disponibles = estado.tripulacion.filter((m) => m.disponible);
-  const hayNovedad = estado.pausado && ultimas && (ultimas.malaSuerte.length > 0 || ultimas.iaCambio || ultimas.efectosLlegaron.length > 0);
+  const cerrable = (panel !== null || dialogo !== null) && !plan && !registro;
+  const tituloHoja = registro ? "ui.decision.titulo" : plan ? "ui.decision.panel" : panel === "mapa" ? "ui.mapa.titulo" : panel === "tripulacion" ? "ui.tripulacion.titulo" : "ui.base.consulta";
 
   return (
-    <section className="base-e6" aria-label={t("ui.hud.titulo")}>
-      <div className="base-mundo">
-        {/* Escena 3D de Daniel (escena/, ESCENAS §3). Decorativa: lo accesible son los botones de la pantalla.
-            Si WebGL se pierde, vuelve el hueco 2D. */}
-        <div className="base-escena-caja" aria-hidden="true">
-          {sin3d ? <HuecoEscena /> : (
-            <Suspense fallback={<HuecoEscena />}>
-              <EscenaBase vista={vista} eventos={eventos} calidad={calidad} camara="tercera" movimientoReducido={reducido}
-                onLugarCercano={() => undefined /* TODO(José): resaltar el botón del lugar cercano. */}
-                onUsar={usarLugar}
-                onCalidad={setCalidad}
-                onWebGLPerdido={() => setSin3d(true)} />
-            </Suspense>
+    <section className={`base-e6${hayPanel ? " base-e6-con-panel" : ""}`} aria-label={t("ui.hud.titulo")}>
+      <HudBase estado={estado} ultimas={ultimas} reloj={hud.reloj} objetivo={{ labelKey: objetivo.labelKey, vars: objetivo.vars }} tactil={tactil} panelAbierto={hayPanel}
+        mundo={{
+          onTripulacion: () => alternarPanel("tripulacion"),
+          onMapa: () => alternarPanel("mapa"),
+          interaccion: uso && mundo.cercano && !hayPanel ? { labelKey: uso.labelKey, onUsar: () => usarLugar(mundo.cercano!) } : undefined,
+          camara: mundo.camara,
+          onCamara: mundo.alternarCamara,
+        }} />
+
+      {tactil && !hayPanel && (
+        <ControlesTactiles entrada={mundo.entrada} camara={mundo.camara} onCamara={mundo.alternarCamara}
+          accion={uso && mundo.cercano ? { labelKey: uso.labelKey, cortoKey: `${uso.labelKey}.corto`, icono: uso.icono, onUsar: () => usarLugar(mundo.cercano!) } : undefined} />
+      )}
+
+      {hayPanel && (
+        <aside className="base-panel" ref={hoja} aria-label={t(tituloHoja)}>
+          {cerrable && (
+            <div className="base-panel-cab">
+              <FacetButton icon="atras" labelKey="ui.comun.cerrar" onClick={cerrarTodo} />
+            </div>
           )}
-        </div>
 
-        {hayNovedad && ultimas && (
-          <div className="base-novedades" role="status">
-            {ultimas.malaSuerte.map((c, i) => (
-              <Mensaje key={`m${i}`} tipo="aviso" tituloKey="ui.novedad.mala_suerte" detalleKey="ui.base.novedad.detalle"
-                vars={{ causaKey: c.descripcionKey, delta: c.delta !== undefined ? signo(c.delta) : "" }} />
-            ))}
-            {ultimas.iaCambio && <Mensaje tipo="aviso" tituloKey={`ui.iris.estado.${ultimas.iaCambio.a}`} />}
-            {ultimas.efectosLlegaron.map((c, i) => (
-              <Mensaje key={`e${i}`} tipo="exito" tituloKey="ui.novedad.efecto" detalleKey="ui.base.novedad.detalle"
-                vars={{ causaKey: c.descripcionKey, delta: c.delta !== undefined ? signo(c.delta) : "" }} />
-            ))}
-            {ultimas.malaSuerte.some((c) => c.descripcionKey === "mala_suerte.tormenta_polvo") && (
-              <div className="fc"><div className="fc-cara base-polvo"><Polvo estado={estado} onAccion={onAccion} onElegir={(a) => { onAccion(a); onReanudar(); }} /></div></div>
-            )}
-            <FacetButton variant="primary" icon="jugar" labelKey="ui.reanudar" onClick={onReanudar} />
-          </div>
-        )}
-
-        {dialogo && (
-          <DialogoExperto d={dialogo} irisDanada={estado.iaBase === "danada"} onPlan={abrirPlan}
-            onCerrar={() => setDialogo(null)}
-            onOtra={() => { setDialogo(null); tripulacion.current?.querySelector<HTMLElement>("button")?.focus(); }} />
-        )}
-      </div>
-
-      <aside className="base-panel" ref={panel} aria-label={t("ui.acciones.titulo")}>
-        {registro ? (
-          registro.despues && (
-            <section className="fc" aria-labelledby="base-decision-titulo"><div className="fc-cara base-bloque">
-              <h2 id="base-decision-titulo">{t("ui.decision.titulo")}</h2>
-              <DecisionRegistrada antes={registro.antes} despues={registro.despues} onContinuar={continuar} />
-            </div></section>
-          )
-        ) : plan ? (
-          <ConfirmarAccion estado={estado} accion={plan} onCancelar={cerrarPlan} onConfirmar={confirmar} />
-        ) : (
-          <section className="fc"><div className="fc-cara base-bloque">
-            <h2>{t("ui.acciones.titulo")}</h2>
-            <p className="base-iris"><Icono nombre={estado.iaBase === "danada" ? "aviso" : "planeta"} tam={20} />{t(`ui.iris.estado.${estado.iaBase}`)}</p>
-            <p className="base-ayuda">{t("ui.base.acciones.ayuda")}</p>
-            <ul className="base-acciones">
-              {opcionesDe(estado).map((o) => (
-                <li key={o.labelKey} data-accion={o.labelKey}><FacetButton icon={o.icono} labelKey={o.labelKey} onClick={() => abrirPlan(o.accion)} /></li>
+          {hayNovedad && ultimas && (
+            <section className="fc"><div className="fc-cara base-bloque base-novedades" role="status">
+              {ultimas.malaSuerte.map((c, i) => (
+                <Mensaje key={`m${i}`} tipo="aviso" tituloKey="ui.novedad.mala_suerte" detalleKey="ui.base.novedad.detalle"
+                  vars={{ causaKey: c.descripcionKey, delta: c.delta !== undefined ? signo(c.delta) : "" }} />
               ))}
-            </ul>
-            {tele && <Mensaje tipo="pendiente" tituloKey="ui.paso.7.llegando" vars={{ ticks: tele.ticksRestantes }} />}
-          </div></section>
-        )}
+              {ultimas.iaCambio && <Mensaje tipo="aviso" tituloKey={`ui.iris.estado.${ultimas.iaCambio.a}`} />}
+              {ultimas.efectosLlegaron.map((c, i) => (
+                <Mensaje key={`e${i}`} tipo="exito" tituloKey="ui.novedad.efecto" detalleKey="ui.base.novedad.detalle"
+                  vars={{ causaKey: c.descripcionKey, delta: c.delta !== undefined ? signo(c.delta) : "" }} />
+              ))}
+              {ultimas.malaSuerte.some((c) => c.descripcionKey === "mala_suerte.tormenta_polvo") && (
+                <div className="base-polvo"><Polvo estado={estado} onAccion={onAccion} onElegir={(a) => { onAccion(a); onReanudar(); }} /></div>
+              )}
+              <FacetButton variant="primary" icon="jugar" labelKey="ui.reanudar" onClick={onReanudar} />
+            </div></section>
+          )}
 
-        <section className="fc" ref={tripulacion}><div className="fc-cara base-bloque">
-          <h2>{t("ui.tripulacion.titulo")}</h2>
-          <ul className="base-expertos">
-            {disponibles.map((m) => (
-              <li key={m.id}>
-                <ExpertPortrait persona={m.id as Persona} compacto seleccionado={preguntada === m.id} onElegir={() => preguntar(m.id)} />
-              </li>
-            ))}
-          </ul>
-          <form className="base-preguntar" onSubmit={enviarTexto}>
-            <label className="oculto-visual" htmlFor="base-campo">{t("ui.base.tripulacion.campo")}</label>
-            <input id="base-campo" type="text" value={texto} onChange={(e) => setTexto(e.target.value)} placeholder={t("ui.base.tripulacion.campo")} />
-            <FacetButton type="submit" labelKey="ui.tripulacion.enviar" onClick={() => undefined} />
-          </form>
-        </div></section>
+          {registro ? (
+            registro.despues && (
+              <section className="fc" aria-labelledby="base-decision-titulo"><div className="fc-cara base-bloque">
+                <h2 id="base-decision-titulo">{t("ui.decision.titulo")}</h2>
+                <DecisionRegistrada antes={registro.antes} despues={registro.despues} onContinuar={continuar} />
+              </div></section>
+            )
+          ) : (
+            <>
+              {dialogo && (
+                <DialogoExperto d={dialogo} irisDanada={estado.iaBase === "danada"} soloTexto={plan !== null} onPlan={abrirPlan}
+                  onCerrar={() => { setDialogo(null); if (!panel) devolverFoco(); }}
+                  onOtra={() => alternarPanel("tripulacion")} />
+              )}
+              {plan ? (
+                <ConfirmarAccion estado={estado} accion={plan} onCancelar={cerrarPlan} onConfirmar={confirmar} />
+              ) : panel === "mapa" ? (
+                <MapaDeLaBase modulos={modulos} destino={mundo.destino ?? objetivo.lugar} onIrA={(l) => { mundo.irA(l); cerrarTodo(); }} />
+              ) : panel === "tripulacion" ? (
+                <>
+                  <section className="fc"><div className="fc-cara base-bloque">
+                    <h2>{t("ui.acciones.titulo")}</h2>
+                    <p className="base-iris"><Icono nombre={estado.iaBase === "danada" ? "aviso" : "planeta"} tam={20} />{t(`ui.iris.estado.${estado.iaBase}`)}</p>
+                    <p className="base-ayuda">{t("ui.base.acciones.ayuda")}</p>
+                    <ul className="base-acciones">
+                      {opcionesDe(estado).map((o) => (
+                        <li key={o.labelKey} data-accion={o.labelKey}><FacetButton icon={o.icono} labelKey={o.labelKey} onClick={() => abrirPlan(o.accion)} /></li>
+                      ))}
+                    </ul>
+                    {tele && <Mensaje tipo="pendiente" tituloKey="ui.paso.7.llegando" vars={{ ticks: tele.ticksRestantes }} />}
+                  </div></section>
 
-        <details className="fc base-registro"><summary className="fc-cara fc-chico">{t("ui.paso.8.titulo")}</summary>
-          <ul>
-            {[...estado.causas].reverse().slice(0, 30).map((c, i) => (
-              <li key={i}>
-                <span className="base-registro-turno">{t("ui.tick", { tick: c.tick })}</span>
-                <span>{t(c.descripcionKey)}{c.accion && c.descripcionKey.startsWith("causa.") ? ` (${describirAccion(c.accion, t)})` : ""}</span>
-                {c.delta !== undefined && <span className={`delta ${c.delta > 0 ? "delta-mas" : "delta-menos"}`}>{signo(c.delta)}</span>}
-              </li>
-            ))}
-          </ul>
-        </details>
-      </aside>
+                  <section className="fc"><div className="fc-cara base-bloque">
+                    <h2>{t("ui.tripulacion.titulo")}</h2>
+                    <ul className="base-expertos">
+                      {disponibles.map((m) => (
+                        <li key={m.id}>
+                          <ExpertPortrait persona={m.id as Persona} compacto seleccionado={preguntada === m.id} onElegir={() => preguntar(m.id)} />
+                        </li>
+                      ))}
+                    </ul>
+                    <form className="base-preguntar" onSubmit={enviarTexto}>
+                      <label className="oculto-visual" htmlFor="base-campo">{t("ui.base.tripulacion.campo")}</label>
+                      <input id="base-campo" type="text" value={texto} onChange={(e) => setTexto(e.target.value)} placeholder={t("ui.base.tripulacion.campo")} />
+                      <FacetButton type="submit" labelKey="ui.tripulacion.enviar" onClick={() => undefined} />
+                    </form>
+                  </div></section>
+
+                  <details className="fc base-registro"><summary className="fc-cara fc-chico">{t("ui.paso.8.titulo")}</summary>
+                    <ul>
+                      {[...estado.causas].reverse().slice(0, 30).map((c, i) => (
+                        <li key={i}>
+                          <span className="base-registro-turno">{t("ui.tick", { tick: c.tick })}</span>
+                          <span>{t(c.descripcionKey)}{c.accion && c.descripcionKey.startsWith("causa.") ? ` (${describirAccion(c.accion, t)})` : ""}</span>
+                          {c.delta !== undefined && <span className={`delta ${c.delta > 0 ? "delta-mas" : "delta-menos"}`}>{signo(c.delta)}</span>}
+                        </li>
+                      ))}
+                    </ul>
+                  </details>
+                </>
+              ) : null}
+            </>
+          )}
+        </aside>
+      )}
     </section>
   );
+}
+
+/** El mapa lee la posición real del jugador (hasta 5 veces por segundo) sin volver a pintar la pantalla entera. */
+function MapaDeLaBase({ modulos, destino, onIrA }: { modulos: ReturnType<typeof vistaEscena>["modulos"]; destino: LugarObjetivo | null; onIrA(l: LugarObjetivo): void }) {
+  const posicion = usePosicionJugador();
+  return <Mapa posicion={posicion} objetivo={destino} modulos={modulos} onIrA={onIrA} />;
 }
