@@ -112,13 +112,9 @@ function montar(): void {
   }
 }
 
-/**
- * `?sala=corredor|taller` (D5): una sala sola (el corredor o el taller), en su propia vista, con la cámara a la altura de
- * los ojos del niño en la entrada, mirando al fondo como la lámina `exterior/01`. Luz provisional de
- * interior (la definitiva va con A8). Con `?medir=1` muestra fps, draw calls y triángulos.
- */
 /** Cómo se ve cada sala en la vista previa: qué se arma, dónde va la cámara y la luz cálida. */
 const SALAS_PREVIA = {
+  // Corredor desde la entrada, a la altura de los ojos del niño, mirando al fondo como `exterior/01`.
   corredor: () => {
     const zona = zonaCorredor();
     return {
@@ -132,6 +128,10 @@ const SALAS_PREVIA = {
   taller: () => ({ raiz: crearTaller(crearMateriales()), camara: [-2.5, 5.2, 7.5] as const, mira: [0.4, 0.8, -0.6] as const, luz: [-2, 6, 4] as const }),
 } as const;
 
+/**
+ * `?sala=corredor|taller` (D5): una sala sola, en su propia vista, con la cámara de `SALAS_PREVIA`. Luz
+ * provisional de interior (la definitiva va con A8). Con `?medir=1` muestra fps, draw calls y triángulos.
+ */
 function montarSala(sala: keyof typeof SALAS_PREVIA): void {
   const canvas = document.getElementById("escena") as HTMLCanvasElement;
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: calidad !== "baja" });
