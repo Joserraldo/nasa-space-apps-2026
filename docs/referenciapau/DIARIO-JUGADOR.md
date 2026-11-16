@@ -35,3 +35,18 @@ No se intentaron rutas alternativas para eludirlo. La sesión B5 queda pendiente
 **No observado:** no se abrió la partida. No hay hallazgos de jugador que justifiquen inventar bugs.
 Por lectura de código sí se comprobó que PantallaBase aún usa conversación síncrona sin la memoria nueva.
 La integración se entrega a A/E mediante issue; no se etiqueta como hallazgo de una partida.
+
+## Prueba posterior reportada por el usuario
+
+El usuario confirmó que abrió y probó la versión local. Comentario textual:
+> todo esta bien me parecio epico
+
+Pidió continuar con la entrega para revisión de María Paula.
+- Duración: no indicada. No se certifican diez minutos.
+- Confusión o aburrimiento: no reportados.
+- Sorpresa: valoración positiva («épico»), sin señalar un momento concreto.
+- Errores: no reportados; no se abren issues inventados.
+- Alcance: reporte del usuario. El agente sigue sin poder observar el navegador por su política guardada.
+
+La integración técnica está en #370 y pasó CI (tipos/tests y seis e2e). B0 #334 está listo para revisión.
+Quedan la duración/guion de diez minutos y las capturas B6 para cerrar formalmente esos criterios.

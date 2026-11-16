@@ -11,3 +11,10 @@
 - Sin verificar: micrófono, proveedor de modelo real, UI integrada con memoria, sesión de diez minutos y capturas de B6.
 - PRs borradores hacia develop; no se hicieron merges ni push a main/develop.
 Tokens: amarillo
+
+## Entrega para revisión posterior
+- #334 listo para revisión con CI verde; sin merge del agente.
+- #370 integra B0–B4/B6, actualizado con A2/E1; CI y seis e2e verdes. Revisión solicitada a María Paula.
+- Usuario probó localmente y reportó valoración positiva; no indicó duración ni errores.
+- B5 registra el reporte sin afirmar diez minutos; capturas B6 pendientes por bloqueo del navegador del agente.
+- #363 sigue separado y en borrador: propuesta de confirmación de un adulto documentada, sin recoger correos.
