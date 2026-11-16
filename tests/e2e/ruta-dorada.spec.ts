@@ -32,16 +32,12 @@ test("ruta dorada: de la órbita al resumen, en inglés", async ({ page }) => {
   // límite general, y se pasaba según la carga de la otra prueba. Mismo margen que "seguir a Iris". Las
   // esperas de cada paso no cambian.
   test.setTimeout(180_000);
-  // TEMPORAL (diagnóstico de #406): cuánto lleva la prueba en cada etapa, para leerlo en el registro de CI.
-  const t0 = Date.now();
-  const marca = (etapa: string) => console.log(`[ruta dorada] ${((Date.now() - t0) / 1000).toFixed(1)} s ${etapa}`);
   const errores: string[] = [];
   page.on("pageerror", (e) => errores.push(e.message));
   page.on("console", (m) => m.type() === "error" && errores.push(m.text()));
 
   await page.clock.install();
   await page.goto("/");
-  marca("inicio");
 
   // E0 Portada (inicio/01): logo oficial, inglés base y aviso de que no es oficial de NASA.
   await expect(page.getByRole("img", { name: "Solar Shield" })).toBeVisible();
@@ -80,7 +76,6 @@ test("ruta dorada: de la órbita al resumen, en inglés", async ({ page }) => {
   expect(await aterrizar.count()).toBeGreaterThanOrEqual(2);
   await expect(page.getByText("Sunlight").first()).toBeVisible();
   await aterrizar.first().click();
-  marca("sitio elegido");
 
   // E8 (inicio/04): llegada a Jezero con Skip y, ya en la base, "Your crew is ready" con los controles.
   // La llegada no avanza sola: el reloj es simulado. Mientras la tarjeta está abierta, nada se mueve.
@@ -94,7 +89,6 @@ test("ruta dorada: de la órbita al resumen, en inglés", async ({ page }) => {
   await page.getByRole("button", { name: "Hide controls" }).click();
   await expect(page.getByText("Jump: Space")).toHaveCount(0);
   await page.getByRole("button", { name: "Explore the base" }).click();
-  marca("exploró (E8)");
   await expect(page.getByRole("heading", { name: "Your crew is ready" })).toHaveCount(0);
 
   // Paso 4: colocar 2 módulos, cada uno con costo ahora y beneficio después.
@@ -117,7 +111,6 @@ test("ruta dorada: de la órbita al resumen, en inglés", async ({ page }) => {
     await expect(tarjeta).toHaveCount(0); // se cierra al decidir
   }
   await expect(listo).toBeEnabled();
-  marca("módulos colocados");
   // Mundo compartido (E5 a E7): se marca el canvas de E5 y tiene que ser el mismo nodo en la base y la tormenta.
   await expect(page.locator("canvas")).toHaveCount(1);
   await page.locator("canvas").evaluate((c) => c.setAttribute("data-prueba", "mundo-e5"));
@@ -181,7 +174,6 @@ test("ruta dorada: de la órbita al resumen, en inglés", async ({ page }) => {
   await page.getByRole("button", { name: "Close", exact: true }).click();
   await expect(page.getByRole("heading", { name: "Actions" })).toHaveCount(0);
 
-  marca("base: Map y Crew recorridos");
   // Paso 5: llega la tormenta real del 20 may 2024, con la escena en pausa (E7, panel "Choose your expert").
   const tormenta = page.getByRole("heading", { name: "Choose your expert" });
   await avanzarHasta(page, () => tormenta.isVisible());
@@ -212,7 +204,6 @@ test("ruta dorada: de la órbita al resumen, en inglés", async ({ page }) => {
   await expect(page.getByRole("heading", { name: "Decision recorded" })).toBeVisible();
   await expect(page.getByText("Action confirmed")).toBeVisible();
   await page.getByRole("button", { name: "Return to exploration" }).click();
-  marca("tormenta decidida");
   // De vuelta en la base, el mismo canvas: la escena no se volvió a montar.
   await expect(canvasE5).toHaveCount(1);
   await expect(page.locator("canvas")).toHaveCount(1);
@@ -229,7 +220,6 @@ test("ruta dorada: de la órbita al resumen, en inglés", async ({ page }) => {
   await expect(page.getByRole("heading", { name: "Decision recorded" })).toBeVisible();
   await expect(page.getByText("Action confirmed")).toBeVisible();
   await page.getByRole("button", { name: "Return to exploration" }).click();
-  marca("telemetría enviada");
   await crew.click();
   await expect(page.getByText(/Earth's answer arrives in \d+ turns/)).toBeVisible();
 
@@ -244,7 +234,6 @@ test("ruta dorada: de la órbita al resumen, en inglés", async ({ page }) => {
   }
 
   // Paso 8: cadena de causas y tarjeta de ciencia.
-  marca("antes del final");
   const fin = page.getByRole("heading", { name: /Mission complete!|The base could not hold/ });
   await avanzarHasta(page, () => fin.isVisible(), 120);
   await expect(page.getByRole("heading", { name: "What happened and why" })).toBeVisible();
