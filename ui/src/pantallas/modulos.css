@@ -146,3 +146,29 @@
 @media (orientation: portrait) and (max-width: 700px) {
   .modulos-e5 { pointer-events: auto; }
 }
+
+/* Celular vertical (problema 9): el mundo se ve en el medio. Arriba, título y progreso; las fichas en una
+   fila que se desliza; abajo, el panel como hoja de hasta ~45 % del alto con "Place" siempre a la vista. */
+@media (orientation: portrait) and (max-width: 700px) {
+  .modulos-e5 { display: flex; flex-direction: column; gap: var(--esp-2); overflow: hidden; pointer-events: none;
+    padding-block-start: calc(max(var(--esp-3), env(safe-area-inset-top)) + var(--hud-reserva, 0px)); }
+  .modulos-izq { display: contents; }
+  .modulos-cabeza { padding: var(--esp-2) var(--esp-4); gap: var(--esp-1); }
+  .modulos-cabeza h2 { font-size: var(--tipo-tam-subtitulo); }
+  .modulos-cabeza > p:not(.modulos-progreso) { display: none; }
+  .modulos-lista { display: flex; flex-wrap: nowrap; overflow-x: auto; overscroll-behavior-x: contain;
+    scroll-snap-type: x proximity; padding-block: 3px; pointer-events: auto;
+    /* Desvanecido a la derecha: avisa que hay más fichas al deslizar. */
+    mask-image: linear-gradient(to right, #000 82%, transparent); padding-inline-end: 15%; }
+  .modulos-lista > li { flex: 0 0 auto; scroll-snap-align: start; }
+  .modulos-ficha-cara { min-block-size: 48px; padding: var(--esp-2) var(--esp-3); white-space: nowrap; }
+  .modulos-panel { order: 10; margin-block-start: auto; position: static; }
+  .modulos-panel-cara { display: flex; flex-direction: column; overflow: hidden; max-block-size: 45dvh; }
+  .modulos-panel-cuerpo { min-block-size: 0; overflow-y: auto; overscroll-behavior: contain; display: grid; gap: var(--esp-2); }
+  .modulos-acciones { flex: none; flex-wrap: nowrap; }
+  .modulos-panel-cab .retrato-marco, .modulos-panel-cab .retrato-compacto .retrato-marco { width: 48px; height: 48px; }
+  .modulos-panel-cab .retrato-marco svg { inline-size: 44px; block-size: 44px; }
+  .modulos-panel-cab .retrato-nombre { display: none; }
+  .modulos-panel-cab h3 { font-size: var(--tipo-tam-subtitulo); }
+  .modulos-base { order: 11; }
+}
