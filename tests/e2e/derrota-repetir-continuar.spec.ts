@@ -11,6 +11,14 @@ test.beforeEach(async ({ page }) => arrancarEnCalidadBaja(page));
 
 const TURNO_MS = 4000;
 
+/** E1: la tarjeta del módulo nace al preguntar a la Ingeniera; se elige el primer módulo libre y se coloca. */
+async function colocarModulo(page: Page) {
+  await page.getByRole("button", { name: "Ask the Engineer" }).click();
+  await page.locator('[role="dialog"].tc ul button:not([disabled])').first().click();
+  await page.getByRole("button", { name: "Place", exact: true }).click();
+  await expect(page.locator('[role="dialog"].tc')).toHaveCount(0);
+}
+
 /** De la portada a la base viva: primer sitio y los dos primeros módulos. */
 async function llegarALaBase(page: Page) {
   await page.getByRole("button", { name: "Start mission" }).click();
@@ -18,9 +26,8 @@ async function llegarALaBase(page: Page) {
   await page.getByRole("button", { name: "Skip", exact: true }).click();
   await page.getByRole("button", { name: "Continue" }).click();
   await page.getByRole("button", { name: "Land here" }).first().click();
-  const colocar = page.getByRole("button", { name: "Place", exact: true });
-  await colocar.first().click();
-  await colocar.first().click();
+  await colocarModulo(page);
+  await colocarModulo(page);
   await page.getByRole("button", { name: "Base ready. Start the clock!" }).click();
   await expect(page.getByRole("button", { name: "Crew", exact: true })).toBeVisible();
 }
@@ -82,8 +89,8 @@ test("sin enviar la telemetría la base se pierde, y \"Play again\" empieza una 
   await page.getByRole("button", { name: "Land here" }).first().click();
   await expect(page.getByText("Placed: 0 of 2")).toBeVisible();
   await expect(page.getByRole("button", { name: "Base ready. Start the clock!" })).toBeDisabled();
-  await page.getByRole("button", { name: "Place", exact: true }).first().click();
-  await page.getByRole("button", { name: "Place", exact: true }).first().click();
+  await colocarModulo(page);
+  await colocarModulo(page);
   await page.getByRole("button", { name: "Base ready. Start the clock!" }).click();
   await abrirTripulacion(page);
   expect(await energia(page)).toBe(energiaInicial);
