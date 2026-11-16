@@ -29,8 +29,12 @@ Fable integra y audita; un solo escritor por archivo; máximo dos Opus a la vez)
   la mitad superior es cielo: la cámara podría inclinarse más hacia abajo (menor).
 - Las ramas `rescate/b-mundo` y `rescate/f-fidelidad` quedan integradas; `checkpoint/1-f-wip` NO se integró.
 
-Para seguir: validación conjunta de 1-8 y 13 con las capturas `despues-abf`; segundo lote de A (9, 10, 11);
-decidir el destino de la publicación (PR hacia `develop`).
+- `[V]` Segundo lote de A: `0a3db1a` (11, sitio apaisado en dos columnas), `448d2ad` (10, plan de tormenta
+  apaisado en dos columnas, Confirm después de los costos), `5a15407` (9, E5 vertical con fichas en fila y hoja).
+  Capturas en `ui/capturas/rescate/despues-a2` (844x390 y 390x844). Tras cada uno: vitest 897 ok, e2e 5/5, build ok.
+
+Para seguir: validación conjunta de 1-11 y 13 con `despues-abf` y `despues-a2`; cámara de 390x844 algo
+alta (mucho cielo); decidir el destino de la publicación (PR hacia `develop`).
 
 ## Problemas conocidos (siguen ABIERTOS hasta arreglarlos y validarlos en el juego real)
 
@@ -47,9 +51,9 @@ el par antes/después mirado junto a su lámina en 1440x900, 1024x683, 844x390 y
 | 6 | El módulo escudo es una puerta de refugio en una roca; no se lee como escudo | ABIERTO (lote F en curso) | `antes/escena-recorte-escudo.png` |
 | 7 | La tripulación está quieta; Iris no acompaña | ABIERTO (B) | mismas capturas |
 | 8 | Tres escenas 3D distintas (módulos, base, tormenta): cada cambio de fase reiniciaba el mundo | ABIERTO, a la espera de la validación conjunta. Integrado: un solo `MundoBase`; la prueba e2e comprueba que el canvas es el mismo nodo `[V]` | `despues-a/registro.json` |
-| 9 | E5 en celular vertical: las tarjetas tapan casi todo el mundo | ABIERTO, sin asignar (segundo lote de A) | `despues-a/e5-modulos-390x844.png` |
-| 10 | E7 en celular apaisado: para llegar a `Confirm` hay que desplazar dentro del panel | ABIERTO, sin asignar (segundo lote de A) | `despues-a/e7-plan-844x390.png` |
-| 11 | E4 en 844x390: los botones `Land here` quedan fuera de pantalla (dicho por A, `[NV]`) | ABIERTO, sin asignar | `despues-a/e4-sitio-844x390.png` |
+| 9 | E5 en celular vertical: las tarjetas tapan casi todo el mundo | Arreglado (`5a15407`), a la espera de validación conjunta | `despues-a/e5-modulos-390x844.png` |
+| 10 | E7 en celular apaisado: para llegar a `Confirm` hay que desplazar dentro del panel | Arreglado (`448d2ad`), a la espera de validación conjunta | `despues-a/e7-plan-844x390.png` |
+| 11 | E4 en 844x390: los botones `Land here` quedan fuera de pantalla (dicho por A, `[NV]`) | Confirmado y arreglado (`0a3db1a`), a la espera de validación conjunta | `despues-a/e4-sitio-844x390.png` |
 | 12 | Motor: un recurso en 0 gana a la telemetría que llega en el mismo turno (`engine/src/acciones.ts:330`) | ABIERTO, decisión de diseño, no se tocó | informe de simulación (Sonnet) |
 | 13 | El módulo antena queda fuera del encuadre fijo: su forma no se ha revisado | ABIERTO, depende de la cámara de B | — |
 
