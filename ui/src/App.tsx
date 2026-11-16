@@ -16,6 +16,7 @@ import { Carga } from "./componentes/Carga.js";
 import { Llegada } from "./componentes/Llegada.js";
 import { Creditos } from "./componentes/Creditos.js";
 import { SelectorMisiones } from "./componentes/SelectorMisiones.js";
+import { GuiaMision } from "./componentes/GuiaMision.js";
 import { Transicion } from "./componentes/Transicion.js";
 import { MundoBase } from "./pantallas/MundoBase.js";
 import { MEMORIA_INICIAL, type MemoriaConversacion, type TemaPregunta } from "@solar-shield/agents";
@@ -185,6 +186,8 @@ function Pantalla({ idioma, setIdioma, sonido, setSonido, grafica }: {
                   onAccion={accion} onReanudar={() => enviar({ tipo: "pausa", pausado: false })} />
               )}
             </Transicion>
+            {/* EXPERIMENTAL: guía de pasos de la misión, a la izquierda. */}
+            {!menu && <GuiaMision fase={j.fase as "modulos" | "base" | "tormenta"} estado={j.estado} decidido={j.registro !== null} />}
           </MundoBase>
         ) : (
           <Transicion clave={j.fase === "inicio" ? inicio : j.fase}>
