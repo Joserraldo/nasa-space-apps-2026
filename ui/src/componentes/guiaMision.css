@@ -1,0 +1,34 @@
+/* tarjeta guía de la misión, a la izquierda del mundo 3D. */
+.guia {
+  position: fixed; z-index: 6; inset-inline-start: max(var(--esp-3), env(safe-area-inset-left)); inset-block-start: 160px;
+  inline-size: 240px; box-sizing: border-box; padding: var(--esp-3);
+  display: grid; gap: var(--esp-2); align-content: start; block-size: auto; max-block-size: calc(100dvh - 260px); overflow-y: auto;
+  background: color-mix(in srgb, var(--color-marfil) 94%, transparent);
+  color: var(--color-indigo-texto);
+  border: 2px solid color-mix(in srgb, var(--color-ciruela) 22%, var(--color-marfil));
+  clip-path: polygon(10px 0, calc(100% - 10px) 0, 100% 10px, 100% calc(100% - 10px), calc(100% - 10px) 100%, 10px 100%, 0 calc(100% - 10px), 0 10px);
+  font-size: 15px; line-height: 1.3; pointer-events: auto;
+}
+.guia p { margin: 0; }
+.guia > * { margin: 0; min-block-size: 0; }
+.guia-mision { font-size: 13px; font-weight: var(--tipo-peso-etiqueta); opacity: .8; }
+.guia-paso { display: grid; gap: 2px; }
+.guia-num { font-size: 13px; font-weight: var(--tipo-peso-etiqueta); color: var(--color-ciruela); text-transform: uppercase; letter-spacing: .04em; }
+.guia-paso strong { font-size: 17px; }
+.guia-lista { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; }
+.guia-lista li { display: grid; grid-template-columns: 22px 1fr; align-items: center; gap: var(--esp-2); }
+.guia-marca { inline-size: 20px; block-size: 20px; display: grid; place-items: center; border-radius: 50%; font-size: 12px; font-weight: var(--tipo-peso-titulo); background: var(--color-deshabilitado); }
+.guia-lista [data-estado="hecho"] { opacity: .6; }
+.guia-lista [data-estado="hecho"] .guia-marca { background: var(--color-marfil); box-shadow: inset 0 0 0 2px var(--color-teal); }
+.guia-lista [data-estado="ahora"] { font-weight: var(--tipo-peso-titulo); }
+.guia-lista [data-estado="ahora"] .guia-marca { background: var(--color-ciruela); color: var(--color-marfil); }
+.guia-boton {
+  justify-self: start; border: 0; padding: 4px 0; background: none; color: var(--color-ciruela);
+  font: inherit; font-size: 14px; font-weight: var(--tipo-peso-etiqueta); text-decoration: underline; cursor: pointer;
+}
+.guia-boton:focus-visible { outline: 3px solid var(--color-cian); outline-offset: 2px; }
+/* Celular: más chica y sin la lista larga, para no tapar el mundo. */
+@media (max-width: 760px), (max-height: 500px) {
+  .guia { inline-size: 180px; inset-block-start: auto; inset-block-end: 90px; font-size: 13px; }
+  .guia-paso strong { font-size: 14px; }
+}

@@ -399,5 +399,10 @@
   "ui.misiones.lugar.espacio": "Espacio profundo",
   "ui.misiones.ganada": "¡Completada!",
   "ui.misiones.jugar": "Jugar esta misión",
-  "ui.misiones.volver": "Volver"
+  "ui.misiones.volver": "Volver",
+  "ui.guia.titulo": "Guía de la misión",
+  "ui.guia.paso": "Paso {n} de {total}",
+  "ui.guia.ver": "Ver todos los pasos",
+  "ui.guia.ocultar": "Ocultar pasos",
+  "ui.guia.hecho": "hecho"
 }
