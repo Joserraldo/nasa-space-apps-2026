@@ -17,6 +17,9 @@ import { Llegada } from "./componentes/Llegada.js";
 import { Creditos } from "./componentes/Creditos.js";
 import { SelectorMisiones } from "./componentes/SelectorMisiones.js";
 import { GuiaMision } from "./componentes/GuiaMision.js";
+import { RadioTripulacion } from "./componentes/RadioTripulacion.js";
+import { avisosDeInicio, avisosDeRadio, recortarCola } from "./juego/radio.js";
+import { encolar, type Dialogo } from "@solar-shield/agents";
 import { Transicion } from "./componentes/Transicion.js";
 import { MundoBase } from "./pantallas/MundoBase.js";
 import { MEMORIA_INICIAL, type MemoriaConversacion, type TemaPregunta } from "@solar-shield/agents";
@@ -150,6 +153,27 @@ function Pantalla({ idioma, setIdioma, sonido, setSonido, grafica }: {
 
   useEffect(() => { document.documentElement.lang = idioma; }, [idioma]);
 
+  // canal de radio. Cada cambio de estado del motor dentro del mundo puede traer avisos
+  // (juego/radio.ts); al entrar a la base por primera vez, la bienvenida de la misión.
+  const [radio, setRadio] = useState<readonly Dialogo[]>([]);
+  const previoRadio = useRef<{ estado: typeof j.estado; fase: typeof j.fase } | null>(null);
+  useEffect(() => {
+    const previo = previoRadio.current;
+    previoRadio.current = { estado: j.estado, fase: j.fase };
+    const enJuego = (f: typeof j.fase) => f === "modulos" || f === "base" || f === "tormenta";
+    if (!enJuego(j.fase)) { if (j.fase !== "final") setRadio([]); return; }
+    if (!previo || !enJuego(previo.fase)) {
+      if (j.fase === "modulos" && j.colocados.length === 0) setRadio(avisosDeInicio(mision));
+      return;
+    }
+    if (previo.estado === j.estado) return;
+    const nuevos = avisosDeRadio(previo.estado, j.estado, mision);
+    if (nuevos.length) setRadio((c) => recortarCola(encolar(c, nuevos)));
+  }, [j.estado, j.fase]);
+  // La radio no toca el reloj: la base ya pausa sola ante lo importante (novedades del motor).
+  const verRadio = enMundo && j.fase !== "tormenta" && entrada === null && !menu;
+  const cerrarRadio = useCallback(() => setRadio((c) => c.slice(1)), []);
+
   const accion = (a: Action) => { tocar("confirmar", sonido); enviar({ tipo: "accion", accion: a }); };
   const continuar = () => { if (guardada) { tocar("confirmar", sonido); setProgreso({ conversado: true, objetivo: true }); enviar({ tipo: "restaurar", juego: guardada }); } };
 
@@ -187,6 +211,7 @@ function Pantalla({ idioma, setIdioma, sonido, setSonido, grafica }: {
               )}
             </Transicion>
             {/* guía de pasos de la misión, a la izquierda. */}
+            {verRadio && <RadioTripulacion cola={radio} onCerrar={cerrarRadio} onAccion={accion} />}
             {!menu && <GuiaMision fase={j.fase as "modulos" | "base" | "tormenta"} estado={j.estado} decidido={j.registro !== null} />}
           </MundoBase>
         ) : (
