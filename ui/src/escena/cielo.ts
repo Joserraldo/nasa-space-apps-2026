@@ -208,8 +208,8 @@ export interface Cielo {
   sol: THREE.DirectionalLight;
   hemisferica: THREE.HemisphereLight;
   niebla: THREE.Fog;
-  /** Sin tone mapping (DISEÑO §3.4), exposición 1 y sombras suaves. */
-  aplicarRenderer(renderer: RendererCielo): void;
+  /** Tone mapping AgX en media/alta (o sin tone mapping en baja sin GPU) y sombras suaves. */
+  aplicarRenderer(renderer: RendererCielo, conTono?: boolean): void;
   /** Quita todo de la escena y libera el domo. */
   quitar(): void;
 }
@@ -294,9 +294,9 @@ export function crearCielo(escena: THREE.Scene, ambiente: Ambiente = "dia", cali
     sol,
     hemisferica,
     niebla,
-    aplicarRenderer(renderer) {
-      renderer.toneMapping = THREE.AgXToneMapping;
-      renderer.toneMappingExposure = LUZ.exposicion;
+    aplicarRenderer(renderer, conTono = true) {
+      renderer.toneMapping = conTono ? THREE.AgXToneMapping : THREE.NoToneMapping;
+      renderer.toneMappingExposure = conTono ? LUZ.exposicion : 1;
       renderer.shadowMap.enabled = true;
       renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     },

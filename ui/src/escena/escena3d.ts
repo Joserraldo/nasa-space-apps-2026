@@ -13,7 +13,7 @@ import type { CalidadGrafica } from "../juego/ajustes";
 import type { EventoFeedback } from "../juego/eventos";
 import { CLARO, MALLA_JEZERO, ROCAS_PRIMER_PLANO, armarEscena, huellasRocas, radioRoca, rejillaJezero, type EscenaArmada } from "./armado";
 import { AJUSTE_CALIDAD, MAS_BAJA } from "./calidad";
-import type { Cielo } from "./cielo";
+import { LUZ, type Cielo } from "./cielo";
 import type { ActorId, Interactivo, PedidoEscena } from "./frontera";
 import { irisGuiaAlObjetivo } from "../juego/pedidoEscena";
 import { crearMateriales, type Materiales } from "./materiales";
@@ -545,7 +545,7 @@ export function crearEscena3D(canvas: HTMLCanvasElement, opciones: OpcionesEscen
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: AJUSTE_CALIDAD[calidad].antialias, powerPreference: "high-performance" });
   const materiales: Materiales = crearMateriales();
   const armada: EscenaArmada = armarEscena(materiales, null, null, calidad === "alta" ? "alta" : "baja");
-  armada.cielo.aplicarRenderer(renderer);
+  armada.cielo.aplicarRenderer(renderer, calidad !== "baja");
   const { tripulacion } = armada;
 
   // --- Movimiento: el niño, Iris y los sólidos reales ---
@@ -668,12 +668,21 @@ export function crearEscena3D(canvas: HTMLCanvasElement, opciones: OpcionesEscen
   function aplicarCalidad(nivel: CalidadGrafica): void {
     const a = AJUSTE_CALIDAD[nivel];
     renderer.setPixelRatio(Math.min(globalThis.devicePixelRatio || 1, a.dpr));
+    const tono = nivel === "baja" ? THREE.NoToneMapping : THREE.AgXToneMapping;
+    const exp = nivel === "baja" ? 1 : LUZ.exposicion;
+    let recompilar = false;
+    if (renderer.toneMapping !== tono || renderer.toneMappingExposure !== exp) {
+      renderer.toneMapping = tono;
+      renderer.toneMappingExposure = exp;
+      recompilar = true;
+    }
     const sol = armada.cielo.sol;
     const conSombra = a.sombra !== null;
     if (renderer.shadowMap.enabled !== conSombra) {
       renderer.shadowMap.enabled = conSombra;
-      for (const m of Object.values(materiales)) m.needsUpdate = true;
+      recompilar = true;
     }
+    if (recompilar) for (const m of Object.values(materiales)) m.needsUpdate = true;
     sol.castShadow = conSombra;
     if (a.sombra !== null && sol.shadow.mapSize.x !== a.sombra) {
       sol.shadow.mapSize.set(a.sombra, a.sombra);
@@ -1084,6 +1093,7 @@ export function crearEscena3D(canvas: HTMLCanvasElement, opciones: OpcionesEscen
     },
     fijarCalidad(nivel) {
       calidad = nivel;
+      ctx.calidad = nivel;
       medidor?.reiniciar();
       aplicarCalidad(nivel);
     },

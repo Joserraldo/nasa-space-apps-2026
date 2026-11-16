@@ -226,14 +226,19 @@ export function crearSistema(): SistemaEscena {
       despliegue += (metaDespliegue - despliegue) * Math.min(1, paso * 3.2);
 
       const mostrarDomo = despliegue > 0.02;
-      domo.visible = mostrarDomo;
+      const baja = ctx.calidad === "baja";
+      // En calidad baja (sin GPU / SwiftShader CPU en CI) se omiten el ShaderMaterial de pantalla
+      // completa y la simulación por CPU de 220 rayos; quedan la red geodésica y los aros livianos.
+      domo.visible = mostrarDomo && !baja;
       redGeodesica.visible = mostrarDomo;
       aroBase.visible = mostrarDomo;
 
       if (mostrarDomo) {
-        shieldMat.uniforms.uDeploy!.value = despliegue;
-        shieldMat.uniforms.uHit!.value = uHitActual;
-        shieldMat.uniforms.uT!.value = t;
+        if (!baja) {
+          shieldMat.uniforms.uDeploy!.value = despliegue;
+          shieldMat.uniforms.uHit!.value = uHitActual;
+          shieldMat.uniforms.uT!.value = t;
+        }
         redMat.opacity = (hayTormenta ? 0.42 : 0.24) * despliegue;
         aroMat.opacity = (0.45 + 0.25 * uHitActual) * despliegue;
       }
@@ -248,7 +253,7 @@ export function crearSistema(): SistemaEscena {
       }
 
       // Haces de tormenta solar: SOLO durante tormenta anunciada o activa en la misión (nunca nieve en calma)
-      if (!hayTormenta || ctx.reducido) {
+      if (!hayTormenta || ctx.reducido || baja) {
         haces.visible = false;
         uHitActual *= 0.85;
         return;
