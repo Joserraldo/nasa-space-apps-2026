@@ -1,3 +1,4 @@
+import { validarClasificacion } from "./conversacion.js";
 import { CLASSIFIER_FALLBACK, ClassifierOutputSchema, type ClassifierOutput } from "@solar-shield/contracts";
 
 /** Capa 2 del PLAN §2.3: el modelo solo clasifica a JSON. Nunca habla ni inventa cifras. Solo usa fetch (Workers y Node). */
@@ -90,10 +91,10 @@ export async function clasificarConModelo(texto: string, o: OpcionesClasificador
       r = await llamar({ type: "json_object" });
     }
     if (r.contenido === null) return fallo(`http ${r.status}`, usoJsonObject, r.tokens);
-    const limpio = r.contenido.replace(/^\s*```(?:json)?\s*|\s*```\s*$/g, "").trim();
-    const p = ClassifierOutputSchema.safeParse({ ...(JSON.parse(limpio) as object), version: "0", fuente: "modelo" });
+    const limpio = r.contenido.trim();
+    const p = ClassifierOutputSchema.strict().safeParse({ ...(JSON.parse(limpio) as object), version: "0", fuente: "modelo" });
     if (!p.success) return fallo("schema invalido", usoJsonObject, r.tokens);
-    return { salida: p.data, valido: true, usoJsonObject, tokens: r.tokens };
+    return { salida: validarClasificacion(p.data), valido: true, usoJsonObject, tokens: r.tokens };
   } catch (e) {
     return fallo(e instanceof Error && e.name === "AbortError" ? "timeout" : "error de red o JSON roto", usoJsonObject);
   }

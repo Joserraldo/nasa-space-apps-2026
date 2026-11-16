@@ -41,7 +41,9 @@ export async function manejar(req: Request, env: Env, f: typeof fetch = fetch): 
   if (req.method !== "POST") return json({ error: "metodo" }, 405);
   let texto: unknown;
   try {
-    texto = ((await req.json()) as { texto?: unknown }).texto;
+    const cuerpo: unknown = await req.json();
+    if (!cuerpo || typeof cuerpo !== "object" || Array.isArray(cuerpo) || Object.keys(cuerpo).some(k => k !== "texto")) return json({ error: "json" }, 400);
+    texto = (cuerpo as { texto?: unknown }).texto;
   } catch {
     return json({ error: "json" }, 400);
   }

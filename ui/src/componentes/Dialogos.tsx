@@ -1,11 +1,16 @@
 import type { Dialogo } from "@solar-shield/agents";
 import type { Action } from "@solar-shield/contracts";
 import { useT } from "../i18n.js";
+import { Icono } from "./base/Iconos.js";
+import { PERSONAS, Retrato, type Persona } from "./base/Retrato.js";
 import { TarjetaFuente } from "./TarjetaFuente.js";
 
-const SIMBOLO: Record<string, string> = {
-  ingeniera: "⚡", doctora: "✚", meteorologa: "☀", matematico: "=", control_mision: "📡", ia_base: "◉",
-};
+/** Quien habla, con su retrato B; quien no es de la tripulación en escena (control de misión) lleva un icono. */
+function RetratoDe({ experto, danada }: { experto: string; danada: boolean }) {
+  return (PERSONAS as readonly string[]).includes(experto)
+    ? <Retrato persona={experto as Persona} expresion="habla_abierta" danada={danada} tam={48} />
+    : <Icono nombre="tripulacion" tam={32} />;
+}
 
 export function NombreExperto({ id }: { id: string }) {
   const { t } = useT();
@@ -17,7 +22,7 @@ export function Burbuja({ d, irisDanada, onAccion }: { d: Dialogo; irisDanada?: 
   const { t } = useT();
   return (
     <div className="tripulante">
-      <div className={`retrato ${d.experto} ${irisDanada && d.experto === "ia_base" ? "danada" : ""}`} aria-hidden="true">{SIMBOLO[d.experto]}</div>
+      <div className={`retrato ${d.experto} ${irisDanada && d.experto === "ia_base" ? "danada" : ""}`} aria-hidden="true"><RetratoDe experto={d.experto} danada={!!irisDanada && d.experto === "ia_base"} /></div>
       <div className={`burbuja ${d.prioridad === "alerta" ? "alerta" : ""}`}>
         <div className="nombre"><NombreExperto id={d.experto} /></div>
         {d.lineas.map((l, i) => <p key={i}>{t(l.clave, l.vars)}</p>)}
