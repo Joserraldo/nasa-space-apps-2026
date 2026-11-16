@@ -29,7 +29,7 @@ const result = await page.evaluate(async (repo) => {
 }, repo);
 await mkdir('agents/evals/capturas',{recursive:true});
 await page.screenshot({path:'agents/evals/capturas/b1-globos-390.png',fullPage:true});
-await writeFile('agents/evals/globos-medidos.json',JSON.stringify(result,null,2)+'\n');
+await writeFile('agents/evals/globos-medidos.json',JSON.stringify({viewport:{width:390,height:844},measured:result.length,maxRows:Math.max(...result.map(r=>r.rows)),failures:result.filter(r=>r.rows>2)},null,2)+'\n');
 await browser.close();
 const failures=result.filter(r=>r.rows>2);
 console.log(JSON.stringify({measured:result.length,failures},null,2));
