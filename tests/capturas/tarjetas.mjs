@@ -73,7 +73,9 @@ for (const t of TAMANOS) {
   await page.goto(URL_VISTA);
   await page.waitForSelector('.tc[data-fase="abierta"]');
   fila.entrada = await medir(page);
-  await page.waitForTimeout(400);
+  // Medir con la entrada terminada: con la página cargando, 400 ms fijos no alcanzan y la caja sale corrida.
+  await page.waitForFunction(() => document.querySelector(".tc")?.getAnimations().every((a) => a.playState === "finished"));
+  await page.waitForTimeout(100);
   fila.abierta = await medir(page);
   await page.screenshot({ path: join(salida, `tarjeta-abierta-${etiqueta}.png`) });
 
