@@ -29,6 +29,7 @@ import { MODULOS_BASE, type ModuloBase } from "./activos/modulos";
 import { PRESUPUESTO, aplanarClaro, contarRender, type CuentaRender } from "./activos/terreno";
 import { huellasBase, huellasColisionExtra } from "./activos/baseExterior";
 import { huellasModulos } from "./activos/modulosArmados";
+import { microrrelieve } from "./activos/microrelieve";
 import { EntradaTactil, type DeltaCamaraTactil } from "./entradaTactil";
 import {
   TecladoMovimiento,
@@ -562,6 +563,7 @@ export function crearEscena3D(canvas: HTMLCanvasElement, opciones: OpcionesEscen
   const jugadorInicial = tripulacion.jugador.grupo.position;
   const irisInicial = tripulacion.iris.grupo.position;
   const mov = crearMovimiento(solidos, {
+    relieve: microrrelieve,
     inicio: { x: jugadorInicial.x, z: jugadorInicial.z },
     rumbo: tripulacion.jugador.grupo.rotation.y,
     iris: { x: irisInicial.x, z: irisInicial.z },
@@ -677,6 +679,7 @@ export function crearEscena3D(canvas: HTMLCanvasElement, opciones: OpcionesEscen
     const tono = toneMappingExterior(a.gradacion);
     const exp = a.gradacion ? LUZ.exposicion : 1;
     armada.cielo.usarNieblaAltura(a.nieblaAltura);
+    armada.usarSueloDetallado(a.sueloDetallado);
     if (conPost(nivel)) {
       post?.dispose();
       post = crearPostproceso(renderer, armada.escena, camara, a);
