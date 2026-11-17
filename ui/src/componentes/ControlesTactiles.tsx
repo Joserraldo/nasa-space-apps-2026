@@ -42,6 +42,9 @@ export interface ControlesTactilesProps {
   onCamara(): void;
 }
 
+/** E9: lo que hace el botón de salto al tocarlo. Pide el salto a la escena (A5); nunca cobra. */
+export const alSaltar = (entrada: EntradaTactil) => (): void => { entrada.saltar(); };
+
 export function ControlesTactiles({ entrada, accion, camara, onCamara }: ControlesTactilesProps) {
   const { t } = useT();
   const capa = useRef<HTMLDivElement>(null);
@@ -89,7 +92,7 @@ export function ControlesTactiles({ entrada, accion, camara, onCamara }: Control
         {/* E9: salto con la gravedad de Marte (A5). Solo mueve al niño, nunca cobra; en el aire o con algo
             abierto la escena no salta. Primero, como en el muestrario de F4. */}
         {entrada && (
-          <button type="button" className="ct-salto" aria-keyshortcuts="Space" aria-label={t("ui.comun.saltar")} onClick={() => entrada.saltar()}>
+          <button type="button" className="ct-salto" aria-keyshortcuts="Space" aria-label={t("ui.comun.saltar")} onClick={alSaltar(entrada)}>
             <span className="ct-cara"><Icono nombre="salto" tam={32} /></span>
           </button>
         )}

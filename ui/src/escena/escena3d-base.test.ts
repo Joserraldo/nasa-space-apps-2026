@@ -3,7 +3,7 @@ import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import * as THREE from "three";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { LUZ, PALETA_CIELO, crearCielo, type RendererCielo } from "./cielo";
+import { LILA_RELLENO, LUZ, PALETA_CIELO, REGOLITO_MEDIO, crearCielo, type RendererCielo } from "./cielo";
 import { SLOTS, TOKENS_TEMP, cacheGeometrias, crearMateriales, geometriaBase } from "./materiales";
 import { liberarCache, liberarEscena } from "./liberar";
 import {
@@ -49,12 +49,13 @@ afterEach(() => {
 });
 
 describe("materiales por slot", () => {
-  it("crea los 9 slots, todos con facetas planas y compartidos", () => {
+  it("crea los 9 slots compartidos, con facetas solo donde corresponde", () => {
     const m = crearMateriales();
     expect(Object.keys(m).sort()).toEqual([...SLOTS].sort());
     expect(SLOTS).toHaveLength(9);
+    const facetados = new Set(["Rock", "Plant", "Hair", "Glass"]);
     for (const s of SLOTS) {
-      expect(m[s].flatShading, s).toBe(true);
+      expect(m[s].flatShading, s).toBe(facetados.has(s));
       expect(m[s].userData.compartido).toBe(true);
     }
   });
@@ -144,25 +145,25 @@ describe("cielo de Marte (Three)", () => {
     expect((cielo.domo.material as THREE.MeshBasicMaterial).fog).toBe(false);
   });
 
-  it("luz: direccional arriba a la izquierda, sombras 1024/512, hemisférica cielo=lila (sombras lilas) suelo=regolito", () => {
+  it("luz: direccional arriba a la izquierda, sombras 2048/1024, hemisférica cielo=lila (sombras lilas) suelo=regolito", () => {
     const alta = crearCielo(new THREE.Scene(), "dia", "alta");
     const baja = crearCielo(new THREE.Scene(), "dia", "baja");
     expect(alta.sol.position.x).toBeLessThan(0);
     expect(alta.sol.position.y).toBeGreaterThan(0);
     expect(alta.sol.castShadow).toBe(true);
-    expect(alta.sol.shadow.mapSize.x).toBe(1024);
-    expect(baja.sol.shadow.mapSize.x).toBe(512);
-    expect(alta.hemisferica.color.getHexString()).toBe(new THREE.Color(TOKENS_TEMP.lila).getHexString());
-    expect(alta.hemisferica.groundColor.getHexString()).toBe(new THREE.Color(TOKENS_TEMP["regolito-medio"]).getHexString());
+    expect(alta.sol.shadow.mapSize.x).toBe(2048);
+    expect(baja.sol.shadow.mapSize.x).toBe(1024);
+    expect(alta.hemisferica.color.getHexString()).toBe(new THREE.Color(LILA_RELLENO).getHexString());
+    expect(alta.hemisferica.groundColor.getHexString()).toBe(new THREE.Color(REGOLITO_MEDIO).getHexString());
   });
 
-  it("aplica sin tone mapping (DISEÑO §3.4) al renderer, y quitar() limpia la escena", () => {
+  it("aplica AgX tone mapping al renderer, y quitar() limpia la escena", () => {
     const escena = new THREE.Scene();
     const cielo = crearCielo(escena);
     const renderer = { toneMapping: THREE.NoToneMapping, toneMappingExposure: 1, shadowMap: { enabled: false, type: THREE.BasicShadowMap } } as unknown as RendererCielo;
     cielo.aplicarRenderer(renderer);
-    expect(renderer.toneMapping).toBe(THREE.NoToneMapping);
-    expect(renderer.toneMappingExposure).toBe(1);
+    expect(renderer.toneMapping).toBe(THREE.AgXToneMapping);
+    expect(renderer.toneMappingExposure).toBeCloseTo(1.05, 5);
     expect(renderer.shadowMap.enabled).toBe(true);
     cielo.quitar();
     expect(escena.children).toHaveLength(0);

@@ -3,13 +3,19 @@
  * Cajas de la portada en % del lienzo de referencia 1536 x 1024: logo 5,5,31,31 · menú 5,40,36,36.
  */
 
+/* Alto disponible: la ventana menos el aviso del pie (App.tsx lo mide y lo publica en --alto-barra). Todos los
+   presupuestos de alto de estas pantallas salen de acá, así el aviso no suma desplazamiento. */
+.portada, .intro, .carga { --alto-ventana: calc(100dvh - var(--alto-barra, 0px)); }
+
 /* ---------- Portada (inicio/01) ---------- */
 .portada {
   position: relative;
-  min-height: 100dvh;
+  min-height: var(--alto-ventana);
+  /* La nave sale por el borde derecho, como en la lámina: se recorta sin barra de desplazamiento. */
+  overflow: hidden;
   color: var(--color-marfil);
   /* Fondo índigo con estrellas discretas (sin degradados de moda: DISEÑO §8). El niño, la nave y los
-     planetas son la capa 3D que va detrás; aquí solo queda el color por si esa capa no carga. */
+     planetas son ilustraciones originales transparentes; este color las acompaña mientras cargan. */
   background-color: var(--color-espacio);
   background-image:
     radial-gradient(1.5px 1.5px at 22% 18%, color-mix(in srgb, var(--color-marfil) 70%, transparent) 50%, transparent 51%),
@@ -27,16 +33,43 @@
   pointer-events: none;
 }
 .portada > * { pointer-events: auto; }
-/* Respaldo 2D del fondo (cajas de DISEÑO §6 en % del lienzo): niño 49,18,31,57 · planeta 79,15,16,14 · asteroide 39,7,10,13. */
-.portada > .portada-fondo { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
-.portada-nino { position: absolute; left: 52%; top: 18%; width: 31%; animation: portada-flota 6s ease-in-out infinite; }
-.portada-nino :is(svg, .retrato-img) { width: 100%; height: auto; transform: rotate(-4deg); }
-.portada-planeta { position: absolute; left: 80%; top: 13%; width: 15%; height: auto; }
-.portada-asteroide { position: absolute; left: 40%; top: 8%; width: 6%; aspect-ratio: 1; background: var(--color-montana-lejana);
-  clip-path: polygon(30% 0, 75% 6%, 100% 40%, 88% 82%, 50% 100%, 12% 86%, 0 46%); animation: portada-deriva 8s ease-in-out infinite; }
-@keyframes portada-flota { 50% { transform: translateY(-6px) rotate(1deg); } }
-@keyframes portada-deriva { 50% { transform: translate(4px, 2px); } }
-@media (prefers-reduced-motion: reduce) { .portada-nino, .portada-asteroide { animation: none; } }
+/* Las dos capas de decorado (FondoPortada) van detrás del menú y del logo, que suben a su propia capa. */
+.portada > :is(.portada-fondo, .portada-grupo) { position: absolute; inset: 0; z-index: 0; pointer-events: none; }
+.portada > :not(.portada-fondo, .portada-grupo, .portada-prefs, .oculto-visual) { position: relative; z-index: 1; }
+.portada > .portada-prefs { z-index: 1; }
+.portada .ilu { position: absolute; height: auto; max-width: none; user-select: none; -webkit-user-drag: none; }
+
+/* Planeta y asteroides en % de la portada, medidos sobre la lámina a 1440 x 900:
+   asteroide 39,7,9 · roca 41,81,9 (anclada abajo para no cortarse en pantallas muy anchas) · planeta 79,14,15. */
+.portada-asteroide { left: 39%; top: 7%; width: 9%;
+  animation: ilu-entra 700ms var(--curva-entrada) both, ilu-gira 60s linear 700ms infinite; }
+.portada-roca { left: 41%; bottom: 5%; width: 9%;
+  animation: ilu-entra 700ms var(--curva-entrada) 120ms both, ilu-gira 90s linear 820ms infinite reverse; }
+.portada-planeta { left: 79%; top: 14%; width: 15%;
+  animation: ilu-entra 700ms var(--curva-entrada) 80ms both, ilu-planeta 11s ease-in-out 780ms infinite alternate; }
+
+/* Niño, cable y nave en un lienzo con la proporción de la lámina (778 x 751 a 1440 x 900, desde 50,15): escalan
+   juntos y el cable no se suelta en ninguna proporción de pantalla. Dentro del lienzo: niño 0,0,55.5 ·
+   nave 50,56.3,50. */
+.portada-lienzo { position: absolute; left: 50%; top: 15%; width: min(54vw, calc(var(--alto-ventana) * 0.86)); aspect-ratio: 778 / 751; }
+.portada-nave { left: 50%; top: 56.3%; width: 50%;
+  animation: ilu-entra 700ms var(--curva-entrada) 160ms both, ilu-nave 7s ease-in-out 860ms infinite alternate; }
+.portada-nino { left: 0; top: 0; width: 55.5%; transform-origin: 40% 60%;
+  animation: ilu-entra 700ms var(--curva-entrada) 240ms both, ilu-flota 6s ease-in-out 940ms infinite alternate; }
+.portada-cable { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible;
+  animation: ilu-aparece 600ms var(--curva-entrada) 600ms both; }
+.portada-cable path { fill: none; stroke: color-mix(in srgb, var(--color-lila) 70%, var(--color-marfil)); stroke-width: 3px; stroke-linecap: round; vector-effect: non-scaling-stroke; }
+
+/* Movimiento (impeccable animate, registro de marca; review-animations): una sola entrada escalonada
+   (700 ms, desaceleración) y después un flotar lento y continuo. Solo translate, rotate, scale y opacity:
+   la entrada usa scale y opacity y el flotar translate y rotate, así no se pisan. */
+@keyframes ilu-entra { from { opacity: 0; scale: .92; } }
+@keyframes ilu-aparece { from { opacity: 0; } }
+@keyframes ilu-flota { from { translate: 0 0; rotate: -2deg; } to { translate: 0 -12px; rotate: 1.5deg; } }
+@keyframes ilu-nave { to { translate: 0 -6px; } }
+@keyframes ilu-planeta { from { translate: 0 0; rotate: -3deg; } to { translate: 0 -8px; rotate: 3deg; } }
+@keyframes ilu-gira { to { rotate: 360deg; } }
+@media (prefers-reduced-motion: reduce) { .portada .ilu, .portada-cable { animation: none; } }
 .portada-marca { grid-column: 1; grid-row: 1 / 3; display: flex; flex-direction: column; align-items: flex-start; gap: var(--esp-2); max-width: 31vw; }
 .portada-logo { width: 100%; max-width: 460px; height: auto; }
 .portada-subtitulo {
@@ -58,39 +91,79 @@
 /* El motivo de "Continue" va sobre el fondo índigo: texto claro. */
 .portada .fb-motivo { color: var(--color-lila); max-width: none; }
 
-@media (max-width: 899px), (max-height: 500px) {
-  .portada { grid-template-columns: 1fr; padding: 64px var(--esp-4) var(--esp-4); row-gap: var(--esp-3); }
-  .portada-marca { grid-row: auto; max-width: min(70vw, 360px); }
-  .portada-menu { grid-row: auto; margin-top: 0; gap: var(--esp-3); max-width: 420px; }
-  .portada-creditos { grid-row: auto; margin-top: 0; }
+/* Ventana apaisada angosta (600 a 899 px): misma composición que la lámina, con botones medianos. */
+@media (min-aspect-ratio: 1/1) and (min-height: 501px) and (max-width: 899px) {
   .portada .fb-menu { --fb-alto: 56px; font-size: var(--tipo-tam-subtitulo); }
-  /* Celular: el niño queda detrás, a la derecha y más chico, sin tapar el menú. */
-  .portada-nino { left: auto; right: -6%; top: auto; bottom: 4%; width: 46%; opacity: 0.9; }
-  .portada-asteroide { display: none; }
 }
-/* Celular vertical: las preferencias bajan de línea dentro de la pantalla, alineadas a la derecha. */
-@media (max-width: 599px) {
+/* Pantalla ancha y baja (laptop chica, hasta 700 px de alto): logo y botones más chicos para que el menú entre. */
+@media (min-aspect-ratio: 1/1) and (min-height: 501px) and (max-height: 700px) {
+  .portada-marca { max-width: min(31vw, calc(var(--alto-ventana) * 0.46)); }
+  .portada-menu { gap: var(--esp-3); }
+  .portada .fb-menu { --fb-alto: 56px; font-size: var(--tipo-tam-subtitulo); }
+}
+/* Pantalla vertical (celular y tableta parados): logo, menú y créditos arriba en una columna. El niño, el
+   cable y la nave ocupan la fila que queda debajo, abajo a la derecha y con la nave saliendo por el borde;
+   el lienzo se mide contra esa fila (consulta de contenedor) y, si queda muy chica, no se dibuja. */
+@media (max-aspect-ratio: 1/1) and (min-height: 501px) {
+  .portada { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto auto auto minmax(0, 1fr); column-gap: 0; padding: 64px var(--esp-4) var(--esp-4); row-gap: var(--esp-3); }
+  .portada-marca { grid-row: 1; max-width: none; }
+  .portada-logo { width: min(70vw, 360px); }
+  .portada-menu { grid-row: 2; margin-top: 0; gap: var(--esp-3); max-width: 420px; }
+  .portada-creditos { grid-row: 3; margin-top: 0; }
+  .portada .fb-menu { --fb-alto: 56px; font-size: var(--tipo-tam-subtitulo); }
+  .portada > .portada-grupo { position: relative; inset: auto; grid-column: 1; grid-row: 4; container-type: size; }
+  .portada-lienzo { left: auto; top: auto; right: -12%; bottom: 0; width: auto; height: min(100cqh, 92cqw); }
+  .portada-planeta { left: auto; right: 4%; top: 14%; width: min(22%, 170px); }
+  .portada-asteroide, .portada-roca { display: none; }
+}
+@container (max-height: 112px) { .portada-lienzo { display: none; } }
+/* Celular bajo (SE y parecidos): todo un poco más compacto para que el niño tenga lugar debajo del menú. */
+@media (max-width: 599px) and (min-height: 501px) and (max-height: 790px) {
+  .portada { padding-top: 56px; row-gap: var(--esp-2); }
+  .portada-logo { width: min(52vw, 300px); }
+  .portada-menu { gap: var(--esp-2); }
+  .portada .fb-menu { --fb-alto: 46px; }
+}
+/* Celular (vertical y apaisado): preferencias compactas, alineadas a la derecha y sin pisar el logo. */
+@media (max-width: 599px), (max-height: 500px) {
   .portada-prefs { left: var(--esp-3); right: var(--esp-3); top: var(--esp-2); justify-content: flex-end; flex-wrap: wrap; gap: var(--esp-2); }
   .portada-prefs .fb { --fb-alto: 44px; --fb-punta: 12px; font-size: 16px; }
   .portada-prefs .fb-superficie { padding: 0 calc(var(--fb-punta) + var(--esp-2)); }
   .portada-sep { display: none; }
   .portada-subtitulo { font-size: var(--tipo-tam-cuerpo); }
 }
-/* Celular horizontal: logo y menú lado a lado para que quepa sin desplazar. */
-@media (max-height: 500px) and (min-width: 600px) {
-  .portada { grid-template-columns: minmax(0, 40%) minmax(0, 50%); padding-top: var(--esp-4); }
-  .portada-marca { grid-column: 1; grid-row: 1 / 3; max-width: 100%; }
-  .portada-menu { grid-column: 2; grid-row: 1 / 4; margin-top: 52px; }
-  .portada-creditos { grid-column: 1; grid-row: 3; }
-  .portada .fb-menu { --fb-alto: 48px; }
+/* Celular apaisado: logo; menú y créditos; y el niño, en tres columnas, sin desplazar. No hay alto para el
+   grupo completo: el niño va solo y entero (sin nave, cable ni planetas). */
+@media (max-height: 500px) {
+  .portada { grid-template-columns: minmax(0, 32%) minmax(0, 38%) minmax(0, 1fr); grid-template-rows: auto auto auto 1fr; column-gap: 3%; padding: var(--esp-4); }
+  .portada-marca { grid-column: 1; grid-row: 1 / 4; max-width: 100%; }
+  .portada-logo { width: 100%; }
+  .portada-menu { grid-column: 2; grid-row: 1 / 4; margin-top: 52px; gap: var(--esp-2); max-width: none; }
+  .portada-creditos { grid-column: 2; grid-row: 4; align-self: start; margin-top: var(--esp-2); }
+  .portada .fb-menu { --fb-alto: 48px; --fb-punta: 16px; font-size: var(--tipo-tam-cuerpo); }
+  .portada .fb-menu .fb-superficie { gap: var(--esp-3); padding-left: calc(var(--fb-punta) + var(--esp-3)); }
+  .portada .fb-menu .fb-texto { padding-left: var(--esp-3); }
   .portada-lema { font-size: var(--tipo-tam-cuerpo); }
+  .portada > .portada-grupo { position: relative; inset: auto; grid-column: 3; grid-row: 1 / -1; margin-top: 52px; container-type: size; }
+  .portada-lienzo { left: auto; top: auto; right: 0; bottom: 0; width: min(100cqw, 77cqh); aspect-ratio: 658 / 851; }
+  .portada-nino { width: 100%; }
+  .portada-nave, .portada-cable, .portada-planeta, .portada-asteroide, .portada-roca { display: none; }
+}
+/* Celular apaisado muy bajo (320 px): columnas y botones más justos y el lema sin sus líneas. */
+@media (max-height: 340px) {
+  .portada { grid-template-columns: minmax(0, 30%) minmax(0, 40%) minmax(0, 1fr); padding: var(--esp-3) var(--esp-4); }
+  .portada-menu, .portada > .portada-grupo { margin-top: 48px; }
+  .portada .fb-menu { --fb-alto: 44px; }
+  .portada-creditos .fb { --fb-alto: 44px; --fb-punta: 12px; font-size: 16px; }
+  .portada-creditos .fb-superficie { padding: 0 calc(var(--fb-punta) + var(--esp-2)); }
+  .portada-lema::before, .portada-lema::after { display: none; }
 }
 
 /* ---------- Intro (inicio/02) ----------
  * Cada viñeta es una escena dentro de la nave: paredes lila, ventana facetada con lo que se ve afuera,
  * personajes adelante. Etiqueta arriba a la izquierda, texto en franja abajo, Skip abajo a la derecha. */
-.intro { min-height: 100dvh; display: grid; place-items: center; padding: var(--esp-4); background: var(--color-espacio); }
-.intro-vineta { width: min(100%, 960px, calc((100dvh - 110px) * 1.5)); display: grid; gap: var(--esp-3); animation: intro-entra var(--dur-aparecer) var(--curva-entrada) both; }
+.intro { min-height: var(--alto-ventana); display: grid; place-items: center; padding: var(--esp-4); background: var(--color-espacio); }
+.intro-vineta { width: min(100%, 960px, calc((var(--alto-ventana) - 110px) * 1.5)); display: grid; gap: var(--esp-3); animation: intro-entra var(--dur-aparecer) var(--curva-entrada) both; }
 @keyframes intro-entra { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
 .intro-escena {
   position: relative; aspect-ratio: 3 / 2; overflow: hidden;
@@ -125,25 +198,37 @@
     radial-gradient(1.5px 1.5px at 44% 36%, var(--color-marfil) 50%, transparent 51%),
     radial-gradient(2px 2px at 88% 40%, var(--color-marfil) 50%, transparent 51%),
     radial-gradient(1px 1px at 30% 64%, var(--color-marfil) 50%, transparent 51%); }
-.intro-marte { position: absolute; left: -10%; right: -10%; bottom: -70%; height: 120%; border-radius: 50%;
-  /* Caras planas, no degradado suave (DISEÑO §3.1): luz arriba a la izquierda. */
-  background: linear-gradient(115deg, var(--color-regolito-claro) 0 46%, color-mix(in srgb, var(--color-regolito-claro) 60%, var(--color-regolito-medio)) 46% 72%, var(--color-regolito-medio) 72%); }
-.intro-ventana-marte_lejos .intro-marte { left: 40%; right: -30%; bottom: -40%; height: 90%; }
-.intro-sat { position: absolute; left: 50%; top: 50%; width: 52%; height: auto; transform: translate(-50%, -50%); color: var(--color-traje-marfil); }
-.intro-ventana-base { background: color-mix(in srgb, var(--color-regolito-claro) 40%, var(--color-lila)); }
-.intro-base { position: absolute; inset: 0; }
-.intro-suelo { position: absolute; left: 0; right: 0; bottom: 0; height: 42%; background: var(--color-regolito-claro); }
-.intro-domo { position: absolute; left: 38%; bottom: 30%; width: 26%; aspect-ratio: 2 / 1; background: var(--color-traje-marfil);
-  clip-path: polygon(15% 0, 85% 0, 100% 50%, 100% 100%, 0 100%, 0 50%); }
-.intro-domo.chico { left: 66%; width: 16%; background: color-mix(in srgb, var(--color-teal) 30%, var(--color-traje-marfil)); }
-.intro-domo.chico.otro { left: 18%; }
+/* Lo de afuera: ilustraciones de María Paula (las de portada, carga y órbita), no figuras planas. */
+.intro-ilu { position: absolute; height: auto; max-width: none; user-select: none; -webkit-user-drag: none; }
+/* 1: Marte asoma abajo como horizonte, con Fobos (su luna, que es un asteroide) arriba a la derecha. */
+.intro-ilu-marte { left: 50%; top: 46%; width: 112%; translate: -50% 0; }
+.intro-ilu-fobos { right: 10%; top: 12%; width: 9%; }
+/* 2: el satélite listo para observar; el borde de Marte abajo a la izquierda. */
+.intro-ilu-marte-borde { left: -14%; bottom: -62%; width: 52%; }
+.intro-ilu-satelite { left: 54%; top: 46%; width: 46%; translate: -50% -50%; }
+/* 3: Marte a la derecha, detrás de la tripulación. */
+.intro-ilu-marte-lejos { right: -10%; bottom: -36%; width: 56%; }
+/* 4: la base sobre el suelo de Marte: paneles, hábitat e invernadero. */
+.intro-ventana-base { background: linear-gradient(color-mix(in srgb, var(--color-regolito-claro) 35%, var(--color-lila)) 0 58%, transparent 58%); }
+.intro-suelo { position: absolute; left: 0; right: 0; bottom: 0; height: 44%; background: var(--color-regolito-claro); }
+.intro-ilu-panel { left: 12%; bottom: 22%; width: 18%; }
+.intro-ilu-habitat { left: 50%; bottom: 18%; width: 30%; translate: -50% 0; }
+.intro-ilu-invernadero { right: 12%; bottom: 20%; width: 19%; }
+@media (prefers-reduced-motion: no-preference) {
+  .intro-ilu-satelite { animation: intro-flota 6s ease-in-out infinite alternate; }
+  @keyframes intro-flota { to { translate: -50% calc(-50% - 6px); rotate: 2deg; } }
+}
 
 /* Personajes: el niño adelante a la izquierda; la tripulación detrás de la mesa en la viñeta 3. */
 .intro-protagonista { position: absolute; z-index: 2; left: 2%; bottom: 14%; }
-.intro-protagonista :is(svg, .retrato-img) { width: clamp(120px, 24vw, 230px); height: auto; }
-.intro-mesa { position: absolute; z-index: 1; left: 26%; right: 4%; bottom: 20%; display: flex; justify-content: space-around; align-items: flex-end; }
-.intro-mesa :is(svg, .retrato-img) { width: clamp(70px, 13vw, 128px); height: auto; }
-.intro-mesa-tapa { position: absolute; left: 4%; right: 18%; bottom: -6%; height: 22%; background: var(--color-traje-marfil);
+/* Los retratos se miden contra el ancho de la escena (no de la ventana): en celular apaisado la escena es chica. */
+.intro-escena { container-type: inline-size; }
+.intro-protagonista :is(svg, .retrato-img) { width: clamp(90px, 24cqw, 230px); height: auto; }
+/* La tripulación se sienta detrás de la mesa pero se ve entera, como en la lámina: la tapa solo cubre el borde
+   recortado de cada busto, no los hombros ni el cuello. */
+.intro-mesa { position: absolute; z-index: 1; left: 26%; right: 4%; bottom: 22%; display: flex; justify-content: space-around; align-items: flex-end; }
+.intro-mesa :is(svg, .retrato-img) { width: clamp(60px, 16cqw, 150px); height: auto; }
+.intro-mesa-tapa { position: absolute; left: 4%; right: 18%; bottom: -12%; height: 19%; background: var(--color-traje-marfil);
   clip-path: polygon(6% 0, 94% 0, 100% 50%, 94% 100%, 6% 100%, 0 50%); box-shadow: inset 0 -6px 0 var(--color-lila); }
 .intro-consola { position: absolute; z-index: 1; right: 6%; bottom: 20%; display: flex; gap: var(--esp-3); padding: var(--esp-3);
   background: var(--color-espacio); box-shadow: 0 0 0 4px var(--color-cian);
@@ -165,7 +250,7 @@
 .intro-puntos i.actual { background: var(--color-cian); }
 
 /* Celular vertical (ESCENAS §2.7): una viñeta por pantalla, la escena más alta y el texto debajo. */
-@media (max-width: 600px) {
+@media (max-width: 600px) and (min-height: 501px) {
   .intro-escena { aspect-ratio: 3 / 4; }
   .intro-ventana { left: 4%; top: 16%; height: 36%; }
   .intro-mesa { left: 4%; bottom: 34%; }
@@ -175,33 +260,68 @@
   /* En vertical la mesa de la tripulación ocupa el ancho: el niño (de espaldas en la lámina) no se dibuja. */
   .intro-escena-3 .intro-protagonista { display: none; }
   .intro-mesa { bottom: 36%; }
+  .intro-mesa :is(svg, .retrato-img) { width: clamp(60px, 22cqw, 110px); }
   .intro-saltar { bottom: 2%; }
 }
 /* Celular horizontal: la escena no puede pasar del alto de la pantalla. */
 @media (max-height: 500px) {
   .intro { padding: var(--esp-2); }
-  .intro-vineta { width: min(100%, calc((100dvh - 80px) * 1.5)); }
+  .intro-vineta { width: min(100%, calc((var(--alto-ventana) - 90px) * 1.5)); }
   .intro-texto { font-size: var(--tipo-tam-cuerpo); }
 }
 
 /* ---------- Carga (inicio/03) ---------- */
 .carga {
-  position: relative; min-height: 100dvh; background: var(--color-ambar); color: var(--color-indigo-texto);
-  display: grid; grid-template-columns: 1fr; place-items: center; align-content: center; gap: var(--esp-5); padding: 120px var(--esp-4) var(--esp-5);
+  position: relative; min-height: var(--alto-ventana); overflow-x: clip; background: var(--color-ambar); color: var(--color-indigo-texto);
+  display: grid; grid-template-columns: minmax(0, 1fr); place-items: center; align-content: center; gap: var(--esp-5); padding: 96px var(--esp-4) var(--esp-5);
 }
 .carga-marca { position: absolute; top: var(--esp-4); left: var(--esp-4); padding: var(--esp-3) var(--esp-5); background: var(--color-espacio);
   clip-path: polygon(16px 0, 100% 0, 100% calc(100% - 16px), calc(100% - 16px) 100%, 0 100%, 0 16px); }
 .carga-logo { display: block; width: 180px; height: auto; }
 .carga-sonido { position: absolute; top: var(--esp-4); right: var(--esp-4); }
-.carga-iconos { display: flex; gap: var(--esp-6); }
-.carga-icono { display: grid; place-items: center; width: 64px; height: 64px; background: var(--color-marfil);
+.carga-icono { display: grid; place-items: center; width: 56px; height: 56px; background: var(--color-marfil);
   clip-path: polygon(14px 0, calc(100% - 14px) 0, 100% 14px, 100% calc(100% - 14px), calc(100% - 14px) 100%, 14px 100%, 0 calc(100% - 14px), 0 14px); }
-.carga-panel { width: min(100%, 640px); }
-.carga-nino { position: absolute; left: 3%; bottom: var(--esp-4); }
-.carga-nino :is(svg, .retrato-img) { width: clamp(180px, 26vw, 280px); height: auto; }
-/* Pantalla ancha: el niño a la izquierda y el panel corrido a la derecha (inicio/03). */
-@media (min-width: 900px) { .carga-panel { justify-self: end; margin-right: 5%; width: min(60%, 640px); } }
-@media (max-width: 899px) { .carga-nino { position: static; order: -1; } .carga-nino :is(svg, .retrato-img) { width: 120px; height: 120px; } }
+
+/* Escena ilustrada (EscenaCarga, ilustraciones 2D de María Paula): los tres módulos en fila con su insignia,
+   sobre una órbita, encima del panel; el niño abajo a la izquierda sobre su sombra lila (inicio/03). En pantalla
+   ancha la escena y el panel van corridos a la derecha. Los módulos y el niño siguen al ancho y al alto de la
+   pantalla, así todo entra sin desplazar. */
+.carga-escena, .carga-panel { justify-self: end; margin-right: 5%; width: min(60%, 640px); }
+.carga-escena { display: grid; justify-items: center; }
+.carga-modulos { position: relative; display: flex; justify-content: space-around; align-items: flex-end; gap: var(--esp-4); width: 100%; padding-block: var(--esp-2) var(--esp-3); }
+.carga-orbita { position: absolute; left: -4%; top: 18%; width: 108%; height: 86%; overflow: visible; }
+.carga-orbita ellipse { fill: none; stroke: color-mix(in srgb, var(--color-marfil) 75%, transparent); stroke-width: 2px; vector-effect: non-scaling-stroke; stroke-dasharray: 100; }
+.carga-modulo { position: relative; display: grid; justify-items: center; gap: var(--esp-2); }
+.carga-modulo-img { display: block; height: auto; max-width: none; }
+.carga-modulo:nth-of-type(1) .carga-modulo-img { width: clamp(72px, min(12vw, calc(var(--alto-ventana) * 0.17)), 191px); }
+.carga-modulo:nth-of-type(2) .carga-modulo-img { width: clamp(66px, min(11vw, calc(var(--alto-ventana) * 0.156)), 172px); }
+.carga-modulo:nth-of-type(3) .carga-modulo-img { width: clamp(96px, min(16vw, calc(var(--alto-ventana) * 0.227)), 260px); }
+.carga-protagonista { position: absolute; left: 2%; bottom: 5%; width: clamp(150px, min(24vw, calc((var(--alto-ventana) - 190px) * 0.656)), 340px); }
+.carga-protagonista picture { display: block; }
+.carga-nino { position: relative; display: block; width: 100%; height: auto; max-width: none; transform-origin: 50% 100%; }
+.carga-sombra { position: absolute; left: 1%; right: 5%; bottom: -3%; height: 8%; border-radius: 50%; background: color-mix(in srgb, var(--color-ciruela-traje) 48%, var(--color-lila)); }
+
+/* Movimiento (impeccable animate; review-animations): la órbita se dibuja una vez, los módulos aparecen de a
+   uno (cada 300 ms) con su insignia después, y al final todo respira con un vaivén lento; la sombra se achica
+   cuando el niño sube. La carga dura 1,8 s (App.tsx): a los 1,65 s la base ya está completa y se ve entera antes
+   de pasar a la órbita. Entrada con scale y opacity, vaivén con translate: no se pisan. Quieto con movimiento
+   reducido. */
+.carga-orbita ellipse { animation: carga-orbita 1.2s var(--curva-entrada) 100ms both; }
+.carga-modulo { --carga-retraso: 150ms;
+  animation: carga-aparece 450ms var(--curva-entrada) var(--carga-retraso) both, carga-vaiven 3.4s ease-in-out calc(var(--carga-retraso) + 450ms) infinite alternate; }
+.carga-modulo:nth-of-type(2) { --carga-retraso: 450ms; }
+.carga-modulo:nth-of-type(3) { --carga-retraso: 750ms; }
+.carga-modulo .carga-icono { animation: carga-insignia 300ms var(--curva-entrada) calc(var(--carga-retraso) + 600ms) both; }
+.carga-nino { animation: carga-aparece 500ms var(--curva-entrada) both, carga-respira 3s ease-in-out 500ms infinite alternate; }
+.carga-sombra { animation: ilu-aparece 500ms var(--curva-entrada) both, carga-sombra 3s ease-in-out 500ms infinite alternate; }
+@keyframes carga-orbita { from { stroke-dashoffset: 100; } }
+@keyframes carga-aparece { from { opacity: 0; scale: .9; } }
+@keyframes carga-insignia { from { opacity: 0; scale: .8; } }
+@keyframes carga-vaiven { to { translate: 0 -4px; } }
+@keyframes carga-respira { to { translate: 0 -5px; } }
+@keyframes carga-sombra { to { scale: .94; opacity: .8; } }
+
+/* Panel: título, puntos (indicador indeterminado), estado y consejo. */
 .carga-cara { --fc-ch: var(--chaflan-grande); display: grid; justify-items: center; gap: var(--esp-3); padding: var(--esp-5) var(--esp-5) var(--esp-4); text-align: center; }
 .carga-cara h2 { margin: 0; font-size: var(--tipo-tam-titulo-grande); }
 .carga-puntos { display: inline-flex; gap: var(--esp-3); }
@@ -215,10 +335,102 @@
 .carga-consejo p { margin: 0; font-weight: var(--tipo-peso-titulo); font-size: var(--tipo-tam-dialogo); }
 .carga-chip { flex: none; padding: 2px var(--esp-3); font-style: italic; font-weight: var(--tipo-peso-portada); letter-spacing: 0.06em; text-transform: uppercase; font-size: 15px; background: var(--color-cian);
   clip-path: polygon(8px 0, calc(100% - 8px) 0, 100% 50%, calc(100% - 8px) 100%, 8px 100%, 0 50%); }
-@media (max-width: 560px) { .carga-consejo { flex-direction: column; text-align: center; } .carga-iconos { gap: var(--esp-4); } }
 
-@media (prefers-reduced-motion: reduce) { .intro-vineta, .carga-puntos i { animation: none; } .carga-puntos i { opacity: 0.8; } }
-/* En inicio/01 el planeta del fondo es violeta (no Marte): se recolorea solo aquí. */
-.portada-planeta polygon:first-child { fill: var(--color-montana-lejana); }
-.portada-planeta polygon:nth-child(2) { fill: var(--color-ciruela-traje); }
-.portada-planeta polygon:nth-child(3) { stroke: var(--color-cian); }
+/* Pantalla ancha y baja (laptop chica, hasta 680 px de alto): insignias y panel más compactos para que todo entre. */
+@media (min-aspect-ratio: 1/1) and (min-height: 501px) and (max-height: 680px) {
+  .carga { padding-top: 80px; gap: var(--esp-3); }
+  .carga-modulo .carga-icono { width: 44px; height: 44px; }
+  .carga-icono svg { width: 26px; height: 26px; }
+  .carga-cara { gap: var(--esp-2); padding: var(--esp-4) var(--esp-5) var(--esp-3); }
+}
+/* Pantalla vertical (celular y tableta parados): una columna con los módulos, el niño y el panel. El niño toma el
+   alto que deja la pantalla; si no queda lugar, no se dibuja. */
+@media (max-aspect-ratio: 1/1) and (min-height: 501px) {
+  .carga { padding: 112px var(--esp-4) var(--esp-4); gap: var(--esp-3); }
+  .carga-escena, .carga-panel { justify-self: center; margin-right: 0; width: min(100%, 560px); }
+  .carga-modulo:nth-of-type(1) .carga-modulo-img { width: clamp(64px, 20vw, 150px); }
+  .carga-modulo:nth-of-type(2) .carga-modulo-img { width: clamp(58px, 18vw, 136px); }
+  .carga-modulo:nth-of-type(3) .carga-modulo-img { width: clamp(86px, 27vw, 204px); }
+  .carga-protagonista { position: relative; left: auto; bottom: auto; width: auto; margin-top: var(--esp-2); }
+  .carga-nino { width: auto; height: clamp(100px, calc(var(--alto-ventana) - 680px), 340px); }
+}
+@media (max-aspect-ratio: 1/1) and (min-width: 600px) and (min-height: 501px) and (max-height: 809px) { .carga-protagonista { display: none; } }
+/* Celular vertical: logo, insignias y panel compactos. */
+@media (max-width: 599px) and (min-height: 501px) {
+  .carga { padding-top: 92px; }
+  .carga-logo { width: 112px; }
+  .carga-modulos { gap: var(--esp-2); }
+  .carga-modulo .carga-icono { width: 40px; height: 40px; }
+  .carga-icono svg { width: 24px; height: 24px; }
+  .carga-cara { padding: var(--esp-4) var(--esp-4) var(--esp-3); gap: var(--esp-2); }
+  .carga-cara h2 { font-size: var(--tipo-tam-titulo); }
+  .carga-consejo { flex-direction: column; gap: var(--esp-2); padding: var(--esp-2) var(--esp-4); text-align: center; }
+  .carga-consejo p { font-size: var(--tipo-tam-cuerpo); }
+  .carga-nino { height: clamp(100px, calc(var(--alto-ventana) - 600px), 300px); }
+}
+@media (max-width: 599px) and (min-height: 501px) and (max-height: 709px) { .carga-protagonista { display: none; } }
+/* Celular (vertical y apaisado): logo, sonido y botón compactos, como las preferencias de la portada. */
+@media (max-width: 599px), (max-height: 500px) {
+  .carga-marca { top: var(--esp-3); left: var(--esp-3); padding: var(--esp-2) var(--esp-3); }
+  .carga-sonido { top: var(--esp-3); right: var(--esp-3); }
+  .carga :is(.carga-sonido, .carga-cara) .fb { --fb-alto: 44px; --fb-punta: 12px; font-size: 16px; }
+  .carga :is(.carga-sonido, .carga-cara) .fb-superficie { padding: 0 calc(var(--fb-punta) + var(--esp-2)); }
+}
+/* Celular apaisado: el niño a la izquierda con el alto de la pantalla; módulos chicos sin insignias y panel
+   compacto a la derecha, debajo del botón de sonido. */
+@media (max-height: 500px) {
+  .carga { padding: 60px var(--esp-4) var(--esp-3); gap: var(--esp-2); }
+  .carga-logo { width: 100px; }
+  /* La columna de la derecha toma lo que deja el niño (su ancho sale de su alto). */
+  .carga-escena, .carga-panel { margin-right: 0; width: min(480px, calc(100% - (var(--alto-ventana) - 120px) * 0.656 - 24px)); }
+  .carga-modulos { gap: var(--esp-3); padding-block: 0 var(--esp-1); }
+  .carga-modulo .carga-icono { display: none; }
+  .carga-modulo:nth-of-type(1) .carga-modulo-img { width: 64px; }
+  .carga-modulo:nth-of-type(2) .carga-modulo-img { width: 58px; }
+  .carga-modulo:nth-of-type(3) .carga-modulo-img { width: 86px; }
+  .carga-protagonista { left: var(--esp-4); bottom: var(--esp-3); width: auto; }
+  .carga-nino { width: auto; height: min(calc(var(--alto-ventana) - 120px), 300px); }
+  /* Puntos y estado en una misma línea; título, consejo y Skip, cada uno en la suya. */
+  .carga-cara { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: var(--esp-2) var(--esp-3); padding: var(--esp-3) var(--esp-4); }
+  .carga-cara > :is(h2, .carga-consejo) { flex-basis: 100%; }
+  .carga-cara h2 { font-size: var(--tipo-tam-subtitulo); }
+  .carga-puntos { gap: var(--esp-2); }
+  .carga-puntos i { width: 14px; height: 14px; }
+  .carga-consejo { flex-direction: row; gap: var(--esp-3); padding: var(--esp-2) var(--esp-4); text-align: left; }
+  .carga-consejo p { font-size: 16px; }
+}
+/* Celular apaisado bajo (hasta 372 px, con el aviso del pie): sin la fila de módulos, para que el panel entre entero. */
+@media (max-height: 372px) { .carga-modulos { display: none; } }
+@media (prefers-reduced-motion: reduce) { .intro-vineta, .carga-puntos i, .carga-modulo, .carga-modulo .carga-icono, .carga-nino, .carga-sombra, .carga-orbita ellipse { animation: none; } .carga-puntos i { opacity: 0.8; } }
+
+/* ---------------------------------------------------------------------------------------------
+   Ajuste automático de la portada al alto disponible (ventana menos el aviso del pie y la barra de
+   la cuenta, --alto-ventana). Logo, botones, letra y espacios escalan con clamp(): el menú completo,
+   incluido "Sources & credits", entra sin desplazar. Los botones no bajan de 44 px (toque).
+   --------------------------------------------------------------------------------------------- */
+.portada {
+  --p-control: clamp(44px, calc(var(--alto-ventana) * 0.085), 68px);
+  padding-top: clamp(12px, calc(var(--alto-ventana) * 0.05), 64px);
+  padding-bottom: clamp(8px, calc(var(--alto-ventana) * 0.03), 40px);
+}
+.portada .fb-menu { --fb-alto: var(--p-control); font-size: clamp(18px, calc(var(--alto-ventana) * 0.04), var(--tipo-tam-portada)); }
+.portada-menu { gap: clamp(6px, calc(var(--alto-ventana) * 0.022), var(--esp-4)); margin-top: clamp(4px, calc(var(--alto-ventana) * 0.022), 3vh); }
+.portada-creditos { margin-top: clamp(4px, calc(var(--alto-ventana) * 0.02), var(--esp-4)); }
+.portada .fb-motivo { font-size: clamp(12px, calc(var(--alto-ventana) * 0.02), 15px); }
+.portada-subtitulo, .portada-lema { font-size: clamp(13px, calc(var(--alto-ventana) * 0.03), var(--tipo-tam-subtitulo)); }
+/* Vertical: el logo también se mide contra el alto, no solo contra el ancho. */
+@media (max-aspect-ratio: 1/1) {
+  .portada-logo { width: min(70vw, 360px, calc(var(--alto-ventana) * 0.3)); }
+  .portada { padding-top: clamp(56px, calc(var(--alto-ventana) * 0.08), 64px); row-gap: clamp(4px, calc(var(--alto-ventana) * 0.015), var(--esp-3)); }
+}
+/* Solo en horizontal la marca se limita al ancho de su columna (en vertical ocupa todo el ancho). */
+@media (min-aspect-ratio: 1/1) { .portada-marca { max-width: min(31vw, calc(var(--alto-ventana) * 0.44)); } }
+/* Vertical muy bajo (celulares de 568 px): el lema es decorativo; se oculta para que entre el menú. */
+@media (max-aspect-ratio: 1/1) and (max-height: 600px) { .portada-lema { display: none; } }
+/* Celular vertical: en la viñeta 4 los tres íconos van abajo de la ventana; la base sube para no quedar tapada. */
+@media (max-width: 600px) and (min-height: 501px) {
+  .intro-ventana-base .intro-suelo { height: 58%; }
+  .intro-ilu-panel { bottom: 40%; }
+  .intro-ilu-habitat { bottom: 36%; }
+  .intro-ilu-invernadero { bottom: 38%; }
+}

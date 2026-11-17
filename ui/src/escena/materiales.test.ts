@@ -10,8 +10,9 @@ describe("materiales y recursos compartidos", () => {
     const fabrica = () => new THREE.BoxGeometry(1, 1, 1);
     const g = geometriaBase("prueba-materiales", fabrica);
     expect(geometriaBase("prueba-materiales", fabrica)).toBe(g);
-    for (const material of Object.values(m)) {
-      expect(material.flatShading).toBe(true);
+    for (const [slot, material] of Object.entries(m)) {
+      const facetado = slot === "Rock" || slot === "Plant" || slot === "Hair" || slot === "Glass";
+      expect(material.flatShading).toBe(facetado);
       expect(material.userData.compartido).toBe(true);
     }
     liberarMateriales(Object.values(m));

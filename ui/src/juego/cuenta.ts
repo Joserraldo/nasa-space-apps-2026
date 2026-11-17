@@ -180,9 +180,10 @@ export async function autenticarCuenta(modo: "login" | "register", usuario: stri
   return { ok: false, errorKey: mapearErrorCuenta(typeof r.data?.error === "string" ? r.data.error : undefined, modo) };
 }
 
-export async function cerrarSesionCuenta(): Promise<void> {
-  marcarPistaSesion(false);
-  await pedirJson("/api/auth/logout", { method: "POST", body: "{}" });
+export async function cerrarSesionCuenta(): Promise<boolean> {
+  const r = await pedirJson("/api/auth/logout", { method: "POST", body: "{}" });
+  if (r.ok) marcarPistaSesion(false);
+  return r.ok;
 }
 
 export async function leerProgresoCuenta(): Promise<ResultadoProgreso> {

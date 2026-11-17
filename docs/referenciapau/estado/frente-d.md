@@ -1,15 +1,16 @@
 # Estado del Frente D (Daniel)
 
-Actualizado: 15 nov 2026, iteración 9 del loop.
+Actualizado: 16 nov 2026, iteración 15 del loop.
 
 **Hecho**
-- D2 (#350) y D4 (#371): fusionados. `media` de 15 a 35-36 fps sin GPU.
-- D1 (#342, borrador): hábitat y antena con los pedidos de F3 corregidos. Espera la revisión de F3 y a C2.
-- D5 parte 1 (#376): corredor de conexión como `exterior/01` en `activos/interiores/corredor.ts`, con zona caminable y entrada para A8. Vista previa `/escena.html?sala=corredor`. 6 draw calls, 1 878 triángulos.
+- D2 (#350), D4 (#371) y D5 (#376 corredor, #381 taller, #388 hábitat, #397 piezas comunes): fusionados.
+- D1 (#342, borrador): espera la revisión de F3 y a C2.
+- D3 (#395): ciclo del día según la fase; día, tarde y atardecer azulado; sin noche jugable. Capturas de las tres fases en los 4 tamaños.
+- D6 parte 1 (#399): tres remolinos de polvo a lo lejos, fuente verificada por B (NASA, MRO). +2 draw calls, fps sin cambio.
 
 **Sigue**
-- D5 parte 2: taller (estación 05) y después hábitat (06 a 08).
+- D6 parte 2: Fobos y Deimos en el atardecer, polvo con viento, la nave en la plataforma. Después D7.
 
 **Bloqueado**
-- C2 sin PR (bloquea cerrar D1).
-- A8 (José) conecta el corredor al juego; las puertas exteriores dependen de C2.
+- C2 sin PR (bloquea cerrar D1). A8 conecta las salas.
+- Regla de la noche con José: #393. Script de capturas cortado en develop: #394.

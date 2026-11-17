@@ -5,8 +5,9 @@ import type { CalidadGrafica } from "../juego/ajustes";
 import type { EventoFeedback } from "../juego/eventos";
 import { crearEscena3D, type CamaraEscena, type Escena3D, type SistemaEscena } from "./escena3d";
 import type { EntradaTactil } from "./entradaTactil";
-import { interactivoDeLugar, type ActorId, type AvisosEscena, type PedidoEscena } from "./frontera";
+import type { ActorId, AvisosEscena, Interactivo, PedidoEscena } from "./frontera";
 import type { LugarObjetivo, VistaEscena } from "./vista";
+import { ANCLAJES_EXPERTAS, type ExpertaBase } from "./mundo";
 
 export type { CamaraEscena } from "./escena3d";
 
@@ -16,7 +17,8 @@ export type { CamaraEscena } from "./escena3d";
  */
 /**
  * `PedidoEscena` y `AvisosEscena` (frontera.ts, PLAN-JUGABILIDAD §3) suman las props del bloque 0.
- * Estado: `onInteractivo` emite lugares; actores (A6), puertas y `sala` (A8), `objetivo` (A2 + marcador C4),
+ * Estado: `onInteractivo` emite lugares y expertas (A6; `[E]` con una experta va a `onUsarInteractivo`);
+ * puertas y `sala` (A8), `objetivo` (A2 + marcador C4),
  * `iris` y `globo` (A2) y `hablando` (A7) se aceptan y llegan a los sistemas en `ctx.pedido` (A0), pero la
  * escena todavía no los dibuja.
  */
@@ -107,9 +109,17 @@ export function EscenaBase(props: EscenaBaseProps) {
         movimientoReducido: p.movimientoReducido,
         alPerderContexto: () => actuales.current.onWebGLPerdido(),
         alExceso: (nivel) => actuales.current.onCalidad(nivel),
-        alLugarCercano: (l) => {
-          actuales.current.onLugarCercano(l);
-          actuales.current.onInteractivo?.(interactivoDeLugar(l));
+        alLugarCercano: (l) => actuales.current.onLugarCercano(l),
+        // A6: lugar o experta al alcance; [E] con una experta va a `onUsarInteractivo` si la pantalla lo pasa.
+        alInteractivo: (i) => actuales.current.onInteractivo?.(i),
+        alUsarInteractivo: (i: Interactivo) => {
+          const usar = actuales.current.onUsarInteractivo;
+          if (usar) usar(i);
+          // Sin `onUsarInteractivo`, se avisa por `onUsar` con la estación de la experta: la pantalla (E2) decide
+          // con el último `onInteractivo`, que ya es el actor, así una sola tecla abre una sola conversación.
+          else if (i.tipo === "actor") actuales.current.onUsar(i.actor in ANCLAJES_EXPERTAS ? ANCLAJES_EXPERTAS[i.actor as ExpertaBase].lugarId : "taller");
+          else return false;
+          return true;
         },
         alUsar: (l) => actuales.current.onUsar(l),
         alCambiarCamara: () => actuales.current.onCambiarCamara?.(),
@@ -138,7 +148,7 @@ export function EscenaBase(props: EscenaBaseProps) {
 
     const cercano = escena.lugarCercano();
     actuales.current.onLugarCercano(cercano);
-    actuales.current.onInteractivo?.(interactivoDeLugar(cercano));
+    actuales.current.onInteractivo?.(escena.interactivo());
     actuales.current.onPosicion?.(escena.posicionJugador());
     actuales.current.onEntradaTactil?.(escena.entradaTactil);
 
@@ -183,7 +193,7 @@ export function EscenaBase(props: EscenaBaseProps) {
   // El globo usa la cara facetada de la base (F); el sistema lo mueve sobre la cabeza de quien habla.
   // A12: con mouse, mientras el puntero esté libre y el mundo no esté bloqueado, un aviso dice cómo mirar.
   // Usa la misma cara facetada; no captura clics (el clic va al canvas y bloquea el puntero).
-  const avisoMirar = mouse && !punteroBloqueado && !props.bloqueado;
+  const avisoMirar = props.camara === "primera" && mouse && !punteroBloqueado && !props.bloqueado;
   return (
     <>
       <canvas ref={canvasRef} aria-hidden="true" style={{ display: "block", width: "100%", height: "100%", touchAction: "none" }} />
@@ -201,6 +211,37 @@ export function EscenaBase(props: EscenaBaseProps) {
       )}
     </>
   );
+}
+
+/** Margen del globo contra los bordes y contra el HUD (px). */
+const MARGEN_GLOBO = 8;
+/** Lo que reserva abajo la fila de controles (Crew, Map, joystick) (px). */
+const RESERVA_ABAJO = 96;
+
+/** Hasta dónde llegan las píldoras del HUD (`--hud-reserva`, la publica HudBase). Sin HUD, 64 px como antes. */
+function reservaHud(): number {
+  if (typeof document === "undefined") return 64;
+  const v = parseFloat(document.documentElement.style.getPropertyValue("--hud-reserva"));
+  return Number.isFinite(v) && v > 0 ? v : 64;
+}
+
+/**
+ * Dónde va la punta de abajo del globo (#390): centrado sobre el actor, sin salirse por los costados, con su
+ * borde de arriba siempre debajo del HUD y sin tapar la fila de abajo. Si no entra en ningún lado (celular
+ * horizontal con texto largo), manda no taparse con el HUD: queda pegado debajo de él. Pura.
+ */
+export function posicionGlobo(
+  ancla: { x: number; y: number },
+  cuadro: { ancho: number; alto: number },
+  globo: { ancho: number; alto: number },
+  reservaArriba: number,
+): { x: number; y: number } {
+  const medio = globo.ancho / 2 + MARGEN_GLOBO;
+  const x = Math.min(Math.max(ancla.x, medio), cuadro.ancho - medio);
+  const minimo = reservaArriba + MARGEN_GLOBO + globo.alto;
+  const maximo = cuadro.alto - RESERVA_ABAJO;
+  const y = Math.max(minimo, Math.min(maximo, ancla.y));
+  return { x: Math.round(x), y: Math.round(y) };
 }
 
 /** Altura del ancla del globo sobre los pies de cada actor (m): por encima del casco o de la antena. [E] */
@@ -233,10 +274,12 @@ function crearSistemaGlobo(canvas: HTMLCanvasElement, ref: React.RefObject<HTMLD
         p.y += ALTURA_GLOBO[g.actor];
         p.project(ctx.camara);
         if (p.z < 1 && Math.abs(p.x) <= 1 && Math.abs(p.y) <= 1) {
-          // Centrado sobre el actor, pero sin salirse del cuadro (celular vertical).
-          const medio = div.offsetWidth / 2 + 8;
-          const x = Math.round(Math.min(Math.max(((p.x + 1) / 2) * canvas.clientWidth, medio), canvas.clientWidth - medio));
-          const y = Math.round(((1 - p.y) / 2) * canvas.clientHeight);
+          const { x, y } = posicionGlobo(
+            { x: ((p.x + 1) / 2) * canvas.clientWidth, y: ((1 - p.y) / 2) * canvas.clientHeight },
+            { ancho: canvas.clientWidth, alto: canvas.clientHeight },
+            { ancho: div.offsetWidth, alto: div.offsetHeight || 64 },
+            reservaHud(),
+          );
           estilo = `translate(${x}px, ${y}px) translate(-50%, -100%)`;
         }
       }
