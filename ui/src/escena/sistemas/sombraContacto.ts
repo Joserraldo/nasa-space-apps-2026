@@ -8,6 +8,10 @@ import * as THREE from "three";
 import { colorToken } from "../materiales";
 import { alturaSuelo } from "../fisica";
 import { TERRENO } from "../mundo";
+import { microrrelieve } from "../activos/microrelieve";
+
+/** El suelo de la física con el microrrelieve del claro: la mancha se apoya donde pisan los pies. */
+const TERRENO_CON_RELIEVE = { ...TERRENO, relieve: microrrelieve };
 import { CAMINO, distanciaPlaza } from "../activos/caminos";
 import type { ContextoSistema, SistemaEscena } from "../escena3d";
 
@@ -84,7 +88,7 @@ export function crearSistema(): SistemaEscena {
       for (const p of personajes) {
         if (!p.objeto.visible || !p.objeto.parent) continue;
         p.objeto.getWorldPosition(pos);
-        const suelo = alturaSuelo(pos.x, pos.z, TERRENO);
+        const suelo = alturaSuelo(pos.x, pos.z, TERRENO_CON_RELIEVE);
         const r = p.radio * escalaContacto(pos.y - suelo);
         m.compose(pos.set(pos.x, suelo + alturaMancha(pos.x, pos.z), pos.z), giro, escala.set(r, 1, r));
         malla.setMatrixAt(i++, m);
