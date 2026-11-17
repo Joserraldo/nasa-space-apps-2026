@@ -9,7 +9,8 @@
     ".": "./src/index.ts"
   },
   "dependencies": {
-    "@solar-shield/contracts": "*"
+    "@solar-shield/contracts": "*",
+    "@solar-shield/missions": "*"
   },
   "devDependencies": {
     "@solar-shield/engine": "*"
