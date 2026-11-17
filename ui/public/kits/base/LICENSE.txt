@@ -1,0 +1,6 @@
+Sci-fi like asset pack by loafbrr - https://loafbrr.itch.io/sci-fi-like-asset-pack
+License: Creative Commons Zero v1.0 Universal (CC0). Attribution is not required.
+
+Files here (derived): props.glb is a selection of 10 props from Generic_Props.gltf
+(pruned and quantized with gltf-transform, UVs kept). The *.webp textures are the pack's
+base color multiplied by its ambient occlusion, resized to 256 px.

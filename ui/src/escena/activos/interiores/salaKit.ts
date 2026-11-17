@@ -44,11 +44,25 @@ type Puesto = readonly [Pieza, number, number, number, number?];
 /** [builder of an own piece, x, z, turn in radians]. */
 type Propio = readonly [(m: Materiales) => THREE.Object3D, number, number, number?];
 
+/**
+ * Props of "Sci-fi like asset pack" by loafbrr (CC0), shipped as one 99 KB GLB with 10 pieces
+ * (`public/kits/base/props.glb`, 2,890 triangles). Textures are the pack's base color multiplied by its
+ * ambient occlusion, 256 px WebP (30 KB in total); its normal, roughness and metal maps are left out on
+ * purpose: they made the props read photo-real next to the flat game style.
+ */
+type PiezaBase =
+  | "Cont_Barrel" | "Cont_Box" | "Cont_Chest" | "Cont_Locker_Static" | "Cont_LockerGroup_Static"
+  | "Furn_Stool" | "Furn_Table_1" | "Cont_DisplayCase_1" | "Furn_Couch" | "Tool_ToolBox";
+/** [piece, x, z, turn in radians (0 = as authored), y]. */
+type PuestoBase = readonly [PiezaBase, number, number, number?, number?];
+
 interface Plano {
   /** Pieces of the back wall, left to right (x from -4 to 4). */
   fondo: readonly Pieza[];
   kit: readonly Puesto[];
   propios: readonly Propio[];
+  /** Props of the CC0 base pack. */
+  base: readonly PuestoBase[];
   /** Multiplies the kit colors: warm on Mars, neutral on the ship. */
   tinte: string;
   estrellas: boolean;
@@ -73,12 +87,16 @@ const PLANOS: Readonly<Record<SalaKit, Plano>> = {
       ["breaker_ss", -3.85, 1.2, 1],
       ["screen_ss_map", 3.85, -0.9, -1, 1.5],
       ["card_reader_ss", 1.8, -2.85, 0],
-      ["crate_ss", -2.6, 1.9, 0], ["crate_ss", -1.3, 2.2, 0.25],
     ],
     propios: [
       [estanteBaterias, -2.7, -2.5],
       [banco, 1.3, -2.4],
       [dock, 3.1, 1.2],
+    ],
+    // Coolant barrels and spare parts; the toolbox sits on the box.
+    base: [
+      ["Cont_Barrel", -3.0, 2.2], ["Cont_Barrel", -1.9, 2.45, 0.6],
+      ["Cont_Box", -0.7, 2.3, 0.3], ["Tool_ToolBox", -0.7, 2.3, 0.3, 0.8],
     ],
     tinte: "#FFF3E8",
     estrellas: false,
@@ -92,13 +110,18 @@ const PLANOS: Readonly<Record<SalaKit, Plano>> = {
       ["screen_ss_map", -3.85, 0.6, 1, 1.5],
       ["card_reader_ss", 1.8, -2.85, 0],
       ["light_ss_emergency", 3.85, -1.6, -1],
-      ["crate_ss", -3.1, 2.1, 0],
     ],
     propios: [
       [litera, -3.0, -2.2],
       [comedor, 0.3, 0.2],
       [camilla, 2.5, 1.9],
       [botiquin, 3.85, 0.3, -Math.PI / 2],
+    ],
+    // Rest corner under the status screen, a suit locker, supplies.
+    base: [
+      ["Furn_Couch", -1.9, 2.45],
+      ["Cont_Locker_Static", 3.5, -1.0, -Math.PI / 2],
+      ["Cont_Box", -3.35, 1.1, 0.4],
     ],
     tinte: "#FFF3E8",
     estrellas: false,
@@ -116,9 +139,13 @@ const PLANOS: Readonly<Record<SalaKit, Plano>> = {
       ["rack_ss", 3.45, 0.2, -1],
       ["card_reader_ss", 1.8, -2.85, 0],
       ["light_ss_emergency", -1.7, -2.85, 0],
-      ["crate_ss", 2.6, 1.4, 0], ["crate_ss", 0.8, 2.2, 0.25],
     ],
     propios: [],
+    // Cargo hold corner and a locker row on the left wall.
+    base: [
+      ["Cont_Chest", 0.6, 2.4, 0.15], ["Cont_Barrel", 2.7, 1.5], ["Cont_Barrel", 2.8, 2.55, 0.8],
+      ["Cont_Locker_Static", -3.5, 2.4, Math.PI / 2],
+    ],
     tinte: "#FFFFFF",
     estrellas: true,
     fondoEscena: "#1A1F3D",
@@ -147,6 +174,52 @@ function sombras(o: THREE.Object3D): void {
       x.receiveShadow = true;
     }
   });
+}
+
+const BASE_PACK = `${import.meta.env.BASE_URL}kits/base/`;
+
+/** Texture file of each pack material (lower case folder name). Glass materials get a shared glass. */
+const TEXTURA_BASE: Record<string, string> = {
+  Barrel_mat: "barrel", Box_mat: "box", Chest_MAT: "chest", Locker_mat: "locker", Chair_mat: "chair",
+  Table_1_mat: "table_1", DIsplayCase_1_mat: "displaycase_1", Couch_mat: "couch", ToolBox_mat: "toolbox",
+};
+
+/** Loads the CC0 props once and places the room's copies, tinted like the rest of the room. */
+async function cargarBase(plano: Plano, raiz: THREE.Group): Promise<void> {
+  const gltf = await new GLTFLoader().loadAsync(`${BASE_PACK}props.glb`);
+  const cargador = new THREE.TextureLoader();
+  const materiales = new Map<string, THREE.Material>();
+  const vidrio = new THREE.MeshStandardMaterial({ color: "#CFEFF5", transparent: true, opacity: 0.35, roughness: 0.1, depthWrite: false });
+  const material = (nombre: string): THREE.Material => {
+    if (/glass/i.test(nombre)) return vidrio;
+    let m = materiales.get(nombre);
+    if (!m) {
+      const archivo = TEXTURA_BASE[nombre];
+      const t = archivo ? cargador.load(`${BASE_PACK}${archivo}.webp`) : null;
+      if (t) {
+        t.flipY = false; // glTF convention
+        t.colorSpace = THREE.SRGBColorSpace;
+      }
+      m = new THREE.MeshStandardMaterial({ color: plano.tinte, map: t, roughness: 0.85, metalness: 0 });
+      materiales.set(nombre, m);
+    }
+    return m;
+  };
+  for (const [nombre, x, z, giro = 0, y = 0] of plano.base) {
+    const original = gltf.scene.getObjectByName(nombre);
+    if (!original) continue;
+    const copia = original.clone();
+    copia.traverse((o) => {
+      if (o instanceof THREE.Mesh) {
+        o.material = material((o.material as THREE.Material).name);
+        o.castShadow = true;
+        o.receiveShadow = true;
+      }
+    });
+    copia.position.set(x, y, z);
+    copia.rotation.set(0, giro, 0);
+    raiz.add(copia);
+  }
 }
 
 /**
@@ -232,6 +305,8 @@ export function crearSalaKit(sala: SalaKit, materiales: Materiales): THREE.Group
       raiz.add(copia);
     }
 
+    if (plano.base.length) void cargarBase(plano, raiz);
+
     if (plano.estrellas) {
       const estrellas = pieza.get("starfield_ss")!;
       estrellas.traverse((o) => {
@@ -261,7 +336,12 @@ export interface PuntoSala {
 const RADIO_PIEZA: Partial<Record<Pieza, number>> = {
   console_ss: 0.7, chair_ss: 0.35, rack_ss: 0.6, crate_ss: 0.72, breaker_ss: 0.25, screen_ss_map: 0, card_reader_ss: 0, light_ss_emergency: 0,
 };
-const INTERACTIVAS: readonly Pieza[] = ["console_ss", "rack_ss", "crate_ss", "breaker_ss", "screen_ss_map"];
+/** Plan radius of the base props (from their measured bounding boxes, long pieces approximated). */
+const RADIO_BASE: Record<PiezaBase, number> = {
+  Cont_Barrel: 0.57, Cont_Box: 0.46, Cont_Chest: 0.6, Cont_Locker_Static: 0.42, Cont_LockerGroup_Static: 0.9,
+  Furn_Stool: 0.24, Furn_Table_1: 0.8, Cont_DisplayCase_1: 1.0, Furn_Couch: 0.7, Tool_ToolBox: 0.3,
+};
+const INTERACTIVAS: readonly Pieza[] = ["console_ss", "rack_ss", "breaker_ss", "screen_ss_map"];
 /** Where the kid appears, just inside the door, and where he leaves. */
 export const PUERTA_SALA = { x: 3, z: -2.2, radio: 0.9 } as const;
 
@@ -272,5 +352,8 @@ export function puntosSalaKit(sala: SalaKit): PuntoSala[] {
     .filter(([p]) => p in RADIO_PIEZA)
     .map(([p, x, z], i) => ({ id: `${p}_${i}`, x, z, radio: RADIO_PIEZA[p]!, interactivo: INTERACTIVAS.includes(p) }));
   const propios = plano.propios.map(([f, x, z]) => ({ id: f.name, x, z, radio: 0.95, interactivo: true }));
-  return [...kit, ...propios];
+  const base = plano.base
+    .filter(([, , , , y = 0]) => y === 0) // pieces resting on others do not add a second obstacle
+    .map(([p, x, z], i) => ({ id: `${p}_${i}`, x, z, radio: RADIO_BASE[p], interactivo: p !== "Furn_Stool" }));
+  return [...kit, ...propios, ...base];
 }
