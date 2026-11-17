@@ -6,7 +6,7 @@ import { botiquin, brazoRobot, cajaAlmacen, cajaBandas, cajaRejilla, consolaPant
 
 /** Grid unit of the plans (room sizes and door positions), in metres. */
 const E = 0.8;
-import type { PuntoSala } from "./salaKit";
+import type { PuntoSala } from "./puntoSala";
 import { cultivoVeggie, terminal } from "./salaPastel";
 import { dock, estanteBaterias } from "./taller";
 import { caja, chaflan, grupo } from "../piezasComunes";
