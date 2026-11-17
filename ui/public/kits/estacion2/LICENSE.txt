@@ -1,7 +1,0 @@
-estacion.glb: 41 pieces of "Low Poly Space Kit" by Likh0i
-https://sketchfab.com/3d-models/low-poly-space-kit-7045c47936934d6988a15cb7ce4eb20b
-License: CC BY 4.0 (http://creativecommons.org/licenses/by/4.0/), as stated in the file's own glTF metadata.
-Credit: "Low Poly Space Kit" by Likh0i, CC BY 4.0.
-
-Changes: only room pieces and props were kept; geometry compressed (gltf-transform prune, quantize,
-meshopt); materials recoloured at runtime (orange trims to purple, whites warmed).
