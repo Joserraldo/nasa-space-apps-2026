@@ -182,7 +182,8 @@ export function MundoBase({ fase, estado, colocados, calidad, movimientoReducido
   const alternarCamara = useCallback(() => fijarCamara(camara === "tercera" ? "primera" : "tercera"), [camara, fijarCamara]);
   const fijarUso = useCallback((fn: ((i: Interactivo) => void) | null) => { uso.current = fn; }, []);
   // Sin WebGL la escena no avisa: lo que hay al alcance es el lugar donde el mapa dejó al niño.
-  const interactivo = sin3d ? interactivoDeLugar(cercano) : alcance;
+  // Inside the base the interior has its own hint and keys: nothing outdoors is within reach.
+  const interactivo = sin3d ? interactivoDeLugar(cercano) : sala !== "exterior" ? null : alcance;
   // E2: una sola vía para `[E]`. La escena (tecla E con 3D), la tecla sin 3D, el aviso del HUD y el
   // toque táctil llegan aquí. Las puertas cambian la sala; lugares y actores van a la pantalla.
   const actual = useRef({ interactivo, bloqueado, sin3d });
@@ -214,7 +215,7 @@ export function MundoBase({ fase, estado, colocados, calidad, movimientoReducido
     if (l) { const p = lugar(l); setPosicion({ x: p.x, z: p.z }); }
   }, [sin3d]);
   const mundo = useMemo<Mundo>(() => ({
-    sin3d, cercano, interactivo, sala, usarCercano, fijarHablando: setHablando, fijarGlobo: setGlobo, camara, alternarCamara, destino, irA, entrada, movimientoReducido,
+    sin3d, cercano: sala !== "exterior" ? null : cercano, interactivo, sala, usarCercano, fijarHablando: setHablando, fijarGlobo: setGlobo, camara, alternarCamara, destino, irA, entrada, movimientoReducido,
     fijarBloqueado: setBloqueadoCapa, fijarInstalando: setInstalando, fijarUso, fijarObjetivo: setLugarObjetivo,
   }), [sin3d, cercano, interactivo, sala, usarCercano, camara, alternarCamara, destino, irA, entrada, movimientoReducido, fijarUso]);
 
@@ -241,7 +242,8 @@ export function MundoBase({ fase, estado, colocados, calidad, movimientoReducido
               bloqueado={bloqueado}
               onPosicion={setPosicion}
               onCambiarCamara={alternarCamara}
-              onEntradaTactil={setEntrada} />
+              onEntradaTactil={setEntrada}
+              onSalirSala={() => setSala("exterior")} />
           </Suspense>
         )}
       </div>

@@ -72,7 +72,7 @@ export function PantallaModulos({ estado, colocados, onColocar, onListo, bienven
     botonera.current?.querySelector<HTMLElement>("button:not([disabled]):not([aria-disabled='true'])")?.focus({ preventScroll: true });
   }, []);
 
-  const { sin3d: sinGl, cercano, interactivo, fijarBloqueado, fijarGlobo, fijarHablando, fijarInstalando, fijarObjetivo, fijarUso, usarCercano } = useMundo();
+  const { sin3d: sinGl, cercano, interactivo, sala, fijarBloqueado, fijarGlobo, fijarHablando, fijarInstalando, fijarObjetivo, fijarUso, usarCercano } = useMundo();
   /** Anclaje vacío al alcance en el mundo: ofrece `[E] Build` (solo con 3D). */
   const ancla = sinGl || faltan <= 0 ? null : (() => {
     const m = LUGARES.find((l) => l.id === cercano)?.modulo;
@@ -146,11 +146,12 @@ export function PantallaModulos({ estado, colocados, onColocar, onListo, bienven
 
   useEffect(() => {
     const tecla = (e: KeyboardEvent) => {
-      if (esTeclaUsar(e) && !interactivo && !cercano) abrirAccion.current();
+      // Inside the base the interior owns E (doors, objects): nothing here opens.
+      if (esTeclaUsar(e) && sala === "exterior" && !interactivo && !cercano) abrirAccion.current();
     };
     window.addEventListener("keydown", tecla);
     return () => window.removeEventListener("keydown", tecla);
-  }, [interactivo, cercano]);
+  }, [interactivo, cercano, sala]);
 
   function colocar(m: Equipment) {
     onColocar(m);
@@ -161,9 +162,11 @@ export function PantallaModulos({ estado, colocados, onColocar, onListo, bienven
   const cercaObjetivo = Boolean(ancla || expertaCercana || cercano === "mesa" || faltan <= 0);
   const textoInteractuar = ancla
     ? t("ui.paso.4.construir", { moduloKey: `ui.paso.4.modulo.${ancla}` })
-    : expertaCercana
-      ? t("ui.interaccion.hablar")
-      : t("ui.interaccion.interactuar");
+    : interactivo?.tipo === "puerta"
+      ? t(interactivo.entrar ? "ui.interaccion.entrar" : "ui.interaccion.salir")
+      : expertaCercana
+        ? t("ui.interaccion.hablar")
+        : t("ui.interaccion.interactuar");
 
   return (
     <section className="modulos-e5" aria-labelledby="modulos-titulo">
