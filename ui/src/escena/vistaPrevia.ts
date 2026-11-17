@@ -14,6 +14,7 @@ import { COLORES, conAlfa } from "../estilos/tokens";
 import { traducir, type Idioma, type Vars } from "../i18n";
 import * as THREE from "three";
 import { crearCorredorInterior, zonaCorredor } from "./activos/interiores/corredor";
+import { montarSalaJugable } from "./salaJugable";
 import { ambienteSalaKit, crearSalaKit, type SalaKit } from "./activos/interiores/salaKit";
 import { crearHabitatInterior } from "./activos/interiores/habitat";
 import { crearTaller } from "./activos/interiores/taller";
@@ -205,5 +206,19 @@ function montarSala(sala: keyof typeof SALAS_PREVIA): void {
 }
 
 const salaPedida = parametros.get("sala");
-if (salaPedida === "corredor" || salaPedida === "taller" || salaPedida === "habitat" || salaPedida === "outpost") montarSala(salaPedida);
+// `&jugar=1`: la sala con kit se recorre con el nino (WASD o flechas, E para interactuar o salir por la puerta).
+if (parametros.get("jugar") === "1" && (salaPedida === "taller" || salaPedida === "habitat" || salaPedida === "outpost")) {
+  const aviso = document.createElement("div");
+  aviso.setAttribute("role", "status");
+  aviso.style.cssText = `position:fixed;bottom:12px;left:50%;translate:-50% 0;padding:8px 12px;border-radius:8px;font:13px/1.4 monospace;background:${conAlfa("espacio", 0.85)};color:${COLORES.marfil}`;
+  document.body.appendChild(aviso);
+  const decir = (texto: string) => (aviso.textContent = texto);
+  decir("WASD / arrows");
+  montarSalaJugable(document.getElementById("escena") as HTMLCanvasElement, salaPedida, {
+    calidad,
+    alCercano: (id) => decir(id ? `[E] ${id}` : "WASD / arrows"),
+    alInteractuar: (id) => decir(`interact: ${id}`),
+    alSalir: () => location.assign(location.pathname),
+  });
+} else if (salaPedida === "corredor" || salaPedida === "taller" || salaPedida === "habitat" || salaPedida === "outpost") montarSala(salaPedida);
 else if (parametros.get("montar") !== "0") montar();
