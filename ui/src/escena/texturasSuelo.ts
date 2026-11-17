@@ -1,7 +1,7 @@
 import * as THREE from "three";
 
 /**
- * Experimental: ground and rock textures behind `?texturas=1` (CC0, Poly Haven, 512 px WebP; sources in
+ * Ground and rock textures, on by default; `?texturas=0` turns them off (CC0, Poly Haven, 512 px WebP; sources in
  * the PR). `?mundo=luna` previews the Moon set; the default is Mars. When the multi-mission chain lands
  * (#410/#411), the world should come from the active mission instead of the URL.
  *
@@ -36,7 +36,8 @@ const ROCA: Readonly<Record<MundoTextura, Juego>> = {
 
 export function texturasSueloActivas(): boolean {
   if (typeof location === "undefined") return false;
-  return new URLSearchParams(location.search).get("texturas") === "1";
+  // Activas por defecto; `?texturas=0` vuelve al suelo liso para comparar.
+  return new URLSearchParams(location.search).get("texturas") !== "0";
 }
 
 export function mundoTextura(): MundoTextura {

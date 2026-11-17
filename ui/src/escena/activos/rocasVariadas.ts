@@ -4,7 +4,7 @@ import { colorToken, geometriaBase } from "../materiales";
 import { pintarPorNormal, TONO_ROCA, trozoFacetado } from "./terrenoVisual";
 
 /**
- * Experimental (behind `?texturas=1`): more varied and more finished rocks.
+ * On by default (`?texturas=0` turns it off): more varied and more finished rocks.
  *
  * Every rock keeps its position, rotation and scale (paths and collisions do not change); only its shape
  * changes, and no new shape is wider than the original rock. Families, all with the original palette

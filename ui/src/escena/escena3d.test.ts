@@ -165,7 +165,8 @@ describe("armarEscena", () => {
     }
     const balizas = posicionesBalizas();
     expect(balizas.length).toBeGreaterThanOrEqual(4);
-    expect(balizas.length).toBeLessThanOrEqual(12);
+    // Van instanciadas (una llamada de dibujo): el tope es de orden visual, troncal + anillo + ramales de la colonia.
+    expect(balizas.length).toBeLessThanOrEqual(20);
     for (const [x, z] of balizas) for (const c of TERRENO.circulos) expect(Math.hypot(x - c.x, z - c.z)).toBeGreaterThan(c.r);
     const a = armarEscena(crearMateriales(), EJEMPLO, rejilla);
     const caminos = a.escena.getObjectByName("Kit_Paths") as THREE.Mesh;

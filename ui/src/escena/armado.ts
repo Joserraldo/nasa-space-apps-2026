@@ -72,7 +72,7 @@ export const CLARO = { radio: 34, borde: 46 } as const;
 /** Rocas sueltas fuera del claro. [E] */
 export const ROCAS = { n: 40, semilla: 42, radioMin: 24, radio: 110 } as const;
 /** Rocas grandes facetadas en el borde del claro (lámina `mundo/01`). [E] */
-export const ROCAS_GRANDES = { n: 14, semilla: 9, radioMin: 15, radio: 28, escalaMin: 1.2, escalaMax: 2.6 } as const;
+export const ROCAS_GRANDES = { n: 26, semilla: 9, radioMin: 15, radio: 28, escalaMin: 1.2, escalaMax: 2.6 } as const;
 
 /** Radio en planta de una roca (la roca maestra mide hasta 1,2 u de radio por unidad de escala). */
 export function radioRoca(r: TransformacionRoca): number {
