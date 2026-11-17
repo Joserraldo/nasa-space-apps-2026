@@ -26,18 +26,46 @@ const VINETAS: readonly { ventana: Ventana; adelante: Persona[]; atras?: Persona
 ];
 export const TOTAL_VINETAS = VINETAS.length;
 
+const BASE = import.meta.env.BASE_URL;
+
+/**
+ * Una ilustración de María Paula (las mismas de portada, carga y órbita) en AVIF y WebP, con dos
+ * anchos. Decorativa: la ventana entera es aria-hidden y el texto de la viñeta cuenta lo que pasa.
+ */
+function Ilustracion({ nombre, anchos, clase }: { nombre: string; anchos: readonly [number, number]; clase: string }) {
+  const srcset = (ext: string) => anchos.map((a) => `${BASE}ilustraciones/${nombre}-${a}.${ext} ${a}w`).join(", ");
+  return (
+    <picture>
+      <source type="image/avif" srcSet={srcset("avif")} sizes="(max-width: 600px) 40vw, 24vw" />
+      <img className={`intro-ilu ${clase}`} src={`${BASE}ilustraciones/${nombre}-${anchos[1]}.webp`} srcSet={srcset("webp")}
+        sizes="(max-width: 600px) 40vw, 24vw" alt="" decoding="async" draggable={false} />
+    </picture>
+  );
+}
+
+/**
+ * Lo que se ve por la ventana de la nave en cada viñeta (inicio/02): Marte con Fobos asomando, el
+ * satélite listo para observar, Marte detrás de la tripulación y la base que el niño puede armar.
+ */
 function VistaVentana({ tipo }: { tipo: Ventana }) {
   return (
     <div className={`intro-ventana intro-ventana-${tipo}`} aria-hidden="true">
       <span className="intro-estrellas" />
-      {(tipo === "marte" || tipo === "marte_lejos") && <span className="intro-marte" />}
-      {tipo === "satelite" && <Icono nombre="satelite" tam={120} className="intro-sat" />}
-      {tipo === "base" && (
-        <span className="intro-base">
-          <span className="intro-suelo" />
-          <span className="intro-domo" /><span className="intro-domo chico" /><span className="intro-domo chico otro" />
-        </span>
-      )}
+      {tipo === "marte" && (<>
+        <Ilustracion nombre="orbita-marte" anchos={[320, 548]} clase="intro-ilu-marte" />
+        <Ilustracion nombre="portada-asteroide" anchos={[120, 240]} clase="intro-ilu-fobos" />
+      </>)}
+      {tipo === "satelite" && (<>
+        <Ilustracion nombre="orbita-marte" anchos={[320, 548]} clase="intro-ilu-marte-borde" />
+        <Ilustracion nombre="orbita-satelite" anchos={[96, 178]} clase="intro-ilu-satelite" />
+      </>)}
+      {tipo === "marte_lejos" && <Ilustracion nombre="orbita-marte" anchos={[320, 548]} clase="intro-ilu-marte-lejos" />}
+      {tipo === "base" && (<>
+        <span className="intro-suelo" />
+        <Ilustracion nombre="carga-panel" anchos={[140, 280]} clase="intro-ilu-panel" />
+        <Ilustracion nombre="carga-habitat" anchos={[180, 360]} clase="intro-ilu-habitat" />
+        <Ilustracion nombre="carga-invernadero" anchos={[130, 248]} clase="intro-ilu-invernadero" />
+      </>)}
     </div>
   );
 }

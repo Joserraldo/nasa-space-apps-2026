@@ -408,6 +408,7 @@
   "ui.cuenta.clave": "Contraseña",
   "ui.cuenta.clave.ayuda": "Usa de 8 a 72 caracteres.",
   "ui.cuenta.repetir": "Repetir contraseña",
+  "ui.cuenta.repetir.ayuda": "Escribe la misma contraseña otra vez.",
   "ui.cuenta.ver": "Mostrar contraseña",
   "ui.cuenta.entrar": "Entrar y jugar",
   "ui.cuenta.crear": "Crear cuenta y jugar",
