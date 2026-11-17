@@ -11,6 +11,7 @@ import {
   COSTOS_ACCION,
   CONSUMO_MODULO_POR_TICK,
   CONSUMO_POR_TICK,
+  DURACION_TORMENTA_TICKS,
   MODULOS,
   RETRASO_COMUNICACIONES,
   MALA_SUERTE_POR_DIFICULTAD,
@@ -294,6 +295,21 @@ const MALA_SUERTE = [
 ] as const;
 
 /**
+ * ¿Se cumplió el objetivo de la misión en este tick? `telemetria_llega` espera el efecto pendiente
+ * de la telemetría; `telemetria_tras_tormenta` exige que ya haya llegado Y que la tormenta haya
+ * terminado (una partida sin tormenta gana en cuanto llega); `sobrevivir_hasta_tick` mira la fecha.
+ */
+function objetivoCumplido(s: GameState, mision: Mision, llegoTelemetria: boolean): boolean {
+  const exito = mision.fin.exitoCuando;
+  if (exito === "telemetria_llega") return llegoTelemetria;
+  if (typeof exito === "object") return s.tick >= exito.tick;
+  const telemetriaEnviada = s.causas.some((c) => c.origen === "decision" && c.accion?.tipo === "enviar_telemetria");
+  const pendiente = s.efectosPendientes.some((e) => e.descripcionKey === "causa.enviar_telemetria");
+  const tormentaTerminada = s.tormenta === null || s.tick >= mision.tickTormenta + DURACION_TORMENTA_TICKS;
+  return telemetriaEnviada && !pendiente && tormentaTerminada;
+}
+
+/**
  * avanzarTick(estado) -> estado. Un paso del reloj fijo: consumo pasivo,
  * efectos pendientes cuyo tick llegó, tormenta activa, mala suerte sorteada, fin de partida.
  * Si está en pausa, no hace nada.
@@ -345,7 +361,7 @@ export function avanzarTick(estado: GameState, mision: Mision = MISION_JEZERO): 
   if (RECURSOS.some((r) => s.recursos[r] <= 0)) s = { ...s, resultado: "fallo" };
   else if (mision.limiteDosisMSv !== undefined && dosisMaximaTripulacion(s) > mision.limiteDosisMSv)
     s = { ...s, resultado: "fallo", causas: [...s.causas, { tick: s.tick, origen: "sistema", descripcionKey: "causa.limite_radiacion" }] };
-  else if (s.tick <= mision.fin.tickLimite && (mision.fin.exitoCuando === "telemetria_llega" ? llegoTelemetria : s.tick >= mision.fin.exitoCuando.tick)) s = { ...s, resultado: "exito" };
+  else if (s.tick <= mision.fin.tickLimite && objetivoCumplido(s, mision, llegoTelemetria)) s = { ...s, resultado: "exito" };
   else if (s.tick >= mision.fin.tickLimite) s = { ...s, resultado: "fallo" };
   return s;
 }

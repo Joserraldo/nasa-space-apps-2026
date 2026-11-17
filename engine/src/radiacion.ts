@@ -5,6 +5,9 @@
  *                 × multiplicador de la tormenta (1 fuera de su ventana)
  *                 × (1 − REDUCCION_MAX_BLINDAJE × blindaje / 100)
  *                 × (FACTOR_REFUGIO si la tripulación está en el refugio, si no 1)
+ *                 × factorEscudo (si hay un subir_escudo activo)
+ *
+ * Escudo activo: subir_escudo reduce la dosis FACTOR_ESCUDO_POR_NIVEL por nivel durante DURACION_ESCUDO_TICKS (parámetro educativo).
  *
  * Limitaciones (es una aproximación educativa, no un cálculo de dosimetría):
  * - El fondo sí es un dato medido con fuente (RAD/Curiosity en Marte; Chang'e-4 en la Luna).
@@ -18,7 +21,9 @@
 import type { GameState } from "@solar-shield/contracts";
 import { referenciaDosis } from "@solar-shield/data";
 import {
+  DURACION_ESCUDO_TICKS,
   DURACION_REFUGIO_TICKS,
+  FACTOR_ESCUDO_POR_NIVEL,
   FACTOR_REFUGIO,
   FACTOR_TORMENTA_SIN_MEDICION,
   REDUCCION_MAX_BLINDAJE,
@@ -47,6 +52,23 @@ export function enRefugio(estado: Pick<GameState, "causas" | "tick">): boolean {
 }
 
 /**
+ * Multiplicador de la dosis por el escudo. Mira la última decisión `subir_escudo` antes del tick
+ * actual: protege el turno siguiente y DURACION_ESCUDO_TICKS. Sin escudo activo, no cambia la dosis (1).
+ */
+export function factorEscudo(estado: Pick<GameState, "causas" | "tick">): number {
+  let ultimoTick: number | undefined;
+  let nivel = 0;
+  for (const causa of estado.causas) {
+    if (causa.origen !== "decision" || causa.accion?.tipo !== "subir_escudo") continue;
+    if (causa.tick >= estado.tick) continue;
+    ultimoTick = causa.tick;
+    nivel = causa.accion.nivel;
+  }
+  if (ultimoTick === undefined || estado.tick - ultimoTick > DURACION_ESCUDO_TICKS) return 1;
+  return Math.max(0, 1 - FACTOR_ESCUDO_POR_NIVEL * nivel);
+}
+
+/**
  * Multiplicador de la dosis por la tormenta. Fuera de su ventana no hay efecto (1). En Marte manda
  * el factor medido por RAD; donde no hay medición en superficie es un valor de juego proporcional
  * a la señal de daño.
@@ -62,7 +84,7 @@ export function multiplicadorTormenta(estado: GameState, mision: Mision = MISION
 export function dosisDelTurno(estado: GameState, mision: Mision = MISION_JEZERO): number {
   const fondo = referenciaDosis(REFERENCIA_FONDO_DOSIS[estado.sitio]).valor / TICKS_POR_DIA;
   const proteccion = 1 - REDUCCION_MAX_BLINDAJE * (estado.recursos.blindaje / 100);
-  return fondo * multiplicadorTormenta(estado, mision) * proteccion * (enRefugio(estado) ? FACTOR_REFUGIO : 1);
+  return fondo * multiplicadorTormenta(estado, mision) * proteccion * (enRefugio(estado) ? FACTOR_REFUGIO : 1) * factorEscudo(estado);
 }
 
 /** Suma la dosis del turno a cada tripulante disponible. No toca nada más del estado. */

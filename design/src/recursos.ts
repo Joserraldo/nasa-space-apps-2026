@@ -214,3 +214,12 @@ export const REFERENCIA_FONDO_DOSIS: Record<Site, string> = {
   luna_lado_visible: "luna-superficie",
   outpost_sorpresa: "marte-crucero",
 };
+
+/**
+ * P0.6. PARÁMETROS EDUCATIVOS DE JUEGO, NO DATOS CIENTÍFICOS.
+ * El escudo de regolito reduce la dosis mientras está activo; estas cifras concretas no son un dato medido.
+ */
+/** Fracción de la dosis que quita cada nivel del escudo (0,25 = quita el 25 % por nivel). */
+export const FACTOR_ESCUDO_POR_NIVEL = 0.25;
+/** Turnos que protege un `subir_escudo` (desde el turno siguiente a la acción). */
+export const DURACION_ESCUDO_TICKS = 2;
