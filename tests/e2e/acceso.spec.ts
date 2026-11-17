@@ -18,6 +18,7 @@ test('invitado entra sin API ni crear cuenta y avisa antes de salir',async({page
 test('error de login permite seguir como invitado',async({page})=>{
   await page.route('**/api/auth/login',r=>r.fulfill({status:401,json:{error:'credenciales'}}));
   await page.goto('/');
+  await page.getByRole('button',{name:'Log in',exact:true}).click();
   await page.getByLabel('Username',{exact:true}).fill('piloto_1');
   await page.getByLabel('Password',{exact:true}).fill('clave-prueba');
   await page.getByRole('button',{name:'Log in and play',exact:true}).click();

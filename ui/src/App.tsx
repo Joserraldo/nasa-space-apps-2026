@@ -109,20 +109,21 @@ function Pantalla({ sesion, onSalir, idioma, setIdioma, sonido, setSonido, grafi
   // Al encender el sonido suena una nota: el jugador oye que funciona.
   const alternarSonido = () => { tocar("toque", !sonido); setSonido(!sonido); };
   // Avisos sonoros de lo que pasa en la partida: llega la tormenta, se gana o se pierde.
-  // El aviso del pie comparte la ventana con la pantalla: su alto real se publica en --alto-barra, que portada,
-  // intro, carga, órbita, sitio y final descuentan de su alto. Así el documento no se desplaza por el aviso.
+  // El aviso del pie y la barra de la cuenta (arriba) comparten la ventana con la pantalla: la suma de sus altos
+  // reales se publica en --alto-barra, que portada, intro, carga, órbita, sitio y final descuentan de su alto.
+  // Así el documento no se desplaza por ninguna de las dos barras.
   const raiz = useRef<HTMLDivElement>(null);
   const pie = useRef<HTMLElement>(null);
+  const barraCuenta = useRef<HTMLElement>(null);
   useLayoutEffect(() => {
     const caja = raiz.current;
     if (!caja) return;
-    const aviso = pie.current;
-    if (!aviso) { caja.style.setProperty("--alto-barra", "0px"); return; }
-    const medir = () => caja.style.setProperty("--alto-barra", `${Math.ceil(aviso.getBoundingClientRect().height)}px`);
+    const barras = [pie.current, barraCuenta.current].filter((b): b is HTMLElement => b !== null);
+    const medir = () => caja.style.setProperty("--alto-barra", `${barras.reduce((suma, b) => suma + Math.ceil(b.getBoundingClientRect().height), 0)}px`);
     medir();
-    if (typeof ResizeObserver === "undefined") return;
+    if (barras.length === 0 || typeof ResizeObserver === "undefined") return;
     const observador = new ResizeObserver(medir);
-    observador.observe(aviso);
+    for (const b of barras) observador.observe(b);
     return () => observador.disconnect();
   }, [enMundo]);
   const faseAnterior = useRef(j.fase);
@@ -159,7 +160,7 @@ function Pantalla({ sesion, onSalir, idioma, setIdioma, sonido, setSonido, grafi
 
   return (
     <div ref={raiz} className={enMundo ? "app app-mundo" : "app"}>
-      <aside className="cuenta-barra" aria-label={t('ui.cuenta.panel')}>
+      <aside ref={barraCuenta} className="cuenta-barra" aria-label={t('ui.cuenta.panel')}>
         <p>{sesion.usuario?t('ui.cuenta.bienvenida',{usuario:sesion.usuario}):t('ui.cuenta.invitado.activo')}</p>
         {sesion.usuario && <p role="status" aria-label={t("ui.cuenta.guardado.etiqueta")}>{t(estadoGuardado)}</p>}
         {errorSalir && <p role="alert">{t("ui.cuenta.error.salir")}</p>}
