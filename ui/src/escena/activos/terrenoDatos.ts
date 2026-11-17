@@ -13,8 +13,15 @@
  * vértices duplicados por triángulo y llamar a `computeVertexNormals()` sin compartir normales.
  */
 
-/** Presupuesto de toda la escena (docs/prompts/front-escenario.md, "Meta"). */
-export const PRESUPUESTO = { drawCalls: 80, triangulos: 80000 } as const;
+/**
+ * Presupuesto de toda la escena, cota alta de `contarRender` (cuenta dos veces lo que proyecta sombra y no
+ * descarta lo que queda fuera de cámara). Draw calls: 80 (docs/prompts/front-escenario.md, "Meta").
+ * Triángulos: eran 80 000 para la escena low poly sin horizonte; desde la Etapa BC del exterior el relieve
+ * con horizonte en tres capas (~75 000) y las rocas de 320 caras con sombra no caben. Se sube a 200 000 y
+ * manda el presupuesto en fps de `docs/referenciapau/exterior/00-comun.md` (≥ 60 fps en alta con GPU
+ * dedicada media, ≥ 30 en baja con integrada), medido al cerrar cada etapa.
+ */
+export const PRESUPUESTO = { drawCalls: 80, triangulos: 200000 } as const;
 
 /** Triángulos máximos para el terreno: 1/4 del presupuesto; el resto, para la base, el kit y los personajes. */
 export const MAX_TRIANGULOS_TERRENO = 20000;
@@ -239,6 +246,8 @@ export interface OpcionesRocas {
   escalaMax?: number;
   /** Descarta las rocas que caerían en (x, z) (caminos, edificios). Puede dar menos de `n`. */
   excluir?: (x: number, z: number) => boolean;
+  /** Altura del suelo donde se apoya cada roca (por defecto, la de la rejilla con `alturaEnMundo`). */
+  altura?: (x: number, z: number) => number;
 }
 
 /** PRNG determinista (mulberry32). */
@@ -281,7 +290,7 @@ export function rocasBasalticas(
     const r1 = azar(), r2 = azar(), r3 = azar(), r4 = azar(), r5 = azar(), r6 = azar();
     if (opciones.excluir?.(x, z)) continue;
     rocas.push({
-      posicion: [x, alturaEnMundo(terreno, opcionesMalla, x, z, m), z],
+      posicion: [x, opciones.altura ? opciones.altura(x, z) : alturaEnMundo(terreno, opcionesMalla, x, z, m), z],
       escala: [e * (0.8 + r1 * 0.4), e * (0.5 + r2 * 0.3), e * (0.8 + r3 * 0.4)],
       rotacion: [(r4 - 0.5) * 0.3, r5 * Math.PI * 2, (r6 - 0.5) * 0.3],
     });
