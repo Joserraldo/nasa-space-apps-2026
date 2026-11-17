@@ -2,7 +2,10 @@ import * as THREE from "three";
 import type { Materiales } from "../../materiales";
 import { fusionar } from "../fusionar";
 import { camilla, litera } from "./habitat";
-import { ESCALA_ESTACION as E, cargarKitEstacion, pieza, type PiezaEstacion } from "./kitEstacion";
+import { botiquin, brazoRobot, cajaAlmacen, cajaBandas, cajaRejilla, consolaPantallas, mesaComedor, mesaTaller, repisaCascos, silla, tanqueH2, tanqueO2, traje } from "./propsEstacion";
+
+/** Grid unit of the plans (room sizes and door positions), in metres. */
+const E = 0.8;
 import type { PuntoSala } from "./salaKit";
 import { cultivoVeggie, terminal } from "./salaPastel";
 import { dock, estanteBaterias } from "./taller";
@@ -48,19 +51,18 @@ export function mesaControl(m: Materiales): THREE.Group {
 }
 
 /**
- * Experimental: the base rooms built with the Likh0i kit (`kitEstacion.ts`), following the interior sheets
+ * The base rooms, built in code in a low poly station look (shell in `cascoEstacion.ts`, props in `propsEstacion.ts`
+ * and `mobiliarioEstacion.ts`), following the interior sheets
  * (airlock, engineering, habitat): open-top rooms seen from above, walls on the camera side hidden.
  *
- * A room is a plan in kit units: `ancho` x `fondo` (multiples of 4, the floor tile), gates on the north
+ * A room is a plan in grid units of 0.8 m: `ancho` x `fondo` (multiples of 4), gates on the north
  * (z = 0) or south (z = fondo) wall, an optional window on the east wall, and props. Walls, floor and gates
- * come out of the plan; props are kit pieces or the game's own furniture (in metres).
+ * come out of the plan; props are code-built pieces placed in metres.
  */
 
 export const SALAS_ESTACION = ["esclusa", "taller", "habitat", "control", "invernadero"] as const;
 export type SalaEstacion = (typeof SALAS_ESTACION)[number];
 
-/** [piece, x, z (kit units, its origin), quarter turns, collision radius in m (0 = none), y, stand up]. */
-type Prop = readonly [PiezaEstacion, number, number, number, number, number?, boolean?];
 /** [builder, x, z (metres from the room centre), turn in radians, collision radius in m]. */
 type Propio = readonly [(m: Materiales) => THREE.Object3D, number, number, number, number];
 type Lado = "norte" | "sur";
@@ -68,10 +70,9 @@ type Lado = "norte" | "sur";
 interface PlanoSala {
   ancho: number;
   fondo: number;
-  /** Gates: wall side, x of the gate's left edge (kit units), where it leads. */
+  /** Gates: wall side, x of the gate's left edge (grid units), where it leads. */
   puertas: readonly (readonly [Lado, number, string])[];
   ventanaEste: boolean;
-  kit: readonly Prop[];
   propios: readonly Propio[];
   /** How far the lit floor dashes run in from each door (m), toward what the room is for. */
   guia: number;
@@ -88,14 +89,13 @@ const PLANOS: Readonly<Record<SalaEstacion, PlanoSala>> = {
   esclusa: {
     ancho: 12, fondo: 8, ventanaEste: false,
     puertas: [["norte", 4, "pasillo"], ["sur", 4, "base"]],
-    kit: [
-      ["Spacesuite_full_4", 1.0, 1.2, 1, 0.5], ["Spacesuite_full_4", 1.0, 2.6, 1, 0.5],
-      ["Hanging_Shelf_43", 0.6, 4.4, 1, 0, 1.6], ["Helm_1_7", 1.0, 4.4, 1, 0, 2.23], ["Helm_1_7", 1.0, 5.1, 1, 0, 2.23],
-      // Crates have their origin at the centre: half their height up, so they sit on the floor.
-      ["Cube_1_26", 9.5, 6.0, 0, 0.6, 0.5], ["Cube_2_27", 10.6, 6.2, 0, 0.6, 0.54],
-    ],
     // The pad in the middle of the room (`cascoEstacion.ts`), the control desk on the north wall.
-    propios: [[padEsclusa, 0, 0, 0, 0], [mesaControl, 3.0, -2.55, 0, 1.0]],
+    propios: [
+      [padEsclusa, 0, 0, 0, 0], [mesaControl, 3.0, -2.55, 0, 1.0],
+      [traje, -4.0, -2.24, -Math.PI / 2, 0.5], [traje, -4.0, -1.12, -Math.PI / 2, 0.5],
+      [repisaCascos, -4.8, 0.6, Math.PI / 2, 0],
+      [cajaBandas, 2.8, 1.6, 0, 0.6], [cajaRejilla, 3.75, 1.75, 0.3, 0.6],
+    ],
     guia: 1.4,
   },
   // Engineering: batteries and the solar console on the north wall, the workbench with its drill, the rover
@@ -103,31 +103,27 @@ const PLANOS: Readonly<Record<SalaEstacion, PlanoSala>> = {
   taller: {
     ancho: 12, fondo: 8, ventanaEste: false,
     puertas: [["sur", 4, "pasillo"]],
-    kit: [
-      ["Table_44", 9.3, 1.6, 0, 1.0], ["Drill_13", 9.0, 1.4, 0, 0, 1.32],
-      ["Tank_O2_46", 1.2, 3.6, 1, 0.8], ["Tank_H2_48", 1.2, 6.2, 1, 0.8],
-      ["Arm_Base_16", 2.6, 1.6, 0, 0.5, 0, true], ["Arm_17", 2.6, 1.6, 0, 0, 0.3, true],
-      ["Cube_4_29", 9.6, 6.6, 0, 0.6],
-    ],
     propios: [
+      [mesaTaller, 2.64, -1.92, 0, 1.0],
+      [tanqueO2, -3.84, -0.32, Math.PI / 2, 0.8], [tanqueH2, -3.84, 1.76, Math.PI / 2, 0.8],
+      [brazoRobot, -2.72, -1.92, 0, 0.5],
+      [cajaAlmacen, 2.88, 2.08, 0, 0.6],
       [estanteBaterias, -3.6, -2.7, 0, 0.9],
       [mesaControl, -0.2, -2.55, 0, 1.1],
       [dock, 3.9, 0.7, Math.PI / 2, 0.9],
     ],
     guia: 2.4,
   },
-  // Habitat: bunk on the west wall, meals in the middle with kit chairs, the crew terminal and the Veggie
+  // Habitat: bunk on the west wall, meals in the middle, the crew terminal and the Veggie
   // garden on the north wall, the infirmary (bed and first aid) by the east wall.
   habitat: {
     ancho: 12, fondo: 8, ventanaEste: false,
     puertas: [["sur", 4, "pasillo"]],
-    kit: [
-      // The table (its origin is its centre) sits off the door's lane, chairs at its ends.
-      ["Table_44", 3.6, 4.4, 0, 1.2],
-      ["Chair_Blue_37", 1.9, 4.4, 1, 0], ["Chair_Blue_37", 5.3, 4.4, 3, 0],
-      ["First_Aid_11", 11.4, 1.4, 2, 0, 1.4],
-    ],
     propios: [
+      // Meals: the table sits off the door's lane, a chair at each end facing it.
+      [mesaComedor, -1.92, 0.32, 0, 1.2],
+      [silla, -3.3, 0.32, Math.PI / 2, 0], [silla, -0.54, 0.32, -Math.PI / 2, 0],
+      [botiquin, 4.8, -2.08, -Math.PI / 2, 0],
       [litera, -3.4, -2.2, 0, 1.2],
       [terminal, -0.6, -2.85, 0, 0.6],
       [cultivoVeggie, 1.2, -2.85, 0, 0.7],
@@ -140,11 +136,9 @@ const PLANOS: Readonly<Record<SalaEstacion, PlanoSala>> = {
   control: {
     ancho: 12, fondo: 8, ventanaEste: true,
     puertas: [["sur", 4, "pasillo"]],
-    kit: [
-      ["Chair_Blue_37", 9.6, 1.8, 1, 0], ["Chair_Blue_37", 9.6, 5.2, 1, 0],
-      ["Computer_41", 2.6, 0.6, 0, 0.6],
-    ],
     propios: [
+      [silla, 2.95, -1.35, Math.PI / 2, 0], [silla, 2.95, 1.35, Math.PI / 2, 0],
+      [consolaPantallas, -1.52, -2.75, 0, 0.9],
       [mesaMapa, 0, -0.4, 0, 1.15],
       [mesaControl, 4.25, -1.35, -Math.PI / 2, 0.9],
       [mesaControl, 4.25, 1.35, -Math.PI / 2, 0.9],
@@ -160,7 +154,6 @@ const PLANOS: Readonly<Record<SalaEstacion, PlanoSala>> = {
   invernadero: {
     ancho: 12, fondo: 8, ventanaEste: true,
     puertas: [["sur", 4, "pasillo"]],
-    kit: [],
     propios: [
       [jardineraTrigo, -2.2, -1.8, 0, 0], [jardineraTrigo, 2.2, -1.8, 0, 0],
       [jardineraPimiento, -2.2, 0, 0, 0], [jardineraPimiento, 2.2, 0, 0, 0],
@@ -191,7 +184,7 @@ const medio = (p: PlanoSala) => ({ x: (p.ancho * E) / 2, z: (p.fondo * E) / 2 })
 
 /**
  * The game furniture (bunk, battery shelf, dock, terminal...) is built with the game materials, ivory and
- * teal; inside the station it gets the kit's colours instead, so it does not read as pasted in.
+ * teal; inside the station it gets the station colours instead, so it does not read as pasted in.
  */
 function materialesEstacion(m: Materiales): Materiales {
   const copia = (k: keyof Materiales, color: string, extra: Partial<THREE.MeshStandardMaterialParameters> = {}) => {
@@ -258,7 +251,7 @@ export function crearSalaEstacion(sala: SalaEstacion, materialesJuego: Materiale
     raiz.add(fusionar(g, `Station_Own_Furniture_${sala}`));
   }
 
-  // Wall runs in metres, filled when the kit arrives; the camera reads `muros` from the first frame.
+  // Wall runs in metres; the camera reads `muros` from the first frame.
   const muros: MuroSala[] = (["norte", "sur", "oeste", "este"] as const).map((lado) => {
     const grupo = new THREE.Group();
     grupo.name = `Station_Wall_${lado}`;
@@ -310,22 +303,6 @@ export function crearSalaEstacion(sala: SalaEstacion, materialesJuego: Materiale
     g.add(placa);
   }
 
-  // Props from the station kit (to be replaced by code-built ones as well).
-  if (plano.kit.length) void cargarKitEstacion().then((kit) => {
-    // Kit-unit content lives in one scaled group whose origin is the room's north-west inner corner.
-    const enKit = (o: THREE.Object3D, destino: THREE.Group) => {
-      o.position.multiplyScalar(E);
-      o.position.x -= m.x;
-      o.position.z -= m.z;
-      o.scale.multiplyScalar(E);
-      destino.add(o);
-    };
-    const props = new THREE.Group();
-    props.name = "Station_Props";
-    raiz.add(props);
-    for (const [nombre, x, z, cuartos, , y = 0, dePie = false] of plano.kit) enKit(pieza(kit, nombre, x, z, cuartos, y, dePie), props);
-  });
-
   // Lit dashes from each door toward what the room is for, and a yellow line across each threshold.
   const tramos: Segmento[] = [], umbrales: { x: number; z: number; giro: number }[] = [];
   for (const [lado, x] of plano.puertas) {
@@ -358,12 +335,9 @@ export function puertasSalaEstacion(sala: SalaEstacion) {
 /** Props to bump into and use. Kit props sit by their grid corner: their centre is about a metre in. */
 export function puntosSalaEstacion(sala: SalaEstacion): PuntoSala[] {
   const p = PLANOS[sala], m = medio(p);
-  const kit = p.kit.filter(([, , , , r]) => r > 0).map(([nombre, x, z, , radio], i) => ({
-    id: `${nombre.replace(/_\d+$/, "")}_${i}`, x: x * E - m.x + 0.4, z: z * E - m.z + 0.4, radio, interactivo: true,
-  }));
   const propios = p.propios.filter(([, , , , r]) => r > 0).map(([f, x, z, , radio]) => ({ id: f.name, x, z, radio, interactivo: true }));
   const choques = (p.choques ?? []).map(([x, z, radio], i) => ({ id: `choque_${i}`, x, z, radio, interactivo: false }));
-  return [...kit, ...propios, ...choques];
+  return [...propios, ...choques];
 }
 
 /** Lights of an open-top room: a low fill and one warm key from the side, so walls and props cast shadows. */

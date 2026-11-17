@@ -1,5 +1,6 @@
 import * as THREE from "three";
-import { cargarKitEstacion, ESCALA_ESTACION, pieza, type PiezaEstacion } from "./kitEstacion";
+import { fusionar } from "../fusionar";
+import { cajaBandas, cajaRejilla, matafuego, tanqueO2, traje } from "./propsEstacion";
 import type { PuntoSala } from "./salaKit";
 import { AMBIENTE_KIT, ALTURA_PISO, colocarTramos, CRUCE_T, FIN, luzTecho, PARED, puertaVisible, TRAMO, type Tramo } from "./kitPastel";
 import { guiaPiso, letrero, type Segmento } from "./guias";
@@ -50,25 +51,24 @@ export function ramalPasillo(x: number, z: number): string | null {
 }
 
 /**
- * Life along the corridor, from the station kit (CC BY, Likh0i): fire extinguishers on the end walls, a stack
- * of crates and a gas tank against the walls of the crossings, a spare suit by the airlock branch. [piece, x, z,
- * y (metres; props have their origin at the centre, so y lifts them onto the floor panels), quarter turns,
- * collision radius in m, stand up (authored lying down)].
+ * Life along the corridor, code-built props (`propsEstacion.ts`): fire extinguishers on the walls by the end
+ * doors, a stack of crates and a gas tank against the walls of the crossings, a spare suit by the airlock branch.
+ * [builder, x, z, y (metres; the floor panels are ALTURA_PISO up), turn in radians, collision radius in m].
  */
-const EQUIPO: readonly (readonly [PiezaEstacion, number, number, number, number, number, boolean?])[] = [
-  ["Fire_Extinguisher_1", -2 * TRAMO - 0.6, 1.05, ALTURA_PISO + 0.6, 2, 0.35, true],
-  ["Fire_Extinguisher_1", 2 * TRAMO + 0.6, -1.05, ALTURA_PISO + 0.6, 0, 0.35, true],
-  ["Cube_2_27", -TRAMO - 0.6, -1.3, ALTURA_PISO + 0.43, 0, 0.5],
-  ["Cube_1_26", -TRAMO - 0.6, -1.3, ALTURA_PISO + 1.2, 1, 0],
-  ["Tank_O2_46", 1.3, 1.45, ALTURA_PISO, 0, 0],
-  ["Spacesuite_full_4", 1.25, -TRAMO - 0.6, ALTURA_PISO, 3, 0.35],
+const EQUIPO: readonly (readonly [() => THREE.Object3D, number, number, number, number, number])[] = [
+  [matafuego, -2 * TRAMO - 0.6, 1.35, ALTURA_PISO + 0.45, Math.PI, 0.3],
+  [matafuego, 2 * TRAMO + 0.6, -1.35, ALTURA_PISO + 0.45, 0, 0.3],
+  [cajaRejilla, -TRAMO - 0.6, -1.15, ALTURA_PISO, 0, 0.55],
+  [cajaBandas, -TRAMO - 0.6, -1.15, ALTURA_PISO + 0.8, 0.4, 0],
+  [tanqueO2, 1.3, 1.3, ALTURA_PISO, 0, 0],
+  [traje, 1.25, -TRAMO - 0.6, ALTURA_PISO, -Math.PI / 2, 0.35],
 ];
 
 /** Obstacles of the corridor (the equipment above, by its centre). */
 export const PUNTOS_PASILLO: PuntoSala[] = EQUIPO.filter(([, , , , , r]) => r > 0)
-  .map(([nombre, x, z, , , radio], i) => ({ id: `${nombre.replace(/_\d+$/, "")}_${i}`, x, z, radio, interactivo: false }));
+  .map(([f, x, z, , , radio], i) => ({ id: `${f.name}_${i}`, x, z, radio, interactivo: false }));
 
-/** Builds the corridor. Returns the group at once and adds the kit pieces when they arrive. */
+/** Builds the corridor. Returns the group at once and adds the kit shell when it arrives. */
 export function crearPasillo(): THREE.Group {
   const raiz = new THREE.Group();
   raiz.name = "Corridor_Kit";
@@ -89,13 +89,14 @@ export function crearPasillo(): THREE.Group {
   const umbrales = PUERTAS_PASILLO.map((p) => ({ x: p.x + Math.sin(p.entrada.giro) * 0.15, z: p.z + Math.cos(p.entrada.giro) * 0.15, giro: p.entrada.giro }));
   raiz.add(guiaPiso(tramos, umbrales, ALTURA_PISO + 0.01, 1.7));
   colocarTramos(raiz, TRAMOS);
-  void cargarKitEstacion().then((kit) => {
-    for (const [nombre, x, z, y, cuartos, , dePie] of EQUIPO) {
-      const o = pieza(kit, nombre, x, z, cuartos, y, dePie);
-      o.scale.setScalar(ESCALA_ESTACION);
-      raiz.add(o);
-    }
-  });
+  const equipo = new THREE.Group();
+  for (const [f, x, z, y, giro] of EQUIPO) {
+    const o = f();
+    o.position.set(x, y, z);
+    o.rotation.y = giro;
+    equipo.add(o);
+  }
+  raiz.add(fusionar(equipo, "Corridor_Equipment"));
   return raiz;
 }
 
