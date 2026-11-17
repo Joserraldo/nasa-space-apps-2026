@@ -6,7 +6,6 @@ import { ESCALA_ESTACION as E, cargarKitEstacion, pieza, type PiezaEstacion } fr
 import type { PuntoSala } from "./salaKit";
 import { cultivoVeggie, terminal } from "./salaPastel";
 import { dock, estanteBaterias } from "./taller";
-import { marcoPuerta } from "./marcoPuerta";
 import { caja, chaflan, grupo } from "../piezasComunes";
 
 const NEGRO_MESA = new THREE.MeshStandardMaterial({ name: "Desk_Top", color: "#1D1E2A", roughness: 0.55 });
@@ -84,7 +83,7 @@ const PLANOS: Readonly<Record<SalaEstacion, PlanoSala>> = {
       ["Floor_M_2_100", 4.5, 2.5, 0, 0, 0.02],
       ["Cube_1_26", 9.5, 6.0, 0, 0.6], ["Cube_2_27", 10.6, 6.2, 0, 0.6],
     ],
-    propios: [[mesaControl, 2.6, -2.55, 0, 1.0]],
+    propios: [[mesaControl, 3.0, -2.55, 0, 1.0]],
   },
   // Engineering: batteries and the solar console on the north wall, the workbench with its drill, the rover
   // dock on the east wall, gas tanks and the robot arm on the west wall.
@@ -100,7 +99,7 @@ const PLANOS: Readonly<Record<SalaEstacion, PlanoSala>> = {
     propios: [
       [estanteBaterias, -3.6, -2.7, 0, 0.9],
       [mesaControl, -0.2, -2.55, 0, 1.1],
-      [dock, 3.9, 0.7, -Math.PI / 2, 0.9],
+      [dock, 3.9, 0.7, Math.PI / 2, 0.9],
     ],
   },
   // Habitat: bunk on the west wall, meals in the middle with kit chairs, the crew terminal and the Veggie
@@ -137,7 +136,28 @@ export interface Sala3D {
 /** Half sizes in metres. */
 const medio = (p: PlanoSala) => ({ x: (p.ancho * E) / 2, z: (p.fondo * E) / 2 });
 
-export function crearSalaEstacion(sala: SalaEstacion, materiales: Materiales): Sala3D {
+/**
+ * The game furniture (bunk, battery shelf, dock, terminal...) is built with the game materials, ivory and
+ * teal; inside the station it gets the kit's colours instead, so it does not read as pasted in.
+ */
+function materialesEstacion(m: Materiales): Materiales {
+  const copia = (k: keyof Materiales, color: string, extra: Partial<THREE.MeshStandardMaterialParameters> = {}) => {
+    const c = m[k].clone();
+    c.color.set(color);
+    Object.assign(c, extra);
+    return c;
+  };
+  return {
+    ...m,
+    SuitBase: copia("SuitBase", "#F2F0EC"),
+    Accent: copia("Accent", "#2F8EEA"),
+    Boots: copia("Boots", "#2B2C38"),
+    Emissive: copia("Emissive", "#5AB4FF", { emissive: new THREE.Color("#5AB4FF") }),
+  };
+}
+
+export function crearSalaEstacion(sala: SalaEstacion, materialesJuego: Materiales): Sala3D {
+  const materiales = materialesEstacion(materialesJuego);
   const plano = PLANOS[sala];
   const raiz = new THREE.Group();
   raiz.name = `Station_Room_${sala}`;
@@ -175,10 +195,16 @@ export function crearSalaEstacion(sala: SalaEstacion, materiales: Materiales): S
     };
     const suelo = new THREE.Group();
     suelo.name = "Station_Floor";
+    // The rooms stand inside the Mars colony: regolith all around, under the open top.
+    const marte = new THREE.Mesh(new THREE.PlaneGeometry(160, 160), new THREE.MeshStandardMaterial({ name: "Station_Outside", color: "#C97A5E", roughness: 1 }));
+    marte.rotation.x = -Math.PI / 2;
+    marte.position.y = -0.05;
+    marte.receiveShadow = true;
+    raiz.add(marte);
     raiz.add(suelo);
-    for (let x = 0; x < plano.ancho; x += 4) for (let z = 0; z < plano.fondo; z += 4) enKit(pieza(kit, "Floor_L_98", x, z), suelo);
     // A mid grey floor under white walls and furniture: the room gets a base tone and the shadows read.
     const piso = new THREE.MeshStandardMaterial({ name: "Station_Floor", color: "#C2C0CC", roughness: 0.75, metalness: 0 });
+    for (let x = 0; x < plano.ancho; x += 4) for (let z = 0; z < plano.fondo; z += 4) enKit(pieza(kit, "Floor_L_98", x, z), suelo);
     suelo.traverse((o) => { if (o instanceof THREE.Mesh) { o.material = piso; o.castShadow = false; } });
 
     const [norte, sur, oeste, este] = muros.map((mu) => mu.grupo) as [THREE.Group, THREE.Group, THREE.Group, THREE.Group];
@@ -196,9 +222,26 @@ export function crearSalaEstacion(sala: SalaEstacion, materiales: Materiales): S
       enKit(pieza(kit, "Wall_L_long_frame_92", plano.ancho, 1, 0), este);
       enKit(pieza(kit, "Wall_L_long_window_93", plano.ancho, 1, 0), este);
     }
-    // Doorways: the lit frame of the interior pack, centred on the gap in the wall.
+    // Gates straddle the wall line (2 deep, the wall is 0.5), and behind each one a short lit stretch of
+    // corridor (floor, side walls, end wall) shows where it leads instead of a black hole.
     for (const [lado, x] of plano.puertas) {
-      marcoPuerta(lado === "norte" ? norte : sur, (x + 2) * E - m.x, lado === "norte" ? -m.z : m.z, 0, 4 * E);
+      const g = lado === "norte" ? norte : sur;
+      const n = lado === "norte";
+      enKit(pieza(kit, "Gate_L_127", x, n ? -1.25 : plano.fondo - 0.75), g);
+      const z0 = n ? -5.25 : plano.fondo + 0.75; // stub floor tile corner
+      // The stub floor belongs to its wall run, so it hides with it when it is on the camera side.
+      const pisoTramo = pieza(kit, "Floor_L_98", x, z0);
+      pisoTramo.traverse((o) => { if (o instanceof THREE.Mesh) o.material = piso; });
+      enKit(pisoTramo, g);
+      for (const dz of [0, 2]) {
+        enKit(pieza(kit, "Wall_L_66", x, z0 + dz + 2, 2), g);
+        enKit(pieza(kit, "Wall_L_66", x + 4, z0 + dz, 0), g);
+      }
+      const zFin = n ? z0 : z0 + 4;
+      for (const dx of [0, 2]) enKit(n ? pieza(kit, "Wall_L_66", x + dx, zFin, 1) : pieza(kit, "Wall_L_66", x + dx + 2, zFin, 3), g);
+      const luz = new THREE.PointLight("#9CCBFF", 3, 5, 2);
+      luz.position.set((x + 2) * E - m.x, 1.8, (z0 + 2) * E - m.z);
+      raiz.add(luz);
     }
 
     const props = new THREE.Group();
@@ -239,6 +282,7 @@ export function puntosSalaEstacion(sala: SalaEstacion): PuntoSala[] {
 
 /** Lights of an open-top room: a low fill and one warm key from the side, so walls and props cast shadows. */
 export const AMBIENTE_ESTACION = {
-  fondoEscena: "#1D1E2A",
+  // Martian daytime sky, the same caramel horizon as outdoors.
+  fondoEscena: "#F2CDB0",
   luz: { color: "#FFE9D2", intensidad: 2.1, hemiCielo: "#EEF0FA", hemiSuelo: "#6E6985", hemi: 1.15 },
 } as const;

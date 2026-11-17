@@ -62,6 +62,10 @@ export interface OpcionesSalaJugable {
 }
 
 export interface SalaJugable {
+  /** Touch stick direction (screen right, screen down), each -1..1; (0, 0) stops. */
+  fijarEje(x: number, z: number): void;
+  /** Same as pressing E. */
+  usar(): void;
   quitar(): void;
 }
 
@@ -94,6 +98,9 @@ export function montarSalaJugable(canvas: HTMLCanvasElement, sala: EspacioJugabl
   const llegada = (puertas.find((d) => d.destino === o.desde) ?? puertas[0]!).entrada;
   nino.grupo.position.set(llegada.x, piso, llegada.z);
   nino.grupo.traverse((x) => { if (x instanceof THREE.Mesh) x.castShadow = true; });
+  // Inside the pressurised base the kid takes the helmet off (from above, its tinted glass also hid his hair).
+  const casco = nino.grupo.getObjectByName("casco");
+  if (casco) casco.visible = false;
   escena.add(nino.grupo);
 
   // Floor ring under the thing within reach.
@@ -109,6 +116,13 @@ export function montarSalaJugable(canvas: HTMLCanvasElement, sala: EspacioJugabl
     const w = canvas.clientWidth || innerWidth, h = canvas.clientHeight || innerHeight;
     renderer.setSize(w, h, false);
     camara.aspect = w / h;
+    // Keep the horizontal view of a 16:10 screen on narrow (portrait) ones, up to 85 degrees vertical.
+    if (esEstacion(sala) || sala === "pasillo") {
+      const base = sala === "pasillo" ? 62 : 50;
+      const horizontal = Math.atan(Math.tan(THREE.MathUtils.degToRad(base / 2)) * 1.6);
+      const vertical = THREE.MathUtils.radToDeg(2 * Math.atan(Math.tan(horizontal) / camara.aspect));
+      camara.fov = THREE.MathUtils.clamp(vertical, base, 85);
+    }
     camara.updateProjectionMatrix();
   };
   ajustar();
@@ -150,6 +164,8 @@ export function montarSalaJugable(canvas: HTMLCanvasElement, sala: EspacioJugabl
   canvas.addEventListener("pointerup", alSoltarPuntero);
   canvas.addEventListener("pointercancel", alSoltarPuntero);
 
+  // Touch stick (`fijarEje`): -1..1 on each axis, screen right and screen down; adds to the keys.
+  const tactil = { x: 0, z: 0 };
   const eje = (pos: string[], neg: string[]) => (pos.some((k) => teclas.has(k)) ? 1 : 0) - (neg.some((k) => teclas.has(k)) ? 1 : 0);
   const p = nino.grupo.position;
   let giro = llegada.giro;
@@ -167,8 +183,8 @@ export function montarSalaJugable(canvas: HTMLCanvasElement, sala: EspacioJugabl
   let t = 0;
 
   function mover(dt: number): boolean {
-    let dx = eje(["KeyD", "ArrowRight"], ["KeyA", "ArrowLeft"]);
-    let dz = eje(["KeyS", "ArrowDown"], ["KeyW", "ArrowUp"]);
+    let dx = THREE.MathUtils.clamp(eje(["KeyD", "ArrowRight"], ["KeyA", "ArrowLeft"]) + tactil.x, -1, 1);
+    let dz = THREE.MathUtils.clamp(eje(["KeyS", "ArrowDown"], ["KeyW", "ArrowUp"]) + tactil.z, -1, 1);
     if (dentroTubo) {
       // Camera-relative: up is "forward along the view", right is "to the screen right".
       const avance = -dz, lado = dx;
@@ -233,7 +249,10 @@ export function montarSalaJugable(canvas: HTMLCanvasElement, sala: EspacioJugabl
     if (esEstacion(sala)) {
       // From above and behind; the wall runs facing the camera hide, so the room reads like the sheets.
       const fx = Math.sin(rumbo + giroManual), fz = Math.cos(rumbo + giroManual);
-      camara.position.set(p.x - fx * 6.2, 5.6, p.z - fz * 6.2);
+      // Portrait: higher and closer, looking more down, so the room fills the tall screen.
+      const vertical = camara.aspect < 1;
+      const atrasSala = vertical ? 4.2 : 6.2, alto = vertical ? 7.8 : 5.6;
+      camara.position.set(p.x - fx * atrasSala, alto, p.z - fz * atrasSala);
       camara.lookAt(p.x + fx * 0.8, 0.6, p.z + fz * 0.8);
       for (const m of muros) m.grupo.visible = -(m.normal[0] * fx + m.normal[1] * fz) < 0.35;
     } else if (dentroTubo) {
@@ -268,6 +287,14 @@ export function montarSalaJugable(canvas: HTMLCanvasElement, sala: EspacioJugabl
   if (!document.hidden) renderer.setAnimationLoop(cuadro);
 
   return {
+    fijarEje(x, z) {
+      tactil.x = x;
+      tactil.z = z;
+    },
+    usar() {
+      alBajar(new KeyboardEvent("keydown", { code: "KeyE" }));
+      teclas.delete("KeyE");
+    },
     quitar() {
       renderer.setAnimationLoop(null);
       document.removeEventListener("visibilitychange", alVisibilidad);
