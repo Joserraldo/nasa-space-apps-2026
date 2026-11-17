@@ -28,7 +28,7 @@ const NORMAL_ARRIBA = 0.7;
  * que miran al cielo (polvo depositado, MARTE §3), `lados` en el resto, y una variación al azar de
  * hasta `variacion` hacia `oscuro` para que cada faceta se distinga. Va tras `computeVertexNormals()`.
  */
-function pintarPorNormal(geo: THREE.BufferGeometry, arriba: THREE.Color, lados: THREE.Color, oscuro: THREE.Color, semilla: number, variacion: number): void {
+export function pintarPorNormal(geo: THREE.BufferGeometry, arriba: THREE.Color, lados: THREE.Color, oscuro: THREE.Color, semilla: number, variacion: number): void {
   const normal = geo.getAttribute("normal");
   const colores = new Float32Array(normal.count * 3);
   const c = new THREE.Color();
@@ -95,7 +95,7 @@ const SEMILLA_FORMA_GRAVILLA = 1984;
  * Tonos de roca (lámina `mundo/01` y `exterior/02`): lados rojizo terroso oscuro (`roca-basalto`
  * calentado con `regolito-claro`, así no sale magenta) y cara superior más clara por el polvo. [E]
  */
-const TONO_ROCA = { lados: 0.35, arriba: 0.5, variacion: 0.3 } as const;
+export const TONO_ROCA = { lados: 0.35, arriba: 0.5, variacion: 0.3 } as const;
 
 /**
  * Trozo facetado cerrado a partir de un poliedro no indexado: cada vértice se aleja del centro al
@@ -103,7 +103,7 @@ const TONO_ROCA = { lados: 0.35, arriba: 0.5, variacion: 0.3 } as const;
  * hacia un lado (roca asimétrica), se aplana la cima a `cima` (cara superior legible) y se hunde
  * `hundir` en el suelo. Pintado por normal con `TONO_ROCA`.
  */
-function trozoFacetado(geo: THREE.BufferGeometry, semilla: number, dMin: number, dMax: number, cima: number, hundir: number): THREE.BufferGeometry {
+export function trozoFacetado(geo: THREE.BufferGeometry, semilla: number, dMin: number, dMax: number, cima: number, hundir: number): THREE.BufferGeometry {
   const pos = geo.getAttribute("position");
   const azar = aleatorio(semilla);
   const desplazamiento = new Map<string, number>();
