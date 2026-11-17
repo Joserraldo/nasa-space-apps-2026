@@ -2,7 +2,7 @@ import * as THREE from "three";
 import { crearMateriales } from "./materiales";
 import { ambienteSalaKit, crearSalaKit, PUERTA_SALA, puntosSalaKit, type PuntoSala, type SalaKit } from "./activos/interiores/salaKit";
 import { AMBIENTE_PASILLO, crearPasillo, PUERTAS_PASILLO, ZONAS_PASILLO } from "./activos/interiores/pasillo";
-import { AMBIENTE_TALLER_PASTEL, crearTallerPastel, PUERTAS_TALLER_PASTEL, puntosTallerPastel, ZONAS_TALLER_PASTEL } from "./activos/interiores/tallerPastel";
+import { AMBIENTE_SALA_PASTEL, crearSalaPastel, PUERTAS_SALA_PASTEL, puntosSalaPastel, ZONAS_SALA_PASTEL } from "./activos/interiores/salaPastel";
 import { animar, crearPersonaje } from "./personajes";
 
 /**
@@ -34,12 +34,12 @@ function datosEspacio(espacio: EspacioJugable) {
   if (espacio === "pasillo") {
     return { raiz: crearPasillo(), amb: AMBIENTE_PASILLO, zonas: ZONAS_PASILLO as readonly Caja[], puntos: [] as PuntoSala[], puertas: PUERTAS_PASILLO as readonly Puerta[] };
   }
-  if (espacio === "taller") {
-    // The workshop is the pastel kit hall now; the habitat and the Outpost still use the cut-away rooms.
-    return { raiz: crearTallerPastel(crearMateriales()), amb: AMBIENTE_TALLER_PASTEL, zonas: ZONAS_TALLER_PASTEL as readonly Caja[], puntos: puntosTallerPastel(), puertas: PUERTAS_TALLER_PASTEL as readonly Puerta[] };
+  if (espacio === "taller" || espacio === "habitat") {
+    // Workshop and habitat are pastel kit halls opening to the corridor; the Outpost still uses the cut-away room.
+    return { raiz: crearSalaPastel(espacio, crearMateriales()), amb: AMBIENTE_SALA_PASTEL, zonas: ZONAS_SALA_PASTEL as readonly Caja[], puntos: puntosSalaPastel(espacio), puertas: PUERTAS_SALA_PASTEL as readonly Puerta[] };
   }
-  // The habitat opens to the corridor; the Outpost (on the ship) back to the base.
-  const destino = espacio === "outpost" ? "base" : "pasillo";
+  // The Outpost (on the ship) opens back to the base.
+  const destino = "base";
   const puerta: Puerta = { destino, x: PUERTA_SALA.x, z: PUERTA_SALA.z - 0.5, entrada: { x: PUERTA_SALA.x, z: PUERTA_SALA.z, giro: 0 } };
   return { raiz: crearSalaKit(espacio, crearMateriales()), amb: ambienteSalaKit(espacio), zonas: [CAJA] as readonly Caja[], puntos: puntosSalaKit(espacio), puertas: [puerta] as readonly Puerta[] };
 }
@@ -97,7 +97,7 @@ export function montarSalaJugable(canvas: HTMLCanvasElement, sala: EspacioJugabl
   escena.add(anillo);
 
   // Wider lens inside the tube, so the kid fits whole in front of the camera.
-  const camara = new THREE.PerspectiveCamera(sala === "pasillo" || sala === "taller" ? 62 : 45, 1, 0.1, 200);
+  const camara = new THREE.PerspectiveCamera(sala !== "outpost" ? 62 : 45, 1, 0.1, 200);
   const ajustar = () => {
     const w = canvas.clientWidth || innerWidth, h = canvas.clientHeight || innerHeight;
     renderer.setSize(w, h, false);
@@ -127,13 +127,13 @@ export function montarSalaJugable(canvas: HTMLCanvasElement, sala: EspacioJugabl
   let giro = llegada.giro;
   nino.grupo.rotation.y = giro;
   // Inside the kit spaces the camera rides behind the kid. In the corridor it looks along the run he is in:
-  // the main run in the direction he came in, the airlock branch toward its far end; in the workshop hall it
-  // looks at the back wall. It only turns at the crossing, so the controls never flip on their own.
-  const dentroTubo = sala === "pasillo" || sala === "taller";
+  // the main run in the direction he came in, the airlock branch toward its far end; in the workshop and habitat
+  // halls it looks at the back wall. It only turns at the crossing, so the controls never flip on their own.
+  const dentroTubo = sala !== "outpost";
   const desdeEsclusa = o.desde === "base";
   const rumboPrincipal = Math.abs(Math.abs(llegada.giro) - Math.PI / 2) < 0.1 ? llegada.giro : Math.PI / 2;
   const rumboRamal = desdeEsclusa ? 0 : Math.PI;
-  let rumbo = sala === "taller" ? Math.PI : dentroTubo && llegada.z < -1.4 ? rumboRamal : rumboPrincipal;
+  let rumbo = sala !== "pasillo" ? Math.PI : dentroTubo && llegada.z < -1.4 ? rumboRamal : rumboPrincipal;
   let previo = 0;
   let t = 0;
 
@@ -201,7 +201,7 @@ export function montarSalaJugable(canvas: HTMLCanvasElement, sala: EspacioJugabl
     if (a !== null) anillo.scale.setScalar(("destino" in a ? 1 : Math.max(0.6, a.radio + 0.25)) * (1 + 0.05 * Math.sin(t * 5)));
 
     if (dentroTubo) {
-      const meta = sala === "taller" ? Math.PI : p.z < -1.4 ? rumboRamal : rumboPrincipal;
+      const meta = sala !== "pasillo" ? Math.PI : p.z < -1.4 ? rumboRamal : rumboPrincipal;
       rumbo += Math.atan2(Math.sin(meta - rumbo), Math.cos(meta - rumbo)) * Math.min(1, dt * 3);
       // Chase camera near the ceiling, pulled in when a wall is closer than its usual distance.
       const fx = Math.sin(rumbo), fz = Math.cos(rumbo);
