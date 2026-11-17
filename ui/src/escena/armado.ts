@@ -31,6 +31,7 @@ import {
   PASO_POR_DEFECTO,
   TAMANO_MUNDO_POR_DEFECTO,
   aplanarClaro,
+  crearMesetas,
   crearMontanas,
   crearGravilla,
   crearRocas,
@@ -72,7 +73,7 @@ export const CLARO = { radio: 34, borde: 46 } as const;
 /** Rocas sueltas fuera del claro. [E] */
 export const ROCAS = { n: 40, semilla: 42, radioMin: 24, radio: 110 } as const;
 /** Rocas grandes facetadas en el borde del claro (lámina `mundo/01`). [E] */
-export const ROCAS_GRANDES = { n: 14, semilla: 9, radioMin: 15, radio: 28, escalaMin: 1.2, escalaMax: 2.6 } as const;
+export const ROCAS_GRANDES = { n: 26, semilla: 9, radioMin: 15, radio: 28, escalaMin: 1.2, escalaMax: 2.6 } as const;
 
 /** Radio en planta de una roca (la roca maestra mide hasta 1,2 u de radio por unidad de escala). */
 export function radioRoca(r: TransformacionRoca): number {
@@ -199,7 +200,7 @@ export function armarEscena(
   // Las rocas de primer plano están dentro del claro llano (y = 0): no esperan al DEM.
   const primerPlano = instanciarRocasAltas(materiales, ROCAS_PRIMER_PLANO, "Rocks_Basalt_Foreground");
   base.add(armarAnclajes(materiales), armarKit(materiales), armarEdificios(materiales), primerPlano, ...MODULOS_BASE.map((id) => modulos[id].raiz));
-  escena.add(terreno, base, crearMontanas(materiales));
+  escena.add(terreno, base, crearMontanas(materiales), crearMesetas(materiales));
 
   const armada: EscenaArmada = {
     escena,

@@ -3,6 +3,7 @@ import * as THREE from "three";
 import { colorToken } from "../materiales";
 import { BANCO, LUGARES, TERRENO, lugar, type LugarId } from "../mundo";
 import { MallaPavimento, barrer, dentroDe, type Franja, type PuntoPavimento } from "./pavimento";
+import { POS_ESTACIONES } from "./estaciones";
 
 type P2 = PuntoPavimento;
 
@@ -62,6 +63,22 @@ export const ANILLO: readonly P2[] = [
   [0, -12.9], [5.5, -12.6], [10.8, -11.4], [13.4, -8.2], [14.5, -3.6], [14.9, 1.6], [14.6, 6.4], [11.8, 9.9], [6, 11.0],
   [-2.4, 11.0], [-11.6, 8.6], [-13.6, 3.6], [-13.2, -0.5], [-13.4, -5.0], [-12.6, -9.0], [-9.6, -11.9], [-5, -12.9], [0, -12.9],
 ];
+/**
+ * Ramales de la colonia (lámina `04_Organizacion/01_distribucion_exterior`): del anillo a los edificios
+ * del borde, para que ninguno quede suelto en el regolito. Terminan a unos pasos de cada edificio, fuera
+ * de su huella; la parte que pasa el límite caminable (20 m) es solo decorado. [E]
+ * - Nave: del codo oeste a la escalera de la plataforma.
+ * - Refugio: del codo suroeste a su puerta.
+ * - Cúpulas del invernadero: del codo noreste, por fuera del laboratorio y de su tubo de vidrio.
+ * - Paneles: del codo noroeste al campo de energía.
+ */
+export const RAMALES: readonly (readonly P2[])[] = [
+  [[-13.4, -5.0], [-19.2, -6.2]],
+  [[-11.6, 8.6], [-15.3, 13.1]],
+  [[10.8, -11.4], [10.6, -22.4]],
+  [[13.4, -8.2], [19.6, -19.4]],
+  [[-12.6, -9.0], [-18.0, -14.1]],
+];
 /** Semiancho extra del camino ancho respecto de los demás. */
 const EXTRA_TRONCAL = (CAMINO.anchoTroncal - CAMINO.ancho) / 2;
 const semianchoDe = (tramo: readonly P2[]) => CAMINO.ancho / 2 + (TRONCAL.includes(tramo) ? EXTRA_TRONCAL : 0);
@@ -91,6 +108,7 @@ export const CAMINOS: readonly (readonly P2[])[] = [
   [plazaHacia("taller"), en("taller"), [-5.0, 0.4], en("panel_solar"), [-13.2, -0.5]],
   ANILLO,
   ...TRONCAL,
+  ...RAMALES,
 ];
 
 /** Distancia de un punto al eje de un segmento. */
@@ -278,8 +296,8 @@ export function geometriaCaminos(): THREE.BufferGeometry {
 // Balizas
 // ---------------------------------------------------------------------------------------------
 
-/** Balizas: `n` en el anillo y `troncal` en el camino ancho (total máx. de la prueba escena3d.test.ts: 12) y distancia de cada una al eje. [E] */
-export const BALIZAS = { n: 4, fase: 0.1, aparte: 0.95, troncal: 8, pasoTroncal: 1.7, aparteTroncal: 1.15 } as const;
+/** Balizas: `n` en el anillo, `troncal` en el camino ancho y una cada `pasoRamal` en los ramales (total máx. de la prueba escena3d.test.ts: 20) y distancia de cada una al eje. [E] */
+export const BALIZAS = { n: 4, fase: 0.1, aparte: 0.95, troncal: 8, pasoTroncal: 1.7, aparteTroncal: 1.15, pasoRamal: 2.6 } as const;
 const ANILLO_CENTRO: P2 = [1.5, -1.0];
 
 /** Choca con un sólido de `TERRENO`, el banco o la plaza (con `margen`). */
@@ -314,8 +332,25 @@ export function posicionesBalizas(): P2[] {
     if (chocaConBase(x, z, 0.6) || sobreCamino(x, z, 0.25)) continue;
     salida.push([x, z]);
   }
-  const ancho = balizasTroncal();
+  const ancho = [...balizasTroncal(), ...balizasRamales()];
   return [...ancho, ...salida.filter(([x, z]) => ancho.every(([a, b]) => Math.hypot(x - a, z - b) > 1.2))];
+}
+
+/** Balizas de los ramales de la colonia: alternadas a cada lado, una cada `pasoRamal` metros, como en la lámina. */
+function balizasRamales(): P2[] {
+  const salida: P2[] = [];
+  for (const [a, b] of RAMALES as readonly (readonly [P2, P2])[]) {
+    const l = Math.hypot(b[0] - a[0], b[1] - a[1]), ux = (b[0] - a[0]) / l, uz = (b[1] - a[1]) / l;
+    let lado = 1;
+    for (let d = 1.6; d < l - 0.6; d += BALIZAS.pasoRamal, lado = -lado) {
+      const x = a[0] + ux * d - uz * lado * BALIZAS.aparte, z = a[1] + uz * d + ux * lado * BALIZAS.aparte;
+      // Solo dentro de lo caminable y con aire alrededor de las estaciones; más afuera el ramal es decorado.
+      if (Math.hypot(x, z) > TERRENO.limite - 0.5 || POS_ESTACIONES.some((e) => Math.hypot(x - e.x, z - e.z) < e.radio + 0.9)) continue;
+      if (chocaConBase(x, z, 0.6) || sobreCamino(x, z, 0.25)) continue;
+      salida.push([x, z]);
+    }
+  }
+  return salida;
 }
 
 /**

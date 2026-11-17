@@ -1,6 +1,6 @@
 # Texture sources
 
-Experimental ambience assets (branch `feat/frente-f-texturas-suelo`), loaded only behind `?texturas=1`.
+Ambience assets of the outdoor scene, loaded by default (`?texturas=0` turns them off).
 
 | File | Source | License |
 |---|---|---|

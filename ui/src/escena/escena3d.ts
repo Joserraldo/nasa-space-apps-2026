@@ -239,6 +239,8 @@ export const CAMARAS: Readonly<Record<CamaraEscena, { pos: [number, number, numb
   primera: { pos: [FOCO.x, 1.1, FOCO.z + 3.4], mira: [FOCO.x, 1.2, FOCO.z - 8] },
 };
 
+const VISTA_CENITAL = import.meta.env.DEV && typeof location !== "undefined" && new URLSearchParams(location.search).get("vista") === "cenital";
+
 /**
  * Tercera persona que sigue al niño (ESCENAS §3.1, `mundo/01`; celular: `02_Celular/01`). Órbita
  * alrededor de un pivote a la altura del pecho, detrás del niño: `distancia` al pivote,
@@ -889,6 +891,11 @@ export function crearEscena3D(canvas: HTMLCanvasElement, opciones: OpcionesEscen
     ctx.calidad = calidad;
     ctx.reducido = reducido;
     sistemas.actualizar(dt);
+    // Solo en desarrollo: `?vista=cenital` mira la base entera desde lo alto, para compararla con la lámina de distribución.
+    if (VISTA_CENITAL) {
+      camara.position.set(0, 34, 22);
+      camara.lookAt(0, 0, -2);
+    }
     renderer.render(armada.escena, camara);
 
     const info = renderer.info.render;

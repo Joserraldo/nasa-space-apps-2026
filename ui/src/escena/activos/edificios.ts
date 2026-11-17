@@ -23,27 +23,50 @@ export function plantaHabitat(largo = LARGO_HABITAT): { ancho: number; fondo: nu
   return { ancho: largo + 2 * (0.3 + 0.45), fondo: escalon - espalda, dz: (escalon + espalda) / 2 };
 }
 
-/** Hábitat alargado (eje x): casco octogonal, remates, puerta central, escalón y ventanas cian. */
+/** Media esfera facetada (low poly) de la caché, con la base en y = 0. */
+const cupulaGeo = (r: number, lados: number, pisos: number) =>
+  geometriaBase(`hub-cupula-${r}-${lados}-${pisos}`, () => new THREE.SphereGeometry(r, lados, pisos, 0, Math.PI * 2, 0, Math.PI / 2));
+
+/**
+ * Hábitat central como domo de la colonia (lámina `04_Organizacion/01_distribucion_exterior` e imagen de la
+ * colonia): tambor con anillo de ventanas, cúpula facetada con lucernario de vidrio y mástil, y dos alas con
+ * remates redondos a los lados. Misma huella, puerta y escalón que el casco alargado de antes (`plantaHabitat`),
+ * así que la colisión y la entrada a la base no cambian.
+ */
 export function crearHabitat(m: Materiales, largo = LARGO_HABITAT): THREE.Group {
   const x = largo / 2;
+  const ala = x - 1.5; // largo de cada ala, del tambor al remate
   const partes: THREE.Object3D[] = [
-    girada(parte(m, "SuitBase", chaflan(3.6, 3.0, largo, 0.85), [0, 1.5, 0], "Habitat_Hull"), 0, Math.PI / 2, 0),
-    girada(parte(m, "SuitBase", tronco(1.25, 1.25, 0.9, 8), [-x - 0.3, 1.45, 0], "Habitat_EndL"), 0, 0, Math.PI / 2),
-    girada(parte(m, "SuitBase", tronco(1.25, 1.25, 0.9, 8), [x + 0.3, 1.45, 0], "Habitat_EndR"), 0, 0, Math.PI / 2),
+    parte(m, "SuitBase", tronco(1.95, 2.05, 1.3, 12), [0, 0.65, 0], "Habitat_Drum"),
+    parte(m, "Accent", tronco(1.97, 1.97, 0.1, 12), [0, 1.32, 0], "Habitat_DrumBand"),
+    parte(m, "SuitBase", cupulaGeo(1.9, 12, 4), [0, 1.35, 0], "Habitat_Dome"),
+    parte(m, "Glass", cupulaGeo(0.85, 8, 2), [0, 3.05, 0], "Habitat_Skylight"),
+    parte(m, "SuitBase", tronco(0.95, 0.95, 0.14, 8), [0, 3.0, 0], "Habitat_SkylightRing"),
+    parte(m, "SuitBase", tronco(0.05, 0.05, 0.9, 6), [0, 4.1, 0], "Habitat_Mast"),
+    parte(m, "Emissive", tronco(0.1, 0.1, 0.12, 6), [0, 4.6, 0], "Habitat_MastLight"),
     parte(m, "SuitBase", chaflan(2.2, 2.7, 0.7, 0.5), [0, 1.35, 1.9], "Habitat_Porch"),
     parte(m, "Boots", caja(1.2, 1.9, 0.05), [0, 1.05, 2.27], "Habitat_DoorLeaf"),
     parte(m, "Emissive", caja(1.0, 0.1, 0.03), [0, 2.35, 2.27], "Habitat_DoorLight"),
     parte(m, "SuitBase", caja(2.4, 0.14, 0.7), [0, 0.07, 2.55], "Habitat_Step"),
     parte(m, "SuitBase", caja(2.0, 0.14, 0.4), [0, 0.21, 2.45], "Habitat_Step2"),
     parte(m, "SuitBase", caja(0.05, 1.9, 0.03), [0, 1.05, 2.31], "Habitat_DoorSeam"),
-    parte(m, "SuitBase", chaflan(2.2, 0.5, 1.4, 0.15), [-1.6, 3.15, -0.2], "Habitat_RoofBox"),
-    parte(m, "Accent", caja(largo, 0.12, 0.04), [0, 0.55, 1.81], "Habitat_Band"),
   ];
-  for (const dx of [-3.2, -2.55, -1.9, 1.9, 2.55, 3.2]) {
-    partes.push(parte(m, "Emissive", chaflan(0.46, 0.42, 0.04, 0.1), [dx, 1.85, 1.8], "Habitat_Window"));
+  // Ventanas del tambor, de lado a lado por detrás del porche.
+  for (const a of [-1.15, -0.75, 0.75, 1.15]) {
+    const v = parte(m, "Emissive", chaflan(0.42, 0.36, 0.04, 0.08), [Math.sin(a) * 2.0, 0.95, Math.cos(a) * 2.0], "Habitat_Window");
+    v.rotation.y = a;
+    partes.push(v);
   }
-  // Paneles solares en el techo, a la derecha de la caja de servicio.
-  partes.push(...panelTecho(m, [1.4, 3.0, -0.2], 1.3, 1.0), ...panelTecho(m, [2.9, 3.0, -0.2], 1.3, 1.0));
+  for (const s of [-1, 1]) {
+    const cx = s * (1.5 + ala / 2);
+    partes.push(
+      girada(parte(m, "SuitBase", chaflan(2.6, 2.3, ala + 0.6, 0.6), [cx, 1.15, 0], "Habitat_Wing"), 0, Math.PI / 2, 0),
+      girada(parte(m, "SuitBase", tronco(1.15, 1.15, 0.8, 8), [s * (x + 0.3), 1.15, 0], s < 0 ? "Habitat_EndL" : "Habitat_EndR"), 0, 0, Math.PI / 2),
+      parte(m, "Accent", caja(ala + 0.4, 0.1, 0.04), [cx, 0.5, 1.31], "Habitat_Band"),
+      ...[-0.5, 0.15].map((dx) => parte(m, "Emissive", chaflan(0.42, 0.38, 0.04, 0.1), [cx + dx * s, 1.45, 1.3], "Habitat_Window")),
+      ...panelTecho(m, [cx, 2.32, -0.1], 1.2, 0.9),
+    );
+  }
   return grupo("Building_Habitat", ...partes);
 }
 
