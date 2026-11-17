@@ -9,11 +9,13 @@ import { dock, estanteBaterias } from "./taller";
 import { caja, chaflan, grupo } from "../piezasComunes";
 import { crearMontanas } from "../terrenoVisual";
 import { colorToken } from "../../materiales";
+import { casilleros, estantePlantulas, jardineraLechuga, jardineraPimiento, jardineraTrigo, maceta, mesaMapa, tanqueAgua } from "./mobiliarioEstacion";
 
 const NEGRO_MESA = new THREE.MeshStandardMaterial({ name: "Desk_Top", color: "#1D1E2A", roughness: 0.55 });
 const GRIS_MESA = new THREE.MeshStandardMaterial({ name: "Desk_Body", color: "#8F8E9C", roughness: 0.7 });
 const LAMA = new THREE.MeshStandardMaterial({ name: "Desk_Slat", color: "#ECEBEF", roughness: 0.6 });
 const PANTALLA = new THREE.MeshBasicMaterial({ name: "Desk_Screen", color: "#5AB4FF" });
+const VIDRIO_CLARO = new THREE.MeshStandardMaterial({ name: "Station_Window", color: "#CFE6FF", roughness: 0.1, metalness: 0, transparent: true, opacity: 0.22, depthWrite: false });
 
 /**
  * Control desk, our own build after the desk reference María Paula chose: long dark top, grey body with
@@ -53,7 +55,8 @@ export function mesaControl(m: Materiales): THREE.Group {
  * come out of the plan; props are kit pieces or the game's own furniture (in metres).
  */
 
-export type SalaEstacion = "esclusa" | "taller" | "habitat";
+export const SALAS_ESTACION = ["esclusa", "taller", "habitat", "control", "invernadero"] as const;
+export type SalaEstacion = (typeof SALAS_ESTACION)[number];
 
 /** [piece, x, z (kit units, grid corner), quarter turns, collision radius in m (0 = none), y]. */
 type Prop = readonly [PiezaEstacion, number, number, number, number, number?];
@@ -69,7 +72,12 @@ interface PlanoSala {
   ventanaEste: boolean;
   kit: readonly Prop[];
   propios: readonly Propio[];
+  /** Extra collision circles [x, z, radius] (m) for long pieces a single circle cannot cover. */
+  choques?: readonly (readonly [number, number, number])[];
 }
+
+/** Two circles along a 2.4 m raised bed at (x, z). */
+const cama = (x: number, z: number) => [[x - 0.6, z, 0.55], [x + 0.6, z, 0.55]] as const;
 
 const PLANOS: Readonly<Record<SalaEstacion, PlanoSala>> = {
   // Airlock: suits and helmets on the west wall, the pressure terminal on the north one, crates by the
@@ -120,6 +128,42 @@ const PLANOS: Readonly<Record<SalaEstacion, PlanoSala>> = {
       [cultivoVeggie, 1.2, -2.85, 0, 0.7],
       [camilla, 3.2, -1.6, 0, 1.0],
     ],
+  },
+  // Control room (sheet 01): the mission table with the crater in relief in the middle, the operators' desks
+  // facing the window on the east wall, lockers on the west wall, the comms terminal and plants on the north.
+  control: {
+    ancho: 12, fondo: 8, ventanaEste: true,
+    puertas: [["sur", 4, "pasillo"]],
+    kit: [
+      ["Chair_Blue_37", 9.6, 1.8, 1, 0], ["Chair_Blue_37", 9.6, 5.2, 1, 0],
+      ["Computer_41", 2.6, 0.6, 0, 0.6],
+    ],
+    propios: [
+      [mesaMapa, 0, -0.4, 0, 1.15],
+      [mesaControl, 4.25, -1.35, -Math.PI / 2, 0.9],
+      [mesaControl, 4.25, 1.35, -Math.PI / 2, 0.9],
+      [casilleros, -4.5, -1.2, Math.PI / 2, 0.8],
+      [terminal, 1.8, -2.85, 0, 0.6],
+      [maceta, -4.3, 1.4, 0, 0.35],
+      [maceta, -4.3, -2.75, 0, 0.35],
+    ],
+  },
+  // Greenhouse (sheet 03): a lit path from the door to the Veggie unit, raised beds of lettuce, pepper and
+  // wheat on both sides, seedling racks along the side walls, water tanks by the north wall.
+  invernadero: {
+    ancho: 12, fondo: 8, ventanaEste: true,
+    puertas: [["sur", 4, "pasillo"]],
+    kit: [],
+    propios: [
+      [jardineraTrigo, -2.2, -1.8, 0, 0], [jardineraTrigo, 2.2, -1.8, 0, 0],
+      [jardineraPimiento, -2.2, 0, 0, 0], [jardineraPimiento, 2.2, 0, 0, 0],
+      [jardineraLechuga, -2.2, 1.8, 0, 0], [jardineraLechuga, 2.2, 1.8, 0, 0],
+      [estantePlantulas, -4.45, -0.9, Math.PI / 2, 0.6], [estantePlantulas, -4.45, 0.9, Math.PI / 2, 0.6],
+      [estantePlantulas, 4.45, -0.9, -Math.PI / 2, 0.6],
+      [cultivoVeggie, 0, -2.85, 0, 0.7],
+      [tanqueAgua, -1.5, -2.75, 0, 0.5], [tanqueAgua, 1.5, -2.75, 0, 0.5],
+    ],
+    choques: [...cama(-2.2, -1.8), ...cama(2.2, -1.8), ...cama(-2.2, 0), ...cama(2.2, 0), ...cama(-2.2, 1.8), ...cama(2.2, 1.8)],
   },
 };
 
@@ -246,7 +290,10 @@ export function crearSalaEstacion(sala: SalaEstacion, materialesJuego: Materiale
     }
     if (plano.ventanaEste) {
       enKit(pieza(kit, "Wall_L_long_frame_92", plano.ancho, 1, 0), este);
-      enKit(pieza(kit, "Wall_L_long_window_93", plano.ancho, 1, 0), este);
+      // A clear pane, so Mars shows through (the kit's navy glass stays on visors and gates).
+      const ventana = pieza(kit, "Wall_L_long_window_93", plano.ancho, 1, 0);
+      ventana.traverse((o) => { if (o instanceof THREE.Mesh && (o.material as THREE.Material).name === "Station_Glass") o.material = VIDRIO_CLARO; });
+      enKit(ventana, este);
     }
     // Gates straddle the wall line (2 deep, the wall is 0.5), and behind each one a short lit stretch of
     // corridor (floor, side walls, end wall) shows where it leads instead of a black hole.
@@ -302,8 +349,9 @@ export function puntosSalaEstacion(sala: SalaEstacion): PuntoSala[] {
   const kit = p.kit.filter(([, , , , r]) => r > 0).map(([nombre, x, z, , radio], i) => ({
     id: `${nombre.replace(/_\d+$/, "")}_${i}`, x: x * E - m.x + 0.4, z: z * E - m.z + 0.4, radio, interactivo: true,
   }));
-  const propios = p.propios.map(([f, x, z, , radio]) => ({ id: f.name, x, z, radio, interactivo: true }));
-  return [...kit, ...propios];
+  const propios = p.propios.filter(([, , , , r]) => r > 0).map(([f, x, z, , radio]) => ({ id: f.name, x, z, radio, interactivo: true }));
+  const choques = (p.choques ?? []).map(([x, z, radio], i) => ({ id: `choque_${i}`, x, z, radio, interactivo: false }));
+  return [...kit, ...propios, ...choques];
 }
 
 /** Lights of an open-top room: a low fill and one warm key from the side, so walls and props cast shadows. */

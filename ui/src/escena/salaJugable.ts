@@ -3,7 +3,7 @@ import { crearMateriales } from "./materiales";
 import { ambienteSalaKit, crearSalaKit, PUERTA_SALA, puntosSalaKit, type PuntoSala, type SalaKit } from "./activos/interiores/salaKit";
 import { ALTURA_PISO } from "./activos/interiores/kitPastel";
 import { AMBIENTE_PASILLO, crearPasillo, PUERTAS_PASILLO, PUNTOS_PASILLO, ZONAS_PASILLO } from "./activos/interiores/pasillo";
-import { AMBIENTE_ESTACION, crearSalaEstacion, puertasSalaEstacion, puntosSalaEstacion, zonaSalaEstacion, type MuroSala } from "./activos/interiores/salaEstacion";
+import { AMBIENTE_ESTACION, crearSalaEstacion, puertasSalaEstacion, puntosSalaEstacion, SALAS_ESTACION, zonaSalaEstacion, type MuroSala, type SalaEstacion } from "./activos/interiores/salaEstacion";
 import { animar, crearPersonaje } from "./personajes";
 
 /**
@@ -28,9 +28,9 @@ const ALCANCE = 1.25;
 /** Walkable box of a kit room (8 x 6 m; walls are 0.25 thick). */
 const CAJA = { xMin: -3.55, xMax: 3.55, zMin: -2.55, zMax: 2.75 } as const;
 
-export type EspacioJugable = SalaKit | "pasillo" | "esclusa";
+export type EspacioJugable = SalaKit | SalaEstacion | "pasillo";
 /** Open-top rooms of the station kit (`salaEstacion.ts`). */
-const esEstacion = (e: EspacioJugable): e is "esclusa" | "taller" | "habitat" => e === "esclusa" || e === "taller" || e === "habitat";
+const esEstacion = (e: EspacioJugable): e is SalaEstacion => (SALAS_ESTACION as readonly string[]).includes(e);
 type Caja = { readonly xMin: number; readonly xMax: number; readonly zMin: number; readonly zMax: number };
 interface Puerta { readonly destino: string; readonly x: number; readonly z: number; readonly entrada: { readonly x: number; readonly z: number; readonly giro: number } }
 

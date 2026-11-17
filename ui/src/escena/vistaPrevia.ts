@@ -14,7 +14,8 @@ import { COLORES, conAlfa } from "../estilos/tokens";
 import { traducir, type Idioma, type Vars } from "../i18n";
 import * as THREE from "three";
 import { crearCorredorInterior, zonaCorredor } from "./activos/interiores/corredor";
-import { montarSalaJugable } from "./salaJugable";
+import { montarSalaJugable, type EspacioJugable } from "./salaJugable";
+import { SALAS_ESTACION } from "./activos/interiores/salaEstacion";
 import { ambienteSalaKit, crearSalaKit, type SalaKit } from "./activos/interiores/salaKit";
 import { crearHabitatInterior } from "./activos/interiores/habitat";
 import { crearTaller } from "./activos/interiores/taller";
@@ -207,16 +208,16 @@ function montarSala(sala: keyof typeof SALAS_PREVIA): void {
 
 const salaPedida = parametros.get("sala");
 // `&jugar=1`: la sala con kit se recorre con el nino (WASD o flechas, E para interactuar o salir por la puerta).
-// Las puertas encadenan: taller y hábitat dan al pasillo (`?sala=pasillo&jugar=1`), el pasillo a los dos y a
-// la esclusa ("base", vuelve a la vista general). `&desde=` dice por qué puerta aparece el niño.
-if (parametros.get("jugar") === "1" && (salaPedida === "taller" || salaPedida === "habitat" || salaPedida === "outpost" || salaPedida === "pasillo" || salaPedida === "esclusa")) {
+// Las puertas encadenan: cada sala da al pasillo (`?sala=pasillo&jugar=1`), el pasillo a todas y la
+// esclusa también a Marte ("base", vuelve a la vista general). `&desde=` dice por qué puerta aparece el niño.
+if (parametros.get("jugar") === "1" && (salaPedida === "outpost" || salaPedida === "pasillo" || (SALAS_ESTACION as readonly string[]).includes(salaPedida ?? ""))) {
   const aviso = document.createElement("div");
   aviso.setAttribute("role", "status");
   aviso.style.cssText = `position:fixed;bottom:12px;left:50%;translate:-50% 0;padding:8px 12px;border-radius:8px;font:13px/1.4 monospace;background:${conAlfa("espacio", 0.85)};color:${COLORES.marfil}`;
   document.body.appendChild(aviso);
   const decir = (texto: string) => (aviso.textContent = texto);
   decir("WASD / arrows");
-  montarSalaJugable(document.getElementById("escena") as HTMLCanvasElement, salaPedida, {
+  montarSalaJugable(document.getElementById("escena") as HTMLCanvasElement, salaPedida as EspacioJugable, {
     calidad,
     desde: parametros.get("desde") ?? undefined,
     alCercano: (id) => decir(id ? `[E] ${id}` : "WASD / arrows"),
