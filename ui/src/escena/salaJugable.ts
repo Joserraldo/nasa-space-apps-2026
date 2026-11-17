@@ -90,7 +90,8 @@ export function montarSalaJugable(canvas: HTMLCanvasElement, sala: EspacioJugabl
   anillo.visible = false;
   escena.add(anillo);
 
-  const camara = new THREE.PerspectiveCamera(45, 1, 0.1, 200);
+  // Wider lens inside the tube, so the kid fits whole in front of the camera.
+  const camara = new THREE.PerspectiveCamera(sala === "pasillo" ? 62 : 45, 1, 0.1, 200);
   const ajustar = () => {
     const w = canvas.clientWidth || innerWidth, h = canvas.clientHeight || innerHeight;
     renderer.setSize(w, h, false);
@@ -119,12 +120,26 @@ export function montarSalaJugable(canvas: HTMLCanvasElement, sala: EspacioJugabl
   const p = nino.grupo.position;
   let giro = llegada.giro;
   nino.grupo.rotation.y = giro;
+  // Inside the corridor the camera rides behind the kid and looks along the run he is in: the main run in
+  // the direction he came in, the airlock branch toward its far end. It only turns at the crossing, so the
+  // controls never flip on their own.
+  const dentroTubo = sala === "pasillo";
+  const desdeEsclusa = o.desde === "base";
+  const rumboPrincipal = Math.abs(Math.abs(llegada.giro) - Math.PI / 2) < 0.1 ? llegada.giro : Math.PI / 2;
+  const rumboRamal = desdeEsclusa ? 0 : Math.PI;
+  let rumbo = dentroTubo && llegada.z < -1.4 ? rumboRamal : rumboPrincipal;
   let previo = 0;
   let t = 0;
 
   function mover(dt: number): boolean {
-    const dx = eje(["KeyD", "ArrowRight"], ["KeyA", "ArrowLeft"]);
-    const dz = eje(["KeyS", "ArrowDown"], ["KeyW", "ArrowUp"]);
+    let dx = eje(["KeyD", "ArrowRight"], ["KeyA", "ArrowLeft"]);
+    let dz = eje(["KeyS", "ArrowDown"], ["KeyW", "ArrowUp"]);
+    if (dentroTubo) {
+      // Camera-relative: up is "forward along the view", right is "to the screen right".
+      const avance = -dz, lado = dx;
+      dx = avance * Math.sin(rumbo) - lado * Math.cos(rumbo);
+      dz = avance * Math.cos(rumbo) + lado * Math.sin(rumbo);
+    }
     const largo = Math.hypot(dx, dz);
     if (largo === 0) return false;
     let x = p.x + (dx / largo) * VELOCIDAD * dt;
@@ -179,11 +194,20 @@ export function montarSalaJugable(canvas: HTMLCanvasElement, sala: EspacioJugabl
     if (a) anillo.position.set(a.x, 0.03, a.z);
     if (a !== null) anillo.scale.setScalar(("destino" in a ? 1 : Math.max(0.6, a.radio + 0.25)) * (1 + 0.05 * Math.sin(t * 5)));
 
-    // Cut-away camera that drifts with the kid so he stays near the middle of the frame; the corridor is
-    // long, so there it follows him all the way along x.
-    const sigue = sala === "pasillo" ? 1 : 0.35;
-    camara.position.set(-2.8 + p.x * sigue, 5.6, 8.4 + p.z * 0.35);
-    camara.lookAt(0.3 + p.x * (sala === "pasillo" ? 1 : 0.45), 0.9, -0.6 + p.z * 0.45);
+    if (dentroTubo) {
+      const meta = p.z < -1.4 ? rumboRamal : rumboPrincipal;
+      rumbo += Math.atan2(Math.sin(meta - rumbo), Math.cos(meta - rumbo)) * Math.min(1, dt * 3);
+      // Chase camera near the ceiling, pulled in when a wall is closer than its usual distance.
+      const fx = Math.sin(rumbo), fz = Math.cos(rumbo);
+      let atras = 3.0;
+      while (atras > 0.8 && !dentro(zonas, p.x - fx * atras, p.z - fz * atras)) atras -= 0.1;
+      camara.position.set(p.x - fx * atras, 2.05, p.z - fz * atras);
+      camara.lookAt(p.x + fx * 4, 0.95, p.z + fz * 4);
+    } else {
+      // Cut-away camera that drifts with the kid so he stays near the middle of the frame.
+      camara.position.set(-2.8 + p.x * 0.35, 5.6, 8.4 + p.z * 0.35);
+      camara.lookAt(0.3 + p.x * 0.45, 0.9, -0.6 + p.z * 0.45);
+    }
     renderer.render(escena, camara);
     if (import.meta.env.DEV) (globalThis as { __ninoSala?: number[] }).__ninoSala = [p.x, p.z];
   }

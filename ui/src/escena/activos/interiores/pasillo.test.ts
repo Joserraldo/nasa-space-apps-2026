@@ -8,10 +8,12 @@ describe("pasillo", () => {
     expect(PUERTAS_PASILLO.map((p) => p.destino).sort()).toEqual(["base", "habitat", "taller"]);
   });
 
-  it("lets the kid appear inside the walkable area at every door, within reach of its marker", () => {
+  it("lets the kid appear inside the walkable area a few steps in from every door, not on it", () => {
     for (const p of PUERTAS_PASILLO) {
       expect(dentro(p.entrada.x, p.entrada.z)).toBe(true);
-      expect(Math.hypot(p.x - p.entrada.x, p.z - p.entrada.z)).toBeLessThan(0.9);
+      const d = Math.hypot(p.x - p.entrada.x, p.z - p.entrada.z);
+      expect(d).toBeGreaterThan(0.9); // outside the door ring, so E does not bounce him straight back
+      expect(d).toBeLessThan(2.5);
     }
   });
 });
