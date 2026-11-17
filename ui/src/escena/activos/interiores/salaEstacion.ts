@@ -10,13 +10,13 @@ import { caja, chaflan, grupo } from "../piezasComunes";
 import { crearMontanas } from "../terrenoVisual";
 import { colorToken } from "../../materiales";
 import { guiaPiso, letrero, type Segmento } from "./guias";
+import { ANCHO_PUERTA, fusionarMuro, GROSOR_MURO, muro, padEsclusa, pisoSala, puertaConTramo, ventanaLarga } from "./cascoEstacion";
 import { casilleros, estantePlantulas, jardineraLechuga, jardineraPimiento, jardineraTrigo, maceta, mesaMapa, tanqueAgua } from "./mobiliarioEstacion";
 
 const NEGRO_MESA = new THREE.MeshStandardMaterial({ name: "Desk_Top", color: "#1D1E2A", roughness: 0.55 });
 const GRIS_MESA = new THREE.MeshStandardMaterial({ name: "Desk_Body", color: "#8F8E9C", roughness: 0.7 });
 const LAMA = new THREE.MeshStandardMaterial({ name: "Desk_Slat", color: "#ECEBEF", roughness: 0.6 });
 const PANTALLA = new THREE.MeshBasicMaterial({ name: "Desk_Screen", color: "#5AB4FF" });
-const VIDRIO_CLARO = new THREE.MeshStandardMaterial({ name: "Station_Window", color: "#CFE6FF", roughness: 0.1, metalness: 0, transparent: true, opacity: 0.22, depthWrite: false });
 
 /**
  * Control desk, our own build after the desk reference María Paula chose: long dark top, grey body with
@@ -91,12 +91,11 @@ const PLANOS: Readonly<Record<SalaEstacion, PlanoSala>> = {
     kit: [
       ["Spacesuite_full_4", 1.0, 1.2, 1, 0.5], ["Spacesuite_full_4", 1.0, 2.6, 1, 0.5],
       ["Hanging_Shelf_43", 0.6, 4.4, 1, 0, 1.6], ["Helm_1_7", 1.0, 4.4, 1, 0, 2.23], ["Helm_1_7", 1.0, 5.1, 1, 0, 2.23],
-      // The pad in the middle: the kit's octagon floor tile, a touch above the floor.
-      ["Floor_M_2_100", 4.5, 2.5, 0, 0, 0.02],
       // Crates have their origin at the centre: half their height up, so they sit on the floor.
       ["Cube_1_26", 9.5, 6.0, 0, 0.6, 0.5], ["Cube_2_27", 10.6, 6.2, 0, 0.6, 0.54],
     ],
-    propios: [[mesaControl, 3.0, -2.55, 0, 1.0]],
+    // The pad in the middle of the room (`cascoEstacion.ts`), the control desk on the north wall.
+    propios: [[padEsclusa, 0, 0, 0, 0], [mesaControl, 3.0, -2.55, 0, 1.0]],
     guia: 1.4,
   },
   // Engineering: batteries and the solar console on the north wall, the workbench with its drill, the rover
@@ -268,7 +267,51 @@ export function crearSalaEstacion(sala: SalaEstacion, materialesJuego: Materiale
     return { grupo, normal };
   });
 
-  void cargarKitEstacion().then((kit) => {
+  // The shell, built in code (`cascoEstacion.ts`): floor, wall runs with their gaps, gates with a stretch of
+  // corridor behind, the long window. All in metres around the room centre.
+  raiz.add(entornoMarte(materiales));
+  raiz.add(pisoSala(2 * m.x + 2 * GROSOR_MURO, 2 * m.z + 2 * GROSOR_MURO));
+  const [norte, sur, oeste, este] = muros.map((mu) => mu.grupo) as [THREE.Group, THREE.Group, THREE.Group, THREE.Group];
+  const huecos = (lado: Lado) => plano.puertas.filter(([l]) => l === lado).map(([, px]) => px * E - m.x).sort((a, b) => a - b);
+  /** Wall pieces along a side from `a` to `b` (metres along the run), skipping the given gaps of ANCHO_PUERTA. */
+  const piezasMuro = (a: number, b: number, gaps: readonly number[]): [number, number][] => {
+    const salida: [number, number][] = [];
+    let desde = a;
+    for (const g of gaps) { if (g > desde) salida.push([desde, g]); desde = g + ANCHO_PUERTA; }
+    if (b > desde) salida.push([desde, b]);
+    return salida;
+  };
+  const poner = (destino: THREE.Group, o: THREE.Object3D, x: number, z: number, giro: number) => {
+    o.position.set(x, 0, z);
+    o.rotation.y = giro;
+    destino.add(o);
+  };
+  const t = GROSOR_MURO;
+  // North and south runs cover the corners; west and east fit between them.
+  for (const [a, b] of piezasMuro(-m.x - t, m.x + t, huecos("norte"))) poner(norte, fusionarMuro(muro(b - a), "Wall_N"), a, -m.z, 0);
+  for (const [a, b] of piezasMuro(-m.x - t, m.x + t, huecos("sur"))) poner(sur, fusionarMuro(muro(b - a), "Wall_S"), b, m.z, Math.PI);
+  poner(oeste, fusionarMuro(muro(2 * m.z), "Wall_W"), -m.x, m.z, Math.PI / 2);
+  if (plano.ventanaEste) {
+    const v = 4.0;
+    poner(este, fusionarMuro(muro(m.z - v / 2), "Wall_E"), m.x, -m.z, -Math.PI / 2);
+    poner(este, fusionarMuro(ventanaLarga(v), "Wall_E_Window"), m.x, -v / 2, -Math.PI / 2);
+    poner(este, fusionarMuro(muro(m.z - v / 2), "Wall_E"), m.x, v / 2, -Math.PI / 2);
+  } else poner(este, fusionarMuro(muro(2 * m.z), "Wall_E"), m.x, -m.z, -Math.PI / 2);
+  for (const [lado, x, destino] of plano.puertas) {
+    const n = lado === "norte";
+    const cx = (x + 2) * E - m.x;
+    // The gate and its stretch of corridor belong to their wall run, so they hide with it on the camera side.
+    const g = n ? norte : sur;
+    poner(g, puertaConTramo(), cx, n ? -m.z : m.z, n ? 0 : Math.PI);
+    // The sign of where it leads, over the opening on the room side.
+    const placa = letrero(destino, 0.5);
+    placa.position.set(cx, 2.75, n ? -m.z + 0.62 : m.z - 0.62);
+    placa.rotation.y = n ? 0 : Math.PI;
+    g.add(placa);
+  }
+
+  // Props from the station kit (to be replaced by code-built ones as well).
+  if (plano.kit.length) void cargarKitEstacion().then((kit) => {
     // Kit-unit content lives in one scaled group whose origin is the room's north-west inner corner.
     const enKit = (o: THREE.Object3D, destino: THREE.Group) => {
       o.position.multiplyScalar(E);
@@ -277,60 +320,6 @@ export function crearSalaEstacion(sala: SalaEstacion, materialesJuego: Materiale
       o.scale.multiplyScalar(E);
       destino.add(o);
     };
-    const suelo = new THREE.Group();
-    suelo.name = "Station_Floor";
-    raiz.add(entornoMarte(materiales));
-    raiz.add(suelo);
-    // A mid grey floor under white walls and furniture: the room gets a base tone and the shadows read.
-    const piso = new THREE.MeshStandardMaterial({ name: "Station_Floor", color: "#C2C0CC", roughness: 0.75, metalness: 0 });
-    for (let x = 0; x < plano.ancho; x += 4) for (let z = 0; z < plano.fondo; z += 4) enKit(pieza(kit, "Floor_L_98", x, z), suelo);
-    suelo.traverse((o) => { if (o instanceof THREE.Mesh) { o.material = piso; o.castShadow = false; } });
-
-    const [norte, sur, oeste, este] = muros.map((mu) => mu.grupo) as [THREE.Group, THREE.Group, THREE.Group, THREE.Group];
-    const hueco = (lado: Lado, x: number) => plano.puertas.some(([l, px]) => l === lado && x >= px && x < px + 4);
-    for (let x = 0; x < plano.ancho; x += 2) {
-      if (!hueco("norte", x)) enKit(pieza(kit, "Wall_L_66", x, 0, 1), norte);
-      if (!hueco("sur", x)) enKit(pieza(kit, "Wall_L_66", x + 2, plano.fondo, 3), sur);
-    }
-    for (let z = 0; z < plano.fondo; z += 2) {
-      enKit(pieza(kit, "Wall_L_66", 0, z + 2, 2), oeste);
-      const ventana = plano.ventanaEste && z >= 2 && z < 6;
-      if (!ventana) enKit(pieza(kit, "Wall_L_66", plano.ancho, z, 0), este);
-    }
-    if (plano.ventanaEste) {
-      enKit(pieza(kit, "Wall_L_long_frame_92", plano.ancho, 1, 0), este);
-      // A clear pane, so Mars shows through (the kit's navy glass stays on visors and gates).
-      const ventana = pieza(kit, "Wall_L_long_window_93", plano.ancho, 1, 0);
-      ventana.traverse((o) => { if (o instanceof THREE.Mesh && (o.material as THREE.Material).name === "Station_Glass") o.material = VIDRIO_CLARO; });
-      enKit(ventana, este);
-    }
-    // Gates straddle the wall line (2 deep, the wall is 0.5), and behind each one a short lit stretch of
-    // corridor (floor, side walls, end wall) shows where it leads instead of a black hole.
-    for (const [lado, x] of plano.puertas) {
-      const g = lado === "norte" ? norte : sur;
-      const n = lado === "norte";
-      enKit(pieza(kit, "Gate_L_127", x, n ? -1.25 : plano.fondo - 0.75), g);
-      const z0 = n ? -5.25 : plano.fondo + 0.75; // stub floor tile corner
-      // The stub floor belongs to its wall run, so it hides with it when it is on the camera side.
-      const pisoTramo = pieza(kit, "Floor_L_98", x, z0);
-      pisoTramo.traverse((o) => { if (o instanceof THREE.Mesh) o.material = piso; });
-      enKit(pisoTramo, g);
-      for (const dz of [0, 2]) {
-        enKit(pieza(kit, "Wall_L_66", x, z0 + dz + 2, 2), g);
-        enKit(pieza(kit, "Wall_L_66", x + 4, z0 + dz, 0), g);
-      }
-      const zFin = n ? z0 : z0 + 4;
-      for (const dx of [0, 2]) enKit(n ? pieza(kit, "Wall_L_66", x + dx, zFin, 1) : pieza(kit, "Wall_L_66", x + dx + 2, zFin, 3), g);
-      // The sign of where it leads, over the opening on the room side.
-      const placa = letrero(plano.puertas.find(([l, px]) => l === lado && px === x)![2], 0.5);
-      placa.position.set((x + 2) * E - m.x, 2.75, n ? -m.z + 0.62 : m.z - 0.62);
-      placa.rotation.y = n ? 0 : Math.PI;
-      g.add(placa);
-      const luz = new THREE.PointLight("#9CCBFF", 3, 5, 2);
-      luz.position.set((x + 2) * E - m.x, 1.8, (z0 + 2) * E - m.z);
-      raiz.add(luz);
-    }
-
     const props = new THREE.Group();
     props.name = "Station_Props";
     raiz.add(props);
