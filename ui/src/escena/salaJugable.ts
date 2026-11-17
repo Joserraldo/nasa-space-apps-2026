@@ -25,8 +25,8 @@ import { animar, crearPersonaje } from "./personajes";
 const VELOCIDAD = 2.4;
 const RADIO_NINO = 0.3;
 const ALCANCE = 1.25;
-/** How close the kid has to be to a door to use it. */
-const RADIO_PUERTA = 0.9;
+/** How close the kid has to be to a door to use it: wide enough to reach it walking along a branch wall. */
+const RADIO_PUERTA = 1.2;
 
 export type EspacioJugable = SalaEstacion | "pasillo";
 /** Open-top rooms of the station kit (`salaEstacion.ts`). */

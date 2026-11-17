@@ -310,7 +310,7 @@ export function crearSalaEstacion(sala: SalaEstacion, materialesJuego: Materiale
     tramos.push([cx, s * (m.z - 0.4), cx, s * (m.z - 0.4 - plano.guia)]);
     umbrales.push({ x: cx, z: s * (m.z - 0.1), giro: lado === "norte" ? 0 : Math.PI });
   }
-  raiz.add(guiaPiso(tramos, umbrales, 0.03, 2.6));
+  raiz.add(guiaPiso(tramos, umbrales, 0.04, 2.6)); // above the floor panels (0.02) and the gate threshold (0.03)
 
   return { raiz, muros };
 }
