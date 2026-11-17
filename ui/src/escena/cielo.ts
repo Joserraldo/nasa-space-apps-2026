@@ -221,6 +221,9 @@ function suave(a: number, b: number, x: number): number {
 
 const mezclar = (a: Rgb, b: Rgb, k: number): Rgb => [a[0] + (b[0] - a[0]) * k, a[1] + (b[1] - a[1]) * k, a[2] + (b[2] - a[2]) * k];
 
+/** `halo: false` deja el halo al Sol visible (`solVisible.ts`), que lo dibuja suave; el domo de 48x24 lo mancha. */
+export const OPCIONES_DOMO = { halo: true };
+
 /**
  * Pinta el domo con el gradiente horizonte→cénit y el halo junto al Sol, mezclando el ambiente de día
  * (`k` = 0) con el de atardecer (`k` = 1) en lineal; `dir` es la dirección hacia el Sol (normalizada).
@@ -238,7 +241,7 @@ export function pintarDomo(geo: THREE.BufferGeometry, k: number, dir: Readonly<{
     const t = Math.sqrt(Math.max(0, y));
     const base = mezclar(colorCielo(t, "dia"), colorCielo(t, "atardecer"), k);
     const angulo = Math.acos(Math.min(1, Math.max(-1, x * dir.x + y * dir.y + z * dir.z)));
-    const w = 1 - suave(0, radioHalo, angulo);
+    const w = OPCIONES_DOMO.halo ? 1 - suave(0, radioHalo, angulo) : 0;
     for (let c = 0; c < 3; c++) colores[i * 3 + c] = (1 - w) * base[c]! + w * halo[c]!;
   }
   atributo.needsUpdate = true;
