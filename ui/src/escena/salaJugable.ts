@@ -2,7 +2,7 @@ import * as THREE from "three";
 import { crearMateriales } from "./materiales";
 import { ambienteSalaKit, crearSalaKit, PUERTA_SALA, puntosSalaKit, type PuntoSala, type SalaKit } from "./activos/interiores/salaKit";
 import { ALTURA_PISO } from "./activos/interiores/kitPastel";
-import { AMBIENTE_PASILLO, crearPasillo, PUERTAS_PASILLO, PUNTOS_PASILLO, ZONAS_PASILLO } from "./activos/interiores/pasillo";
+import { AMBIENTE_PASILLO, crearPasillo, PUERTAS_PASILLO, PUNTOS_PASILLO, ramalPasillo, ZONAS_PASILLO } from "./activos/interiores/pasillo";
 import { AMBIENTE_ESTACION, crearSalaEstacion, puertasSalaEstacion, puntosSalaEstacion, SALAS_ESTACION, zonaSalaEstacion, type MuroSala, type SalaEstacion } from "./activos/interiores/salaEstacion";
 import { animar, crearPersonaje } from "./personajes";
 
@@ -174,15 +174,21 @@ export function montarSalaJugable(canvas: HTMLCanvasElement, sala: EspacioJugabl
   let giro = llegada.giro;
   nino.grupo.rotation.y = giro;
   // Inside the kit spaces the camera rides behind the kid. In the corridor it looks along the run he is in:
-  // the main run in the direction he came in, the airlock branch toward its far end; in the workshop and habitat
-  // halls it looks at the back wall. It only turns at the crossing, so the controls never flip on their own.
+  // the main run in the direction he came in; a branch toward the main run if he came out of its door, toward
+  // its door otherwise. It only turns at the crossings, so the controls never flip on their own.
   const dentroTubo = sala !== "outpost";
-  const desdeEsclusa = o.desde === "esclusa";
   const rumboPrincipal = Math.abs(Math.abs(llegada.giro) - Math.PI / 2) < 0.1 ? llegada.giro : Math.PI / 2;
-  const rumboRamal = desdeEsclusa ? 0 : Math.PI;
+  const ramalLlegada = ramalPasillo(llegada.x, llegada.z);
+  const rumboTubo = (x: number, z: number) => {
+    const r = ramalPasillo(x, z);
+    if (r === null) return rumboPrincipal;
+    return (r === ramalLlegada) === (z < 0) ? 0 : Math.PI;
+  };
   // Station rooms start looking the way the kid walks in.
-  let rumbo = esEstacion(sala) ? llegada.giro : sala !== "pasillo" ? Math.PI : dentroTubo && llegada.z < -1.4 ? rumboRamal : rumboPrincipal;
+  let rumbo = esEstacion(sala) ? llegada.giro : sala !== "pasillo" ? Math.PI : rumboTubo(llegada.x, llegada.z);
   let previo = 0;
+  /** Corridor camera distance behind the kid, eased (see the chase camera below). */
+  let atrasTubo = 3.0;
   let t = 0;
 
   function mover(dt: number): boolean {
@@ -262,16 +268,18 @@ export function montarSalaJugable(canvas: HTMLCanvasElement, sala: EspacioJugabl
       camara.lookAt(cx + fx * mira, 0.6, cz + fz * mira);
       for (const m of muros) m.grupo.visible = -(m.normal[0] * fx + m.normal[1] * fz) < 0.35;
     } else if (dentroTubo) {
-      const meta = sala !== "pasillo" ? Math.PI : p.z < -1.4 ? rumboRamal : rumboPrincipal;
+      const meta = sala !== "pasillo" ? Math.PI : rumboTubo(p.x, p.z);
       rumbo += Math.atan2(Math.sin(meta - rumbo), Math.cos(meta - rumbo)) * Math.min(1, dt * 3);
       // Chase camera near the ceiling, pulled in when a wall is closer than its usual distance.
       if (sala === "pasillo" && camina) giroManual *= 1 - Math.min(1, dt * 1.5);
       const fx = Math.sin(rumbo + giroManual), fz = Math.cos(rumbo + giroManual);
-      let atras = 3.0;
+      let lejos = 3.0;
       // The camera also keeps out of columns and furniture, so it never ends up inside one.
       const libre = (x: number, z: number) => dentro(zonas, x, z) && puntos.every((s) => s.radio === 0 || Math.hypot(x - s.x, z - s.z) > s.radio + 0.2);
-      while (atras > 0.8 && !libre(p.x - fx * atras, p.z - fz * atras)) atras -= 0.1;
-      camara.position.set(p.x - fx * atras, 2.05, p.z - fz * atras);
+      while (lejos > 0.8 && !libre(p.x - fx * lejos, p.z - fz * lejos)) lejos -= 0.02;
+      // Pulled in at once (never through a wall), eased back out: stepping it every frame made the view shake.
+      atrasTubo = lejos < atrasTubo ? lejos : atrasTubo + (lejos - atrasTubo) * Math.min(1, dt * 4);
+      camara.position.set(p.x - fx * atrasTubo, 2.05, p.z - fz * atrasTubo);
       camara.lookAt(p.x + fx * 4, 0.95, p.z + fz * 4);
     } else {
       // Cut-away camera that drifts with the kid so he stays near the middle of the frame.
@@ -279,7 +287,7 @@ export function montarSalaJugable(canvas: HTMLCanvasElement, sala: EspacioJugabl
       camara.lookAt(0.3 + p.x * 0.45, 0.9, -0.6 + p.z * 0.45);
     }
     renderer.render(escena, camara);
-    if (import.meta.env.DEV) (globalThis as { __ninoSala?: number[] }).__ninoSala = [p.x, p.z];
+    if (import.meta.env.DEV) Object.assign(globalThis, { __ninoSala: [p.x, p.z], __camSala: [camara.position.x, camara.position.z] });
   }
 
   const alVisibilidad = () => {

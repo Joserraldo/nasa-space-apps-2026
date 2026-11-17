@@ -9,6 +9,7 @@ import { dock, estanteBaterias } from "./taller";
 import { caja, chaflan, grupo } from "../piezasComunes";
 import { crearMontanas } from "../terrenoVisual";
 import { colorToken } from "../../materiales";
+import { guiaPiso, letrero, type Segmento } from "./guias";
 import { casilleros, estantePlantulas, jardineraLechuga, jardineraPimiento, jardineraTrigo, maceta, mesaMapa, tanqueAgua } from "./mobiliarioEstacion";
 
 const NEGRO_MESA = new THREE.MeshStandardMaterial({ name: "Desk_Top", color: "#1D1E2A", roughness: 0.55 });
@@ -58,8 +59,8 @@ export function mesaControl(m: Materiales): THREE.Group {
 export const SALAS_ESTACION = ["esclusa", "taller", "habitat", "control", "invernadero"] as const;
 export type SalaEstacion = (typeof SALAS_ESTACION)[number];
 
-/** [piece, x, z (kit units, grid corner), quarter turns, collision radius in m (0 = none), y]. */
-type Prop = readonly [PiezaEstacion, number, number, number, number, number?];
+/** [piece, x, z (kit units, its origin), quarter turns, collision radius in m (0 = none), y, stand up]. */
+type Prop = readonly [PiezaEstacion, number, number, number, number, number?, boolean?];
 /** [builder, x, z (metres from the room centre), turn in radians, collision radius in m]. */
 type Propio = readonly [(m: Materiales) => THREE.Object3D, number, number, number, number];
 type Lado = "norte" | "sur";
@@ -72,6 +73,8 @@ interface PlanoSala {
   ventanaEste: boolean;
   kit: readonly Prop[];
   propios: readonly Propio[];
+  /** How far the lit floor dashes run in from each door (m), toward what the room is for. */
+  guia: number;
   /** Extra collision circles [x, z, radius] (m) for long pieces a single circle cannot cover. */
   choques?: readonly (readonly [number, number, number])[];
 }
@@ -87,12 +90,14 @@ const PLANOS: Readonly<Record<SalaEstacion, PlanoSala>> = {
     puertas: [["norte", 4, "pasillo"], ["sur", 4, "base"]],
     kit: [
       ["Spacesuite_full_4", 1.0, 1.2, 1, 0.5], ["Spacesuite_full_4", 1.0, 2.6, 1, 0.5],
-      ["Hanging_Shelf_43", 0.6, 4.4, 1, 0, 1.6], ["Helm_1_7", 1.0, 4.4, 1, 0, 2.05], ["Helm_1_7", 1.0, 5.1, 1, 0, 2.05],
+      ["Hanging_Shelf_43", 0.6, 4.4, 1, 0, 1.6], ["Helm_1_7", 1.0, 4.4, 1, 0, 2.23], ["Helm_1_7", 1.0, 5.1, 1, 0, 2.23],
       // The pad in the middle: the kit's octagon floor tile, a touch above the floor.
       ["Floor_M_2_100", 4.5, 2.5, 0, 0, 0.02],
-      ["Cube_1_26", 9.5, 6.0, 0, 0.6], ["Cube_2_27", 10.6, 6.2, 0, 0.6],
+      // Crates have their origin at the centre: half their height up, so they sit on the floor.
+      ["Cube_1_26", 9.5, 6.0, 0, 0.6, 0.5], ["Cube_2_27", 10.6, 6.2, 0, 0.6, 0.54],
     ],
     propios: [[mesaControl, 3.0, -2.55, 0, 1.0]],
+    guia: 1.4,
   },
   // Engineering: batteries and the solar console on the north wall, the workbench with its drill, the rover
   // dock on the east wall, gas tanks and the robot arm on the west wall.
@@ -100,9 +105,9 @@ const PLANOS: Readonly<Record<SalaEstacion, PlanoSala>> = {
     ancho: 12, fondo: 8, ventanaEste: false,
     puertas: [["sur", 4, "pasillo"]],
     kit: [
-      ["Table_44", 9.3, 1.6, 0, 1.0], ["Drill_13", 9.0, 1.4, 0, 0, 1.03],
+      ["Table_44", 9.3, 1.6, 0, 1.0], ["Drill_13", 9.0, 1.4, 0, 0, 1.32],
       ["Tank_O2_46", 1.2, 3.6, 1, 0.8], ["Tank_H2_48", 1.2, 6.2, 1, 0.8],
-      ["Arm_Base_16", 2.6, 1.6, 0, 0.5], ["Arm_17", 2.6, 1.6, 0, 0, 0.3],
+      ["Arm_Base_16", 2.6, 1.6, 0, 0.5, 0, true], ["Arm_17", 2.6, 1.6, 0, 0, 0.3, true],
       ["Cube_4_29", 9.6, 6.6, 0, 0.6],
     ],
     propios: [
@@ -110,6 +115,7 @@ const PLANOS: Readonly<Record<SalaEstacion, PlanoSala>> = {
       [mesaControl, -0.2, -2.55, 0, 1.1],
       [dock, 3.9, 0.7, Math.PI / 2, 0.9],
     ],
+    guia: 2.4,
   },
   // Habitat: bunk on the west wall, meals in the middle with kit chairs, the crew terminal and the Veggie
   // garden on the north wall, the infirmary (bed and first aid) by the east wall.
@@ -128,6 +134,7 @@ const PLANOS: Readonly<Record<SalaEstacion, PlanoSala>> = {
       [cultivoVeggie, 1.2, -2.85, 0, 0.7],
       [camilla, 3.2, -1.6, 0, 1.0],
     ],
+    guia: 2.2,
   },
   // Control room (sheet 01): the mission table with the crater in relief in the middle, the operators' desks
   // facing the window on the east wall, lockers on the west wall, the comms terminal and plants on the north.
@@ -147,6 +154,7 @@ const PLANOS: Readonly<Record<SalaEstacion, PlanoSala>> = {
       [maceta, -4.3, 1.4, 0, 0.35],
       [maceta, -4.3, -2.75, 0, 0.35],
     ],
+    guia: 2.0,
   },
   // Greenhouse (sheet 03): a lit path from the door to the Veggie unit, raised beds of lettuce, pepper and
   // wheat on both sides, seedling racks along the side walls, water tanks by the north wall.
@@ -163,6 +171,7 @@ const PLANOS: Readonly<Record<SalaEstacion, PlanoSala>> = {
       [cultivoVeggie, 0, -2.85, 0, 0.7],
       [tanqueAgua, -1.5, -2.75, 0, 0.5], [tanqueAgua, 1.5, -2.75, 0, 0.5],
     ],
+    guia: 5.0,
     choques: [...cama(-2.2, -1.8), ...cama(2.2, -1.8), ...cama(-2.2, 0), ...cama(2.2, 0), ...cama(-2.2, 1.8), ...cama(2.2, 1.8)],
   },
 };
@@ -312,6 +321,11 @@ export function crearSalaEstacion(sala: SalaEstacion, materialesJuego: Materiale
       }
       const zFin = n ? z0 : z0 + 4;
       for (const dx of [0, 2]) enKit(n ? pieza(kit, "Wall_L_66", x + dx, zFin, 1) : pieza(kit, "Wall_L_66", x + dx + 2, zFin, 3), g);
+      // The sign of where it leads, over the opening on the room side.
+      const placa = letrero(plano.puertas.find(([l, px]) => l === lado && px === x)![2], 0.5);
+      placa.position.set((x + 2) * E - m.x, 2.75, n ? -m.z + 0.62 : m.z - 0.62);
+      placa.rotation.y = n ? 0 : Math.PI;
+      g.add(placa);
       const luz = new THREE.PointLight("#9CCBFF", 3, 5, 2);
       luz.position.set((x + 2) * E - m.x, 1.8, (z0 + 2) * E - m.z);
       raiz.add(luz);
@@ -320,8 +334,17 @@ export function crearSalaEstacion(sala: SalaEstacion, materialesJuego: Materiale
     const props = new THREE.Group();
     props.name = "Station_Props";
     raiz.add(props);
-    for (const [nombre, x, z, cuartos, , y = 0] of plano.kit) enKit(pieza(kit, nombre, x, z, cuartos, y), props);
+    for (const [nombre, x, z, cuartos, , y = 0, dePie = false] of plano.kit) enKit(pieza(kit, nombre, x, z, cuartos, y, dePie), props);
   });
+
+  // Lit dashes from each door toward what the room is for, and a yellow line across each threshold.
+  const tramos: Segmento[] = [], umbrales: { x: number; z: number; giro: number }[] = [];
+  for (const [lado, x] of plano.puertas) {
+    const cx = (x + 2) * E - m.x, s = lado === "norte" ? -1 : 1;
+    tramos.push([cx, s * (m.z - 0.4), cx, s * (m.z - 0.4 - plano.guia)]);
+    umbrales.push({ x: cx, z: s * (m.z - 0.1), giro: lado === "norte" ? 0 : Math.PI });
+  }
+  raiz.add(guiaPiso(tramos, umbrales, 0.03, 2.6));
 
   return { raiz, muros };
 }

@@ -65,6 +65,11 @@ export function verboInterior(id: string | null): string | null {
   return "ui.interaccion.usar";
 }
 
+/** Name key of the room a door leads to (null when what is within reach is not a door). */
+export function destinoInterior(id: string | null): string | null {
+  return id?.startsWith("puerta:") ? `ui.interior.sala.${id.slice("puerta:".length)}` : null;
+}
+
 export function InteriorBase({ calidad, onSalir }: InteriorBaseProps) {
   const { t } = useT();
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -96,13 +101,15 @@ export function InteriorBase({ calidad, onSalir }: InteriorBaseProps) {
   }, [lugar, calidad]);
 
   const verbo = verboInterior(cercano);
+  const destino = destinoInterior(cercano);
+  const aviso = verbo && (destino ? `${t(verbo)} · ${t(destino)}` : t(verbo));
   return (
     <div className="interior-base" style={{ position: "absolute", inset: 0 }}>
       <canvas ref={canvasRef} aria-hidden="true" style={{ display: "block", width: "100%", height: "100%", touchAction: "none" }} />
       {verbo && (
         <div className="fc-cara fc-chico" role="status"
           style={{ position: "absolute", left: "50%", bottom: "18%", transform: "translateX(-50%)", padding: "0.4rem 0.9rem", pointerEvents: "none", whiteSpace: "nowrap" }}>
-          <span>{tactil ? t(verbo) : `[E] ${t(verbo)}`}</span>
+          <span>{tactil ? aviso : `[E] ${aviso}`}</span>
         </div>
       )}
       {tactil && (
