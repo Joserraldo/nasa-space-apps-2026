@@ -362,6 +362,71 @@ export function crearMontanas(materiales: Materiales, o: OpcionesMontanas = MONT
   return malla;
 }
 
+/** Mesetas del horizonte: `n` torres de cima plana entre `radioMin` y `radioMax` m del centro. [E] */
+export const MESETAS = { n: 18, radioMin: 88, radioMax: 150, semilla: 23 } as const;
+
+/**
+ * Mesetas y agujas de roca entre la base y la cordillera (imagen de la colonia): prismas irregulares de 6 a 8
+ * caras, algo cónicos, con uno o dos escalones y la cima plana, en tonos de regolito y basalto con estratos.
+ * Una malla con color de vértice (una llamada), sin sombras; el pie se hunde para tapar el relieve del DEM.
+ */
+export function crearMesetas(materiales: Materiales, o: typeof MESETAS = MESETAS): THREE.Mesh {
+  const azar = aleatorio(o.semilla);
+  const pos: number[] = [];
+  const col: number[] = [];
+  const cara = (a: number[], b: number[], c: number[], color: THREE.Color) => {
+    pos.push(...a, ...b, ...c);
+    for (let k = 0; k < 3; k++) col.push(color.r, color.g, color.b);
+  };
+  const basalto = colorToken("roca-basalto");
+  const cuerpo = colorToken("regolito-medio").lerp(basalto, 0.15);
+  const estrato = colorToken("regolito-claro").lerp(basalto, 0.12);
+  const cima = colorToken("regolito-claro");
+  for (let i = 0; i < o.n; i++) {
+    const ang = (i / o.n) * Math.PI * 2 + azar() * 0.25;
+    const r = o.radioMin + azar() * (o.radioMax - o.radioMin);
+    const cx = Math.cos(ang) * r, cz = Math.sin(ang) * r;
+    const lados = 6 + Math.floor(azar() * 3);
+    const aguja = azar() < 0.35; // aguja alta y fina, o meseta ancha
+    let ancho = aguja ? 3 + azar() * 3 : 7 + azar() * 9;
+    let y0 = -6;
+    const escalones = aguja ? 1 : 1 + Math.floor(azar() * 2);
+    const altoTotal = aguja ? 16 + azar() * 14 : 9 + azar() * 10;
+    const forma = Array.from({ length: lados }, (_, k) => 0.75 + azar() * 0.5);
+    for (let e = 0; e < escalones; e++) {
+      const y1 = y0 + (altoTotal + 6) / escalones;
+      const arriba = ancho * (aguja ? 0.55 : 0.82);
+      const anillo = (rad: number, y: number) => forma.map((f, k) => {
+        const a = (k / lados) * Math.PI * 2;
+        return [cx + Math.cos(a) * rad * f, y, cz + Math.sin(a) * rad * f];
+      });
+      const bajo = anillo(ancho, y0), alto = anillo(arriba, y1);
+      for (let k = 0; k < lados; k++) {
+        const k2 = (k + 1) % lados;
+        const c = (k + e) % 3 === 0 ? estrato : cuerpo.clone().lerp(estrato, azar() * 0.4);
+        // Caras hacia afuera (sentido antihorario visto desde fuera).
+        cara(bajo[k]!, alto[k]!, bajo[k2]!, c);
+        cara(bajo[k2]!, alto[k]!, alto[k2]!, c);
+      }
+      // Cornisa plana del escalón (o cima).
+      const centro = [cx, y1, cz];
+      for (let k = 0; k < lados; k++) cara(centro, alto[(k + 1) % lados]!, alto[k]!, cima);
+      y0 = y1;
+      ancho = arriba * 0.8;
+    }
+  }
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute("position", new THREE.Float32BufferAttribute(pos, 3));
+  geo.setAttribute("color", new THREE.Float32BufferAttribute(col, 3));
+  geo.computeVertexNormals();
+  geo.computeBoundingSphere();
+  const malla = new THREE.Mesh(geo, materiales.Rock);
+  malla.name = "Mesas_Horizon";
+  malla.castShadow = false;
+  malla.receiveShadow = false;
+  return malla;
+}
+
 // ---------------------------------------------------------------------------------------------
 // Lomas: montículos facetados (antena parabólica y base de montaña, lámina `mundo/01`)
 // ---------------------------------------------------------------------------------------------

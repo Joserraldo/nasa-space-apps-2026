@@ -31,6 +31,7 @@ import {
   PASO_POR_DEFECTO,
   TAMANO_MUNDO_POR_DEFECTO,
   aplanarClaro,
+  crearMesetas,
   crearMontanas,
   crearGravilla,
   crearRocas,
@@ -199,7 +200,7 @@ export function armarEscena(
   // Las rocas de primer plano están dentro del claro llano (y = 0): no esperan al DEM.
   const primerPlano = instanciarRocasAltas(materiales, ROCAS_PRIMER_PLANO, "Rocks_Basalt_Foreground");
   base.add(armarAnclajes(materiales), armarKit(materiales), armarEdificios(materiales), primerPlano, ...MODULOS_BASE.map((id) => modulos[id].raiz));
-  escena.add(terreno, base, crearMontanas(materiales));
+  escena.add(terreno, base, crearMontanas(materiales), crearMesetas(materiales));
 
   const armada: EscenaArmada = {
     escena,
