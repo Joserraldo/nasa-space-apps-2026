@@ -26,6 +26,7 @@ import type { EstadoModulo, VistaEscena } from "./vista";
 import { MODULOS_BASE, type ModuloBase } from "./activos/modulos";
 import { PRESUPUESTO, aplanarClaro, contarRender, type CuentaRender } from "./activos/terreno";
 import { huellasBase, huellasColisionExtra } from "./activos/baseExterior";
+import { aplicarModelosColonia } from "./activos/modelosColonia";
 import { huellasModulos } from "./activos/modulosArmados";
 import { EntradaTactil, type DeltaCamaraTactil } from "./entradaTactil";
 import {
@@ -548,6 +549,8 @@ export function crearEscena3D(canvas: HTMLCanvasElement, opciones: OpcionesEscen
   const materiales: Materiales = crearMateriales();
   const armada: EscenaArmada = armarEscena(materiales, null, null, calidad === "alta" ? "alta" : "baja");
   armada.cielo.aplicarRenderer(renderer, calidad !== "baja");
+  // Local colony models, when their files are deployed; otherwise the code-built base stays as it is.
+  void aplicarModelosColonia(armada.escena, materiales, () => !liberada);
   const { tripulacion } = armada;
 
   // --- Movimiento: el niño, Iris y los sólidos reales ---

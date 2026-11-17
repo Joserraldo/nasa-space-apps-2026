@@ -32,3 +32,6 @@ pitch/trailer/renders/
 pitch/trailer/.hyperframes/
 pitch/trailer/**/*.mp3
 pitch/trailer/**/*.mp4
+
+# Modelos derivados de packs cuya licencia no permite redistribuir los archivos (ver assets/MODELOS-LOCALES.md)
+ui/public/modelos-locales/

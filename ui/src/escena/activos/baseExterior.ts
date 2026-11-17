@@ -252,6 +252,14 @@ export function huellasColisionExtra(): Huella[] {
 // Montaje
 // ---------------------------------------------------------------------------------------------
 
+/** Piezas en código que un modelo local puede reemplazar (`modelosColonia.ts`). */
+export type PiezaReemplazable = "habitat" | "enlaces" | "paneles";
+
+/** Dónde va cada tubo entre estaciones vecinas: centro, giro (eje del tubo) y largo. */
+export function enlacesEstaciones(): { x: number; z: number; giro: number; largo: number }[] {
+  return paresCorredoresEstacion().flatMap(([a, b]) => corredorEntre(a, b) ?? []);
+}
+
 /** Caminos (una malla) y balizas instanciadas. */
 export function armarKit(m: Materiales): THREE.Group {
   const kit = new THREE.Group();
@@ -297,9 +305,10 @@ function enlaceCupulas(m: Materiales): THREE.Group {
 
 /**
  * Hábitat en su anclaje, todo el decorado y las piezas sueltas del kit (consolas y cajas), fusionado
- * por material en `Base_Buildings`: 1 llamada por slot, sin importar cuántas piezas haya.
+ * por material en `Base_Buildings`: 1 llamada por slot, sin importar cuántas piezas haya. `omitir` deja fuera
+ * las piezas que un modelo local ya puso en la escena.
  */
-export function armarEdificios(m: Materiales): THREE.Group {
+export function armarEdificios(m: Materiales, omitir: ReadonlySet<PiezaReemplazable> = new Set()): THREE.Group {
   const h = lugar("habitat");
   const g = new THREE.Group();
   const en = (id: Decorado["id"], o: THREE.Object3D, esc = 1) => {
@@ -307,8 +316,8 @@ export function armarEdificios(m: Materiales): THREE.Group {
     return colocar(o, [d.x, 0, d.z], [0, alCentro(d.x, d.z), 0], esc);
   };
   const c = corredor();
+  if (!omitir.has("habitat")) g.add(colocar(crearHabitat(m), [h.mx, 0, h.mz]));
   g.add(
-    colocar(crearHabitat(m), [h.mx, 0, h.mz]),
     en("torre", crearTorreControl(m)),
     colocar(crearCorredor(m, LARGO_CORREDOR), [c.x, 0, c.z], [0, c.giro, 0]),
     en("capsula", crearCapsula(m)),
@@ -323,7 +332,7 @@ export function armarEdificios(m: Materiales): THREE.Group {
   );
   // Estaciones por fuera y corredores de vidrio entre edificios vecinos.
   for (const e of POS_ESTACIONES) g.add(colocar(crearEstacion(m, e.id), [e.x, 0, e.z], [0, alCentro(e.x, e.z), 0]));
-  for (const [a, b] of paresCorredoresEstacion()) {
+  if (!omitir.has("enlaces")) for (const [a, b] of paresCorredoresEstacion()) {
     const k = corredorEntre(a, b);
     if (k) g.add(colocar(crearCorredor(m, k.largo), [k.x, 0, k.z], [0, k.giro, 0]));
   }
@@ -332,7 +341,7 @@ export function armarEdificios(m: Materiales): THREE.Group {
     g.add(colocar(crearConsola(m), [p.x, 0, p.z], [0, p.giro, 0], p.escala));
   }
   const mesa = lugar("mesa");
-  for (const dx of PANELES_MESA.dx) g.add(colocar(crearPanelSolarInclinado(m), [mesa.mx + dx, 0.1, mesa.mz + PANELES_MESA.dz], [0, 0, 0], PANELES_MESA.escala));
+  if (!omitir.has("paneles")) for (const dx of PANELES_MESA.dx) g.add(colocar(crearPanelSolarInclinado(m), [mesa.mx + dx, 0.1, mesa.mz + PANELES_MESA.dz], [0, 0, 0], PANELES_MESA.escala));
   for (const k of CAJAS) g.add(colocar(crearCaja(m), [k.x, 0, k.z], [0, k.giro, 0]));
   const salida = fusionar(g, "Base_Buildings");
   // Lomas facetadas (una malla con el color de vértice del suelo): antena y base de montaña.
