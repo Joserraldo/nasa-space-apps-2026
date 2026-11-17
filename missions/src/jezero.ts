@@ -191,6 +191,11 @@ export interface Mision {
   sitiosCandidatos: SitioCandidato[];
   averiaIris: AveriaIris;
   fin: FinMision;
+  /**
+   * Presupuesto de radiación de la misión (valor de juego, NO un umbral de salud).
+   * Si falta, la misión no pierde por dosis.
+   */
+  limiteDosisMSv?: number;
   /** Opcional: una misión sin polvo/panel dañado no debe inventar ese evento para usar el motor. */
   eventoPolvo?: EventoPolvo;
   dilemaPaso6: DilemaPaso6;
@@ -261,6 +266,7 @@ export const MISION_JEZERO: Mision & { eventoPolvo: EventoPolvo } = {
     falloCuando: "recurso_en_cero",
     tickLimite: 10,
   },
+  limiteDosisMSv: 6, // provisional, P0.2
   eventoPolvo: {
     descripcionKey: "mala_suerte.tormenta_polvo",
     equipo: "panel_solar",
