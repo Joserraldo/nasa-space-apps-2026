@@ -55,6 +55,14 @@ describe("cámara de tercera persona que sigue al niño", () => {
     });
   }
 
+  it("A10: en celular vertical (390x844) el cielo no ocupa más de un tercio del alto", () => {
+    for (const yaw of [0, 1.2, -2.5]) {
+      const { horizonte } = proyectar(390, 844, INICIO_JUGADOR.x, INICIO_JUGADOR.z, yaw);
+      // Fracción del alto por encima del horizonte (NDC +1 arriba): antes ~41 %, la lámina mundo/03 ~22 %.
+      expect((1 - horizonte.y) / 2).toBeLessThan(0.3);
+    }
+  });
+
   it("el encuadre se interpola entre apaisado y vertical y no sale de esos extremos", () => {
     const a = encuadreTercera(2.5), v = encuadreTercera(0.2), m = encuadreTercera(1);
     expect(a).toEqual(CAMARA_TERCERA.apaisado);
