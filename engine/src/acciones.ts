@@ -23,6 +23,7 @@ import { actualizarIa, repararIa } from "./ia.js";
 import { tormentaEnCurso } from "./tormenta.js";
 import { ajustarAltura, avanzarOrbita, senalDeDano } from "./orbita.js";
 import { elegir, enteroEntre, siguiente } from "./rng.js";
+import { acumularDosis } from "./radiacion.js";
 
 const RECURSOS: readonly Resource[] = ["energia", "soporte_vital", "blindaje"];
 
@@ -311,6 +312,8 @@ export function avanzarTick(estado: GameState, mision: Mision = MISION_JEZERO): 
   for (const e of listos) s = aplicarDeltas(s, { [e.recurso]: e.delta }, e.origen, e.descripcionKey);
   s = { ...s, efectosPendientes: futuros };
   const llegoTelemetria = listos.some((e) => e.descripcionKey === "causa.enviar_telemetria");
+  // P0.1: la tripulación acumula dosis con el blindaje que hay cuando llega la radiación (antes del daño del turno).
+  s = acumularDosis(s, mision);
 
   // #113: la tormenta solo hace daño dentro de su ventana (desde que se revela, DURACION_TORMENTA_TICKS).
   const senal = tormentaEnCurso(s, mision) ? senalDeDano(s) : 0;

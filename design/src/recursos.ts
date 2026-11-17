@@ -188,3 +188,29 @@ export const ENERGIA_POR_CANTIDAD: Record<QuantityWord, number> = {
  * 3 es la mayor duración que deja ganar con las dos salidas del dilema del paso 6.
  */
 export const DURACION_TORMENTA_TICKS = 3;
+
+/**
+ * P0.1 Radiación de la tripulación. PARÁMETROS EDUCATIVOS DE JUEGO, NO DATOS CIENTÍFICOS:
+ * se ajustan en P0.6 con la prueba de estrategias. La idea "más masa y el refugio reducen la
+ * radiación" es un hecho; estas cifras concretas no lo son.
+ */
+/** Fracción máxima de radiación que quita el blindaje al 100 % (0,6 = quita hasta el 60 %). */
+export const REDUCCION_MAX_BLINDAJE = 0.6;
+/** Multiplicador de la dosis dentro del refugio (0,3 = recibe el 30 %). */
+export const FACTOR_REFUGIO = 0.3;
+/** Turnos que protege un `refugiarse` (desde el turno siguiente a la acción). */
+export const DURACION_REFUGIO_TICKS = 2;
+/** Multiplicador máximo de la tormenta donde no hay medición en superficie (Luna, nave): 1 + señal·(este − 1). */
+export const FACTOR_TORMENTA_SIN_MEDICION = 20;
+/**
+ * Referencia de data/ciencia/radiacion.json (vía referenciaDosis de @solar-shield/data) que da la
+ * dosis de fondo de cada sitio. Es una elección del equipo; los valores tienen fuente en data/.
+ * luna-superficie es de Chang'e-4 (CNSA, no NASA): pendiente de revisión del rol de datos.
+ */
+export const REFERENCIA_FONDO_DOSIS: Record<Site, string> = {
+  marte_jezero: "marte-superficie",
+  marte_polo_norte: "marte-superficie",
+  luna_polo_sur: "luna-superficie",
+  luna_lado_visible: "luna-superficie",
+  outpost_sorpresa: "marte-crucero",
+};
