@@ -1,14 +1,13 @@
 # Estado — Frente A (José)
 
-**Hecho (16 nov):**
-- Fusionados: A0, A1, A2 parte 1, A3 (falta aprobación), A4, A5, A12, A13 y #372 (cámara en ajustes).
-- A6 (rama `feat/frente-a-A6-expertas`): Doctora y Meteoróloga en sus estaciones; las tres expertas se giran,
-  saludan y explican; son sólidas; `Interactivo` de tipo actor cerca de ellas y `[E]` abre su conversación.
-  Cascos en un `InstancedMesh` y expertas sin sombra del Sol: peor caso 79 draw calls y 75 454 triángulos.
+**Hecho (17 nov):**
+- Fusionados: A0, A1, A2 parte 1, A3 (falta aprobación), A4, A5, A6, A12, A13 y #372 (cámara en ajustes).
+- Esperan revisión: A7 (#383, coreografía de los 14 gestos) y A10 (#441, cámara en celular vertical).
+- A11 (rama `feat/frente-a-A11-fin-mismo-tick`): propuesta D12. La regla de #21 (recurso en cero gana) ya está en
+  el motor con pruebas; el motor multi-misión de #152 está hecho; la UI pasa la misión cuando haya una segunda.
 
-**Sigue:** A7 (coreografía con los 14 gestos), que esperaba a A6.
+**Sigue:** nada sin bloqueo. A8 espera C2 (#374, borrador); A9 espera la aprobación de A3.
 
 **Bloqueado:**
-- E: #339 (quizá resuelto por #367), #344, #364 y #368. Al conectar #344, rehacer las capturas de A2.
-- A8 espera C2 (#374, borrador). A9 espera la aprobación de A3.
-- Frente B (Jaime) y D (Daniel) sin loop activo: #370 y D5 parte 2 sin dueño.
+- E: #344, #364 y #368 (revisar si siguen abiertos tras E4, E6, E8 y E9). E pasa `hablando` (A7).
+- Diseño: aprobar D12 y cerrar #152. Santiago y María Paula: aprobar A3.
