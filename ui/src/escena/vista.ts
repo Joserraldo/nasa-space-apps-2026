@@ -38,6 +38,8 @@ export interface VistaEscena {
     /** Ya está golpeando la base. */
     activa: boolean;
   };
+  /** Verdadero si la tripulación activó explícitamente "Subir el escudo" en esta misión. */
+  escudoElevado?: boolean;
   /** Adónde conviene ir ahora; null si no hay sugerencia. */
   lugarObjetivo: LugarObjetivo | null;
   resultado: GameState["resultado"];
@@ -68,6 +70,9 @@ export function vistaEscena(estado: GameState, entrada: EntradaVista): VistaEsce
     modulos,
     iris: { nivel: estado.iaBase, averiada: modulos.ia_base === "averiado" },
     tormenta: { anunciada: estado.tormenta !== null, activa: tormentaActiva(estado) },
+    escudoElevado:
+      estado.causas.some((c) => c.descripcionKey === "causa.subir_escudo" || c.accion?.tipo === "subir_escudo") ||
+      estado.efectosPendientes.some((e) => e.descripcionKey === "causa.subir_escudo"),
     lugarObjetivo: entrada.lugarObjetivo ?? null,
     resultado: estado.resultado,
   };

@@ -4,14 +4,14 @@ import { cadenciaCaminar } from "./personajes/animaciones";
 import { VEL_JUGADOR } from "./movimientoBase";
 import type { ModoGuia } from "./guia";
 import type { FaseSalto } from "./movimientoBase";
-import { ANCLAJES_EXPERTAS, DOCK_IRIS, INICIO_JUGADOR } from "./mundo";
+import { ANCLAJES_EXPERTAS, DOCK_IRIS, INICIO_JUGADOR, type ExpertaBase } from "./mundo";
 import type { VistaEscena } from "./vista";
 import type { ActorId } from "./frontera";
 import { gestoDe, type Reaccion, type Situacion } from "./coreografia";
 
-/** La Ingeniera se vuelve hacia el niño cuando está a esta distancia (m). [E] */
+/** Cada experta se vuelve hacia el niño cuando está a esta distancia (m). [E] */
 export const DISTANCIA_ATENCION = 3.6;
-/** Giro de la Ingeniera hacia el niño, rad/s. */
+/** Giro de las expertas hacia el niño, rad/s. */
 const GIRO_INGENIERA = 4;
 /** Cara de Iris según lo que hace como guía (si no está apagada ni averiada). */
 const CARA_GUIA: Readonly<Record<ModoGuia, CaraIris>> = { acompana: "atenta", guia: "atenta", espera: "pensando", llego: "feliz" };
@@ -26,21 +26,35 @@ function girarHacia(actual: number, deseado: number, max: number): number {
  * niño y de Iris la escribe la escena (desde `movimientoBase`); aquí se eligen gestos, caras y el
  * giro de la Ingeniera. Sin asignaciones por fotograma.
  */
+/** Las tres expertas de la base, cada una en su estación (A6): taller, hábitat y sensor. */
+export const EXPERTAS_BASE: readonly ExpertaBase[] = ["ingeniera", "doctora", "meteorologa"];
+
 export function crearTripulacionBase() {
   const grupo = new THREE.Group();
   grupo.name = "Tripulacion_Base";
   const jugador = crearPersonaje("nino");
-  const ingeniera = crearPersonaje("ingeniera");
   const iris = crearIris();
   jugador.grupo.position.set(INICIO_JUGADOR.x, 0, INICIO_JUGADOR.z);
   jugador.grupo.rotation.y = Math.PI;
-  const anclaje = ANCLAJES_EXPERTAS.ingeniera;
-  ingeniera.grupo.position.set(anclaje.x, anclaje.y, anclaje.z);
-  const rumboIngeniera = Math.atan2(INICIO_JUGADOR.x - anclaje.x, INICIO_JUGADOR.z - anclaje.z);
-  ingeniera.grupo.rotation.y = rumboIngeniera;
+  // Cada experta en su anclaje, mirando hacia donde empieza el niño.
+  const expertas = EXPERTAS_BASE.map((id) => {
+    const pj = crearPersonaje(id);
+    const a = ANCLAJES_EXPERTAS[id];
+    pj.grupo.position.set(a.x, a.y, a.z);
+    const rumbo = Math.atan2(INICIO_JUGADOR.x - a.x, INICIO_JUGADOR.z - a.z);
+    pj.grupo.rotation.y = rumbo;
+    // Las expertas no proyectan sombra del Sol: las apoya la sombra de contacto (D2), y así las tres caben en
+    // el presupuesto de la vista (cada sombra suma una pasada con todos sus triángulos). El Sol queda para el niño.
+    const cuerpo = pj.grupo.getObjectByName("cuerpo");
+    if (cuerpo) cuerpo.castShadow = false;
+    return { id, pj, rumbo, atendiendoDesde: -1 };
+  });
+  const [ingeniera, doctora, meteorologa] = expertas.map((e) => e.pj) as [ReturnType<typeof crearPersonaje>, ReturnType<typeof crearPersonaje>, ReturnType<typeof crearPersonaje>];
   iris.grupo.position.set(DOCK_IRIS.x, DOCK_IRIS.y, DOCK_IRIS.z);
   iris.grupo.rotation.y = Math.atan2(INICIO_JUGADOR.x - DOCK_IRIS.x, INICIO_JUGADOR.z - DOCK_IRIS.z);
-  grupo.add(jugador.grupo, ingeniera.grupo, iris.grupo);
+  grupo.add(jugador.grupo, ...expertas.map((e) => e.pj.grupo), iris.grupo);
+  const cascos = crearCascosInstanciados([jugador, ...expertas.map((e) => e.pj)]);
+  grupo.add(cascos.malla);
   // Objetos reutilizados en cada frame.
   const gesto = { quieto: true };
   /** Opciones del niño: paso según la rapidez (A4) y capa de salto (A5). */
@@ -60,7 +74,6 @@ export function crearTripulacionBase() {
   const situacion: Situacion = { t: 0, vista: null, hablando: null, reaccion: null, cerca: -1, caminando: false };
   const reaccionVista = { tipo: "averia" as Reaccion, hace: 0 };
   let apagada = false;
-  let atendiendoDesde = -1;
   let ultimoMs = -1;
   let liberada = false;
   const animarTripulacion = (ahoraMs: number, reducido: boolean) => {
@@ -92,29 +105,35 @@ export function crearTripulacionBase() {
     situacion.cerca = -1;
     animar(jugador, gestoDe("nino", situacion), t, gestoNino);
 
-    // La Ingeniera: la coreografía elige el gesto (saluda, explica, escucha, trabaja en su estación o
-    // reacciona). Mira al niño cuando está cerca o cuando ella habla; si no, a su puesto.
-    const p = jugador.grupo.position, q = ingeniera.grupo.position;
-    const cerca = Math.hypot(p.x - q.x, p.z - q.z) <= DISTANCIA_ATENCION;
-    if (cerca) {
-      if (atendiendoDesde < 0) atendiendoDesde = ahoraMs;
-    } else atendiendoDesde = -1;
+    // Coreografía (A7) para las tres expertas: saludan, explican, escuchan, trabajan en su estación o
+    // reaccionan. Cada una mira al niño cuando está cerca o cuando ella habla; si no, a su puesto.
+    const p = jugador.grupo.position;
     situacion.caminando = false;
-    situacion.cerca = cerca ? (ahoraMs - atendiendoDesde) / 1000 : -1;
-    const g: Gesto = gestoDe("ingeniera", situacion);
-    const deseado = cerca || actores.hablando === "ingeniera" ? Math.atan2(p.x - q.x, p.z - q.z) : rumboIngeniera;
-    ingeniera.grupo.rotation.y = reducido ? deseado : girarHacia(ingeniera.grupo.rotation.y, deseado, GIRO_INGENIERA * dt);
-    animar(ingeniera, g, t, gesto);
+    for (const e of expertas) {
+      const q = e.pj.grupo.position;
+      const cerca = Math.hypot(p.x - q.x, p.z - q.z) <= DISTANCIA_ATENCION;
+      if (cerca) {
+        if (e.atendiendoDesde < 0) e.atendiendoDesde = ahoraMs;
+      } else e.atendiendoDesde = -1;
+      situacion.cerca = cerca ? (ahoraMs - e.atendiendoDesde) / 1000 : -1;
+      const g: Gesto = gestoDe(e.id, situacion);
+      const deseado = cerca || actores.hablando === e.id ? Math.atan2(p.x - q.x, p.z - q.z) : e.rumbo;
+      e.pj.grupo.rotation.y = reducido ? deseado : girarHacia(e.pj.grupo.rotation.y, deseado, GIRO_INGENIERA * dt);
+      animar(e.pj, g, t, gesto);
+    }
 
-    // Iris: ruedas con su rapidez real y cara según lo que hace.
-    rover.velocidad = actores.velocidadIris;
+    // Iris: ruedas con su rapidez real (con umbral anti-temblor cuando está parada) y cara según lo que hace.
+    rover.velocidad = actores.velocidadIris > 0.12 ? actores.velocidadIris : 0;
     // La guía pide cara de error (avería revelada): la muestra aunque la vista todavía no la marque averiada.
     if (!apagada) rover.cara = actores.errorIris ? "error" : CARA_GUIA[actores.modoIris];
     iris.animar(t, rover);
+    cascos.actualizar(grupo);
   };
   animarTripulacion(0, true);
   return {
-    grupo, jugador, ingeniera, iris, actores,
+    grupo, jugador, ingeniera, doctora, meteorologa, iris, actores,
+    /** Las expertas por id, para la cercanía (`Interactivo` de tipo actor) y los globos. */
+    expertas: { ingeniera, doctora, meteorologa } as Readonly<Record<ExpertaBase, ReturnType<typeof crearPersonaje>>>,
     aplicarVista(vista: VistaEscena) {
       vistaActual = vista;
       apagada = vista.iris.nivel === "offline";
@@ -127,10 +146,48 @@ export function crearTripulacionBase() {
       liberada = true;
       // Cada fábrica libera también su esqueleto; el liberador genérico de mallas no lo hace.
       grupo.removeFromParent();
+      cascos.liberar();
       jugador.liberar();
-      ingeniera.liberar();
+      for (const e of expertas) e.pj.liberar();
       iris.liberar();
     },
   };
 }
 export type TripulacionBase = ReturnType<typeof crearTripulacionBase>;
+
+/**
+ * Los cascos (la burbuja translúcida de cada humano) en un solo `InstancedMesh`: es la misma geometría
+ * (`IcosahedronGeometry(1, 1)` escalada) con el mismo material compartido, así que cuatro cascos cuestan
+ * una llamada de dibujo en vez de cuatro (A6: con las tres expertas, la vista sigue en ≤ 80). El casco
+ * original de cada personaje queda oculto; en cada fotograma la instancia copia su matriz (sigue al torso).
+ * Si el personaje está oculto (primera persona), su instancia se encoge a cero.
+ */
+function crearCascosInstanciados(personajes: readonly ReturnType<typeof crearPersonaje>[]) {
+  const originales = personajes.map((p) => p.grupo.getObjectByName("casco") as THREE.Mesh);
+  const geometria = new THREE.IcosahedronGeometry(1, 1);
+  const malla = new THREE.InstancedMesh(geometria, originales[0]!.material, originales.length);
+  malla.name = "Cascos_Instanciados";
+  malla.renderOrder = originales[0]!.renderOrder;
+  malla.frustumCulled = false; // las instancias se mueven por toda la base
+  for (const o of originales) o.visible = false;
+  const inversa = new THREE.Matrix4();
+  const m = new THREE.Matrix4();
+  const cero = new THREE.Matrix4().makeScale(0, 0, 0);
+  return {
+    malla,
+    actualizar(raiz: THREE.Object3D) {
+      raiz.updateMatrixWorld(true);
+      inversa.copy(raiz.matrixWorld).invert();
+      originales.forEach((o, i) => {
+        const visible = personajes[i]!.grupo.visible;
+        malla.setMatrixAt(i, visible ? m.multiplyMatrices(inversa, o.matrixWorld) : cero);
+      });
+      malla.instanceMatrix.needsUpdate = true;
+    },
+    liberar() {
+      malla.removeFromParent();
+      geometria.dispose();
+      malla.dispose();
+    },
+  };
+}

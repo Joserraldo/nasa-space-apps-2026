@@ -105,25 +105,47 @@ for (const t of TAMANOS) {
     await boton("Continue").click();
     await foto("e4-sitio", 600);
     await boton("Land here").first().click();
+    // E8 (inicio/04): llegada con Skip y, ya en la base, "Your crew is ready" con "Explore the base".
+    await page.getByRole("heading", { name: /Arriving at/ }).waitFor();
+    await foto("e5-llegada", 600);
+    await boton("Skip", { exact: true }).click();
+    await page.getByRole("heading", { name: "Your crew is ready" }).waitFor();
     await page.waitForSelector("canvas");
     await page.evaluate(() => document.querySelector("canvas")?.setAttribute("data-captura", "e5"));
-    await foto("e5-modulos", 2500);
-    await boton("Place", { exact: true }).first().click();
-    await boton("Place", { exact: true }).first().click();
+    await foto("e5-listo", 2500);
+    await boton("Explore the base").click();
+    await foto("e5-modulos", 1500);
+    // E1: cada módulo se elige en la tarjeta de la Ingeniera y se coloca con "Place" (como la ruta dorada).
+    const tarjeta = page.locator('[role="dialog"].tc');
+    for (let i = 0; i < 2; i++) {
+      await boton("Ask the Engineer").click();
+      await tarjeta.locator("ul button:not([disabled])").first().click();
+      if (i === 0) await foto("e5-modulo-tarjeta", 500);
+      await boton("Place", { exact: true }).click();
+      await tarjeta.waitFor({ state: "detached" });
+    }
     await foto("e5-modulos-colocados", 1500);
     await boton("Base ready. Start the clock!").click();
+    // Pausa antes de cualquier espera: con el reloj andando llegan novedades ("Resume") que bloquean el mundo
+    // y el niño ya no camina. La pausa no frena la caminata (igual que la ruta dorada).
+    await boton("Pause", { exact: true }).click();
     await page.waitForSelector("canvas");
     await foto("e6-base", 2500);
-    // Crew abre el panel con las acciones y la tripulación; Map, el plano de la base.
+    // E3: Crew llega con la primera conversación. El mapa lleva al niño caminando hasta el sensor.
+    await boton("Map", { exact: true }).click();
+    await foto("e6-base-mapa", 500);
+    await page.getByRole("list", { name: "Places" }).getByRole("button", { name: /Radiation sensor/ }).click();
+    await boton("Ask the Solar Meteorologist").click({ timeout: 60_000 });
+    await foto("e6-base-conversacion", 800);
+    await page.keyboard.press("Escape");
+    await boton("Resume", { exact: true }).click();
+    // Crew abre el panel con las acciones y la tripulación.
     await boton("Crew", { exact: true }).click();
     await foto("e6-base-tripulacion", 500);
     await boton("Raise the shield").click();
     await foto("e6-base-confirmar", 500);
     await boton("Back").click();
     await boton("Close", { exact: true }).click();
-    await boton("Map", { exact: true }).click();
-    await foto("e6-base-mapa", 500);
-    await page.keyboard.press("Escape");
 
     const tormenta = page.getByRole("heading", { name: "Choose your expert" });
     await avanzarHasta(() => tormenta.isVisible());

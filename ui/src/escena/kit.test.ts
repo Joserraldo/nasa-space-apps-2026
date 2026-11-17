@@ -32,7 +32,8 @@ describe("kit de piezas comunes", () => {
     const juego = new Set<THREE.Material>(Object.values(mats));
     for (const m of meshes(pieza)) {
       expect(juego.has(m.material as THREE.Material)).toBe(true);
-      expect((m.material as THREE.MeshStandardMaterial).flatShading).toBe(true);
+      const flatEsperado = m.material === mats.Rock || m.material === mats.Plant || m.material === mats.Hair || m.material === mats.Glass;
+      expect((m.material as THREE.MeshStandardMaterial).flatShading).toBe(flatEsperado);
       expect(m.geometry.userData.compartido).toBe(true); // geometrías de la caché
     }
   });

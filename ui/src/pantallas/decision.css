@@ -5,7 +5,8 @@
 .decision-personajes .retrato-nombre { font-size: 14px; line-height: 1.15; text-align: center; text-wrap: balance; }
 .decision-detalle { display: grid; gap: var(--esp-3); min-inline-size: 0; }
 .decision-detalle .costos { grid-template-columns: 1fr 1fr; }
-.decision-detalle .mensaje { grid-template-columns: 32px 0 minmax(0, 1fr) auto; column-gap: var(--esp-2); padding-inline: var(--esp-3); }
+.decision-detalle .mensaje { grid-template-columns: 32px minmax(0, 1fr); column-gap: var(--esp-2); padding-inline: var(--esp-3); }
+.decision-detalle .mensaje-titulo, .decision-detalle .mensaje-detalle { grid-column: 2; text-align: start; }
 .decision-detalle .costos { gap: var(--esp-2); }
 .decision-detalle .costos-bloque { min-inline-size: 0; }
 .decision-detalle .costos-bloque + .costos-bloque { padding-left: var(--esp-2); }

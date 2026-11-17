@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { conversar, escenaTormenta, type Dialogo, type Entrada } from "@solar-shield/agents";
 import type { Equipment, GameState } from "@solar-shield/contracts";
-import { referenciaDosis } from "@solar-shield/data";
+import { referenciaDosis, tormentasCuradas } from "@solar-shield/data";
 import { costoDe, puedeAplicar, tormentaActiva } from "@solar-shield/engine";
 import { MISION_JEZERO } from "@solar-shield/missions";
 import { useT } from "../i18n.js";
@@ -95,6 +95,8 @@ export function PantallaTormenta({ estado, colocados, registro, onSeguir, onDeci
           : plan && verificando && escena ? <Verificar estado={estado} dialogos={escena.dialogos} onAtras={() => setVerificando(false)} />
           : plan ? <PlanComparado estado={estado} colocados={colocados} plan={plan} dialogo={escena?.dialogos.find((d) => d.experto === plan.experta)}
             onVerificar={() => setVerificando(true)} onOtra={() => { setConservada(plan.opcionId); setElegido(null); setPlan(null); }} onAtras={() => { setConservada(undefined); setElegido(null); setPlan(null); }} onDecidir={onDecidir} /> : <>
+          <p className="tormenta-guia">{t("ui.tormenta.guia")}</p>
+
           <ul className="tormenta-expertos">
             {EXPERTOS.map((p) => (
               <li key={p}>
@@ -110,11 +112,32 @@ export function PantallaTormenta({ estado, colocados, registro, onSeguir, onDeci
             <FacetButton type="submit" icon="avion_papel" labelKey="ui.tripulacion.enviar" onClick={NADA} />
           </form>
 
+          <ul className="tormenta-preguntas" aria-label={t("ui.base.charla.opciones")}>
+            <li><ChipPregunta icono="escudo" labelKey="ui.tormenta.pregunta.proteger" onClick={() => { setElegido(null); hablar({ texto: t("ui.tormenta.pregunta.proteger") }); }} /></li>
+            <li><ChipPregunta icono="sol" labelKey="ui.tormenta.pregunta.sensor" onClick={() => { setElegido(null); hablar({ texto: t("ui.tormenta.pregunta.sensor") }); }} /></li>
+          </ul>
+
           {dialogo && (
-            <div className="tormenta-respuesta" role="status" aria-live="polite">
-              <h3>{t(`agentes.titulo.${dialogo.experto}`)}</h3>
-              {dialogo.lineas.map((l, i) => <p key={i}>{t(l.clave, l.vars)}</p>)}
-              {dialogo.fuente && <TarjetaFuente fuente={dialogo.fuente} />}
+            <div className="fc">
+              <div className="fc-cara tormenta-respuesta" role="status" aria-live="polite">
+                <h3>{t(`agentes.titulo.${dialogo.experto}`)}</h3>
+                {dialogo.experto === "ia_base" && <p className="tormenta-respuesta-aviso">{t("ui.tormenta.irisAviso")}</p>}
+                {dialogo.lineas.map((l, i) => <p key={i}>{t(l.clave, l.vars)}</p>)}
+                {dialogo.fuente && <TarjetaFuente fuente={dialogo.fuente} />}
+                <div className="tormenta-respuesta-acciones">
+                  {EXPERTOS.includes(dialogo.experto as Experto) ? (
+                    <FacetButton variant="primary" icon="escudo" labelKey="ui.tormenta.comparar"
+                      onClick={() => { const exp = dialogo.experto as Experto; setElegido(exp); comparar(exp); }} />
+                  ) : (
+                    <>
+                      <FacetButton variant="primary" icon="escudo" labelKey="ui.accion.subir_escudo"
+                        onClick={() => { setElegido("ingeniera"); hablar({ experto: "ingeniera" }); comparar("ingeniera"); }} />
+                      <FacetButton icon="vida" labelKey="ui.accion.refugiarse"
+                        onClick={() => { setElegido("doctora"); hablar({ experto: "doctora" }); comparar("doctora"); }} />
+                    </>
+                  )}
+                </div>
+              </div>
             </div>
           )}
           </>}
@@ -196,6 +219,7 @@ function Verificar({ estado, dialogos, onAtras }: { estado: GameState; dialogos:
       <div className="tormenta-plan-accion tormenta-verif">
         <span className="fc"><span className="fc-cara fc-chico tormenta-pieza"><span>{t("ui.tormenta.fuente")}</span></span></span>
         <TarjetaFuente fuente={fuente} />
+        <MedicionMarte estado={estado} />
         <ul className="tormenta-preguntas">
           {PREGUNTAS.map((q) => (
             <li key={q.id}><ChipPregunta icono={q.icono} labelKey={`ui.tormenta.pregunta.${q.id}`} selected={pregunta === q.id ? true : undefined} onClick={() => setPregunta(q.id)} /></li>
@@ -216,5 +240,21 @@ function Verificar({ estado, dialogos, onAtras }: { estado: GameState; dialogos:
         </div>
       </div>
     </div>
+  );
+}
+
+/**
+ * #137: la medición real en Marte (RAD de Curiosity) de la tormenta curada: la prueba más fuerte de que
+ * la tormenta es real. Solo si hubo aumento claro (factor >= 1,5), igual que en la pantalla final.
+ */
+export function MedicionMarte({ estado }: { estado: GameState }) {
+  const { t } = useT();
+  const m = tormentasCuradas.find((x) => x.id === estado.tormenta?.id)?.medicionMarte;
+  if (!m || m.factor < 1.5) return null;
+  return (
+    <p className="tormenta-medicion">
+      <Icono nombre="aviso" tam={20} />
+      <span>{t("datos.tarjeta.medicion", { pico: m.pico, dia: m.diaPico, factor: Math.round(m.factor), fondo: m.fondo })}</span>
+    </p>
   );
 }

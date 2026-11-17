@@ -1,7 +1,7 @@
 # Estado: Frente E (Santiago)
 
-**Actualizado:** dom 15 nov, 23:45.
+**Actualizado:** lun 16 nov, 08:45.
 
-- **Hecho:** E0, E1, E2, E3 y E7 fusionadas (más #339 en #367). E9 en PR #379 (botón táctil de salto).
-- **Sigue:** E5 (conversación larga) y E8 (flujo de entrada; A5 y A12 ya están, falta F6).
-- **Bloqueado:** E4 espera `camara` en `AjustesJugador` (#372, frente A). E6 espera A2 y A9.
+- **Hecho:** E0, E1, E2, E3, E5, E7 y E9 fusionadas (más #339, #344 con su e2e, el retrato de Iris, la conversación de B en #402, las curiosidades en #403 y el tiempo de la ruta dorada en #404). En PR y en verde: E8 #406, E4 #407 y #408 (e2e en fila en CI: sin GPU las pruebas largas se frenaban entre sí).
+- **Sigue:** E6 cuando entre A9. E8 y E4 chocan en `App.tsx`: el que entre segundo lo pongo al día yo.
+- **Bloqueado:** E6 espera A9. Guardar memoria y vistos con la partida: #360 (A). Globo en celular horizontal: #390 (A). Iris habla como averiada: #401 (B).

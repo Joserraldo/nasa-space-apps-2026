@@ -50,9 +50,9 @@ export function crearMateriales(): Materiales {
   const base = (slot: Slot, extra: THREE.MeshStandardMaterialParameters = {}) => {
     const m = new THREE.MeshStandardMaterial({
       color: colorToken(TOKEN_SLOT[slot]),
-      roughness: 0.9,
-      metalness: 0,
-      flatShading: true,
+      roughness: 0.65,
+      metalness: 0.04,
+      flatShading: false,
       ...extra,
     });
     m.name = slot;
@@ -63,12 +63,12 @@ export function crearMateriales(): Materiales {
     SuitBase: base("SuitBase"),
     Accent: base("Accent"),
     Boots: base("Boots"),
-    Skin: base("Skin", { roughness: 0.8 }),
-    Hair: base("Hair"),
-    Glass: base("Glass", { transparent: true, opacity: 0.35, roughness: 0.15, depthWrite: false, side: THREE.FrontSide }),
+    Skin: base("Skin", { roughness: 0.75, metalness: 0 }),
+    Hair: base("Hair", { roughness: 0.9, metalness: 0, flatShading: true }),
+    Glass: base("Glass", { transparent: true, opacity: 0.35, roughness: 0.15, depthWrite: false, side: THREE.FrontSide, flatShading: true }),
     Emissive: base("Emissive", { emissive: colorToken(TOKEN_SLOT.Emissive), emissiveIntensity: 1 }),
-    Rock: base("Rock", { color: 0xffffff, vertexColors: true }),
-    Plant: base("Plant"),
+    Rock: base("Rock", { color: 0xffffff, roughness: 0.92, metalness: 0, vertexColors: true, flatShading: true }),
+    Plant: base("Plant", { roughness: 0.85, metalness: 0, flatShading: true }),
   };
 }
 

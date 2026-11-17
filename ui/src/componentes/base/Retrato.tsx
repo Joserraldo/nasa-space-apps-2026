@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import "./retratos.css";
 
 /**
  * Retratos de diálogo (DISEÑO §4.4, F1). Los cuatro tripulantes usan las caras de la alternativa B
@@ -280,19 +281,24 @@ const srcSetB = (persona: Rol, e: Expresion) => ANCHOS_RETRATO.map((a) => `${rut
 export function Retrato({ persona, expresion = "neutral", danada = false, tam = 96, parpadear = false, className }: PropsRetrato) {
   const [falla, setFalla] = useState(false);
   const rol = persona === "ia_base" || falla ? null : persona;
-  const cerrado = useParpadeo(rol !== null && parpadear && expresion !== "parpadeo");
-  // La cara de parpadeo se baja antes, para que el primer parpadeo no quede en blanco.
-  useEffect(() => {
-    if (!rol || !parpadear || typeof Image === "undefined") return;
-    const img = new Image();
-    img.sizes = `${tam}px`;
-    img.srcset = srcSetB(rol, "parpadeo");
-  }, [rol, parpadear, tam]);
+  const parpadea = rol !== null && parpadear && expresion !== "parpadeo";
+  const cerrado = useParpadeo(parpadea);
   if (!rol) return <RetratoSvg persona={persona} expresion={expresion} danada={danada} tam={tam} parpadear={parpadear} className={className} />;
-  const e = cerrado ? "parpadeo" : expresion;
-  return (
-    <img className={`retrato-img${className ? ` ${className}` : ""}`} src={rutaRetratoB(rol, e, 320)} srcSet={srcSetB(rol, e)} sizes={`${tam}px`}
+  const clase = `retrato-img${className ? ` ${className}` : ""}`;
+  const cara = (
+    <img className={clase} src={rutaRetratoB(rol, expresion, 320)} srcSet={srcSetB(rol, expresion)} sizes={`${tam}px`}
       width={tam} height={tam} alt="" aria-hidden="true" decoding="async" draggable={false} data-persona={persona} data-expresion={expresion}
       onError={() => setFalla(true)} />
+  );
+  if (!parpadea) return cara;
+  // Parpadeo: la cara de ojos cerrados va encima, recortada a los ojos con borde suave (retratos.css), y se ve
+  // unos 100 ms. La boca y las cejas de la expresión no cambian; y como ya está en la página, el primer parpadeo
+  // no queda en blanco.
+  return (
+    <span className="retrato-parpadea" data-ojos={rol} data-cerrado={cerrado ? "" : undefined} aria-hidden="true">
+      {cara}
+      <img className={`${clase} retrato-ojos`} src={rutaRetratoB(rol, "parpadeo", 320)} srcSet={srcSetB(rol, "parpadeo")} sizes={`${tam}px`}
+        width={tam} height={tam} alt="" aria-hidden="true" decoding="async" draggable={false} />
+    </span>
   );
 }
