@@ -4,8 +4,8 @@ import { PUERTAS_PASILLO, ZONAS_PASILLO } from "./pasillo";
 const dentro = (x: number, z: number) => ZONAS_PASILLO.some((c) => x >= c.xMin && x <= c.xMax && z >= c.zMin && z <= c.zMax);
 
 describe("pasillo", () => {
-  it("leads to the workshop, the habitat and the airlock", () => {
-    expect(PUERTAS_PASILLO.map((p) => p.destino).sort()).toEqual(["esclusa", "habitat", "taller"]);
+  it("is the hub: every room of the base opens off it", () => {
+    expect(PUERTAS_PASILLO.map((p) => p.destino).sort()).toEqual(["control", "esclusa", "habitat", "invernadero", "taller"]);
   });
 
   it("lets the kid appear inside the walkable area a few steps in from every door, not on it", () => {

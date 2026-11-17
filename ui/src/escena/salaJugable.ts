@@ -2,7 +2,7 @@ import * as THREE from "three";
 import { crearMateriales } from "./materiales";
 import { ambienteSalaKit, crearSalaKit, PUERTA_SALA, puntosSalaKit, type PuntoSala, type SalaKit } from "./activos/interiores/salaKit";
 import { ALTURA_PISO } from "./activos/interiores/kitPastel";
-import { AMBIENTE_PASILLO, crearPasillo, PUERTAS_PASILLO, PUNTOS_PASILLO, ZONAS_PASILLO } from "./activos/interiores/pasillo";
+import { AMBIENTE_PASILLO, crearPasillo, PUERTAS_PASILLO, PUNTOS_PASILLO, ramalPasillo, ZONAS_PASILLO } from "./activos/interiores/pasillo";
 import { AMBIENTE_ESTACION, crearSalaEstacion, puertasSalaEstacion, puntosSalaEstacion, SALAS_ESTACION, zonaSalaEstacion, type MuroSala, type SalaEstacion } from "./activos/interiores/salaEstacion";
 import { animar, crearPersonaje } from "./personajes";
 
@@ -174,14 +174,18 @@ export function montarSalaJugable(canvas: HTMLCanvasElement, sala: EspacioJugabl
   let giro = llegada.giro;
   nino.grupo.rotation.y = giro;
   // Inside the kit spaces the camera rides behind the kid. In the corridor it looks along the run he is in:
-  // the main run in the direction he came in, the airlock branch toward its far end; in the workshop and habitat
-  // halls it looks at the back wall. It only turns at the crossing, so the controls never flip on their own.
+  // the main run in the direction he came in; a branch toward the main run if he came out of its door, toward
+  // its door otherwise. It only turns at the crossings, so the controls never flip on their own.
   const dentroTubo = sala !== "outpost";
-  const desdeEsclusa = o.desde === "esclusa";
   const rumboPrincipal = Math.abs(Math.abs(llegada.giro) - Math.PI / 2) < 0.1 ? llegada.giro : Math.PI / 2;
-  const rumboRamal = desdeEsclusa ? 0 : Math.PI;
+  const ramalLlegada = ramalPasillo(llegada.x, llegada.z);
+  const rumboTubo = (x: number, z: number) => {
+    const r = ramalPasillo(x, z);
+    if (r === null) return rumboPrincipal;
+    return (r === ramalLlegada) === (z < 0) ? 0 : Math.PI;
+  };
   // Station rooms start looking the way the kid walks in.
-  let rumbo = esEstacion(sala) ? llegada.giro : sala !== "pasillo" ? Math.PI : dentroTubo && llegada.z < -1.4 ? rumboRamal : rumboPrincipal;
+  let rumbo = esEstacion(sala) ? llegada.giro : sala !== "pasillo" ? Math.PI : rumboTubo(llegada.x, llegada.z);
   let previo = 0;
   let t = 0;
 
@@ -262,7 +266,7 @@ export function montarSalaJugable(canvas: HTMLCanvasElement, sala: EspacioJugabl
       camara.lookAt(cx + fx * mira, 0.6, cz + fz * mira);
       for (const m of muros) m.grupo.visible = -(m.normal[0] * fx + m.normal[1] * fz) < 0.35;
     } else if (dentroTubo) {
-      const meta = sala !== "pasillo" ? Math.PI : p.z < -1.4 ? rumboRamal : rumboPrincipal;
+      const meta = sala !== "pasillo" ? Math.PI : rumboTubo(p.x, p.z);
       rumbo += Math.atan2(Math.sin(meta - rumbo), Math.cos(meta - rumbo)) * Math.min(1, dt * 3);
       // Chase camera near the ceiling, pulled in when a wall is closer than its usual distance.
       if (sala === "pasillo" && camina) giroManual *= 1 - Math.min(1, dt * 1.5);

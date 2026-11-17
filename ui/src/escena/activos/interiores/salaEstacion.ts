@@ -9,6 +9,7 @@ import { dock, estanteBaterias } from "./taller";
 import { caja, chaflan, grupo } from "../piezasComunes";
 import { crearMontanas } from "../terrenoVisual";
 import { colorToken } from "../../materiales";
+import { guiaPiso, letrero, type Segmento } from "./guias";
 import { casilleros, estantePlantulas, jardineraLechuga, jardineraPimiento, jardineraTrigo, maceta, mesaMapa, tanqueAgua } from "./mobiliarioEstacion";
 
 const NEGRO_MESA = new THREE.MeshStandardMaterial({ name: "Desk_Top", color: "#1D1E2A", roughness: 0.55 });
@@ -72,6 +73,8 @@ interface PlanoSala {
   ventanaEste: boolean;
   kit: readonly Prop[];
   propios: readonly Propio[];
+  /** How far the lit floor dashes run in from each door (m), toward what the room is for. */
+  guia: number;
   /** Extra collision circles [x, z, radius] (m) for long pieces a single circle cannot cover. */
   choques?: readonly (readonly [number, number, number])[];
 }
@@ -93,6 +96,7 @@ const PLANOS: Readonly<Record<SalaEstacion, PlanoSala>> = {
       ["Cube_1_26", 9.5, 6.0, 0, 0.6], ["Cube_2_27", 10.6, 6.2, 0, 0.6],
     ],
     propios: [[mesaControl, 3.0, -2.55, 0, 1.0]],
+    guia: 1.4,
   },
   // Engineering: batteries and the solar console on the north wall, the workbench with its drill, the rover
   // dock on the east wall, gas tanks and the robot arm on the west wall.
@@ -110,6 +114,7 @@ const PLANOS: Readonly<Record<SalaEstacion, PlanoSala>> = {
       [mesaControl, -0.2, -2.55, 0, 1.1],
       [dock, 3.9, 0.7, Math.PI / 2, 0.9],
     ],
+    guia: 2.4,
   },
   // Habitat: bunk on the west wall, meals in the middle with kit chairs, the crew terminal and the Veggie
   // garden on the north wall, the infirmary (bed and first aid) by the east wall.
@@ -128,6 +133,7 @@ const PLANOS: Readonly<Record<SalaEstacion, PlanoSala>> = {
       [cultivoVeggie, 1.2, -2.85, 0, 0.7],
       [camilla, 3.2, -1.6, 0, 1.0],
     ],
+    guia: 2.2,
   },
   // Control room (sheet 01): the mission table with the crater in relief in the middle, the operators' desks
   // facing the window on the east wall, lockers on the west wall, the comms terminal and plants on the north.
@@ -147,6 +153,7 @@ const PLANOS: Readonly<Record<SalaEstacion, PlanoSala>> = {
       [maceta, -4.3, 1.4, 0, 0.35],
       [maceta, -4.3, -2.75, 0, 0.35],
     ],
+    guia: 2.0,
   },
   // Greenhouse (sheet 03): a lit path from the door to the Veggie unit, raised beds of lettuce, pepper and
   // wheat on both sides, seedling racks along the side walls, water tanks by the north wall.
@@ -163,6 +170,7 @@ const PLANOS: Readonly<Record<SalaEstacion, PlanoSala>> = {
       [cultivoVeggie, 0, -2.85, 0, 0.7],
       [tanqueAgua, -1.5, -2.75, 0, 0.5], [tanqueAgua, 1.5, -2.75, 0, 0.5],
     ],
+    guia: 5.0,
     choques: [...cama(-2.2, -1.8), ...cama(2.2, -1.8), ...cama(-2.2, 0), ...cama(2.2, 0), ...cama(-2.2, 1.8), ...cama(2.2, 1.8)],
   },
 };
@@ -312,6 +320,11 @@ export function crearSalaEstacion(sala: SalaEstacion, materialesJuego: Materiale
       }
       const zFin = n ? z0 : z0 + 4;
       for (const dx of [0, 2]) enKit(n ? pieza(kit, "Wall_L_66", x + dx, zFin, 1) : pieza(kit, "Wall_L_66", x + dx + 2, zFin, 3), g);
+      // The sign of where it leads, over the opening on the room side.
+      const placa = letrero(plano.puertas.find(([l, px]) => l === lado && px === x)![2], 0.5);
+      placa.position.set((x + 2) * E - m.x, 2.75, n ? -m.z + 0.62 : m.z - 0.62);
+      placa.rotation.y = n ? 0 : Math.PI;
+      g.add(placa);
       const luz = new THREE.PointLight("#9CCBFF", 3, 5, 2);
       luz.position.set((x + 2) * E - m.x, 1.8, (z0 + 2) * E - m.z);
       raiz.add(luz);
@@ -322,6 +335,15 @@ export function crearSalaEstacion(sala: SalaEstacion, materialesJuego: Materiale
     raiz.add(props);
     for (const [nombre, x, z, cuartos, , y = 0] of plano.kit) enKit(pieza(kit, nombre, x, z, cuartos, y), props);
   });
+
+  // Lit dashes from each door toward what the room is for, and a yellow line across each threshold.
+  const tramos: Segmento[] = [], umbrales: { x: number; z: number; giro: number }[] = [];
+  for (const [lado, x] of plano.puertas) {
+    const cx = (x + 2) * E - m.x, s = lado === "norte" ? -1 : 1;
+    tramos.push([cx, s * (m.z - 0.4), cx, s * (m.z - 0.4 - plano.guia)]);
+    umbrales.push({ x: cx, z: s * (m.z - 0.1), giro: lado === "norte" ? 0 : Math.PI });
+  }
+  raiz.add(guiaPiso(tramos, umbrales, 0.03, 2.6));
 
   return { raiz, muros };
 }

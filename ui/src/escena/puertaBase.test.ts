@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { interactivoCercano, PUERTA_HABITAT } from "./escena3d";
-import { verboInterior } from "./InteriorBase";
+import { destinoInterior, verboInterior } from "./InteriorBase";
 import { lugar } from "./mundo";
 
 describe("habitat airlock door", () => {
@@ -25,5 +25,11 @@ describe("verboInterior", () => {
     expect(verboInterior("puerta:base")).toBe("ui.interaccion.salir");
     expect(verboInterior("puerta:taller")).toBe("ui.interaccion.entrar");
     expect(verboInterior("cultivoVeggie")).toBe("ui.interaccion.usar");
+  });
+
+  it("names the room behind a door, nothing for furniture", () => {
+    expect(destinoInterior("puerta:invernadero")).toBe("ui.interior.sala.invernadero");
+    expect(destinoInterior("mesaMapa")).toBeNull();
+    expect(destinoInterior(null)).toBeNull();
   });
 });
