@@ -4,9 +4,9 @@ import type { CalidadGrafica } from "../juego/ajustes";
 import { montarSalaJugable, type EspacioJugable } from "./salaJugable";
 
 /**
- * Inside the base: the corridor, the workshop and the habitat, walked with the kid (`salaJugable`). The
- * airlock door of the habitat building opens here, at the corridor's airlock branch; the corridor's doors
- * lead to the two rooms and back out. Only the way out reaches the game (`onSalir`); moving between the
+ * Inside the base: the airlock, the corridor, the workshop and the habitat, walked with the kid
+ * (`salaJugable`). The habitat building's door opens into the airlock; the airlock leads to the corridor,
+ * and the corridor to the two rooms. Only the way out reaches the game (`onSalir`); moving between the
  * inside spaces stays here.
  *
  * Presentational shell: one canvas over the outdoor scene and the "[E] ..." hint, worded with the same
@@ -30,7 +30,7 @@ export function verboInterior(id: string | null): string | null {
 export function InteriorBase({ calidad, onSalir }: InteriorBaseProps) {
   const { t } = useT();
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [lugar, setLugar] = useState<Lugar>({ espacio: "pasillo", desde: "base" });
+  const [lugar, setLugar] = useState<Lugar>({ espacio: "esclusa", desde: "base" });
   const [cercano, setCercano] = useState<string | null>(null);
   const salir = useRef(onSalir);
   salir.current = onSalir;

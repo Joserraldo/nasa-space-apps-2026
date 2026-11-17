@@ -42,7 +42,7 @@ export const CRUCE_T: readonly PiezaKit[] = ["Corridor-01 T-Crossing", "Floor Gl
 export const CURVA: readonly PiezaKit[] = ["Corridor-01 Bend Sharp", "Floor Glas-01 Bend Sharp", "Conduit-01 Bend", "Lamp-01 Bend", "Light Strip-02 Bend Sharp"];
 
 /** Glow strip on each door: the expert's colour, cyan for the airlock and the corridor. */
-const COLOR_PUERTA: Record<string, string> = { taller: "#F2B531", habitat: "#47AAB5", base: "#73D4E1", pasillo: "#73D4E1" };
+const COLOR_PUERTA: Record<string, string> = { taller: "#F2B531", habitat: "#47AAB5", esclusa: "#73D4E1", base: "#73D4E1", pasillo: "#73D4E1" };
 
 /** A hatch against a wall, in the kit's lilac with a glowing strip. `giro` faces it into the room. */
 export function puertaVisible(destino: string, x: number, z: number, giro: number): THREE.Group {
@@ -61,8 +61,8 @@ export function puertaVisible(destino: string, x: number, z: number, giro: numbe
 }
 
 /** Soft light under a ceiling panel (no shadows: cheap, and the closed shell would block a sun anyway). */
-export function luzTecho(x: number, z: number, intensidad = 3): THREE.PointLight {
-  const luz = new THREE.PointLight("#FFE6EC", intensidad, 7, 2);
+export function luzTecho(x: number, z: number, intensidad = 4): THREE.PointLight {
+  const luz = new THREE.PointLight("#FFF4EA", intensidad, 7, 2);
   luz.position.set(x, 1.5, z);
   return luz;
 }
@@ -83,10 +83,10 @@ export function colocarTramos(raiz: THREE.Group, tramos: readonly Tramo[]): void
     // Ceiling panels glow, unlit.
     emissive: new THREE.MeshBasicMaterial({ name: "Kit_Ceiling_Light", color: "#FFFDF8", fog: false }),
     // Glossy mauve floor panels, see-through enough for the cables underneath to read.
-    glas: new THREE.MeshStandardMaterial({ name: "Kit_Floor", color: "#7E6A78", roughness: 0.3, metalness: 0, transparent: true, opacity: 0.45, depthWrite: false }),
+    glas: new THREE.MeshStandardMaterial({ name: "Kit_Floor", color: "#2B2C38", roughness: 0.3, metalness: 0, transparent: true, opacity: 0.5, depthWrite: false }),
   };
   // Wall strips: warm white diffusers that still take the room light, so they read as lamps, not stickers.
-  const tira = new THREE.MeshStandardMaterial({ name: "Kit_Wall_Strip", color: "#FFF3E4", emissive: "#FFDDB8", emissiveIntensity: 0.8, roughness: 0.5, metalness: 0 });
+  const tira = new THREE.MeshStandardMaterial({ name: "Kit_Wall_Strip", color: "#DDEEFF", emissive: "#5AB4FF", emissiveIntensity: 0.7, roughness: 0.5, metalness: 0 });
 
   const cargador = new GLTFLoader().setMeshoptDecoder(MeshoptDecoder);
   void cargador.loadAsync(`${KIT}pasillo.glb`).then((gltf) => {
@@ -115,9 +115,9 @@ export function colocarTramos(raiz: THREE.Group, tramos: readonly Tramo[]): void
   });
 }
 
-/** Inside a closed shell: pink haze and a soft pink fill from above and from the floor bounce. */
+/** Inside a closed shell: a light cool haze, white fill from above and a soft lilac bounce, like the station rooms. */
 export const AMBIENTE_KIT = {
-  fondoEscena: "#E9CBD1",
-  niebla: { color: "#E9CBD1", cerca: 5, lejos: 24 },
-  luz: { color: "#FFE3EA", intensidad: 0.3, hemiCielo: "#FFE6EC", hemiSuelo: "#E8C4CE", hemi: 2.4 },
+  fondoEscena: "#9C9AAE",
+  niebla: { color: "#9C9AAE", cerca: 7, lejos: 28 },
+  luz: { color: "#FFF4EA", intensidad: 0.2, hemiCielo: "#ECEAF4", hemiSuelo: "#4A4660", hemi: 1.0 },
 } as const;

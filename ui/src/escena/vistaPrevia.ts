@@ -209,7 +209,7 @@ const salaPedida = parametros.get("sala");
 // `&jugar=1`: la sala con kit se recorre con el nino (WASD o flechas, E para interactuar o salir por la puerta).
 // Las puertas encadenan: taller y hábitat dan al pasillo (`?sala=pasillo&jugar=1`), el pasillo a los dos y a
 // la esclusa ("base", vuelve a la vista general). `&desde=` dice por qué puerta aparece el niño.
-if (parametros.get("jugar") === "1" && (salaPedida === "taller" || salaPedida === "habitat" || salaPedida === "outpost" || salaPedida === "pasillo")) {
+if (parametros.get("jugar") === "1" && (salaPedida === "taller" || salaPedida === "habitat" || salaPedida === "outpost" || salaPedida === "pasillo" || salaPedida === "esclusa")) {
   const aviso = document.createElement("div");
   aviso.setAttribute("role", "status");
   aviso.style.cssText = `position:fixed;bottom:12px;left:50%;translate:-50% 0;padding:8px 12px;border-radius:8px;font:13px/1.4 monospace;background:${conAlfa("espacio", 0.85)};color:${COLORES.marfil}`;
