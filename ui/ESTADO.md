@@ -29,6 +29,12 @@ Una sección por persona, máximo 5 líneas, y nadie edita la de otro (FLUJO §8
 - Verificado: 154 pruebas de escena, build; contra Occupy Mars 2 brillo 20 → 6 y saturación 13 → 10.
 - Sigue: Etapa de objetos en otra sesión; caras en sombra del horizonte para la E; contacto a 6,5 cm y carga de 1,3 s pendientes.
 
+## Exterior: módulos de Jezero (Etapa D, tanda 1, María Paula)
+**Rama:** feat/exterior-d-modulos · **PR:** hacia develop (apilado sobre la BC) · **Tokens:** amarillo
+- Hecho: antena Tall Dish (NASA) con mástil de relevo y luz roja; panel con 3 paneles Craftpix, controlador y polvo según `VistaEscena.panelConPolvo`. Hábitat: el HDU de NASA se descartó tras dos intentos (vuelve el procedural).
+- Verificado: 60 pruebas de escena, build; `giro-izq` 162.611 triángulos, 60/60 FPS, sin errores de consola.
+- Sigue: visto bueno de María Paula; luego invernadero, reciclador y escudo. El motor todavía no expone el polvo del panel.
+
 ## Escenario (Daniel)
 **Rama:** feat/ui-escena-v* · **PR:** #311–#315 abiertos hacia develop (la pila #282–#310 ya entró) · **Tokens:** 🟡
 - Hecho: pila del escenario en develop (composición, suelo, caminos, cámara, medición, contorno y guantes, planta, anillo, vista, rocas, balizas, torre, kit: panel, consola, antena) y medición sobre el render real (#306).
