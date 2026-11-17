@@ -50,19 +50,23 @@ export function ramalPasillo(x: number, z: number): string | null {
 }
 
 /**
- * Life along the corridor, from the station kit (CC BY, Likh0i): a gas tank and a crate against the walls of
- * the crossings, a spare suit by the airlock branch. Nothing in the middle of a run or of the camera's view. [piece, x, z (metres, grid
- * corner), quarter turns, collision radius in m].
+ * Life along the corridor, from the station kit (CC BY, Likh0i): fire extinguishers on the end walls, a stack
+ * of crates and a gas tank against the walls of the crossings, a spare suit by the airlock branch. [piece, x, z,
+ * y (metres; props have their origin at the centre, so y lifts them onto the floor panels), quarter turns,
+ * collision radius in m, stand up (authored lying down)].
  */
-const EQUIPO: readonly (readonly [PiezaEstacion, number, number, number, number])[] = [
-  ["Tank_O2_46", 1.3, 1.45, 0, 0],
-  ["Cube_2_27", -TRAMO - 0.6, -1.35, 0, 0.45],
-  ["Spacesuite_full_4", 1.25, -TRAMO - 0.6, 3, 0.35],
+const EQUIPO: readonly (readonly [PiezaEstacion, number, number, number, number, number, boolean?])[] = [
+  ["Fire_Extinguisher_1", -2 * TRAMO - 0.6, 1.05, ALTURA_PISO + 0.6, 2, 0.35, true],
+  ["Fire_Extinguisher_1", 2 * TRAMO + 0.6, -1.05, ALTURA_PISO + 0.6, 0, 0.35, true],
+  ["Cube_2_27", -TRAMO - 0.6, -1.3, ALTURA_PISO + 0.43, 0, 0.5],
+  ["Cube_1_26", -TRAMO - 0.6, -1.3, ALTURA_PISO + 1.2, 1, 0],
+  ["Tank_O2_46", 1.3, 1.45, ALTURA_PISO, 0, 0],
+  ["Spacesuite_full_4", 1.25, -TRAMO - 0.6, ALTURA_PISO, 3, 0.35],
 ];
 
-/** Obstacles of the corridor (the equipment above). */
-export const PUNTOS_PASILLO: PuntoSala[] = EQUIPO.filter(([, , , , r]) => r > 0)
-  .map(([nombre, x, z, , radio], i) => ({ id: `${nombre.replace(/_\d+$/, "")}_${i}`, x: x + 0.3, z: z + 0.3, radio, interactivo: false }));
+/** Obstacles of the corridor (the equipment above, by its centre). */
+export const PUNTOS_PASILLO: PuntoSala[] = EQUIPO.filter(([, , , , , r]) => r > 0)
+  .map(([nombre, x, z, , , radio], i) => ({ id: `${nombre.replace(/_\d+$/, "")}_${i}`, x, z, radio, interactivo: false }));
 
 /** Builds the corridor. Returns the group at once and adds the kit pieces when they arrive. */
 export function crearPasillo(): THREE.Group {
@@ -86,8 +90,8 @@ export function crearPasillo(): THREE.Group {
   raiz.add(guiaPiso(tramos, umbrales, ALTURA_PISO + 0.01, 1.7));
   colocarTramos(raiz, TRAMOS);
   void cargarKitEstacion().then((kit) => {
-    for (const [nombre, x, z, cuartos] of EQUIPO) {
-      const o = pieza(kit, nombre, x, z, cuartos);
+    for (const [nombre, x, z, y, cuartos, , dePie] of EQUIPO) {
+      const o = pieza(kit, nombre, x, z, cuartos, y, dePie);
       o.scale.setScalar(ESCALA_ESTACION);
       raiz.add(o);
     }

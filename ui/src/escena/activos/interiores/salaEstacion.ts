@@ -59,8 +59,8 @@ export function mesaControl(m: Materiales): THREE.Group {
 export const SALAS_ESTACION = ["esclusa", "taller", "habitat", "control", "invernadero"] as const;
 export type SalaEstacion = (typeof SALAS_ESTACION)[number];
 
-/** [piece, x, z (kit units, grid corner), quarter turns, collision radius in m (0 = none), y]. */
-type Prop = readonly [PiezaEstacion, number, number, number, number, number?];
+/** [piece, x, z (kit units, its origin), quarter turns, collision radius in m (0 = none), y, stand up]. */
+type Prop = readonly [PiezaEstacion, number, number, number, number, number?, boolean?];
 /** [builder, x, z (metres from the room centre), turn in radians, collision radius in m]. */
 type Propio = readonly [(m: Materiales) => THREE.Object3D, number, number, number, number];
 type Lado = "norte" | "sur";
@@ -90,10 +90,11 @@ const PLANOS: Readonly<Record<SalaEstacion, PlanoSala>> = {
     puertas: [["norte", 4, "pasillo"], ["sur", 4, "base"]],
     kit: [
       ["Spacesuite_full_4", 1.0, 1.2, 1, 0.5], ["Spacesuite_full_4", 1.0, 2.6, 1, 0.5],
-      ["Hanging_Shelf_43", 0.6, 4.4, 1, 0, 1.6], ["Helm_1_7", 1.0, 4.4, 1, 0, 2.05], ["Helm_1_7", 1.0, 5.1, 1, 0, 2.05],
+      ["Hanging_Shelf_43", 0.6, 4.4, 1, 0, 1.6], ["Helm_1_7", 1.0, 4.4, 1, 0, 2.23], ["Helm_1_7", 1.0, 5.1, 1, 0, 2.23],
       // The pad in the middle: the kit's octagon floor tile, a touch above the floor.
       ["Floor_M_2_100", 4.5, 2.5, 0, 0, 0.02],
-      ["Cube_1_26", 9.5, 6.0, 0, 0.6], ["Cube_2_27", 10.6, 6.2, 0, 0.6],
+      // Crates have their origin at the centre: half their height up, so they sit on the floor.
+      ["Cube_1_26", 9.5, 6.0, 0, 0.6, 0.5], ["Cube_2_27", 10.6, 6.2, 0, 0.6, 0.54],
     ],
     propios: [[mesaControl, 3.0, -2.55, 0, 1.0]],
     guia: 1.4,
@@ -104,9 +105,9 @@ const PLANOS: Readonly<Record<SalaEstacion, PlanoSala>> = {
     ancho: 12, fondo: 8, ventanaEste: false,
     puertas: [["sur", 4, "pasillo"]],
     kit: [
-      ["Table_44", 9.3, 1.6, 0, 1.0], ["Drill_13", 9.0, 1.4, 0, 0, 1.03],
+      ["Table_44", 9.3, 1.6, 0, 1.0], ["Drill_13", 9.0, 1.4, 0, 0, 1.32],
       ["Tank_O2_46", 1.2, 3.6, 1, 0.8], ["Tank_H2_48", 1.2, 6.2, 1, 0.8],
-      ["Arm_Base_16", 2.6, 1.6, 0, 0.5], ["Arm_17", 2.6, 1.6, 0, 0, 0.3],
+      ["Arm_Base_16", 2.6, 1.6, 0, 0.5, 0, true], ["Arm_17", 2.6, 1.6, 0, 0, 0.3, true],
       ["Cube_4_29", 9.6, 6.6, 0, 0.6],
     ],
     propios: [
@@ -333,7 +334,7 @@ export function crearSalaEstacion(sala: SalaEstacion, materialesJuego: Materiale
     const props = new THREE.Group();
     props.name = "Station_Props";
     raiz.add(props);
-    for (const [nombre, x, z, cuartos, , y = 0] of plano.kit) enKit(pieza(kit, nombre, x, z, cuartos, y), props);
+    for (const [nombre, x, z, cuartos, , y = 0, dePie = false] of plano.kit) enKit(pieza(kit, nombre, x, z, cuartos, y, dePie), props);
   });
 
   // Lit dashes from each door toward what the room is for, and a yellow line across each threshold.

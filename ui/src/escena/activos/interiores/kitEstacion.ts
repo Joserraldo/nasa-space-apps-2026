@@ -67,14 +67,22 @@ export function cargarKitEstacion(): Promise<THREE.Group> {
 }
 
 /**
- * A copy of `nombre` placed by its grid corner at (x, z) kit units, turned `cuartos` quarter turns. Each
+ * A copy of `nombre` placed by its origin at (x, y, z) kit units, turned `cuartos` quarter turns. Shell pieces
+ * (walls, floors, gates) have it at a grid corner; most props have it at their centre, so a crate needs y = half
+ * its height to sit on the floor. Each
  * quarter turn maps the piece's +z to +x, its +x to -z (so a wall's length follows the turn).
  */
-export function pieza(kit: THREE.Group, nombre: PiezaEstacion, x: number, z: number, cuartos = 0, y = 0): THREE.Object3D {
+export function pieza(kit: THREE.Group, nombre: PiezaEstacion, x: number, z: number, cuartos = 0, y = 0, dePie = false): THREE.Object3D {
   const original = kit.getObjectByName(nombre);
   if (!original) throw new Error(`pieza del kit desconocida: ${nombre}`);
   const holder = new THREE.Group();
-  holder.add(original.clone());
+  if (dePie) {
+    // A few props (extinguisher, robot arm) were authored Z-up and come in lying down: stand them up.
+    const erguir = new THREE.Group();
+    erguir.rotation.x = -Math.PI / 2;
+    erguir.add(original.clone());
+    holder.add(erguir);
+  } else holder.add(original.clone());
   holder.position.set(x, y, z);
   holder.rotation.y = (cuartos * Math.PI) / 2;
   holder.name = nombre;
