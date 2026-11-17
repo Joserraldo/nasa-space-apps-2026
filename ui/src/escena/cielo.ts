@@ -337,7 +337,7 @@ export interface Cielo {
   hemisferica: THREE.HemisphereLight;
   /** Niebla activa (de altura o lineal según `usarNieblaAltura`); comparten el mismo color. */
   niebla: THREE.FogExp2 | THREE.Fog;
-  /** Grupo de estrellas del cielo nocturno (vacío por ahora). Invisible de día. */
+  /** Estrellas (las llena `estrellas.ts` la primera vez que hace falta). Invisibles de día. */
   estrellas: THREE.Group;
   /** Escena del cielo para generar el entorno (PMREM). Solo cielo y suelo, sin la base. */
   escenaEntorno: THREE.Scene;

@@ -3,6 +3,7 @@ import * as THREE from "three";
 import { LUZ, PALETA_CIELO, colorCielo, coloresCielo, hexALineal, hexARgb } from "./cielo";
 import { GRADACION, instalarAtmosfera } from "./atmosfera";
 import { cambioCielo } from "./sistemas/entornoCielo";
+import { LATITUD_JEZERO, POLO_MARTE, desdeArDec, fusionar, matrizCielo } from "./estrellas";
 
 const dirDia = { x: LUZ.direccionSol[0], y: LUZ.direccionSol[1], z: LUZ.direccionSol[2] };
 
@@ -52,5 +53,21 @@ describe("entorno", () => {
     expect(cambioCielo(null, e)).toBe(true);
     expect(cambioCielo(e, { ...e, mezcla: 0.01 })).toBe(false);
     expect(cambioCielo(e, { ...e, mezcla: 0.2 })).toBe(true);
+  });
+});
+
+describe("estrellas de Jezero", () => {
+  it("el polo norte de Marte queda al norte (-z), a la altura de la latitud de Jezero", () => {
+    const p = desdeArDec(POLO_MARTE.ar, POLO_MARTE.dec).applyMatrix3(matrizCielo());
+    expect(p.y).toBeCloseTo(Math.sin(THREE.MathUtils.degToRad(LATITUD_JEZERO)), 6);
+    expect(p.z).toBeLessThan(0);
+    expect(Math.abs(p.x)).toBeLessThan(1e-6);
+  });
+
+  it("une los picos repetidos de una misma estrella y se queda con el más brillante", () => {
+    const a = [1, 0, 0, 0.9, 1, 1, 1];
+    const b = [Math.cos(0.002), Math.sin(0.002), 0, 1, 1, 1, 1]; // a 0,11° de `a`
+    const c = [0, 1, 0, 0.5, 1, 1, 1];
+    expect(fusionar([a, b, c])).toEqual([b, c]);
   });
 });

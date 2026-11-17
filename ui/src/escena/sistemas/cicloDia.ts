@@ -10,6 +10,7 @@ import { AJUSTE_CALIDAD } from "../calidad";
 import { fijarDireccionSol } from "../cielo";
 import { acercarMomento, luzDelMomento, momentoDeFase, type MomentoDia } from "../cicloDia";
 import type { ContextoSistema, SistemaEscena } from "../escena3d";
+import { cargarEstrellas } from "../estrellas";
 
 /** Distancia del Sol al blanco (la misma que usa `cielo.ts`). */
 const DISTANCIA_SOL = 150;
@@ -33,6 +34,7 @@ export function aplicarMomento(ctx: Pick<ContextoSistema, "cielo" | "escena">, m
   hemisferica.groundColor.copy(l.colorSueloHemi);
   hemisferica.intensity = conEntorno ? l.intensidadHemiConEntorno : l.intensidadHemi;
   ctx.cielo.pintar(l.cielo);
+  if (l.noche > 0) void cargarEstrellas(ctx.cielo);
 }
 
 export function crearSistema(): SistemaEscena {
