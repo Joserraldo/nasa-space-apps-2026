@@ -187,6 +187,8 @@ export function montarSalaJugable(canvas: HTMLCanvasElement, sala: EspacioJugabl
   // Station rooms start looking the way the kid walks in.
   let rumbo = esEstacion(sala) ? llegada.giro : sala !== "pasillo" ? Math.PI : rumboTubo(llegada.x, llegada.z);
   let previo = 0;
+  /** Corridor camera distance behind the kid, eased (see the chase camera below). */
+  let atrasTubo = 3.0;
   let t = 0;
 
   function mover(dt: number): boolean {
@@ -271,11 +273,13 @@ export function montarSalaJugable(canvas: HTMLCanvasElement, sala: EspacioJugabl
       // Chase camera near the ceiling, pulled in when a wall is closer than its usual distance.
       if (sala === "pasillo" && camina) giroManual *= 1 - Math.min(1, dt * 1.5);
       const fx = Math.sin(rumbo + giroManual), fz = Math.cos(rumbo + giroManual);
-      let atras = 3.0;
+      let lejos = 3.0;
       // The camera also keeps out of columns and furniture, so it never ends up inside one.
       const libre = (x: number, z: number) => dentro(zonas, x, z) && puntos.every((s) => s.radio === 0 || Math.hypot(x - s.x, z - s.z) > s.radio + 0.2);
-      while (atras > 0.8 && !libre(p.x - fx * atras, p.z - fz * atras)) atras -= 0.1;
-      camara.position.set(p.x - fx * atras, 2.05, p.z - fz * atras);
+      while (lejos > 0.8 && !libre(p.x - fx * lejos, p.z - fz * lejos)) lejos -= 0.02;
+      // Pulled in at once (never through a wall), eased back out: stepping it every frame made the view shake.
+      atrasTubo = lejos < atrasTubo ? lejos : atrasTubo + (lejos - atrasTubo) * Math.min(1, dt * 4);
+      camara.position.set(p.x - fx * atrasTubo, 2.05, p.z - fz * atrasTubo);
       camara.lookAt(p.x + fx * 4, 0.95, p.z + fz * 4);
     } else {
       // Cut-away camera that drifts with the kid so he stays near the middle of the frame.
@@ -283,7 +287,7 @@ export function montarSalaJugable(canvas: HTMLCanvasElement, sala: EspacioJugabl
       camara.lookAt(0.3 + p.x * 0.45, 0.9, -0.6 + p.z * 0.45);
     }
     renderer.render(escena, camara);
-    if (import.meta.env.DEV) (globalThis as { __ninoSala?: number[] }).__ninoSala = [p.x, p.z];
+    if (import.meta.env.DEV) Object.assign(globalThis, { __ninoSala: [p.x, p.z], __camSala: [camara.position.x, camara.position.z] });
   }
 
   const alVisibilidad = () => {

@@ -50,18 +50,14 @@ export function ramalPasillo(x: number, z: number): string | null {
 }
 
 /**
- * Life along the corridor, from the station kit (CC BY, Likh0i): fire extinguishers by the doors, gas tanks
- * and crates in the T crossing's side bays, a spare suit by the airlock branch. [piece, x, z (metres, grid
+ * Life along the corridor, from the station kit (CC BY, Likh0i): a gas tank and a crate against the walls of
+ * the crossings, a spare suit by the airlock branch. Nothing in the middle of a run or of the camera's view. [piece, x, z (metres, grid
  * corner), quarter turns, collision radius in m].
  */
 const EQUIPO: readonly (readonly [PiezaEstacion, number, number, number, number])[] = [
-  ["Fire_Extinguisher_1", -2 * TRAMO + 0.4, 1.0, 2, 0.3],
-  ["Fire_Extinguisher_1", 2 * TRAMO - 0.4, -1.0, 0, 0.3],
   ["Tank_O2_46", 1.3, 1.45, 0, 0],
-  ["Cube_1_26", -1.9, 0.85, 0, 0.45],
   ["Cube_2_27", -TRAMO - 0.6, -1.35, 0, 0.45],
   ["Spacesuite_full_4", 1.25, -TRAMO - 0.6, 3, 0.35],
-  ["Fire_Extinguisher_Base_18", -1.25, -TRAMO, 1, 0],
 ];
 
 /** Obstacles of the corridor (the equipment above). */
