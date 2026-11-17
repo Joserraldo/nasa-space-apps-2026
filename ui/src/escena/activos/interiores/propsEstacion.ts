@@ -50,31 +50,68 @@ function grupo(nombre: string, ...hijos: THREE.Object3D[]): THREE.Group {
   return g;
 }
 
-/** Helmet: faceted white shell and a navy visor, centred at `p`. */
-function cascoEn(p: V3, nombre: string): THREE.Object3D[] {
-  const shell = new THREE.Mesh(new THREE.IcosahedronGeometry(0.19, 1), BLANCO_FACETA);
+const VISOR_FACETA = FACETA(VISOR);
+const MORADO_FACETA = FACETA(MORADO);
+
+/**
+ * Helmet: faceted white shell and a big curved navy visor over its front (a slice of a slightly larger sphere,
+ * so the shell never pokes through it), centred at `p`.
+ */
+function cascoEn(p: V3, nombre: string, r = 0.2): THREE.Object3D[] {
+  const shell = new THREE.Mesh(new THREE.IcosahedronGeometry(r, 1), BLANCO_FACETA);
   shell.name = `${nombre}_Shell`;
   shell.position.set(...p);
   shell.castShadow = true;
-  return [shell, caja(0.24, 0.13, 0.06, VISOR, [p[0], p[1] - 0.01, p[2] + 0.15], `${nombre}_Visor`)];
+  const visor = new THREE.Mesh(new THREE.SphereGeometry(r * 1.12, 12, 5, Math.PI / 2 - 0.95, 1.9, 1.15, 0.95), VISOR_FACETA);
+  visor.name = `${nombre}_Visor`;
+  visor.position.set(...p);
+  return [shell, visor];
 }
 
-/** Spare suit standing on its own, purple with white plates, backpack and helmet: 1.6 m. */
+/** A limb segment: a low poly cylinder from `a` (top) going down `largo` m, tilted `inclina` rad out to the side. */
+function tramo(r: number, largo: number, mat: THREE.Material, a: V3, inclina: number, nombre: string): THREE.Mesh {
+  const o = cilindro(r, largo, mat, [a[0] + Math.sin(inclina) * largo / 2, a[1] - Math.cos(inclina) * largo / 2, a[2]], nombre, [0, 0, inclina], 7);
+  return o;
+}
+
+/**
+ * Spare suit standing on its own, after the low poly suits of the station look: purple, round limbs, a white V
+ * plate and collar on the chest, white knee guards, cuffs and gloves, black boots, a white backpack and a round
+ * helmet with a big navy visor. 1.6 m.
+ */
 export function traje(): THREE.Group {
-  const lado = [-1, 1].flatMap((s) => [
-    caja(0.16, 0.12, 0.26, OSCURO, [s * 0.1, 0.06, 0.03], "Suit_Boot"),
-    caja(0.15, 0.56, 0.17, MORADO, [s * 0.1, 0.4, 0], "Suit_Leg"),
-    caja(0.16, 0.1, 0.19, BLANCO, [s * 0.1, 0.42, 0.01], "Suit_Knee"),
-    caja(0.11, 0.48, 0.13, MORADO, [s * 0.27, 0.96, 0], "Suit_Arm"),
-    caja(0.11, 0.1, 0.12, BLANCO, [s * 0.27, 0.67, 0.01], "Suit_Glove"),
-  ]);
+  const lado = [-1, 1].flatMap((s) => {
+    const guante = new THREE.Mesh(new THREE.IcosahedronGeometry(0.065, 0), BLANCO_FACETA);
+    guante.name = "Suit_Glove";
+    guante.position.set(s * 0.33, 0.68, 0.02);
+    const hombro = new THREE.Mesh(new THREE.IcosahedronGeometry(0.095, 0), MORADO_FACETA);
+    hombro.name = "Suit_Shoulder";
+    hombro.position.set(s * 0.24, 1.2, 0);
+    return [
+      caja(0.15, 0.1, 0.25, OSCURO, [s * 0.1, 0.05, 0.03], "Suit_Boot"),
+      tramo(0.075, 0.34, MORADO, [s * 0.1, 0.44, 0], 0, "Suit_Shin"),
+      cilindro(0.083, 0.1, BLANCO, [s * 0.1, 0.33, 0], "Suit_KneeGuard", [0, 0, 0], 7),
+      tramo(0.088, 0.36, MORADO, [s * 0.1, 0.8, 0], 0, "Suit_Thigh"),
+      hombro,
+      tramo(0.062, 0.28, MORADO, [s * 0.26, 1.18, 0], s * 0.12, "Suit_UpperArm"),
+      tramo(0.058, 0.26, MORADO, [s * 0.295, 0.92, 0.01], s * 0.08, "Suit_Forearm"),
+      cilindro(0.064, 0.06, BLANCO, [s * 0.312, 0.73, 0.015], "Suit_Cuff", [0, 0, s * 0.08], 7),
+      guante,
+      // One arm of the white V plate on the chest.
+      caja(0.07, 0.24, 0.03, BLANCO, [s * 0.075, 1.07, 0.135], "Suit_ChestV", [0, 0, s * 0.5]),
+    ];
+  });
+  const torso = cilindro(0.2, 0.46, MORADO, [0, 1.0, 0], "Suit_Torso", [0, 0, 0], 8);
+  torso.scale.z = 0.7;
   return grupo(
     "traje",
     ...lado,
-    caja(0.42, 0.52, 0.26, MORADO, [0, 0.95, 0], "Suit_Torso"),
-    caja(0.3, 0.2, 0.03, BLANCO, [0, 1.02, 0.14], "Suit_Chest"),
-    caja(0.36, 0.44, 0.15, BLANCO, [0, 1.0, -0.2], "Suit_Pack"),
-    ...cascoEn([0, 1.38, 0.01], "Suit_Helmet"),
+    torso,
+    caja(0.34, 0.14, 0.22, MORADO, [0, 0.77, 0], "Suit_Hips"),
+    cilindro(0.16, 0.06, BLANCO, [0, 1.25, 0], "Suit_Collar", [0, 0, 0], 8),
+    caja(0.32, 0.4, 0.13, BLANCO, [0, 1.02, -0.19], "Suit_Pack"),
+    caja(0.12, 0.05, 0.02, AZUL, [0, 0.9, 0.145], "Suit_Light"),
+    ...cascoEn([0, 1.43, 0.01], "Suit_Helmet"),
   );
 }
 
