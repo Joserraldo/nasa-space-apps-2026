@@ -35,12 +35,18 @@ export interface AjusteCalidad {
   gradacion: boolean;
   ao: boolean;
   bloom: boolean;
+  /**
+   * Etapa BC: suelo y rocas con texturas CC0, roca estratificada por pendiente y normales de detalle
+   * (`activos/sueloMarte.ts`). Sin él, color de vértice (mismo relieve y mismas rocas). Activo en las tres
+   * calidades: la regla 11 de `docs/referenciapau/exterior/00-comun.md` pide texturas activas por defecto.
+   */
+  sueloDetallado: boolean;
 }
 
 export const AJUSTE_CALIDAD: Readonly<Record<CalidadGrafica, Readonly<AjusteCalidad>>> = {
-  alta: { dpr: 1.5, sombra: LUZ.tamanoSombra.alta, antialias: true, filtroSombra: "suave", entorno: true, nieblaAltura: true, gradacion: true, ao: true, bloom: true },
-  media: { dpr: 1.25, sombra: LUZ.tamanoSombra.baja, antialias: true, filtroSombra: "suave", entorno: true, nieblaAltura: true, gradacion: true, ao: false, bloom: false },
-  baja: { dpr: 0.75, sombra: null, antialias: false, filtroSombra: null, entorno: false, nieblaAltura: true, gradacion: false, ao: false, bloom: false },
+  alta: { dpr: 1.5, sombra: LUZ.tamanoSombra.alta, antialias: true, filtroSombra: "suave", entorno: true, nieblaAltura: true, gradacion: true, ao: true, bloom: true, sueloDetallado: true },
+  media: { dpr: 1.25, sombra: LUZ.tamanoSombra.baja, antialias: true, filtroSombra: "suave", entorno: true, nieblaAltura: true, gradacion: true, ao: false, bloom: false, sueloDetallado: true },
+  baja: { dpr: 0.75, sombra: null, antialias: false, filtroSombra: null, entorno: false, nieblaAltura: true, gradacion: false, ao: false, bloom: false, sueloDetallado: true },
 };
 
 /** Monta el compositor de post (solo si hay AO o bloom). */
