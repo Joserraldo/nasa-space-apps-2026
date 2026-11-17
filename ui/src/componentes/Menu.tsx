@@ -3,7 +3,7 @@ import { useT, type Idioma } from "../i18n.js";
 import type { CalidadGrafica, CamaraJugador } from "../juego/ajustes.js";
 import { FacetButton } from "./base/FacetButton.js";
 import "./base/facetas.css";
-import "./base/datos.css";
+import "./menu.css";
 
 export const CAMARAS: readonly CamaraJugador[] = ["tercera", "primera"];
 export const CALIDADES: readonly CalidadGrafica[] = ["alta", "media", "baja"];
@@ -25,36 +25,50 @@ export interface MenuProps {
  * E4: el menú (PLAN-JUGABILIDAD §4, #7). Cámara de primera o tercera persona, calidad gráfica, sonido e
  * idioma; todo se guarda en los ajustes del navegador (`juego/ajustes.ts`). Cambiar algo nunca toca la
  * partida: no cobra, no avanza el reloj y conserva la pausa (MECANICAS §6, invariante 4). `V` y el botón
- * del HUD siguen cambiando la cámara: es el mismo ajuste. Diálogo modal con la forma de "Sources &
- * credits": foco en "Close" al abrir, Esc o tocar afuera cierra, y el foco vuelve adonde estaba.
+ * del HUD siguen cambiando la cámara: es el mismo ajuste.
+ *
+ * `<dialog>` nativo abierto con showModal() (Modern Web Guidance, "dialog"): el navegador da la capa
+ * superior, el fondo inerte, el foco dentro, Esc y el gesto de atrás, y devuelve el foco a quien lo abrió.
+ * Tocar afuera también cierra (`closedby="any"`, con respaldo para Safari).
  */
 export function Menu({ camara, onCamara, calidad, onCalidad, sonido, onSonido, idioma, onIdioma, onCerrar }: MenuProps) {
   const { t } = useT();
-  const caja = useRef<HTMLDivElement>(null);
+  const dialogo = useRef<HTMLDialogElement>(null);
   const cerrar = useRef(onCerrar);
   cerrar.current = onCerrar;
   useEffect(() => {
-    const previo = document.activeElement instanceof HTMLElement ? document.activeElement : null;
-    caja.current?.querySelector<HTMLButtonElement>("button")?.focus();
-    const tecla = (e: KeyboardEvent) => { if (e.key === "Escape") { e.preventDefault(); cerrar.current(); } };
-    window.addEventListener("keydown", tecla);
+    const d = dialogo.current;
+    if (!d) return;
+    if (!d.open && typeof d.showModal === "function") d.showModal();
+    const alCerrar = () => cerrar.current();
+    d.addEventListener("close", alCerrar);
+    // Respaldo de closedby="any" donde no existe: cerrar solo si se apretó y se soltó fuera de la caja.
+    let afuera = false;
+    const fuera = (e: PointerEvent) => { const r = d.getBoundingClientRect(); return e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom; };
+    const baja = (e: PointerEvent) => { afuera = fuera(e); };
+    const sube = (e: PointerEvent) => { if (afuera && fuera(e)) d.close(); };
+    const sinClosedBy = !("closedBy" in HTMLDialogElement.prototype);
+    if (sinClosedBy) { d.addEventListener("pointerdown", baja); d.addEventListener("pointerup", sube); }
     return () => {
-      window.removeEventListener("keydown", tecla);
-      if (previo?.isConnected) previo.focus();
+      d.removeEventListener("close", alCerrar);
+      if (sinClosedBy) { d.removeEventListener("pointerdown", baja); d.removeEventListener("pointerup", sube); }
+      // Sin d.close() aquí: el evento "close" llega después y cerraría el menú recién abierto (React monta
+      // dos veces en desarrollo). Al desmontar, el <dialog> sale del documento y el navegador lo cierra.
     };
   }, []);
   const grupo = (id: string, titulo: string, hijos: React.ReactNode) => (
-    <section aria-labelledby={id}>
-      <h3 id={id}>{titulo}</h3>
-      <div className="fila" role="group" aria-labelledby={id}>{hijos}</div>
+    <section className="menu-fila" aria-labelledby={id}>
+      <h3 id={id} className="menu-etiqueta">{titulo}</h3>
+      <div className="menu-opciones" role="group" aria-labelledby={id}>{hijos}</div>
     </section>
   );
   return (
-    <div className="creditos-fondo" onClick={(e) => { if (e.target === e.currentTarget) onCerrar(); }}>
-      <div ref={caja} className="creditos" role="dialog" aria-modal="true" aria-labelledby="menu-titulo">
-        <div className="creditos-cerrar"><FacetButton labelKey="ui.comun.cerrar" onClick={onCerrar} /></div>
-        <div className="fc"><div className="fc-cara">
-        <h2 id="menu-titulo">{t("ui.menu.titulo")}</h2>
+    <dialog ref={dialogo} className="menu-ajustes" aria-labelledby="menu-titulo" {...({ closedby: "any" } as object)}>
+      <div className="fc menu-caja"><div className="fc-cara menu-cara">
+        <header className="menu-cab">
+          <h2 id="menu-titulo">{t("ui.menu.titulo")}</h2>
+          <FacetButton labelKey="ui.comun.cerrar" icon="atras" onClick={() => dialogo.current?.close()} />
+        </header>
         {grupo("menu-camara", t("ui.menu.camara"), CAMARAS.map((c) => (
           <FacetButton key={c} labelKey={`ui.comun.hud.${c}`} selected={camara === c || undefined} onClick={() => onCamara(c)} />
         )))}
@@ -67,8 +81,7 @@ export function Menu({ camara, onCamara, calidad, onCalidad, sonido, onSonido, i
         {grupo("menu-idioma", t("ui.portada.idioma"), IDIOMAS.map((i) => (
           <FacetButton key={i} labelKey={`ui.menu.idioma.${i}`} selected={idioma === i || undefined} onClick={() => onIdioma(i)} />
         )))}
-        </div></div>
-      </div>
-    </div>
+      </div></div>
+    </dialog>
   );
 }

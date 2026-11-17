@@ -408,6 +408,7 @@
   "ui.cuenta.clave": "Password",
   "ui.cuenta.clave.ayuda": "Use 8–72 characters.",
   "ui.cuenta.repetir": "Repeat password",
+  "ui.cuenta.repetir.ayuda": "Type the same password again.",
   "ui.cuenta.ver": "Show password",
   "ui.cuenta.entrar": "Log in and play",
   "ui.cuenta.crear": "Create account and play",
