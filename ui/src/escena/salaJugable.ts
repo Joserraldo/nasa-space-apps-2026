@@ -2,6 +2,7 @@ import * as THREE from "three";
 import { crearMateriales } from "./materiales";
 import { ambienteSalaKit, crearSalaKit, PUERTA_SALA, puntosSalaKit, type PuntoSala, type SalaKit } from "./activos/interiores/salaKit";
 import { AMBIENTE_PASILLO, crearPasillo, PUERTAS_PASILLO, ZONAS_PASILLO } from "./activos/interiores/pasillo";
+import { AMBIENTE_TALLER_PASTEL, crearTallerPastel, PUERTAS_TALLER_PASTEL, puntosTallerPastel, ZONAS_TALLER_PASTEL } from "./activos/interiores/tallerPastel";
 import { animar, crearPersonaje } from "./personajes";
 
 /**
@@ -33,7 +34,11 @@ function datosEspacio(espacio: EspacioJugable) {
   if (espacio === "pasillo") {
     return { raiz: crearPasillo(), amb: AMBIENTE_PASILLO, zonas: ZONAS_PASILLO as readonly Caja[], puntos: [] as PuntoSala[], puertas: PUERTAS_PASILLO as readonly Puerta[] };
   }
-  // Workshop and habitat open to the corridor; the Outpost (on the ship) back to the base.
+  if (espacio === "taller") {
+    // The workshop is the pastel kit hall now; the habitat and the Outpost still use the cut-away rooms.
+    return { raiz: crearTallerPastel(crearMateriales()), amb: AMBIENTE_TALLER_PASTEL, zonas: ZONAS_TALLER_PASTEL as readonly Caja[], puntos: puntosTallerPastel(), puertas: PUERTAS_TALLER_PASTEL as readonly Puerta[] };
+  }
+  // The habitat opens to the corridor; the Outpost (on the ship) back to the base.
   const destino = espacio === "outpost" ? "base" : "pasillo";
   const puerta: Puerta = { destino, x: PUERTA_SALA.x, z: PUERTA_SALA.z - 0.5, entrada: { x: PUERTA_SALA.x, z: PUERTA_SALA.z, giro: 0 } };
   return { raiz: crearSalaKit(espacio, crearMateriales()), amb: ambienteSalaKit(espacio), zonas: [CAJA] as readonly Caja[], puntos: puntosSalaKit(espacio), puertas: [puerta] as readonly Puerta[] };
@@ -92,7 +97,7 @@ export function montarSalaJugable(canvas: HTMLCanvasElement, sala: EspacioJugabl
   escena.add(anillo);
 
   // Wider lens inside the tube, so the kid fits whole in front of the camera.
-  const camara = new THREE.PerspectiveCamera(sala === "pasillo" ? 62 : 45, 1, 0.1, 200);
+  const camara = new THREE.PerspectiveCamera(sala === "pasillo" || sala === "taller" ? 62 : 45, 1, 0.1, 200);
   const ajustar = () => {
     const w = canvas.clientWidth || innerWidth, h = canvas.clientHeight || innerHeight;
     renderer.setSize(w, h, false);
@@ -121,14 +126,14 @@ export function montarSalaJugable(canvas: HTMLCanvasElement, sala: EspacioJugabl
   const p = nino.grupo.position;
   let giro = llegada.giro;
   nino.grupo.rotation.y = giro;
-  // Inside the corridor the camera rides behind the kid and looks along the run he is in: the main run in
-  // the direction he came in, the airlock branch toward its far end. It only turns at the crossing, so the
-  // controls never flip on their own.
-  const dentroTubo = sala === "pasillo";
+  // Inside the kit spaces the camera rides behind the kid. In the corridor it looks along the run he is in:
+  // the main run in the direction he came in, the airlock branch toward its far end; in the workshop hall it
+  // looks at the back wall. It only turns at the crossing, so the controls never flip on their own.
+  const dentroTubo = sala === "pasillo" || sala === "taller";
   const desdeEsclusa = o.desde === "base";
   const rumboPrincipal = Math.abs(Math.abs(llegada.giro) - Math.PI / 2) < 0.1 ? llegada.giro : Math.PI / 2;
   const rumboRamal = desdeEsclusa ? 0 : Math.PI;
-  let rumbo = dentroTubo && llegada.z < -1.4 ? rumboRamal : rumboPrincipal;
+  let rumbo = sala === "taller" ? Math.PI : dentroTubo && llegada.z < -1.4 ? rumboRamal : rumboPrincipal;
   let previo = 0;
   let t = 0;
 
@@ -196,12 +201,14 @@ export function montarSalaJugable(canvas: HTMLCanvasElement, sala: EspacioJugabl
     if (a !== null) anillo.scale.setScalar(("destino" in a ? 1 : Math.max(0.6, a.radio + 0.25)) * (1 + 0.05 * Math.sin(t * 5)));
 
     if (dentroTubo) {
-      const meta = p.z < -1.4 ? rumboRamal : rumboPrincipal;
+      const meta = sala === "taller" ? Math.PI : p.z < -1.4 ? rumboRamal : rumboPrincipal;
       rumbo += Math.atan2(Math.sin(meta - rumbo), Math.cos(meta - rumbo)) * Math.min(1, dt * 3);
       // Chase camera near the ceiling, pulled in when a wall is closer than its usual distance.
       const fx = Math.sin(rumbo), fz = Math.cos(rumbo);
       let atras = 3.0;
-      while (atras > 0.8 && !dentro(zonas, p.x - fx * atras, p.z - fz * atras)) atras -= 0.1;
+      // The camera also keeps out of columns and furniture, so it never ends up inside one.
+      const libre = (x: number, z: number) => dentro(zonas, x, z) && puntos.every((s) => s.radio === 0 || Math.hypot(x - s.x, z - s.z) > s.radio + 0.2);
+      while (atras > 0.8 && !libre(p.x - fx * atras, p.z - fz * atras)) atras -= 0.1;
       camara.position.set(p.x - fx * atras, 2.05, p.z - fz * atras);
       camara.lookAt(p.x + fx * 4, 0.95, p.z + fz * 4);
     } else {
