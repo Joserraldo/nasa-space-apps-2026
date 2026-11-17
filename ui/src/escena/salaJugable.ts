@@ -2,8 +2,8 @@ import * as THREE from "three";
 import { crearMateriales } from "./materiales";
 import { ambienteSalaKit, crearSalaKit, PUERTA_SALA, puntosSalaKit, type PuntoSala, type SalaKit } from "./activos/interiores/salaKit";
 import { ALTURA_PISO } from "./activos/interiores/kitPastel";
-import { AMBIENTE_PASILLO, crearPasillo, PUERTAS_PASILLO, ZONAS_PASILLO } from "./activos/interiores/pasillo";
-import { AMBIENTE_SALA_PASTEL, crearSalaPastel, PUERTAS_SALA_PASTEL, puntosSalaPastel, ZONAS_SALA_PASTEL } from "./activos/interiores/salaPastel";
+import { AMBIENTE_PASILLO, crearPasillo, PUERTAS_PASILLO, PUNTOS_PASILLO, ZONAS_PASILLO } from "./activos/interiores/pasillo";
+import { AMBIENTE_ESTACION, crearSalaEstacion, puertasSalaEstacion, puntosSalaEstacion, zonaSalaEstacion, type MuroSala } from "./activos/interiores/salaEstacion";
 import { animar, crearPersonaje } from "./personajes";
 
 /**
@@ -13,8 +13,10 @@ import { animar, crearPersonaje } from "./personajes";
  * - Movement: WASD or arrows, screen-relative (the camera is a cut-away view that drifts with the kid).
  * - Collision: circles for furniture (`puntosSalaKit`) and the room box.
  * - Interaction: the nearest interactive thing within reach gets a floor ring; `E` reports it with
- *   `alInteractuar(id)`. At a door, `E` calls `alSalir(destino)`: the workshop and the habitat open to the
- *   corridor, the corridor opens to both and to the airlock ("base").
+ *   `alInteractuar(id)`. At a door, `E` calls `alSalir(destino)`: the airlock opens to Mars ("base") and to
+ *   the corridor, the corridor to the airlock, the workshop and the habitat.
+ * - Cameras: in the corridor it rides behind the kid; in the open-top station rooms it looks down from above
+ *   and hides the wall runs between it and the kid; drag turns it in both.
  * - The loop stops while the tab is hidden and everything is released in `quitar()`.
  * Touch controls and the wiring into the game screens come next; today this runs in the dev preview:
  * `/escena.html?sala=taller&kit=1&jugar=1`.
@@ -26,23 +28,25 @@ const ALCANCE = 1.25;
 /** Walkable box of a kit room (8 x 6 m; walls are 0.25 thick). */
 const CAJA = { xMin: -3.55, xMax: 3.55, zMin: -2.55, zMax: 2.75 } as const;
 
-export type EspacioJugable = SalaKit | "pasillo";
+export type EspacioJugable = SalaKit | "pasillo" | "esclusa";
+/** Open-top rooms of the station kit (`salaEstacion.ts`). */
+const esEstacion = (e: EspacioJugable): e is "esclusa" | "taller" | "habitat" => e === "esclusa" || e === "taller" || e === "habitat";
 type Caja = { readonly xMin: number; readonly xMax: number; readonly zMin: number; readonly zMax: number };
 interface Puerta { readonly destino: string; readonly x: number; readonly z: number; readonly entrada: { readonly x: number; readonly z: number; readonly giro: number } }
 
 /** What the loop needs from a space: its scene, walkable boxes, obstacles and doors. */
 function datosEspacio(espacio: EspacioJugable) {
   if (espacio === "pasillo") {
-    return { piso: ALTURA_PISO, raiz: crearPasillo(), amb: AMBIENTE_PASILLO, zonas: ZONAS_PASILLO as readonly Caja[], puntos: [] as PuntoSala[], puertas: PUERTAS_PASILLO as readonly Puerta[] };
+    return { piso: ALTURA_PISO, raiz: crearPasillo(), muros: [] as MuroSala[], amb: AMBIENTE_PASILLO, zonas: ZONAS_PASILLO as readonly Caja[], puntos: PUNTOS_PASILLO, puertas: PUERTAS_PASILLO as readonly Puerta[] };
   }
-  if (espacio === "taller" || espacio === "habitat") {
-    // Workshop and habitat are pastel kit halls opening to the corridor; the Outpost still uses the cut-away room.
-    return { piso: ALTURA_PISO, raiz: crearSalaPastel(espacio, crearMateriales()), amb: AMBIENTE_SALA_PASTEL, zonas: ZONAS_SALA_PASTEL as readonly Caja[], puntos: puntosSalaPastel(espacio), puertas: PUERTAS_SALA_PASTEL as readonly Puerta[] };
+  if (esEstacion(espacio)) {
+    const sala = crearSalaEstacion(espacio, crearMateriales());
+    return { piso: 0, raiz: sala.raiz, muros: sala.muros, amb: AMBIENTE_ESTACION, zonas: [zonaSalaEstacion(espacio)] as readonly Caja[], puntos: puntosSalaEstacion(espacio), puertas: puertasSalaEstacion(espacio) as readonly Puerta[] };
   }
   // The Outpost (on the ship) opens back to the base.
   const destino = "base";
   const puerta: Puerta = { destino, x: PUERTA_SALA.x, z: PUERTA_SALA.z - 0.5, entrada: { x: PUERTA_SALA.x, z: PUERTA_SALA.z, giro: 0 } };
-  return { piso: 0, raiz: crearSalaKit(espacio, crearMateriales()), amb: ambienteSalaKit(espacio), zonas: [CAJA] as readonly Caja[], puntos: puntosSalaKit(espacio), puertas: [puerta] as readonly Puerta[] };
+  return { piso: 0, muros: [] as MuroSala[], raiz: crearSalaKit(espacio, crearMateriales()), amb: ambienteSalaKit(espacio), zonas: [CAJA] as readonly Caja[], puntos: puntosSalaKit(espacio), puertas: [puerta] as readonly Puerta[] };
 }
 
 const dentro = (zonas: readonly Caja[], x: number, z: number) => zonas.some((c) => x >= c.xMin && x <= c.xMax && z >= c.zMin && z <= c.zMax);
@@ -58,6 +62,10 @@ export interface OpcionesSalaJugable {
 }
 
 export interface SalaJugable {
+  /** Touch stick direction (screen right, screen down), each -1..1; (0, 0) stops. */
+  fijarEje(x: number, z: number): void;
+  /** Same as pressing E. */
+  usar(): void;
   quitar(): void;
 }
 
@@ -70,12 +78,13 @@ export function montarSalaJugable(canvas: HTMLCanvasElement, sala: EspacioJugabl
 
   const escena = new THREE.Scene();
   // `piso`: height of the walkable floor; the kit floors are raised panels, so feet go on top of them.
-  const { piso, raiz, amb, zonas, puntos, puertas } = datosEspacio(sala);
+  const { piso, raiz, muros, amb, zonas, puntos, puertas } = datosEspacio(sala);
   escena.background = new THREE.Color(amb.fondoEscena);
   if ("niebla" in amb) escena.fog = new THREE.Fog(amb.niebla.color, amb.niebla.cerca, amb.niebla.lejos);
   escena.add(raiz, new THREE.HemisphereLight(amb.luz.hemiCielo, amb.luz.hemiSuelo, amb.luz.hemi));
   const luz = new THREE.DirectionalLight(amb.luz.color, amb.luz.intensidad);
-  luz.position.set(-2, 6, 4);
+  // High and from the open side: short shadows under props, both side walls lit alike.
+  luz.position.set(0.8, 8, 4.5);
   luz.castShadow = true;
   const lado = calidad === "alta" ? 1024 : 512;
   luz.shadow.mapSize.set(lado, lado);
@@ -89,6 +98,9 @@ export function montarSalaJugable(canvas: HTMLCanvasElement, sala: EspacioJugabl
   const llegada = (puertas.find((d) => d.destino === o.desde) ?? puertas[0]!).entrada;
   nino.grupo.position.set(llegada.x, piso, llegada.z);
   nino.grupo.traverse((x) => { if (x instanceof THREE.Mesh) x.castShadow = true; });
+  // Inside the pressurised base the kid takes the helmet off (from above, its tinted glass also hid his hair).
+  const casco = nino.grupo.getObjectByName("casco");
+  if (casco) casco.visible = false;
   escena.add(nino.grupo);
 
   // Floor ring under the thing within reach.
@@ -99,11 +111,18 @@ export function montarSalaJugable(canvas: HTMLCanvasElement, sala: EspacioJugabl
   escena.add(anillo);
 
   // Wider lens inside the tube, so the kid fits whole in front of the camera.
-  const camara = new THREE.PerspectiveCamera(sala !== "outpost" ? 62 : 45, 1, 0.1, 200);
+  const camara = new THREE.PerspectiveCamera(sala === "pasillo" ? 62 : esEstacion(sala) ? 50 : 45, 1, 0.1, 200);
   const ajustar = () => {
     const w = canvas.clientWidth || innerWidth, h = canvas.clientHeight || innerHeight;
     renderer.setSize(w, h, false);
     camara.aspect = w / h;
+    // Keep the horizontal view of a 16:10 screen on narrow (portrait) ones, up to 85 degrees vertical.
+    if (esEstacion(sala) || sala === "pasillo") {
+      const base = sala === "pasillo" ? 62 : 50;
+      const horizontal = Math.atan(Math.tan(THREE.MathUtils.degToRad(base / 2)) * 1.6);
+      const vertical = THREE.MathUtils.radToDeg(2 * Math.atan(Math.tan(horizontal) / camara.aspect));
+      camara.fov = THREE.MathUtils.clamp(vertical, base, 85);
+    }
     camara.updateProjectionMatrix();
   };
   ajustar();
@@ -127,6 +146,9 @@ export function montarSalaJugable(canvas: HTMLCanvasElement, sala: EspacioJugabl
   // Drag (mouse or finger) turns the camera around the kid, as outdoors. `giroManual` adds to the automatic
   // heading; in the corridor it eases back while the kid walks, in the rooms it stays where it was left.
   let giroManual = 0;
+  // A station room is wider than deep; on a portrait screen the view turns a quarter so its long side runs
+  // up the screen. Movement reads the same heading, so "up" still walks away from the camera.
+  const vistaActual = () => rumbo + giroManual + (esEstacion(sala) && camara.aspect < 1 ? Math.PI / 2 : 0);
   let arrastre: { id: number; x: number } | null = null;
   const alApuntar = (e: PointerEvent) => {
     arrastre = { id: e.pointerId, x: e.clientX };
@@ -145,6 +167,8 @@ export function montarSalaJugable(canvas: HTMLCanvasElement, sala: EspacioJugabl
   canvas.addEventListener("pointerup", alSoltarPuntero);
   canvas.addEventListener("pointercancel", alSoltarPuntero);
 
+  // Touch stick (`fijarEje`): -1..1 on each axis, screen right and screen down; adds to the keys.
+  const tactil = { x: 0, z: 0 };
   const eje = (pos: string[], neg: string[]) => (pos.some((k) => teclas.has(k)) ? 1 : 0) - (neg.some((k) => teclas.has(k)) ? 1 : 0);
   const p = nino.grupo.position;
   let giro = llegada.giro;
@@ -153,20 +177,21 @@ export function montarSalaJugable(canvas: HTMLCanvasElement, sala: EspacioJugabl
   // the main run in the direction he came in, the airlock branch toward its far end; in the workshop and habitat
   // halls it looks at the back wall. It only turns at the crossing, so the controls never flip on their own.
   const dentroTubo = sala !== "outpost";
-  const desdeEsclusa = o.desde === "base";
+  const desdeEsclusa = o.desde === "esclusa";
   const rumboPrincipal = Math.abs(Math.abs(llegada.giro) - Math.PI / 2) < 0.1 ? llegada.giro : Math.PI / 2;
   const rumboRamal = desdeEsclusa ? 0 : Math.PI;
-  let rumbo = sala !== "pasillo" ? Math.PI : dentroTubo && llegada.z < -1.4 ? rumboRamal : rumboPrincipal;
+  // Station rooms start looking the way the kid walks in.
+  let rumbo = esEstacion(sala) ? llegada.giro : sala !== "pasillo" ? Math.PI : dentroTubo && llegada.z < -1.4 ? rumboRamal : rumboPrincipal;
   let previo = 0;
   let t = 0;
 
   function mover(dt: number): boolean {
-    let dx = eje(["KeyD", "ArrowRight"], ["KeyA", "ArrowLeft"]);
-    let dz = eje(["KeyS", "ArrowDown"], ["KeyW", "ArrowUp"]);
+    let dx = THREE.MathUtils.clamp(eje(["KeyD", "ArrowRight"], ["KeyA", "ArrowLeft"]) + tactil.x, -1, 1);
+    let dz = THREE.MathUtils.clamp(eje(["KeyS", "ArrowDown"], ["KeyW", "ArrowUp"]) + tactil.z, -1, 1);
     if (dentroTubo) {
       // Camera-relative: up is "forward along the view", right is "to the screen right".
       const avance = -dz, lado = dx;
-      const vista = rumbo + giroManual;
+      const vista = vistaActual();
       dx = avance * Math.sin(vista) - lado * Math.cos(vista);
       dz = avance * Math.cos(vista) + lado * Math.sin(vista);
     }
@@ -224,7 +249,19 @@ export function montarSalaJugable(canvas: HTMLCanvasElement, sala: EspacioJugabl
     if (a) anillo.position.set(a.x, piso + 0.03, a.z);
     if (a !== null) anillo.scale.setScalar(("destino" in a ? 1 : Math.max(0.6, a.radio + 0.25)) * (1 + 0.05 * Math.sin(t * 5)));
 
-    if (dentroTubo) {
+    if (esEstacion(sala)) {
+      // From above and behind; the wall runs facing the camera hide, so the room reads like the sheets.
+      const fx = Math.sin(vistaActual()), fz = Math.cos(vistaActual());
+      // Portrait: the lens spans ~46 degrees across, so the camera climbs and looks almost straight down
+      // until the 9.6 m room fits side to side, with no empty ground under it.
+      const vertical = camara.aspect < 1;
+      const atrasSala = vertical ? 3.0 : 6.2, alto = vertical ? 10.5 : 5.6, mira = vertical ? 0.3 : 0.8;
+      // Portrait frames mostly the room (its centre is the origin) and only follows the kid a little.
+      const sigue = vertical ? 0.35 : 1, cx = p.x * sigue, cz = p.z * sigue;
+      camara.position.set(cx - fx * atrasSala, alto, cz - fz * atrasSala);
+      camara.lookAt(cx + fx * mira, 0.6, cz + fz * mira);
+      for (const m of muros) m.grupo.visible = -(m.normal[0] * fx + m.normal[1] * fz) < 0.35;
+    } else if (dentroTubo) {
       const meta = sala !== "pasillo" ? Math.PI : p.z < -1.4 ? rumboRamal : rumboPrincipal;
       rumbo += Math.atan2(Math.sin(meta - rumbo), Math.cos(meta - rumbo)) * Math.min(1, dt * 3);
       // Chase camera near the ceiling, pulled in when a wall is closer than its usual distance.
@@ -256,6 +293,14 @@ export function montarSalaJugable(canvas: HTMLCanvasElement, sala: EspacioJugabl
   if (!document.hidden) renderer.setAnimationLoop(cuadro);
 
   return {
+    fijarEje(x, z) {
+      tactil.x = x;
+      tactil.z = z;
+    },
+    usar() {
+      alBajar(new KeyboardEvent("keydown", { code: "KeyE" }));
+      teclas.delete("KeyE");
+    },
     quitar() {
       renderer.setAnimationLoop(null);
       document.removeEventListener("visibilitychange", alVisibilidad);

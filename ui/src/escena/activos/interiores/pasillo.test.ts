@@ -5,7 +5,7 @@ const dentro = (x: number, z: number) => ZONAS_PASILLO.some((c) => x >= c.xMin &
 
 describe("pasillo", () => {
   it("leads to the workshop, the habitat and the airlock", () => {
-    expect(PUERTAS_PASILLO.map((p) => p.destino).sort()).toEqual(["base", "habitat", "taller"]);
+    expect(PUERTAS_PASILLO.map((p) => p.destino).sort()).toEqual(["esclusa", "habitat", "taller"]);
   });
 
   it("lets the kid appear inside the walkable area a few steps in from every door, not on it", () => {
