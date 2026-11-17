@@ -65,6 +65,7 @@ export function montarSalaJugable(canvas: HTMLCanvasElement, sala: EspacioJugabl
   const escena = new THREE.Scene();
   const { raiz, amb, zonas, puntos, puertas } = datosEspacio(sala);
   escena.background = new THREE.Color(amb.fondoEscena);
+  if ("niebla" in amb) escena.fog = new THREE.Fog(amb.niebla.color, amb.niebla.cerca, amb.niebla.lejos);
   escena.add(raiz, new THREE.HemisphereLight(amb.luz.hemiCielo, amb.luz.hemiSuelo, amb.luz.hemi));
   const luz = new THREE.DirectionalLight(amb.luz.color, amb.luz.intensidad);
   luz.position.set(-2, 6, 4);

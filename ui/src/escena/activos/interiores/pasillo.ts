@@ -8,10 +8,11 @@ import { MeshoptDecoder } from "three/examples/jsm/libs/meshopt_decoder.module.j
  * Pieces from "Corridor Level Kit" by dueddel (KitJam 2021-08, free for any use, see
  * `public/kits/pasillo/LICENSE.txt`). 12 pieces in one 115 KB GLB (prune, quantize and meshopt).
  *
- * Look: the kit's own, seen from inside (closed ceiling, chase camera): warm off-white shell, slate frames,
- * dark tinted floor glass over yellow cables, warm light panels and wall strips. The kit samples its colours
- * from a palette strip; ours (`paleta.png`, 1 x 19 px) is our own file painted in that spirit (the palette
- * the kit ships with belongs to a third party and is not included).
+ * Look: the kit's pastel interior, seen from inside (closed ceiling, chase camera): pale pink shell and lilac
+ * trims, plain mauve floor panels with ochre cables on top, white ceiling panels, pink wall strips and a soft
+ * pink haze (fog) that melts the far end. The kit samples its colours from a palette strip; ours
+ * (`paleta.png`, 1 x 19 px) is our own file (the palette the kit ships with belongs to a third party and is
+ * not included).
  *
  * Layout along x, one tile every `TRAMO` m: workshop end, straight, T crossing (branch to -z, the airlock),
  * straight, habitat end. The kit is built for 5 x 4 x 3 m tiles; it is scaled to the kid.
@@ -25,18 +26,19 @@ const FONDO = 2 * ESCALA;
 
 type PiezaPasillo =
   | "Corridor-01 Straight" | "Corridor-01 Dead End" | "Corridor-01 T-Crossing"
-  | "Floor Glas+Grid-01 Straight" | "Floor Glas+Grid-01 Dead End" | "Floor Glas+Grid-01 T-Crossing"
-  | "Conduit-01 Straight" | "Frame-01 Straight" | "Lamp-01 Straight"
+  | "Floor Glas-01 Straight" | "Floor Glas-01 Dead End" | "Floor Glas-01 T-Crossing"
+  | "Conduit-01 Straight" | "Conduit-01 Dead End" | "Conduit-02 T-Crossing"
+  | "Frame-01 Straight" | "Lamp-01 Straight" | "Lamp-01 T-Crossing"
   | "Light Strip-02 Straight" | "Light Strip-02 Dead End" | "Light Strip-02 T-Crossing";
 
-const RECTO: readonly PiezaPasillo[] = ["Corridor-01 Straight", "Floor Glas+Grid-01 Straight", "Conduit-01 Straight", "Frame-01 Straight", "Lamp-01 Straight", "Light Strip-02 Straight"];
-const FIN: readonly PiezaPasillo[] = ["Corridor-01 Dead End", "Floor Glas+Grid-01 Dead End", "Light Strip-02 Dead End"];
+const RECTO: readonly PiezaPasillo[] = ["Corridor-01 Straight", "Floor Glas-01 Straight", "Conduit-01 Straight", "Frame-01 Straight", "Lamp-01 Straight", "Light Strip-02 Straight"];
+const FIN: readonly PiezaPasillo[] = ["Corridor-01 Dead End", "Floor Glas-01 Dead End", "Conduit-01 Dead End", "Light Strip-02 Dead End"];
 
 /** [tile x, tile z, quarter turns, pieces]. Dead ends close toward +x as authored. */
 const TRAMOS: readonly (readonly [number, number, number, readonly PiezaPasillo[]])[] = [
   [-2, 0, 2, FIN],
   [-1, 0, 0, RECTO],
-  [0, 0, 2, ["Corridor-01 T-Crossing", "Floor Glas+Grid-01 T-Crossing", "Light Strip-02 T-Crossing"]],
+  [0, 0, 2, ["Corridor-01 T-Crossing", "Floor Glas-01 T-Crossing", "Conduit-02 T-Crossing", "Lamp-01 T-Crossing", "Light Strip-02 T-Crossing"]],
   [1, 0, 0, RECTO],
   [2, 0, 0, FIN],
   [0, -1, 1, FIN],
@@ -57,15 +59,15 @@ export const PUERTAS_PASILLO = [
 ] as const;
 
 /** Glow strip on each door: the expert's colour, cyan for the airlock. */
-const COLOR_PUERTA: Record<string, string> = { taller: "#F2B531", habitat: "#47AAB5", base: "#7FE6EC" };
+const COLOR_PUERTA: Record<string, string> = { taller: "#F2B531", habitat: "#47AAB5", base: "#73D4E1" };
 
 /** A hatch at a dead end, in the kit's grey with a glowing strip. */
 function puertaVisible(destino: string, x: number, z: number, giro: number): THREE.Group {
   const g = new THREE.Group();
   g.name = `Corridor_Door_${destino}`;
-  const marco = new THREE.Mesh(new THREE.BoxGeometry(1.6, 2.1, 0.1), new THREE.MeshStandardMaterial({ color: "#56606C", roughness: 0.6 }));
+  const marco = new THREE.Mesh(new THREE.BoxGeometry(1.6, 2.1, 0.1), new THREE.MeshStandardMaterial({ color: "#C9B6C6", roughness: 0.7 }));
   marco.position.y = 1.05;
-  const hoja = new THREE.Mesh(new THREE.BoxGeometry(1.2, 1.85, 0.06), new THREE.MeshStandardMaterial({ color: "#B9BEC2", roughness: 0.5 }));
+  const hoja = new THREE.Mesh(new THREE.BoxGeometry(1.2, 1.85, 0.06), new THREE.MeshStandardMaterial({ color: "#EFE2EA", roughness: 0.6 }));
   hoja.position.set(0, 0.95, 0.06);
   const franja = new THREE.Mesh(new THREE.BoxGeometry(0.9, 0.08, 0.02), new THREE.MeshBasicMaterial({ color: COLOR_PUERTA[destino] }));
   franja.position.set(0, 1.55, 0.1);
@@ -88,13 +90,13 @@ export function crearPasillo(): THREE.Group {
     raiz.add(puertaVisible(p.destino, fondo.x, fondo.z, p.entrada.giro));
   }
 
-  // Warm light under each ceiling panel (no shadows: cheap, and the shell would block a sun anyway).
+  // Soft pink-white light under each ceiling panel (no shadows: cheap, and the shell would block a sun anyway).
   for (const x of [-TRAMO, TRAMO, -2 * TRAMO, 2 * TRAMO, 0]) {
-    const luz = new THREE.PointLight("#FFE7C4", 3, 7, 2);
+    const luz = new THREE.PointLight("#FFE3EA", 3, 7, 2);
     luz.position.set(x, 1.5, 0);
     raiz.add(luz);
   }
-  const ramal = new THREE.PointLight("#FFE7C4", 2.5, 6, 2);
+  const ramal = new THREE.PointLight("#FFE3EA", 2.5, 6, 2);
   ramal.position.set(0, 1.5, -TRAMO);
   raiz.add(ramal);
 
@@ -106,11 +108,12 @@ export function crearPasillo(): THREE.Group {
   paleta.generateMipmaps = false;
   const materiales: Record<string, THREE.Material> = {
     rough: new THREE.MeshStandardMaterial({ name: "Corridor_Shell", map: paleta, roughness: 0.8, metalness: 0 }),
-    // Light panels and strips glow warm white, unlit.
-    emissive: new THREE.MeshBasicMaterial({ name: "Corridor_Light", color: "#FFF4DC" }),
-    // Dark tinted glass over the cables, like the kit.
-    glas: new THREE.MeshStandardMaterial({ name: "Corridor_Glass", color: "#0F3442", roughness: 0.15, transparent: true, opacity: 0.55, depthWrite: false }),
+    // Ceiling panels glow white, unlit (the wall strips get their own pink below).
+    emissive: new THREE.MeshBasicMaterial({ name: "Corridor_Light", color: "#FFFFFF", fog: false }),
+    // Glossy mauve floor panels, see-through enough for the cables underneath to read.
+    glas: new THREE.MeshStandardMaterial({ name: "Corridor_Floor", color: "#7E6A78", roughness: 0.3, metalness: 0, transparent: true, opacity: 0.45, depthWrite: false }),
   };
+  const tira = new THREE.MeshBasicMaterial({ name: "Corridor_Strip", color: "#FF9FB8" });
 
   const cargador = new GLTFLoader().setMeshoptDecoder(MeshoptDecoder);
   void cargador.loadAsync(`${KIT}pasillo.glb`).then((gltf) => {
@@ -122,7 +125,8 @@ export function crearPasillo(): THREE.Group {
         const copia = original.clone();
         copia.traverse((o) => {
           if (o instanceof THREE.Mesh) {
-            o.material = materiales[(o.material as THREE.Material).name] ?? materiales.rough!;
+            const propio = (o.material as THREE.Material).name;
+            o.material = propio === "emissive" && nombre.startsWith("Light Strip") ? tira : (materiales[propio] ?? materiales.rough!);
             o.receiveShadow = true;
           }
         });
@@ -139,8 +143,9 @@ export function crearPasillo(): THREE.Group {
   return raiz;
 }
 
-/** Inside a closed tube: dark background, soft warm fill; the point lights do the rest. */
+/** Inside a closed tube: pink haze and a soft pink fill from above and from the floor bounce. */
 export const AMBIENTE_PASILLO = {
-  fondoEscena: "#121519",
-  luz: { color: "#FFE9D2", intensidad: 0.3, hemiCielo: "#FFF1DE", hemiSuelo: "#3A4450", hemi: 1.4 },
+  fondoEscena: "#E9CBD1",
+  niebla: { color: "#E9CBD1", cerca: 5, lejos: 24 },
+  luz: { color: "#FFE3EA", intensidad: 0.3, hemiCielo: "#FFE6EC", hemiSuelo: "#E8C4CE", hemi: 2.4 },
 } as const;
