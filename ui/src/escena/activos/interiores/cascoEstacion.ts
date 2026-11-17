@@ -157,13 +157,14 @@ export function padEsclusa(): THREE.Group {
     return o;
   };
   g.add(
-    caja(2.4, 0.02, 2.4, BLANCO, 0, 0.01, 0, "Pad_Plate"),
-    octogono(1.0, 0.03, GRIS, 0.025, "Pad_Ring"),
-    octogono(0.78, 0.04, BLANCO, 0.03, "Pad_Centre"),
+    // Every layer clears the floor panels (top at 0.02 m) and the one below it: equal heights flicker.
+    caja(2.4, 0.02, 2.4, BLANCO, 0, 0.032, 0, "Pad_Plate"),
+    octogono(1.0, 0.03, GRIS, 0.045, "Pad_Ring"),
+    octogono(0.78, 0.04, BLANCO, 0.05, "Pad_Centre"),
   );
   for (let k = 0; k < 4; k++) {
     const a = (k * Math.PI) / 2;
-    const marca = caja(0.5, 0.025, 0.16, MORADO, Math.sin(a) * 1.08, 0.03, Math.cos(a) * 1.08, "Pad_Mark");
+    const marca = caja(0.5, 0.025, 0.16, MORADO, Math.sin(a) * 1.08, 0.05, Math.cos(a) * 1.08, "Pad_Mark");
     marca.rotation.y = a;
     g.add(marca);
   }

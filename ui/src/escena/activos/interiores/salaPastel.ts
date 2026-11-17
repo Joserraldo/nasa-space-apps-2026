@@ -4,7 +4,7 @@ import { fusionar } from "../fusionar";
 import { caja, chaflan, grupo, parte, tronco } from "../piezasComunes";
 import { botiquin, camilla, comedor, litera } from "./habitat";
 import { AMBIENTE_KIT, colocarTramos, CRUCE_T, CURVA, luzTecho, PARED, puertaVisible, TRAMO, type Tramo } from "./kitPastel";
-import type { PuntoSala } from "./salaKit";
+import type { PuntoSala } from "./puntoSala";
 import { banco, dock, estanteBaterias } from "./taller";
 
 /**

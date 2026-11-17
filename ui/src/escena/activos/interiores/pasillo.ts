@@ -1,7 +1,7 @@
 import * as THREE from "three";
 import { fusionar } from "../fusionar";
 import { cajaBandas, cajaRejilla, matafuego, tanqueO2, traje } from "./propsEstacion";
-import type { PuntoSala } from "./salaKit";
+import type { PuntoSala } from "./puntoSala";
 import { AMBIENTE_KIT, ALTURA_PISO, colocarTramos, CRUCE_T, FIN, luzTecho, PARED, puertaVisible, TRAMO, type Tramo } from "./kitPastel";
 import { guiaPiso, letrero, type Segmento } from "./guias";
 
