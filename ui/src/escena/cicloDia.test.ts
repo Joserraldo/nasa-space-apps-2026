@@ -47,8 +47,18 @@ describe("ciclo del día (D3)", () => {
     expect(luzDelMomento(0.5).mezclaCielo).toBe(0);
     const a = luzDelMomento(1);
     expect(a.mezclaCielo).toBe(1);
-    expect(a.niebla.getHexString()).toBe(new THREE.Color(PALETA_CIELO.atardecer.niebla).getHexString());
+    expect(a.cielo).toEqual({ mezcla: 1, noche: 0, dirSol: { x: a.direccion.x, y: a.direccion.y, z: a.direccion.z } });
     expect(a.intensidadSol).toBeLessThan(luzDelMomento(0).intensidadSol);
+    expect(Object.keys(PALETA_CIELO)).toContain("atardecer");
+  });
+
+  it("la noche (momento 2) solo existe forzada: Sol bajo el horizonte y apagado", () => {
+    for (const f of ["base", "modulos", "tormenta", "final", null] as const) expect(momentoDeFase(f)).toBeLessThanOrEqual(1);
+    const n = luzDelMomento(2);
+    expect(n.noche).toBe(1);
+    expect(n.direccion.y).toBeLessThan(0);
+    expect(n.intensidadSol).toBe(0);
+    expect(n.intensidadHemiConEntorno).toBeGreaterThan(luzDelMomento(0).intensidadHemiConEntorno);
   });
 
   it("cambia de a poco y llega exacto al objetivo", () => {
@@ -60,14 +70,15 @@ describe("ciclo del día (D3)", () => {
   it("aplicar el atardecer mueve el Sol, la dirección compartida con la sombra y repinta el cielo", () => {
     const escena = new THREE.Scene();
     const cielo = crearCielo(escena);
-    const antes = (cielo.domo.geometry.getAttribute("color").array as Float32Array).slice();
+    const horizonte = (cielo.domo.material as THREE.ShaderMaterial).uniforms.uHorizonte!.value as THREE.Vector3;
+    const antes = horizonte.clone();
     aplicarMomento({ cielo, escena }, 1);
     const l = luzDelMomento(1);
     expect(direccionSolActual().angleTo(l.direccion)).toBeLessThan(1e-6);
     expect(cielo.sol.position.clone().sub(cielo.sol.target.position).normalize().angleTo(l.direccion)).toBeLessThan(1e-6);
     expect(cielo.sol.intensity).toBeCloseTo(l.intensidadSol);
-    const despues = cielo.domo.geometry.getAttribute("color").array as Float32Array;
-    expect(despues).not.toEqual(antes);
+    expect(horizonte.equals(antes)).toBe(false);
+    expect(cielo.estado.mezcla).toBe(1);
     cielo.quitar();
   });
 });

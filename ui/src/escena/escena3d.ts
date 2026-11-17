@@ -12,7 +12,9 @@ import urlDem from "../../../data/terreno/jezero/elevacion.bin?url";
 import type { CalidadGrafica } from "../juego/ajustes";
 import type { EventoFeedback } from "../juego/eventos";
 import { CLARO, MALLA_JEZERO, ROCAS_PRIMER_PLANO, armarEscena, huellasRocas, radioRoca, rejillaJezero, type EscenaArmada } from "./armado";
-import { AJUSTE_CALIDAD, MAS_BAJA } from "./calidad";
+import { AJUSTE_CALIDAD, MAS_BAJA, conPost } from "./calidad";
+import { toneMappingExterior } from "./atmosfera";
+import { crearPostproceso, type Postproceso } from "./postproceso";
 import { LUZ, type Cielo } from "./cielo";
 import type { ActorId, Interactivo, PedidoEscena } from "./frontera";
 import { irisGuiaAlObjetivo } from "../juego/pedidoEscena";
@@ -27,6 +29,7 @@ import { MODULOS_BASE, type ModuloBase } from "./activos/modulos";
 import { PRESUPUESTO, aplanarClaro, contarRender, type CuentaRender } from "./activos/terreno";
 import { huellasBase, huellasColisionExtra } from "./activos/baseExterior";
 import { huellasModulos } from "./activos/modulosArmados";
+import { microrrelieve } from "./activos/microrelieve";
 import { EntradaTactil, type DeltaCamaraTactil } from "./entradaTactil";
 import {
   TecladoMovimiento,
@@ -545,7 +548,11 @@ export function crearEscena3D(canvas: HTMLCanvasElement, opciones: OpcionesEscen
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: AJUSTE_CALIDAD[calidad].antialias, powerPreference: "high-performance" });
   const materiales: Materiales = crearMateriales();
   const armada: EscenaArmada = armarEscena(materiales, null, null, calidad === "alta" ? "alta" : "baja");
-  armada.cielo.aplicarRenderer(renderer, calidad !== "baja");
+  armada.cielo.aplicarRenderer(renderer, AJUSTE_CALIDAD[calidad].gradacion);
+  /** Compositor de post (Etapa A): solo en las calidades con AO o bloom. */
+  let post: Postproceso | null = null;
+  /** Tamaño CSS del lienzo (lo fija `redimensionar`); el post lo necesita al montarse. */
+  let anchoCss = 0, altoCss = 0;
   const { tripulacion } = armada;
 
   // --- Movimiento: el niño, Iris y los sólidos reales ---
@@ -556,6 +563,7 @@ export function crearEscena3D(canvas: HTMLCanvasElement, opciones: OpcionesEscen
   const jugadorInicial = tripulacion.jugador.grupo.position;
   const irisInicial = tripulacion.iris.grupo.position;
   const mov = crearMovimiento(solidos, {
+    relieve: microrrelieve,
     inicio: { x: jugadorInicial.x, z: jugadorInicial.z },
     rumbo: tripulacion.jugador.grupo.rotation.y,
     iris: { x: irisInicial.x, z: irisInicial.z },
@@ -668,8 +676,18 @@ export function crearEscena3D(canvas: HTMLCanvasElement, opciones: OpcionesEscen
   function aplicarCalidad(nivel: CalidadGrafica): void {
     const a = AJUSTE_CALIDAD[nivel];
     renderer.setPixelRatio(Math.min(globalThis.devicePixelRatio || 1, a.dpr));
-    const tono = nivel === "baja" ? THREE.NoToneMapping : THREE.AgXToneMapping;
-    const exp = nivel === "baja" ? 1 : LUZ.exposicion;
+    const tono = toneMappingExterior(a.gradacion);
+    const exp = a.gradacion ? LUZ.exposicion : 1;
+    armada.cielo.usarNieblaAltura(a.nieblaAltura);
+    armada.usarSueloDetallado(a.sueloDetallado);
+    if (conPost(nivel)) {
+      post?.dispose();
+      post = crearPostproceso(renderer, armada.escena, camara, a);
+      if (anchoCss > 0) post.tamano(anchoCss, altoCss, renderer.getPixelRatio());
+    } else if (post) {
+      post.dispose();
+      post = null;
+    }
     let recompilar = false;
     if (renderer.toneMapping !== tono || renderer.toneMappingExposure !== exp) {
       renderer.toneMapping = tono;
@@ -889,9 +907,11 @@ export function crearEscena3D(canvas: HTMLCanvasElement, opciones: OpcionesEscen
     ctx.calidad = calidad;
     ctx.reducido = reducido;
     sistemas.actualizar(dt);
-    renderer.render(armada.escena, camara);
+    if (post) post.render(dt, armada.cielo.estado.noche);
+    else renderer.render(armada.escena, camara);
 
-    const info = renderer.info.render;
+    // Con post, el presupuesto mide solo el pase de escena (como antes del post).
+    const info = post ? post.cuenta : renderer.info.render;
     medidor?.registrar(ahora, { drawCalls: info.calls, triangulos: info.triangles });
     if (info.calls > PRESUPUESTO.drawCalls || info.triangles > PRESUPUESTO.triangulos) proponer(MAS_BAJA[calidad]);
     if (ultimo >= 0 && ahora - arranque > 2000) {
@@ -1126,6 +1146,9 @@ export function crearEscena3D(canvas: HTMLCanvasElement, opciones: OpcionesEscen
     redimensionar(ancho, alto) {
       if (ancho <= 0 || alto <= 0) return;
       renderer.setSize(ancho, alto, false);
+      anchoCss = ancho;
+      altoCss = alto;
+      post?.tamano(ancho, alto, renderer.getPixelRatio());
       camara.aspect = ancho / alto;
       camara.fov = fovParaAspecto(camaraActual, camara.aspect, FOV_JUEGO_TERCERA);
       camara.updateProjectionMatrix();
@@ -1167,6 +1190,8 @@ export function crearEscena3D(canvas: HTMLCanvasElement, opciones: OpcionesEscen
       canvas.removeEventListener("webglcontextrestored", alRecuperar);
       document.removeEventListener("visibilitychange", alVisibilidad);
       sistemas.dispose();
+      post?.dispose();
+      post = null;
       armada.liberar();
       liberarEscena(armada.escena, { compartidos: true });
       liberarMateriales(Object.values(materiales));

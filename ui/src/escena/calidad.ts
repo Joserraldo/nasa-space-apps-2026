@@ -18,13 +18,42 @@ export type FiltroSombra = "suave" | "simple";
  * sombra suave 7 fps; DPR 1 sin antialias con sombra simple 18 fps (con `baja` en 35). Sigue teniendo
  * sombras del Sol, con borde duro; `alta` conserva el borde suave.
  */
-export const AJUSTE_CALIDAD: Readonly<
-  Record<CalidadGrafica, { dpr: number; sombra: number | null; antialias: boolean; filtroSombra: FiltroSombra | null }>
-> = {
-  alta: { dpr: 1.5, sombra: LUZ.tamanoSombra.alta, antialias: true, filtroSombra: "suave" },
-  media: { dpr: 1.25, sombra: LUZ.tamanoSombra.baja, antialias: true, filtroSombra: "suave" },
-  baja: { dpr: 0.75, sombra: null, antialias: false, filtroSombra: null },
+export interface AjusteCalidad {
+  dpr: number;
+  sombra: number | null;
+  antialias: boolean;
+  filtroSombra: FiltroSombra | null;
+  /**
+   * Etapa A (luz, atmósfera y color). Cada efecto nuevo tiene su interruptor:
+   * - `entorno`: `envMap` del cielo procedural (PMREM). Metal y vidrio reflejan el cielo y el cielo rellena las sombras.
+   * - `nieblaAltura`: niebla densa a ras del suelo y limpia cerca del jugador (`atmosfera.ts`); sin ella, niebla lineal.
+   * - `gradacion`: AgX + curva en S, tono partido y saturación (`atmosfera.ts`); sin ella, sin tone mapping.
+   * - `ao` y `bloom`: pases de post (GTAO y bloom con umbral alto). Cualquiera de los dos monta el compositor.
+   */
+  entorno: boolean;
+  nieblaAltura: boolean;
+  gradacion: boolean;
+  ao: boolean;
+  bloom: boolean;
+  /**
+   * Etapa BC: suelo y rocas con texturas CC0, roca estratificada por pendiente y normales de detalle
+   * (`activos/sueloMarte.ts`). Sin él, color de vértice (mismo relieve y mismas rocas). Activo en las tres
+   * calidades: la regla 11 de `docs/referenciapau/exterior/00-comun.md` pide texturas activas por defecto.
+   */
+  sueloDetallado: boolean;
+}
+
+export const AJUSTE_CALIDAD: Readonly<Record<CalidadGrafica, Readonly<AjusteCalidad>>> = {
+  alta: { dpr: 1.5, sombra: LUZ.tamanoSombra.alta, antialias: true, filtroSombra: "suave", entorno: true, nieblaAltura: true, gradacion: true, ao: true, bloom: true, sueloDetallado: true },
+  media: { dpr: 1.25, sombra: LUZ.tamanoSombra.baja, antialias: true, filtroSombra: "suave", entorno: true, nieblaAltura: true, gradacion: true, ao: false, bloom: false, sueloDetallado: true },
+  baja: { dpr: 0.75, sombra: null, antialias: false, filtroSombra: null, entorno: false, nieblaAltura: true, gradacion: false, ao: false, bloom: false, sueloDetallado: true },
 };
+
+/** Monta el compositor de post (solo si hay AO o bloom). */
+export function conPost(nivel: CalidadGrafica): boolean {
+  const a = AJUSTE_CALIDAD[nivel];
+  return a.ao || a.bloom;
+}
 
 /** Nivel al que la escena propone bajar cuando no rinde; `null` en el más bajo. */
 export const MAS_BAJA: Readonly<Record<CalidadGrafica, CalidadGrafica | null>> = { alta: "media", media: "baja", baja: null };
