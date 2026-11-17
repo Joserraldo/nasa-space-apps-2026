@@ -3,6 +3,7 @@ import * as THREE from "three";
 import { LUZ, PALETA_CIELO, colorCielo, coloresCielo, hexALineal, hexARgb } from "./cielo";
 import { GRADACION, instalarAtmosfera } from "./atmosfera";
 import { cambioCielo } from "./sistemas/entornoCielo";
+import { BLOOM, umbralBloom } from "./postproceso";
 
 const dirDia = { x: LUZ.direccionSol[0], y: LUZ.direccionSol[1], z: LUZ.direccionSol[2] };
 
@@ -52,5 +53,13 @@ describe("entorno", () => {
     expect(cambioCielo(null, e)).toBe(true);
     expect(cambioCielo(e, { ...e, mezcla: 0.01 })).toBe(false);
     expect(cambioCielo(e, { ...e, mezcla: 0.2 })).toBe(true);
+  });
+});
+
+describe("bloom", () => {
+  it("el umbral del bloom es alto de día y baja de noche", () => {
+    expect(umbralBloom(0)).toBe(BLOOM.umbralDia);
+    expect(umbralBloom(1)).toBe(BLOOM.umbralNoche);
+    expect(BLOOM.umbralDia).toBeGreaterThan(1);
   });
 });

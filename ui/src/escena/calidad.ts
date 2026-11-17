@@ -28,18 +28,26 @@ export interface AjusteCalidad {
    * - `entorno`: `envMap` del cielo procedural (PMREM). Metal y vidrio reflejan el cielo y el cielo rellena las sombras.
    * - `nieblaAltura`: niebla densa a ras del suelo y limpia cerca del jugador (`atmosfera.ts`); sin ella, niebla lineal.
    * - `gradacion`: AgX + curva en S, tono partido y saturación (`atmosfera.ts`); sin ella, sin tone mapping.
+   * - `ao` y `bloom`: pases de post (GTAO y bloom con umbral alto). Cualquiera de los dos monta el compositor.
    */
   entorno: boolean;
   nieblaAltura: boolean;
   gradacion: boolean;
+  ao: boolean;
+  bloom: boolean;
 }
 
 export const AJUSTE_CALIDAD: Readonly<Record<CalidadGrafica, Readonly<AjusteCalidad>>> = {
-  alta: { dpr: 1.5, sombra: LUZ.tamanoSombra.alta, antialias: true, filtroSombra: "suave", entorno: true, nieblaAltura: true, gradacion: true },
-  media: { dpr: 1.25, sombra: LUZ.tamanoSombra.baja, antialias: true, filtroSombra: "suave", entorno: true, nieblaAltura: true, gradacion: true },
-  baja: { dpr: 0.75, sombra: null, antialias: false, filtroSombra: null, entorno: false, nieblaAltura: true, gradacion: false },
+  alta: { dpr: 1.5, sombra: LUZ.tamanoSombra.alta, antialias: true, filtroSombra: "suave", entorno: true, nieblaAltura: true, gradacion: true, ao: true, bloom: true },
+  media: { dpr: 1.25, sombra: LUZ.tamanoSombra.baja, antialias: true, filtroSombra: "suave", entorno: true, nieblaAltura: true, gradacion: true, ao: false, bloom: false },
+  baja: { dpr: 0.75, sombra: null, antialias: false, filtroSombra: null, entorno: false, nieblaAltura: true, gradacion: false, ao: false, bloom: false },
 };
 
+/** Monta el compositor de post (solo si hay AO o bloom). */
+export function conPost(nivel: CalidadGrafica): boolean {
+  const a = AJUSTE_CALIDAD[nivel];
+  return a.ao || a.bloom;
+}
 
 /** Nivel al que la escena propone bajar cuando no rinde; `null` en el más bajo. */
 export const MAS_BAJA: Readonly<Record<CalidadGrafica, CalidadGrafica | null>> = { alta: "media", media: "baja", baja: null };
