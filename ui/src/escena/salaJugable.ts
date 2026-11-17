@@ -83,8 +83,8 @@ export function montarSalaJugable(canvas: HTMLCanvasElement, sala: EspacioJugabl
   if ("niebla" in amb) escena.fog = new THREE.Fog(amb.niebla.color, amb.niebla.cerca, amb.niebla.lejos);
   escena.add(raiz, new THREE.HemisphereLight(amb.luz.hemiCielo, amb.luz.hemiSuelo, amb.luz.hemi));
   const luz = new THREE.DirectionalLight(amb.luz.color, amb.luz.intensidad);
-  // Low enough from the side for long shadows under props, as in the interior sheets.
-  luz.position.set(-4, 5, 2.5);
+  // High and from the open side: short shadows under props, both side walls lit alike.
+  luz.position.set(0.8, 8, 4.5);
   luz.castShadow = true;
   const lado = calidad === "alta" ? 1024 : 512;
   luz.shadow.mapSize.set(lado, lado);
@@ -146,6 +146,9 @@ export function montarSalaJugable(canvas: HTMLCanvasElement, sala: EspacioJugabl
   // Drag (mouse or finger) turns the camera around the kid, as outdoors. `giroManual` adds to the automatic
   // heading; in the corridor it eases back while the kid walks, in the rooms it stays where it was left.
   let giroManual = 0;
+  // A station room is wider than deep; on a portrait screen the view turns a quarter so its long side runs
+  // up the screen. Movement reads the same heading, so "up" still walks away from the camera.
+  const vistaActual = () => rumbo + giroManual + (esEstacion(sala) && camara.aspect < 1 ? Math.PI / 2 : 0);
   let arrastre: { id: number; x: number } | null = null;
   const alApuntar = (e: PointerEvent) => {
     arrastre = { id: e.pointerId, x: e.clientX };
@@ -188,7 +191,7 @@ export function montarSalaJugable(canvas: HTMLCanvasElement, sala: EspacioJugabl
     if (dentroTubo) {
       // Camera-relative: up is "forward along the view", right is "to the screen right".
       const avance = -dz, lado = dx;
-      const vista = rumbo + giroManual;
+      const vista = vistaActual();
       dx = avance * Math.sin(vista) - lado * Math.cos(vista);
       dz = avance * Math.cos(vista) + lado * Math.sin(vista);
     }
@@ -248,12 +251,15 @@ export function montarSalaJugable(canvas: HTMLCanvasElement, sala: EspacioJugabl
 
     if (esEstacion(sala)) {
       // From above and behind; the wall runs facing the camera hide, so the room reads like the sheets.
-      const fx = Math.sin(rumbo + giroManual), fz = Math.cos(rumbo + giroManual);
-      // Portrait: higher and closer, looking more down, so the room fills the tall screen.
+      const fx = Math.sin(vistaActual()), fz = Math.cos(vistaActual());
+      // Portrait: the lens spans ~46 degrees across, so the camera climbs and looks almost straight down
+      // until the 9.6 m room fits side to side, with no empty ground under it.
       const vertical = camara.aspect < 1;
-      const atrasSala = vertical ? 4.2 : 6.2, alto = vertical ? 7.8 : 5.6;
-      camara.position.set(p.x - fx * atrasSala, alto, p.z - fz * atrasSala);
-      camara.lookAt(p.x + fx * 0.8, 0.6, p.z + fz * 0.8);
+      const atrasSala = vertical ? 3.0 : 6.2, alto = vertical ? 10.5 : 5.6, mira = vertical ? 0.3 : 0.8;
+      // Portrait frames mostly the room (its centre is the origin) and only follows the kid a little.
+      const sigue = vertical ? 0.35 : 1, cx = p.x * sigue, cz = p.z * sigue;
+      camara.position.set(cx - fx * atrasSala, alto, cz - fz * atrasSala);
+      camara.lookAt(cx + fx * mira, 0.6, cz + fz * mira);
       for (const m of muros) m.grupo.visible = -(m.normal[0] * fx + m.normal[1] * fz) < 0.35;
     } else if (dentroTubo) {
       const meta = sala !== "pasillo" ? Math.PI : p.z < -1.4 ? rumboRamal : rumboPrincipal;

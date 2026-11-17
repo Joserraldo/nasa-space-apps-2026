@@ -21,7 +21,7 @@ export const ESCALA_ESTACION = 0.8;
 /** Kit material name to game colour. "Glow" and "Blue" are lights: unlit. */
 const COLOR: Record<string, string> = {
   Plastic: "#F2F0EC", Aluminium: "#B9B8C2", Orange: "#7C5CC4", Blue: "#2F8EEA", Glow: "#5AB4FF",
-  Dark: "#1D1E2A", Metalic: "#2B2C38", Chrome: "#C6D9EE", Gold: "#D69A2A", Green: "#3FBF62",
+  Dark: "#1D1E2A", Metalic: "#2B2C38", Chrome: "#C6D9EE", Gold: "#7C5CC4", Green: "#3FBF62",
   Glass: "#123A78", material: "#8C2E3A",
 };
 

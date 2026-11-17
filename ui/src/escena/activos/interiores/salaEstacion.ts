@@ -80,7 +80,6 @@ const PLANOS: Readonly<Record<SalaEstacion, PlanoSala>> = {
     kit: [
       ["Spacesuite_full_4", 1.0, 1.2, 1, 0.5], ["Spacesuite_full_4", 1.0, 2.6, 1, 0.5],
       ["Hanging_Shelf_43", 0.6, 4.4, 1, 0, 1.6], ["Helm_1_7", 1.0, 4.4, 1, 0, 2.05], ["Helm_1_7", 1.0, 5.1, 1, 0, 2.05],
-      ["Backpack_1_5", 1.0, 6.2, 1, 0.4],
       // The pad in the middle: the kit's octagon floor tile, a touch above the floor.
       ["Floor_M_2_100", 4.5, 2.5, 0, 0, 0.02],
       ["Cube_1_26", 9.5, 6.0, 0, 0.6], ["Cube_2_27", 10.6, 6.2, 0, 0.6],
@@ -312,5 +311,5 @@ export const AMBIENTE_ESTACION = {
   // Martian daytime sky and the outdoor horizon haze, so the rim and the rocks fade like outside.
   fondoEscena: "#F2CDB0",
   niebla: { color: "#F2CDB0", cerca: 22, lejos: 75 },
-  luz: { color: "#FFE9D2", intensidad: 2.1, hemiCielo: "#EEF0FA", hemiSuelo: "#6E6985", hemi: 1.15 },
+  luz: { color: "#FFE9D2", intensidad: 1.8, hemiCielo: "#EEF0FA", hemiSuelo: "#8A86A0", hemi: 1.55 },
 } as const;
