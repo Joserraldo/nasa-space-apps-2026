@@ -75,3 +75,27 @@ describe("coreografía de la tripulación (A7)", () => {
     expect(reaccionDe({ tipo: "recurso" })).toBeNull();
   });
 });
+
+describe("la tripulación de la escena sigue la coreografía (A7)", () => {
+  it("con la tormenta activa cada experta hace el gesto de su rol en su estación", async () => {
+    const { armarEscena } = await import("./armado");
+    const { crearMateriales } = await import("./materiales");
+    const { crearPersonaje, animar } = await import("./personajes");
+    const { HUESOS } = await import("./personajes/personaje");
+    const pose = (pj: ReturnType<typeof crearPersonaje>) => HUESOS.map((n) => pj.huesos[n].rotation.toArray().slice(0, 3).map((v) => (v as number).toFixed(4)).join(","));
+    const a = armarEscena(crearMateriales(), null);
+    const tormenta = { ...base, tormenta: { anunciada: true, activa: true } };
+    a.aplicarVista(tormenta);
+    const ms = 12_345;
+    a.animar(ms, false);
+    for (const id of ["doctora", "meteorologa"] as const) {
+      const g = gestoDe(id, sit({ t: ms / 1000, vista: tormenta }));
+      const ref = crearPersonaje(id);
+      animar(ref, g, ms / 1000, { quieto: false });
+      expect(pose(a.tripulacion.expertas[id]), `${id} hace ${g}`).toEqual(pose(ref));
+      ref.liberar();
+    }
+    expect(["tranquilizar", "verificar"]).toContain(gestoDe("doctora", sit({ t: ms / 1000, vista: tormenta })));
+    a.liberar();
+  });
+});
