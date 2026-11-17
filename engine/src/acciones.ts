@@ -23,7 +23,7 @@ import { actualizarIa, repararIa } from "./ia.js";
 import { tormentaEnCurso } from "./tormenta.js";
 import { ajustarAltura, avanzarOrbita, senalDeDano } from "./orbita.js";
 import { elegir, enteroEntre, siguiente } from "./rng.js";
-import { acumularDosis } from "./radiacion.js";
+import { acumularDosis, dosisMaximaTripulacion } from "./radiacion.js";
 
 const RECURSOS: readonly Resource[] = ["energia", "soporte_vital", "blindaje"];
 
@@ -339,10 +339,12 @@ export function avanzarTick(estado: GameState, mision: Mision = MISION_JEZERO): 
   const huboDecision = estado.causas.some((c) => c.tick === estado.tick && c.origen === "decision");
   s = actualizarIa(s, huboDecision, senal);
 
-  // Orden de fin: recurso en cero > objetivo cumplido > plazo agotado sin objetivo.
+  // Orden de fin: recurso en cero > límite de radiación > objetivo cumplido > plazo agotado sin objetivo.
   // El objetivo puede cumplirse en el propio tick límite. Pasar días no concede
   // una victoria alternativa que la misión no haya definido.
   if (RECURSOS.some((r) => s.recursos[r] <= 0)) s = { ...s, resultado: "fallo" };
+  else if (mision.limiteDosisMSv !== undefined && dosisMaximaTripulacion(s) > mision.limiteDosisMSv)
+    s = { ...s, resultado: "fallo", causas: [...s.causas, { tick: s.tick, origen: "sistema", descripcionKey: "causa.limite_radiacion" }] };
   else if (s.tick <= mision.fin.tickLimite && (mision.fin.exitoCuando === "telemetria_llega" ? llegoTelemetria : s.tick >= mision.fin.exitoCuando.tick)) s = { ...s, resultado: "exito" };
   else if (s.tick >= mision.fin.tickLimite) s = { ...s, resultado: "fallo" };
   return s;
