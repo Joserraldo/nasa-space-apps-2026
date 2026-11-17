@@ -13,8 +13,9 @@ const html = (p: Partial<MenuProps> = {}) => renderToStaticMarkup(
 describe("menú (E4)", () => {
   it("diálogo modal con su título y los cuatro ajustes", () => {
     const h = html();
-    expect(h).toContain(`role="dialog"`);
-    expect(h).toContain(`aria-modal="true"`);
+    // <dialog> nativo: el navegador ya lo expone como diálogo modal (sin role ni aria-modal a mano).
+    expect(h).toContain(`<dialog`);
+    expect(h).toContain(`aria-labelledby="menu-titulo"`);
     for (const texto of ["Settings", "Camera", "Graphics", "Sound", "Language", "Third person", "First person", "High", "Medium", "Low", "English", "Español", "Close"]) expect(h).toContain(texto);
   });
 
