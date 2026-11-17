@@ -7,6 +7,8 @@ import type { PuntoSala } from "./salaKit";
 import { cultivoVeggie, terminal } from "./salaPastel";
 import { dock, estanteBaterias } from "./taller";
 import { caja, chaflan, grupo } from "../piezasComunes";
+import { crearMontanas } from "../terrenoVisual";
+import { colorToken } from "../../materiales";
 
 const NEGRO_MESA = new THREE.MeshStandardMaterial({ name: "Desk_Top", color: "#1D1E2A", roughness: 0.55 });
 const GRIS_MESA = new THREE.MeshStandardMaterial({ name: "Desk_Body", color: "#8F8E9C", roughness: 0.7 });
@@ -156,6 +158,36 @@ function materialesEstacion(m: Materiales): Materiales {
   };
 }
 
+/**
+ * What the open top shows around the room: the same Mars as outdoors, in cheap pieces. Regolith in the
+ * outdoor ground tone, the outdoor crater rim (`crearMontanas`, one mesh, < 1000 triangles) pulled in close,
+ * and a ring of instanced rocks; the caramel haze of the outdoor horizon (`AMBIENTE_ESTACION.niebla`) melts
+ * them into the sky. About 3 draw calls; nothing out here casts shadows.
+ */
+function entornoMarte(materiales: Materiales): THREE.Group {
+  const g = new THREE.Group();
+  g.name = "Station_Mars_Around";
+  const suelo = new THREE.Mesh(new THREE.CircleGeometry(120, 24), new THREE.MeshStandardMaterial({ name: "Station_Regolith", color: colorToken("regolito-claro"), roughness: 1 }));
+  suelo.rotation.x = -Math.PI / 2;
+  suelo.position.y = -0.05;
+  suelo.receiveShadow = true;
+  const montes = crearMontanas(materiales, { radio: 46, alto: 10, picos: 44, semilla: 7 });
+  montes.position.y = -0.5;
+  // Rocks: a seeded ring between the room and the rim.
+  const roca = new THREE.IcosahedronGeometry(1, 0);
+  const rocas = new THREE.InstancedMesh(roca, new THREE.MeshStandardMaterial({ name: "Station_Rock", color: colorToken("roca-basalto"), roughness: 0.95, flatShading: true }), 48);
+  let semilla = 11;
+  const azar = () => ((semilla = (semilla * 16807) % 2147483647) / 2147483647);
+  const m = new THREE.Matrix4(), q = new THREE.Quaternion(), e = new THREE.Euler(), v = new THREE.Vector3(), sc = new THREE.Vector3();
+  for (let i = 0; i < rocas.count; i++) {
+    const ang = azar() * Math.PI * 2, r = 10 + azar() * 28, t = 0.3 + azar() * azar() * 1.6;
+    rocas.setMatrixAt(i, m.compose(v.set(Math.cos(ang) * r, t * 0.3, Math.sin(ang) * r), q.setFromEuler(e.set(azar() * 3, azar() * 3, azar() * 3)), sc.set(t, t * 0.7, t * 1.1)));
+  }
+  rocas.receiveShadow = true;
+  g.add(suelo, montes, rocas);
+  return g;
+}
+
 export function crearSalaEstacion(sala: SalaEstacion, materialesJuego: Materiales): Sala3D {
   const materiales = materialesEstacion(materialesJuego);
   const plano = PLANOS[sala];
@@ -195,12 +227,7 @@ export function crearSalaEstacion(sala: SalaEstacion, materialesJuego: Materiale
     };
     const suelo = new THREE.Group();
     suelo.name = "Station_Floor";
-    // The rooms stand inside the Mars colony: regolith all around, under the open top.
-    const marte = new THREE.Mesh(new THREE.PlaneGeometry(160, 160), new THREE.MeshStandardMaterial({ name: "Station_Outside", color: "#C97A5E", roughness: 1 }));
-    marte.rotation.x = -Math.PI / 2;
-    marte.position.y = -0.05;
-    marte.receiveShadow = true;
-    raiz.add(marte);
+    raiz.add(entornoMarte(materiales));
     raiz.add(suelo);
     // A mid grey floor under white walls and furniture: the room gets a base tone and the shadows read.
     const piso = new THREE.MeshStandardMaterial({ name: "Station_Floor", color: "#C2C0CC", roughness: 0.75, metalness: 0 });
@@ -282,7 +309,8 @@ export function puntosSalaEstacion(sala: SalaEstacion): PuntoSala[] {
 
 /** Lights of an open-top room: a low fill and one warm key from the side, so walls and props cast shadows. */
 export const AMBIENTE_ESTACION = {
-  // Martian daytime sky, the same caramel horizon as outdoors.
+  // Martian daytime sky and the outdoor horizon haze, so the rim and the rocks fade like outside.
   fondoEscena: "#F2CDB0",
+  niebla: { color: "#F2CDB0", cerca: 22, lejos: 75 },
   luz: { color: "#FFE9D2", intensidad: 2.1, hemiCielo: "#EEF0FA", hemiSuelo: "#6E6985", hemi: 1.15 },
 } as const;
