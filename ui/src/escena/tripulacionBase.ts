@@ -6,11 +6,11 @@ import type { ModoGuia } from "./guia";
 import type { FaseSalto } from "./movimientoBase";
 import { ANCLAJES_EXPERTAS, DOCK_IRIS, INICIO_JUGADOR, type ExpertaBase } from "./mundo";
 import type { VistaEscena } from "./vista";
+import type { ActorId } from "./frontera";
+import { gestoDe, type Reaccion, type Situacion } from "./coreografia";
 
 /** Cada experta se vuelve hacia el niño cuando está a esta distancia (m). [E] */
 export const DISTANCIA_ATENCION = 3.6;
-/** Al acercarse el niño, saluda este tiempo y después explica. */
-const MS_SALUDO = 1600;
 /** Giro de las expertas hacia el niño, rad/s. */
 const GIRO_INGENIERA = 4;
 /** Cara de Iris según lo que hace como guía (si no está apagada ni averiada). */
@@ -61,7 +61,18 @@ export function crearTripulacionBase() {
   const gestoNino: { quieto: boolean; fase: number; ritmo: number; salto: { fase: FaseSalto; k: number } } = { quieto: true, fase: 0, ritmo: 0, salto: { fase: "suelo", k: 0 } };
   const rover: OpcionesIris = { quieto: true, velocidad: 0, averiada: false, cara: "atenta" };
   /** Lo escribe la escena en cada fotograma, después de mover a los actores (`errorIris`, al cambiar el pedido). */
-  const actores = { caminando: false, velocidad: 0, salto: { fase: "suelo", k: 0 } as Readonly<{ fase: FaseSalto; k: number }>, velocidadIris: 0, modoIris: "acompana" as ModoGuia, errorIris: false };
+  const actores = {
+    caminando: false, velocidad: 0, salto: { fase: "suelo", k: 0 } as Readonly<{ fase: FaseSalto; k: number }>, velocidadIris: 0,
+    modoIris: "acompana" as ModoGuia, errorIris: false,
+    /** Quién habla en el diálogo abierto (A7, del pedido de la pantalla). */
+    hablando: null as ActorId | null,
+    /** Última reacción a un evento del motor y cuándo llegó (ms, mismo reloj que `animar`). */
+    reaccion: null as { tipo: Reaccion; desdeMs: number } | null,
+  };
+  let vistaActual: VistaEscena | null = null;
+  /** Situación de la coreografía, reutilizada en cada fotograma. */
+  const situacion: Situacion = { t: 0, vista: null, hablando: null, reaccion: null, cerca: -1, caminando: false };
+  const reaccionVista = { tipo: "averia" as Reaccion, hace: 0 };
   let apagada = false;
   let ultimoMs = -1;
   let liberada = false;
@@ -73,6 +84,16 @@ export function crearTripulacionBase() {
     const dt = ultimoMs >= 0 ? Math.min(0.1, Math.max(0, (ahoraMs - ultimoMs) / 1000)) : 0;
     ultimoMs = ahoraMs;
 
+    // Coreografía (A7): lo común a todos los actores en este fotograma.
+    situacion.t = t;
+    situacion.vista = vistaActual;
+    situacion.hablando = actores.hablando;
+    if (actores.reaccion) {
+      reaccionVista.tipo = actores.reaccion.tipo;
+      reaccionVista.hace = Math.max(0, (ahoraMs - actores.reaccion.desdeMs) / 1000);
+      situacion.reaccion = reaccionVista;
+    } else situacion.reaccion = null;
+
     // El niño camina con el gesto de caminar; quieto, en reposo (con movimiento reducido, la pose clave).
     // La cadencia y el largo del paso siguen a la rapidez real: arranca y frena con pasos cortos (A4).
     gestoNino.quieto = reducido;
@@ -80,20 +101,23 @@ export function crearTripulacionBase() {
     gestoNino.fase = actores.caminando ? (gestoNino.fase + cadenciaCaminar(gestoNino.ritmo) * dt) % (Math.PI * 2) : 0;
     gestoNino.salto.fase = actores.salto.fase;
     gestoNino.salto.k = actores.salto.k;
-    animar(jugador, actores.caminando ? "caminar" : "reposo", t, gestoNino);
+    situacion.caminando = actores.caminando;
+    situacion.cerca = -1;
+    animar(jugador, gestoDe("nino", situacion), t, gestoNino);
 
-    // Cada experta se vuelve hacia el niño si está cerca: saluda y después explica (A7 la vuelve coreografía).
+    // Coreografía (A7) para las tres expertas: saludan, explican, escuchan, trabajan en su estación o
+    // reaccionan. Cada una mira al niño cuando está cerca o cuando ella habla; si no, a su puesto.
     const p = jugador.grupo.position;
+    situacion.caminando = false;
     for (const e of expertas) {
       const q = e.pj.grupo.position;
       const cerca = Math.hypot(p.x - q.x, p.z - q.z) <= DISTANCIA_ATENCION;
-      let g: Gesto = "reposo";
-      let deseado = e.rumbo;
       if (cerca) {
         if (e.atendiendoDesde < 0) e.atendiendoDesde = ahoraMs;
-        g = ahoraMs - e.atendiendoDesde < MS_SALUDO ? "saludar" : "explicar";
-        deseado = Math.atan2(p.x - q.x, p.z - q.z);
       } else e.atendiendoDesde = -1;
+      situacion.cerca = cerca ? (ahoraMs - e.atendiendoDesde) / 1000 : -1;
+      const g: Gesto = gestoDe(e.id, situacion);
+      const deseado = cerca || actores.hablando === e.id ? Math.atan2(p.x - q.x, p.z - q.z) : e.rumbo;
       e.pj.grupo.rotation.y = reducido ? deseado : girarHacia(e.pj.grupo.rotation.y, deseado, GIRO_INGENIERA * dt);
       animar(e.pj, g, t, gesto);
     }
@@ -111,6 +135,7 @@ export function crearTripulacionBase() {
     /** Las expertas por id, para la cercanía (`Interactivo` de tipo actor) y los globos. */
     expertas: { ingeniera, doctora, meteorologa } as Readonly<Record<ExpertaBase, ReturnType<typeof crearPersonaje>>>,
     aplicarVista(vista: VistaEscena) {
+      vistaActual = vista;
       apagada = vista.iris.nivel === "offline";
       rover.averiada = !apagada && vista.iris.averiada;
       rover.cara = apagada ? "apagada" : CARA_GUIA[actores.modoIris];
