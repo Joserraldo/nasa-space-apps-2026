@@ -6,6 +6,7 @@ import { ESCALA_ESTACION as E, cargarKitEstacion, pieza, type PiezaEstacion } fr
 import type { PuntoSala } from "./salaKit";
 import { cultivoVeggie, terminal } from "./salaPastel";
 import { dock, estanteBaterias } from "./taller";
+import { marcoPuerta } from "./marcoPuerta";
 import { caja, chaflan, grupo } from "../piezasComunes";
 
 const NEGRO_MESA = new THREE.MeshStandardMaterial({ name: "Desk_Top", color: "#1D1E2A", roughness: 0.55 });
@@ -195,9 +196,9 @@ export function crearSalaEstacion(sala: SalaEstacion, materiales: Materiales): S
       enKit(pieza(kit, "Wall_L_long_frame_92", plano.ancho, 1, 0), este);
       enKit(pieza(kit, "Wall_L_long_window_93", plano.ancho, 1, 0), este);
     }
-    // Gates straddle the wall line (2 deep, the wall is 0.5): centred on it.
+    // Doorways: the lit frame of the interior pack, centred on the gap in the wall.
     for (const [lado, x] of plano.puertas) {
-      enKit(pieza(kit, "Gate_L_127", x, lado === "norte" ? -1.25 : plano.fondo - 0.75), lado === "norte" ? norte : sur);
+      marcoPuerta(lado === "norte" ? norte : sur, (x + 2) * E - m.x, lado === "norte" ? -m.z : m.z, 0, 4 * E);
     }
 
     const props = new THREE.Group();
