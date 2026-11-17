@@ -27,9 +27,15 @@ const validez = {
   onInput: marcarValidez,
 };
 
-export function Acceso({ idioma, onIdioma, onEntrar }: {idioma: Idioma; onIdioma(i: Idioma): void; onEntrar(sesion: SesionJugador): void}) {
+/**
+ * Dos pasos para que todo quepa en la pantalla sin desplazar: primero "Jugar como invitado" y los dos
+ * botones de cuenta; los campos aparecen al elegir "Iniciar sesión" o "Crear cuenta". `modoInicial`
+ * permite abrir directo un formulario (pruebas o un enlace futuro).
+ */
+export type ModoAcceso = 'elegir'|'login'|'register';
+export function Acceso({ idioma, onIdioma, onEntrar, modoInicial = 'elegir' }: {idioma: Idioma; onIdioma(i: Idioma): void; onEntrar(sesion: SesionJugador): void; modoInicial?: ModoAcceso | undefined}) {
   const { t } = useT();
-  const [modo, setModo] = useState<'login'|'register'>('login');
+  const [modo, setModo] = useState<ModoAcceso>(modoInicial);
   const [usuario, setUsuario] = useState('');
   const [clave, setClave] = useState('');
   const [repetida, setRepetida] = useState('');
@@ -55,7 +61,7 @@ export function Acceso({ idioma, onIdioma, onEntrar }: {idioma: Idioma; onIdioma
   }
   async function entrar(e: FormEvent) {
     e.preventDefault();
-    if (ocupado) return;
+    if (ocupado || modo === 'elegir') return;
     setError(null);
     if (modo === 'register' && clave !== repetida) { setError('ui.cuenta.error.coincidencia'); return; }
     const n = ++intento.current;
@@ -72,7 +78,7 @@ export function Acceso({ idioma, onIdioma, onEntrar }: {idioma: Idioma; onIdioma
     onEntrar({usuario:null,progreso:null});
   }
   return (
-    <main className="acceso portada" aria-labelledby="acceso-titulo">
+    <main className={`acceso portada ${modo === "elegir" || sesion ? "acceso-paso-elegir" : "acceso-paso-formulario"}`} aria-labelledby="acceso-titulo">
       <div className="acceso-idiomas" role="group" aria-label={t('ui.portada.idioma')}>
         {(['en','es'] as const).map(i=><FacetButton key={i} labelKey={`ui.portada.idioma.${i}`} selected={idioma===i} onClick={()=>onIdioma(i)} />)}
       </div>
@@ -103,25 +109,26 @@ export function Acceso({ idioma, onIdioma, onEntrar }: {idioma: Idioma; onIdioma
           <div className="acceso-modos" role="group" aria-label={t('ui.cuenta.modo')}>
             {(['login','register'] as const).map(m=><FacetButton key={m} labelKey={`ui.cuenta.${m}`} selected={modo===m} disabled={ocupado} onClick={()=>{setModo(m);setError(null);setClave('');setRepetida('');}} />)}
           </div>
-          <form className="acceso-formulario" onSubmit={entrar} aria-busy={ocupado}>
+          {modo !== 'elegir' && <form className={`acceso-formulario${modo === 'register' ? ' acceso-registro' : ''}`} onSubmit={entrar} aria-busy={ocupado}>
             {/* Pista arriba del campo: el autocompletar y el teclado del celular no la tapan (Modern Web Guidance). */}
             <div className="acceso-campo">
               <label htmlFor="cuenta-usuario">{t('ui.cuenta.usuario')}</label>
               <p id="cuenta-ayuda" className="acceso-ayuda">{t('ui.cuenta.usuario.ayuda')}</p>
               <input {...validez} id="cuenta-usuario" name="username" autoComplete="username" autoCapitalize="none" autoCorrect="off" spellCheck={false} enterKeyHint="next" minLength={3} maxLength={20} pattern="[A-Za-z0-9_]{3,20}" required value={usuario} disabled={ocupado} onChange={e=>setUsuario(e.target.value)} aria-describedby="cuenta-ayuda" />
             </div>
-            <div className="acceso-campo">
+            <div className="acceso-campo acceso-campo-clave">
               <label htmlFor="cuenta-clave">{t('ui.cuenta.clave')}</label>
               <p id="clave-ayuda" className="acceso-ayuda">{t('ui.cuenta.clave.ayuda')}</p>
               <input {...validez} id="cuenta-clave" name="password" type={verClave?'text':'password'} autoComplete={modo==='register'?'new-password':'current-password'} enterKeyHint={modo==='register'?'next':'done'} minLength={8} maxLength={72} required value={clave} disabled={ocupado} onChange={e=>setClave(e.target.value)} aria-describedby="clave-ayuda" />
             </div>
-            {modo==='register' && <div className="acceso-campo">
+            {modo==='register' && <div className="acceso-campo acceso-campo-repetir">
               <label htmlFor="cuenta-repetida">{t('ui.cuenta.repetir')}</label>
-              <input {...validez} id="cuenta-repetida" name="confirm-password" type={verClave?'text':'password'} autoComplete="new-password" enterKeyHint="done" minLength={8} maxLength={72} required value={repetida} disabled={ocupado} onChange={e=>setRepetida(e.target.value)} />
+              <p id="repetir-ayuda" className="acceso-ayuda">{t('ui.cuenta.repetir.ayuda')}</p>
+              <input {...validez} id="cuenta-repetida" name="confirm-password" type={verClave?'text':'password'} autoComplete="new-password" enterKeyHint="done" minLength={8} maxLength={72} required value={repetida} disabled={ocupado} onChange={e=>setRepetida(e.target.value)} aria-describedby="repetir-ayuda" />
             </div>}
             <label className="acceso-ver"><input type="checkbox" checked={verClave} onChange={e=>setVerClave(e.target.checked)} />{t('ui.cuenta.ver')}</label>
             <FacetButton type="submit" variant="primary" labelKey={modo==='login'?'ui.cuenta.entrar':'ui.cuenta.crear'} busy={ocupado} onClick={()=>{}} />
-          </form>
+          </form>}
         </>}
         {error && <p className="acceso-error" role="alert">{t(error)}</p>}
         <p className="acceso-privacidad">{t('ui.cuenta.privacidad')}</p>

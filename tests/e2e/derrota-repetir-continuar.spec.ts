@@ -60,6 +60,7 @@ async function entrarConCuenta(page: Page) {
     else await r.fulfill({ json: { datos: guardado } });
   });
   await page.goto("/");
+  await page.getByRole("button",{name:"Log in",exact:true}).click();
   await page.getByLabel("Username", { exact: true }).fill("piloto_1");
   await page.getByLabel("Password", { exact: true }).fill("clave-prueba");
   await page.getByRole("button", { name: "Log in and play", exact: true }).click();
@@ -145,6 +146,7 @@ test("\"Continue\" recupera la partida guardada después de recargar la página"
     else await r.fulfill({json:{datos:guardado}});
   });
   await page.goto('/');
+  await page.getByRole('button',{name:'Log in',exact:true}).click();
   await page.getByLabel('Username',{exact:true}).fill('piloto_1');
   await page.getByLabel('Password',{exact:true}).fill('clave-prueba');
   await page.getByRole('button',{name:'Log in and play',exact:true}).click();

@@ -25,7 +25,7 @@
 .acceso-separador { display:flex; align-items:center; gap:var(--esp-3); font-size:14px; }
 .acceso-separador::before, .acceso-separador::after { content:''; height:1px; background:var(--color-ciruela); flex:1; opacity:.3; }
 .acceso-modos { display:flex; flex-wrap:wrap; justify-content:center; gap:var(--esp-2); }
-.acceso-formulario { display:grid; gap:var(--esp-2); }
+.acceso-formulario { display:grid; gap:var(--esp-2); grid-template-columns:minmax(0,1fr); min-width:0; }
 /* Cada campo: etiqueta, pista y caja, en ese orden (la pista arriba no la tapa el autocompletar). */
 .acceso-campo { display:grid; gap:var(--esp-1); }
 .acceso-campo > label { font-weight:var(--tipo-peso-etiqueta); }
@@ -42,7 +42,13 @@
 .acceso-error { margin:0; color:var(--color-error); font-weight:var(--tipo-peso-etiqueta); }
 .acceso-privacidad { text-align:center; }
 .acceso-aviso { grid-column:1 / -1; justify-self:center; margin:0; color:var(--color-lila); font-size:13px; }
-.cuenta-barra { display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:var(--esp-2); padding:var(--esp-2) var(--esp-4); background:var(--color-lila); color:var(--color-indigo-texto); }
+/* Barra de la cuenta: una sola fila compacta en cualquier ancho (su alto se descuenta de la pantalla). */
+.cuenta-barra { display:flex; flex-wrap:nowrap; align-items:center; justify-content:space-between; gap:var(--esp-2); padding:var(--esp-1) max(var(--esp-3), env(safe-area-inset-right, 0px)) var(--esp-1) max(var(--esp-3), env(safe-area-inset-left, 0px)); background:var(--color-lila); color:var(--color-indigo-texto); }
+.cuenta-barra p { min-width:0; overflow-wrap:anywhere; }
+.cuenta-barra .fb { --fb-alto:40px; font-size:15px; }
+.cuenta-barra .fb-superficie { padding-inline:calc(var(--fb-punta) + 6px); }
+@media (pointer: coarse) { .cuenta-barra .fb { --fb-alto:44px; } }
+@media (max-width: 420px) { .cuenta-barra p { font-size:12px; } .cuenta-barra .fb { font-size:13px; } }
 .cuenta-barra p { margin:0; font-size:14px; }
 /* Escritorio: el formulario puede ser más alto que la pantalla; la bienvenida con el niño queda arriba y a la vista. */
 @media(min-width:801px) and (min-height:501px) { .acceso-bienvenida { align-self:start; position:sticky; top:80px; } }
@@ -67,4 +73,115 @@
  .acceso.portada > .acceso-aviso { grid-column:1 / -1; grid-row:2; }
  .acceso-logo { width:min(100%,180px); }
  .acceso-bienvenida h1 { font-size:22px; }
+}
+
+/* ---------------------------------------------------------------------------------------------
+   Ajuste automático a cualquier pantalla. Todo sale del alto real de la ventana (dvh) con clamp():
+   botones, campos, espacios, letra y logo crecen o se encogen solos, sin un caso por dispositivo.
+   El mínimo de los controles respeta 44 px en pantallas táctiles (WCAG 2.5.5).
+   --------------------------------------------------------------------------------------------- */
+.acceso.portada {
+  --a-control: clamp(38px, 5.4dvh, 50px);
+  --a-hueco: clamp(4px, 1.1dvh, 12px);
+  --a-letra: clamp(12px, 1.65dvh, 15px);
+  --a-pista: clamp(11px, 1.45dvh, 14px);
+  min-height: 100dvh;
+  box-sizing: border-box;
+  padding-block: clamp(52px, 8dvh, 84px) clamp(8px, 2dvh, 24px);
+  align-items: center;
+  row-gap: clamp(6px, 1.5dvh, 16px);
+}
+@media (pointer: coarse) { .acceso.portada { --a-control: max(44px, clamp(38px, 5.4dvh, 50px)); } }
+.acceso-panel { --fb-alto: var(--a-control); container: acceso-panel / inline-size; }
+.acceso-panel .pf-cuerpo, .acceso-invitado, .acceso-sesion, .acceso-formulario { gap: var(--a-hueco); }
+.acceso-campo { gap: calc(var(--a-hueco) * .5); }
+.acceso-campo > input { min-height: var(--a-control); height: var(--a-control); }
+.acceso-invitado p, .acceso-privacidad, .acceso-ver { font-size: var(--a-letra); }
+.acceso-ayuda, .acceso-separador { font-size: var(--a-pista); }
+.acceso-ver { min-height: max(24px, calc(var(--a-control) * .8)); }
+.acceso-logo { width: min(100%, 330px, 30dvh); margin-bottom: clamp(8px, 2dvh, 24px); }
+.acceso-bienvenida h1 { font-size: clamp(22px, 4.2dvh, 42px); }
+.acceso-nino { height: min(32dvh, 360px); }
+/* Paso 2: con el formulario abierto, la explicación del invitado ya no hace falta (el botón sigue). */
+.acceso-paso-formulario .acceso-invitado p { display: none; }
+/* Crear cuenta: contraseña y repetirla lado a lado si el panel tiene ancho (lo decide el panel, no la pantalla). */
+@container acceso-panel (inline-size >= 380px) {
+  .acceso-registro { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: var(--esp-3); }
+  .acceso-registro > * { grid-column: 1 / -1; }
+  .acceso-registro > .acceso-campo-clave { grid-column: 1; }
+  .acceso-registro > .acceso-campo-repetir { grid-column: 2; }
+}
+/* Celular vertical: con el formulario abierto, el formulario usa toda la pantalla (la bienvenida ya se vio en el paso 1). */
+@media (max-width: 800px) and (orientation: portrait) {
+  .acceso.portada.acceso-paso-formulario > .acceso-bienvenida { display: none; }
+  .acceso.portada.acceso-paso-formulario > .acceso-panel { grid-row: 1; }
+  .acceso.portada.acceso-paso-formulario > .acceso-aviso { grid-row: 2; }
+}
+/* Poca altura con el formulario abierto: una sola columna ancha, sin bienvenida; el aviso de
+   privacidad ya se leyó en el paso 1. Los campos se reparten en dos columnas (container query). */
+@media (max-height: 560px) {
+  .acceso.portada.acceso-paso-formulario { grid-template-columns: minmax(0, 720px); justify-content: center; padding-top: clamp(52px, 14dvh, 64px); }
+  .acceso.portada.acceso-paso-formulario > .acceso-bienvenida { display: none; }
+  .acceso.portada.acceso-paso-formulario > .acceso-panel { grid-column: 1; grid-row: 1; }
+  .acceso.portada.acceso-paso-formulario > .acceso-aviso { grid-column: 1; grid-row: 2; }
+  .acceso-paso-formulario .acceso-privacidad { display: none; }
+}
+@container acceso-panel (inline-size >= 560px) {
+  .acceso-formulario { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: var(--esp-3); }
+  .acceso-formulario > * { grid-column: 1 / -1; }
+  .acceso-formulario > .acceso-campo { grid-column: auto; }
+}
+/* Poca altura (celular horizontal, ventanas bajas): el niño se oculta y el aviso de privacidad se achica. */
+@media (max-height: 560px) {
+  .acceso.portada { padding-bottom: 4px; }
+  .acceso-tripulante { display: none; }
+  .acceso-paso-formulario .acceso-privacidad { font-size: 11px; }
+}
+/* Las grillas del formulario siempre caben en el panel: sin columna explícita, la caja de texto
+   empujaba la columna a su ancho natural (~320 px) y se salía del panel en pantallas angostas. */
+.acceso-campo { grid-template-columns: minmax(0, 1fr); min-width: 0; }
+.acceso-campo > label { font-size: calc(var(--a-letra) + 2px); }
+/* Crear cuenta con panel ancho: usuario, contraseña y repetir en una sola fila. */
+@container acceso-panel (inline-size >= 600px) {
+  .acceso-registro { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .acceso-registro > .acceso-campo-repetir { grid-column: auto; }
+}
+/* Pantallas bajas con el formulario abierto: invitado y los modos en una fila, sin separador, y
+   "mostrar contraseña" junto al botón de entrar. */
+@media (max-height: 560px) {
+  .acceso-paso-formulario .acceso-panel .pf-cuerpo { grid-template-columns: minmax(0, 1fr) auto; align-items: center; }
+  .acceso-paso-formulario .acceso-panel .pf-cuerpo > * { grid-column: 1 / -1; }
+  .acceso-paso-formulario .acceso-panel .pf-cuerpo > .acceso-invitado { grid-column: 1; }
+  .acceso-paso-formulario .acceso-panel .pf-cuerpo > .acceso-modos { grid-column: 2; flex-wrap: nowrap; }
+  .acceso-paso-formulario .acceso-separador { display: none; }
+  .acceso-paso-formulario .acceso-formulario > .acceso-ver { grid-column: 1; }
+  .acceso-paso-formulario .acceso-formulario > .fb-caja { grid-column: 2 / -1; }
+}
+/* "Iniciar sesión" y "Crear cuenta" siempre en una fila: repartidos a lo ancho, nunca apilados. */
+.acceso-modos { flex-wrap: nowrap; }
+.acceso-modos > .fb-caja { flex: 1 1 0; min-width: 0; }
+/* El relleno del botón facetado vive en .fb-superficie (nowrap): sin esto no se achica y desborda. */
+.acceso-modos .fb { width: 100%; grid-template-columns: minmax(0, 1fr); }
+.acceso-modos .fb-superficie { padding-inline: calc(var(--fb-punta) + 6px); }
+.acceso-panel .fb-caja { max-width: 100%; }
+/* Panel muy angosto (celulares de 320 px): letra de botones un poco menor para que el texto quepa. */
+@container acceso-panel (inline-size < 330px) {
+  .acceso-panel .fb { font-size: 15px; }
+  .acceso-panel .fb-superficie { padding-inline: calc(var(--fb-punta) + 2px); gap: 4px; }
+}
+@media (max-width: 800px) and (orientation: portrait) {
+  .acceso-paso-formulario .acceso-privacidad { display: none; }
+}
+/* Celular vertical bajo: logo más chico y sin el subtítulo, así el paso 1 entra completo. */
+@media (max-width: 800px) and (orientation: portrait) and (max-height: 740px) {
+  .acceso-logo { width: min(200px, 22dvh); }
+  .acceso-bienvenida p { display: none; }
+  .acceso-bienvenida h1 { font-size: clamp(18px, 3.4dvh, 26px); margin-block: 4px; }
+}
+/* Celular vertical bajo con el formulario abierto: sin separador y con menos aire arriba; la franja
+   del título queda (es la etiqueta del panel para el lector de pantalla) pero más baja. */
+@media (max-width: 800px) and (orientation: portrait) and (max-height: 740px) {
+  .acceso-paso-formulario .acceso-separador { display: none; }
+  .acceso.portada.acceso-paso-formulario { padding-top: 64px; }
+  .acceso-paso-formulario .pf-cab { padding-block: 2px; }
 }
