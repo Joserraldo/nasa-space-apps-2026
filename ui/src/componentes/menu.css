@@ -1,0 +1,53 @@
+/* Menú de ajustes (E4): <dialog> nativo. Caja centrada de ancho cómodo, cabecera con el título y
+   "Cerrar", y cada ajuste en una fila (etiqueta a la izquierda, opciones a la derecha). Tamaños
+   fluidos con el alto de la ventana; si aun así no entra, desplaza por dentro y no la página. */
+.menu-ajustes {
+  --m-control: clamp(40px, 5.6dvh, 50px);
+  width: min(100% - 2 * var(--esp-4), 640px);
+  max-width: none;
+  max-height: calc(100dvh - 2 * var(--esp-4));
+  margin: auto;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--color-indigo-texto);
+  overflow: auto;
+  overscroll-behavior: contain;
+}
+.menu-ajustes::backdrop {
+  background: color-mix(in srgb, var(--color-espacio) 72%, transparent);
+  overflow: hidden;
+  overscroll-behavior: contain;
+}
+.menu-caja { width: 100%; }
+.menu-cara { display: grid; gap: 0; padding: clamp(12px, 2.6dvh, 28px) clamp(16px, 3vw, 32px); }
+.menu-cab { display: flex; align-items: center; justify-content: space-between; gap: var(--esp-3); padding-bottom: clamp(8px, 1.8dvh, 16px); }
+.menu-cab h2 { margin: 0; font-size: clamp(24px, 4dvh, 34px); line-height: 1.1; text-wrap: balance; }
+.menu-cab .fb { --fb-alto: var(--m-control); }
+/* Cada ajuste: una fila con separador suave. */
+.menu-fila {
+  display: grid;
+  grid-template-columns: minmax(7rem, 9rem) minmax(0, 1fr);
+  align-items: center;
+  gap: var(--esp-3);
+  padding-block: clamp(8px, 1.6dvh, 14px);
+  border-top: 1px solid color-mix(in srgb, var(--color-ciruela) 18%, transparent);
+}
+.menu-etiqueta { margin: 0; font-size: clamp(16px, 2.3dvh, 19px); }
+.menu-opciones { display: flex; flex-wrap: wrap; gap: var(--esp-2); }
+.menu-opciones .fb { --fb-alto: var(--m-control); font-size: clamp(15px, 2.1dvh, 17px); }
+.menu-opciones .fb-superficie { padding-inline: calc(var(--fb-punta) + 10px); }
+@media (pointer: coarse) { .menu-ajustes { --m-control: max(44px, clamp(40px, 5.6dvh, 50px)); } }
+/* Angosto (celular vertical): la etiqueta arriba de sus opciones. */
+@media (max-width: 520px) {
+  .menu-fila { grid-template-columns: minmax(0, 1fr); gap: var(--esp-1); }
+  /* Opciones repartidas a lo ancho en una sola fila (como botones segmentados), sin cortes desparejos. */
+  .menu-opciones { flex-wrap: nowrap; }
+  .menu-opciones > .fb-caja { flex: 1 1 0; min-width: 0; }
+  .menu-opciones .fb { width: 100%; grid-template-columns: minmax(0, 1fr); font-size: 15px; }
+  .menu-opciones .fb-superficie { padding-inline: calc(var(--fb-punta) + 2px); gap: 4px; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .menu-ajustes[open] { animation: menu-entra 160ms var(--curva-salida, ease-out); }
+  @keyframes menu-entra { from { opacity: 0; translate: 0 8px; } }
+}
