@@ -61,5 +61,8 @@ export function conversar(entrada: Entrada, estado: GameState, o: OpcionesConver
   if (salida.experto === "ia_base" && v.iaBase === "danada" && salida.confianza >= CONFIDENCE_THRESHOLD && salida.accion !== "saludo" && salida.accion !== "fuera_de_tema") {
     return irisDanada(v, o.vecesFallaIris ?? 0);
   }
-  return responder(salida, v, o.dosisMarte ? { dosisMarte: o.dosisMarte } : {});
+  // P0.4: antes de activarse, la tormenta ya está en el estado y la Meteoróloga la anuncia.
+  const pronostico = !o.tormentaActiva && estado.tormenta !== null ? estado.tormenta : undefined;
+  const contexto = { ...(o.dosisMarte ? { dosisMarte: o.dosisMarte } : {}), ...(pronostico ? { pronostico } : {}) };
+  return responder(salida, v, contexto);
 }

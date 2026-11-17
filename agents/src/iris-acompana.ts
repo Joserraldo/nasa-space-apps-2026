@@ -73,6 +73,8 @@ function planDe(v: VistaAgente, paso: number, averiaRevelada: boolean): Plan {
   if (area === "energia" || area === "blindaje" || area === "soporte") return PLAN_URGENTE[area];
   const meta = META_DEL_PASO[paso - 1];
   if (!meta) return { destino: "mesa", motivo: "libre" };
+  // P0.4: con la tormenta ya en el estado (aún sin activar) Iris avisa al llegar al taller.
+  if (meta === "modulos_colocados" && v.tormenta !== null) return { destino: "taller", experto: "ingeniera", motivo: "tormenta_viene" };
   return { ...PLAN_DEL_PASO[meta], motivo: meta };
 }
 
