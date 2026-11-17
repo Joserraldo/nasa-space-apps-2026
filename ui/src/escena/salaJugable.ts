@@ -1,6 +1,7 @@
 import * as THREE from "three";
 import { crearMateriales } from "./materiales";
 import { ambienteSalaKit, crearSalaKit, PUERTA_SALA, puntosSalaKit, type PuntoSala, type SalaKit } from "./activos/interiores/salaKit";
+import { ALTURA_PISO } from "./activos/interiores/kitPastel";
 import { AMBIENTE_PASILLO, crearPasillo, PUERTAS_PASILLO, ZONAS_PASILLO } from "./activos/interiores/pasillo";
 import { AMBIENTE_SALA_PASTEL, crearSalaPastel, PUERTAS_SALA_PASTEL, puntosSalaPastel, ZONAS_SALA_PASTEL } from "./activos/interiores/salaPastel";
 import { animar, crearPersonaje } from "./personajes";
@@ -32,16 +33,16 @@ interface Puerta { readonly destino: string; readonly x: number; readonly z: num
 /** What the loop needs from a space: its scene, walkable boxes, obstacles and doors. */
 function datosEspacio(espacio: EspacioJugable) {
   if (espacio === "pasillo") {
-    return { raiz: crearPasillo(), amb: AMBIENTE_PASILLO, zonas: ZONAS_PASILLO as readonly Caja[], puntos: [] as PuntoSala[], puertas: PUERTAS_PASILLO as readonly Puerta[] };
+    return { piso: ALTURA_PISO, raiz: crearPasillo(), amb: AMBIENTE_PASILLO, zonas: ZONAS_PASILLO as readonly Caja[], puntos: [] as PuntoSala[], puertas: PUERTAS_PASILLO as readonly Puerta[] };
   }
   if (espacio === "taller" || espacio === "habitat") {
     // Workshop and habitat are pastel kit halls opening to the corridor; the Outpost still uses the cut-away room.
-    return { raiz: crearSalaPastel(espacio, crearMateriales()), amb: AMBIENTE_SALA_PASTEL, zonas: ZONAS_SALA_PASTEL as readonly Caja[], puntos: puntosSalaPastel(espacio), puertas: PUERTAS_SALA_PASTEL as readonly Puerta[] };
+    return { piso: ALTURA_PISO, raiz: crearSalaPastel(espacio, crearMateriales()), amb: AMBIENTE_SALA_PASTEL, zonas: ZONAS_SALA_PASTEL as readonly Caja[], puntos: puntosSalaPastel(espacio), puertas: PUERTAS_SALA_PASTEL as readonly Puerta[] };
   }
   // The Outpost (on the ship) opens back to the base.
   const destino = "base";
   const puerta: Puerta = { destino, x: PUERTA_SALA.x, z: PUERTA_SALA.z - 0.5, entrada: { x: PUERTA_SALA.x, z: PUERTA_SALA.z, giro: 0 } };
-  return { raiz: crearSalaKit(espacio, crearMateriales()), amb: ambienteSalaKit(espacio), zonas: [CAJA] as readonly Caja[], puntos: puntosSalaKit(espacio), puertas: [puerta] as readonly Puerta[] };
+  return { piso: 0, raiz: crearSalaKit(espacio, crearMateriales()), amb: ambienteSalaKit(espacio), zonas: [CAJA] as readonly Caja[], puntos: puntosSalaKit(espacio), puertas: [puerta] as readonly Puerta[] };
 }
 
 const dentro = (zonas: readonly Caja[], x: number, z: number) => zonas.some((c) => x >= c.xMin && x <= c.xMax && z >= c.zMin && z <= c.zMax);
@@ -68,7 +69,8 @@ export function montarSalaJugable(canvas: HTMLCanvasElement, sala: EspacioJugabl
   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
   const escena = new THREE.Scene();
-  const { raiz, amb, zonas, puntos, puertas } = datosEspacio(sala);
+  // `piso`: height of the walkable floor; the kit floors are raised panels, so feet go on top of them.
+  const { piso, raiz, amb, zonas, puntos, puertas } = datosEspacio(sala);
   escena.background = new THREE.Color(amb.fondoEscena);
   if ("niebla" in amb) escena.fog = new THREE.Fog(amb.niebla.color, amb.niebla.cerca, amb.niebla.lejos);
   escena.add(raiz, new THREE.HemisphereLight(amb.luz.hemiCielo, amb.luz.hemiSuelo, amb.luz.hemi));
@@ -85,14 +87,14 @@ export function montarSalaJugable(canvas: HTMLCanvasElement, sala: EspacioJugabl
 
   const nino = crearPersonaje("nino");
   const llegada = (puertas.find((d) => d.destino === o.desde) ?? puertas[0]!).entrada;
-  nino.grupo.position.set(llegada.x, 0, llegada.z);
+  nino.grupo.position.set(llegada.x, piso, llegada.z);
   nino.grupo.traverse((x) => { if (x instanceof THREE.Mesh) x.castShadow = true; });
   escena.add(nino.grupo);
 
   // Floor ring under the thing within reach.
   const anillo = new THREE.Mesh(new THREE.RingGeometry(0.55, 0.68, 32), new THREE.MeshBasicMaterial({ color: "#8FF3FF", transparent: true, opacity: 0.9, depthWrite: false }));
   anillo.rotation.x = -Math.PI / 2;
-  anillo.position.y = 0.03;
+  anillo.position.y = piso + 0.03;
   anillo.visible = false;
   escena.add(anillo);
 
@@ -197,7 +199,7 @@ export function montarSalaJugable(canvas: HTMLCanvasElement, sala: EspacioJugabl
       o.alCercano?.(cercano);
     }
     anillo.visible = a !== null;
-    if (a) anillo.position.set(a.x, 0.03, a.z);
+    if (a) anillo.position.set(a.x, piso + 0.03, a.z);
     if (a !== null) anillo.scale.setScalar(("destino" in a ? 1 : Math.max(0.6, a.radio + 0.25)) * (1 + 0.05 * Math.sin(t * 5)));
 
     if (dentroTubo) {

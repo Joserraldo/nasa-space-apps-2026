@@ -21,6 +21,8 @@ import { MeshoptDecoder } from "three/examples/jsm/libs/meshopt_decoder.module.j
 const KIT = `${import.meta.env.BASE_URL}kits/pasillo/`;
 export const ESCALA = 0.8;
 export const TRAMO = 5 * ESCALA;
+/** Top of the kit's floor panels and rims (0.2 m as authored): where feet stand, not y = 0. */
+export const ALTURA_PISO = 0.2 * ESCALA;
 /** Distance from a tile centre to a wall that closes it (dead end, T, bend). */
 export const PARED = 2 * ESCALA;
 
