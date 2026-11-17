@@ -1,0 +1,13 @@
+pasillo.glb: 20 pieces of "Corridor Level Kit (KitJam 2021-08)" by dueddel
+https://dueddel.itch.io/corridor-level-kit-kitjam-2021
+
+Author's terms on that page (checked 2026-11-16): "Feel free to use my level kit for anything you like.
+Would be nice to be credited, but it definitively isn't a must-have."
+Credit: Corridor Level Kit by dueddel.
+
+Changes: only the corridor, room edge and corner, floor, conduit, frame, lamp and light strip pieces were kept; extra UV sets and
+the reference figure were removed; geometry compressed (gltf-transform prune, quantize, meshopt).
+
+The kit ships with a copy of the Sky Pirate Studios palette, which is not the kit author's. It is NOT
+included here. paleta.png is our own 1 x 19 px strip, painted with Solar Shield colour tokens on the cells
+the kit samples.

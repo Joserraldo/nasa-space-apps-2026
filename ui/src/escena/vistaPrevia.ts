@@ -207,7 +207,9 @@ function montarSala(sala: keyof typeof SALAS_PREVIA): void {
 
 const salaPedida = parametros.get("sala");
 // `&jugar=1`: la sala con kit se recorre con el nino (WASD o flechas, E para interactuar o salir por la puerta).
-if (parametros.get("jugar") === "1" && (salaPedida === "taller" || salaPedida === "habitat" || salaPedida === "outpost")) {
+// Las puertas encadenan: taller y hábitat dan al pasillo (`?sala=pasillo&jugar=1`), el pasillo a los dos y a
+// la esclusa ("base", vuelve a la vista general). `&desde=` dice por qué puerta aparece el niño.
+if (parametros.get("jugar") === "1" && (salaPedida === "taller" || salaPedida === "habitat" || salaPedida === "outpost" || salaPedida === "pasillo")) {
   const aviso = document.createElement("div");
   aviso.setAttribute("role", "status");
   aviso.style.cssText = `position:fixed;bottom:12px;left:50%;translate:-50% 0;padding:8px 12px;border-radius:8px;font:13px/1.4 monospace;background:${conAlfa("espacio", 0.85)};color:${COLORES.marfil}`;
@@ -216,9 +218,11 @@ if (parametros.get("jugar") === "1" && (salaPedida === "taller" || salaPedida ==
   decir("WASD / arrows");
   montarSalaJugable(document.getElementById("escena") as HTMLCanvasElement, salaPedida, {
     calidad,
+    desde: parametros.get("desde") ?? undefined,
     alCercano: (id) => decir(id ? `[E] ${id}` : "WASD / arrows"),
     alInteractuar: (id) => decir(`interact: ${id}`),
-    alSalir: () => location.assign(location.pathname),
+    alSalir: (destino) =>
+      location.assign(destino === "base" ? location.pathname : `${location.pathname}?sala=${destino}&kit=1&jugar=1&desde=${salaPedida}`),
   });
 } else if (salaPedida === "corredor" || salaPedida === "taller" || salaPedida === "habitat" || salaPedida === "outpost") montarSala(salaPedida);
 else if (parametros.get("montar") !== "0") montar();
