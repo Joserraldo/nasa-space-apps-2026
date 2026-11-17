@@ -8,6 +8,7 @@
  * entrada (teclado, ratón y `EntradaTactil`) → movimiento → actores → cámara → render.
  */
 import * as THREE from "three";
+import { cargarModelosModulos } from "./activos/modelosModulos";
 import urlDem from "../../../data/terreno/jezero/elevacion.bin?url";
 import type { CalidadGrafica } from "../juego/ajustes";
 import type { EventoFeedback } from "../juego/eventos";
@@ -1076,6 +1077,12 @@ export function crearEscena3D(canvas: HTMLCanvasElement, opciones: OpcionesEscen
     });
   // Sin DEM la base se sigue viendo (sin relieve); quien espere `listo` recibe el error.
   listo.catch(() => undefined);
+  // Modelos reales de la Etapa D (hábitat, antena, panel): si no llegan, quedan las formas procedurales.
+  cargarModelosModulos()
+    .then((m) => {
+      if (!liberada) armada.ponerModelos(m);
+    })
+    .catch((e: unknown) => console.warn("[escena] modelos de los módulos sin cargar", e));
 
   return {
     listo,

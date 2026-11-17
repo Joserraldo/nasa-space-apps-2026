@@ -16,9 +16,10 @@ import { liberarEscena, liberarMateriales } from "./liberar";
 import type { VistaEscena } from "./vista";
 import { MODULOS_BASE, TIEMPOS_MODULO_MS, type ModuloBase } from "./activos/modulos";
 import { DECORADO, armarKit, armarEdificios, distanciaAHuella, huellasBase } from "./activos/baseExterior";
+import { CONTROLADOR_PANEL, armarAntenaReal, armarPanelReal, pintarPolvo, type ModelosModulos } from "./activos/modelosModulos";
 import { huellasModulos } from "./activos/modulosArmados";
 import type { Huella } from "./activos/piezasComunes";
-import { aplicarEstado, armarAnclajes, armarModulo, type ModuloArmado } from "./activos/modulosArmados";
+import { aplicarEstado, armarAnclajes, armarModulo, reemplazarSolido, type ModuloArmado } from "./activos/modulosArmados";
 export { PLAZA, CAMINO, CAMINOS, BALIZAS, geometriaCaminos, posicionesBalizas } from "./activos/caminos";
 import { chocaConBase, posicionesBalizas, sobreCamino } from "./activos/caminos";
 import { LUGARES } from "./mundo";
@@ -169,6 +170,11 @@ export interface EscenaArmada {
   usarSueloDetallado(detallado: boolean): void;
   /** Reconcilia los módulos con la vista (sin reconstruir mallas: solo visibilidad). */
   aplicarVista(vista: VistaEscena): void;
+  /**
+   * Cambia la antena y el panel por los modelos reales (Etapa D) cuando llegan los GLB. Sin llamarla (pruebas en
+   * Node) quedan las formas procedurales. El hábitat sigue procedural (el HDU no se leía como refugio).
+   */
+  ponerModelos(modelos: ModelosModulos): void;
   /** Pone (o reemplaza) el terreno de Jezero con el claro aplanado y las rocas. */
   ponerTerreno(rejilla: Rejilla): void;
   /** Marca un pulso corto en un módulo (evento de avería). */
@@ -201,6 +207,9 @@ export function armarEscena(
   const modulos = Object.fromEntries(MODULOS_BASE.map((id) => [id, armarModulo(materiales, id)])) as Record<ModuloBase, ModuloArmado>;
   const suelo = crearMaterialesSuelo();
   let detallado = true;
+  /** Material de las celdas del panel real (null hasta `ponerModelos`) y el último estado de polvo pedido. */
+  let celdasPanel: THREE.MeshStandardMaterial | null = null;
+  let polvo = vista?.panelConPolvo ?? false;
   const materialRoca = () => (detallado ? suelo.roca.detallado : suelo.roca.simple);
   base.add(armarAnclajes(materiales), armarKit(materiales), armarEdificios(materiales), ...MODULOS_BASE.map((id) => modulos[id].raiz));
   // Fuera de la zona de la Etapa BC el horizonte sigue siendo la cordillera de `develop`.
@@ -233,6 +242,16 @@ export function armarEscena(
     aplicarVista(v) {
       tripulacion.aplicarVista(v);
       for (const id of MODULOS_BASE) aplicarEstado(modulos[id], v.modulos[id]);
+      polvo = v.panelConPolvo ?? false;
+      if (celdasPanel) pintarPolvo(celdasPanel, polvo);
+    },
+    ponerModelos(m) {
+      // Luz de estado: en la zapata de la antena y sobre el controlador del panel.
+      reemplazarSolido(modulos.antena, armarAntenaReal(m), [0, 0.38, 0.62]);
+      const panel = armarPanelReal(m);
+      reemplazarSolido(modulos.panel_solar, panel.grupo, [CONTROLADOR_PANEL.x, CONTROLADOR_PANEL.alto + 0.1, CONTROLADOR_PANEL.z]);
+      celdasPanel = panel.celdas;
+      if (celdasPanel) pintarPolvo(celdasPanel, polvo);
     },
     ponerTerreno(r) {
       for (const hijo of [...terreno.children]) {

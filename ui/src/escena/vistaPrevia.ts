@@ -2,7 +2,8 @@
  * Vista previa SOLO para desarrollo (`/escena.html` con `npm run dev -w ui`): monta la escena 3D a
  * pantalla completa con una `VistaEscena` de ejemplo, sin pasar por la app. No entra en el build
  * (Vite solo empaqueta `index.html`). Parámetros: `?camara=primera`, `?calidad=baja|media|alta`,
- * `?modulos=todos` (los cinco módulos funcionando, para revisar formas y presupuesto),
+ * `?modulos=todos` o `?modulos=panel_solar,antena` (esos módulos funcionando, para revisar formas y presupuesto),
+ * `?polvo=1` (panel solar con polvo),
  * `?medir=1` (recuadro con fps, draw calls, triángulos, calidad y lienzo, para medir en un
  * celular o PC real), `?destino=<LugarId>` (camina hasta ese lugar con la ruta planeada),
  * `?reducido=1` (fuerza movimiento reducido), `?montar=0` (página vacía, para que una prueba monte
@@ -49,9 +50,13 @@ const parametros = new URLSearchParams(location.search);
 // `?fase=tormenta|final` (D3): ver la luz de la tarde o del atardecer.
 const fasePedida = parametros.get("fase");
 if (fasePedida === "tormenta" || fasePedida === "final") VISTA_EJEMPLO.fase = fasePedida;
-if (parametros.get("modulos") === "todos") {
-  for (const id of ["panel_solar", "antena", "reciclador_agua", "escudo", "invernadero"] as const) VISTA_EJEMPLO.modulos[id] = "funcionando";
+const MODULOS_PREVIA = ["panel_solar", "antena", "reciclador_agua", "escudo", "invernadero"] as const;
+const modulosPedidos = parametros.get("modulos");
+if (modulosPedidos) {
+  for (const id of MODULOS_PREVIA) if (modulosPedidos === "todos" || modulosPedidos.split(",").includes(id)) VISTA_EJEMPLO.modulos[id] = "funcionando";
 }
+// `?polvo=1` (Etapa D): el panel con la capa de polvo del evento de Jezero.
+if (parametros.get("polvo") === "1") VISTA_EJEMPLO.panelConPolvo = true;
 const calidad = (["alta", "media", "baja"] as const).find((c) => c === parametros.get("calidad")) ?? "alta";
 const MOMENTOS = { dia: 0, tarde: 0.5, atardecer: 1, noche: 2 } as const;
 const momentoPedido = parametros.get("momento");
