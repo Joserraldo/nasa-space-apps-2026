@@ -124,6 +124,27 @@ export function montarSalaJugable(canvas: HTMLCanvasElement, sala: EspacioJugabl
   addEventListener("keyup", alSubir);
   addEventListener("blur", alDesenfocar);
 
+  // Drag (mouse or finger) turns the camera around the kid, as outdoors. `giroManual` adds to the automatic
+  // heading; in the corridor it eases back while the kid walks, in the rooms it stays where it was left.
+  let giroManual = 0;
+  let arrastre: { id: number; x: number } | null = null;
+  const alApuntar = (e: PointerEvent) => {
+    arrastre = { id: e.pointerId, x: e.clientX };
+    canvas.setPointerCapture(e.pointerId);
+  };
+  const alMoverPuntero = (e: PointerEvent) => {
+    if (!arrastre || e.pointerId !== arrastre.id) return;
+    giroManual -= (e.clientX - arrastre.x) * 0.008;
+    arrastre.x = e.clientX;
+  };
+  const alSoltarPuntero = (e: PointerEvent) => {
+    if (arrastre?.id === e.pointerId) arrastre = null;
+  };
+  canvas.addEventListener("pointerdown", alApuntar);
+  canvas.addEventListener("pointermove", alMoverPuntero);
+  canvas.addEventListener("pointerup", alSoltarPuntero);
+  canvas.addEventListener("pointercancel", alSoltarPuntero);
+
   const eje = (pos: string[], neg: string[]) => (pos.some((k) => teclas.has(k)) ? 1 : 0) - (neg.some((k) => teclas.has(k)) ? 1 : 0);
   const p = nino.grupo.position;
   let giro = llegada.giro;
@@ -145,8 +166,9 @@ export function montarSalaJugable(canvas: HTMLCanvasElement, sala: EspacioJugabl
     if (dentroTubo) {
       // Camera-relative: up is "forward along the view", right is "to the screen right".
       const avance = -dz, lado = dx;
-      dx = avance * Math.sin(rumbo) - lado * Math.cos(rumbo);
-      dz = avance * Math.cos(rumbo) + lado * Math.sin(rumbo);
+      const vista = rumbo + giroManual;
+      dx = avance * Math.sin(vista) - lado * Math.cos(vista);
+      dz = avance * Math.cos(vista) + lado * Math.sin(vista);
     }
     const largo = Math.hypot(dx, dz);
     if (largo === 0) return false;
@@ -206,7 +228,8 @@ export function montarSalaJugable(canvas: HTMLCanvasElement, sala: EspacioJugabl
       const meta = sala !== "pasillo" ? Math.PI : p.z < -1.4 ? rumboRamal : rumboPrincipal;
       rumbo += Math.atan2(Math.sin(meta - rumbo), Math.cos(meta - rumbo)) * Math.min(1, dt * 3);
       // Chase camera near the ceiling, pulled in when a wall is closer than its usual distance.
-      const fx = Math.sin(rumbo), fz = Math.cos(rumbo);
+      if (sala === "pasillo" && camina) giroManual *= 1 - Math.min(1, dt * 1.5);
+      const fx = Math.sin(rumbo + giroManual), fz = Math.cos(rumbo + giroManual);
       let atras = 3.0;
       // The camera also keeps out of columns and furniture, so it never ends up inside one.
       const libre = (x: number, z: number) => dentro(zonas, x, z) && puntos.every((s) => s.radio === 0 || Math.hypot(x - s.x, z - s.z) > s.radio + 0.2);
@@ -240,6 +263,10 @@ export function montarSalaJugable(canvas: HTMLCanvasElement, sala: EspacioJugabl
       removeEventListener("keydown", alBajar);
       removeEventListener("keyup", alSubir);
       removeEventListener("blur", alDesenfocar);
+      canvas.removeEventListener("pointerdown", alApuntar);
+      canvas.removeEventListener("pointermove", alMoverPuntero);
+      canvas.removeEventListener("pointerup", alSoltarPuntero);
+      canvas.removeEventListener("pointercancel", alSoltarPuntero);
       escena.traverse((x) => {
         if (x instanceof THREE.Mesh) {
           x.geometry.dispose();

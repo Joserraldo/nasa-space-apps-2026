@@ -21,6 +21,7 @@ import { liberarCache, liberarEscena, liberarMateriales } from "./liberar";
 import { crearContorno } from "./contorno";
 import { crearGuantes } from "./guantes";
 import { ANCLAJES_EXPERTAS, RADIO_EXPERTA, lugar, lugarCercano, type ExpertaBase, type LugarId } from "./mundo";
+import { plantaHabitat } from "./activos/edificios";
 import { EXPERTAS_BASE } from "./tripulacionBase";
 import type { EstadoModulo, VistaEscena } from "./vista";
 import { MODULOS_BASE, type ModuloBase } from "./activos/modulos";
@@ -204,6 +205,8 @@ export interface Escena3D {
   fijarDestino(destino: LugarId | null): void;
   /** Diálogo, panel o campo abierto: sin caminar ni usar; se sueltan teclas y joystick. */
   fijarBloqueado(bloqueado: boolean): void;
+  /** Inside the base (`InteriorBase`): the outdoor loop stops drawing, so only one 3D scene runs at a time. */
+  fijarPausa(pausa: boolean): void;
   /** Lo que pide la pantalla (frontera.ts). Los sistemas lo leen en `ctx.pedido`. */
   fijarPedido(pedido: PedidoEscena): void;
   /** Monta un sistema y devuelve cómo quitarlo. Lanza si ya hay uno con el mismo `id`. */
@@ -335,8 +338,23 @@ export const DISTANCIA_HABLAR = 2.8;
  * Lo que hay al alcance del niño (A6): una experta si está a `DISTANCIA_HABLAR` o menos y más cerca que el
  * punto de uso del lugar; si no, el lugar. Iris no cuenta: acompaña al niño y siempre estaría al alcance.
  */
+/**
+ * The habitat's airlock door: just in front of its step (the step is part of the building's solid
+ * footprint and ends `dz + fondo / 2` past its axis). The door opens to the base corridor, which joins the
+ * workshop and the habitat inside (`InteriorBase`).
+ */
+export const PUERTA_HABITAT = (() => {
+  const h = lugar("habitat"), p = plantaHabitat();
+  return { x: h.mx, z: h.mz + p.dz + p.fondo / 2 + 0.3, radio: 0.8 };
+})();
+
 export function interactivoCercano(x: number, z: number): Interactivo | null {
+  // The door wins in front of its step, so the kid can always go in; one step back, the doctor's spot is there again.
+  const dPuerta = Math.hypot(x - PUERTA_HABITAT.x, z - PUERTA_HABITAT.z);
   const l = lugarCercano(x, z);
+  if (dPuerta <= PUERTA_HABITAT.radio && (!l || dPuerta < Math.hypot(x - lugar(l).x, z - lugar(l).z))) {
+    return { tipo: "puerta", sala: "habitat", entrar: true };
+  }
   const dLugar = l ? Math.hypot(x - lugar(l).x, z - lugar(l).z) : Infinity;
   let actor: ExpertaBase | null = null;
   let dActor = DISTANCIA_HABLAR;
@@ -1017,11 +1035,12 @@ export function crearEscena3D(canvas: HTMLCanvasElement, opciones: OpcionesEscen
     renderer.setAnimationLoop(null);
     medidor?.reiniciar();
   };
+  let pausada = false;
   const alVisibilidad = () => {
     if (document.hidden) {
       soltarTodo();
       parar();
-    } else arrancar();
+    } else if (!pausada) arrancar();
   };
   const alPerder = (e: Event) => {
     e.preventDefault();
@@ -1102,6 +1121,14 @@ export function crearEscena3D(canvas: HTMLCanvasElement, opciones: OpcionesEscen
     },
     fijarDestino(d) {
       mov.irA(d);
+    },
+    fijarPausa(p) {
+      if (p === pausada) return;
+      pausada = p;
+      if (p) {
+        soltarTodo();
+        parar();
+      } else if (!document.hidden) arrancar();
     },
     fijarBloqueado(b) {
       if (b === bloqueado) return;

@@ -8,6 +8,7 @@ import type { EntradaTactil } from "./entradaTactil";
 import type { ActorId, AvisosEscena, Interactivo, PedidoEscena } from "./frontera";
 import type { LugarObjetivo, VistaEscena } from "./vista";
 import { ANCLAJES_EXPERTAS, type ExpertaBase } from "./mundo";
+import { InteriorBase } from "./InteriorBase";
 
 export type { CamaraEscena } from "./escena3d";
 
@@ -66,6 +67,8 @@ export interface EscenaBaseProps extends PedidoEscena, AvisosEscena {
    * (`iniciar`, `mover`, `terminar`, `cancelar`) y lee `estado` para dibujar el joystick.
    */
   onEntradaTactil?: ((entrada: EntradaTactil | null) => void) | undefined;
+  /** The kid left the base through the airlock: the screen sets `sala` back to "exterior". */
+  onSalirSala?: (() => void) | undefined;
 }
 
 /** Las props de `PedidoEscena` (frontera.ts) en un objeto nuevo: los sistemas lo leen en `ctx.pedido`. */
@@ -134,6 +137,8 @@ export function EscenaBase(props: EscenaBaseProps) {
       return;
     }
     escenaRef.current = escena;
+    // Dev only: lets the browser checks read the player and walk him to a place with the game's own route.
+    if (import.meta.env.DEV) (globalThis as { __escenaBase?: Escena3D }).__escenaBase = escena;
     escena.fijarCamara(p.camara);
     escena.fijarBloqueado(p.bloqueado ?? false);
     escena.actualizar(p.vista, p.eventos);
@@ -180,9 +185,12 @@ export function EscenaBase(props: EscenaBaseProps) {
     escenaRef.current?.fijarDestino(props.destino ?? null);
   }, [props.destino]);
 
+  // Inside the base the outdoor scene is frozen (no input) and paused (no drawing): one 3D scene at a time.
+  const dentro = props.sala !== undefined && props.sala !== "exterior";
   useEffect(() => {
-    escenaRef.current?.fijarBloqueado(props.bloqueado ?? false);
-  }, [props.bloqueado]);
+    escenaRef.current?.fijarBloqueado((props.bloqueado ?? false) || dentro);
+    escenaRef.current?.fijarPausa(dentro);
+  }, [props.bloqueado, dentro]);
 
   useEffect(() => {
     escenaRef.current?.fijarPedido(pedidoDe(props));
@@ -197,7 +205,8 @@ export function EscenaBase(props: EscenaBaseProps) {
   return (
     <>
       <canvas ref={canvasRef} aria-hidden="true" style={{ display: "block", width: "100%", height: "100%", touchAction: "none" }} />
-      {avisoMirar && (
+      {dentro && <InteriorBase calidad={props.calidad} onSalir={() => actuales.current.onSalirSala?.()} />}
+      {avisoMirar && !dentro && (
         <div className="fc-cara fc-chico aviso-mirar" data-aviso="mirar"
           style={{ position: "absolute", left: "50%", top: "22%", transform: "translateX(-50%)", padding: "0.4rem 0.9rem", pointerEvents: "none", whiteSpace: "nowrap" }}>
           <span>{t("ui.escena.mirar")}</span>
