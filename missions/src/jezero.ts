@@ -61,13 +61,18 @@ export interface AveriaIris {
 }
 
 /** Condición de victoria de una misión. */
-export type ExitoCuando = "telemetria_llega" | { tipo: "sobrevivir_hasta_tick"; tick: number };
+export type ExitoCuando =
+  | "telemetria_llega"
+  | "telemetria_tras_tormenta"
+  | { tipo: "sobrevivir_hasta_tick"; tick: number };
 
 /** Cuándo termina la partida de demo. */
 export interface FinMision {
   /**
    * Gana cuando llega la telemetría a la Tierra (paso 7 → 8) sin ningún medidor en 0, o,
    * con `{ tipo: "sobrevivir_hasta_tick", tick }`, al llegar a ese tick con todo por encima de 0 (p. ej. el amanecer lunar).
+   * telemetria_tras_tormenta: gana cuando la telemetría ya llegó a la Tierra Y la tormenta terminó
+   * (si la partida no tiene tormenta, basta con que llegue).
    */
   exitoCuando: ExitoCuando;
   /** Pierde si cualquier medidor llega a 0 (regla general del motor). */
@@ -262,11 +267,11 @@ export const MISION_JEZERO: Mision & { eventoPolvo: EventoPolvo } = {
     reparaCon: "ingeniera",
   },
   fin: {
-    exitoCuando: "telemetria_llega",
+    exitoCuando: "telemetria_tras_tormenta",
     falloCuando: "recurso_en_cero",
     tickLimite: 10,
   },
-  limiteDosisMSv: 6, // provisional, P0.2
+  limiteDosisMSv: 4, // valor de juego, P0.6: con 4 mSv el pasivo pierde y ninguna opción del dilema gana siempre
   eventoPolvo: {
     descripcionKey: "mala_suerte.tormenta_polvo",
     equipo: "panel_solar",

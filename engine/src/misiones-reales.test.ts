@@ -5,7 +5,7 @@
 import { describe, expect, it } from "vitest";
 import type { Equipment, GameState, Resource } from "@solar-shield/contracts";
 import { RECURSOS_INICIALES, RETRASO_COMUNICACIONES, RETRASO_POR_DIFICULTAD } from "@solar-shield/design";
-import { MISION_JEZERO, MISION_MARTE_POLO_NORTE, MISION_LUNA_POLO_SUR, MISION_OUTPOST_SORPRESA, type Mision } from "@solar-shield/missions";
+import { MISION_MARTE_POLO_NORTE, MISION_LUNA_POLO_SUR, MISION_OUTPOST_SORPRESA, type Mision } from "@solar-shield/missions";
 import { aplicarAccion, aterrizar, avanzarTick, modulosColocados } from "./acciones.js";
 import { elegirDilema } from "./dilema.js";
 import { partidaDeMision, SEMILLA_DORADA, paso } from "./dorada.js";
@@ -13,7 +13,7 @@ import { partidaDeMision, SEMILLA_DORADA, paso } from "./dorada.js";
 const RECURSOS: readonly Resource[] = ["energia", "soporte_vital", "blindaje"];
 interface Ruta { mision: Mision; sitio: string; envio: number; ganaEn: number; pierdeEn: number; envioPerdedor?: number }
 const RUTAS: Ruta[] = [
-  { mision: MISION_JEZERO, sitio: "llanura-central", envio: 3, ganaEn: 5, pierdeEn: 10 },
+  // Jezero sale de aquí en P0.3: gana con telemetría tras la tormenta y puede perder por radiación; lo cubre jezero-victoria.test.ts.
   { mision: MISION_MARTE_POLO_NORTE, sitio: "crater-louth", envio: 3, ganaEn: 5, pierdeEn: 10, envioPerdedor: 8 },
   { mision: MISION_LUNA_POLO_SUR, sitio: "nobile", envio: 3, ganaEn: 4, pierdeEn: 8 },
   { mision: MISION_OUTPOST_SORPRESA, sitio: "cabina", envio: 3, ganaEn: 6, pierdeEn: 8 },
@@ -41,7 +41,7 @@ describe.each(RUTAS)("$mision.id: reglas integradas disponibles", (ruta) => {
     const s = jugar(ruta, ruta.envioPerdedor);
     expect(s.resultado).toBe("fallo");
     expect(s.tick).toBe(ruta.pierdeEn);
-    if (m.id === MISION_JEZERO.id) {
+    if (m.id === "jezero-dorada") {
       expect(s.tick).toBe(m.fin.tickLimite);
       expect(RECURSOS.every(r => s.recursos[r] > 0)).toBe(true);
     } else {
