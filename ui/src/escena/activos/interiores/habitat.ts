@@ -39,7 +39,7 @@ export function zonaHabitat() {
 }
 
 /** Litera de dos camas con mantas teal, almohadas, escalera y lámpara cálida en cada cama. */
-function litera(m: Materiales): THREE.Group {
+export function litera(m: Materiales): THREE.Group {
   // Marco abierto: fondo, costado, techo y postes al frente, para que se vean las dos camas.
   const x = grupo(
     "Habitat_Bunk",
@@ -64,7 +64,7 @@ function litera(m: Materiales): THREE.Group {
 }
 
 /** Mesa con borde cian y dos banquetas índigo. */
-function comedor(m: Materiales): THREE.Group {
+export function comedor(m: Materiales): THREE.Group {
   const x = grupo(
     "Habitat_MessTable",
     parte(m, "SuitBase", chaflan(2.0, 0.12, 0.95, 0.06), [0, 0.78, 0], "Mess_Top"),
@@ -79,7 +79,7 @@ function comedor(m: Materiales): THREE.Group {
 }
 
 /** Camilla teal (enfermería): base, colchón y respaldo inclinado, con una tira cian. */
-function camilla(m: Materiales): THREE.Group {
+export function camilla(m: Materiales): THREE.Group {
   const respaldo = parte(m, "Accent", caja(0.7, 0.14, 0.8), [-0.85, 0.85, 0], "Bed_Backrest");
   respaldo.rotation.z = -0.45;
   return grupo(
@@ -92,7 +92,7 @@ function camilla(m: Materiales): THREE.Group {
 }
 
 /** Mueble bajo con el botiquín teal y su escudo cian (el símbolo de la base). */
-function botiquin(m: Materiales): THREE.Group {
+export function botiquin(m: Materiales): THREE.Group {
   const escudo = geometriaBase("int-escudo-botiquin", () => {
     const f = new THREE.Shape([[0, 0.13], [0.1, 0.09], [0.09, -0.02], [0, -0.12], [-0.09, -0.02], [-0.1, 0.09]].map(([a, b]) => new THREE.Vector2(a!, b!)));
     return new THREE.ExtrudeGeometry(f, { depth: 0.02, bevelEnabled: false });

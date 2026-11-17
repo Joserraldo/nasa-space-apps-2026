@@ -14,6 +14,7 @@ import { COLORES, conAlfa } from "../estilos/tokens";
 import { traducir, type Idioma, type Vars } from "../i18n";
 import * as THREE from "three";
 import { crearCorredorInterior, zonaCorredor } from "./activos/interiores/corredor";
+import { ambienteSalaKit, crearSalaKit, type SalaKit } from "./activos/interiores/salaKit";
 import { crearHabitatInterior } from "./activos/interiores/habitat";
 import { crearTaller } from "./activos/interiores/taller";
 import { fusionar } from "./activos/fusionar";
@@ -132,6 +133,8 @@ const SALAS_PREVIA = {
   taller: () => ({ raiz: crearTaller(crearMateriales()), camara: [-2.5, 5.2, 7.5] as const, mira: [0.4, 0.8, -0.6] as const, luz: [-2, 6, 4] as const }),
   // Hábitat en corte, como las láminas `estaciones/06` y `07`.
   habitat: () => ({ raiz: crearHabitatInterior(crearMateriales()), camara: [-2.5, 5.4, 8] as const, mira: [0.3, 0.8, -0.5] as const, luz: [-2, 6, 4] as const }),
+  // Sala de mando del Outpost (nave): kit CC BY que carga en diferido, así que no se fusiona; fondo de espacio.
+  outpost: () => ({ raiz: crearSalaKit("outpost", crearMateriales()), camara: [-2.8, 5.6, 8.4] as const, mira: [0.3, 0.9, -0.6] as const, luz: [-2, 6, 4] as const, kit: "outpost" as SalaKit }),
 } as const;
 
 /**
@@ -143,10 +146,26 @@ function montarSala(sala: keyof typeof SALAS_PREVIA): void {
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: calidad !== "baja" });
   renderer.setPixelRatio(Math.min(globalThis.devicePixelRatio || 1, calidad === "alta" ? 1.5 : 1));
   const escena = new THREE.Scene();
-  escena.background = colorToken("lila");
-  const cfg = SALAS_PREVIA[sala]();
-  escena.add(fusionar(cfg.raiz, `Sala_${sala}`), new THREE.HemisphereLight(colorToken("marfil"), colorToken("lila"), 2.4));
-  const luz = new THREE.DirectionalLight(colorToken("aviso-fondo"), 1.2);
+  type Terna = readonly [number, number, number];
+  let cfg: { raiz: THREE.Group; camara: Terna; mira: Terna; luz: Terna; kit?: SalaKit } = SALAS_PREVIA[sala]();
+  // `&kit=1`: taller y hábitat rehechos con el kit (casco y equipo del kit, muebles propios que tienen sentido).
+  if (parametros.get("kit") === "1" && (sala === "taller" || sala === "habitat")) cfg = { ...cfg, raiz: crearSalaKit(sala, crearMateriales()), camara: [-2.8, 5.6, 8.4], kit: sala };
+  const amb = cfg.kit ? ambienteSalaKit(cfg.kit) : null;
+  escena.background = amb ? new THREE.Color(amb.fondoEscena) : colorToken("lila");
+  // El kit carga en diferido, así que no se fusiona.
+  escena.add(cfg.kit ? cfg.raiz : fusionar(cfg.raiz, `Sala_${sala}`), amb ? new THREE.HemisphereLight(amb.luz.hemiCielo, amb.luz.hemiSuelo, amb.luz.hemi) : new THREE.HemisphereLight(colorToken("marfil"), colorToken("lila"), 2.4));
+  const luz = amb ? new THREE.DirectionalLight(amb.luz.color, amb.luz.intensidad) : new THREE.DirectionalLight(colorToken("aviso-fondo"), 1.2);
+  if (amb) {
+    // Sombras suaves solo en las salas con kit: una luz, caja ajustada a la sala (8 x 6 m).
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    luz.castShadow = true;
+    luz.shadow.mapSize.set(calidad === "baja" ? 512 : 1024, calidad === "baja" ? 512 : 1024);
+    const c = luz.shadow.camera;
+    c.left = -7; c.right = 7; c.top = 7; c.bottom = -7; c.near = 1; c.far = 20;
+    luz.shadow.bias = -0.0005;
+    luz.shadow.normalBias = 0.03;
+  }
   luz.position.set(cfg.luz[0], cfg.luz[1], cfg.luz[2]);
   luz.target.position.set(0, 0, 0);
   escena.add(luz, luz.target);
@@ -186,5 +205,5 @@ function montarSala(sala: keyof typeof SALAS_PREVIA): void {
 }
 
 const salaPedida = parametros.get("sala");
-if (salaPedida === "corredor" || salaPedida === "taller" || salaPedida === "habitat") montarSala(salaPedida);
+if (salaPedida === "corredor" || salaPedida === "taller" || salaPedida === "habitat" || salaPedida === "outpost") montarSala(salaPedida);
 else if (parametros.get("montar") !== "0") montar();
