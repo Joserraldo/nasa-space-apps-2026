@@ -21,7 +21,7 @@ Una sección por persona, máximo 5 líneas, y nadie edita la de otro (FLUJO §8
 **Rama:** feat/exterior-a-luz · **PR:** ninguno (espera aprobación de capturas) · **Tokens:** amarillo
 - Hecho: entorno PMREM del cielo procedural, cielo por shader (día caramelo, halo azul al atardecer, noche con estrellas NASA SVS 4851), niebla de altura, AgX + gradación, GTAO a media resolución, bloom por umbral y SMAA; cada efecto con interruptor en `calidad.ts`. Noche solo con `?momento=noche`; pieza de prueba con `?domo=1`.
 - Verificado: 86 pruebas de escena, build, consola sin errores en vista previa y juego real; sombra/sol 0,21 (lineal); `alta` sin vsync 432 → 196 fps (Intel integrada, 1366×768).
-- Sigue: aprobación de las capturas (`ss-capturas/etapa-a/`); después PR y Etapa B. Las 3 capas de montaña dependen del terreno (B).
+- Sigue: aprobación de `lamina-dia-horizonte` y `lamina-atardecer` (bruma por capas y atardecer cálido corregidos el 17 nov). Noche pospuesta: el juego no la tiene.
 
 ## Escenario (Daniel)
 **Rama:** feat/ui-escena-v* · **PR:** #311–#315 abiertos hacia develop (la pila #282–#310 ya entró) · **Tokens:** 🟡

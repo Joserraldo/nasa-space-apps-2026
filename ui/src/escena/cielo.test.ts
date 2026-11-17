@@ -28,7 +28,9 @@ describe("cielo de Marte", () => {
     const noche = coloresCielo({ mezcla: 1, noche: 1, dirSol: { x: -0.7, y: -0.3, z: 0.1 } });
     expect(dia.halo[2]).toBeLessThan(dia.halo[0]);
     expect(tarde.halo[2]).toBeGreaterThan(tarde.halo[0]);
-    expect(tarde.radioHalo).toBeGreaterThan(dia.radioHalo);
+    // Al atardecer el halo es ceñido al Sol y más intenso (no un cielo azul diurno).
+    expect(tarde.radioHalo).toBeLessThanOrEqual(dia.radioHalo);
+    expect(tarde.brilloHalo).toBeGreaterThan(dia.brilloHalo);
     expect(noche.brilloHalo).toBe(0);
     expect(noche.brilloDisco).toBe(0);
     expect(noche.densidadNiebla).toBeLessThan(dia.densidadNiebla / 3);

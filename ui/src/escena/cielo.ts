@@ -36,19 +36,19 @@ export const PALETA_CIELO: Readonly<Record<Ambiente, Readonly<PaletaCielo>>> = {
   // Día: caramelo/ocre (panorámicas de Perseverance en Jezero y Curiosity en Gale). Horizonte más claro y
   // amarillo por el polvo, cénit más oscuro y rojizo. Nunca blanco lechoso ni azul.
   dia: {
-    cenit: "#9A5636",
-    horizonte: "#DDA472",
+    cenit: "#B27D57",
+    horizonte: "#DCAA78",
     halo: "#F2DCC2", // de día el brillo junto al Sol es blanco cálido
-    niebla: "#C98A5C", // caramelo, un poco más oscuro que el horizonte para que las siluetas se lean
+    niebla: "#F0C38F", // polvo: igual al horizonte con su banda clara, así lo lejano se funde con el cielo
     brillo: 1.15,
   },
   // Atardecer: el resto del cielo se apaga a pardo y el halo junto al Sol es azul.
   atardecer: {
-    cenit: "#3A2E36",
-    horizonte: "#A2684A",
-    halo: "#7FA6D8",
-    niebla: "#8A5B43",
-    brillo: 0.78,
+    cenit: "#4A3438",
+    horizonte: "#C98A5E",
+    halo: "#6E9EE0",
+    niebla: "#C9906A", // polvo cálido iluminado de canto, no pardo apagado
+    brillo: 0.85,
   },
   // Noche: cielo casi negro con un resto pardo en el horizonte; sin bruma.
   noche: {
@@ -61,7 +61,7 @@ export const PALETA_CIELO: Readonly<Record<Ambiente, Readonly<PaletaCielo>>> = {
 };
 
 /** Tamaño relativo del halo junto al Sol (pequeño de día, más grande al atardecer). [E] */
-export const TAMANO_HALO: Readonly<Record<Ambiente, number>> = { dia: 1, atardecer: 1.6, noche: 0 };
+export const TAMANO_HALO: Readonly<Record<Ambiente, number>> = { dia: 1, atardecer: 0.9, noche: 0 };
 
 /** Tokens de DISEÑO.md §2.3 que usa la luz. */
 export const REGOLITO_MEDIO = "#9E5340";
@@ -88,6 +88,8 @@ export const LUZ = {
   direccionSol: normalizar([-0.8, 0.65, 0.2]),
   /** Direccional: Sol cálido y fuerte. [E] */
   colorSol: "#FFE8D0",
+  /** Sol rasante del atardecer: luz cálida (el polvo filtra el azul en el camino largo por la atmósfera). [E] */
+  colorSolAtardecer: "#FFA866",
   /** Hemisférica: suelo = `regolito-medio` (rebote cálido); cielo de día = relleno malva, al atardecer = horizonte. */
   hemisferica: {
     dia: { cielo: LILA_RELLENO, suelo: REGOLITO_MEDIO },
@@ -275,7 +277,8 @@ export function coloresCielo(e: EstadoCielo): ColoresCielo {
     halo: mezclar(d.halo, a.halo, k),
     niebla: tarde("niebla"),
     radioHalo: RADIO_HALO * (TAMANO_HALO.dia + (TAMANO_HALO.atardecer - TAMANO_HALO.dia) * k),
-    brilloHalo: (1.1 - 0.55 * k) * sobre * (1 - q),
+    // Halo: más chico y más intenso al atardecer, para que el azul se vea alrededor del Sol.
+    brilloHalo: (1.1 + 0.6 * k) * sobre * (1 - q),
     brilloDisco: 40 * (1 - 0.5 * k) * sobre * (1 - q),
     densidadNiebla:
       DENSIDAD_NIEBLA.dia + (DENSIDAD_NIEBLA.atardecer - DENSIDAD_NIEBLA.dia) * k + (DENSIDAD_NIEBLA.noche - DENSIDAD_NIEBLA.atardecer) * q,
@@ -315,7 +318,8 @@ void main() {
 	// Polvo: dispersión hacia adelante. Un brillo amplio hacia el Sol y el halo cercano con su color.
 	col *= 1.0 + 0.35 * uBrilloHalo * pow( max( cosA, 0.0 ), 8.0 );
 	float halo = exp( - ( ang * ang ) / ( uRadioHalo * uRadioHalo ) );
-	col += uHalo * halo * uBrilloHalo;
+	// El halo tiñe el cielo junto al Sol (mezcla, no suma: sumado sobre un cielo claro se lavaba a blanco).
+	col = mix( col, uHalo * ( 0.35 + 0.65 * uBrilloHalo ), clamp( halo * min( uBrilloHalo, 1.0 ), 0.0, 0.85 ) );
 	float disco = 1.0 - smoothstep( ${RADIO_DISCO_SOL.toFixed(4)}, ${(RADIO_DISCO_SOL * 1.25).toFixed(4)}, ang );
 	col += vec3( 1.0, 0.96, 0.9 ) * disco * uBrilloDisco * ( 1.0 - uEntorno );
 	// Debajo del horizonte: el domo sigue el horizonte (la niebla lo tapa); el entorno ve regolito.

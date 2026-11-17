@@ -15,23 +15,24 @@ import * as THREE from "three";
 
 /**
  * Niebla de altura (u = m). Densidad de altura: `exp(-caida · (y - suelo))`. Profundidad óptica:
- * `F · (x + (cuadratica · x)²)` con `x = densidad · d`, `d` = distancia menos `inicio` y `F` = la integral de
+ * `F · (lineal · x + (cuadratica · x)²)` con `x = densidad · d`, `d` = distancia menos `inicio` y `F` = la integral de
  * la densidad a lo largo del rayo. La parte lineal da bruma a media distancia (lomas a 40-80 m); la
  * cuadrática separa las tres capas de montañas (215, 252 y 292 m), cada una más lavada. [E]
  */
 export const NIEBLA_ALTURA = {
   /** Radio limpio alrededor de la cámara (m): la base se ve con su color pleno. */
-  inicio: 18,
+  inicio: 12,
   /** Caída con la altura (1/m): a 40 m sobre el suelo la densidad baja a ~37 %. */
   caida: 0.025,
   /** Altura del suelo de la base (m). */
   suelo: 0,
-  /** Peso del término cuadrático. */
+  /** Peso del término lineal (velo de polvo a media distancia) y del cuadrático (capas lejanas). */
+  lineal: 1.8,
   cuadratica: 1.1,
 } as const;
 
 /** Densidad de la niebla de altura por momento (`FogExp2.density`). La noche va sin bruma. [E] */
-export const DENSIDAD_NIEBLA = { dia: 0.0036, atardecer: 0.0038, noche: 0.0006 } as const;
+export const DENSIDAD_NIEBLA = { dia: 0.0043, atardecer: 0.0038, noche: 0.0006 } as const;
 
 /**
  * Gradación sobre AgX, en espacio aproximado de pantalla (gamma 2,2). [E]
@@ -98,7 +99,7 @@ const FOG_FRAGMENT = /* glsl */ `
 		float fogF = exp( - fogK * fogH ) * ( abs( fogKy ) > 1e-3 ? ( 1.0 - exp( - fogKy ) ) / fogKy : 1.0 );
 		float fogX = fogDensity * fogD;
 		float fogQ = ${f(NIEBLA_ALTURA.cuadratica)} * fogX;
-		float fogTau = ( fogX + fogQ * fogQ ) * min( fogF, 4.0 );
+		float fogTau = ( ${f(NIEBLA_ALTURA.lineal)} * fogX + fogQ * fogQ ) * min( fogF, 4.0 );
 		float fogFactor = 1.0 - exp( - fogTau );
 	#else
 		float fogFactor = smoothstep( fogNear, fogFar, vFogDepth );

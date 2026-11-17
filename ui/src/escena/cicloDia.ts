@@ -93,9 +93,9 @@ export function luzDelMomento(m: MomentoDia): LuzMomento {
   const sobre = THREE.MathUtils.smoothstep(direccion.y, Math.sin(THREE.MathUtils.degToRad(-4)), Math.sin(THREE.MathUtils.degToRad(2)));
   return {
     direccion,
-    // Sol blanco cálido de día; al atardecer toma algo del halo azul (el atardecer azul de Marte).
-    colorSol: new THREE.Color(LUZ.colorSol).lerp(new THREE.Color(tarde.halo), 0.35 * cielo),
-    intensidadSol: INTENSIDAD.sol * (1 - 0.15 * Math.min(1, k / 0.5) - 0.3 * cielo) * sobre,
+    // Sol blanco cálido de día; al atardecer, luz cálida rasante (el azul queda en el halo del cielo).
+    colorSol: new THREE.Color(LUZ.colorSol).lerp(new THREE.Color(LUZ.colorSolAtardecer), cielo),
+    intensidadSol: INTENSIDAD.sol * (1 - 0.15 * Math.min(1, k / 0.5) + 0.0 * cielo) * sobre,
     colorCieloHemi: new THREE.Color(h.dia.cielo).lerp(new THREE.Color(h.atardecer.cielo), cielo).lerp(new THREE.Color(h.noche.cielo), noche),
     colorSueloHemi: new THREE.Color(h.dia.suelo).lerp(new THREE.Color(h.noche.suelo), noche),
     intensidadHemi: INTENSIDAD.hemisferica * (1 - 0.15 * cielo) + (INTENSIDAD.noche - INTENSIDAD.hemisferica * 0.85) * noche,
