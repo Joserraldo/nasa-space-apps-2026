@@ -183,9 +183,15 @@ export function instanciarRocasAltas(materiales: Materiales, rocas: readonly Tra
  * semilla fija, sobre `terreno` y fuera de `radioMin`. `excluir(x, z)` descarta las que caerían en
  * caminos o edificios (pueden quedar menos de `n`). Sin sombras (APLICACION §8): 1 draw call.
  */
-export function crearGravilla(materiales: Materiales, terreno: Terreno3D, opciones: OpcionesRocas & { n?: number; semilla?: number } = {}): THREE.InstancedMesh {
+export function crearGravilla(
+  materiales: Materiales,
+  terreno: Terreno3D,
+  opciones: OpcionesRocas & { n?: number; semilla?: number } = {},
+  extra: readonly TransformacionRoca[] = [],
+): THREE.InstancedMesh {
   const o = { ...GRAVILLA, ...opciones };
-  const piedras = rocasBasalticas(o.semilla, o.n, terreno.rejilla, terreno.opciones, o);
+  // `extra`: piedritas sueltas de la zona (alrededor de los bloques y al pie de las paredes), en la misma malla.
+  const piedras = [...rocasBasalticas(o.semilla, o.n, terreno.rejilla, terreno.opciones, o), ...extra];
   const malla = instanciar(geometriaBase("gravilla", geometriaGravilla), materiales, piedras, "Rocks_Gravel");
   malla.castShadow = false;
   malla.receiveShadow = true;
@@ -306,7 +312,7 @@ export const CAPAS_MONTANA = [
  * vueltas hacia la base (pie, hombro y cima), así se leen facetas grandes y no pirámides sueltas.
  * Comparte el material `Rock` (color de vértice) y recibe la niebla del cielo.
  */
-export function crearMontanas(materiales: Materiales, o: OpcionesMontanas = MONTANAS): THREE.Mesh {
+export function crearMontanas(materiales: Materiales, o: OpcionesMontanas = MONTANAS, excluir: (acimut: number) => boolean = () => false): THREE.Mesh {
   const azar = aleatorio(o.semilla);
   const pos: number[] = [];
   const col: number[] = [];
@@ -336,6 +342,8 @@ export function crearMontanas(materiales: Materiales, o: OpcionesMontanas = MONT
     for (let i = 0; i < n; i++) {
       const p = puntos[i]!, q = puntos[(i + 1) % n]!;
       const pa = p[3]!, qa = q[3]! < pa ? q[3]! + Math.PI * 2 : q[3]!;
+      // Tramos tapados por el relieve de la zona (Etapa BC) no se dibujan.
+      if (excluir((pa + qa) / 2)) continue;
       // Pie delante (hacia el centro) y bajo el suelo; hombro a media altura entre dos cimas.
       const r0 = radio * 0.9;
       const pie1 = [Math.cos(pa) * r0, -40, Math.sin(pa) * r0];

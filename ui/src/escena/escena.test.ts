@@ -129,7 +129,7 @@ describe("cielo de Marte", () => {
     expect(LUZ.tamanoSombra.alta).toBeLessThanOrEqual(2048);
     expect(LUZ.tamanoSombra.baja).toBeLessThanOrEqual(LUZ.tamanoSombra.alta);
     expect(LUZ.toneMapping).toBe("AgX");
-    expect(LUZ.exposicion).toBeCloseTo(1.05, 5);
+    expect(LUZ.exposicion).toBeCloseTo(1, 5);
   });
 });
 

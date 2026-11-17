@@ -7,6 +7,7 @@ import { FORMA_MODULO as FORMA, MODULOS_BASE, crearFormaModulo, partesVisibles, 
 import { instanciar, type TransformacionPieza } from "./instancias";
 import type { Huella } from "./piezasComunes";
 import { fusionar } from "./fusionar";
+import { liberarEscena } from "../liberar";
 
 // ---------------------------------------------------------------------------------------------
 // Andamio
@@ -107,6 +108,27 @@ export function armarModulo(m: Materiales, id: ModuloBase): ModuloArmado {
   const modulo: ModuloArmado = { raiz, solido, andamio, vivos, estado: "ausente", inicio: 0, pulso: -Infinity };
   aplicarEstado(modulo, "ausente");
   return modulo;
+}
+
+/**
+ * Cambia el sólido de un módulo por otra pieza (modelo real de la Etapa D) sin tocar su estado: hereda la
+ * visibilidad, libera la forma vieja y apoya la luz de estado en `luz` (local) o en el techo de la pieza nueva.
+ */
+export function reemplazarSolido(mod: ModuloArmado, nuevo: THREE.Object3D, luz?: readonly [number, number, number]): void {
+  nuevo.name = mod.solido.name;
+  nuevo.visible = mod.solido.visible;
+  mod.raiz.remove(mod.solido);
+  liberarEscena(mod.solido);
+  mod.raiz.add(nuevo);
+  mod.solido = nuevo;
+  if (luz) {
+    // Luz de estado apoyada en un aparato de la pieza (no flotando sobre el punto más alto del modelo).
+    mod.vivos.position.set(...luz);
+    return;
+  }
+  nuevo.updateMatrixWorld(true);
+  const caja = new THREE.Box3().setFromObject(nuevo);
+  mod.vivos.position.y = caja.max.y - mod.raiz.position.y - 0.02;
 }
 
 export function aplicarEstado(mod: ModuloArmado, estado: EstadoModulo): void {

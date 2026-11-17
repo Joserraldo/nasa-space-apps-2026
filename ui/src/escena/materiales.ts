@@ -66,7 +66,8 @@ export function crearMateriales(): Materiales {
     Skin: base("Skin", { roughness: 0.75, metalness: 0 }),
     Hair: base("Hair", { roughness: 0.9, metalness: 0, flatShading: true }),
     Glass: base("Glass", { transparent: true, opacity: 0.35, roughness: 0.15, depthWrite: false, side: THREE.FrontSide, flatShading: true }),
-    Emissive: base("Emissive", { emissive: colorToken(TOKEN_SLOT.Emissive), emissiveIntensity: 1 }),
+    // Etapa A: 1,4 (antes 1): de noche pasa el umbral del bloom (`postproceso.ts`); de día, con el Sol encima, no.
+    Emissive: base("Emissive", { emissive: colorToken(TOKEN_SLOT.Emissive), emissiveIntensity: 1.4 }),
     Rock: base("Rock", { color: 0xffffff, roughness: 0.92, metalness: 0, vertexColors: true, flatShading: true }),
     Plant: base("Plant", { roughness: 0.85, metalness: 0, flatShading: true }),
   };

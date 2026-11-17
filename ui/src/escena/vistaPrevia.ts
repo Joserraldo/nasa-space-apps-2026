@@ -2,11 +2,15 @@
  * Vista previa SOLO para desarrollo (`/escena.html` con `npm run dev -w ui`): monta la escena 3D a
  * pantalla completa con una `VistaEscena` de ejemplo, sin pasar por la app. No entra en el build
  * (Vite solo empaqueta `index.html`). Parámetros: `?camara=primera`, `?calidad=baja|media|alta`,
- * `?modulos=todos` (los cinco módulos funcionando, para revisar formas y presupuesto),
+ * `?modulos=todos` o `?modulos=panel_solar,antena` (esos módulos funcionando, para revisar formas y presupuesto),
+ * `?polvo=1` (panel solar con polvo),
  * `?medir=1` (recuadro con fps, draw calls, triángulos, calidad y lienzo, para medir en un
  * celular o PC real), `?destino=<LugarId>` (camina hasta ese lugar con la ruta planeada),
  * `?reducido=1` (fuerza movimiento reducido), `?montar=0` (página vacía, para que una prueba monte
  * y desmonte la escena por su cuenta) e `?idioma=es|en` (inglés por defecto).
+ * Etapa A (lookdev de luz): `?momento=dia|tarde|atardecer|noche` fija la hora sin pasar por la fase (la
+ * noche no existe en el juego) y `?domo=1` agrega la pieza de prueba: domo provisional de vidrio y metal,
+ * bola cromada y bola gris al 18 % (referencias de reflejo y de luz; no es geometría del juego).
  * Se camina con `WASD`/flechas, `V` cambia de cámara, arrastrar gira y la rueda acerca.
  */
 import type { CalidadGrafica } from "../juego/ajustes";
@@ -21,6 +25,8 @@ import { crearEscena3D } from "./escena3d";
 import { colorToken, crearMateriales } from "./materiales";
 import { LUGARES, type LugarId } from "./mundo";
 import { prefiereMenosMovimiento } from "./soporte";
+import { forzarMomento } from "./sistemas/cicloDia";
+import type { SistemaEscena } from "./escena3d";
 import type { VistaEscena } from "./vista";
 
 const VISTA_EJEMPLO: VistaEscena = {
@@ -44,10 +50,61 @@ const parametros = new URLSearchParams(location.search);
 // `?fase=tormenta|final` (D3): ver la luz de la tarde o del atardecer.
 const fasePedida = parametros.get("fase");
 if (fasePedida === "tormenta" || fasePedida === "final") VISTA_EJEMPLO.fase = fasePedida;
-if (parametros.get("modulos") === "todos") {
-  for (const id of ["panel_solar", "antena", "reciclador_agua", "escudo", "invernadero"] as const) VISTA_EJEMPLO.modulos[id] = "funcionando";
+const MODULOS_PREVIA = ["panel_solar", "antena", "reciclador_agua", "escudo", "invernadero"] as const;
+const modulosPedidos = parametros.get("modulos");
+if (modulosPedidos) {
+  for (const id of MODULOS_PREVIA) if (modulosPedidos === "todos" || modulosPedidos.split(",").includes(id)) VISTA_EJEMPLO.modulos[id] = "funcionando";
 }
+// `?polvo=1` (Etapa D): el panel con la capa de polvo del evento de Jezero.
+if (parametros.get("polvo") === "1") VISTA_EJEMPLO.panelConPolvo = true;
 const calidad = (["alta", "media", "baja"] as const).find((c) => c === parametros.get("calidad")) ?? "alta";
+const MOMENTOS = { dia: 0, tarde: 0.5, atardecer: 1, noche: 2 } as const;
+const momentoPedido = parametros.get("momento");
+if (momentoPedido && momentoPedido in MOMENTOS) forzarMomento(MOMENTOS[momentoPedido as keyof typeof MOMENTOS]);
+
+/**
+ * Pieza de prueba de la Etapa A: domo de vidrio sobre anillo de metal, bola cromada (refleja el entorno) y
+ * bola gris al 18 % (lee la luz). Provisional: se evalúa la luz, no la geometría.
+ */
+function piezaDePrueba(): SistemaEscena {
+  const grupo = new THREE.Group();
+  grupo.name = "Lookdev_Test_Piece";
+  const vidrio = new THREE.MeshStandardMaterial({ color: 0xf2f4f6, roughness: 0.04, metalness: 0, transparent: true, opacity: 0.28, depthWrite: false });
+  const metal = new THREE.MeshStandardMaterial({ color: 0xc9ccd0, roughness: 0.28, metalness: 1 });
+  const cromo = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.02, metalness: 1 });
+  const gris = new THREE.MeshStandardMaterial({ color: new THREE.Color().setRGB(0.18, 0.18, 0.18, THREE.LinearSRGBColorSpace), roughness: 0.9, metalness: 0 });
+  const domo = new THREE.Mesh(new THREE.SphereGeometry(1.5, 48, 24, 0, Math.PI * 2, 0, Math.PI / 2), vidrio);
+  domo.position.y = 0.25;
+  const anillo = new THREE.Mesh(new THREE.CylinderGeometry(1.6, 1.7, 0.25, 48), metal);
+  anillo.position.y = 0.125;
+  const bolaCromo = new THREE.Mesh(new THREE.SphereGeometry(0.35, 48, 24), cromo);
+  bolaCromo.position.set(1.4, 1.05, 1.5);
+  const bolaGris = new THREE.Mesh(new THREE.SphereGeometry(0.35, 48, 24), gris);
+  bolaGris.position.set(2.25, 1.05, 1.5);
+  const pie = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.08, 0.7, 12), metal);
+  const pie2 = pie.clone();
+  pie.position.set(1.4, 0.35, 1.5);
+  pie2.position.set(2.25, 0.35, 1.5);
+  for (const m of [domo, anillo, bolaCromo, bolaGris, pie, pie2]) {
+    m.castShadow = true;
+    m.receiveShadow = true;
+  }
+  domo.castShadow = false;
+  grupo.add(anillo, domo, bolaCromo, bolaGris, pie, pie2);
+  grupo.position.set(-2.6, 0, 0.6);
+  return {
+    id: "pieza-de-prueba",
+    montar(ctx) {
+      ctx.escena.add(grupo);
+    },
+    actualizar() {},
+    dispose() {
+      grupo.removeFromParent();
+      grupo.traverse((o) => (o as THREE.Mesh).geometry?.dispose());
+      for (const m of [vidrio, metal, cromo, gris]) m.dispose();
+    },
+  };
+}
 const idioma: Idioma = parametros.get("idioma") === "es" ? "es" : "en";
 const t = (clave: string, vars?: Vars) => traducir(idioma, clave, vars);
 function montar(): void {
@@ -66,6 +123,7 @@ function montar(): void {
     alLugarCercano: (l) => console.info("[vista previa] lugar cercano", l),
     alUsar: (l) => console.info("[vista previa] usar", l),
     alDestino: (tipo, l) => console.info("[vista previa] destino", tipo, l),
+    sistemas: parametros.get("domo") === "1" ? [piezaDePrueba()] : [],
   });
   escena.actualizar(VISTA_EJEMPLO, []);
   escena.fijarCamara(camara);

@@ -10,15 +10,16 @@
  * repetidas se instancian, así cada familia cuesta 1 llamada por material (+1 de sombra).
  */
 import * as THREE from "three";
-import { crearCielo, type Calidad, type Cielo } from "./cielo";
+import { crearCielo, direccionSolActual, type Calidad, type Cielo } from "./cielo";
 import type { Materiales } from "./materiales";
-import { liberarEscena } from "./liberar";
+import { liberarEscena, liberarMateriales } from "./liberar";
 import type { VistaEscena } from "./vista";
 import { MODULOS_BASE, TIEMPOS_MODULO_MS, type ModuloBase } from "./activos/modulos";
 import { DECORADO, armarKit, armarEdificios, distanciaAHuella, huellasBase } from "./activos/baseExterior";
+import { CONTROLADOR_PANEL, armarAntenaReal, armarPanelReal, pintarPolvo, type ModelosModulos } from "./activos/modelosModulos";
 import { huellasModulos } from "./activos/modulosArmados";
 import type { Huella } from "./activos/piezasComunes";
-import { aplicarEstado, armarAnclajes, armarModulo, type ModuloArmado } from "./activos/modulosArmados";
+import { aplicarEstado, armarAnclajes, armarModulo, reemplazarSolido, type ModuloArmado } from "./activos/modulosArmados";
 export { PLAZA, CAMINO, CAMINOS, BALIZAS, geometriaCaminos, posicionesBalizas } from "./activos/caminos";
 import { chocaConBase, posicionesBalizas, sobreCamino } from "./activos/caminos";
 import { LUGARES } from "./mundo";
@@ -29,12 +30,8 @@ import {
   PASO_POR_DEFECTO,
   TAMANO_MUNDO_POR_DEFECTO,
   aplanarClaro,
-  crearMontanas,
   crearGravilla,
-  crearRocas,
-  crearTerreno,
-  instanciarRocas,
-  instanciarRocasAltas,
+  crearMontanas,
   leerDem,
   rocasBasalticas,
   submuestrear,
@@ -42,6 +39,9 @@ import {
   type Rejilla,
   type TransformacionRoca,
 } from "./activos/terreno";
+import { anguloEnZona, funcionRelieve, geometriaRelieve, mascaraZona } from "./activos/relieve";
+import { coloresRespaldo, crearMaterialesSuelo, type MaterialesSuelo } from "./activos/sueloMarte";
+import { conVariante, gruposRocas, instanciarPorVariante, piedritas } from "./activos/rocasMarte";
 
 // ---------------------------------------------------------------------------------------------
 // Datos del DEM y del claro
@@ -67,10 +67,12 @@ export function rejillaJezero(buffer: ArrayBuffer): Rejilla {
  * `radio` (con margen de una celda del DEM, ~4,3 u) y sube suave hasta `borde`. [E]
  */
 export const CLARO = { radio: 34, borde: 46 } as const;
-/** Rocas sueltas fuera del claro. [E] */
-export const ROCAS = { n: 40, semilla: 42, radioMin: 24, radio: 110 } as const;
-/** Rocas grandes facetadas en el borde del claro (lámina `mundo/01`). [E] */
-export const ROCAS_GRANDES = { n: 14, semilla: 9, radioMin: 15, radio: 28, escalaMin: 1.2, escalaMax: 2.6 } as const;
+/**
+ * Bloques sueltos en el borde del claro. Referencia (regla 11): `occupy-mars-2`, bloques de 1 a 3 m
+ * repartidos por el llano en el plano medio, nunca tapando la vista. Por eso la escala máxima baja de
+ * 2,6 (lámina `mundo/01`, dirección descartada) a 1,8. [E]
+ */
+export const ROCAS_GRANDES = { n: 14, semilla: 9, radioMin: 15, radio: 28, escalaMin: 1.0, escalaMax: 1.8 } as const;
 
 /** Radio en planta de una roca (la roca maestra mide hasta 1,2 u de radio por unidad de escala). */
 export function radioRoca(r: TransformacionRoca): number {
@@ -120,18 +122,18 @@ export function rocasGrandes(claro: Rejilla): TransformacionRoca[] {
 const rocasGrandesPorRejilla = new WeakMap<Rejilla, TransformacionRoca[]>();
 
 /**
- * Rocas basálticas grandes de primer plano (`mundo/01`: abajo a la izquierda y a la derecha del
- * encuadre de tercera persona). Puestas a mano para el encuadre por defecto de `CAMARAS.tercera`,
- * fuera de caminos, plaza, banco, sólidos de `TERRENO` y del radio de uso de cada lugar
- * (`rocaPrimerPlanoLibre`). En el borde del círculo caminable: PENDIENTE que Camilo las sume como
- * círculos de colisión en `TERRENO` (mundo.ts) con `radioRocaPrimerPlano`. [E]
+ * Piedras sueltas de primer plano, bajas. Referencia (regla 11): `occupy-mars-2`, primer plano abierto con
+ * piedras chicas sobre el regolito; nada alto entre la cámara y el horizonte. Las dos rocas altas de la
+ * lámina `mundo/01` (dirección descartada) se quitaron porque tapaban la vista. Fuera de caminos, plaza,
+ * banco, sólidos de `TERRENO` y del radio de uso de cada lugar (`rocaPrimerPlanoLibre`). [E]
  */
 export const ROCAS_PRIMER_PLANO: readonly TransformacionRoca[] = [
-  { posicion: [-6.5, 0, 1.5], escala: [0.75, 1.5, 0.7], rotacion: [0.02, 0.6, -0.03] }, // grande y alta, esquina inferior izquierda
-  { posicion: [2.4, 0, 3.1], escala: [0.75, 1.7, 0.72], rotacion: [-0.02, 2.1, 0.03] }, // grande y alta, esquina inferior derecha
-  { posicion: [-4.2, 0, 2.1], escala: [0.5, 0.7, 0.48], rotacion: [0.05, 0.3, 0] },
-  { posicion: [7.2, 0, 3.4], escala: [0.5, 0.6, 0.5], rotacion: [0, 1.4, 0.03] },
+  { posicion: [-4.2, 0, 2.1], escala: [0.5, 0.55, 0.48], rotacion: [0.05, 0.3, 0] },
+  { posicion: [7.2, 0, 3.4], escala: [0.5, 0.5, 0.5], rotacion: [0, 1.4, 0.03] },
 ];
+
+/** Formas de las piedras de primer plano: bloque partido y laja. */
+const VARIANTES_PRIMER_PLANO = [0, 1] as const;
 
 /** Huella en planta de una roca de primer plano. */
 export const radioRocaPrimerPlano = radioRoca;
@@ -162,8 +164,17 @@ export interface EscenaArmada {
   modulos: Readonly<Record<ModuloBase, ModuloArmado>>;
   /** Grupo del terreno y las rocas (vacío hasta `ponerTerreno`). */
   terreno: THREE.Group;
+  /** Materiales del suelo y las rocas de Marte (Etapa BC). */
+  suelo: MaterialesSuelo;
+  /** Suelo y rocas con texturas y shader propio (true) o con color de vértice (false, calidad baja). */
+  usarSueloDetallado(detallado: boolean): void;
   /** Reconcilia los módulos con la vista (sin reconstruir mallas: solo visibilidad). */
   aplicarVista(vista: VistaEscena): void;
+  /**
+   * Cambia la antena y el panel por los modelos reales (Etapa D) cuando llegan los GLB. Sin llamarla (pruebas en
+   * Node) quedan las formas procedurales. El hábitat sigue procedural (el HDU no se leía como refugio).
+   */
+  ponerModelos(modelos: ModelosModulos): void;
   /** Pone (o reemplaza) el terreno de Jezero con el claro aplanado y las rocas. */
   ponerTerreno(rejilla: Rejilla): void;
   /** Marca un pulso corto en un módulo (evento de avería). */
@@ -194,10 +205,27 @@ export function armarEscena(
   const base = new THREE.Group();
   base.name = "Base";
   const modulos = Object.fromEntries(MODULOS_BASE.map((id) => [id, armarModulo(materiales, id)])) as Record<ModuloBase, ModuloArmado>;
-  // Las rocas de primer plano están dentro del claro llano (y = 0): no esperan al DEM.
-  const primerPlano = instanciarRocasAltas(materiales, ROCAS_PRIMER_PLANO, "Rocks_Basalt_Foreground");
-  base.add(armarAnclajes(materiales), armarKit(materiales), armarEdificios(materiales), primerPlano, ...MODULOS_BASE.map((id) => modulos[id].raiz));
-  escena.add(terreno, base, crearMontanas(materiales));
+  const suelo = crearMaterialesSuelo();
+  let detallado = true;
+  /** Material de las celdas del panel real (null hasta `ponerModelos`) y el último estado de polvo pedido. */
+  let celdasPanel: THREE.MeshStandardMaterial | null = null;
+  let polvo = vista?.panelConPolvo ?? false;
+  const materialRoca = () => (detallado ? suelo.roca.detallado : suelo.roca.simple);
+  base.add(armarAnclajes(materiales), armarKit(materiales), armarEdificios(materiales), ...MODULOS_BASE.map((id) => modulos[id].raiz));
+  // Fuera de la zona de la Etapa BC el horizonte sigue siendo la cordillera de `develop`.
+  escena.add(terreno, base, crearMontanas(materiales, undefined, (a) => anguloEnZona(a, 0.05)));
+  // Con suelo detallado los caminos se dibujan en el suelo (`caminosSuelo.ts`); las losas quedan para calidad baja.
+  const kitCaminos = base.getObjectByName("Kit_Paths")!;
+  kitCaminos.visible = !detallado;
+  const pares: [THREE.Material, THREE.Material][] = [
+    [suelo.terreno.simple, suelo.terreno.detallado],
+    [suelo.roca.simple, suelo.roca.detallado],
+  ];
+  const aplicarMaterialSuelo = (raiz: THREE.Object3D) =>
+    raiz.traverse((o) => {
+      if (!(o instanceof THREE.Mesh)) return;
+      for (const [simple, det] of pares) if (o.material === simple || o.material === det) o.material = detallado ? det : simple;
+    });
 
   const armada: EscenaArmada = {
     escena,
@@ -205,9 +233,25 @@ export function armarEscena(
     cielo,
     modulos,
     terreno,
+    suelo,
+    usarSueloDetallado(d) {
+      detallado = d;
+      kitCaminos.visible = !d;
+      aplicarMaterialSuelo(terreno);
+    },
     aplicarVista(v) {
       tripulacion.aplicarVista(v);
       for (const id of MODULOS_BASE) aplicarEstado(modulos[id], v.modulos[id]);
+      polvo = v.panelConPolvo ?? false;
+      if (celdasPanel) pintarPolvo(celdasPanel, polvo);
+    },
+    ponerModelos(m) {
+      // Luz de estado: en la zapata de la antena y sobre el controlador del panel.
+      reemplazarSolido(modulos.antena, armarAntenaReal(m), [0, 0.38, 0.62]);
+      const panel = armarPanelReal(m);
+      reemplazarSolido(modulos.panel_solar, panel.grupo, [CONTROLADOR_PANEL.x, CONTROLADOR_PANEL.alto + 0.1, CONTROLADOR_PANEL.z]);
+      celdasPanel = panel.celdas;
+      if (celdasPanel) pintarPolvo(celdasPanel, polvo);
     },
     ponerTerreno(r) {
       for (const hijo of [...terreno.children]) {
@@ -215,14 +259,30 @@ export function armarEscena(
         liberarEscena(hijo);
       }
       const claro = aplanarClaro(r, MALLA_JEZERO, CLARO.radio, CLARO.borde);
-      const t = crearTerreno(materiales, { rejilla: claro.rejilla, malla: MALLA_JEZERO });
-      const rocas = crearRocas(materiales, t, ROCAS.n, ROCAS.semilla, { radioMin: ROCAS.radioMin, radio: ROCAS.radio });
-      const grandes = instanciarRocas(materiales, rocasGrandes(claro.rejilla), "Rocks_Basalt_Large");
+      const altura = funcionRelieve(claro.rejilla, MALLA_JEZERO);
+      const sol = direccionSolActual();
+      const malla = new THREE.Mesh(geometriaRelieve(altura, claro.altura, coloresRespaldo(), [sol.x, sol.y, sol.z]), detallado ? suelo.terreno.detallado : suelo.terreno.simple);
+      malla.name = "Terrain_Jezero";
+      malla.receiveShadow = true;
+      malla.castShadow = false;
+      const rocaMat = materialRoca();
+      // Toda roca se apoya en la función de altura (con el microrrelieve del claro): ninguna flota ni se hunde de más.
+      const apoyar = <T extends TransformacionRoca>(r: T): T => ({ ...r, posicion: [r.posicion[0], altura(r.posicion[0], r.posicion[2]), r.posicion[2]] });
+      // Primer plano y borde del claro (chocan) y grupos cercanos comparten las variantes: 1 malla por variante.
+      const primerPlano = conVariante(ROCAS_PRIMER_PLANO, VARIANTES_PRIMER_PLANO).map(apoyar);
+      const bordeClaro = conVariante(rocasGrandes(claro.rejilla)).map(apoyar);
+      // Grupos de rocas solo dentro de la zona (regla 10).
+      const fueraDeZona = (x: number, z: number) => mascaraZona(x, z) < 0.6;
+      const grupos = [...gruposRocas(altura, "cerca", fueraDeZona), ...gruposRocas(altura, "lejos", fueraDeZona)];
+      const cerca = instanciarPorVariante([...primerPlano, ...bordeClaro, ...grupos.filter((g) => g.detalle === "cerca")], "cerca", rocaMat, "Rocks_Near");
+      const lejos = instanciarPorVariante(grupos.filter((g) => g.detalle === "lejos"), "lejos", rocaMat, "Rocks_Clusters_Far");
       const ocupado = [...huellasFijasDeBase(), ...huellasRocas(claro.rejilla)];
-      const gravilla = crearGravilla(materiales, t, {
-        excluir: (x, z) => chocaConBase(x, z, 0.3) || sobreCamino(x, z, 0.2) || ocupado.some((h) => distanciaAHuella(h, x, z) < 0.3),
-      });
-      terreno.add(t.malla, rocas, grandes, gravilla);
+      const enBase = (x: number, z: number) => chocaConBase(x, z, 0.3) || sobreCamino(x, z, 0.2) || ocupado.some((h) => distanciaAHuella(h, x, z) < 0.3);
+      // Piedritas en muchas escalas: alrededor de cada bloque y al pie de las paredes, fuera del círculo caminable.
+      const sueltas = piedritas(altura, [...bordeClaro, ...grupos], (x, z) => fueraDeZona(x, z) || Math.hypot(x, z) < 33 || enBase(x, z));
+      const gravilla = crearGravilla(materiales, { malla, rejilla: claro.rejilla, opciones: MALLA_JEZERO }, { excluir: enBase, altura }, sueltas);
+      gravilla.material = rocaMat;
+      terreno.add(malla, cerca, lejos, gravilla);
       terreno.position.y = -claro.altura;
     },
     pulsar(id, ahora) {
@@ -250,6 +310,7 @@ export function armarEscena(
       tripulacion.liberar();
       cielo.quitar();
       liberarEscena(escena);
+      liberarMateriales(suelo.todos);
     },
   };
   if (vista) armada.aplicarVista(vista);

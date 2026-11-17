@@ -82,6 +82,8 @@ export interface Terreno {
   plataformas: readonly Plataforma[];
   /** Radio de la zona jugable, centrada en el origen. */
   limite: number;
+  /** Relieve del suelo (m) fuera de rampas y plataformas: el microrrelieve del claro (Etapa BC). Sin él, 0. */
+  relieve?: (x: number, z: number) => number;
 }
 
 function entre(v: number, a: number, b: number): boolean {
@@ -89,8 +91,8 @@ function entre(v: number, a: number, b: number): boolean {
 }
 
 /** Altura del suelo en un punto: plano, rampa o plataforma. */
-export function alturaSuelo(x: number, z: number, t: Pick<Terreno, "rampas" | "plataformas">): number {
-  let h = 0;
+export function alturaSuelo(x: number, z: number, t: Pick<Terreno, "rampas" | "plataformas" | "relieve">): number {
+  let h = t.relieve?.(x, z) ?? 0;
   for (const p of t.plataformas) {
     if (entre(x, p.x0, p.x1) && entre(z, p.z0, p.z1)) h = Math.max(h, p.alto);
   }

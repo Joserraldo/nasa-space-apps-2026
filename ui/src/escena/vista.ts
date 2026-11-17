@@ -40,6 +40,11 @@ export interface VistaEscena {
   };
   /** Verdadero si la tripulación activó explícitamente "Subir el escudo" en esta misión. */
   escudoElevado?: boolean;
+  /**
+   * Polvo sobre el panel solar (evento de `MISION_JEZERO.eventoPolvo`): la escena lo pinta hasta que el motor diga
+   * que se limpió. Opcional: sin el campo, el panel se ve limpio. El motor todavía no guarda este estado.
+   */
+  panelConPolvo?: boolean;
   /** Adónde conviene ir ahora; null si no hay sugerencia. */
   lugarObjetivo: LugarObjetivo | null;
   resultado: GameState["resultado"];
