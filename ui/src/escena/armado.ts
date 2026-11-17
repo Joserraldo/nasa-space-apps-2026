@@ -11,6 +11,8 @@
  */
 import * as THREE from "three";
 import { muestraRocas, variarRocas } from "./activos/rocasVariadas";
+import { ajusteDeMundo, aplicarCieloMundo, mundoCielo, tintarMontanas } from "./cieloMundo";
+import { crearSolVisible, solVisibleActivo } from "./solVisible";
 import { aplicarTexturasRocas, aplicarTexturasSuelo, texturasSueloActivas } from "./texturasSuelo";
 import { crearCielo, type Calidad, type Cielo } from "./cielo";
 import type { Materiales } from "./materiales";
@@ -191,6 +193,11 @@ export function armarEscena(
   const tripulacion = crearTripulacionBase();
   escena.add(tripulacion.grupo);
   const cielo = crearCielo(escena, "dia", calidad);
+  const mundo = mundoCielo();
+  const ajusteMundo = ajusteDeMundo(mundo);
+  aplicarCieloMundo(escena, cielo, mundo);
+  if ((solVisibleActivo() || mundo !== "marte") && ajusteMundo.solVisible) crearSolVisible(escena, cielo, { brillo: ajusteMundo.brilloSol, tamano: ajusteMundo.tamanoSol });
+  const conTexturas = texturasSueloActivas() || mundo !== "marte";
   const terreno = new THREE.Group();
   terreno.name = "Terrain_Group";
   const base = new THREE.Group();
@@ -199,7 +206,9 @@ export function armarEscena(
   // Las rocas de primer plano están dentro del claro llano (y = 0): no esperan al DEM.
   const primerPlano = instanciarRocasAltas(materiales, ROCAS_PRIMER_PLANO, "Rocks_Basalt_Foreground");
   base.add(armarAnclajes(materiales), armarKit(materiales), armarEdificios(materiales), primerPlano, ...MODULOS_BASE.map((id) => modulos[id].raiz));
-  escena.add(terreno, base, crearMontanas(materiales));
+  const montanas = crearMontanas(materiales);
+  if (ajusteMundo.suelo) tintarMontanas(montanas, ajusteMundo.suelo);
+  escena.add(terreno, base, montanas);
 
   const armada: EscenaArmada = {
     escena,
@@ -218,8 +227,7 @@ export function armarEscena(
       }
       const claro = aplanarClaro(r, MALLA_JEZERO, CLARO.radio, CLARO.borde);
       const t = crearTerreno(materiales, { rejilla: claro.rejilla, malla: MALLA_JEZERO });
-      const conTexturas = texturasSueloActivas();
-      if (conTexturas) aplicarTexturasSuelo(t.malla);
+      if (conTexturas) aplicarTexturasSuelo(t.malla, ajusteMundo.texturas, ajusteMundo.suelo);
       const rocas = crearRocas(materiales, t, ROCAS.n, ROCAS.semilla, { radioMin: ROCAS.radioMin, radio: ROCAS.radio });
       const grandes = instanciarRocas(materiales, rocasGrandes(claro.rejilla), "Rocks_Basalt_Large");
       const ocupado = [...huellasFijasDeBase(), ...huellasRocas(claro.rejilla)];
@@ -238,7 +246,7 @@ export function armarEscena(
         terreno.add(fila);
         variadas.push(...(fila.children as THREE.InstancedMesh[]));
       }
-      if (conTexturas) aplicarTexturasRocas([rocas, grandes, gravilla, primerPlano, ...variadas]);
+      if (conTexturas) aplicarTexturasRocas([rocas, grandes, gravilla, primerPlano, ...variadas], ajusteMundo.texturas, ajusteMundo.suelo);
       terreno.position.y = -claro.altura;
     },
     pulsar(id, ahora) {
