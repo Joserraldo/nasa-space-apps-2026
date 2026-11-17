@@ -246,3 +246,31 @@ export function crearSalaKit(sala: SalaKit, materiales: Materiales): THREE.Group
   });
   return raiz;
 }
+
+/** A thing in the room the kid bumps into and may interact with. */
+export interface PuntoSala {
+  /** Kit piece name or own builder name, with its index: stable id for the game to react to. */
+  id: string;
+  x: number;
+  z: number;
+  /** Collision radius in metres (0 = wall-mounted, no collision). */
+  radio: number;
+  interactivo: boolean;
+}
+
+const RADIO_PIEZA: Partial<Record<Pieza, number>> = {
+  console_ss: 0.7, chair_ss: 0.35, rack_ss: 0.6, crate_ss: 0.72, breaker_ss: 0.25, screen_ss_map: 0, card_reader_ss: 0, light_ss_emergency: 0,
+};
+const INTERACTIVAS: readonly Pieza[] = ["console_ss", "rack_ss", "crate_ss", "breaker_ss", "screen_ss_map"];
+/** Where the kid appears, just inside the door, and where he leaves. */
+export const PUERTA_SALA = { x: 3, z: -2.2, radio: 0.9 } as const;
+
+/** Obstacles and interactive spots of a kit room, derived from its plan. */
+export function puntosSalaKit(sala: SalaKit): PuntoSala[] {
+  const plano = PLANOS[sala];
+  const kit = plano.kit
+    .filter(([p]) => p in RADIO_PIEZA)
+    .map(([p, x, z], i) => ({ id: `${p}_${i}`, x, z, radio: RADIO_PIEZA[p]!, interactivo: INTERACTIVAS.includes(p) }));
+  const propios = plano.propios.map(([f, x, z]) => ({ id: f.name, x, z, radio: 0.95, interactivo: true }));
+  return [...kit, ...propios];
+}
