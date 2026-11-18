@@ -41,11 +41,11 @@ function enBanda<T extends THREE.BufferGeometry>(g: T, banda: Banda): T {
 }
 
 /** Color de pieza: una banda de la paleta tal cual o un acento por función sobre la banda clara. */
-export type Tono = Banda | Acento;
+export type Tono = Banda | Acento | `#${string}`;
 const BANDAS: readonly string[] = ["negro", "rojo", "oscuro", "cuerpo"];
 export function tonear<T extends THREE.BufferGeometry>(g: T, t: Tono): T {
   if (BANDAS.includes(t)) return pintar(enBanda(g, t as Banda), new THREE.Color(1, 1, 1));
-  return pintar(enBanda(g, "cuerpo"), colorSobreCuerpo(t as Acento));
+  return pintar(enBanda(g, "cuerpo"), colorSobreCuerpo(t as Acento | `#${string}`));
 }
 
 /** Color de una luz: el acento (o un hex) en lineal por un brillo (sobre 1 brilla). */
@@ -102,17 +102,21 @@ export function parteLuz(g: THREE.BufferGeometry, m: MaterialesColonia, pos: V3,
 // ---------------------------------------------------------------------------------------------
 
 /**
- * Saco lleno: almohada baja y redondeada (elipsoide de 6 × 3 caras con la base aplastada), de tela con polvo. Los
- * sacos de D2 eran cajas en hileras trabadas y se leían como ladrillos; estos se apoyan, se solapan y se hunden. [E]
+ * Saco lleno: caja redondeada (mitad caja, mitad esfera, 2 × 1 × 2 divisiones) con la base aplastada y un lomo arriba,
+ * de tela con polvo; 32 triángulos. Los sacos de D2 eran cajas en hileras trabadas (se leían como ladrillos) y el
+ * primer intento de D3, un elipsoide de 6 caras, se leía como piedras hexagonales. [E]
  */
 function geometriaSaco(): THREE.BufferGeometry {
-  const g = new THREE.SphereGeometry(0.5, 6, 3);
+  const g = new THREE.BoxGeometry(1, 1, 1, 2, 1, 2);
   const p = g.getAttribute("position");
+  const v = new THREE.Vector3();
   for (let i = 0; i < p.count; i++) {
-    const y = p.getY(i);
-    p.setXYZ(i, p.getX(i) * 0.68, y < 0 ? y * 0.45 : y, p.getZ(i) * 0.4);
+    v.fromBufferAttribute(p, i);
+    const esfera = v.clone().normalize().multiplyScalar(0.62);
+    v.lerp(esfera, 0.5);
+    if (v.y < 0) v.y *= 0.35;
+    p.setXYZ(i, v.x * 0.66, v.y * 0.36, v.z * 0.4);
   }
-  g.scale(1, 0.46, 1);
   g.computeVertexNormals();
   return tonear(g, "tela");
 }
@@ -224,19 +228,19 @@ export function crearTuberias(m: MaterialesColonia, desde: number, hasta: number
 // ---------------------------------------------------------------------------------------------
 
 /** Poste de aterrizaje a rayas amarillas y negras con luz del acento arriba (silueta de `SM_Landing_Light`). */
-export function crearPosteLuz(m: MaterialesColonia, acento: Acento, alto = 1.15): THREE.Group {
-  const g = grupo("Colony_LightPost", malla(cilindro(0.13, 0.16, 0.08, 8, "oscuro"), m.kit, [0, 0.04, 0]));
+export function crearPosteLuz(m: MaterialesColonia, acento: Acento | string, alto = 1.15, rayas: readonly [Tono, Tono] = ["amarillo", "negro"], base: Tono = "oscuro"): THREE.Group {
+  const g = grupo("Colony_LightPost", malla(cilindro(0.13, 0.16, 0.08, 8, base), m.kit, [0, 0.04, 0]));
   const n = 4;
-  for (let i = 0; i < n; i++) g.add(malla(cilindro(0.045, 0.045, alto / n, 6, i % 2 ? "negro" : "amarillo"), m.kit, [0, 0.08 + (i + 0.5) * (alto / n), 0]));
-  g.add(malla(cilindro(0.09, 0.07, 0.05, 8, "oscuro"), m.kit, [0, alto + 0.1, 0]));
+  for (let i = 0; i < n; i++) g.add(malla(cilindro(0.045, 0.045, alto / n, 6, rayas[i % 2]!), m.kit, [0, 0.08 + (i + 0.5) * (alto / n), 0]));
+  g.add(malla(cilindro(0.09, 0.07, 0.05, 8, base), m.kit, [0, alto + 0.1, 0]));
   g.add(parteLuz(luzCil(0.08, 0.12, 8, acento, 1.9), m, [0, alto + 0.19, 0]));
   return g;
 }
 
 /** Franja de peligro amarilla y negra (`SM_Floor_Hazard_Edge`): `n` bandas a lo largo de x. */
-export function franjaPeligro(m: MaterialesColonia, ancho: number, alto: number, fondo: number, n: number): THREE.Group {
+export function franjaPeligro(m: MaterialesColonia, ancho: number, alto: number, fondo: number, n: number, tonos: readonly [Tono, Tono] = ["amarillo", "negro"]): THREE.Group {
   const g = new THREE.Group();
-  for (let i = 0; i < n; i++) g.add(malla(caja(ancho / n, alto, fondo, i % 2 ? "negro" : "amarillo"), m.kit, [-ancho / 2 + (i + 0.5) * (ancho / n), 0, 0]));
+  for (let i = 0; i < n; i++) g.add(malla(caja(ancho / n, alto, fondo, tonos[i % 2]!), m.kit, [-ancho / 2 + (i + 0.5) * (ancho / n), 0, 0]));
   return g;
 }
 

@@ -22,6 +22,10 @@ import { crearHabitatInterior } from "./activos/interiores/habitat";
 import { crearTaller } from "./activos/interiores/taller";
 import { fusionar } from "./activos/fusionar";
 import { crearPerseverance } from "./activos/perseverance";
+import { fusionarConUV } from "./activos/colonia";
+import { berma, crearEscudoColonia } from "./activos/coloniaPiezas";
+import { crearDomoVidrio } from "./activos/domoVidrio";
+import { crearPaleta, materialKit, materialLuces, materialMarco, materialRegolito, materialVidrio } from "./activos/polvoKit";
 import { crearEscena3D } from "./escena3d";
 import { colorToken, crearMateriales } from "./materiales";
 import { LUGARES, type LugarId } from "./mundo";
@@ -194,6 +198,22 @@ const SALAS_PREVIA = {
   // Hábitat en corte, como las láminas `estaciones/06` y `07`.
   habitat: () => ({ raiz: crearHabitatInterior(crearMateriales()), camara: [-2.5, 5.4, 8] as const, mira: [0.3, 0.8, -0.5] as const, luz: [-2, 6, 4] as const }),
   // Etapa D3: Perseverance low poly solo, en el mismo ángulo que el render del modelo de NASA.
+  // Etapa D3: escudo de sacos de regolito con su generador y una berma de arco, con los materiales de la colonia.
+  escudo: () => {
+    const paleta = crearPaleta();
+    const m = { kit: materialKit(paleta), regolito: materialRegolito(), luz: materialLuces(), vidrio: materialVidrio(), marco: materialMarco(paleta) };
+    const g = new THREE.Group();
+    const b = berma(m, 3.2, 2.4, 3.9, 3, 5);
+    b.position.set(-1, 0, 2.6);
+    g.add(crearEscudoColonia(m), b);
+    return { raiz: g, camara: [-4.4, 2.1, 3.2] as const, mira: [0, 0.4, 0.4] as const, luz: [-3, 5, 4] as const };
+  },
+  // Etapa D3: invernadero (pieza de aprobación de la paleta), en el ángulo de `dome/all.png`.
+  invernadero: () => {
+    const paleta = crearPaleta();
+    const m = { kit: materialKit(paleta), regolito: materialRegolito(), luz: materialLuces(), vidrio: materialVidrio(), marco: materialMarco(paleta) };
+    return { raiz: crearDomoVidrio(m, { radio: 2.65, estantes: 2 }), camara: [-4.6, 4.2, 6.4] as const, mira: [0, 1.0, 0] as const, luz: [-3, 6, 4] as const };
+  },
   perseverance: () => ({ raiz: crearPerseverance(), camara: [3.0, 2.3, 4.2] as const, mira: [0, 0.8, 0] as const, luz: [3, 6, 4] as const }),
 } as const;
 
@@ -208,7 +228,7 @@ function montarSala(sala: keyof typeof SALAS_PREVIA): void {
   const escena = new THREE.Scene();
   escena.background = colorToken("lila");
   const cfg = SALAS_PREVIA[sala]();
-  escena.add(fusionar(cfg.raiz, `Sala_${sala}`), new THREE.HemisphereLight(colorToken("marfil"), colorToken("lila"), 2.4));
+  escena.add(fusionarConUV(cfg.raiz, `Sala_${sala}`), new THREE.HemisphereLight(colorToken("marfil"), colorToken("lila"), 2.4));
   const luz = new THREE.DirectionalLight(colorToken("aviso-fondo"), 1.2);
   luz.position.set(cfg.luz[0], cfg.luz[1], cfg.luz[2]);
   luz.target.position.set(0, 0, 0);

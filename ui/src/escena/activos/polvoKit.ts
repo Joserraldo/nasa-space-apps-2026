@@ -23,6 +23,25 @@ export const COLORES_PALETA: Readonly<Record<Banda, readonly [number, number, nu
 };
 
 /**
+ * Paleta del sistema estético (`clasificacion-objetos.md`, "Sistema estético", decisión de María Paula del 18 nov): los
+ * hexadecimales se cambian todos juntos, nunca en piezas sueltas. Por ahora la usa solo el invernadero (`domoVidrio.ts`),
+ * la pieza que se aprueba antes de pintar la colonia entera. `planta` no es acento: es el único verde (plantas adentro).
+ */
+export const PALETA = {
+  blanco: "#E8E6E1",
+  gris: "#A8A29A",
+  grafito: "#2E3238",
+  azul: "#5BA9C9",
+  cian: "#4FD1E0",
+  amarillo: "#F2B705",
+  rojo: "#E0453A",
+  polvo: "#9C5B3C",
+  planta: "#5E9C3F",
+  /** Luz cálida de marcos y estantes (sin rosa: la paleta no lo admite). */
+  luzCalida: "#FFE2B0",
+} as const;
+
+/**
  * Acentos por función (`clasificacion-objetos.md`, "Color por función"): hábitat cian (identidad del juego), energía
  * amarillo, agua azul, invernadero verde, comunicaciones rojo, depósito naranja. Más el blanco de estructura, la tela de
  * los sacos y el negro de las franjas de peligro. sRGB. [E]
@@ -45,8 +64,8 @@ export type Acento = keyof typeof ACENTOS;
  * Color por vértice que, multiplicado por la banda `cuerpo` de la paleta, da el acento pedido (en lineal: la banda es
  * gris cálido, así que el factor pasa de 1). Las piezas originales apuntan su UV a esa banda y llevan este color.
  */
-export function colorSobreCuerpo(acento: Acento): THREE.Color {
-  const objetivo = new THREE.Color(ACENTOS[acento]);
+export function colorSobreCuerpo(acento: Acento | `#${string}`): THREE.Color {
+  const objetivo = new THREE.Color(acento.startsWith("#") ? acento : ACENTOS[acento as Acento]);
   const banda = new THREE.Color().setRGB(...(COLORES_PALETA.cuerpo.map((x) => x / 255) as [number, number, number]), THREE.SRGBColorSpace);
   return new THREE.Color(objetivo.r / banda.r, objetivo.g / banda.g, objetivo.b / banda.b);
 }
@@ -82,6 +101,8 @@ export interface OpcionesPolvo {
   arriba: number;
   /** Fuerza del chorreado vertical que oscurece paredes. */
   chorreado: number;
+  /** Color del polvo (sRGB); sin él, `COLOR_POLVO`. */
+  color?: string;
 }
 
 // Suelo más bajo que en D2: con 0,6 los acentos de las piezas bajas (contenedores, barriles) se perdían.
@@ -89,7 +110,7 @@ const POLVO_KIT: OpcionesPolvo = { base: 0.12, suelo: 0.42, arriba: 0.5, chorrea
 
 /** Inyecta el polvo en un `MeshStandardMaterial` (mismo programa para todos los que lo usan). */
 export function conPolvo(m: THREE.MeshStandardMaterial, o: OpcionesPolvo = POLVO_KIT): THREE.MeshStandardMaterial {
-  const color = new THREE.Color(COLOR_POLVO);
+  const color = new THREE.Color(o.color ?? COLOR_POLVO);
   m.onBeforeCompile = (s) => {
     s.uniforms.uPolvo = { value: color };
     s.uniforms.uPolvoOp = { value: new THREE.Vector4(o.base, o.suelo, o.arriba, o.chorreado) };
@@ -131,7 +152,7 @@ float ruidoP(vec2 p) {
 }`,
       );
   };
-  m.customProgramCacheKey = () => `polvo-kit-${o.base}-${o.suelo}-${o.arriba}-${o.chorreado}`;
+  m.customProgramCacheKey = () => `polvo-kit-${o.base}-${o.suelo}-${o.arriba}-${o.chorreado}-${o.color ?? ""}`;
   return m;
 }
 
@@ -178,5 +199,6 @@ export function materialMarco(paleta: THREE.Texture): THREE.MeshStandardMaterial
     suelo: 0.45,
     arriba: 0.06,
     chorreado: 0,
+    color: PALETA.polvo,
   });
 }

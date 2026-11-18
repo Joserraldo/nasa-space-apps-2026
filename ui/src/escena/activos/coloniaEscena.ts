@@ -143,7 +143,7 @@ export function ponerColonia(
   base.add(habitat, torre, baliza);
 
   // Módulos: invernadero de vidrio con estantes y luz, escudo de sacos y reciclador CC BY con su tubería al hábitat.
-  reemplazarSolido(modulos.invernadero, fusionarConUV(crearDomoVidrio(m, { radio: 2.65, vidrio: "azul", estantes: 2 }), "Module_Greenhouse"), [0, 2.72, 0]);
+  reemplazarSolido(modulos.invernadero, fusionarConUV(crearDomoVidrio(m, { radio: 2.65, estantes: 2 }), "Module_Greenhouse"), [0, 2.72, 0]);
   reemplazarSolido(modulos.escudo, fusionarConUV(crearEscudoColonia(m), "Module_Shield"), [0.3, 1.47, 1.3]);
   const reciclador = new THREE.Group();
   const estacion = prepararModelo(modelos.reciclador);

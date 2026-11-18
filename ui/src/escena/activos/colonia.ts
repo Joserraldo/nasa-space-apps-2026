@@ -98,10 +98,10 @@ export const HABITAT_COLONIA = { x: 0, z: -8.5, ancho: 7.2 } as const;
 /** Torre de comunicaciones (CC BY, 6,4 m de ancho) en el lugar de la torre de control vieja. [E] */
 export const TORRE_COLONIA = { ancho: 6.0 } as const;
 
-/** Domos de vidrio del fondo: radio y variante de vidrio de la referencia (nunca dos iguales juntas). [E] */
+/** Domos de vidrio del fondo: radio y estantes (el vidrio es el azul único de la paleta en todos). [E] */
 export const DOMOS_FONDO = [
-  { id: "cupula", radio: 4.8, vidrio: "celeste", estantes: 3 },
-  { id: "cupula2", radio: 3.6, vidrio: "claro", estantes: 2 },
+  { id: "cupula", radio: 4.8, estantes: 3 },
+  { id: "cupula2", radio: 3.6, estantes: 2 },
 ] as const;
 
 const dec = (id: Decorado["id"]) => decorado(id);
@@ -400,7 +400,7 @@ export function armarColonia(kit: KitColonia, m: MaterialesColonia, panel: Mater
     todo.add(x);
   }
   for (const d of DOMOS_FONDO) {
-    const domo = crearDomoVidrio(m, { radio: d.radio, vidrio: d.vidrio, estantes: d.estantes });
+    const domo = crearDomoVidrio(m, { radio: d.radio, estantes: d.estantes });
     const n = nodos.find((x) => x.id === d.id)!;
     domo.position.set(n.x, 0, n.z);
     domo.rotation.y = n.giro;
