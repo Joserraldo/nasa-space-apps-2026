@@ -14,13 +14,13 @@ import { CORREDORES, CORREDOR_ELEVADO, fusionarConUV, huellasColonia } from "./c
 import { SITIO_PERSEVERANCE } from "./coloniaEscena";
 import type { ModelosModulos } from "./modelosModulos";
 
-/** Kit real (`public/modelos/kit-colonia.glb`, sin texturas: se carga en Node) y modelos CC BY de prueba. */
-let kit: THREE.Group;
+/** Kit Quaternius real (`public/modelos/quaternius.glb`, sin texturas: se carga en Node) y modelos CC BY de prueba. */
+let quaternius: THREE.Group;
 beforeAll(async () => {
-  const buf = readFileSync(fileURLToPath(new URL("../../../public/modelos/kit-colonia.glb", import.meta.url)));
+  const buf = readFileSync(fileURLToPath(new URL("../../../public/modelos/quaternius.glb", import.meta.url)));
   const ab = buf.buffer.slice(buf.byteOffset, buf.byteOffset + buf.byteLength) as ArrayBuffer;
   const gltf = await new Promise<{ scene: THREE.Group }>((res, rej) => new GLTFLoader().parse(ab, "", res as never, rej));
-  kit = gltf.scene;
+  quaternius = gltf.scene;
 });
 
 function modelos(): ModelosModulos {
@@ -33,18 +33,13 @@ function modelos(): ModelosModulos {
   const rotor = (n: string) => Object.assign(new THREE.Mesh(new THREE.BoxGeometry(1, 0.02, 0.1), new THREE.MeshStandardMaterial()), { name: n });
   return {
     antena: malla("antena"),
-    kit,
     habitat: malla("habitat"),
     torre: malla("torre"),
     reciclador: malla("reciclador"),
     capsula: malla("capsula"),
     ingenuity: malla("ingenuity", [rotor("rotors_01"), rotor("rotors_02")]),
     tripulante: malla("tripulante"),
-    quaternius: (() => {
-      const g = new THREE.Group();
-      for (const n of ["Q_Ramp", "Q_Rover"]) g.add(Object.assign(new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1), new THREE.MeshStandardMaterial()), { name: n }));
-      return g;
-    })(),
+    quaternius,
   };
 }
 

@@ -4,7 +4,7 @@
  * de Node, sin red) se ven las formas procedurales de `modulos.ts` y `edificios.ts`.
  *
  * Fuentes y licencias (`public/modelos/FUENTES.md`): antena e Ingenuity de NASA 3D Resources (con crédito y sin
- * insignia); hábitat, torre, reciclador, cápsula y tripulante CC BY 4.0 (con crédito); kit Craftpix Space Colony. El
+ * insignia); hábitat, torre, reciclador, cápsula y tripulante CC BY 4.0 (con crédito); kit Quaternius (CC0). El
  * panel solar es original (`panelSolar.ts`) y Perseverance se dibuja en código (`perseverance.ts`).
  * La escena no cobra ni decide nada (`frontera.ts`): el polvo del panel solo se pinta según `VistaEscena`.
  */
@@ -17,8 +17,6 @@ import { PALETA, conPolvo } from "./polvoKit";
 /** Archivos de `public/modelos/` (los arma `construir_modelos.py`: base en y = 0, frente hacia +z, en metros). */
 export const ARCHIVOS_MODELOS = {
   antena: "antena-tall-dish.glb",
-  /** Kit Craftpix Space Colony, una malla por pieza (Etapa D2, `colonia.ts`). */
-  kit: "kit-colonia.glb",
   /** CC BY (Etapa D3): hábitat de domo geodésico, torre de comunicaciones, reciclador y cápsula de llegada. */
   habitat: "habitat-domo.glb",
   torre: "torre-comunicaciones.glb",

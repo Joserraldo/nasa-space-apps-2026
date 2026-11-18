@@ -10,7 +10,7 @@
  * Frente (esclusa) hacia +z, base en y = 0, medidas en metros. [E]
  */
 import * as THREE from "three";
-import { ESCLUSA, caja, crearEsclusa, grupo, luzCaja, parteKit, parteLuz, parteMarco, pintar, tonear, type MaterialesColonia } from "./coloniaPiezas";
+import { ESCLUSA, caja, crearEsclusa, grupo, luzCaja, parteKit, parteLuz, parteMarco, pintar, tonear, type MaterialesColonia, type PiezasQuaternius } from "./coloniaPiezas";
 import { PALETA } from "./polvoKit";
 
 export interface OpcionesDomo {
@@ -19,8 +19,8 @@ export interface OpcionesDomo {
   estantes: number;
   /** Esclusa al frente (la misma de toda la colonia; el invernadero no tiene acento). Por defecto, sí. */
   esclusa?: boolean;
-  /** Rampa del kit Quaternius para la esclusa. */
-  rampa?: THREE.BufferGeometry | undefined;
+  /** Piezas del kit Quaternius (esclusa `House_Long` y rampa). */
+  q?: PiezasQuaternius | undefined;
 }
 
 /** Meridianos y paralelos del marco (la referencia tiene 16 gajos y 5 anillos). */
@@ -77,8 +77,11 @@ export function crearDomoVidrio(m: MaterialesColonia, o: OpcionesDomo): THREE.Gr
   g.add(parteMarco(tonear(new THREE.CylinderGeometry(0.5, 0.5, 0.12, 10), PALETA.blanco), m, [0, r, 0]));
   // Esclusa única de la colonia (sin acento: puerta grafito sin marco), apoyada en el vidrio.
   if (o.esclusa !== false) {
-    const e = crearEsclusa(m, null, o.rampa);
-    e.position.z = Math.sqrt(Math.max(0, r * r - (ESCLUSA.alto * 0.6) ** 2)) - 0.35;
+    // En los domos chicos la esclusa va a menor escala para no tapar el domo (excepción a la regla 8, anotada).
+    const tamano = r < 3 ? 0.62 : 1;
+    const e = crearEsclusa(m, null, o.q, tamano);
+    // La escotilla asoma 0,9 m del vidrio; el resto del módulo entra en el domo (se ve como túnel a través del vidrio).
+    e.position.z = r + 0.9 * tamano - ESCLUSA.fondo * tamano;
     g.add(e);
   }
   // Estantes de cultivo en fila por el centro, bajo la parte alta del domo.

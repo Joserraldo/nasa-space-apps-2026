@@ -1,14 +1,15 @@
 /**
  * Colonia de Jezero (Etapas D2 y D3, `docs/referenciapau/exterior/etapa-D.md` y `clasificacion-objetos.md`).
- * - Hábitat y torre de comunicaciones: modelos CC BY (`coloniaEscena.ts` los coloca con `HABITAT_COLONIA` y la torre).
- * - Invernaderos del fondo: domos de vidrio originales (`domoVidrio.ts`).
- * - Módulos habitables restantes (enfermería, comedor, laboratorio, cápsula, refugio) y depósito: kit Craftpix.
- * - Lo que ningún kit trae (corredores elevados, bermas, entrada, balizas, losas): original (`coloniaPiezas.ts`).
- * Todo se fusiona por material: kit, regolito, luces y vidrio cuestan una llamada cada uno.
+ * - Hábitat, torre, reciclador y cápsula de llegada: modelos CC BY (`coloniaEscena.ts`).
+ * - Invernaderos: domos de vidrio originales (`domoVidrio.ts`).
+ * - Módulos habitables, refugio, depósito, túneles, esclusas y rover: kit Quaternius Ultimate Space Kit (CC0), pedido
+ *   de María Paula del 18 nov; reemplaza al kit Craftpix (sin permiso para publicar sus archivos).
+ * - Lo que ningún kit trae (bermas, balizas, losas, terminales, instrumentos): original (`coloniaPiezas.ts`).
+ * Todo se fusiona por material y por sector.
  *
  * Las posiciones son las de siempre (`DECORADO`, `LUGARES`, `POS_ESTACIONES`). Las estaciones (comedor, enfermería,
- * laboratorio) son módulos cerrados conectados al hábitat; los instrumentos automáticos van en el puesto de la
- * Meteoróloga (restricción del 17 nov, línea 7). Ese cambio espera la confirmación de María Paula (`traspaso-D.md`).
+ * laboratorio) son módulos cerrados conectados al hábitat (María Paula, 18 nov); los instrumentos automáticos van en el
+ * puesto de la Meteoróloga (restricción del 17 nov, línea 7).
  */
 import * as THREE from "three";
 import { mergeGeometries } from "three/examples/jsm/utils/BufferGeometryUtils.js";
@@ -21,7 +22,6 @@ import { FORMA_MODULO, MODULOS_BASE } from "./modulos";
 import { fusionar } from "./fusionar";
 import {
   berma,
-  caja,
   cilindro,
   crearBalizaColonia,
   crearBarril,
@@ -45,21 +45,6 @@ import { crearDomoVidrio } from "./domoVidrio";
 import { crearPanelSolar, geometriaCeldas, geometriaCuerpoPanel } from "./panelSolar";
 import type { Huella } from "./piezasComunes";
 
-export const PIEZAS_KIT = [
-  "Main_house",
-  "Main_house_2lv",
-  "Home_colonists",
-  "Research_center",
-  "Resource_warehouse",
-  "Connecting_gateway",
-  "Section",
-  "Farm",
-] as const;
-export type PiezaKit = (typeof PIEZAS_KIT)[number];
-/** Geometrías del kit a escala original (base en y = 0, entrada hacia +z), listas para clonar. */
-export type KitColonia = Readonly<Record<PiezaKit, THREE.BufferGeometry>>;
-
-/** Geometrías del GLB del kit (`construir_modelos.py` nombra cada malla `Kit_<pieza>`). */
 /** Geometrías de `quaternius.glb` por pieza (`Q_<pieza>` sin el prefijo). */
 export function quaterniusDesdeGltf(raiz: THREE.Object3D): PiezasQuaternius {
   const q: Record<string, THREE.BufferGeometry> = {};
@@ -74,18 +59,6 @@ export function quaterniusDesdeGltf(raiz: THREE.Object3D): PiezasQuaternius {
 /** Rover Quaternius estacionado junto al taller, fuera de senderos (referencias de organización). [E] */
 export const ROVER_COLONIA = { x: -9.6, z: 2.6, giro: 2.3, escala: 0.62, radio: 1.7 } as const;
 
-export function kitDesdeGltf(raiz: THREE.Object3D): KitColonia {
-  const kit: Partial<Record<PiezaKit, THREE.BufferGeometry>> = {};
-  raiz.traverse((o) => {
-    if (!(o instanceof THREE.Mesh)) return;
-    const nombre = [o.name, o.parent?.name ?? ""].find((n) => n.startsWith("Kit_"));
-    const pieza = PIEZAS_KIT.find((p) => nombre === `Kit_${p}`);
-    if (pieza) kit[pieza] = o.geometry;
-  });
-  for (const p of PIEZAS_KIT) if (!kit[p]) throw new Error(`kit-colonia.glb sin la pieza ${p}`);
-  return kit as KitColonia;
-}
-
 // ---------------------------------------------------------------------------------------------
 // Distribución
 // ---------------------------------------------------------------------------------------------
@@ -99,16 +72,19 @@ export interface NodoColonia {
   radio: number;
 }
 
+/** Piezas del kit Quaternius que hacen de edificio (escotilla hacia +z). */
+export type PiezaEdificio = "House_Single" | "House_Long" | "House_Cylinder" | "Building_L" | "Base_Large";
+
 export interface PiezaColocada extends NodoColonia {
-  pieza: PiezaKit;
+  pieza: PiezaEdificio;
   escala: number;
   /** Hundimiento (m): refugio y depósito semienterrados. */
   y?: number;
 }
 
 /**
- * Hábitat (domo geodésico CC BY, 7,2 m de ancho): su puerta queda a 0,6 m del puesto del jugador (0; −4,3) y su borde
- * trasero libra el anillo exterior (z −12,9). [E]
+ * Hábitat (domo geodésico CC BY, 7,2 m de ancho): su esclusa termina a 0,35 m del puesto del jugador (0; −4,3) y su
+ * borde trasero libra el anillo exterior (z −12,9). [E]
  */
 export const HABITAT_COLONIA = { x: 0, z: -8.5, ancho: 7.2 } as const;
 /** Torre de comunicaciones (CC BY, 6,4 m de ancho) en el lugar de la torre de control vieja. [E] */
@@ -124,23 +100,24 @@ const dec = (id: Decorado["id"]) => decorado(id);
 const est = (id: EstacionId) => POS_ESTACIONES.find((e) => e.id === id)!;
 
 /**
- * Piezas del kit Craftpix en su lugar (escalas por huella vieja). La cápsula usa `Main_house_2lv`, libre desde que el
- * hábitat es CC BY: así no se repite edificio en el cuadro (corrección 3 de `etapa-D.md`). [E]
+ * Edificios del kit Quaternius en su lugar, con escala por la huella vieja y nunca dos iguales juntos: enfermería en
+ * cápsula esférica, comedor en módulo largo, laboratorio en edificio en L, cápsula en cilindro con domo, refugio en L
+ * semienterrado y depósito en la base grande, al borde (regla 3 de composición). [E]
  */
 export function colocacionesKit(): PiezaColocada[] {
-  const en = (pieza: PiezaKit, id: string, x: number, z: number, escala: number, radio: number, y = 0): PiezaColocada =>
+  const en = (pieza: PiezaEdificio, id: string, x: number, z: number, escala: number, radio: number, y = 0): PiezaColocada =>
     ({ pieza, id, x, z, giro: alCentro(x, z), escala, radio, y });
   return [
-    en("Main_house", "enfermeria", est("enfermeria").x, est("enfermeria").z - 0.3, 0.45, 2.6),
-    en("Home_colonists", "comedor", est("comedor").x, est("comedor").z, 0.4, 2.4),
-    en("Home_colonists", "laboratorio", est("laboratorio").x, est("laboratorio").z, 0.4, 2.4),
-    en("Main_house_2lv", "capsula", dec("capsula").x, dec("capsula").z, 0.34, 2.6),
-    en("Main_house", "refugio", dec("refugio").x, dec("refugio").z, 0.42, 2.6, -0.55),
-    en("Resource_warehouse", "deposito", LOMA_BASE.x - 1.5, LOMA_BASE.z + 11.5, 0.7, 4, 0.9),
+    en("House_Single", "enfermeria", est("enfermeria").x, est("enfermeria").z - 0.3, 0.72, 1.45),
+    en("House_Long", "comedor", est("comedor").x, est("comedor").z, 0.55, 1.15),
+    en("Building_L", "laboratorio", est("laboratorio").x, est("laboratorio").z, 0.48, 1.9),
+    en("House_Cylinder", "capsula", dec("capsula").x, dec("capsula").z, 0.62, 1.75),
+    en("Building_L", "refugio", dec("refugio").x, dec("refugio").z, 0.5, 1.95, -0.5),
+    en("Base_Large", "deposito", LOMA_BASE.x - 1.5, LOMA_BASE.z + 11.5, 0.55, 2.35, 0.9),
   ];
 }
 
-/** Todos los nodos que conectan los corredores: kit, hábitat, torre y domos. */
+/** Todos los nodos que conectan los corredores: edificios, hábitat, torre y domos. */
 export function nodosColonia(): NodoColonia[] {
   const t = dec("torre");
   return [
@@ -163,14 +140,14 @@ export const CORREDORES: readonly (readonly [string, string])[] = [
 ];
 
 /**
- * El corredor hábitat–enfermería cruza el anillo exterior (z −12,9): va elevado sobre soportes (Quaternius Connector
- * sobre Metal Support, `clasificacion-objetos.md`) y el sendero pasa por debajo. Del lado del hábitat lo sostiene el
- * domo; las patas (fracción del tramo) van junto a la enfermería, fuera del sendero. Solo chocan las patas. [E]
+ * El corredor hábitat–enfermería cruza el anillo exterior (z −12,9): va elevado sobre Metal Support del kit y el sendero
+ * pasa por debajo. Del lado del hábitat lo sostiene el domo; las patas (fracción del tramo) van junto a la enfermería,
+ * fuera del sendero. Solo chocan las patas. [E]
  */
 export const CORREDOR_ELEVADO = { a: "habitat", b: "enfermeria", alto: 2.35, patas: [0.92] } as const;
 
-/** Escala de los tubos (`Section`, `Connecting_gateway`): 1,4 m de diámetro. [E] */
-const ESCALA_TUBO = 0.5;
+/** Túnel `Connector` del kit (3,37 m de largo, 2,2 m de diámetro) a 1,4 m de diámetro. [E] */
+const TUNEL = { largo: 3.37, escala: 0.65 } as const;
 /** Ancho en planta de un corredor (para su colisión). */
 export const ANCHO_CORREDOR_COLONIA = 1.5;
 
@@ -178,12 +155,14 @@ export const ANCHO_CORREDOR_COLONIA = 1.5;
 // Armado
 // ---------------------------------------------------------------------------------------------
 
-function piezaKit(kit: KitColonia, mat: THREE.Material, p: PiezaKit, escala: number | THREE.Vector3): THREE.Mesh {
-  const m = new THREE.Mesh(kit[p], mat);
-  if (typeof escala === "number") m.scale.setScalar(escala);
-  else m.scale.copy(escala);
-  m.castShadow = m.receiveShadow = true;
-  return m;
+function piezaQ(q: PiezasQuaternius, m: MaterialesColonia, p: string, escala: number | THREE.Vector3): THREE.Mesh | null {
+  const g = q[p];
+  if (!g) return null;
+  const x = new THREE.Mesh(g, m.quat);
+  if (typeof escala === "number") x.scale.setScalar(escala);
+  else x.scale.copy(escala);
+  x.castShadow = x.receiveShadow = true;
+  return x;
 }
 
 /** Centro, giro y largo libre de un corredor entre dos nodos. */
@@ -195,37 +174,37 @@ export function tramoCorredor(a: NodoColonia, b: NodoColonia): { x: number; z: n
   return { x: a.x + (dx / d) * mitad, z: a.z + (dz / d) * mitad, giro: Math.atan2(dx, dz), largo, desde: a.radio };
 }
 
-/**
- * Tubo de `a` a `b`: secciones `Section` del kit y un anillo oscuro en cada extremo, donde entra al módulo; elevado si
- * es el que cruza el anillo. Sin las compuertas `Connecting_gateway` (835 triángulos cada una): fusionada, la colonia
- * se dibuja entera aunque el tubo quede detrás de un edificio, y el presupuesto no alcanzaba. [E]
- */
-function corredor(kit: KitColonia, m: MaterialesColonia, a: NodoColonia, b: NodoColonia, elevado: boolean): THREE.Group {
+/** Túnel `Connector` de `a` a `b` (estirado a lo largo), con anillos grises donde entra a cada módulo; elevado si cruza el anillo. */
+function corredor(q: PiezasQuaternius, m: MaterialesColonia, a: NodoColonia, b: NodoColonia, elevado: boolean): THREE.Group {
   const g = new THREE.Group();
   g.name = `Colony_Corridor_${a.id}_${b.id}`;
   const t = tramoCorredor(a, b);
-  // El tubo entra un poco en cada módulo para no quedar suelto.
-  const largo = t.largo + (elevado ? 1.0 : 0.5);
+  // El túnel entra un poco en cada módulo para no quedar suelto.
+  const largo = t.largo + (elevado ? 1.0 : 0.8);
   g.position.set(t.x, 0, t.z);
   g.rotation.y = t.giro;
-  const s = ESCALA_TUBO;
-  const y = elevado ? CORREDOR_ELEVADO.alto - 0.7 : 0;
-  // Una sola sección estirada (572 triángulos por corredor, no una por cada 2 m).
-  const sec = piezaKit(kit, m.kit, "Section", new THREE.Vector3(s, s, largo / 3.95));
-  sec.position.y = y;
-  g.add(sec);
-  for (const lado of [-1, 1]) g.add(parteKit(cilindro(0.82, 0.82, 0.22, 10, "oscuro"), m, [0, y + 0.72, lado * (t.largo / 2 - 0.05)], [Math.PI / 2, 0, 0]));
+  const s = TUNEL.escala;
+  const y = elevado ? CORREDOR_ELEVADO.alto - 0.72 : 0;
+  const tubo = piezaQ(q, m, "Connector", new THREE.Vector3(largo / TUNEL.largo, s, s));
+  if (tubo) {
+    tubo.rotation.y = Math.PI / 2;
+    tubo.position.y = y;
+    g.add(tubo);
+  }
+  for (const lado of [-1, 1]) g.add(parteKit(cilindro(0.8, 0.8, 0.2, 12, "gris"), m, [0, y + 0.72, lado * (t.largo / 2 - 0.05)], [Math.PI / 2, 0, 0]));
   if (elevado) {
-    // Soportes de celosía (Metal Support): dos patas, travesaño bajo el tubo y riostras en cruz.
+    // Patas: Metal Support del kit de pie (5,95 m de largo), una a cada lado bajo el túnel.
     for (const f of CORREDOR_ELEVADO.patas) {
       const z = -t.largo / 2 + f * t.largo;
-      for (const x of [-0.75, 0.75]) g.add(parteKit(caja(0.12, y + 0.05, 0.12, "oscuro"), m, [x, (y + 0.05) / 2, z]));
-      g.add(parteKit(caja(1.65, 0.12, 0.2, "oscuro"), m, [0, y + 0.02, z]));
-      const diag = Math.hypot(1.5, y);
-      for (const sgn of [-1, 1]) g.add(parteKit(caja(0.05, diag, 0.05, "oscuro"), m, [0, y / 2, z], [0, 0, sgn * Math.atan2(1.5, y)]));
-      for (const x of [-0.75, 0.75]) g.add(parteKit(caja(0.3, 0.3, 0.3, "oscuro"), m, [x, 0.15, z]));
+      for (const x of [-0.75, 0.75]) {
+        const pata = piezaQ(q, m, "MetalSupport", new THREE.Vector3(1, 0.5, y / 5.95));
+        if (!pata) continue;
+        pata.rotation.x = -Math.PI / 2;
+        pata.position.set(x, 0, z);
+        g.add(pata);
+      }
     }
-    // Luces cian del hábitat bajo el tubo: se ve por dónde se pasa.
+    // Luz cian del hábitat bajo el túnel: se ve por dónde se pasa.
     g.add(parteLuz(luzCil(0.06, 0.05, 6, "cian", 1.8), m, [0, y - 0.02, 0]));
   }
   return g;
@@ -385,7 +364,7 @@ export interface PiezasExtra {
  * Esclusa del hábitat: su fondo se apoya en el domo (z local desde el centro del hábitat) y cubre la puerta del modelo;
  * su puerta queda a 0,5 m del puesto del jugador (0; −4,3). [E]
  */
-export const PUERTA_HABITAT = { z: 2.6 } as const;
+export const PUERTA_HABITAT = { z: 3.85 - ESCLUSA.fondo } as const;
 
 /** Materiales de los paneles decorativos (bastidor y celdas, estas sin polvo del evento). */
 export interface MaterialesPanel {
@@ -397,7 +376,7 @@ export interface MaterialesPanel {
 function vidaHabitat(m: MaterialesColonia, q: PiezasQuaternius): THREE.Group {
   const g = new THREE.Group();
   const r = HABITAT_COLONIA.ancho / 2;
-  const esclusa = crearEsclusa(m, "cian", q.Ramp);
+  const esclusa = crearEsclusa(m, "cian", q);
   esclusa.position.z = PUERTA_HABITAT.z;
   g.add(esclusa);
   const barriles = [[2.1, r - 0.2], [2.6, r - 0.75], [2.75, r - 0.05]] as const;
@@ -415,30 +394,31 @@ function vidaHabitat(m: MaterialesColonia, q: PiezasQuaternius): THREE.Group {
 }
 
 /** Arma la colonia fusionada: kit, domos, corredores, bermas, entrada, terminales, instrumentos, balizas y losas. */
-export function armarColonia(kit: KitColonia, m: MaterialesColonia, panel: MaterialesPanel, extra: PiezasExtra): THREE.Group {
+export function armarColonia(m: MaterialesColonia, panel: MaterialesPanel, extra: PiezasExtra): THREE.Group {
   const piezas = colocacionesKit();
   const nodos = nodosColonia();
   const todo = new THREE.Group();
   for (const p of piezas) {
-    const x = piezaKit(kit, m.kit, p.pieza, p.escala);
+    const x = piezaQ(extra.q, m, p.pieza, p.escala);
+    if (!x) continue;
     x.position.set(p.x, p.y ?? 0, p.z);
     x.rotation.y = p.giro;
     todo.add(x);
   }
   for (const d of DOMOS_FONDO) {
-    const domo = crearDomoVidrio(m, { radio: d.radio, estantes: d.estantes, rampa: extra.q.Ramp });
+    const domo = crearDomoVidrio(m, { radio: d.radio, estantes: d.estantes, q: extra.q });
     const n = nodos.find((x) => x.id === d.id)!;
     domo.position.set(n.x, 0, n.z);
     domo.rotation.y = n.giro;
     todo.add(domo);
   }
   const por = (id: string) => nodos.find((p) => p.id === id)!;
-  for (const [a, b] of CORREDORES) todo.add(corredor(kit, m, por(a), por(b), a === CORREDOR_ELEVADO.a && b === CORREDOR_ELEVADO.b));
+  for (const [a, b] of CORREDORES) todo.add(corredor(extra.q, m, por(a), por(b), a === CORREDOR_ELEVADO.a && b === CORREDOR_ELEVADO.b));
   todo.add(bermas(m, nodos), vidaHabitat(m, extra.q));
   // Torre de comunicaciones: la misma esclusa con marco rojo (la luz roja que parpadea arriba la pone `coloniaEscena`).
   const torre = por("torre");
-  const esclusaTorre = crearEsclusa(m, "rojo", extra.q.Ramp);
-  const dz = torre.radio - 0.9;
+  const esclusaTorre = crearEsclusa(m, "rojo", extra.q);
+  const dz = torre.radio + 0.3 - ESCLUSA.fondo;
   esclusaTorre.position.set(torre.x + Math.sin(torre.giro) * dz, 0, torre.z + Math.cos(torre.giro) * dz);
   esclusaTorre.rotation.y = torre.giro;
   todo.add(esclusaTorre);

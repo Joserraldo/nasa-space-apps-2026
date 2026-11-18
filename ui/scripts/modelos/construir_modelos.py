@@ -1,12 +1,12 @@
 """Arma los GLB de la Etapa D para ui/public/modelos: antena Tall Dish de NASA, panel y kit Craftpix, los cuatro
 modelos CC BY de la colonia e Ingenuity de NASA. moon_walk.glb se copia tal cual (no pasa por Blender: se estira).
-Uso: blender -b --factory-startup -P construir_modelos.py -- <salida> [secciones: antena panel kit ccby ingenuity]
+Uso: blender -b --factory-startup -P construir_modelos.py -- <salida> [secciones: antena panel ccby ingenuity quaternius]
 Las fuentes viven fuera del repo (NASA y CRAFT, abajo); fuentes y licencias en ui/public/modelos/FUENTES.md.
 Convención de salida: base en y = 0, centro en planta en el origen, frente hacia +z (glTF)."""
 import bpy, bmesh, sys, math, mathutils
 a = sys.argv[sys.argv.index("--") + 1:]
 SALIDA = a[0]
-SECCIONES = set(a[1:]) or {"antena", "panel", "kit", "ccby", "ingenuity", "quaternius"}
+SECCIONES = set(a[1:]) or {"antena", "panel", "ccby", "ingenuity", "quaternius"}
 DESCARGAS = "C:/Users/mpaul/Downloads/"
 NASA = "C:/Users/mpaul/Documents/ss-referencias/nasa3d/"
 CRAFT = "C:/Users/mpaul/Documents/ss-fuentes/craftpix/"
@@ -117,39 +117,6 @@ if "panel" in SECCIONES:
     bpy.context.view_layer.objects.active = o; bpy.ops.object.modifier_apply(modifier="dec")
     normalizar(pan, 0.7)
     exportar(pan, "panel-solar")
-
-# ---------------- Kit Craftpix Space Colony: un GLB con una malla por pieza (Etapa D2, colonia) ----------------
-if "kit" in SECCIONES:
-    # Escala original del kit (en metros), base en y = 0, centrada en planta y con la entrada hacia +z: el kit trae la
-    # entrada hacia -x, se gira 90 grados. Sin materiales: la escena pone uno solo con la paleta compartida (UV intactas).
-    # `Section` ya corre a lo largo de y (glTF z) y no se gira.
-    REDUCIR = {"Home_colonists": 0.5, "Research_center": 0.6, "Connecting_gateway": 0.5, "Farm": 0.7, "Main_house": 0.7, "Main_house_2lv": 0.75, "Resource_warehouse": 0.7}
-    KIT = ["Main_house", "Main_house_2lv", "Home_colonists", "Research_center", "Resource_warehouse", "Connecting_gateway", "Section", "Farm"]
-    reset()
-    piezas = []
-    for n in KIT:
-        objs = importar(CRAFT + n + ".fbx")
-        aplicar(objs)
-        if n != "Section":
-            for o in objs: o.matrix_world = mathutils.Matrix.Rotation(math.radians(90), 4, "Z") @ o.matrix_world
-            aplicar(objs)
-        mn, mx = caja(objs)
-        d = mathutils.Vector(((mn.x + mx.x) / -2, (mn.y + mx.y) / -2, -mn.z))
-        for o in objs: o.location += d
-        aplicar(objs)
-        o = unir(objs, "Kit_" + n)
-        o.data.materials.clear()
-        # Las piezas pesadas, colapsadas al 60 % (presupuesto de 200 mil triángulos con la colonia entera).
-        if n in REDUCIR:
-            mod = o.modifiers.new("dec", "DECIMATE"); mod.ratio = REDUCIR[n]; mod.delimit = {"UV"}
-            bpy.context.view_layer.objects.active = o; bpy.ops.object.modifier_apply(modifier="dec")
-        piezas.append(o)
-    for o in bpy.data.objects: o.select_set(o in piezas)
-    bpy.ops.export_scene.gltf(filepath=f"{SALIDA}/kit-colonia.glb", export_format="GLB", use_selection=True, export_yup=True,
-                              export_apply=True, export_materials="NONE")
-    for o in piezas:
-        mn, mx = caja([o])
-        print("KIT", o.name, "tris", tris(o), "dims", [round(mx[i] - mn[i], 2) for i in range(3)])
 
 # ---------------- Color por vértice: un material para piezas de colores planos (una llamada de dibujo) ----------------
 def colorear(objs, color_de, nombre_mat):
@@ -264,7 +231,7 @@ if "ingenuity" in SECCIONES:
 # El color sale del atlas compartido (muestreado en el centro UV de cada cara) y se lleva a la paleta: claros a blanco,
 # medios a gris, oscuros a grafito y los saturados al acento más cercano. Sin textura ni material: la escena pone uno.
 QUAT = "C:/Users/mpaul/Documents/ss-fuentes/quaternius-space/"
-PIEZAS_Q = {"Rover": 0.25, "SolarPanel_Ground": 1, "Roof_Antenna": 1, "Roof_Radar": 1, "Ramp": 1, "MetalSupport": 1, "House_Long": 1, "House_Cylinder": 1}
+PIEZAS_Q = {"Rover": 0.25, "SolarPanel_Ground": 1, "Roof_Antenna": 1, "Roof_Radar": 1, "Ramp": 1, "Stairs": 1, "MetalSupport": 1, "House_Long": 0.45, "House_Cylinder": 1, "Connector": 1, "House_Single": 1, "House_Open": 1, "Building_L": 0.6, "Base_Large": 0.6}
 ACENTOS_Q = {"azul": lineal("#5BA9C9"), "amarillo": lineal("#F2B705"), "rojo": lineal("#E0453A"), "cian": lineal("#4FD1E0")}
 if "quaternius" in SECCIONES:
     import colorsys

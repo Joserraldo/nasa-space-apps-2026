@@ -223,34 +223,42 @@ export function crearManguera(m: MaterialesColonia, a: V3, b: V3): THREE.Mesh {
   return malla(tonear(new THREE.TubeGeometry(curva, 10, 0.06, 5, false), "oscuro"), m.kit, [0, 0, 0]);
 }
 
-/** Medidas únicas de la esclusa (regla 8: misma forma, alto y ancho en toda la colonia). [E] */
-export const ESCLUSA = { ancho: 2.2, alto: 2.3, fondo: 1.25, puerta: [0.95, 1.9] as const } as const;
+/**
+ * Medidas únicas de la esclusa (regla 8: misma forma, alto y ancho en toda la colonia): el `House_Long` del kit Quaternius
+ * a escala 0,55 (2,2 m de ancho, 2,4 de alto y 4,3 de largo). Escotilla redonda en el frente. [E]
+ */
+export const ESCLUSA = { escala: 0.55, ancho: 2.2, alto: 2.4, fondo: 4.3, escotilla: { y: 1.05, r: 0.62 } } as const;
 
 /**
- * Esclusa pegada al módulo (referencias de organización: el domo de hielo de NASA y su esclusa en caja con rampa): caja
- * blanca sobre zócalo gris, rejillas grafito a los costados, puerta en panel grafito con marco del acento del módulo (sin
- * acento, grafito sin marco) y rampa a ras del suelo. La parte trasera (z = 0) se apoya en el módulo; la puerta mira a
- * +z. `rampa`: geometría de `Ramp` del kit Quaternius.
+ * Esclusa pegada al módulo, como en las referencias de organización (módulos blancos redondeados unidos por túneles, con
+ * escotillas redondas en las puntas): el `House_Long` del kit Quaternius con un anillo del color del acento alrededor de
+ * la escotilla (sin acento, sin anillo) y la rampa del kit hasta el suelo. La parte trasera (z = 0) entra en el módulo y
+ * la escotilla mira a +z.
  */
-export function crearEsclusa(m: MaterialesColonia, acento: Acento | `#${string}` | null, rampa?: THREE.BufferGeometry): THREE.Group {
-  const { ancho, alto, fondo, puerta } = ESCLUSA;
-  const g = grupo(
-    "Colony_Airlock",
-    malla(caja(ancho + 0.1, 0.14, fondo + 0.1, "gris"), m.kit, [0, 0.07, fondo / 2]),
-    malla(caja(ancho, alto - 0.14, fondo, "blanco"), m.kit, [0, 0.14 + (alto - 0.14) / 2, fondo / 2]),
-    malla(caja(ancho + 0.08, 0.1, fondo + 0.08, "gris"), m.kit, [0, alto + 0.05, fondo / 2]),
-    malla(caja(puerta[0], puerta[1], 0.05, "grafito"), m.kit, [0, 0.14 + puerta[1] / 2, fondo + 0.03]),
-  );
-  if (acento) {
-    g.add(malla(caja(puerta[0] + 0.16, 0.08, 0.06, acento), m.kit, [0, 0.14 + puerta[1] + 0.04, fondo + 0.03]));
-    for (const s of [-1, 1]) g.add(malla(caja(0.08, puerta[1], 0.06, acento), m.kit, [s * (puerta[0] / 2 + 0.04), 0.14 + puerta[1] / 2, fondo + 0.03]));
+/** `tamano`: 1 en toda la colonia; menor solo donde el módulo es chico (invernadero del módulo, 5,6 m de huella). */
+export function crearEsclusa(m: MaterialesColonia, acento: Acento | `#${string}` | null, q?: PiezasQuaternius, tamano = 1): THREE.Group {
+  const g = grupo("Colony_Airlock");
+  g.scale.setScalar(tamano);
+  const { escala, fondo, escotilla } = ESCLUSA;
+  if (q?.House_Long) {
+    const cuerpo = new THREE.Mesh(q.House_Long, m.quat);
+    cuerpo.scale.setScalar(escala);
+    cuerpo.position.z = fondo / 2;
+    cuerpo.castShadow = cuerpo.receiveShadow = true;
+    g.add(cuerpo);
+  } else {
+    g.add(malla(caja(ESCLUSA.ancho, ESCLUSA.alto, fondo, "blanco"), m.kit, [0, ESCLUSA.alto / 2, fondo / 2]));
   }
-  for (const s of [-1, 1]) for (let i = 0; i < 4; i++) g.add(malla(caja(0.03, 0.9, 0.08, "grafito"), m.kit, [s * (ancho / 2 + 0.01), 1.0, 0.3 + i * 0.2]));
-  if (rampa) {
-    // Rampa del kit Quaternius (1,87 × 1,39 × 3,11 m) aplastada a un escalón de 14 cm frente a la puerta.
-    const r = new THREE.Mesh(rampa, m.quat);
-    r.scale.set(1.1 / 1.87, 0.14 / 1.39, 1.0 / 3.11);
-    r.position.set(0, 0, fondo + 0.55);
+  if (acento) {
+    const anillo = tonear(new THREE.TorusGeometry(escotilla.r, 0.045, 6, 20), acento);
+    g.add(malla(anillo, m.kit, [0, escotilla.y, fondo + 0.02]));
+  }
+  if (q?.Ramp) {
+    // Rampa del kit (1,87 × 1,39 × 3,11 m) hasta el borde bajo de la escotilla.
+    const r = new THREE.Mesh(q.Ramp, m.quat);
+    const alto = escotilla.y - escotilla.r;
+    r.scale.set(1.0 / 1.87, Math.max(0.05, alto) / 1.39, 1.1 / 3.11);
+    r.position.set(0, 0, fondo + 0.5);
     r.castShadow = r.receiveShadow = true;
     g.add(r);
   }

@@ -11,7 +11,7 @@ import type { Materiales } from "../materiales";
 import { liberarEscena } from "../liberar";
 import { decorado, alCentro } from "./baseExterior";
 import { ANILLO } from "./caminos";
-import { HABITAT_COLONIA, TORRE_COLONIA, armarColonia, fusionarConUV, kitDesdeGltf, quaterniusDesdeGltf } from "./colonia";
+import { HABITAT_COLONIA, TORRE_COLONIA, armarColonia, fusionarConUV, quaterniusDesdeGltf } from "./colonia";
 import { colorLuz, crearTuberias, type MaterialesColonia } from "./coloniaPiezas";
 import { crearDomoVidrio, crearEmisorEscudo } from "./domoVidrio";
 import type { ModelosModulos } from "./modelosModulos";
@@ -162,7 +162,6 @@ export function ponerColonia(
   modulos: Readonly<Record<ModuloBase, ModuloArmado>>,
   modelos: ModelosModulos,
 ): ColoniaViva {
-  const kit = kitDesdeGltf(modelos.kit);
   const paleta = crearPaleta();
   const m: MaterialesColonia = {
     kit: materialKit(paleta),
@@ -194,7 +193,7 @@ export function ponerColonia(
   capsula.rotation.y = alCentro(nave.x, nave.z);
   quedan.push(capsula);
   const panel = { cuerpo: conPolvo(materialCuerpoPanel(), { base: 0.1, suelo: 0.5, arriba: 0.3, chorreado: 0 }), celdas: materialCeldasPanel("Colony_PanelCells") };
-  base.add(armarColonia(kit, m, panel, { quedan, q }));
+  base.add(armarColonia(m, panel, { quedan, q }));
 
   // Hábitat (refugio de la tormenta) y torre de comunicaciones: CC BY tal cual, con polvo mate.
   const habitat = prepararModelo(modelos.habitat, POLVO_CCBY, false, true);
@@ -215,7 +214,7 @@ export function ponerColonia(
   base.add(habitat, torre, baliza);
 
   // Módulos: invernadero de vidrio con estantes y luz, escudo de sacos y reciclador CC BY con su tubería al hábitat.
-  reemplazarSolido(modulos.invernadero, fusionarConUV(crearDomoVidrio(m, { radio: 2.65, estantes: 2, rampa: q.Ramp }), "Module_Greenhouse"), [0, 2.72, 0]);
+  reemplazarSolido(modulos.invernadero, fusionarConUV(crearDomoVidrio(m, { radio: 2.65, estantes: 2, q }), "Module_Greenhouse"), [0, 2.72, 0]);
   // Escudo: emisor en forma de domo chico; la protección es la cúpula de `escudoTormenta.ts`.
   reemplazarSolido(modulos.escudo, fusionarConUV(crearEmisorEscudo(m), "Module_Shield"), [0, 1.3, 0]);
   const reciclador = new THREE.Group();

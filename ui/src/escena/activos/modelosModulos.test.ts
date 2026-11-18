@@ -3,7 +3,6 @@ import * as THREE from "three";
 import { crearMateriales } from "../materiales";
 import { armarEscena } from "../armado";
 import { PANELES, armarAntenaReal, armarPanelReal, materialCeldas, pintarPolvo, type ModelosModulos } from "./modelosModulos";
-import { PIEZAS_KIT } from "./colonia";
 import type { VistaEscena } from "../vista";
 
 /** Modelos de prueba con los nombres de material que deja `construir_modelos.py` (sin red ni GLB). */
@@ -14,14 +13,6 @@ function modelosFalsos(): ModelosModulos {
     g.add(new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1), material));
     return g;
   };
-  // Kit de la colonia: una malla `Kit_<pieza>` por pieza, como lo deja `construir_modelos.py`.
-  const kit = new THREE.Group();
-  kit.name = "kit";
-  for (const p of PIEZAS_KIT) {
-    const m = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1), new THREE.MeshStandardMaterial({ name: "Kit" }));
-    m.name = `Kit_${p}`;
-    kit.add(m);
-  }
   // Un material con transmisión (como el lambert del HDU) obliga a redibujar la escena: la preparación la apaga.
   const rotores = malla("ingenuity", new THREE.MeshStandardMaterial({ name: "Ingenuity_VC", vertexColors: true }));
   for (const n of ["rotors_01", "rotors_02"]) {
@@ -31,7 +22,6 @@ function modelosFalsos(): ModelosModulos {
   }
   return {
     antena: malla("dish", new THREE.MeshPhysicalMaterial({ name: "Dish_White", transmission: 1 })),
-    kit,
     habitat: malla("habitat", new THREE.MeshStandardMaterial({ name: "Habitat" })),
     torre: malla("torre", new THREE.MeshStandardMaterial({ name: "Tower" })),
     reciclador: malla("reciclador", new THREE.MeshStandardMaterial({ name: "Recycler_VC", vertexColors: true })),
