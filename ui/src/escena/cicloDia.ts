@@ -8,13 +8,14 @@
  *   ámbar en el resto; crepúsculo largo, no un corte a noche).
  * - **Sin noche jugable** (PLAN-JUGABILIDAD D3): el motor todavía no modela que de noche el panel no da
  *   energía, y la imagen no puede contradecir a Iris ("sin sol no hay energía"). Por eso el Sol nunca baja
- *   de `ELEVACION_MINIMA`.
+ *   de `ELEVACION_MINIMA` en los momentos de la misión (0 a 1). La noche (momento 2) queda preparada para
+ *   cuando el motor la modele (P1): hoy solo se ve con `?momento=noche` en la vista previa (Etapa A).
  * - La escena no recibe la hora del motor: el momento sale de la fase de la misión (`VistaEscena.fase`).
  *   Si el motor expone el avance del día, `momentoDeFase` se reemplaza sin tocar lo demás.
  */
 import * as THREE from "three";
 import type { FaseVista } from "./vista";
-import { INTENSIDAD, LUZ, PALETA_CIELO } from "./cielo";
+import { INTENSIDAD, LUZ, PALETA_CIELO, type EstadoCielo } from "./cielo";
 
 /** Duración del sol en horas (NSSDC). [V] */
 export const DURACION_SOL_H = 24.6597;
@@ -23,7 +24,7 @@ export const ELEVACION_MAXIMA = THREE.MathUtils.degToRad(45);
 /** El Sol nunca baja de acá: sin noche jugable. [E] */
 export const ELEVACION_MINIMA = THREE.MathUtils.degToRad(5);
 
-/** Momento del día: 0 = día (mañana), 0,5 = tarde, 1 = atardecer. */
+/** Momento del día: 0 = día (mañana), 0,5 = tarde, 1 = atardecer, 2 = noche (solo vista previa). */
 export type MomentoDia = number;
 
 /** Hora local (h de sol) de cada momento clave. [E] La del día da la misma altura que `LUZ.direccionSol` (38°), así el día no cambia. */
@@ -59,32 +60,50 @@ export interface LuzMomento {
   colorSol: THREE.Color;
   intensidadSol: number;
   colorCieloHemi: THREE.Color;
+  colorSueloHemi: THREE.Color;
+  /** Hemisférica sin entorno (calidad baja) y con entorno (el cielo PMREM ya rellena las sombras). */
   intensidadHemi: number;
+  intensidadHemiConEntorno: number;
   /** Mezcla de las paletas del cielo: 0 = día, 1 = atardecer. */
   mezclaCielo: number;
-  niebla: THREE.Color;
-  fondo: THREE.Color;
+  /** 0 = sin noche, 1 = noche cerrada. Solo con `momentoForzado` (vista previa): el juego no tiene noche. */
+  noche: number;
+  /** Estado que pinta el cielo (`Cielo.pintar`). */
+  cielo: EstadoCielo;
 }
 
 const RUMBO = new THREE.Vector2(LUZ.direccionSol[0], LUZ.direccionSol[2]).normalize();
+/** Altura del Sol en la noche de la vista previa (rad): bajo el horizonte, fuera del crepúsculo. [E] */
+export const ELEVACION_NOCHE = THREE.MathUtils.degToRad(-22);
 
-/** Luz y cielo de un momento. La tarde ya baja el Sol; el cielo se vuelve atardecer solo en la segunda mitad. */
+/**
+ * Luz y cielo de un momento (0 = día, 0,5 = tarde, 1 = atardecer, 2 = noche). La tarde ya baja el Sol;
+ * el cielo se vuelve atardecer solo en la segunda mitad. De 1 a 2 el Sol cruza el horizonte y se apaga.
+ */
 export function luzDelMomento(m: MomentoDia): LuzMomento {
   const k = Math.min(1, Math.max(0, m));
-  const e = elevacionSol(horaDelMomento(k));
+  const noche = Math.min(1, Math.max(0, m - 1));
+  const eTarde = elevacionSol(horaDelMomento(k));
+  const e = eTarde + (ELEVACION_NOCHE - eTarde) * noche;
   const direccion = new THREE.Vector3(RUMBO.x * Math.cos(e), Math.sin(e), RUMBO.y * Math.cos(e)).normalize();
   const cielo = Math.max(0, (k - 0.5) / 0.5);
-  const dia = PALETA_CIELO.dia, tarde = PALETA_CIELO.atardecer;
+  const tarde = PALETA_CIELO.atardecer;
+  const h = LUZ.hemisferica;
+  // El Sol se apaga al cruzar el horizonte (entre +2° y -4°).
+  const sobre = THREE.MathUtils.smoothstep(direccion.y, Math.sin(THREE.MathUtils.degToRad(-4)), Math.sin(THREE.MathUtils.degToRad(2)));
   return {
     direccion,
-    // Sol blanco cálido de día; al atardecer toma algo del halo azul (el atardecer azul de Marte, MARTE.md §4).
-    colorSol: new THREE.Color(LUZ.colorSol).lerp(new THREE.Color(tarde.halo), 0.35 * cielo),
-    intensidadSol: INTENSIDAD.sol * (1 - 0.15 * Math.min(1, k / 0.5) - 0.3 * cielo),
-    colorCieloHemi: new THREE.Color(LUZ.hemisferica.dia.cielo).lerp(new THREE.Color(LUZ.hemisferica.atardecer.cielo), cielo),
-    intensidadHemi: INTENSIDAD.hemisferica * (1 - 0.15 * cielo),
+    // Sol blanco cálido de día; al atardecer, luz cálida rasante (el azul queda en el halo del cielo).
+    colorSol: new THREE.Color(LUZ.colorSol).lerp(new THREE.Color(LUZ.colorSolAtardecer), cielo),
+    intensidadSol: INTENSIDAD.sol * (1 - 0.15 * Math.min(1, k / 0.5) + 0.0 * cielo) * sobre,
+    colorCieloHemi: new THREE.Color(h.dia.cielo).lerp(new THREE.Color(h.atardecer.cielo), cielo).lerp(new THREE.Color(h.noche.cielo), noche),
+    colorSueloHemi: new THREE.Color(h.dia.suelo).lerp(new THREE.Color(h.noche.suelo), noche),
+    intensidadHemi: INTENSIDAD.hemisferica * (1 - 0.15 * cielo) + (INTENSIDAD.noche - INTENSIDAD.hemisferica * 0.85) * noche,
+    // De noche el entorno es casi negro: la hemisférica vuelve a dar la luz de las estrellas y del cielo.
+    intensidadHemiConEntorno: INTENSIDAD.hemisfericaConEntorno + (INTENSIDAD.noche - INTENSIDAD.hemisfericaConEntorno) * noche,
     mezclaCielo: cielo,
-    niebla: new THREE.Color(dia.niebla).lerp(new THREE.Color(tarde.niebla), cielo),
-    fondo: new THREE.Color(dia.horizonte).lerp(new THREE.Color(tarde.horizonte), cielo),
+    noche,
+    cielo: { mezcla: cielo, noche, dirSol: { x: direccion.x, y: direccion.y, z: direccion.z } },
   };
 }
 
