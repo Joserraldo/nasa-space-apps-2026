@@ -1,0 +1,38 @@
+import { it } from "vitest";
+import { writeFileSync } from "node:fs";
+import { eventosCurados } from "@solar-shield/data";
+import type { Equipment, GameState, BaseAction } from "@solar-shield/contracts";
+import { MISION_JEZERO as m } from "@solar-shield/missions";
+import { aplicarAccion, aterrizar, avanzarTick } from "./acciones.js";
+import { elegirDilema } from "./dilema.js";
+import { partidaDeMision, paso } from "./dorada.js";
+import { dosisMaximaTripulacion } from "./radiacion.js";
+const SAL: BaseAction = { tipo: "salida_exterior", objetivo: "panel_solar" };
+type Plan = { n: string; t3: ("aguantar"|"refugio"|"escudo1"|"escudo2"|"combo")[]; };
+const planes = ["aguantar","refugio","escudo1","escudo2","combo"] as const;
+const pares: [Equipment, Equipment][] = [["panel_solar","escudo"],["panel_solar","reciclador_agua"],["reciclador_agua","invernadero"],["escudo","antena"]];
+function causa(s: GameState) { if (s.resultado==="exito") return "-"; const r=(["energia","soporte_vital","blindaje"] as const).find(k=>s.recursos[k]<=0); if (r) return "recurso_"+r; if (s.causas.some(c=>c.descripcionKey==="causa.limite_radiacion")) return "dosis"; return "plazo"; }
+it("E", () => {
+  const eventos = (eventosCurados as any[]).map(e => ({ id: e.id as string, factor: e.medicionMarte?.factor ?? null }));
+  const rows = ["tormenta,factor,sitio,par,salida,plan,resultado,tick,E,V,B,dosis,causa"];
+  for (const ev of eventos) for (const sitio of ["llanura-central","pie-de-la-pared-sur"]) for (const par of pares) for (const salida of [false, true]) for (const plan of planes) {
+    let s = aterrizar(partidaDeMision(m), sitio, m);
+    s = { ...s, tormenta: (eventosCurados as any[]).find(e => e.id === ev.id) };
+    for (const mo of par) s = paso(s, { tipo: "colocar_modulo", modulo: mo }, m);
+    while (s.tick < m.tickTormenta && s.resultado === "en_curso") s = avanzarTick(s, m);
+    let env = false;
+    if (s.resultado === "en_curso") {
+      s = plan === "aguantar" ? elegirDilema(s, "aguantar", m) : plan === "refugio" ? elegirDilema(s, "refugio_y_apagar_invernadero", m)
+        : plan === "escudo2" ? elegirDilema(s, "subir_escudo", m) : plan === "escudo1" ? aplicarAccion(s, { tipo: "subir_escudo", nivel: 1 }, m)
+        : aplicarAccion(elegirDilema(s, "subir_escudo", m), { tipo: "refugiarse" }, m);
+    }
+    while (s.resultado === "en_curso" && s.tick < m.fin.tickLimite) {
+      if (salida && s.tick === m.tickTormenta + 1) s = aplicarAccion(s, SAL, m);
+      if (!env && s.tick >= m.tickTormenta) { s = aplicarAccion(s, { tipo: "enviar_telemetria" }, m); env = true; }
+      s = avanzarTick(s, m);
+    }
+    rows.push([ev.id, ev.factor ?? "sin_medicion", sitio, par.join("+"), salida ? "salida@4" : "no", plan, s.resultado, s.tick, Math.round(s.recursos.energia), Math.round(s.recursos.soporte_vital), Math.round(s.recursos.blindaje), dosisMaximaTripulacion(s).toFixed(2), causa(s)].join(","));
+  }
+  writeFileSync(".rev0/escenarios.csv", rows.join("\n"));
+  console.log("RES-E filas", rows.length - 1, "eventos", JSON.stringify(eventos));
+});
