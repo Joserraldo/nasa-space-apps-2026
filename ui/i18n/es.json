@@ -444,5 +444,9 @@
   "ui.cuenta.error.red": "No pudimos conectar. Inténtalo de nuevo o juega como invitado.",
   "ui.cuenta.error.tamano": "No se pudo guardar esta misión. Mantén esta página abierta.",
   "ui.cuenta.error.salir": "No pudimos cerrar sesión. Revisa la conexión e inténtalo de nuevo.",
-  "ui.cuenta.guardado.etiqueta": "Progreso de la cuenta"
+  "ui.cuenta.guardado.etiqueta": "Progreso de la cuenta",
+  "ui.tick.limite": "Turno {tick} de {limite}",
+  "ui.plazo.envio": "Envía ahora: la respuesta de la Tierra llega en el turno {llegada} de {limite}",
+  "ui.plazo.tarde": "Tarde: la respuesta de la Tierra llegaría después del turno {limite}",
+  "ui.hud.objetivo.telemetria": "Envía tus noticias a la Tierra desde la consola"
 }

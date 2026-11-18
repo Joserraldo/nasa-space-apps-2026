@@ -91,6 +91,10 @@ export function mundoBloqueado(abierto: {
  * lugar que la escena y el mapa resaltan. Sin Iris (offline) vuelve al objetivo general de la fase.
  */
 export function objetivoDeLaBase(estado: GameState): { labelKey: string; vars?: Vars; lugar: LugarObjetivo | null } {
+  // Con la tormenta encima y sin telemetría enviada manda el plazo: avisar a la Tierra desde la consola.
+  if (tormentaActiva(estado) && !telemetriaPendiente(estado) && !estado.causas.some((c) => c.accion?.tipo === "enviar_telemetria") && estado.resultado === "en_curso") {
+    return { labelKey: "ui.hud.objetivo.telemetria", lugar: "mesa" };
+  }
   const guia = guiaIrisLugar(estado, pasoDeLaBase(estado), { averiaRevelada: averiaIrisRevelada(estado) });
   if (!guia) return { labelKey: "ui.comun.hud.objetivo.base", lugar: null };
   const lugarKey = `agentes.iris.lugar.${guia.destino}`;

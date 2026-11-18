@@ -444,5 +444,9 @@
   "ui.cuenta.error.red": "We could not connect. Try again, or play as guest.",
   "ui.cuenta.error.tamano": "This mission could not be saved. Keep this page open.",
   "ui.cuenta.error.salir": "We could not log out. Check your connection and try again.",
-  "ui.cuenta.guardado.etiqueta": "Account progress"
+  "ui.cuenta.guardado.etiqueta": "Account progress",
+  "ui.tick.limite": "Turn {tick} of {limite}",
+  "ui.plazo.envio": "Send now: Earth's answer arrives at turn {llegada} of {limite}",
+  "ui.plazo.tarde": "Too late: Earth's answer would arrive after turn {limite}",
+  "ui.hud.objetivo.telemetria": "Send your news to Earth at the console"
 }

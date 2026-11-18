@@ -4,6 +4,7 @@ import type { Novedades } from "@solar-shield/engine";
 import { useT, type Vars } from "../i18n.js";
 import type { DatosDosimetro } from "../juego/dosis.js";
 import { Dosimetro } from "./Dosimetro.js";
+import type { DatosPlazo } from "../juego/plazo.js";
 import { Pildora, PildoraBoton, PildoraObjetivo } from "./base/Pildoras.js";
 import { RECURSOS, ResourcePlaque } from "./base/Piezas.js";
 import "./hud.css";
@@ -126,11 +127,13 @@ export interface HudBaseProps {
   onMenu?: (() => void) | undefined;
   /** Dosímetro: solo llega con la tormenta en marcha (`useDosimetro`; sin dato, no se pinta). */
   dosimetro?: DatosDosimetro | undefined;
+  /** Turno máximo de la misión y, si enviar la telemetría sirviera, el turno en que llegaría la respuesta. */
+  plazo?: DatosPlazo | undefined;
   /** Qué partes ya aparecieron (E3, `hudVisible`). Sin este dato se ve todo, como en el muestrario. */
   visible?: HudVisible | undefined;
 }
 
-export function HudBase({ estado, ultimas, reloj, objetivo, mundo, tactil = false, panelAbierto = false, onMenu, dosimetro, visible = TODO_VISIBLE }: HudBaseProps) {
+export function HudBase({ estado, ultimas, reloj, objetivo, plazo, mundo, tactil = false, panelAbierto = false, onMenu, dosimetro, visible = TODO_VISIBLE }: HudBaseProps) {
   const { t } = useT();
   const escala = useEscalaHud();
   const capa = useRef<HTMLElement>(null);
@@ -146,7 +149,14 @@ export function HudBase({ estado, ultimas, reloj, objetivo, mundo, tactil = fals
     <section ref={capa} className={`hud-base${tactil ? " hud-tactil" : ""}${panelAbierto ? " hud-con-panel" : ""}`} aria-label={t("ui.hud.titulo")} style={{ zoom: escala }}>
       <div className="hud-arriba">
         <div className="hud-izq" ref={izq}>
-          <Pildora className="hud-dia"><span>{t("ui.dia", { dia: estado.dia })}</span> <span aria-hidden="true">·</span> <span>{t("ui.tick", { tick: estado.tick })}</span></Pildora>
+          <Pildora className="hud-dia"><span>{t("ui.dia", { dia: estado.dia })}</span> <span aria-hidden="true">·</span> <span>{plazo ? t("ui.tick.limite", { tick: estado.tick, limite: plazo.limite }) : t("ui.tick", { tick: estado.tick })}</span></Pildora>
+          {plazo?.llegadaSiEnvia !== undefined && (
+            <p role="status">
+              <Pildora className={plazo.llegadaSiEnvia > plazo.limite ? "hud-plazo hud-plazo-tarde" : "hud-plazo"}>
+                <span>{plazo.llegadaSiEnvia > plazo.limite ? t("ui.plazo.tarde", { limite: plazo.limite }) : t("ui.plazo.envio", { llegada: plazo.llegadaSiEnvia, limite: plazo.limite })}</span>
+              </Pildora>
+            </p>
+          )}
           {reloj && (
             <>
               <PildoraBoton className="hud-pausa" labelKey={estado.pausado ? "ui.reanudar" : "ui.pausa"} icon={estado.pausado ? "jugar" : "pausa"} onClick={reloj.onPausa} />

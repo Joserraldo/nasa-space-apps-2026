@@ -28,6 +28,7 @@ import { Menu } from "./componentes/Menu.js";
 import { almacenDelNavegador } from "./juego/guardado.js";
 import { inicial, reducir } from "./juego/reductor.js";
 import { useDosimetro } from "./juego/dosis.js";
+import { plazoTelemetria } from "./juego/plazo.js";
 import { tocar } from "./juego/sonido.js";
 
 /** Módulos que tienen pregunta de Iris nivel 2 al colocarlos. */
@@ -157,6 +158,7 @@ function Pantalla({ sesion, onSalir, idioma, setIdioma, sonido, setSonido, grafi
 
   const reloj = enBase ? { velocidad, onPausa: () => enviar({ tipo: "pausa", pausado: !j.estado.pausado }), onVelocidad: setVelocidad } : undefined;
   const dosimetro = useDosimetro(j.estado, MISION_JEZERO);
+  const plazo = plazoTelemetria(j.estado, MISION_JEZERO);
   const objetivo = j.fase === "modulos" ? { labelKey: "ui.comun.hud.objetivo.modulos", vars: { n: MISION_JEZERO.modulosAColocar } }
     : { labelKey: j.fase === "tormenta" ? "ui.comun.hud.objetivo.tormenta" : "ui.comun.hud.objetivo.base" };
 
@@ -169,7 +171,7 @@ function Pantalla({ sesion, onSalir, idioma, setIdioma, sonido, setSonido, grafi
         <FacetButton labelKey={sesion.usuario?'ui.cuenta.salir':'ui.cuenta.volver'} busy={saliendo} onClick={()=>void salir()} />
       </aside>
       {/* En la base el HUD lo pone la pantalla, que es dueña de la fila de abajo (Crew, Map, [E], [V]). */}
-      {((j.fase === "modulos" && !llegando) || j.fase === "tormenta") && <HudBase estado={j.estado} ultimas={null} objetivo={objetivo} onMenu={abrirMenu} dosimetro={dosimetro} />}
+      {((j.fase === "modulos" && !llegando) || j.fase === "tormenta") && <HudBase estado={j.estado} ultimas={null} objetivo={objetivo} onMenu={abrirMenu} dosimetro={dosimetro} plazo={plazo} />}
 
       <main>
         {enMundo ? (
@@ -191,7 +193,7 @@ function Pantalla({ sesion, onSalir, idioma, setIdioma, sonido, setSonido, grafi
                   onConverso={() => avanzarHud({ conversado: true })} />
               )}
               {enBase && (
-                <PantallaBase estado={j.estado} colocados={j.colocados} ultimas={j.ultimas} hud={{ reloj, onMenu: abrirMenu, dosimetro }} progreso={progreso} onProgreso={avanzarHud} memoria={memoria} onMemoria={setMemoria}
+                <PantallaBase estado={j.estado} colocados={j.colocados} ultimas={j.ultimas} hud={{ reloj, onMenu: abrirMenu, dosimetro, plazo }} progreso={progreso} onProgreso={avanzarHud} memoria={memoria} onMemoria={setMemoria}
                   vistos={vistos} onVisto={(id) => setVistos((v) => (v.includes(id) ? v : [...v, id]))}
                   onAccion={accion} onReanudar={() => enviar({ tipo: "pausa", pausado: false })} />
               )}

@@ -190,6 +190,9 @@ test("ruta dorada: de la órbita al resumen, en inglés", async ({ page }) => {
   await avanzarHasta(page, () => tormenta.isVisible());
   await expect(tormenta).toBeVisible();
   await expect(page.getByText("Paused", { exact: true })).toBeVisible();
+  // Jezero v2: el plazo es visible (el turno con su límite) y, sin telemetría enviada, el HUD pide enviarla.
+  await expect(page.getByText(/Turn \d+ of 10/)).toBeVisible();
+  await expect(page.getByText(/Send now: Earth's answer arrives at turn \d+ of 10/)).toBeVisible();
   // Jezero v2: el dosímetro aparece al llegar la tormenta, sin hablar con la Doctora, con el límite de entrenamiento y la tasa.
   const dosimetro = page.getByRole("status").filter({ hasText: /Radiation \d/ });
   await expect(dosimetro).toContainText(/training limit 4/);

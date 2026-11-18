@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { MISION_JEZERO } from "@solar-shield/missions";
-import { puedeAplicar } from "@solar-shield/engine";
+import { aplicarAccion, puedeAplicar } from "@solar-shield/engine";
 import { LUGARES } from "../escena/mundo.js";
 import { traducir } from "../i18n.js";
 import { inicial, reducir, type Juego } from "../juego/reductor.js";
@@ -77,6 +77,16 @@ describe("usar un lugar de la base (ESCENAS §3.2)", () => {
   });
 });
 
+describe("objetivo del plazo de telemetría", () => {
+  it("con la tormenta y sin telemetría enviada, el objetivo es avisar a la Tierra desde la consola", () => {
+    const j = conTormenta();
+    expect(objetivoDeLaBase(j.estado)).toMatchObject({ labelKey: "ui.hud.objetivo.telemetria", lugar: "mesa" });
+  });
+  it("antes de la tormenta no es el objetivo", () => {
+    expect(objetivoDeLaBase(enBase().estado).labelKey).not.toBe("ui.hud.objetivo.telemetria");
+  });
+});
+
 describe("estado visible de Iris", () => {
   it("antes de la tormenta una Iris dañada se presenta como la guía del tutorial", () => {
     const { estado } = enBase();
@@ -128,7 +138,10 @@ describe("objetivo de la base (guía de Iris)", () => {
     const j = conTormenta();
     expect(pasoDeLaBase(j.estado)).toBeGreaterThanOrEqual(MISION_JEZERO.averiaIris.pasoRevelacion);
     expect(averiaIrisRevelada(j.estado)).toBe(true);
-    expect(objetivoDeLaBase(j.estado)).toMatchObject({ labelKey: "ui.hud.objetivo.averia", lugar: "taller" });
+    // Con la tormenta encima manda el plazo de la telemetría; reparar a Iris vuelve a ser el objetivo después de enviarla.
+    expect(objetivoDeLaBase(j.estado)).toMatchObject({ labelKey: "ui.hud.objetivo.telemetria", lugar: "mesa" });
+    const enviada = aplicarAccion(j.estado, { tipo: "enviar_telemetria" });
+    expect(objetivoDeLaBase(enviada)).toMatchObject({ labelKey: "ui.hud.objetivo.averia", lugar: "taller" });
   });
   it("sin Iris (offline) vuelve al objetivo general", () => {
     const o = objetivoDeLaBase({ ...enBase().estado, iaBase: "offline" });
