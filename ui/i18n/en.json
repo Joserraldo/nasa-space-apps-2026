@@ -16,7 +16,7 @@
   "ui.dosimetro.tasa": "+{tasa} this turn",
   "ui.dosimetro.protegido": "Protected next turn",
   "ui.estimacion.dosis": "Estimate for the next {n} turns: radiation {dosis}",
-  "ui.estimacion.menos": "{delta} less than waiting",
+  "ui.estimacion.menos": "That is {delta} less radiation than waiting",
   "ui.recurso.energia": "Energy",
   "ui.recurso.soporte_vital": "Life support",
   "ui.recurso.blindaje": "Shielding",
@@ -345,7 +345,7 @@
   "ui.mapa.lugar.banco": "Experiment bench",
   "ui.tormenta.elegir": "Choose your expert",
   "ui.tormenta.guia": "Pick an expert to inspect her storm plan, or ask a question first.",
-  "ui.tormenta.irisAviso": "Iris may be giving bad advice because of radiation — check with an expert above.",
+  "ui.tormenta.irisAviso": "Iris may be giving bad advice because of radiation. Compare her number with your meters and ask an expert.",
   "ui.tormenta.acceso": "{recurso} {valor}",
   "ui.escena.mirar": "Click to look around · Esc frees the mouse",
   "ui.medir.fps_prom": "FPS avg (5 s)",
@@ -448,5 +448,6 @@
   "ui.tick.limite": "Turn {tick} of {limite}",
   "ui.plazo.envio": "Send now: Earth's answer arrives at turn {llegada} of {limite}",
   "ui.plazo.tarde": "Too late: Earth's answer would arrive after turn {limite}",
-  "ui.hud.objetivo.telemetria": "Send your news to Earth at the console"
+  "ui.hud.objetivo.telemetria": "Send your news to Earth at the console",
+  "ui.tormenta.pregunta.iris": "Is Iris right?"
 }

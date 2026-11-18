@@ -208,7 +208,7 @@ test("ruta dorada: de la órbita al resumen, en inglés", async ({ page }) => {
   await expect(page.getByText("Costs now").first()).toBeVisible();
   // Jezero v2: la dosis proyectada de la opción, rotulada como estimación, y cuánto ahorra frente a esperar.
   await expect(page.getByText(/Estimate for the next 2 turns: radiation \d/)).toBeVisible();
-  await expect(page.getByText(/less than waiting/)).toBeVisible();
+  await expect(page.getByText(/less radiation than waiting/)).toBeVisible();
 
   // "Check the source": la Doctora (refugio) y la Ingeniera (escudo nivel 2) se contradicen y la fuente NASA es real, no en vivo.
   await page.getByRole("button", { name: "Check the source" }).click();

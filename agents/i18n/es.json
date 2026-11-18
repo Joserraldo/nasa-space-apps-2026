@@ -365,5 +365,6 @@
   "agentes.recuerdo.meteorologa.reparar": "Elegiste reparar la antena. Revisemos el enlace.",
   "agentes.recuerdo.meteorologa.esperar": "Elegiste esperar. ¿Qué mostrará el sensor?",
   "agentes.recuerdo.meteorologa.enviar_telemetria": "Enviaste nuestros datos a la Tierra. ¿Qué descubrirán?",
-  "agentes.iris.acompana.danada.verificar": "Bzzt... verifiquemos con la Ingeniera."
+  "agentes.iris.acompana.danada.verificar": "Bzzt... verifiquemos con la Ingeniera.",
+  "agentes.aviso.meteorologa.real": "Esta tormenta es real. Pasó de verdad el {fecha}."
 }

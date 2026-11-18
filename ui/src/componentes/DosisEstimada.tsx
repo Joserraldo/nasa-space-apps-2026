@@ -18,9 +18,9 @@ export function DosisEstimada({ estado, accion, mision }: { estado: GameState; a
   const dosis = unDecimal(estimacion.dosis);
   const delta = unDecimal(estimacion.menosQueEsperar);
   return (
-    <p className="dosis-estimada">
-      {t("ui.estimacion.dosis", { n: estimacion.turnos, dosis })}
-      {delta >= 0.1 && ` ${t("ui.estimacion.menos", { delta })}`}
-    </p>
+    <div className="dosis-estimada">
+      <p>{t("ui.estimacion.dosis", { n: estimacion.turnos, dosis })}</p>
+      {delta >= 0.1 && <p>{t("ui.estimacion.menos", { delta })}</p>}
+    </div>
   );
 }

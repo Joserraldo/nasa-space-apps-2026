@@ -16,8 +16,8 @@ export function avisosAntesDeModulos(estado: Pick<GameState, "tormenta">): Dialo
       fuente: t.fuente,
       lineas: [
         { clave: "agentes.aviso.meteorologa.sensor" },
-        // Igual que la rama de pronóstico de `expertos.ts`: nombre curado + fecha real del evento.
-        { clave: "agentes.meteorologa.pronostico.viene", vars: { nombreKey: `datos.tormenta.${t.id}.nombre`, fecha: t.inicio.slice(0, 10) } },
+        // La fecha real del evento; el nombre curado ya trae su fecha y repetiría la frase.
+        { clave: "agentes.aviso.meteorologa.real", vars: { fecha: t.inicio.slice(0, 10) } },
         { clave: "agentes.aviso.meteorologa.nube" },
       ],
     },
