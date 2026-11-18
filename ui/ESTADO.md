@@ -17,6 +17,12 @@ Una sección por persona, máximo 5 líneas, y nadie edita la de otro (FLUJO §8
 - Sigue: Santiago revisa/fusiona #247 y este PR; aplicar frentes A/B del plan. Movimiento, táctiles y fidelidad final no están implementados por este montaje.
 - Bloqueo: ninguno externo; todo el trabajo restante queda repartido entre Santiago y María Paula en `PLAN-INTEGRACION-SANTIAGO-PAULA.md`.
 
+## Exterior: luz, atmósfera y color (Etapa A, María Paula)
+**Rama:** feat/exterior-a-cielo → -post y -estrellas (apiladas) · **PR:** tres PRs hacia develop · **Tokens:** amarillo
+- Hecho y aprobado (17 nov): cielo por shader, entorno PMREM, niebla de altura por capas, AgX + gradación, atardecer cálido con halo azul; post en alta (GTAO a media resolución, bloom, SMAA); estrellas NASA SVS 4851 para la noche. Cada efecto con interruptor en `calidad.ts`.
+- Verificado: pruebas de escena, build, consola sin errores; `alta` sin vsync 432 → 194 fps (Intel integrada, 1366×768).
+- Sigue: fusionar en orden (cielo, después post y estrellas) y Etapa B. Noche pospuesta: el juego no la tiene (solo `?momento=noche`).
+
 ## Escenario (Daniel)
 **Rama:** feat/ui-escena-v* · **PR:** #311–#315 abiertos hacia develop (la pila #282–#310 ya entró) · **Tokens:** 🟡
 - Hecho: pila del escenario en develop (composición, suelo, caminos, cámara, medición, contorno y guantes, planta, anillo, vista, rocas, balizas, torre, kit: panel, consola, antena) y medición sobre el render real (#306).
