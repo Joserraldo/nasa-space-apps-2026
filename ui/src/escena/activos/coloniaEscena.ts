@@ -22,7 +22,7 @@ import { colocar } from "./modulos";
 import { fusionar } from "./fusionar";
 import { materialCeldasPanel, materialCuerpoPanel } from "./panelSolar";
 import { crearPerseverance } from "./perseverance";
-import { conPolvo, crearPaleta, materialKit, materialLuces, materialMarco, materialRegolito, materialVidrio, type OpcionesPolvo } from "./polvoKit";
+import { PALETA, conPolvo, crearPaleta, materialKit, materialLuces, materialMarco, materialRegolito, materialVidrio, type OpcionesPolvo } from "./polvoKit";
 
 /** Sitio de aterrizaje donde se ven los vehículos de NASA (`missions/src/jezero.ts`). */
 export const SITIO_PERSEVERANCE = "cerca-de-perseverance";
@@ -48,8 +48,47 @@ function quitar(o: THREE.Object3D | undefined): void {
   liberarEscena(o);
 }
 
+/**
+ * Vidrio de la textura de un CC BY al azul único de la paleta (`clasificacion-objetos.md`, regla 7): los píxeles azulados
+ * toman `PALETA.azul` con su misma luz relativa. Sin imagen (pruebas de Node) devuelve la textura tal cual.
+ */
+function texturaAzulUnico(t: THREE.Texture): THREE.Texture {
+  const img = t.image as (CanvasImageSource & { width: number; height: number }) | undefined;
+  if (!img || typeof document === "undefined" || !img.width) return t;
+  const lienzo = document.createElement("canvas");
+  lienzo.width = img.width;
+  lienzo.height = img.height;
+  const ctx = lienzo.getContext("2d");
+  if (!ctx) return t;
+  ctx.drawImage(img, 0, 0);
+  const datos = ctx.getImageData(0, 0, lienzo.width, lienzo.height);
+  const p = datos.data;
+  // Luz relativa respecto del azul de la paleta, en sRGB como la imagen.
+  const [ar, ag, ab] = [1, 3, 5].map((i) => parseInt(PALETA.azul.slice(i, i + 2), 16)) as [number, number, number];
+  const ref = 0.2126 * ar + 0.7152 * ag + 0.0722 * ab;
+  for (let i = 0; i < p.length; i += 4) {
+    const r = p[i]!, g = p[i + 1]!, b = p[i + 2]!;
+    // Azules y turquesas (el vidrio de la textura es turquesa: verde y azul por encima del rojo).
+    if (b > r + 25 && g > r + 10 && b + 25 >= g) {
+      // El vidrio original es oscuro: se toma el azul de la paleta casi tal cual, con ±15 % de su luz relativa.
+      const k = Math.min(1.15, Math.max(0.85, 0.85 + 0.3 * ((0.2126 * r + 0.7152 * g + 0.0722 * b) / ref)));
+      p[i] = Math.min(255, ar * k);
+      p[i + 1] = Math.min(255, ag * k);
+      p[i + 2] = Math.min(255, ab * k);
+    }
+  }
+  ctx.putImageData(datos, 0, 0);
+  const nueva = new THREE.CanvasTexture(lienzo);
+  nueva.flipY = t.flipY;
+  nueva.colorSpace = t.colorSpace;
+  nueva.wrapS = t.wrapS;
+  nueva.wrapT = t.wrapT;
+  nueva.name = `${t.name}_AzulUnico`;
+  return nueva;
+}
+
 /** Clona un GLB con materiales propios (mate y con polvo desde abajo), sombras y sin transmisión. */
-function prepararModelo(raiz: THREE.Object3D, polvo: OpcionesPolvo = POLVO_CCBY, esqueleto = false): THREE.Object3D {
+function prepararModelo(raiz: THREE.Object3D, polvo: OpcionesPolvo = POLVO_CCBY, esqueleto = false, azulUnico = false): THREE.Object3D {
   const copia = esqueleto ? clonarEsqueleto(raiz) : raiz.clone();
   const clones = new Map<THREE.Material, THREE.MeshStandardMaterial>();
   copia.traverse((o) => {
@@ -62,7 +101,8 @@ function prepararModelo(raiz: THREE.Object3D, polvo: OpcionesPolvo = POLVO_CCBY,
       if (m instanceof THREE.MeshPhysicalMaterial) m.transmission = 0;
       m.roughness = Math.max(m.roughness, 0.82);
       m.metalness = Math.min(m.metalness, 0.1);
-      clones.set(original, conPolvo(m, polvo));
+      if (azulUnico && m.map) m.map = texturaAzulUnico(m.map);
+      clones.set(original, conPolvo(m, { ...polvo, color: PALETA.polvo }));
     }
     o.material = m;
   });
@@ -125,12 +165,12 @@ export function ponerColonia(
   base.add(armarColonia(kit, m, panel, { quedan }));
 
   // Hábitat (refugio de la tormenta) y torre de comunicaciones: CC BY tal cual, con polvo mate.
-  const habitat = prepararModelo(modelos.habitat);
+  const habitat = prepararModelo(modelos.habitat, POLVO_CCBY, false, true);
   habitat.name = "Colony_Habitat";
   habitat.scale.setScalar(HABITAT_COLONIA.ancho / LADO_GLB.habitat);
   habitat.position.set(HABITAT_COLONIA.x, 0, HABITAT_COLONIA.z);
   const t = decorado("torre");
-  const torre = prepararModelo(modelos.torre);
+  const torre = prepararModelo(modelos.torre, POLVO_CCBY, false, true);
   torre.name = "Colony_CommsTower";
   const escalaTorre = TORRE_COLONIA.ancho / LADO_GLB.torre;
   torre.scale.setScalar(escalaTorre);
@@ -167,6 +207,13 @@ export function ponerColonia(
   // Tripulante que camina por el anillo exterior (CC BY, con su ciclo de caminar de 1,33 s).
   const tripulante = prepararModelo(modelos.tripulante, { base: 0.05, suelo: 0.35, arriba: 0.1, chorreado: 0 }, true);
   tripulante.name = "Colony_Walker";
+  // Visor del casco: el naranja del modelo pasa a grafito con brillo (sin naranja en la colonia).
+  tripulante.traverse((o) => {
+    if (o instanceof THREE.Mesh && o.material instanceof THREE.MeshStandardMaterial && o.material.name.startsWith("helmet")) {
+      o.material.color.set(PALETA.grafito);
+      o.material.roughness = 0.25;
+    }
+  });
   const mezclador = new THREE.AnimationMixer(tripulante);
   const clip = modelos.tripulante.animations[0];
   if (clip) mezclador.clipAction(clip).play();

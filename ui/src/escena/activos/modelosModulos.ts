@@ -12,7 +12,7 @@ import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { colorToken } from "../materiales";
 import { crearPanelSolar, geometriaCeldas, geometriaCuerpoPanel, materialCeldasPanel, materialCuerpoPanel } from "./panelSolar";
-import { ACENTOS, conPolvo } from "./polvoKit";
+import { PALETA, conPolvo } from "./polvoKit";
 
 /** Archivos de `public/modelos/` (los arma `construir_modelos.py`: base en y = 0, frente hacia +z, en metros). */
 export const ARCHIVOS_MODELOS = {
@@ -112,9 +112,9 @@ export function armarAntenaReal(modelos: ModelosModulos): THREE.Group {
   g.name = "Antenna_TallDish";
   const plato = modelos.antena.clone();
   plato.position.y = 0.3;
-  const metal = new THREE.MeshStandardMaterial({ name: "Antenna_Metal", color: 0x8e8a84, roughness: 0.7, metalness: 0.4 });
+  const metal = new THREE.MeshStandardMaterial({ name: "Antenna_Metal", color: PALETA.gris, roughness: 0.7, metalness: 0.2 });
   const zapata = new THREE.MeshStandardMaterial({ name: "Antenna_Footing", color: colorToken("regolito-medio").lerp(new THREE.Color(0x6b5a50), 0.6), roughness: 1 });
-  const rojo = new THREE.MeshStandardMaterial({ name: "Antenna_Beacon", color: 0x3a0606, emissive: 0xff2a1a, emissiveIntensity: 2.2 });
+  const rojo = new THREE.MeshStandardMaterial({ name: "Antenna_Beacon", color: 0x3a0606, emissive: PALETA.rojo, emissiveIntensity: 2.2 });
   const base = new THREE.Mesh(new THREE.CylinderGeometry(0.7, 0.85, 0.3, 8), zapata);
   base.position.y = 0.17;
   const { x, z, alto } = MASTIL_RELEVO;
@@ -128,7 +128,15 @@ export function armarAntenaReal(modelos: ModelosModulos): THREE.Group {
   // Dos travesaños con antenas de látigo a media altura: lectura de "relevo", no solo un poste.
   const travesano = new THREE.Mesh(new THREE.BoxGeometry(0.7, 0.05, 0.05), metal);
   travesano.position.set(x, alto * 0.78, z);
-  prepararMallas(plato);
+  // Plato en el blanco cálido de la paleta con polvo en degradé (sin el tinte parejo que lo volvía beige).
+  prepararMallas(plato, false);
+  plato.traverse((o) => {
+    if (o instanceof THREE.Mesh && o.material instanceof THREE.MeshStandardMaterial) {
+      o.material.color.set(PALETA.blanco);
+      o.material.roughness = 0.8;
+      conPolvo(o.material, { base: 0.05, suelo: 0.5, arriba: 0.15, chorreado: 0.05 });
+    }
+  });
   g.add(plato, base, mastil, pie, luz, travesano);
   for (const x of [base, mastil, pie, luz, travesano]) x.castShadow = x.receiveShadow = true;
   luz.castShadow = false;
@@ -157,10 +165,10 @@ export function armarPanelReal(): { grupo: THREE.Group; celdas: THREE.MeshStanda
   controlador.name = "Panel_Controller";
   const caja = new THREE.Mesh(
     new THREE.BoxGeometry(0.5, CONTROLADOR_PANEL.alto, 0.36),
-    new THREE.MeshStandardMaterial({ name: "Panel_Controller", color: 0x9d9a94, roughness: 0.85 }),
+    new THREE.MeshStandardMaterial({ name: "Panel_Controller", color: PALETA.gris, roughness: 0.85 }),
   );
   caja.position.y = CONTROLADOR_PANEL.alto / 2;
-  const franja = new THREE.Mesh(new THREE.BoxGeometry(0.52, 0.1, 0.38), new THREE.MeshStandardMaterial({ name: "Panel_ControllerStripe", color: ACENTOS.amarillo, roughness: 0.8 }));
+  const franja = new THREE.Mesh(new THREE.BoxGeometry(0.52, 0.1, 0.38), new THREE.MeshStandardMaterial({ name: "Panel_ControllerStripe", color: PALETA.amarillo, roughness: 0.8 }));
   franja.position.y = CONTROLADOR_PANEL.alto - 0.18;
   for (const x of [caja, franja]) x.castShadow = x.receiveShadow = true;
   controlador.add(caja, franja);

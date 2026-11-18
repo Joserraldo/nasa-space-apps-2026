@@ -14,18 +14,10 @@ import * as THREE from "three";
 export const V_BANDA = { negro: 0.125, rojo: 0.375, oscuro: 0.625, cuerpo: 0.875 } as const;
 export type Banda = keyof typeof V_BANDA;
 
-/** Paleta propia del kit (sRGB): cuerpo gris cálido, rojo óxido apagado, gris oscuro y casi negro. [E] */
-export const COLORES_PALETA: Readonly<Record<Banda, readonly [number, number, number]>> = {
-  negro: [28, 27, 27],
-  rojo: [126, 50, 38],
-  oscuro: [66, 63, 60],
-  cuerpo: [182, 174, 164],
-};
-
 /**
- * Paleta del sistema estético (`clasificacion-objetos.md`, "Sistema estético", decisión de María Paula del 18 nov): los
- * hexadecimales se cambian todos juntos, nunca en piezas sueltas. Por ahora la usa solo el invernadero (`domoVidrio.ts`),
- * la pieza que se aprueba antes de pintar la colonia entera. `planta` no es acento: es el único verde (plantas adentro).
+ * Paleta del sistema estético (`clasificacion-objetos.md`, "Sistema estético", aprobada por María Paula el 18 nov con el
+ * invernadero): única fuente de color de la colonia. Los hexadecimales se cambian todos juntos, nunca en piezas sueltas.
+ * `planta` no es acento: es el único verde (plantas dentro del invernadero). Sin naranja, morado ni rosa.
  */
 export const PALETA = {
   blanco: "#E8E6E1",
@@ -37,26 +29,39 @@ export const PALETA = {
   rojo: "#E0453A",
   polvo: "#9C5B3C",
   planta: "#5E9C3F",
-  /** Luz cálida de marcos y estantes (sin rosa: la paleta no lo admite). */
+  /** Luz cálida de marcos y estantes (sin rosa). */
   luzCalida: "#FFE2B0",
 } as const;
 
+const rgb = (hex: string): readonly [number, number, number] => [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16)) as unknown as [number, number, number];
+
 /**
- * Acentos por función (`clasificacion-objetos.md`, "Color por función"): hábitat cian (identidad del juego), energía
- * amarillo, agua azul, invernadero verde, comunicaciones rojo, depósito naranja. Más el blanco de estructura, la tela de
- * los sacos y el negro de las franjas de peligro. sRGB. [E]
+ * Bandas de la paleta del kit Craftpix, llevadas al sistema estético: cuerpo blanco cálido, el óxido del kit pasa a gris
+ * cálido claro (sin naranja), el gris oscuro también a gris (nada de gris oscuro en el cuerpo) y el negro a grafito.
+ */
+export const COLORES_PALETA: Readonly<Record<Banda, readonly [number, number, number]>> = {
+  negro: rgb(PALETA.grafito),
+  rojo: rgb(PALETA.gris),
+  oscuro: rgb(PALETA.gris),
+  cuerpo: rgb(PALETA.blanco),
+};
+
+/**
+ * Tonos de pieza por función (`clasificacion-objetos.md`): hábitat cian, energía amarillo, agua azul, comunicaciones
+ * rojo; estructura blanca, bases y soportes grises, franjas y paneles en grafito. El depósito no tiene acento.
  */
 export const ACENTOS = {
-  cian: "#29b6c6",
-  amarillo: "#e5b02a",
-  azul: "#2f6bd0",
-  verde: "#45a84a",
-  rojo: "#cf3b2c",
-  naranja: "#e0782a",
-  blanco: "#e6e3dc",
-  tela: "#b39672",
-  negro: "#232222",
-  aluminio: "#b9b7b1",
+  cian: PALETA.cian,
+  amarillo: PALETA.amarillo,
+  azul: PALETA.azul,
+  rojo: PALETA.rojo,
+  blanco: PALETA.blanco,
+  gris: PALETA.gris,
+  grafito: PALETA.grafito,
+  /** Sacos de regolito: tela gris cálida (el polvo los tiñe desde abajo). */
+  tela: PALETA.gris,
+  negro: PALETA.grafito,
+  aluminio: PALETA.gris,
 } as const;
 export type Acento = keyof typeof ACENTOS;
 
@@ -71,7 +76,7 @@ export function colorSobreCuerpo(acento: Acento | `#${string}`): THREE.Color {
 }
 
 /** Polvo de Jezero: tono del suelo cercano de la Etapa BC. */
-export const COLOR_POLVO = "#a0705a";
+export const COLOR_POLVO = PALETA.polvo;
 /** Regolito de los sacos y las losas: más oscuro y frío que el polvo suelto. */
 export const COLOR_REGOLITO = "#5f4034";
 

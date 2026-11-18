@@ -185,6 +185,17 @@ def ancho_a(objs, metros):
     mn, mx = caja(objs)
     return metros / max(mx.x - mn.x, mx.y - mn.y)
 
+# ---------------- Paleta del sistema estético (`clasificacion-objetos.md`, igual que `PALETA` de polvoKit.ts) ----------------
+def lineal(hexa):
+    c = [int(hexa[i:i + 2], 16) / 255 for i in (1, 3, 5)]
+    return tuple(x / 12.92 if x <= 0.04045 else ((x + 0.055) / 1.055) ** 2.4 for x in c)
+BLANCO, GRIS, GRAFITO, AZUL = lineal("#E8E6E1"), lineal("#A8A29A"), lineal("#2E3238"), lineal("#5BA9C9")
+
+def a_paleta(c, oscuro_a=GRAFITO):
+    """Lleva un color plano a la paleta por su luminancia: claro a blanco, medio a gris, oscuro a `oscuro_a`."""
+    l = 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2]
+    return BLANCO if l > 0.28 else GRIS if l > 0.15 else oscuro_a
+
 # ---------------- Los cuatro CC BY 4.0 de la colonia (crédito en FUENTES.md) ----------------
 # Forma tal cual; solo escala, apoyo en el suelo y frente hacia +z (las puertas ya miran a -y de Blender).
 if "ccby" in SECCIONES:
@@ -196,16 +207,16 @@ if "ccby" in SECCIONES:
         normalizar(objs, ancho_a(objs, metros))
         o = unir(objs, "CCBY_" + nombre)
         exportar([o], nombre)
-    # Reciclador de agua: tanques y tuberías (anton.engdahl). Colores planos a color por vértice; los grises oscuros
-    # de las tapas pasan al azul del agua (color por función, `clasificacion-objetos.md`).
+    # Reciclador de agua: tanques y tuberías (anton.engdahl). Colores planos a color por vértice, llevados a la paleta;
+    # las tapas oscuras de los tanques pasan al azul único del agua (color por función, `clasificacion-objetos.md`).
     reset()
     objs = importar(DESCARGAS + "mars_science_station_low_poly.glb")
     aplicar(objs)
     normalizar(objs, ancho_a(objs, 2.9))
     def color_reciclador(m):
         c = color_base(m)
-        if 0.07 < c[0] < 0.12: return (0.03, 0.2, 0.55)
-        return c
+        if 0.07 < c[0] < 0.12: return AZUL
+        return a_paleta(c)
     colorear(objs, color_reciclador, "Recycler_VC")
     exportar_vc([unir(objs, "CCBY_Recycler")], "reciclador-agua")
     # Cápsula de llegada (MauricioPB) sin su astronauta (quieto y sin esqueleto: el tripulante es moon_walk).
@@ -216,7 +227,7 @@ if "ccby" in SECCIONES:
     for o in astronauta: bpy.data.objects.remove(o)
     objs = [o for o in bpy.data.objects if o.type == "MESH"]
     normalizar(objs, 1.25)
-    colorear(objs, color_base, "Capsule_VC")
+    colorear(objs, lambda m: a_paleta(color_base(m)), "Capsule_VC")
     exportar_vc([unir(objs, "CCBY_Capsule")], "capsula-llegada")
 
 # ---------------- Ingenuity (NASA 3D Resources): colores planos de NASA, rotores aparte para girarlos ----------------

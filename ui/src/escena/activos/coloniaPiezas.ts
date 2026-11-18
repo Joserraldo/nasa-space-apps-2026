@@ -9,7 +9,7 @@
  * franja amarilla y negra sobre la puerta, barriles, manguera). Sin insignias ni texto.
  */
 import * as THREE from "three";
-import { ACENTOS, V_BANDA, colorSobreCuerpo, type Acento, type Banda } from "./polvoKit";
+import { ACENTOS, PALETA, V_BANDA, colorSobreCuerpo, type Acento, type Banda } from "./polvoKit";
 
 export interface MaterialesColonia {
   kit: THREE.MeshStandardMaterial;
@@ -306,7 +306,7 @@ export function crearTerminal(m: MaterialesColonia, alto = 1.15): THREE.Group {
   const cabeza = grupo(
     "Terminal_Head",
     malla(caja(0.62, 0.42, 0.1, "oscuro"), m.kit, [0, 0, 0]),
-    parteLuz(luzCaja(0.52, 0.32, 0.02, "#7fe3ef", 1.3), m, [0, 0, 0.06]),
+    parteLuz(luzCaja(0.52, 0.32, 0.02, PALETA.cian, 1.2), m, [0, 0, 0.06]),
     malla(caja(0.66, 0.05, 0.16, "cian"), m.kit, [0, 0.24, 0]),
   );
   cabeza.position.set(0, alto, 0.05);
@@ -332,12 +332,12 @@ export function crearEstacionMeteo(m: MaterialesColonia): THREE.Group {
     malla(cilindro(0.35, 0.42, 0.12, 8, "oscuro"), m.kit, [0, 0.06, 0]),
     malla(cilindro(0.04, 0.05, h, 6, "cuerpo"), m.kit, [0, h / 2, 0]),
     malla(caja(0.36, 0.42, 0.24, "blanco"), m.kit, [0, 0.62, 0.1]),
-    malla(caja(0.3, 0.06, 0.2, "cian"), m.kit, [0, 0.86, 0.1]),
+    malla(caja(0.3, 0.06, 0.2, "gris"), m.kit, [0, 0.86, 0.1]),
     malla(caja(0.8, 0.03, 0.03, "oscuro"), m.kit, [0, h * 0.72, 0]),
     malla(caja(0.1, 0.14, 0.1, "negro"), m.kit, [0.4, h * 0.72 - 0.08, 0]),
     malla(caja(0.1, 0.14, 0.1, "negro"), m.kit, [-0.4, h * 0.72 - 0.08, 0]),
     malla(cilindro(0.02, 0.02, 0.5, 4, "oscuro"), m.kit, [0, h + 0.02, 0], [0, 0, Math.PI / 2]),
-    malla(caja(0.04, 0.16, 0.2, "cian"), m.kit, [0.25, h + 0.02, 0]),
+    malla(caja(0.04, 0.16, 0.2, "gris"), m.kit, [0.25, h + 0.02, 0]),
   );
   for (let i = 0; i < 3; i++) {
     const a = (i / 3) * Math.PI * 2;
@@ -356,7 +356,7 @@ export function crearSismometro(m: MaterialesColonia): THREE.Group {
     "Colony_Seismometer",
     malla(cilindro(0.55, 0.6, 0.06, 10, "oscuro"), m.regolito, [0, 0.03, 0]),
     malla(domo, m.kit, [0, 0.06, 0]),
-    malla(cilindro(0.44, 0.44, 0.06, 10, "cian"), m.kit, [0, 0.09, 0]),
+    malla(cilindro(0.44, 0.44, 0.06, 10, "gris"), m.kit, [0, 0.09, 0]),
     malla(cilindro(0.025, 0.025, 1.6, 4, "negro"), m.kit, [0.9, 0.025, 0.4], [0, 0.4, Math.PI / 2]),
   );
 }
@@ -369,7 +369,7 @@ export function crearBalizaColonia(m: MaterialesColonia): THREE.Group {
     malla(cilindro(0.045, 0.045, 0.14, 6, "amarillo"), m.kit, [0, 0.13, 0]),
     malla(cilindro(0.045, 0.045, 0.14, 6, "negro"), m.kit, [0, 0.27, 0]),
     malla(cilindro(0.045, 0.045, 0.12, 6, "amarillo"), m.kit, [0, 0.4, 0]),
-    parteLuz(luzCaja(0.07, 0.05, 0.07, "#ffa040", 1.7), m, [0, 0.48, 0]),
+    parteLuz(luzCaja(0.07, 0.05, 0.07, PALETA.amarillo, 1.7), m, [0, 0.48, 0]),
   );
 }
 
@@ -383,14 +383,14 @@ export function crearLosa(m: MaterialesColonia, ancho: number, fondo: number): T
   return x;
 }
 
-/** Contenedor de carga (silueta de `SM_Cargo_Container`): cuerpo naranja de depósito con marco oscuro. */
+/** Contenedor de carga (silueta de `SM_Cargo_Container`): blanco con marco gris; el depósito no lleva acento. */
 export function crearContenedor(m: MaterialesColonia): THREE.Group {
   return grupo(
     "Colony_Crate",
-    malla(caja(1.2, 0.8, 0.8, "naranja"), m.kit, [0, 0.4, 0]),
+    malla(caja(1.2, 0.8, 0.8, "blanco"), m.kit, [0, 0.4, 0]),
     malla(caja(1.24, 0.08, 0.84, "oscuro"), m.kit, [0, 0.8, 0]),
     malla(caja(0.08, 0.82, 0.84, "oscuro"), m.kit, [-0.58, 0.41, 0]),
     malla(caja(0.08, 0.82, 0.84, "oscuro"), m.kit, [0.58, 0.41, 0]),
-    malla(caja(0.4, 0.2, 0.02, "blanco"), m.kit, [0, 0.5, 0.41]),
+    malla(caja(0.4, 0.2, 0.02, "grafito"), m.kit, [0, 0.5, 0.41]),
   );
 }

@@ -7,12 +7,10 @@
  */
 import * as THREE from "three";
 import { mergeGeometries } from "three/examples/jsm/utils/BufferGeometryUtils.js";
-import { ACENTOS } from "./polvoKit";
+import { PALETA } from "./polvoKit";
 
 /** Medidas del panel: ancho, largo inclinado, inclinación, alto del borde bajo, cuadrícula de celdas. [E] */
 export const PANEL = { ancho: 1.6, largo: 2.2, inclinacion: (30 * Math.PI) / 180, bajo: 0.55, columnas: 3, filas: 6, junta: 0.045 } as const;
-
-const color = (hex: number) => new THREE.Color(hex);
 
 function pintada(g: THREE.BufferGeometry, c: THREE.Color, m?: THREE.Matrix4): THREE.BufferGeometry {
   const x = g.index ? g.toNonIndexed() : g;
@@ -33,8 +31,9 @@ export function geometriaCuerpoPanel(): THREE.BufferGeometry {
   const { ancho, largo, inclinacion, bajo } = PANEL;
   const alto = bajo + Math.sin(inclinacion) * largo;
   const cz = (Math.cos(inclinacion) * largo) / 2;
-  const aluminio = color(0xc4c2bc), oscuro = color(0x45423f);
-  const amarillo = new THREE.Color(ACENTOS.amarillo);
+  // Bastidor blanco cálido, patas grises (soportes), borde amarillo de energía; las celdas son el grafito/azul oscuro.
+  const aluminio = new THREE.Color(PALETA.blanco), oscuro = new THREE.Color(PALETA.gris);
+  const amarillo = new THREE.Color(PALETA.amarillo);
   const p: THREE.BufferGeometry[] = [];
   const centro = (bajo + alto) / 2;
   // Bastidor inclinado (la cara de arriba queda bajo las celdas) y borde bajo amarillo.
