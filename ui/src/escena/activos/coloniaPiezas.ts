@@ -102,12 +102,12 @@ export function parteLuz(g: THREE.BufferGeometry, m: MaterialesColonia, pos: V3,
 // ---------------------------------------------------------------------------------------------
 
 /**
- * Saco lleno: caja redondeada (mitad caja, mitad esfera, 2 × 1 × 2 divisiones) con la base aplastada y un lomo arriba,
- * de tela con polvo; 32 triángulos. Los sacos de D2 eran cajas en hileras trabadas (se leían como ladrillos) y el
+ * Saco lleno: caja redondeada (mitad caja, mitad esfera, 2 × 1 × 1 divisiones) con la base aplastada y un lomo arriba,
+ * de tela con polvo; 20 triángulos. Los sacos de D2 eran cajas en hileras trabadas (se leían como ladrillos) y el
  * primer intento de D3, un elipsoide de 6 caras, se leía como piedras hexagonales. [E]
  */
 function geometriaSaco(): THREE.BufferGeometry {
-  const g = new THREE.BoxGeometry(1, 1, 1, 2, 1, 2);
+  const g = new THREE.BoxGeometry(1, 1, 1, 2, 1, 1);
   const p = g.getAttribute("position");
   const v = new THREE.Vector3();
   for (let i = 0; i < p.count; i++) {
