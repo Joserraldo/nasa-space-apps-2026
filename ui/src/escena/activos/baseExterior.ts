@@ -74,7 +74,7 @@ export const LARGO_CORREDOR = 4.4;
 /** Ancho del corredor en planta (diámetro de sus costillas). */
 const ANCHO_CORREDOR = 2.4;
 /** Escala de la antena parabólica del fondo respecto de la forma del módulo `antena`. [E] */
-const ESCALA_PARABOLICA = 1.9;
+export const ESCALA_PARABOLICA = 1.9;
 /** Radio en planta de la parabólica: el plato de la forma del módulo mide 1,3 m de radio. */
 const RADIO_PARABOLICA = 1.3 * ESCALA_PARABOLICA;
 /**
@@ -87,11 +87,11 @@ const ESCALA_CUPULA2 = 1.25;
 const RADIO_CUPULA = 3.8 * ESCALA_CUPULA;
 const RADIO_CUPULA2 = 3.8 * ESCALA_CUPULA2;
 /** Fila de cuatro paneles solares inclinados, a la izquierda detrás, junto a la torre. */
-const FILA_PANELES = { x: -20.8, z: -16.8, n: 4, paso: 2.0, escala: 1.35, giro: 1.35 } as const;
+export const FILA_PANELES = { x: -20.8, z: -16.8, n: 4, paso: 2.0, escala: 1.35, giro: 1.35 } as const;
 /** Loma de la antena parabólica (`mundo/01`, a la izquierda al fondo). */
-const LOMA_ANTENA: Loma = { x: -26, z: -28.5, radio: 6.5, alto: 4, semilla: 11, tono: 0.9 };
+export const LOMA_ANTENA: Loma = { x: -26, z: -28.5, radio: 6.5, alto: 4, semilla: 11, tono: 0.9 };
 /** Loma grande de la base de montaña (`mundo/01`, al fondo a la derecha) con un edificio semienterrado. */
-const LOMA_BASE: Loma = { x: 27, z: -44, radio: 14, alto: 9, semilla: 23, tono: 0.55 };
+export const LOMA_BASE: Loma = { x: 27, z: -44, radio: 14, alto: 9, semilla: 23, tono: 0.55 };
 
 /**
  * Ángulo de la torre: el mínimo (en grados, hacia la izquierda) con el que su silueta se separa del
@@ -111,7 +111,7 @@ function haciaFuera(x: number, z: number, d: number): [number, number] {
   return [(x / n) * d, (z / n) * d];
 }
 /** Giro que pone el frente (+z local) de una pieza en (x, z) mirando al centro de la base. */
-const alCentro = (x: number, z: number) => Math.atan2(-x, -z);
+export const alCentro = (x: number, z: number) => Math.atan2(-x, -z);
 
 /** Dirección tangente del anillo en la torre, hacia la derecha (hacia el hábitat). */
 function tangenteTorre(): [number, number] {

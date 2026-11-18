@@ -18,6 +18,7 @@ import { MODULOS_BASE, TIEMPOS_MODULO_MS, type ModuloBase } from "./activos/modu
 import { DECORADO, armarKit, armarEdificios, distanciaAHuella, huellasBase } from "./activos/baseExterior";
 import { CONTROLADOR_PANEL, armarAntenaReal, armarPanelReal, pintarPolvo, type ModelosModulos } from "./activos/modelosModulos";
 import { huellasModulos } from "./activos/modulosArmados";
+import { ponerColonia } from "./activos/coloniaEscena";
 import type { Huella } from "./activos/piezasComunes";
 import { aplicarEstado, armarAnclajes, armarModulo, reemplazarSolido, type ModuloArmado } from "./activos/modulosArmados";
 export { PLAZA, CAMINO, CAMINOS, BALIZAS, geometriaCaminos, posicionesBalizas } from "./activos/caminos";
@@ -246,6 +247,7 @@ export function armarEscena(
       if (celdasPanel) pintarPolvo(celdasPanel, polvo);
     },
     ponerModelos(m) {
+      ponerColonia(base, materiales, modulos, m);
       // Luz de estado: en la zapata de la antena y sobre el controlador del panel.
       reemplazarSolido(modulos.antena, armarAntenaReal(m), [0, 0.38, 0.62]);
       const panel = armarPanelReal(m);

@@ -16,6 +16,8 @@ import { colorToken } from "../materiales";
 export const ARCHIVOS_MODELOS = {
   antena: "antena-tall-dish.glb",
   panel: "panel-solar.glb",
+  /** Kit Craftpix Space Colony, una malla por pieza (Etapa D2, `colonia.ts`). */
+  kit: "kit-colonia.glb",
 } as const;
 export type ModeloExterno = keyof typeof ARCHIVOS_MODELOS;
 
@@ -67,7 +69,7 @@ const TINTE_POLVO = new THREE.Color(0.95, 0.86, 0.78);
  * clonan aquí (uno por material original, así las mallas que lo compartían lo siguen compartiendo) para que el
  * tinte no se acumule si la pieza se arma más de una vez.
  */
-function prepararMallas(raiz: THREE.Object3D, tinte = true): void {
+export function prepararMallas(raiz: THREE.Object3D, tinte = true): void {
   const clones = new Map<THREE.Material, THREE.MeshStandardMaterial>();
   raiz.traverse((o) => {
     if (!(o instanceof THREE.Mesh)) return;
