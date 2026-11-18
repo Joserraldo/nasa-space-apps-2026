@@ -1,4 +1,4 @@
-import { CONFIDENCE_THRESHOLD, type ClassifierOutput, type GameState } from "@solar-shield/contracts";
+import { CONFIDENCE_THRESHOLD, type ClassifierOutput, type GameState, type SpaceWeatherEvent } from "@solar-shield/contracts";
 import { aAccion } from "./a-accion.js";
 import type { Dialogo, Linea, ReferenciaDosis } from "./dialogo.js";
 
@@ -8,6 +8,8 @@ export type VistaAgente = Pick<GameState, "recursos" | "tripulacion" | "tormenta
 export interface Contexto {
   /** Dosis en la superficie de Marte (RAD/Curiosity), para la Doctora. */
   dosisMarte?: ReferenciaDosis;
+  /** Tormenta que llegará pronto (aún no activa): la Meteoróloga avisa antes. */
+  pronostico?: SpaceWeatherEvent;
 }
 
 const l = (clave: string, vars?: Linea["vars"]): Linea => (vars ? { clave, vars } : { clave });
@@ -55,14 +57,30 @@ function doctora(s: ClassifierOutput, v: VistaAgente, c: Contexto): Dialogo {
   return { ...base, lineas: [...lineas, muletilla("doctora")] };
 }
 
-function meteorologa(s: ClassifierOutput, v: VistaAgente): Dialogo {
+function meteorologa(s: ClassifierOutput, v: VistaAgente, c: Contexto): Dialogo {
   const base = { experto: "meteorologa" as const, prioridad: "consejo" as const };
   const t = v.tormenta;
   if (s.accion === "explicar_evento") {
     // Destello ≠ nube: lo que hay que esperar con el escudo es la nube (revisión de datos, #40).
     return { ...base, lineas: [l("agentes.meteorologa.evento.destelloNube"), muletilla("meteorologa")] };
   }
-  if (!t) return { ...base, lineas: [l("agentes.meteorologa.pronostico.calma"), muletilla("meteorologa")] };
+  if (!t) {
+    // P0.4: la tormenta está en el estado antes de activarse; la Meteoróloga la anuncia.
+    // (`explicar_evento` ya salió arriba: aquí solo queda el pronóstico normal.)
+    if (c.pronostico) {
+      return {
+        experto: "meteorologa",
+        prioridad: "alerta",
+        fuente: c.pronostico.fuente,
+        lineas: [
+          { clave: "agentes.meteorologa.pronostico.viene", vars: { nombreKey: `datos.tormenta.${c.pronostico.id}.nombre`, fecha: c.pronostico.inicio.slice(0, 10) } },
+          { clave: "agentes.meteorologa.pronostico.preparar" },
+          muletilla("meteorologa"),
+        ],
+      };
+    }
+    return { ...base, lineas: [l("agentes.meteorologa.pronostico.calma"), muletilla("meteorologa")] };
+  }
   // Datos curados, no en vivo: se dice la fecha real, nunca "ahora mismo".
   const lineas = [l("agentes.meteorologa.pronostico.real", { fecha: t.inicio.slice(0, 10), nombreKey: `datos.tormenta.${t.id}.nombre` })];
   if (t.marcoMarte) lineas.push(l(`datos.marco.${t.marcoMarte}`));
@@ -93,7 +111,7 @@ export function responder(s: ClassifierOutput, v: VistaAgente, c: Contexto = {})
     case "doctora":
       return doctora(s, v, c);
     case "meteorologa":
-      return meteorologa(s, v);
+      return meteorologa(s, v, c);
     case "matematico": {
       const accion = aAccion(s);
       return { experto: "matematico", prioridad: "consejo", ...(accion ? { accion } : {}), lineas: [l(accion ? "agentes.matematico.calculo" : "agentes.matematico.cual")] };

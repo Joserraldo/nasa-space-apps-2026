@@ -10,9 +10,10 @@ describe("conversar: una entrada para el panel de ui", () => {
     expect(preguntaDelBoton("meteorologa")).toMatchObject({ accion: "pronostico", fuente: "boton", confianza: 1 });
     expect(conversar({ experto: "ingeniera" }, s, o).lineas[0]?.clave).toMatch(/^agentes\.ingeniera\.energia\./);
   });
-  it("antes del paso 5 la Meteoróloga no ve la tormenta aunque esté en el estado", () => {
+  // P0.4: decisión de producto aprobada: la tormenta se anuncia antes de llegar.
+  it("antes del paso 5 la Meteoróloga avisa de la tormenta que viene", () => {
     expect(s.tormenta).not.toBeNull();
-    expect(conversar({ experto: "meteorologa" }, s, o).lineas[0]?.clave).toBe("agentes.meteorologa.pronostico.calma");
+    expect(conversar({ experto: "meteorologa" }, s, o).lineas[0]?.clave).toBe("agentes.meteorologa.pronostico.viene");
     expect(conversar({ experto: "meteorologa" }, s, { tormentaActiva: true }).lineas[0]?.clave).toBe("agentes.meteorologa.pronostico.real");
   });
   it("texto que no se entiende → aclaración, nunca silencio", () => {
