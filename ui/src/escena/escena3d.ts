@@ -29,6 +29,7 @@ import type { EstadoModulo, VistaEscena } from "./vista";
 import { MODULOS_BASE, type ModuloBase } from "./activos/modulos";
 import { PRESUPUESTO, aplanarClaro, contarRender, type CuentaRender } from "./activos/terreno";
 import { huellasBase, huellasColisionExtra } from "./activos/baseExterior";
+import { huellasColonia } from "./activos/colonia";
 import { huellasModulos } from "./activos/modulosArmados";
 import { microrrelieve } from "./activos/microrelieve";
 import { EntradaTactil, type DeltaCamaraTactil } from "./entradaTactil";
@@ -378,6 +379,8 @@ export function solidosBase(modulos: Partial<Record<ModuloBase, EstadoModulo>>, 
   const huellas: HuellaPlanta[] = [
     ...huellasBase(),
     ...huellasColisionExtra(),
+    // Colonia (Etapa D3): domo del hábitat, corredores, patas del corredor elevado y bermas.
+    ...huellasColonia(),
     ...huellasModulos().filter((h) => {
       const id = h.id.slice("modulo:".length) as ModuloBase;
       const e = modulos[id];

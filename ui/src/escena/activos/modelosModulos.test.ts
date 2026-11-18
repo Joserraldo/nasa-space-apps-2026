@@ -23,10 +23,21 @@ function modelosFalsos(): ModelosModulos {
     kit.add(m);
   }
   // Un material con transmisión (como el lambert del HDU) obliga a redibujar la escena: la preparación la apaga.
+  const rotores = malla("ingenuity", new THREE.MeshStandardMaterial({ name: "Ingenuity_VC", vertexColors: true }));
+  for (const n of ["rotors_01", "rotors_02"]) {
+    const r = new THREE.Mesh(new THREE.BoxGeometry(1, 0.02, 0.1), new THREE.MeshStandardMaterial());
+    r.name = n;
+    rotores.add(r);
+  }
   return {
     antena: malla("dish", new THREE.MeshPhysicalMaterial({ name: "Dish_White", transmission: 1 })),
-    panel: malla("panel", new THREE.MeshStandardMaterial({ name: "Panel_Cells" })),
     kit,
+    habitat: malla("habitat", new THREE.MeshStandardMaterial({ name: "Habitat" })),
+    torre: malla("torre", new THREE.MeshStandardMaterial({ name: "Tower" })),
+    reciclador: malla("reciclador", new THREE.MeshStandardMaterial({ name: "Recycler_VC", vertexColors: true })),
+    capsula: malla("capsula", new THREE.MeshStandardMaterial({ name: "Capsule_VC", vertexColors: true })),
+    ingenuity: rotores,
+    tripulante: malla("tripulante", new THREE.MeshStandardMaterial({ name: "Suit" })),
   };
 }
 
@@ -58,7 +69,7 @@ describe("modelos reales de la Etapa D", () => {
   });
 
   it("los paneles comparten un solo material de celdas (pintar una vez cambia los tres)", () => {
-    const { grupo, celdas } = armarPanelReal(modelosFalsos());
+    const { grupo, celdas } = armarPanelReal();
     expect(celdas).not.toBeNull();
     const usados = new Set<THREE.Material>();
     grupo.traverse((o) => {

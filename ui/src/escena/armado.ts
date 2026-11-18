@@ -18,7 +18,7 @@ import { MODULOS_BASE, TIEMPOS_MODULO_MS, type ModuloBase } from "./activos/modu
 import { DECORADO, armarKit, armarEdificios, distanciaAHuella, huellasBase } from "./activos/baseExterior";
 import { CONTROLADOR_PANEL, armarAntenaReal, armarPanelReal, pintarPolvo, type ModelosModulos } from "./activos/modelosModulos";
 import { huellasModulos } from "./activos/modulosArmados";
-import { ponerColonia } from "./activos/coloniaEscena";
+import { ponerColonia, type ColoniaViva } from "./activos/coloniaEscena";
 import type { Huella } from "./activos/piezasComunes";
 import { aplicarEstado, armarAnclajes, armarModulo, reemplazarSolido, type ModuloArmado } from "./activos/modulosArmados";
 export { PLAZA, CAMINO, CAMINOS, BALIZAS, geometriaCaminos, posicionesBalizas } from "./activos/caminos";
@@ -211,6 +211,9 @@ export function armarEscena(
   /** Material de las celdas del panel real (null hasta `ponerModelos`) y el último estado de polvo pedido. */
   let celdasPanel: THREE.MeshStandardMaterial | null = null;
   let polvo = vista?.panelConPolvo ?? false;
+  /** Colonia montada con los GLB (null hasta `ponerModelos`) y el último sitio pedido. */
+  let colonia: ColoniaViva | null = null;
+  let sitio = vista?.sitio ?? null;
   const materialRoca = () => (detallado ? suelo.roca.detallado : suelo.roca.simple);
   base.add(armarAnclajes(materiales), armarKit(materiales), armarEdificios(materiales), ...MODULOS_BASE.map((id) => modulos[id].raiz));
   // Fuera de la zona de la Etapa BC el horizonte sigue siendo la cordillera de `develop`.
@@ -245,12 +248,15 @@ export function armarEscena(
       for (const id of MODULOS_BASE) aplicarEstado(modulos[id], v.modulos[id]);
       polvo = v.panelConPolvo ?? false;
       if (celdasPanel) pintarPolvo(celdasPanel, polvo);
+      sitio = v.sitio ?? null;
+      colonia?.mostrarSitio(sitio);
     },
     ponerModelos(m) {
-      ponerColonia(base, materiales, modulos, m);
+      colonia = ponerColonia(base, materiales, modulos, m);
+      colonia.mostrarSitio(sitio);
       // Luz de estado: en la zapata de la antena y sobre el controlador del panel.
       reemplazarSolido(modulos.antena, armarAntenaReal(m), [0, 0.38, 0.62]);
-      const panel = armarPanelReal(m);
+      const panel = armarPanelReal();
       reemplazarSolido(modulos.panel_solar, panel.grupo, [CONTROLADOR_PANEL.x, CONTROLADOR_PANEL.alto + 0.1, CONTROLADOR_PANEL.z]);
       celdasPanel = panel.celdas;
       if (celdasPanel) pintarPolvo(celdasPanel, polvo);
@@ -292,6 +298,7 @@ export function armarEscena(
     },
     animar(ahora, reducido) {
       tripulacion.animar(ahora, reducido);
+      colonia?.animar(ahora, reducido);
       for (const id of MODULOS_BASE) {
         const mod = modulos[id];
         if (mod.inicio < 0) mod.inicio = ahora;

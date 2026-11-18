@@ -171,7 +171,7 @@ function Pantalla({ sesion, onSalir, idioma, setIdioma, sonido, setSonido, grafi
 
       <main>
         {enMundo ? (
-          <MundoBase fase={j.fase as "modulos" | "base" | "tormenta"} estado={j.estado} colocados={j.colocados}
+          <MundoBase fase={j.fase as "modulos" | "base" | "tormenta"} estado={j.estado} colocados={j.colocados} sitio={j.sitio?.id ?? null}
             calidad={grafica.calidad} movimientoReducido={grafica.movimientoReducido} onCalidad={grafica.onCalidad}
             camara={grafica.camara} onCamara={grafica.onCamara} bloqueadoFuera={menu}>
             <Transicion clave={j.fase}>

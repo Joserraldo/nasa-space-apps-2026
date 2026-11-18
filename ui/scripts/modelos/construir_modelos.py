@@ -234,9 +234,9 @@ if "ingenuity" in SECCIONES:
     colorear(objs, color_ingenuity, "Ingenuity_VC")
     rotores = [o for o in objs if o.name.startswith("rotors_")]
     cuerpo = unir([o for o in objs if o not in rotores], "Ingenuity_Body")
-    # Mitad de triángulos (forma intacta: lo pesado son las palas y las patas).
+    # Un cuarto de los triángulos (forma intacta: lo pesado son las palas y las patas; presupuesto de 200 mil).
     for o in [cuerpo] + rotores:
-        mod = o.modifiers.new("dec", "DECIMATE"); mod.ratio = 0.45
+        mod = o.modifiers.new("dec", "DECIMATE"); mod.ratio = 0.25
         bpy.context.view_layer.objects.active = o; bpy.ops.object.modifier_apply(modifier="dec")
     piezas = [cuerpo] + rotores
     mn, mx = caja(piezas)

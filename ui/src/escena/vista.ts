@@ -45,6 +45,11 @@ export interface VistaEscena {
    * que se limpió. Opcional: sin el campo, el panel se ve limpio. El motor todavía no guarda este estado.
    */
   panelConPolvo?: boolean;
+  /**
+   * Sitio de aterrizaje elegido en el paso 3 (`MISION_JEZERO.sitiosCandidatos`, p. ej. `cerca-de-perseverance`).
+   * Opcional: sin el campo, la escena no muestra lo propio de un sitio (Perseverance e Ingenuity, Etapa D3).
+   */
+  sitio?: string | null;
   /** Adónde conviene ir ahora; null si no hay sugerencia. */
   lugarObjetivo: LugarObjetivo | null;
   resultado: GameState["resultado"];
@@ -63,6 +68,8 @@ export interface EntradaVista {
    * Mientras sea false, la escena la ve funcionando para no adelantar la sorpresa.
    */
   averiaRevelada?: boolean;
+  /** Sitio de aterrizaje elegido (id de `sitiosCandidatos`); lo guarda la pantalla, no el motor. */
+  sitio?: string | null;
 }
 
 export function vistaEscena(estado: GameState, entrada: EntradaVista): VistaEscena {
@@ -78,6 +85,7 @@ export function vistaEscena(estado: GameState, entrada: EntradaVista): VistaEsce
     escudoElevado:
       estado.causas.some((c) => c.descripcionKey === "causa.subir_escudo" || c.accion?.tipo === "subir_escudo") ||
       estado.efectosPendientes.some((e) => e.descripcionKey === "causa.subir_escudo"),
+    sitio: entrada.sitio ?? null,
     lugarObjetivo: entrada.lugarObjetivo ?? null,
     resultado: estado.resultado,
   };

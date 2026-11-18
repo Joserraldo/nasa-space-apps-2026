@@ -3,7 +3,7 @@
  * pantalla completa con una `VistaEscena` de ejemplo, sin pasar por la app. No entra en el build
  * (Vite solo empaqueta `index.html`). Parámetros: `?camara=primera`, `?calidad=baja|media|alta`,
  * `?modulos=todos` o `?modulos=panel_solar,antena` (esos módulos funcionando, para revisar formas y presupuesto),
- * `?polvo=1` (panel solar con polvo),
+ * `?polvo=1` (panel solar con polvo), `?sitio=<id>` (sitio de aterrizaje: Perseverance en `cerca-de-perseverance`),
  * `?medir=1` (recuadro con fps, draw calls, triángulos, calidad y lienzo, para medir en un
  * celular o PC real), `?destino=<LugarId>` (camina hasta ese lugar con la ruta planeada),
  * `?reducido=1` (fuerza movimiento reducido), `?montar=0` (página vacía, para que una prueba monte
@@ -21,6 +21,7 @@ import { crearCorredorInterior, zonaCorredor } from "./activos/interiores/corred
 import { crearHabitatInterior } from "./activos/interiores/habitat";
 import { crearTaller } from "./activos/interiores/taller";
 import { fusionar } from "./activos/fusionar";
+import { crearPerseverance } from "./activos/perseverance";
 import { crearEscena3D } from "./escena3d";
 import { colorToken, crearMateriales } from "./materiales";
 import { LUGARES, type LugarId } from "./mundo";
@@ -57,6 +58,8 @@ if (modulosPedidos) {
 }
 // `?polvo=1` (Etapa D): el panel con la capa de polvo del evento de Jezero.
 if (parametros.get("polvo") === "1") VISTA_EJEMPLO.panelConPolvo = true;
+// `?sitio=cerca-de-perseverance` (Etapa D3): el sitio de aterrizaje, para ver a Perseverance e Ingenuity.
+VISTA_EJEMPLO.sitio = parametros.get("sitio");
 const calidad = (["alta", "media", "baja"] as const).find((c) => c === parametros.get("calidad")) ?? "alta";
 const MOMENTOS = { dia: 0, tarde: 0.5, atardecer: 1, noche: 2 } as const;
 const momentoPedido = parametros.get("momento");
@@ -190,10 +193,12 @@ const SALAS_PREVIA = {
   taller: () => ({ raiz: crearTaller(crearMateriales()), camara: [-2.5, 5.2, 7.5] as const, mira: [0.4, 0.8, -0.6] as const, luz: [-2, 6, 4] as const }),
   // Hábitat en corte, como las láminas `estaciones/06` y `07`.
   habitat: () => ({ raiz: crearHabitatInterior(crearMateriales()), camara: [-2.5, 5.4, 8] as const, mira: [0.3, 0.8, -0.5] as const, luz: [-2, 6, 4] as const }),
+  // Etapa D3: Perseverance low poly solo, en el mismo ángulo que el render del modelo de NASA.
+  perseverance: () => ({ raiz: crearPerseverance(), camara: [3.0, 2.3, 4.2] as const, mira: [0, 0.8, 0] as const, luz: [3, 6, 4] as const }),
 } as const;
 
 /**
- * `?sala=corredor|taller|habitat` (D5): una sala sola, en su propia vista, con la cámara de `SALAS_PREVIA`. Luz
+ * `?sala=corredor|taller|habitat|perseverance` (D5; perseverance de la Etapa D3): una sala sola, en su propia vista, con la cámara de `SALAS_PREVIA`. Luz
  * provisional de interior (la definitiva va con A8). Con `?medir=1` muestra fps, draw calls y triángulos.
  */
 function montarSala(sala: keyof typeof SALAS_PREVIA): void {
@@ -244,5 +249,5 @@ function montarSala(sala: keyof typeof SALAS_PREVIA): void {
 }
 
 const salaPedida = parametros.get("sala");
-if (salaPedida === "corredor" || salaPedida === "taller" || salaPedida === "habitat") montarSala(salaPedida);
+if (salaPedida && salaPedida in SALAS_PREVIA) montarSala(salaPedida as keyof typeof SALAS_PREVIA);
 else if (parametros.get("montar") !== "0") montar();

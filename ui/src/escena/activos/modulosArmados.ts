@@ -1,5 +1,6 @@
 /** Andamios, estados y anclajes de los cinco módulos de Jezero. */
 import * as THREE from "three";
+import { mergeGeometries } from "three/examples/jsm/utils/BufferGeometryUtils.js";
 import { geometriaBase, type Materiales } from "../materiales";
 import { lugarDelModulo } from "../mundo";
 import type { EstadoModulo } from "../vista";
@@ -90,6 +91,18 @@ export function huellasModulos(): Huella[] {
   });
 }
 
+/** Lámpara de estado (Etapa D3): base, lente cilíndrica y tapa, apoyada en y = 0. Unos 60 triángulos. */
+function geometriaLampara(): THREE.BufferGeometry {
+  const partes = [
+    new THREE.CylinderGeometry(0.1, 0.12, 0.05, 8).translate(0, 0.025, 0),
+    new THREE.CylinderGeometry(0.075, 0.075, 0.14, 8).translate(0, 0.12, 0),
+    new THREE.CylinderGeometry(0.03, 0.09, 0.05, 8).translate(0, 0.215, 0),
+  ];
+  const g = mergeGeometries(partes, false)!;
+  for (const p of partes) p.dispose();
+  return g;
+}
+
 export function armarModulo(m: Materiales, id: ModuloBase): ModuloArmado {
   const l = lugarDelModulo(id)!;
   const f = FORMA[id];
@@ -99,7 +112,8 @@ export function armarModulo(m: Materiales, id: ModuloBase): ModuloArmado {
   raiz.rotation.y = giroModulo(id);
   const solido = crearSolido(m, id);
   const andamio = crearAndamio(m, f.huella[0], f.huella[1], f.alto);
-  const vivos = malla(m, "Emissive", geometriaBase("armado-luz-estado", () => new THREE.IcosahedronGeometry(0.13, 0)), [0, 0, 0], false);
+  // Luz de estado: lámpara baliza baja (lente de 8 caras con tapa), no la gema flotante del estilo viejo.
+  const vivos = malla(m, "Emissive", geometriaBase("armado-luz-estado", geometriaLampara), [0, 0, 0], false);
   // Apoyada en el techo del sólido (no flotando a la altura nominal): la luz de estado es parte de la pieza.
   solido.updateMatrixWorld(true);
   vivos.position.y = new THREE.Box3().setFromObject(solido).max.y - 0.02;

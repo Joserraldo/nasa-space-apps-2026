@@ -20,6 +20,6 @@ Processing (Blender 5.3, `ui/scripts/modelos/construir_modelos.py`):
 - Solar panel (2026-11-17): the Craftpix palette replaced by three materials (cells, frame, dark parts), chosen by the UV band of each face. Scaled to 0.7 (2.9 m high, 2,588 triangles). Dust on the cells is a material change in code, not a texture.
 - Space Colony kit (2026-11-17): one mesh per piece, heavy pieces decimated (50 to 75 %), no materials (the scene uses one material with the kit palette and dust in code).
 - CC BY models (2026-11-18): habitat 7.6 m wide (1,212 triangles), communications tower 6.4 m (1,343), recycler 2.9 m (1,830), arrival capsule 4.8 m high (3,344).
-- Ingenuity (2026-11-18): NASA materials replaced by flat NASA colors in vertex colors, decimated to 45 % (4,103 triangles), rotors kept as separate meshes so the scene can spin them.
+- Ingenuity (2026-11-18): NASA materials replaced by flat NASA colors in vertex colors, decimated to 25 % (2,280 triangles), rotors kept as separate meshes so the scene can spin them.
 
 The NASA Habitat Demonstration Unit was tried for the habitat and dropped (it did not read as a shelter from the start camera); it is not shipped.

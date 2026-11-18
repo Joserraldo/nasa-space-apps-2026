@@ -1,27 +1,36 @@
 /**
- * Modelos reales de la Etapa D del exterior (módulos de Jezero, `missions/src/jezero.ts`): antena y panel solar.
- * El hábitat sigue procedural: el Habitat Demonstration Unit de NASA no se leía como refugio desde la cámara de
- * inicio (dos intentos, ver `traspaso-D.md`). Llegan como GLB desde `public/modelos/` después del primer cuadro, igual que el DEM; mientras tanto (y en
- * las pruebas de Node, sin red) se ven las formas procedurales de `modulos.ts` y `edificios.ts`.
+ * Modelos reales de la Etapa D del exterior (módulos de Jezero, `missions/src/jezero.ts`) y de la colonia (D2 y D3).
+ * Llegan como GLB desde `public/modelos/` después del primer cuadro, igual que el DEM; mientras tanto (y en las pruebas
+ * de Node, sin red) se ven las formas procedurales de `modulos.ts` y `edificios.ts`.
  *
- * Fuentes y licencias (`public/modelos/FUENTES.md`): antena = Tall Dish, de NASA 3D Resources (con crédito y sin
- * insignia); panel = `Solar_panel` de Craftpix Space Colony.
+ * Fuentes y licencias (`public/modelos/FUENTES.md`): antena e Ingenuity de NASA 3D Resources (con crédito y sin
+ * insignia); hábitat, torre, reciclador, cápsula y tripulante CC BY 4.0 (con crédito); kit Craftpix Space Colony. El
+ * panel solar es original (`panelSolar.ts`) y Perseverance se dibuja en código (`perseverance.ts`).
  * La escena no cobra ni decide nada (`frontera.ts`): el polvo del panel solo se pinta según `VistaEscena`.
  */
 import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { colorToken } from "../materiales";
+import { crearPanelSolar, geometriaCeldas, geometriaCuerpoPanel, materialCeldasPanel, materialCuerpoPanel } from "./panelSolar";
+import { ACENTOS, conPolvo } from "./polvoKit";
 
 /** Archivos de `public/modelos/` (los arma `construir_modelos.py`: base en y = 0, frente hacia +z, en metros). */
 export const ARCHIVOS_MODELOS = {
   antena: "antena-tall-dish.glb",
-  panel: "panel-solar.glb",
   /** Kit Craftpix Space Colony, una malla por pieza (Etapa D2, `colonia.ts`). */
   kit: "kit-colonia.glb",
+  /** CC BY (Etapa D3): hábitat de domo geodésico, torre de comunicaciones, reciclador y cápsula de llegada. */
+  habitat: "habitat-domo.glb",
+  torre: "torre-comunicaciones.glb",
+  reciclador: "reciclador-agua.glb",
+  capsula: "capsula-llegada.glb",
+  /** Ingenuity de NASA (cuerpo y dos rotores aparte) y tripulante con su ciclo de caminar (`animations`). */
+  ingenuity: "ingenuity.glb",
+  tripulante: "tripulante-caminando.glb",
 } as const;
 export type ModeloExterno = keyof typeof ARCHIVOS_MODELOS;
 
-/** Mallas de cada modelo cargado, listas para clonar (sin colocar). */
+/** Mallas de cada modelo cargado, listas para clonar (sin colocar). Las animaciones del GLB quedan en `animations`. */
 export type ModelosModulos = Readonly<Record<ModeloExterno, THREE.Group>>;
 
 /**
@@ -129,25 +138,34 @@ export function armarAntenaReal(modelos: ModelosModulos): THREE.Group {
 /** Controlador del panel, al costado de la fila (punto de uso del panel en `mundo.ts`). */
 export const CONTROLADOR_PANEL = { x: -3.6, z: 0.55, alto: 0.95 } as const;
 
-/** Panel solar: `PANELES.n` paneles en fila; devuelve el grupo y el material de sus celdas (compartido). */
-export function armarPanelReal(modelos: ModelosModulos): { grupo: THREE.Group; celdas: THREE.MeshStandardMaterial | null } {
+/**
+ * Panel solar: `PANELES.n` paneles originales en fila (`panelSolar.ts`) más el controlador con franja amarilla; devuelve
+ * el grupo y el material de sus celdas (compartido: pintar una vez cambia los tres).
+ */
+export function armarPanelReal(): { grupo: THREE.Group; celdas: THREE.MeshStandardMaterial } {
   const g = new THREE.Group();
-  g.name = "Solar_Craftpix";
-  const molde = modelos.panel.clone();
-  prepararMallas(molde);
-  const celdas = materialCeldas(molde);
+  g.name = "Solar_Panels";
+  const cuerpo = conPolvo(materialCuerpoPanel(), { base: 0.1, suelo: 0.5, arriba: 0.3, chorreado: 0 });
+  const celdas = materialCeldasPanel();
+  const geos = { cuerpo: geometriaCuerpoPanel(), celdas: geometriaCeldas() };
   for (let i = 0; i < PANELES.n; i++) {
-    const p = i === 0 ? molde : molde.clone();
+    const p = crearPanelSolar(cuerpo, celdas, geos);
     p.position.x = (i - (PANELES.n - 1) / 2) * PANELES.paso;
     g.add(p);
   }
+  const controlador = new THREE.Group();
+  controlador.name = "Panel_Controller";
   const caja = new THREE.Mesh(
     new THREE.BoxGeometry(0.5, CONTROLADOR_PANEL.alto, 0.36),
-    new THREE.MeshStandardMaterial({ name: "Panel_Controller", color: new THREE.Color(0.62, 0.6, 0.56).multiply(TINTE_POLVO), roughness: 0.85 }),
+    new THREE.MeshStandardMaterial({ name: "Panel_Controller", color: 0x9d9a94, roughness: 0.85 }),
   );
-  caja.position.set(CONTROLADOR_PANEL.x, CONTROLADOR_PANEL.alto / 2, CONTROLADOR_PANEL.z);
-  caja.castShadow = caja.receiveShadow = true;
-  g.add(caja);
+  caja.position.y = CONTROLADOR_PANEL.alto / 2;
+  const franja = new THREE.Mesh(new THREE.BoxGeometry(0.52, 0.1, 0.38), new THREE.MeshStandardMaterial({ name: "Panel_ControllerStripe", color: ACENTOS.amarillo, roughness: 0.8 }));
+  franja.position.y = CONTROLADOR_PANEL.alto - 0.18;
+  for (const x of [caja, franja]) x.castShadow = x.receiveShadow = true;
+  controlador.add(caja, franja);
+  controlador.position.set(CONTROLADOR_PANEL.x, 0, CONTROLADOR_PANEL.z);
+  g.add(controlador);
   return { grupo: g, celdas };
 }
 
@@ -155,12 +173,13 @@ export function armarPanelReal(modelos: ModelosModulos): { grupo: THREE.Group; c
 // Carga (navegador)
 // ---------------------------------------------------------------------------------------------
 
-/** Carga los tres GLB. Los materiales del GLB quedan en el árbol: los libera `liberarEscena` con la escena. */
+/** Carga todos los GLB. Los materiales del GLB quedan en el árbol: los libera `liberarEscena` con la escena. */
 export async function cargarModelosModulos(base: string = import.meta.env.BASE_URL): Promise<ModelosModulos> {
   const cargador = new GLTFLoader();
   const pares = await Promise.all(
     (Object.keys(ARCHIVOS_MODELOS) as ModeloExterno[]).map(async (k) => {
       const gltf = await cargador.loadAsync(`${base}modelos/${ARCHIVOS_MODELOS[k]}`);
+      gltf.scene.animations = gltf.animations;
       return [k, gltf.scene] as const;
     }),
   );

@@ -115,10 +115,12 @@ const esCampo = (el: EventTarget | null) =>
  * vuelven al inicio al cambiar de fase. Las pantallas son capas encima (`children`) y hablan con
  * la escena por `useMundo()`. `calidad` y movimiento reducido vienen de los ajustes guardados.
  */
-export function MundoBase({ fase, estado, colocados, calidad, movimientoReducido, onCalidad, camara: camaraAjuste, onCamara, bloqueadoFuera = false, children }: {
+export function MundoBase({ fase, estado, colocados, sitio = null, calidad, movimientoReducido, onCalidad, camara: camaraAjuste, onCamara, bloqueadoFuera = false, children }: {
   fase: FaseMundo;
   estado: GameState;
   colocados: readonly Equipment[];
+  /** Sitio de aterrizaje elegido (id); la escena muestra a Perseverance en `cerca-de-perseverance`. */
+  sitio?: string | null | undefined;
   calidad: CalidadGrafica;
   movimientoReducido: boolean;
   onCalidad(c: CalidadGrafica): void;
@@ -162,8 +164,8 @@ export function MundoBase({ fase, estado, colocados, calidad, movimientoReducido
   const bloqueado = bloqueadoCapa || campo || bloqueadoFuera;
 
   const fv = faseVista(fase, estado);
-  const vista = useMemo(() => vistaEscena(estado, { fase: fv, colocados, instalando: fase === "modulos" ? instalando : null, averiaRevelada: fase !== "modulos" && averiaIrisRevelada(estado) }),
-    [estado, colocados, fv, fase, instalando]);
+  const vista = useMemo(() => vistaEscena(estado, { fase: fv, colocados, sitio, instalando: fase === "modulos" ? instalando : null, averiaRevelada: fase !== "modulos" && averiaIrisRevelada(estado) }),
+    [estado, colocados, sitio, fv, fase, instalando]);
   // A2 (#344): la guía de Iris llega a la escena como pedido: destino marcado (haz, ruta y flecha), gesto
   // y cara de Iris, y su globo. En E5 los módulos se colocan con la tarjeta: ahí Iris no guía.
   // Depende del idioma, no de `t` (que es nuevo en cada render): la escena recibe un pedido nuevo solo si cambia.
