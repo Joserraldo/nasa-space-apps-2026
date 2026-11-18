@@ -2,6 +2,8 @@ import { useEffect, useRef, useState, type RefObject } from "react";
 import type { GameState } from "@solar-shield/contracts";
 import type { Novedades } from "@solar-shield/engine";
 import { useT, type Vars } from "../i18n.js";
+import type { DatosDosimetro } from "../juego/dosis.js";
+import { Dosimetro } from "./Dosimetro.js";
 import { Pildora, PildoraBoton, PildoraObjetivo } from "./base/Pildoras.js";
 import { RECURSOS, ResourcePlaque } from "./base/Piezas.js";
 import "./hud.css";
@@ -122,11 +124,13 @@ export interface HudBaseProps {
   panelAbierto?: boolean | undefined;
   /** E4: abre el menú (cámara, calidad, sonido e idioma). Siempre visible, como la pausa. */
   onMenu?: (() => void) | undefined;
+  /** Dosímetro: solo llega con la tormenta en marcha (`useDosimetro`; sin dato, no se pinta). */
+  dosimetro?: DatosDosimetro | undefined;
   /** Qué partes ya aparecieron (E3, `hudVisible`). Sin este dato se ve todo, como en el muestrario. */
   visible?: HudVisible | undefined;
 }
 
-export function HudBase({ estado, ultimas, reloj, objetivo, mundo, tactil = false, panelAbierto = false, onMenu, visible = TODO_VISIBLE }: HudBaseProps) {
+export function HudBase({ estado, ultimas, reloj, objetivo, mundo, tactil = false, panelAbierto = false, onMenu, dosimetro, visible = TODO_VISIBLE }: HudBaseProps) {
   const { t } = useT();
   const escala = useEscalaHud();
   const capa = useRef<HTMLElement>(null);
@@ -158,6 +162,7 @@ export function HudBase({ estado, ultimas, reloj, objetivo, mundo, tactil = fals
                 feedback={cambios.filter((c) => c.recurso === r && c.delta !== undefined).map((c, i) => ({ id: `${c.tick}-${r}-${i}`, delta: c.delta!, causaKey: c.descripcionKey }))} />
             ))}
           </div>
+          {dosimetro && <Dosimetro datos={dosimetro} />}
           {objetivo && <PildoraObjetivo labelKey={objetivo.labelKey} vars={objetivo.vars} />}
         </div>
       </div>
