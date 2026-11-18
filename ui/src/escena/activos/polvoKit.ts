@@ -22,6 +22,35 @@ export const COLORES_PALETA: Readonly<Record<Banda, readonly [number, number, nu
   cuerpo: [182, 174, 164],
 };
 
+/**
+ * Acentos por función (`clasificacion-objetos.md`, "Color por función"): hábitat cian (identidad del juego), energía
+ * amarillo, agua azul, invernadero verde, comunicaciones rojo, depósito naranja. Más el blanco de estructura, la tela de
+ * los sacos y el negro de las franjas de peligro. sRGB. [E]
+ */
+export const ACENTOS = {
+  cian: "#29b6c6",
+  amarillo: "#e5b02a",
+  azul: "#2f6bd0",
+  verde: "#45a84a",
+  rojo: "#cf3b2c",
+  naranja: "#e0782a",
+  blanco: "#e6e3dc",
+  tela: "#b39672",
+  negro: "#232222",
+  aluminio: "#b9b7b1",
+} as const;
+export type Acento = keyof typeof ACENTOS;
+
+/**
+ * Color por vértice que, multiplicado por la banda `cuerpo` de la paleta, da el acento pedido (en lineal: la banda es
+ * gris cálido, así que el factor pasa de 1). Las piezas originales apuntan su UV a esa banda y llevan este color.
+ */
+export function colorSobreCuerpo(acento: Acento): THREE.Color {
+  const objetivo = new THREE.Color(ACENTOS[acento]);
+  const banda = new THREE.Color().setRGB(...(COLORES_PALETA.cuerpo.map((x) => x / 255) as [number, number, number]), THREE.SRGBColorSpace);
+  return new THREE.Color(objetivo.r / banda.r, objetivo.g / banda.g, objetivo.b / banda.b);
+}
+
 /** Polvo de Jezero: tono del suelo cercano de la Etapa BC. */
 export const COLOR_POLVO = "#a0705a";
 /** Regolito de los sacos y las losas: más oscuro y frío que el polvo suelto. */
@@ -55,7 +84,8 @@ export interface OpcionesPolvo {
   chorreado: number;
 }
 
-const POLVO_KIT: OpcionesPolvo = { base: 0.16, suelo: 0.6, arriba: 0.55, chorreado: 0.22 };
+// Suelo más bajo que en D2: con 0,6 los acentos de las piezas bajas (contenedores, barriles) se perdían.
+const POLVO_KIT: OpcionesPolvo = { base: 0.12, suelo: 0.42, arriba: 0.5, chorreado: 0.22 };
 
 /** Inyecta el polvo en un `MeshStandardMaterial` (mismo programa para todos los que lo usan). */
 export function conPolvo(m: THREE.MeshStandardMaterial, o: OpcionesPolvo = POLVO_KIT): THREE.MeshStandardMaterial {
@@ -107,14 +137,46 @@ float ruidoP(vec2 p) {
 
 /** Material del kit (paleta + polvo). Lo liberan `liberarEscena` (material y textura) con la escena. */
 export function materialKit(paleta: THREE.Texture): THREE.MeshStandardMaterial {
-  return conPolvo(new THREE.MeshStandardMaterial({ name: "Colony_Kit", map: paleta, roughness: 0.86, metalness: 0.08 }));
+  // Color por vértice: blanco en el kit Craftpix, acento por función en las piezas originales (`fusionarConUV` lo completa).
+  return conPolvo(new THREE.MeshStandardMaterial({ name: "Colony_Kit", map: paleta, vertexColors: true, roughness: 0.88, metalness: 0.04 }));
 }
 
 /** Material de los sacos de regolito y las losas sinterizadas. */
 export function materialRegolito(): THREE.MeshStandardMaterial {
   // Poco polvo arriba: con más, las losas horizontales quedaban más claras que el suelo que las rodea.
   return conPolvo(
-    new THREE.MeshStandardMaterial({ name: "Colony_Regolith", color: COLOR_REGOLITO, roughness: 1, metalness: 0 }),
+    new THREE.MeshStandardMaterial({ name: "Colony_Regolith", color: COLOR_REGOLITO, vertexColors: true, roughness: 1, metalness: 0 }),
     { base: 0.06, suelo: 0.2, arriba: 0.12, chorreado: 0 },
   );
+}
+
+/**
+ * Luces chicas de toda la colonia (marcos de puerta, balizas, luces de crecimiento, luz roja de la torre): sin
+ * iluminación y con el color en el vértice, así cualquier acento cuesta una sola llamada. Valores sobre 1 brillan más.
+ */
+export function materialLuces(): THREE.MeshBasicMaterial {
+  return new THREE.MeshBasicMaterial({ name: "Colony_Light", vertexColors: true });
+}
+
+/** Vidrio de los domos: transparente sin transmisión (la transmisión obliga a redibujar la escena entera). */
+export function materialVidrio(): THREE.MeshStandardMaterial {
+  return new THREE.MeshStandardMaterial({
+    name: "Colony_Glass",
+    vertexColors: true,
+    transparent: true,
+    opacity: 0.74,
+    roughness: 0.38,
+    metalness: 0.1,
+    depthWrite: false,
+  });
+}
+
+/** Marco blanco de los domos de vidrio: poco polvo, para que siga blanco como en la referencia (`dome/all.png`). */
+export function materialMarco(paleta: THREE.Texture): THREE.MeshStandardMaterial {
+  return conPolvo(new THREE.MeshStandardMaterial({ name: "Colony_Frame", map: paleta, vertexColors: true, roughness: 0.7, metalness: 0.05 }), {
+    base: 0.03,
+    suelo: 0.45,
+    arriba: 0.06,
+    chorreado: 0,
+  });
 }
