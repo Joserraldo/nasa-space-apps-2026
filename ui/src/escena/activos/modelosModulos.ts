@@ -50,7 +50,8 @@ export const MASTIL_RELEVO = { x: 1.0, z: -0.75, alto: 5.6 } as const;
 // ---------------------------------------------------------------------------------------------
 
 /** Aspecto de las celdas limpias y cubiertas de polvo (más rojizo y sin reflejo, como los paneles de InSight). */
-const AZUL_CELDA = new THREE.Color(0.03, 0.05, 0.12);
+// Celdas en el grafito de la paleta (sin azul oscuro, pedido del 18 nov); el vidrio las hace brillar un poco.
+const AZUL_CELDA = new THREE.Color(PALETA.grafito);
 const CELDAS = {
   // Vidrio dieléctrico: refleja el cielo en ángulo rasante sin volverse espejo blanco.
   limpio: { color: AZUL_CELDA, rugosidad: 0.42, metal: 0 },

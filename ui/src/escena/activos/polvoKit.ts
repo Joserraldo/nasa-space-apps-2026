@@ -29,6 +29,8 @@ export const PALETA = {
   rojo: "#E0453A",
   polvo: "#9C5B3C",
   planta: "#5E9C3F",
+  /** Azul claro del vidrio del hábitat: el azul de la paleta aclarado hacia el blanco (sin azul oscuro). */
+  azulClaro: "#9CCBDD",
   /** Luz cálida de marcos y estantes (sin rosa). */
   luzCalida: "#FFE2B0",
 } as const;
@@ -184,15 +186,23 @@ export function materialLuces(): THREE.MeshBasicMaterial {
   return new THREE.MeshBasicMaterial({ name: "Colony_Light", vertexColors: true });
 }
 
-/** Vidrio de los domos: transparente sin transmisión (la transmisión obliga a redibujar la escena entera). */
-export function materialVidrio(): THREE.MeshStandardMaterial {
-  return new THREE.MeshStandardMaterial({
+/**
+ * Vidrio de los domos (pedido de María Paula, 18 nov: "más vidrio", como la referencia de domos transparentes): casi
+ * transparente, liso y con capa brillante que refleja el cielo (`escena.environment`), visto por las dos caras para que
+ * se lea la curva de atrás. Sin transmisión: obligaría a redibujar la escena entera.
+ */
+export function materialVidrio(): THREE.MeshPhysicalMaterial {
+  return new THREE.MeshPhysicalMaterial({
     name: "Colony_Glass",
     vertexColors: true,
     transparent: true,
-    opacity: 0.74,
-    roughness: 0.38,
-    metalness: 0.1,
+    opacity: 0.3,
+    roughness: 0.06,
+    metalness: 0,
+    clearcoat: 1,
+    clearcoatRoughness: 0.05,
+    envMapIntensity: 1.5,
+    side: THREE.DoubleSide,
     depthWrite: false,
   });
 }

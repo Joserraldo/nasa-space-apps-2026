@@ -80,7 +80,7 @@ export function materialCuerpoPanel(): THREE.MeshStandardMaterial {
 
 /** Material de las celdas (lo pinta `pintarPolvo`). */
 export function materialCeldasPanel(nombre = "Panel_Cells"): THREE.MeshStandardMaterial {
-  return new THREE.MeshStandardMaterial({ name: nombre, color: new THREE.Color(0.03, 0.05, 0.12), roughness: 0.42, metalness: 0 });
+  return new THREE.MeshStandardMaterial({ name: nombre, color: new THREE.Color(PALETA.grafito), roughness: 0.42, metalness: 0 });
 }
 
 /** Un panel con sus dos mallas (bastidor y celdas). */

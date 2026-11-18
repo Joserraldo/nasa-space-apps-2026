@@ -52,24 +52,34 @@ function quitar(o: THREE.Object3D | undefined): void {
  * Vidrio de la textura de un CC BY al azul único de la paleta (`clasificacion-objetos.md`, regla 7): los píxeles azulados
  * toman `PALETA.azul` con su misma luz relativa. Sin imagen (pruebas de Node) devuelve la textura tal cual.
  */
-function texturaAzulUnico(t: THREE.Texture): THREE.Texture {
+function texturaAzulUnico(t: THREE.Texture): { mapa: THREE.Texture; rugosidad: THREE.Texture | null } {
   const img = t.image as (CanvasImageSource & { width: number; height: number }) | undefined;
-  if (!img || typeof document === "undefined" || !img.width) return t;
+  if (!img || typeof document === "undefined" || !img.width) return { mapa: t, rugosidad: null };
   const lienzo = document.createElement("canvas");
   lienzo.width = img.width;
   lienzo.height = img.height;
   const ctx = lienzo.getContext("2d");
-  if (!ctx) return t;
+  if (!ctx) return { mapa: t, rugosidad: null };
   ctx.drawImage(img, 0, 0);
   const datos = ctx.getImageData(0, 0, lienzo.width, lienzo.height);
   const p = datos.data;
   // Luz relativa respecto del azul de la paleta, en sRGB como la imagen.
-  const [ar, ag, ab] = [1, 3, 5].map((i) => parseInt(PALETA.azul.slice(i, i + 2), 16)) as [number, number, number];
+  const [ar, ag, ab] = [1, 3, 5].map((i) => parseInt(PALETA.azulClaro.slice(i, i + 2), 16)) as [number, number, number];
+  // Rugosidad (canal verde): el vidrio liso y brillante, el resto mate.
+  const rug = document.createElement("canvas");
+  rug.width = lienzo.width;
+  rug.height = lienzo.height;
+  const ctxR = rug.getContext("2d")!;
+  const datosR = ctxR.createImageData(rug.width, rug.height);
+  const q = datosR.data;
   const ref = 0.2126 * ar + 0.7152 * ag + 0.0722 * ab;
   for (let i = 0; i < p.length; i += 4) {
     const r = p[i]!, g = p[i + 1]!, b = p[i + 2]!;
     // Azules y turquesas (el vidrio de la textura es turquesa: verde y azul por encima del rojo).
-    if (b > r + 25 && g > r + 10 && b + 25 >= g) {
+    const vidrio = b > r + 25 && g > r + 10 && b + 25 >= g;
+    q[i] = q[i + 1] = q[i + 2] = vidrio ? 30 : 235;
+    q[i + 3] = 255;
+    if (vidrio) {
       // El vidrio original es oscuro: se toma el azul de la paleta casi tal cual, con ±15 % de su luz relativa.
       const k = Math.min(1.15, Math.max(0.85, 0.85 + 0.3 * ((0.2126 * r + 0.7152 * g + 0.0722 * b) / ref)));
       p[i] = Math.min(255, ar * k);
@@ -78,13 +88,18 @@ function texturaAzulUnico(t: THREE.Texture): THREE.Texture {
     }
   }
   ctx.putImageData(datos, 0, 0);
+  ctxR.putImageData(datosR, 0, 0);
+  const rugosidad = new THREE.CanvasTexture(rug);
+  rugosidad.flipY = t.flipY;
+  rugosidad.wrapS = t.wrapS;
+  rugosidad.wrapT = t.wrapT;
   const nueva = new THREE.CanvasTexture(lienzo);
   nueva.flipY = t.flipY;
   nueva.colorSpace = t.colorSpace;
   nueva.wrapS = t.wrapS;
   nueva.wrapT = t.wrapT;
   nueva.name = `${t.name}_AzulUnico`;
-  return nueva;
+  return { mapa: nueva, rugosidad };
 }
 
 /** Clona un GLB con materiales propios (mate y con polvo desde abajo), sombras y sin transmisión. */
@@ -101,7 +116,16 @@ function prepararModelo(raiz: THREE.Object3D, polvo: OpcionesPolvo = POLVO_CCBY,
       if (m instanceof THREE.MeshPhysicalMaterial) m.transmission = 0;
       m.roughness = Math.max(m.roughness, 0.82);
       m.metalness = Math.min(m.metalness, 0.1);
-      if (azulUnico && m.map) m.map = texturaAzulUnico(m.map);
+      if (azulUnico && m.map) {
+        const { mapa, rugosidad } = texturaAzulUnico(m.map);
+        m.map = mapa;
+        if (rugosidad) {
+          m.roughnessMap = rugosidad;
+          m.roughness = 1;
+          m.metalness = 0;
+          m.envMapIntensity = 1.4;
+        }
+      }
       clones.set(original, conPolvo(m, { ...polvo, color: PALETA.polvo }));
     }
     o.material = m;

@@ -20,7 +20,7 @@ export interface OpcionesDomo {
 }
 
 /** Meridianos y paralelos del marco (la referencia tiene 16 gajos y 5 anillos). */
-const MARCO = { meridianos: 16, paralelos: 5, grueso: 0.07 } as const;
+const MARCO = { meridianos: 16, paralelos: 5, grueso: 0.045 } as const;
 
 /** Barra triangular (3 caras, sin tapas) de `a` a `b`: lo mínimo que se lee como marco. */
 function barra(a: THREE.Vector3, b: THREE.Vector3, grueso: number): THREE.BufferGeometry {
