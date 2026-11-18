@@ -61,5 +61,9 @@
   "causa.aterrizaje.desc": "Landing at this site cost energy and protection, and some sites pay you back later.",
   "causa.apagar_invernadero": "Greenhouse switched off",
   "causa.apagar_invernadero.desc": "You switched off the greenhouse to save the crew in the shelter, so tomorrow there is less food.",
-  "causa.limite_radiacion": "The crew took too much radiation for this mission"
+  "causa.limite_radiacion": "The crew took too much radiation for this mission",
+  "causa.recurso_agotado.energia": "The base ran out of energy",
+  "causa.recurso_agotado.soporte_vital": "Life support ran out: the crew had no more air and water",
+  "causa.recurso_agotado.blindaje": "The base ran out of shielding",
+  "causa.plazo_agotado": "Time ran out before the mission was complete"
 }

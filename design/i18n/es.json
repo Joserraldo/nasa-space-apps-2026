@@ -61,5 +61,9 @@
   "causa.aterrizaje.desc": "Aterrizar en este sitio costó energía y protección, y algunos sitios te lo devuelven después.",
   "causa.apagar_invernadero": "Invernadero apagado",
   "causa.apagar_invernadero.desc": "Apagaste el invernadero para proteger a la tripulación en el refugio, así que mañana hay menos comida.",
-  "causa.limite_radiacion": "La tripulación recibió más radiación de la que admite esta misión"
+  "causa.limite_radiacion": "La tripulación recibió más radiación de la que admite esta misión",
+  "causa.recurso_agotado.energia": "La base se quedó sin energía",
+  "causa.recurso_agotado.soporte_vital": "Se acabó el soporte vital: la tripulación se quedó sin aire ni agua",
+  "causa.recurso_agotado.blindaje": "La base se quedó sin blindaje",
+  "causa.plazo_agotado": "Se acabó el tiempo antes de completar la misión"
 }
