@@ -27,6 +27,15 @@ async function avanzarHasta(page: Page, listo: () => Promise<boolean>, maxTurnos
   throw new Error(`No se cumplió la condición en ${maxTurnos} turnos`);
 }
 
+/** Pasa el aviso de tormenta (Meteoróloga, Doctora, Ingeniera) antes de elegir módulos, con "Continue". */
+async function pasarAviso(page: Page) {
+  const continuar = page.locator(".dialogo-experto").getByRole("button", { name: "Continue", exact: true });
+  for (let i = 0; i < 4 && (await continuar.isVisible()); i++) {
+    await continuar.click();
+    await page.waitForTimeout(100);
+  }
+}
+
 test("ruta dorada: de la órbita al resumen, en inglés", async ({ page }) => {
   // Recorre la misión entera con la escena 3D: en CI (sin GPU, dos trabajadores) tarda cerca de 90 s, el
   // límite general, y se pasaba según la carga de la otra prueba. Mismo margen que "seguir a Iris". Las
@@ -91,6 +100,7 @@ test("ruta dorada: de la órbita al resumen, en inglés", async ({ page }) => {
   await expect(page.getByText("Jump: Space")).toHaveCount(0);
   await page.getByRole("button", { name: "Explore the base" }).click();
   await expect(page.getByRole("heading", { name: "Your crew is ready" })).toHaveCount(0);
+  await pasarAviso(page);
 
   // Paso 4: colocar 2 módulos, cada uno con costo ahora y beneficio después.
   await expect(page.getByRole("heading", { name: "Place 2 modules" })).toBeVisible();
@@ -130,9 +140,9 @@ test("ruta dorada: de la órbita al resumen, en inglés", async ({ page }) => {
   const crew = page.getByRole("button", { name: "Crew", exact: true });
   // A2 + #344: la guía de Iris llega a la escena; su globo sobre el rover dice adónde ir (el taller).
   await expect(page.locator('.globo-escena[data-actor="iris"]')).toContainText("workshop");
-  // E3, HUD progresivo: al entrar a la base no se ve Crew (llega con la primera conversación); Map y
-  // Pause sí, porque ya hay un objetivo.
-  await expect(crew).toHaveCount(0);
+  // E3, HUD progresivo: Crew llega con la primera conversación, que ahora es el aviso de tormenta de los
+  // módulos (Jezero v2, antes de elegir módulos); Map y Pause sí, porque ya hay un objetivo.
+  await expect(crew).toBeVisible();
   await expect(page.getByRole("button", { name: "Map", exact: true })).toBeVisible();
 
   // Acercarse a un lugar nunca cobra: [E] abre el plan del lugar y "Back" no cambia nada.
@@ -149,8 +159,8 @@ test("ruta dorada: de la órbita al resumen, en inglés", async ({ page }) => {
   await page.getByRole("dialog").getByRole("button", { name: "Back", exact: true }).click();
   await expect(page.getByRole("dialog")).toHaveCount(0);
   expect(await page.getByRole("meter", { name: "Energy" }).getAttribute("aria-valuenow")).toBe(energiaAntes);
-  // Primera conversación en el mundo: caminar al sensor y hablar con la Meteoróloga trae Crew al HUD (E3).
-  await expect(crew).toHaveCount(0);
+  // Conversación en el mundo: caminar al sensor y hablar con la Meteoróloga (Crew ya está desde el aviso).
+  await expect(crew).toBeVisible();
   await page.getByRole("button", { name: "Map", exact: true }).click();
   await page.getByRole("list", { name: "Places" }).getByRole("button", { name: /Radiation sensor/ }).click();
   await page.getByRole("button", { name: "Ask the Solar Meteorologist" }).click({ timeout: 60_000 });

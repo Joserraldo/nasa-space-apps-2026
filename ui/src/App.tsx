@@ -178,7 +178,8 @@ function Pantalla({ sesion, onSalir, idioma, setIdioma, sonido, setSonido, grafi
               {j.fase === "modulos" && (
                 <>
                   <PantallaModulos estado={j.estado} colocados={j.colocados} onColocar={(m) => { tocar("confirmar", sonido); enviar({ tipo: "modulo", modulo: m }); }} onListo={() => enviar({ tipo: "fase", fase: "base" })}
-                    bienvenida={entrada === "listo" ? { onExplorar: () => setEntrada(null) } : undefined} />
+                    bienvenida={entrada === "listo" ? { onExplorar: () => setEntrada(null) } : undefined}
+                    onAviso={() => avanzarHud({ conversado: true })} />
                   {TEMAS_IRIS.find((m) => m === j.colocados.at(-1)) && <PreguntaDeIris key={j.colocados.length} tema={j.colocados.at(-1) as TemaPregunta} nivel={j.estado.iaBase} />}
                 </>
               )}
