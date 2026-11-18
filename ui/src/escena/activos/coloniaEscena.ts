@@ -12,7 +12,7 @@ import { liberarEscena } from "../liberar";
 import { decorado, alCentro } from "./baseExterior";
 import { ANILLO } from "./caminos";
 import { HABITAT_COLONIA, TORRE_COLONIA, armarColonia, fusionarConUV, quaterniusDesdeGltf } from "./colonia";
-import { colorLuz, crearTuberias, type MaterialesColonia } from "./coloniaPiezas";
+import { TUNEL, colorLuz, crearTuberias, crearTunel, parteKit, cilindro, type MaterialesColonia } from "./coloniaPiezas";
 import { crearDomoVidrio, crearEmisorEscudo } from "./domoVidrio";
 import type { ModelosModulos } from "./modelosModulos";
 import { reemplazarSolido, type ModuloArmado } from "./modulosArmados";
@@ -37,7 +37,7 @@ export const TRIPULANTE = { alto: 1.75, velocidad: 0.8 } as const;
 /** Escala de cada CC BY: el GLB mide 7,6 m (hábitat) y 6,4 m (torre) en su lado mayor. */
 const LADO_GLB = { habitat: 7.6, torre: 6.4, reciclador: 2.9 } as const;
 /** Reciclador dentro de su huella (2,3 × 1,5): escala y tubería hasta el domo por +z local. [E] */
-const RECICLADOR = { escala: 0.82, tubo: [0.95, 2.25] as const } as const;
+const RECICLADOR = { escala: 0.82, tubo: [0.95, 4.7] as const } as const;
 
 /** Polvo de los modelos CC BY: menos que el kit para no ensuciar el vidrio del domo. */
 const POLVO_CCBY: OpcionesPolvo = { base: 0.03, suelo: 0.5, arriba: 0.04, chorreado: 0.06 };
@@ -195,11 +195,7 @@ export function ponerColonia(
   const panel = { cuerpo: conPolvo(materialCuerpoPanel(), { base: 0.1, suelo: 0.5, arriba: 0.3, chorreado: 0 }), celdas: materialCeldasPanel("Colony_PanelCells") };
   base.add(armarColonia(m, panel, { quedan, q }));
 
-  // Hábitat (refugio de la tormenta) y torre de comunicaciones: CC BY tal cual, con polvo mate.
-  const habitat = prepararModelo(modelos.habitat, POLVO_CCBY, false, true);
-  habitat.name = "Colony_Habitat";
-  habitat.scale.setScalar(HABITAT_COLONIA.ancho / LADO_GLB.habitat);
-  habitat.position.set(HABITAT_COLONIA.x, 0, HABITAT_COLONIA.z);
+  // Torre de comunicaciones: CC BY tal cual, con polvo mate (el hábitat es el núcleo de `colonia.ts`).
   const t = decorado("torre");
   const torre = prepararModelo(modelos.torre, POLVO_CCBY, false, true);
   torre.name = "Colony_CommsTower";
@@ -211,10 +207,22 @@ export function ponerColonia(
   const baliza = new THREE.Mesh(new THREE.SphereGeometry(0.16, 6, 4), new THREE.MeshBasicMaterial({ name: "Tower_Beacon", color: colorLuz("rojo", 2.2) }));
   baliza.name = "Tower_Beacon";
   baliza.position.set(t.x, 5.75 * escalaTorre * (6.4 / LADO_GLB.torre) + 0.15, t.z);
-  base.add(habitat, torre, baliza);
+  base.add(torre, baliza);
 
   // Módulos: invernadero de vidrio con estantes y luz, escudo de sacos y reciclador CC BY con su tubería al hábitat.
-  reemplazarSolido(modulos.invernadero, fusionarConUV(crearDomoVidrio(m, { radio: 2.65, estantes: 2, q }), "Module_Greenhouse"), [0, 2.72, 0]);
+  // Invernadero unido al núcleo por un túnel en L que pasa por detrás del reciclador (referencia: domo conectado).
+  const invernadero = crearDomoVidrio(m, { radio: 2.65, estantes: 2, q });
+  const anclaInv = modulos.invernadero.raiz.position;
+  const haciaNucleo = { x: HABITAT_COLONIA.x - anclaInv.x, z: HABITAT_COLONIA.z - anclaInv.z };
+  const codo = haciaNucleo.z;
+  const tramoA = crearTunel(m, Math.abs(codo) - 2.4);
+  tramoA.position.z = (codo - 2.4) / 2;
+  const largoB = Math.abs(haciaNucleo.x) - (HABITAT_COLONIA.ancho / 2 - 0.3);
+  const tramoB = crearTunel(m, largoB);
+  tramoB.rotation.y = Math.PI / 2;
+  tramoB.position.set(-largoB / 2 - 0.2, 0, codo);
+  invernadero.add(tramoA, tramoB, parteKit(cilindro(TUNEL.radio + 0.12, TUNEL.radio + 0.12, 1.3, 12, "gris"), m, [0, TUNEL.altoEje, codo]));
+  reemplazarSolido(modulos.invernadero, fusionarConUV(invernadero, "Module_Greenhouse"), [0, 2.72, 0]);
   // Escudo: emisor en forma de domo chico; la protección es la cúpula de `escudoTormenta.ts`.
   reemplazarSolido(modulos.escudo, fusionarConUV(crearEmisorEscudo(m), "Module_Shield"), [0, 1.3, 0]);
   const reciclador = new THREE.Group();

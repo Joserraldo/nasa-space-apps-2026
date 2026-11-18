@@ -10,6 +10,7 @@
  * la rampa, la plataforma y el límite de `TERRENO`, y después sacar al cuerpo de las cajas. El
  * llamador copia `jugador` e `iris` a los grupos de three; aquí no se reconstruye nada.
  */
+import { rampasColonia } from "./activos/colonia";
 import { moverPersonaje, PASO_FISICO, resolver, subpasos, VEL_DESPEGUE, type Circulo, type Cuerpo, type Terreno } from "./fisica";
 import { pasoGuia, type Guia, type ModoGuia, type Punto } from "./guia";
 import { planearRuta, type PuntoRuta } from "./navegacion";
@@ -154,7 +155,8 @@ export function coberturaCaja(k: Caja): Circulo[] {
 
 /** Terreno de movimiento: rampa, plataforma y límite de `TERRENO`, con los círculos reales. */
 export function terrenoMovimiento(s: Solidos, limite = TERRENO.limite, relieve?: Terreno["relieve"]): Terreno {
-  return { limite, rampas: TERRENO.rampas, plataformas: TERRENO.plataformas, capsulas: [], circulos: s.circulos, ...(relieve ? { relieve } : {}) };
+  // La rejilla del hangar del hábitat se sube (Etapa D3): su rampa se suma a las de `TERRENO`.
+  return { limite, rampas: [...TERRENO.rampas, ...rampasColonia()], plataformas: TERRENO.plataformas, capsulas: [], circulos: s.circulos, ...(relieve ? { relieve } : {}) };
 }
 
 /** Terreno para `planearRuta`: los círculos reales más la cobertura de cada caja. */

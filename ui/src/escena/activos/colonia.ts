@@ -22,18 +22,25 @@ import { FORMA_MODULO, MODULOS_BASE } from "./modulos";
 import { fusionar } from "./fusionar";
 import {
   berma,
+  caja,
   cilindro,
   crearBalizaColonia,
   crearBarril,
   crearCarrete,
   crearContenedor,
   crearEsclusa,
-  ESCLUSA,
+  crearAntenas,
+  crearHangar,
+  UMBRAL_HANGAR,
+  crearNucleo,
+  crearTunel,
+  HANGAR,
+  NUCLEO,
+  TUNEL,
   crearEstacionMeteo,
   crearLosa,
   crearManguera,
   crearSismometro,
-  crearTerminal,
   luzCil,
   parteKit,
   parteLuz,
@@ -54,6 +61,16 @@ export function quaterniusDesdeGltf(raiz: THREE.Object3D): PiezasQuaternius {
     if (nombre) q[nombre.slice(2)] = o.geometry;
   });
   return q;
+}
+
+/**
+ * Rampas transitables de la colonia para la física (`terrenoMovimiento`): la rejilla del hangar sube del suelo al umbral
+ * de la puerta, así el personaje puede subirla (pedido de María Paula del 18 nov: que no sea solo estética). [E]
+ */
+export function rampasColonia(): { x0: number; x1: number; zBajo: number; zAlto: number; alto: number }[] {
+  const puerta = HABITAT_COLONIA.z + PUERTA_HABITAT.z + 0.18;
+  const ancho = (HANGAR.puerta[0] + 0.1) / 2;
+  return [{ x0: HABITAT_COLONIA.x - ancho, x1: HABITAT_COLONIA.x + ancho, zBajo: puerta + HANGAR.rejilla, zAlto: puerta, alto: UMBRAL_HANGAR }];
 }
 
 /** Rover Quaternius estacionado junto al taller, fuera de senderos (referencias de organización). [E] */
@@ -83,10 +100,10 @@ export interface PiezaColocada extends NodoColonia {
 }
 
 /**
- * Hábitat (domo geodésico CC BY, 7,2 m de ancho): su esclusa termina a 0,35 m del puesto del jugador (0; −4,3) y su
- * borde trasero libra el anillo exterior (z −12,9). [E]
+ * Núcleo del hábitat (referencia obligatoria): cilindro de 4 m de ancho; delante quedan el pasillo, la conexión y el
+ * hangar, cuya puerta queda a 0,35 m del puesto del jugador (0; −4,3). Su borde trasero libra el anillo (z −12,9). [E]
  */
-export const HABITAT_COLONIA = { x: 0, z: -8.5, ancho: 7.2 } as const;
+export const HABITAT_COLONIA = { x: 0, z: -10.25, ancho: 4.8 } as const;
 /** Torre de comunicaciones (CC BY, 6,4 m de ancho) en el lugar de la torre de control vieja. [E] */
 export const TORRE_COLONIA = { ancho: 6.0 } as const;
 
@@ -100,17 +117,17 @@ const dec = (id: Decorado["id"]) => decorado(id);
 const est = (id: EstacionId) => POS_ESTACIONES.find((e) => e.id === id)!;
 
 /**
- * Edificios del kit Quaternius en su lugar, con escala por la huella vieja y nunca dos iguales juntos: enfermería en
- * cápsula esférica, comedor en módulo largo, laboratorio en edificio en L, cápsula en cilindro con domo, refugio en L
- * semienterrado y depósito en la base grande, al borde (regla 3 de composición). [E]
+ * Edificios del kit Quaternius en su lugar: las tres estaciones en módulos largos paralelos (la referencia), cápsula en
+ * cilindro con domo, refugio en L semienterrado y depósito en la base grande, al borde (regla 3 de composición). [E]
  */
 export function colocacionesKit(): PiezaColocada[] {
   const en = (pieza: PiezaEdificio, id: string, x: number, z: number, escala: number, radio: number, y = 0): PiezaColocada =>
     ({ pieza, id, x, z, giro: alCentro(x, z), escala, radio, y });
   return [
-    en("House_Single", "enfermeria", est("enfermeria").x, est("enfermeria").z - 0.3, 0.72, 1.45),
-    en("House_Long", "comedor", est("comedor").x, est("comedor").z, 0.55, 1.15),
-    en("Building_L", "laboratorio", est("laboratorio").x, est("laboratorio").z, 0.48, 1.9),
+    // Estaciones: tres módulos largos en paralelo, todos mirando al núcleo (referencia obligatoria del 18 nov).
+    { ...en("House_Long", "enfermeria", est("enfermeria").x, est("enfermeria").z - 0.3, 0.55, 1.15), giro: 0 },
+    { ...en("House_Long", "comedor", est("comedor").x, est("enfermeria").z - 0.3, 0.55, 1.15), giro: 0 },
+    { ...en("House_Long", "laboratorio", est("laboratorio").x, est("enfermeria").z - 0.3, 0.55, 1.15), giro: 0 },
     en("House_Cylinder", "capsula", dec("capsula").x, dec("capsula").z, 0.62, 1.75),
     en("Building_L", "refugio", dec("refugio").x, dec("refugio").z, 0.5, 1.95, -0.5),
     en("Base_Large", "deposito", LOMA_BASE.x - 1.5, LOMA_BASE.z + 11.5, 0.55, 2.35, 0.9),
@@ -144,10 +161,8 @@ export const CORREDORES: readonly (readonly [string, string])[] = [
  * pasa por debajo. Del lado del hábitat lo sostiene el domo; las patas (fracción del tramo) van junto a la enfermería,
  * fuera del sendero. Solo chocan las patas. [E]
  */
-export const CORREDOR_ELEVADO = { a: "habitat", b: "enfermeria", alto: 2.35, patas: [0.92] } as const;
+export const CORREDOR_ELEVADO = { a: "habitat", b: "enfermeria", alto: 2.2, patas: [0.88] } as const;
 
-/** Túnel `Connector` del kit (3,37 m de largo, 2,2 m de diámetro) a 1,4 m de diámetro. [E] */
-const TUNEL = { largo: 3.37, escala: 0.65 } as const;
 /** Ancho en planta de un corredor (para su colisión). */
 export const ANCHO_CORREDOR_COLONIA = 1.5;
 
@@ -174,38 +189,31 @@ export function tramoCorredor(a: NodoColonia, b: NodoColonia): { x: number; z: n
   return { x: a.x + (dx / d) * mitad, z: a.z + (dz / d) * mitad, giro: Math.atan2(dx, dz), largo, desde: a.radio };
 }
 
-/** Túnel `Connector` de `a` a `b` (estirado a lo largo), con anillos grises donde entra a cada módulo; elevado si cruza el anillo. */
+/** Pasillo de `a` a `b` (el túnel de la referencia: blanco, sobre patas, con ventanas y anillos); elevado si cruza el anillo. */
 function corredor(q: PiezasQuaternius, m: MaterialesColonia, a: NodoColonia, b: NodoColonia, elevado: boolean): THREE.Group {
   const g = new THREE.Group();
   g.name = `Colony_Corridor_${a.id}_${b.id}`;
   const t = tramoCorredor(a, b);
-  // El túnel entra un poco en cada módulo para no quedar suelto.
-  const largo = t.largo + (elevado ? 1.0 : 0.8);
+  // El pasillo entra un poco en cada módulo para no quedar suelto.
+  const largo = t.largo + 0.6;
   g.position.set(t.x, 0, t.z);
   g.rotation.y = t.giro;
-  const s = TUNEL.escala;
-  const y = elevado ? CORREDOR_ELEVADO.alto - 0.72 : 0;
-  const tubo = piezaQ(q, m, "Connector", new THREE.Vector3(largo / TUNEL.largo, s, s));
-  if (tubo) {
-    tubo.rotation.y = Math.PI / 2;
-    tubo.position.y = y;
-    g.add(tubo);
-  }
-  for (const lado of [-1, 1]) g.add(parteKit(cilindro(0.8, 0.8, 0.2, 12, "gris"), m, [0, y + 0.72, lado * (t.largo / 2 - 0.05)], [Math.PI / 2, 0, 0]));
+  const y = elevado ? CORREDOR_ELEVADO.alto : TUNEL.altoEje;
+  g.add(crearTunel(m, largo, y, !elevado));
   if (elevado) {
-    // Patas: Metal Support del kit de pie (5,95 m de largo), una a cada lado bajo el túnel.
+    // Patas: Metal Support del kit de pie, una a cada lado bajo el pasillo.
     for (const f of CORREDOR_ELEVADO.patas) {
       const z = -t.largo / 2 + f * t.largo;
-      for (const x of [-0.75, 0.75]) {
-        const pata = piezaQ(q, m, "MetalSupport", new THREE.Vector3(1, 0.5, y / 5.95));
+      for (const x of [-0.6, 0.6]) {
+        const pata = piezaQ(q, m, "MetalSupport", new THREE.Vector3(1, 0.5, (y - TUNEL.radio) / 5.95));
         if (!pata) continue;
         pata.rotation.x = -Math.PI / 2;
         pata.position.set(x, 0, z);
         g.add(pata);
       }
     }
-    // Luz cian del hábitat bajo el túnel: se ve por dónde se pasa.
-    g.add(parteLuz(luzCil(0.06, 0.05, 6, "cian", 1.8), m, [0, y - 0.02, 0]));
+    // Luz cian del hábitat bajo el pasillo: se ve por dónde se pasa.
+    g.add(parteLuz(luzCil(0.06, 0.05, 6, "cian", 1.8), m, [0, y - TUNEL.radio - 0.02, 0]));
   }
   return g;
 }
@@ -213,8 +221,8 @@ function corredor(q: PiezasQuaternius, m: MaterialesColonia, a: NodoColonia, b: 
 /** Bermas de sacos de regolito: [nodo, radio, ángulo inicial, ángulo final, hileras]. 0 rad = frente del nodo. [E] */
 export const BERMAS: readonly (readonly [string, number, number, number, number])[] = [
   // Hábitat: a los costados, entre la entrada y el anillo trasero (libran el escudo, el reciclador y su tubería).
-  ["habitat", 3.95, 1.5, 2.25, 3],
-  ["habitat", 3.95, -2.25, -1.5, 3],
+  ["habitat", 2.65, 1.6, 2.5, 3],
+  ["habitat", 2.65, -2.5, -1.6, 3],
   ["refugio", 2.9, 0.75, Math.PI * 2 - 0.75, 3],
   ["torre", 3.5, 1.3, 2.5, 2],
   ["torre", 3.5, -2.5, -1.3, 2],
@@ -244,7 +252,8 @@ export function huellasColonia(): Huella[] {
   const h: Huella[] = [
     { id: "colonia:habitat", x: HABITAT_COLONIA.x, z: HABITAT_COLONIA.z, r: HABITAT_COLONIA.ancho / 2 - 0.25 },
     // Esclusa del hábitat: su puerta queda a medio metro del puesto del jugador.
-    { id: "colonia:esclusa_habitat", x: HABITAT_COLONIA.x, z: fondoEsclusa + ESCLUSA.fondo / 2, ancho: ESCLUSA.ancho + 0.1, fondo: ESCLUSA.fondo, giro: 0 },
+    { id: "colonia:hangar_habitat", x: HABITAT_COLONIA.x, z: fondoEsclusa - HANGAR.fondo / 2, ancho: HANGAR.ancho, fondo: HANGAR.fondo, giro: 0 },
+    { id: "colonia:pasillo_habitat", x: HABITAT_COLONIA.x, z: (HABITAT_COLONIA.z + NUCLEO.radio + fondoEsclusa - HANGAR.fondo) / 2, ancho: TUNEL.radio * 2 + 0.1, fondo: fondoEsclusa - HANGAR.fondo - HABITAT_COLONIA.z - NUCLEO.radio, giro: 0 },
     { id: "colonia:rover", x: ROVER_COLONIA.x, z: ROVER_COLONIA.z, r: ROVER_COLONIA.radio },
   ];
   for (const [a, b] of CORREDORES) {
@@ -364,7 +373,7 @@ export interface PiezasExtra {
  * Esclusa del hábitat: su fondo se apoya en el domo (z local desde el centro del hábitat) y cubre la puerta del modelo;
  * su puerta queda a 0,5 m del puesto del jugador (0; −4,3). [E]
  */
-export const PUERTA_HABITAT = { z: 3.85 - ESCLUSA.fondo } as const;
+export const PUERTA_HABITAT = { z: -4.65 - HABITAT_COLONIA.z } as const;
 
 /** Materiales de los paneles decorativos (bastidor y celdas, estas sin polvo del evento). */
 export interface MaterialesPanel {
@@ -372,23 +381,40 @@ export interface MaterialesPanel {
   celdas: THREE.Material;
 }
 
-/** Esclusa del hábitat (marco cian) y detalles de vida al lado: barriles azules, carrete y manguera al domo. */
+/**
+ * Hábitat como la referencia obligatoria: núcleo, pasillo sobre patas con ventanas y dos mástiles, anillo de conexión y
+ * hangar de entrada con puerta de marco cian y rampa; al costado, barriles de agua, carrete y manguera. Coordenadas
+ * locales desde el centro del núcleo, entrada hacia +z.
+ */
 function vidaHabitat(m: MaterialesColonia, q: PiezasQuaternius): THREE.Group {
   const g = new THREE.Group();
-  const r = HABITAT_COLONIA.ancho / 2;
-  const esclusa = crearEsclusa(m, "cian", q);
-  esclusa.position.z = PUERTA_HABITAT.z;
-  g.add(esclusa);
-  const barriles = [[2.1, r - 0.2], [2.6, r - 0.75], [2.75, r - 0.05]] as const;
+  g.add(crearNucleo(m));
+  const puerta = PUERTA_HABITAT.z;
+  const atrasHangar = puerta - HANGAR.fondo;
+  const desde = NUCLEO.radio - 0.25;
+  const largo = atrasHangar - desde + 0.15;
+  const pasillo = crearTunel(m, largo);
+  pasillo.position.z = desde + largo / 2;
+  g.add(pasillo);
+  // Conexión: junta ancha entre el pasillo y el hangar.
+  g.add(parteKit(cilindro(TUNEL.radio + 0.14, TUNEL.radio + 0.14, 0.32, 12, "gris"), m, [0, TUNEL.altoEje, atrasHangar - 0.1], [Math.PI / 2, 0, 0]));
+  // Antenas de la referencia sobre el pasillo.
+  const antenas = crearAntenas(m);
+  antenas.position.set(0, TUNEL.altoEje + TUNEL.radio - 0.04, desde + largo * 0.5);
+  g.add(antenas);
+  const hangar = crearHangar(m);
+  hangar.position.z = puerta;
+  g.add(hangar);
+  const barriles = [[2.0, puerta - 0.3], [2.5, puerta - 0.9], [2.6, puerta - 0.1]] as const;
   for (const [x, z] of barriles) {
-    const b = crearBarril(m, "azul");
+    const b = crearBarril(m, "blanco");
     b.position.set(x, 0, z);
     g.add(b);
   }
   const carrete = crearCarrete(m);
-  carrete.position.set(-2.3, 0, r - 0.3);
+  carrete.position.set(-2.1, 0, puerta - 0.5);
   carrete.rotation.y = 0.5;
-  g.add(carrete, crearManguera(m, [2.1, 0.7, r - 0.2], [1.5, 0.5, r - 1.0]));
+  g.add(carrete, crearManguera(m, [2.0, 0.7, puerta - 0.3], [TUNEL.radio + 0.1, 0.5, desde + largo * 0.5]));
   g.position.set(HABITAT_COLONIA.x, 0, HABITAT_COLONIA.z);
   return g;
 }
@@ -417,8 +443,8 @@ export function armarColonia(m: MaterialesColonia, panel: MaterialesPanel, extra
   todo.add(bermas(m, nodos), vidaHabitat(m, extra.q));
   // Torre de comunicaciones: la misma esclusa con marco rojo (la luz roja que parpadea arriba la pone `coloniaEscena`).
   const torre = por("torre");
-  const esclusaTorre = crearEsclusa(m, "rojo", extra.q);
-  const dz = torre.radio + 0.3 - ESCLUSA.fondo;
+  const esclusaTorre = crearEsclusa(m, "rojo", extra.q.Ramp);
+  const dz = torre.radio - 0.9;
   esclusaTorre.position.set(torre.x + Math.sin(torre.giro) * dz, 0, torre.z + Math.cos(torre.giro) * dz);
   esclusaTorre.rotation.y = torre.giro;
   todo.add(esclusaTorre);
@@ -430,14 +456,7 @@ export function armarColonia(m: MaterialesColonia, panel: MaterialesPanel, extra
     rover.rotation.y = ROVER_COLONIA.giro;
     todo.add(rover);
   }
-  // Terminales en poste (mesa y taller) e instrumentos automáticos (puesto de la Meteoróloga).
-  for (const id of ["mesa", "taller"] as const) {
-    const p = puesto(id);
-    const t = crearTerminal(m);
-    t.position.set(p.x, 0, p.z);
-    t.rotation.y = p.giro;
-    todo.add(t);
-  }
+  // Instrumentos automáticos (puesto de la Meteoróloga). Sin terminales en poste: pedido de María Paula del 18 nov.
   const sensor = puesto("sensor");
   const meteo = crearEstacionMeteo(m);
   meteo.position.set(sensor.x, 0, sensor.z);

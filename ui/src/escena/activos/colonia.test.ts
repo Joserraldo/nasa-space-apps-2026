@@ -10,7 +10,10 @@ import { LUGARES } from "../mundo";
 import type { VistaEscena } from "../vista";
 import { distanciaAHuella } from "./baseExterior";
 import { sobreCamino } from "./caminos";
-import { CORREDORES, CORREDOR_ELEVADO, fusionarConUV, huellasColonia } from "./colonia";
+import { CORREDORES, CORREDOR_ELEVADO, fusionarConUV, huellasColonia, rampasColonia } from "./colonia";
+import { HANGAR, UMBRAL_HANGAR } from "./coloniaPiezas";
+import { alturaSuelo } from "../fisica";
+import { terrenoMovimiento } from "../movimientoBase";
 import { SITIO_PERSEVERANCE } from "./coloniaEscena";
 import type { ModelosModulos } from "./modelosModulos";
 
@@ -33,7 +36,6 @@ function modelos(): ModelosModulos {
   const rotor = (n: string) => Object.assign(new THREE.Mesh(new THREE.BoxGeometry(1, 0.02, 0.1), new THREE.MeshStandardMaterial()), { name: n });
   return {
     antena: malla("antena"),
-    habitat: malla("habitat"),
     torre: malla("torre"),
     reciclador: malla("reciclador"),
     capsula: malla("capsula"),
@@ -92,6 +94,18 @@ describe("colonia de Jezero (Etapa D3)", () => {
     }
   });
 
+  it("la rejilla del hangar se sube: el suelo va del piso al umbral de la puerta con pendiente caminable", () => {
+    const [r] = rampasColonia();
+    const t = terrenoMovimiento({ circulos: [], cajas: [] } as never);
+    expect(t.rampas).toContainEqual(r);
+    expect(alturaSuelo(0, r!.zAlto, t)).toBeCloseTo(UMBRAL_HANGAR);
+    expect(alturaSuelo(0, r!.zBajo, t)).toBeCloseTo(0);
+    expect(alturaSuelo(0, (r!.zAlto + r!.zBajo) / 2, t)).toBeCloseTo(UMBRAL_HANGAR / 2);
+    // Pendiente menor a 25 grados y largo igual a la rejilla visible.
+    expect(Math.atan2(UMBRAL_HANGAR, HANGAR.rejilla)).toBeLessThan((25 * Math.PI) / 180);
+    expect(Math.abs(r!.zBajo - r!.zAlto)).toBeCloseTo(HANGAR.rejilla);
+  });
+
   it("la colonia entra en su parte del presupuesto y Perseverance aparece solo en su sitio", () => {
     const a = armarEscena(crearMateriales(), vista(null));
     a.ponerModelos(modelos());
@@ -139,7 +153,7 @@ describe("colonia de Jezero (Etapa D3)", () => {
       r.addEventListener("dispose", () => pendientes.delete(r));
     };
     let texturas = 0;
-    for (const nombre of ["Colony", "Colony_Habitat", "Colony_CommsTower", "NASA_Jezero", "Colony_Walker", "Module_Greenhouse"]) {
+    for (const nombre of ["Colony", "Colony_CommsTower", "NASA_Jezero", "Colony_Walker", "Module_Greenhouse"]) {
       a.escena.getObjectByName(nombre)!.traverse((o) => {
         const x = o as Partial<THREE.Mesh>;
         if (x.geometry) vigilar(x.geometry);

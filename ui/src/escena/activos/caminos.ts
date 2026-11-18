@@ -59,8 +59,8 @@ export const TRONCAL: readonly (readonly P2[])[] = [
  * último punto repite el primero. Sus codos dejan libres los sólidos de `TERRENO`, el banco y la antena. [E]
  */
 export const ANILLO: readonly P2[] = [
-  [0, -12.9], [5.5, -12.6], [10.8, -11.4], [13.4, -8.2], [14.5, -3.6], [14.9, 1.6], [14.6, 6.4], [11.8, 9.9], [6, 11.0],
-  [-2.4, 11.0], [-11.6, 8.6], [-13.6, 3.6], [-13.2, -0.5], [-13.4, -5.0], [-12.6, -9.0], [-9.6, -11.9], [-5, -12.9], [0, -12.9],
+  [0, -13.2], [5.5, -12.9], [10.8, -11.4], [13.4, -8.2], [14.5, -3.6], [14.9, 1.6], [14.6, 6.4], [11.8, 9.9], [6, 11.0],
+  [-2.4, 11.0], [-11.6, 8.6], [-13.6, 3.6], [-13.2, -0.5], [-13.4, -5.0], [-12.6, -9.0], [-9.6, -11.9], [-5, -13.2], [0, -13.2],
 ];
 /** Semiancho extra del camino ancho respecto de los demás. */
 const EXTRA_TRONCAL = (CAMINO.anchoTroncal - CAMINO.ancho) / 2;

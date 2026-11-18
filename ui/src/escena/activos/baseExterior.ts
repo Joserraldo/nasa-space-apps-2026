@@ -222,30 +222,9 @@ function paresCorredoresEstacion(): [ { x: number; z: number; radio: number }, {
  * alterar `sinSolapes.test`).
  */
 export function huellasColisionExtra(): Huella[] {
-  const extras: Huella[] = [];
-  paresCorredoresEstacion().forEach(([a, b], idx) => {
-    const k = corredorEntre(a, b);
-    if (k) extras.push({ id: `corredor_estacion:${idx}`, x: k.x, z: k.z, ancho: ANCHO_CORREDOR, fondo: k.largo, giro: k.giro });
-  });
-  for (const e of POS_ESTACIONES) {
-    const g = alCentro(e.x, e.z);
-    extras.push({
-      id: `porche:${e.id}`,
-      x: e.x + Math.sin(g) * 2.45,
-      z: e.z + Math.cos(g) * 2.45,
-      r: 0.75,
-    });
-  }
-  const a = decorado("cupula"), b = decorado("cupula2");
-  extras.push({
-    id: "enlace_cupulas",
-    x: (a.x + b.x) / 2,
-    z: (a.z + b.z) / 2,
-    ancho: 1.5,
-    fondo: Math.hypot(b.x - a.x, b.z - a.z) * 0.65,
-    giro: Math.atan2(b.x - a.x, b.z - a.z),
-  });
-  return extras;
+  // Etapa D3: las estaciones, sus porches, los corredores de vidrio y el enlace de las cúpulas procedurales ya no se
+  // ven (los reemplaza la colonia, con sus propias huellas en `huellasColonia`). Sus colisiones tapaban el anillo.
+  return [];
 }
 
 // ---------------------------------------------------------------------------------------------

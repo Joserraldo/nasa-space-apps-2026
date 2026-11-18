@@ -180,8 +180,8 @@ export function crearTuberias(m: MaterialesColonia, desde: number, hasta: number
   const largo = hasta - desde;
   for (const [x, y] of [[-0.22, 0.42], [0.22, 0.62]] as const) {
     g.add(malla(cilindro(0.075, 0.075, largo, 6, "blanco"), m.kit, [x, y, desde + largo / 2], [Math.PI / 2, 0, 0]));
-    for (let t = 0.35; t < largo - 0.1; t += 0.6) g.add(malla(cilindro(0.085, 0.085, 0.08, 6, "azul"), m.kit, [x, y, desde + t], [Math.PI / 2, 0, 0]));
-    g.add(malla(cilindro(0.13, 0.13, 0.06, 8, "azul"), m.kit, [x, y, hasta - 0.05], [Math.PI / 2, 0, 0]));
+    for (let t = 0.35; t < largo - 0.1; t += 0.6) g.add(malla(cilindro(0.085, 0.085, 0.08, 6, "gris"), m.kit, [x, y, desde + t], [Math.PI / 2, 0, 0]));
+    g.add(malla(cilindro(0.13, 0.13, 0.06, 8, "bronce"), m.kit, [x, y, hasta - 0.05], [Math.PI / 2, 0, 0]));
   }
   for (let t = 0.3; t < largo; t += 0.9) {
     g.add(malla(caja(0.7, 0.05, 0.06, "oscuro"), m.kit, [0, 0.66, desde + t]));
@@ -223,45 +223,190 @@ export function crearManguera(m: MaterialesColonia, a: V3, b: V3): THREE.Mesh {
   return malla(tonear(new THREE.TubeGeometry(curva, 10, 0.06, 5, false), "oscuro"), m.kit, [0, 0, 0]);
 }
 
-/**
- * Medidas únicas de la esclusa (regla 8: misma forma, alto y ancho en toda la colonia): el `House_Long` del kit Quaternius
- * a escala 0,55 (2,2 m de ancho, 2,4 de alto y 4,3 de largo). Escotilla redonda en el frente. [E]
- */
-export const ESCLUSA = { escala: 0.55, ancho: 2.2, alto: 2.4, fondo: 4.3, escotilla: { y: 1.05, r: 0.62 } } as const;
+/** Medidas únicas de la esclusa (regla 8: misma forma, alto y ancho en toda la colonia). [E] */
+export const ESCLUSA = { ancho: 2.2, alto: 2.3, fondo: 1.25, puerta: [0.95, 1.9] as const } as const;
 
 /**
- * Esclusa pegada al módulo, como en las referencias de organización (módulos blancos redondeados unidos por túneles, con
- * escotillas redondas en las puntas): el `House_Long` del kit Quaternius con un anillo del color del acento alrededor de
- * la escotilla (sin acento, sin anillo) y la rampa del kit hasta el suelo. La parte trasera (z = 0) entra en el módulo y
- * la escotilla mira a +z.
+ * Esclusa pegada al módulo (la aprobada con el invernadero): caja blanca sobre zócalo gris, rejillas grafito a los
+ * costados, puerta en panel grafito con marco del acento del módulo (sin acento, grafito sin marco) y rampa a ras del
+ * suelo. La parte trasera (z = 0) se apoya en el módulo; la puerta mira a +z. `rampa`: `Ramp` del kit Quaternius.
  */
-/** `tamano`: 1 en toda la colonia; menor solo donde el módulo es chico (invernadero del módulo, 5,6 m de huella). */
-export function crearEsclusa(m: MaterialesColonia, acento: Acento | `#${string}` | null, q?: PiezasQuaternius, tamano = 1): THREE.Group {
-  const g = grupo("Colony_Airlock");
-  g.scale.setScalar(tamano);
-  const { escala, fondo, escotilla } = ESCLUSA;
-  if (q?.House_Long) {
-    const cuerpo = new THREE.Mesh(q.House_Long, m.quat);
-    cuerpo.scale.setScalar(escala);
-    cuerpo.position.z = fondo / 2;
-    cuerpo.castShadow = cuerpo.receiveShadow = true;
-    g.add(cuerpo);
-  } else {
-    g.add(malla(caja(ESCLUSA.ancho, ESCLUSA.alto, fondo, "blanco"), m.kit, [0, ESCLUSA.alto / 2, fondo / 2]));
-  }
-  if (acento) {
-    const anillo = tonear(new THREE.TorusGeometry(escotilla.r, 0.045, 6, 20), acento);
-    g.add(malla(anillo, m.kit, [0, escotilla.y, fondo + 0.02]));
-  }
-  if (q?.Ramp) {
-    // Rampa del kit (1,87 × 1,39 × 3,11 m) hasta el borde bajo de la escotilla.
-    const r = new THREE.Mesh(q.Ramp, m.quat);
-    const alto = escotilla.y - escotilla.r;
-    r.scale.set(1.0 / 1.87, Math.max(0.05, alto) / 1.39, 1.1 / 3.11);
-    r.position.set(0, 0, fondo + 0.5);
+export function crearEsclusa(m: MaterialesColonia, acento: Acento | `#${string}` | null, rampa?: THREE.BufferGeometry): THREE.Group {
+  const { ancho, alto, fondo, puerta } = ESCLUSA;
+  const g = grupo(
+    "Colony_Airlock",
+    malla(caja(ancho + 0.1, 0.14, fondo + 0.1, "gris"), m.kit, [0, 0.07, fondo / 2]),
+    malla(caja(ancho, alto - 0.14, fondo, "blanco"), m.kit, [0, 0.14 + (alto - 0.14) / 2, fondo / 2]),
+    malla(caja(ancho + 0.08, 0.1, fondo + 0.08, "gris"), m.kit, [0, alto + 0.05, fondo / 2]),
+    malla(caja(puerta[0], puerta[1], 0.05, "grafito"), m.kit, [0, 0.14 + puerta[1] / 2, fondo + 0.03]),
+  );
+  marcoPuerta(g, m, acento, puerta, 0.14, fondo + 0.03);
+  for (const s of [-1, 1]) for (let i = 0; i < 4; i++) g.add(malla(caja(0.03, 0.9, 0.08, "grafito"), m.kit, [s * (ancho / 2 + 0.01), 1.0, 0.3 + i * 0.2]));
+  if (rampa) {
+    // Rampa del kit Quaternius (1,87 × 1,39 × 3,11 m) aplastada a un escalón de 14 cm frente a la puerta.
+    const r = new THREE.Mesh(rampa, m.quat);
+    r.scale.set(1.1 / 1.87, 0.14 / 1.39, 1.0 / 3.11);
+    r.position.set(0, 0, fondo + 0.55);
     r.castShadow = r.receiveShadow = true;
     g.add(r);
   }
+  return g;
+}
+
+/** Marco del acento alrededor de una puerta (dintel y jambas); sin acento no hay marco. */
+function marcoPuerta(g: THREE.Group, m: MaterialesColonia, acento: Acento | `#${string}` | null, puerta: readonly [number, number], y0: number, z: number): void {
+  if (!acento) return;
+  g.add(malla(caja(puerta[0] + 0.16, 0.08, 0.06, acento), m.kit, [0, y0 + puerta[1] + 0.04, z]));
+  for (const s of [-1, 1]) g.add(malla(caja(0.08, puerta[1], 0.06, acento), m.kit, [s * (puerta[0] / 2 + 0.04), y0 + puerta[1] / 2, z]));
+}
+
+/** Caja de bordes redondeados (mitad caja, un cuarto esfera): los módulos blancos de la referencia. */
+function cajaRedondeada(w: number, h: number, d: number, t: Tono): THREE.BufferGeometry {
+  const g = new THREE.BoxGeometry(1, 1, 1, 3, 3, 3);
+  const p = g.getAttribute("position");
+  const v = new THREE.Vector3();
+  for (let i = 0; i < p.count; i++) {
+    v.fromBufferAttribute(p, i);
+    const esfera = v.clone().normalize().multiplyScalar(Math.SQRT1_2 * 1.05);
+    v.lerp(esfera, 0.22);
+    p.setXYZ(i, v.x * w, v.y * h, v.z * d);
+  }
+  g.computeVertexNormals();
+  return tonear(g, t);
+}
+
+/**
+ * Núcleo del hábitat (referencia obligatoria de María Paula, 18 nov: colonia en fila con núcleo cilíndrico en el centro):
+ * cilindro blanco sobre zócalo gris, una banda de ventanas chicas grafito y techo de vidrio en hexágonos (uno central y
+ * seis alrededor) con marco blanco sobre fondo grafito. Sin puerta: se entra por el túnel y el hangar. Centro en el
+ * origen, base en y = 0. [E]
+ */
+export const NUCLEO = { radio: 2.4, alto: 2.6 } as const;
+export function crearNucleo(m: MaterialesColonia): THREE.Group {
+  const { radio, alto } = NUCLEO;
+  const g = grupo(
+    "Colony_HabitatCore",
+    malla(cilindro(radio + 0.15, radio + 0.2, 0.22, 20, "gris"), m.kit, [0, 0.11, 0]),
+    malla(cilindro(radio, radio, alto, 20, "blanco"), m.kit, [0, 0.22 + alto / 2, 0]),
+    malla(cilindro(radio + 0.05, radio + 0.05, 0.12, 20, "gris"), m.kit, [0, 0.22 + alto + 0.06, 0]),
+    malla(cilindro(radio - 0.05, radio, 0.18, 20, "blanco"), m.kit, [0, 0.22 + alto + 0.21, 0]),
+    malla(cilindro(radio - 0.2, radio - 0.2, 0.05, 20, "grafito"), m.kit, [0, 0.22 + alto + 0.31, 0]),
+  );
+  // Banda de ventanas chicas (grafito) alrededor, a la altura de los ojos.
+  for (let i = 0; i < 12; i++) {
+    const a = (i / 12) * Math.PI * 2 + Math.PI / 12;
+    if (i % 2) g.add(malla(caja(0.22, 0.95, 0.06, "grafito"), m.kit, [Math.sin(a) * (radio + 0.01), 0.22 + alto * 0.55, Math.cos(a) * (radio + 0.01)], [0, a, 0]));
+    else g.add(malla(cilindro(0.42, 0.42, 0.06, 3, "grafito"), m.kit, [Math.sin(a) * (radio + 0.01), 0.22 + alto * 0.5, Math.cos(a) * (radio + 0.01)], [Math.PI / 2, a, Math.PI]));
+  }
+  // Techo de hexágonos de vidrio con marco blanco.
+  const yTecho = 0.22 + alto + 0.36;
+  const hex = (r: number, x: number, z: number, inclina: number, giro: number) => {
+    const marco = malla(cilindro(r + 0.08, r + 0.08, 0.06, 6, "blanco"), m.kit, [x, yTecho, z], [inclina * Math.cos(giro), 0, -inclina * Math.sin(giro)]);
+    const vidrio = new THREE.Mesh(pintar(new THREE.CylinderGeometry(r, r, 0.08, 6), new THREE.Color(PALETA.azul)), m.vidrio);
+    vidrio.position.set(x, yTecho + 0.03, z);
+    vidrio.rotation.copy(marco.rotation);
+    vidrio.renderOrder = 2;
+    g.add(marco, vidrio);
+  };
+  hex(0.62, 0, 0, 0, 0);
+  for (let i = 0; i < 6; i++) {
+    const a = (i / 6) * Math.PI * 2;
+    hex(0.52, Math.sin(a) * 1.25, Math.cos(a) * 1.25, 0.16, a);
+  }
+  return g;
+}
+
+/**
+ * Túnel de la colonia (la referencia: tubos blancos sobre patas, con franja de ventanas y anillos en las juntas): a lo
+ * largo de z, centrado en el origen, con el eje a `altoEje` m del suelo; patas grises cada ~1,6 m si el eje va bajo. [E]
+ */
+export const TUNEL = { radio: 0.68, altoEje: 1.05 } as const;
+export function crearTunel(m: MaterialesColonia, largo: number, altoEje: number = TUNEL.altoEje, patas = true): THREE.Group {
+  const r = TUNEL.radio;
+  const g = grupo("Colony_Tunnel", malla(cilindro(r, r, largo, 14, "blanco"), m.kit, [0, altoEje, 0], [Math.PI / 2, 0, 0]));
+  // Ventana alargada de vidrio oscuro a cada costado (la de la referencia).
+  if (largo > 1.2) for (const s of [-1, 1]) g.add(malla(caja(0.05, 0.42, Math.min(1.6, largo * 0.45), "grafito"), m.kit, [s * (r - 0.02), altoEje + 0.12, 0]));
+  // Juntas: anillo gris con abrazaderas de bronce arriba y a los costados.
+  const juntas = largo > 3 ? [-largo / 2 + 0.12, 0, largo / 2 - 0.12] : [-largo / 2 + 0.12, largo / 2 - 0.12];
+  for (const z of juntas) {
+    g.add(malla(cilindro(r + 0.06, r + 0.06, 0.16, 14, "gris"), m.kit, [0, altoEje, z], [Math.PI / 2, 0, 0]));
+    for (const a of [0, Math.PI / 2, -Math.PI / 2]) g.add(malla(caja(0.16, 0.08, 0.2, "bronce"), m.kit, [Math.sin(a) * (r + 0.09), altoEje + Math.cos(a) * (r + 0.09), z], [0, 0, -a]));
+  }
+  // Patas abiertas hacia afuera con pie redondo, como en la referencia.
+  if (patas && altoEje < 1.6) {
+    const n = Math.max(1, Math.floor(largo / 1.6));
+    const alto = altoEje - r * 0.7;
+    for (let i = 0; i < n; i++) {
+      const z = -largo / 2 + (i + 0.5) * (largo / n);
+      for (const s of [-1, 1]) {
+        g.add(malla(cilindro(0.045, 0.055, alto / Math.cos(0.32), 6, "blanco"), m.kit, [s * (r * 0.45 + alto * 0.16), alto / 2, z], [0, 0, s * 0.32]));
+        g.add(malla(cilindro(0.13, 0.15, 0.05, 8, "gris"), m.kit, [s * (r * 0.45 + alto * 0.32), 0.025, z]));
+      }
+    }
+  }
+  return g;
+}
+
+/** Antenas de la referencia: dos mástiles finos con punta sobre una caja redondeada. */
+export function crearAntenas(m: MaterialesColonia): THREE.Group {
+  const g = grupo("Colony_Antennas", malla(cajaRedondeada(0.62, 0.26, 0.48, "blanco"), m.kit, [0, 0.13, 0]));
+  for (const [x, alto] of [[-0.14, 1.8], [0.14, 1.35]] as const) {
+    g.add(malla(cilindro(0.02, 0.035, alto, 6, "gris"), m.kit, [x, 0.26 + alto / 2, -0.08]));
+    g.add(malla(tonear(new THREE.SphereGeometry(0.04, 6, 4), "gris"), m.kit, [x, 0.26 + alto, -0.08]));
+  }
+  return g;
+}
+
+/**
+ * Rejilla para subir (la de la referencia): dos largueros de bronce y travesaños, en pendiente de `alto` (junto a la
+ * puerta, z = 0) a 0 (z = `largo`). Transitable: la misma rampa va a la física (`rampasColonia` en `colonia.ts`).
+ */
+export function crearRejilla(m: MaterialesColonia, ancho: number, largo: number, alto: number): THREE.Group {
+  const g = grupo("Colony_Grating");
+  const pend = Math.atan2(alto, largo);
+  const diag = Math.hypot(alto, largo);
+  for (const s of [-1, 1]) g.add(malla(caja(0.06, 0.07, diag, "bronce"), m.kit, [s * (ancho / 2 - 0.03), alto / 2, largo / 2], [pend, 0, 0]));
+  const n = Math.round(diag / 0.11);
+  for (let i = 0; i <= n; i++) {
+    const t = i / n;
+    g.add(malla(caja(ancho - 0.1, 0.025, 0.035, i % 4 ? "gris" : "bronce"), m.kit, [0, alto * (1 - t) + 0.01, largo * t], [pend, 0, 0]));
+  }
+  for (const x of [-ancho / 2 + 0.25, 0, ancho / 2 - 0.25]) g.add(malla(caja(0.025, 0.025, diag, "gris"), m.kit, [x, alto / 2 - 0.005, largo / 2], [pend, 0, 0]));
+  return g;
+}
+
+/**
+ * Hangar de entrada al final del túnel (la referencia: caja blanca de bordes redondeados sobre patas, puerta con marco y
+ * rampa de rejilla hasta el suelo). Origen en la cara de la puerta, que mira a +z; el cuerpo va hacia −z. [E]
+ */
+export const HANGAR = { ancho: 3.1, alto: 2.35, fondo: 2.1, patas: 0.36, puerta: [1.2, 1.6] as const, rejilla: 1.25 } as const;
+/** Alto del umbral de la puerta del hangar (lo alcanza la rejilla). */
+export const UMBRAL_HANGAR = HANGAR.patas + 0.06;
+export function crearHangar(m: MaterialesColonia): THREE.Group {
+  const { ancho, alto, fondo, patas, puerta, rejilla } = HANGAR;
+  const g = grupo("Colony_Hangar");
+  const cy = patas + alto / 2;
+  g.add(malla(cajaRedondeada(ancho, alto, fondo, "blanco"), m.kit, [0, cy, -fondo / 2]));
+  // Paneles: juntas finas en el techo (a lo largo) y un panel rebajado gris a cada costado (el de la referencia).
+  for (let i = 1; i < 6; i++) g.add(malla(caja(0.02, 0.02, fondo * 0.8, "gris"), m.kit, [-ancho * 0.4 + (i * ancho * 0.8) / 6, patas + alto + 0.08, -fondo / 2]));
+  for (const sx of [-1, 1]) {
+    g.add(malla(caja(0.03, alto * 0.55, fondo * 0.5, "gris"), m.kit, [sx * (ancho / 2 + 0.08), cy, -fondo * 0.6]));
+    for (let i = 0; i < 3; i++) g.add(malla(caja(0.035, 0.02, fondo * 0.46, "blanco"), m.kit, [sx * (ancho / 2 + 0.09), cy - alto * 0.18 + i * alto * 0.18, -fondo * 0.6]));
+  }
+  // Puerta: marco grueso de bronce, hoja grafito con contramarco gris (la de la referencia).
+  const y0 = UMBRAL_HANGAR;
+  const zf = 0.1;
+  g.add(malla(caja(puerta[0] + 0.3, puerta[1] + 0.22, 0.12, "bronce"), m.kit, [0, y0 + puerta[1] / 2 + 0.06, zf]));
+  g.add(malla(caja(puerta[0], puerta[1], 0.14, "gris"), m.kit, [0, y0 + puerta[1] / 2, zf + 0.01]));
+  g.add(malla(caja(puerta[0] - 0.16, puerta[1] - 0.16, 0.15, "grafito"), m.kit, [0, y0 + puerta[1] / 2, zf + 0.02]));
+  // Patas de chapa con pie, como las del hangar de la referencia.
+  for (const x of [-ancho / 2 + 0.35, ancho / 2 - 0.35]) for (const z of [-fondo + 0.3, -0.35]) {
+    g.add(malla(caja(0.12, patas + 0.12, 0.3, "gris"), m.kit, [x, (patas + 0.12) / 2, z]));
+    g.add(malla(caja(0.36, 0.05, 0.42, "gris"), m.kit, [x, 0.025, z]));
+  }
+  const r = crearRejilla(m, puerta[0] + 0.1, rejilla, y0);
+  r.position.z = zf + 0.08;
+  g.add(r);
   return g;
 }
 

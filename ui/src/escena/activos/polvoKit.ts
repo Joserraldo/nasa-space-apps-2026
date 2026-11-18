@@ -31,6 +31,8 @@ export const PALETA = {
   planta: "#5E9C3F",
   /** Azul claro del vidrio del hábitat: el azul de la paleta aclarado hacia el blanco (sin azul oscuro). */
   azulClaro: "#9CCBDD",
+  /** Metal cálido de marcos de puerta, abrazaderas y rejillas (el de la referencia obligatoria del 18 nov). */
+  bronce: "#A8895A",
   /** Luz cálida de marcos y estantes (sin rosa). */
   luzCalida: "#FFE2B0",
 } as const;
@@ -64,6 +66,7 @@ export const ACENTOS = {
   tela: PALETA.gris,
   negro: PALETA.grafito,
   aluminio: PALETA.gris,
+  bronce: PALETA.bronce,
 } as const;
 export type Acento = keyof typeof ACENTOS;
 

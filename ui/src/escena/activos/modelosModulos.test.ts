@@ -22,7 +22,6 @@ function modelosFalsos(): ModelosModulos {
   }
   return {
     antena: malla("dish", new THREE.MeshPhysicalMaterial({ name: "Dish_White", transmission: 1 })),
-    habitat: malla("habitat", new THREE.MeshStandardMaterial({ name: "Habitat" })),
     torre: malla("torre", new THREE.MeshStandardMaterial({ name: "Tower" })),
     reciclador: malla("reciclador", new THREE.MeshStandardMaterial({ name: "Recycler_VC", vertexColors: true })),
     capsula: malla("capsula", new THREE.MeshStandardMaterial({ name: "Capsule_VC", vertexColors: true })),

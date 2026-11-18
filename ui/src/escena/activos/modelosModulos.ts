@@ -17,8 +17,7 @@ import { PALETA, conPolvo } from "./polvoKit";
 /** Archivos de `public/modelos/` (los arma `construir_modelos.py`: base en y = 0, frente hacia +z, en metros). */
 export const ARCHIVOS_MODELOS = {
   antena: "antena-tall-dish.glb",
-  /** CC BY (Etapa D3): hábitat de domo geodésico, torre de comunicaciones, reciclador y cápsula de llegada. */
-  habitat: "habitat-domo.glb",
+  /** CC BY (Etapa D3): torre de comunicaciones, reciclador y cápsula de llegada. */
   torre: "torre-comunicaciones.glb",
   reciclador: "reciclador-agua.glb",
   capsula: "capsula-llegada.glb",

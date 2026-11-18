@@ -586,6 +586,8 @@ export function crearEscena3D(canvas: HTMLCanvasElement, opciones: OpcionesEscen
   // --- Cámara ---
   const camara = new THREE.PerspectiveCamera(FOV_JUEGO_TERCERA, 1, 0.1, 600);
   const contorno = crearContorno(materiales);
+  /** Falso cuando la colonia (sin consolas en poste) ya está montada. */
+  let contornoActivo = true;
   const guantes = crearGuantes(materiales);
   armada.escena.add(contorno.malla, camara);
   camara.add(guantes.raiz);
@@ -657,7 +659,7 @@ export function crearEscena3D(canvas: HTMLCanvasElement, opciones: OpcionesEscen
   // --- Proximidad, posición y atributos de prueba ---
   let ultimoLugar: LugarId | null = lugarCercano(mov.jugador.x, mov.jugador.z);
   let ultimoInteractivo: Interactivo | null = interactivoCercano(mov.jugador.x, mov.jugador.z);
-  contorno.colocar(ultimoLugar);
+  if (contornoActivo) contorno.colocar(ultimoLugar);
   let ultimaPosicion = -Infinity;
   let caminaba = false;
   const marcar = () => {
@@ -894,7 +896,7 @@ export function crearEscena3D(canvas: HTMLCanvasElement, opciones: OpcionesEscen
     const l = lugarCercano(j.x, j.z);
     if (l !== ultimoLugar) {
       ultimoLugar = l;
-      contorno.colocar(l);
+      if (contornoActivo) contorno.colocar(l);
       marcar();
       opciones.alLugarCercano?.(l);
     }
@@ -1084,6 +1086,10 @@ export function crearEscena3D(canvas: HTMLCanvasElement, opciones: OpcionesEscen
   cargarModelosModulos()
     .then((m) => {
       if (!liberada) armada.ponerModelos(m);
+      // Con la colonia montada ya no hay consolas en poste: el contorno cian copiaba la consola vieja y dejaba una
+      // silueta fantasma junto a la mesa, el taller y el sensor (pedido de María Paula del 18 nov).
+      contorno.colocar(null);
+      contornoActivo = false;
     })
     .catch((e: unknown) => console.warn("[escena] modelos de los módulos sin cargar", e));
 

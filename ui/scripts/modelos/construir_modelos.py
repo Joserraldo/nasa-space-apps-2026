@@ -167,7 +167,7 @@ def a_paleta(c, oscuro_a=GRAFITO):
 # Forma tal cual; solo escala, apoyo en el suelo y frente hacia +z (las puertas ya miran a -y de Blender).
 if "ccby" in SECCIONES:
     # Hábitat principal: domo geodésico de vidrio azul con torre de regolito impreso (Jason_Phillips). Textura propia.
-    for archivo, nombre, metros in (("medium_low_poly_habitat.glb", "habitat-domo", 7.6), ("low_poly_antenna_habitat.glb", "torre-comunicaciones", 6.4)):
+    for archivo, nombre, metros in (("low_poly_antenna_habitat.glb", "torre-comunicaciones", 6.4),):
         reset()
         objs = importar(DESCARGAS + archivo)
         aplicar(objs)
@@ -175,14 +175,14 @@ if "ccby" in SECCIONES:
         o = unir(objs, "CCBY_" + nombre)
         exportar([o], nombre)
     # Reciclador de agua: tanques y tuberías (anton.engdahl). Colores planos a color por vértice, llevados a la paleta;
-    # las tapas oscuras de los tanques pasan al azul único del agua (color por función, `clasificacion-objetos.md`).
+    # las tapas oscuras de los tanques pasan a gris (María Paula, 18 nov: nada de cilindros turquesa).
     reset()
     objs = importar(DESCARGAS + "mars_science_station_low_poly.glb")
     aplicar(objs)
     normalizar(objs, ancho_a(objs, 2.9))
     def color_reciclador(m):
         c = color_base(m)
-        if 0.07 < c[0] < 0.12: return AZUL
+        if 0.07 < c[0] < 0.12: return GRIS
         return a_paleta(c)
     colorear(objs, color_reciclador, "Recycler_VC")
     exportar_vc([unir(objs, "CCBY_Recycler")], "reciclador-agua")
