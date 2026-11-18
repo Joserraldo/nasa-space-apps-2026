@@ -107,5 +107,40 @@ for poly in o.data.polygons:
     cuenta[banda] = cuenta.get(banda, 0) + poly.area
     poly.material_index = {0: 0, 1: 2, 2: 2, 3: 1}[banda]
 print("BANDAS", {k: round(v, 2) for k, v in cuenta.items()})
+# Colapso al 45 % sin mezclar materiales: lo pesado son los caños curvos de arriba (presupuesto D2).
+mod = o.modifiers.new("dec", "DECIMATE"); mod.ratio = 0.45; mod.delimit = {"MATERIAL"}
+bpy.context.view_layer.objects.active = o; bpy.ops.object.modifier_apply(modifier="dec")
 normalizar(pan, 0.7)
 exportar(pan, "panel-solar")
+
+# ---------------- Kit Craftpix Space Colony: un GLB con una malla por pieza (Etapa D2, colonia) ----------------
+# Escala original del kit (en metros), base en y = 0, centrada en planta y con la entrada hacia +z: el kit trae la
+# entrada hacia -x, se gira 90 grados. Sin materiales: la escena pone uno solo con la paleta compartida (UV intactas).
+# `Section` ya corre a lo largo de y (glTF z) y no se gira.
+REDUCIR = {"Home_colonists": 0.5, "Research_center": 0.6, "Connecting_gateway": 0.5, "Farm": 0.7, "Main_house": 0.7, "Main_house_2lv": 0.75, "Resource_warehouse": 0.7}
+KIT = ["Main_house", "Main_house_2lv", "Home_colonists", "Research_center", "Resource_warehouse", "Connecting_gateway", "Section", "Farm"]
+reset()
+piezas = []
+for n in KIT:
+    objs = importar(CRAFT + n + ".fbx")
+    aplicar(objs)
+    if n != "Section":
+        for o in objs: o.matrix_world = mathutils.Matrix.Rotation(math.radians(90), 4, "Z") @ o.matrix_world
+        aplicar(objs)
+    mn, mx = caja(objs)
+    d = mathutils.Vector(((mn.x + mx.x) / -2, (mn.y + mx.y) / -2, -mn.z))
+    for o in objs: o.location += d
+    aplicar(objs)
+    o = unir(objs, "Kit_" + n)
+    o.data.materials.clear()
+    # Las piezas pesadas, colapsadas al 60 % (presupuesto de 200 mil triángulos con la colonia entera).
+    if n in REDUCIR:
+        mod = o.modifiers.new("dec", "DECIMATE"); mod.ratio = REDUCIR[n]; mod.delimit = {"UV"}
+        bpy.context.view_layer.objects.active = o; bpy.ops.object.modifier_apply(modifier="dec")
+    piezas.append(o)
+for o in bpy.data.objects: o.select_set(o in piezas)
+bpy.ops.export_scene.gltf(filepath=f"{SALIDA}/kit-colonia.glb", export_format="GLB", use_selection=True, export_yup=True,
+                          export_apply=True, export_materials="NONE")
+for o in piezas:
+    mn, mx = caja([o])
+    print("KIT", o.name, "tris", tris(o), "dims", [round(mx[i] - mn[i], 2) for i in range(3)])
