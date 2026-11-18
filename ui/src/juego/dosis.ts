@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
-import type { GameState } from "@solar-shield/contracts";
-import { dosisMaximaTripulacion, enRefugio, factorEscudo, tormentaActiva } from "@solar-shield/engine";
+import type { BaseAction, GameState } from "@solar-shield/contracts";
+import { RETRASO_POR_DIFICULTAD } from "@solar-shield/design";
+import { dosisMaximaTripulacion, enRefugio, factorEscudo, puedeAplicar, queEsSi, tormentaActiva } from "@solar-shield/engine";
 import type { Mision } from "@solar-shield/missions";
 
 /**
@@ -49,4 +50,20 @@ export function useDosimetro(estado: GameState, mision: Mision): DatosDosimetro 
     // Lo que protege el turno siguiente: refugio ya activo o escudo que reduce la dosis.
     protegido: enRefugio({ causas: estado.causas, tick: estado.tick + 1 }) || factorEscudo({ causas: estado.causas, tick: estado.tick + 1 }) < 1,
   };
+}
+
+/**
+ * Dosis proyectada de una acción en el horizonte de consecuencias de la dificultad. La cuenta es
+ * solo del motor: `queEsSi` simula la acción y sus turnos, y `dosisMaximaTripulacion` lee la dosis.
+ * Devuelve `null` si el motor no permite la acción (sin inventar una cifra).
+ */
+export function estimarDosis(estado: GameState, accion: BaseAction, mision: Mision): { turnos: number; dosis: number; menosQueEsperar: number } | null {
+  if (!puedeAplicar(estado, accion, mision).ok) return null;
+  const turnos = RETRASO_POR_DIFICULTAD[estado.dificultad].max;
+  // Al llegar la tormenta la partida está en pausa y `avanzarTick` no avanza en pausa: sin esto la
+  // proyección devolvería la dosis de ahora para todas las opciones. Se proyecta lo que pasa al reanudar.
+  const vivo = estado.pausado ? { ...estado, pausado: false } : estado;
+  const dosis = dosisMaximaTripulacion(queEsSi(vivo, accion, mision));
+  const base = dosisMaximaTripulacion(queEsSi(vivo, { tipo: "esperar" }, mision));
+  return { turnos, dosis, menosQueEsperar: base - dosis };
 }

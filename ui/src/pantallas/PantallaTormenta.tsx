@@ -6,6 +6,7 @@ import { costoDe, puedeAplicar, tormentaActiva } from "@solar-shield/engine";
 import { MISION_JEZERO } from "@solar-shield/missions";
 import { useT } from "../i18n.js";
 import { describirAccion } from "../componentes/Dialogos.js";
+import { DosisEstimada } from "../componentes/DosisEstimada.js";
 import { TarjetaFuente } from "../componentes/TarjetaFuente.js";
 import { ExpertPortrait } from "../componentes/base/ExpertPortrait.js";
 import { FacetButton } from "../componentes/base/FacetButton.js";
@@ -174,6 +175,7 @@ function PlanComparado({ estado, colocados, plan, dialogo, onOtra, onVerificar, 
       <div className="tormenta-plan-accion">
         <span className="fc"><span className="fc-cara fc-chico tormenta-pieza"><span>{o.accion.tipo === "redistribuir_energia" ? t("ui.accion.redistribuir") : describirAccion(o.accion, t)}</span></span></span>
         <CostRow inmediato={inmediato} retrasado={retrasado} />
+        <DosisEstimada estado={estado} accion={o.accion} mision={MISION_JEZERO} />
         <div className="tormenta-plan-botones">
           <FacetButton variant="primary" icon="check" labelKey="ui.comun.confirmar" disabled={!permiso.ok || !onDecidir}
             disabledReasonKey={permiso.ok ? undefined : `ui.comun.motivo.${permiso.motivo}${permiso.recurso ? `.${permiso.recurso}` : ""}`}

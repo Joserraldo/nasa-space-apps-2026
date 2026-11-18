@@ -15,6 +15,8 @@
   "ui.dosimetro.sin_limite": "Radiation {dosis}",
   "ui.dosimetro.tasa": "+{tasa} this turn",
   "ui.dosimetro.protegido": "Protected next turn",
+  "ui.estimacion.dosis": "Estimate for the next {n} turns: radiation {dosis}",
+  "ui.estimacion.menos": "{delta} less than waiting",
   "ui.recurso.energia": "Energy",
   "ui.recurso.soporte_vital": "Life support",
   "ui.recurso.blindaje": "Shielding",
