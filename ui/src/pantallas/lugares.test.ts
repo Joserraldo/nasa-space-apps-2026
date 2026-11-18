@@ -4,7 +4,7 @@ import { puedeAplicar } from "@solar-shield/engine";
 import { LUGARES } from "../escena/mundo.js";
 import { traducir } from "../i18n.js";
 import { inicial, reducir, type Juego } from "../juego/reductor.js";
-import { averiaIrisRevelada, mundoBloqueado, objetivoDeLaBase, pasoDeLaBase, usoDelLugar } from "./lugares.js";
+import { averiaIrisRevelada, estadoIrisVisible, mundoBloqueado, objetivoDeLaBase, pasoDeLaBase, usoDelLugar } from "./lugares.js";
 
 /** De la portada a la base viva (sitio y dos módulos), como la ruta dorada. */
 function enBase(): Juego {
@@ -37,11 +37,20 @@ describe("usar un lugar de la base (ESCENAS §3.2)", () => {
   });
 
   it("el taller repara a Iris solo si está dañada; si no, consulta a la Ingeniera", () => {
-    const { estado } = enBase();
-    const danada = { ...estado, iaBase: "danada" as const };
-    const sana = { ...estado, iaBase: "pistas" as const };
+    const j = conTormenta();
+    expect(averiaIrisRevelada(j.estado)).toBe(true);
+    const danada = { ...j.estado, iaBase: "danada" as const };
+    const sana = { ...j.estado, iaBase: "pistas" as const };
     expect(usoDelLugar("taller", danada)).toMatchObject({ accion: { tipo: "reparar", equipo: "ia_base" }, consulta: { experto: "ingeniera" } });
     expect(usoDelLugar("taller", sana)).toMatchObject({ accion: null, consulta: { experto: "ingeniera" } });
+  });
+
+  it("antes de la tormenta el taller no repara: manda a la Ingeniera", () => {
+    const { estado } = enBase();
+    expect(estado.iaBase).toBe("danada");
+    expect(usoDelLugar("taller", estado)).toMatchObject({
+      accion: null, consulta: { experto: "ingeniera" }, labelKey: "ui.hud.usar.taller",
+    });
   });
 
   it("los lugares sin acción solo abren la consulta, y todas las etiquetas existen en los dos idiomas", () => {
@@ -65,6 +74,23 @@ describe("usar un lugar de la base (ESCENAS §3.2)", () => {
       const a = usoDelLugar(l.id, estado).accion;
       if (a) expect(typeof puedeAplicar(estado, a).ok).toBe("boolean");
     }
+  });
+});
+
+describe("estado visible de Iris", () => {
+  it("antes de la tormenta una Iris dañada se presenta como la guía del tutorial", () => {
+    const { estado } = enBase();
+    expect(estado.iaBase).toBe("danada");
+    expect(estadoIrisVisible(estado)).toBe("tutorial");
+  });
+  it("con la tormenta encima se ve el estado real", () => {
+    const j = conTormenta();
+    expect(estadoIrisVisible(j.estado)).toBe("danada");
+  });
+  it("no cambia los otros estados", () => {
+    const { estado } = enBase();
+    expect(estadoIrisVisible({ ...estado, iaBase: "pistas" })).toBe("pistas");
+    expect(estadoIrisVisible({ ...estado, iaBase: "offline" })).toBe("offline");
   });
 });
 

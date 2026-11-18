@@ -33,9 +33,8 @@ export function usoDelLugar(l: LugarObjetivo, estado: GameState): UsoLugar {
     case "habitat":
       return { accion: { tipo: "refugiarse" }, consulta: { experto: "doctora" }, labelKey: "ui.hud.usar.habitat", icono: "vida" };
     case "taller":
-      // Por ahora el taller ofrece reparar aunque la avería no se haya revelado: la e2e del respaldo 2D lo usa
-      // (issue [bloquea frente E] A1). Cuando E la cambie, pasa a `averiaIrisRevelada(estado)`.
-      return estado.iaBase === "danada"
+      // Antes de que la avería se revele, el taller es una visita a la Ingeniera; reparar aparece con la revelación.
+      return averiaIrisRevelada(estado)
         ? { accion: { tipo: "reparar", equipo: "ia_base" }, consulta: { experto: "ingeniera" }, labelKey: "ui.hud.usar.taller_reparar", icono: "llave" }
         : { accion: null, consulta: { experto: "ingeniera" }, labelKey: "ui.hud.usar.taller", icono: "tripulacion" };
     case "escudo":
@@ -67,6 +66,16 @@ export function pasoDeLaBase(estado: GameState): number {
  */
 export function averiaIrisRevelada(estado: GameState): boolean {
   return estado.iaBase === "danada" && pasoDeLaBase(estado) >= MISION_JEZERO.averiaIris.pasoRevelacion;
+}
+
+/**
+ * Qué estado de Iris se puede mostrar en la interfaz. La partida guarda la verdad (`danada`) desde el
+ * principio, pero hasta que la tormenta revela la avería Iris se presenta como la guía del tutorial.
+ * En cualquier otro caso se muestra el estado real tal cual.
+ */
+export function estadoIrisVisible(estado: GameState): GameState["iaBase"] {
+  if (estado.iaBase === "danada" && !averiaIrisRevelada(estado)) return "tutorial";
+  return estado.iaBase;
 }
 
 /** El mundo no se mueve ni se "usa" mientras haya algo abierto encima o se esté escribiendo. */

@@ -121,7 +121,7 @@ export function PantallaTormenta({ estado, colocados, registro, onSeguir, onDeci
             <div className="fc">
               <div className="fc-cara tormenta-respuesta" role="status" aria-live="polite">
                 <h3>{t(`agentes.titulo.${dialogo.experto}`)}</h3>
-                {dialogo.experto === "ia_base" && <p className="tormenta-respuesta-aviso">{t("ui.tormenta.irisAviso")}</p>}
+                {"falla" in dialogo && <p className="tormenta-respuesta-aviso">{t("ui.tormenta.irisAviso")}</p>}
                 {dialogo.lineas.map((l, i) => <p key={i}>{t(l.clave, l.vars)}</p>)}
                 {dialogo.fuente && <TarjetaFuente fuente={dialogo.fuente} />}
                 <div className="tormenta-respuesta-acciones">

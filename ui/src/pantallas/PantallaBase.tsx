@@ -23,7 +23,7 @@ import "../componentes/base/facetas.css";
 import type { ActorId } from "../escena/frontera.js";
 import { vistaEscena, type LugarObjetivo } from "../escena/vista.js";
 import { DecisionRegistrada } from "./DecisionRegistrada.js";
-import { averiaIrisRevelada, mundoBloqueado, objetivoDeLaBase, usoDelLugar } from "./lugares.js";
+import { averiaIrisRevelada, estadoIrisVisible, mundoBloqueado, objetivoDeLaBase, usoDelLugar } from "./lugares.js";
 import { useAltoHoja, useMundo, usePosicionJugador, verboDe } from "./MundoBase.js";
 import "./base.css";
 
@@ -435,7 +435,7 @@ export function PantallaBase({ estado, colocados = [], ultimas, hud, progreso = 
                 <>
                   <section className="fc"><div className="fc-cara base-bloque">
                     <h2>{t("ui.acciones.titulo")}</h2>
-                    <p className="base-iris"><Icono nombre={estado.iaBase === "danada" ? "aviso" : "planeta"} tam={20} />{t(`ui.iris.estado.${estado.iaBase}`)}</p>
+                    <p className="base-iris"><Icono nombre={estadoIrisVisible(estado) === "danada" ? "aviso" : "planeta"} tam={20} />{t(`ui.iris.estado.${estadoIrisVisible(estado)}`)}</p>
                     <p className="base-ayuda">{t("ui.base.acciones.ayuda")}</p>
                     <ul className="base-acciones">
                       {opcionesDe(estado).map((o) => (

@@ -261,10 +261,10 @@ test("ruta dorada: de la órbita al resumen, en inglés", async ({ page }) => {
  * talk to Earth?"): textos de `agents/i18n/en.json`.
  */
 const DESTINOS: { pide: RegExp; lugar: RegExp; aviso: RegExp }[] = [
-  { pide: /fix me|Who fixes machines|check with the Engineer/, lugar: /^Workshop/, aviso: /Repair Iris/ },
+  { pide: /fix me|Who fixes machines|check with the Engineer/, lugar: /^Workshop/, aviso: /Engineer|workshop/i },
   { pide: /send our news back home|How do we talk to Earth/, lugar: /^Mission control/, aviso: /Send telemetry from the console/ },
   { pide: /protect the crew|shield is weak|shield looks thin|Life support is low|safe place|air and water/, lugar: /^Habitat/, aviso: /shelter/ },
-  { pide: /Energy is low|how much energy|smells like energy|eats energy/, lugar: /^Workshop/, aviso: /Engineer|Repair Iris/ },
+  { pide: /Energy is low|how much energy|smells like energy|eats energy/, lugar: /^Workshop/, aviso: /Engineer|workshop/i },
   { pide: /what the Sun is doing|who reads the sky/, lugar: /^Radiation sensor/, aviso: /Meteorologist/ },
 ];
 /** El globo del final: Iris pide verse en la consola para repasar la misión. */
@@ -333,7 +333,7 @@ test("seguir a Iris del paso 4 al 8 sin abrir Crew, con el mapa y la tecla E", a
   // Paso 4: Iris pide ir al taller a preguntarle a la Ingeniera.
   const globoIris = page.locator('.globo-escena[data-actor="iris"]');
   await expect(globoIris).toContainText("workshop");
-  await irYUsarConE(page, /^Workshop/, /Engineer|Repair Iris/);
+  await irYUsarConE(page, /^Workshop/, /Engineer|workshop/i);
   await decidirOCerrar(page);
 
   // Pasos 5 y 6: llega la tormenta y se decide con la Ingeniera (panel de la tormenta, no Crew).
