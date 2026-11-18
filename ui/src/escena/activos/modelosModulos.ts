@@ -27,6 +27,8 @@ export const ARCHIVOS_MODELOS = {
   /** Ingenuity de NASA (cuerpo y dos rotores aparte) y tripulante con su ciclo de caminar (`animations`). */
   ingenuity: "ingenuity.glb",
   tripulante: "tripulante-caminando.glb",
+  /** Quaternius Ultimate Space Kit (CC0): una malla `Q_<pieza>` por pieza, color por vértice en la paleta. */
+  quaternius: "quaternius.glb",
 } as const;
 export type ModeloExterno = keyof typeof ARCHIVOS_MODELOS;
 

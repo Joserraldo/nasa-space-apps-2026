@@ -18,7 +18,7 @@ import type { ModelosModulos } from "./modelosModulos";
 let kit: THREE.Group;
 beforeAll(async () => {
   const buf = readFileSync(fileURLToPath(new URL("../../../public/modelos/kit-colonia.glb", import.meta.url)));
-  const ab = buf.buffer.slice(buf.byteOffset, buf.byteOffset + buf.byteLength);
+  const ab = buf.buffer.slice(buf.byteOffset, buf.byteOffset + buf.byteLength) as ArrayBuffer;
   const gltf = await new Promise<{ scene: THREE.Group }>((res, rej) => new GLTFLoader().parse(ab, "", res as never, rej));
   kit = gltf.scene;
 });
@@ -40,6 +40,11 @@ function modelos(): ModelosModulos {
     capsula: malla("capsula"),
     ingenuity: malla("ingenuity", [rotor("rotors_01"), rotor("rotors_02")]),
     tripulante: malla("tripulante"),
+    quaternius: (() => {
+      const g = new THREE.Group();
+      for (const n of ["Q_Ramp", "Q_Rover"]) g.add(Object.assign(new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1), new THREE.MeshStandardMaterial()), { name: n }));
+      return g;
+    })(),
   };
 }
 

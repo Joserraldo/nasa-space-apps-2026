@@ -20,7 +20,12 @@ export interface MaterialesColonia {
   vidrio: THREE.Material;
   /** Marco blanco de los domos (misma paleta, poco polvo). */
   marco: THREE.MeshStandardMaterial;
+  /** Piezas del kit Quaternius (color por vértice ya en la paleta). */
+  quat: THREE.MeshStandardMaterial;
 }
+
+/** Geometrías del kit Quaternius (`quaternius.glb`, malla `Q_<pieza>`), base en y = 0 y centradas en planta. */
+export type PiezasQuaternius = Readonly<Record<string, THREE.BufferGeometry>>;
 
 type V3 = readonly [number, number, number];
 
@@ -161,47 +166,9 @@ export function puntosBerma(r: number, a0: number, a1: number, paso = 0.7): { x:
   });
 }
 
-/** Berma recta de `largo` m centrada en el origen, a lo largo de x. */
-export function bermaRecta(m: MaterialesColonia, largo: number, filas: number, s = 1): THREE.Group {
-  const g = new THREE.Group();
-  g.name = "Colony_BermStraight";
-  const geo = geometriaSaco();
-  const azar = semilla(s * 104729);
-  const n0 = Math.max(2, Math.round(largo / SACO.paso));
-  for (let f = 0; f < filas; f++) {
-    const n = n0 - (f % 2);
-    for (let i = 0; i < n; i++) {
-      const x0 = -largo / 2 + (i + 0.5 + (f % 2) * 0.5) * (largo / n0);
-      g.add(saco(m, geo, x0, 0.08 + f * SACO.alto, -f * SACO.adentro, 0, azar));
-    }
-  }
-  return g;
-}
-
 // ---------------------------------------------------------------------------------------------
 // Módulos originales
 // ---------------------------------------------------------------------------------------------
-
-/**
- * Escudo (`escudo`, huella 2,2 × 4,0): muro de sacos de regolito de cuatro hileras a lo largo de z (el regolito apilado
- * frena la radiación, tarjeta `escudo_regolito`) y el generador con acento amarillo de energía (< 2.000 triángulos).
- */
-export function crearEscudoColonia(m: MaterialesColonia): THREE.Group {
-  const muro = bermaRecta(m, 3.8, 4, 3);
-  muro.rotation.y = Math.PI / 2;
-  muro.position.x = -0.45;
-  const gen = grupo(
-    "Shield_Generator",
-    malla(caja(1.0, 0.75, 1.1, "oscuro"), m.kit, [0, 0.375, 0]),
-    malla(caja(1.04, 0.12, 1.14, "amarillo"), m.kit, [0, 0.62, 0]),
-    malla(caja(0.9, 0.08, 1.0, "cuerpo"), m.kit, [0, 0.79, 0]),
-    malla(cilindro(0.22, 0.26, 0.5, 8, "cuerpo"), m.kit, [0, 1.08, 0]),
-    parteLuz(luzCil(0.16, 0.06, 8, "amarillo", 1.8), m, [0, 1.36, 0]),
-  );
-  for (let i = 0; i < 5; i++) gen.add(malla(caja(0.04, 0.55, 0.9, "negro"), m.kit, [-0.28 + i * 0.14, 0.4, -0.62]));
-  gen.position.set(0.3, 0, 1.3);
-  return grupo("Shape_ShieldColony", muro, gen);
-}
 
 /**
  * Tuberías del reciclador (agua usada que entra y agua limpia que sale, tarjeta `agua_reciclada`): dos caños paralelos
@@ -226,23 +193,6 @@ export function crearTuberias(m: MaterialesColonia, desde: number, hasta: number
 // ---------------------------------------------------------------------------------------------
 // Entrada obvia (kit repetible para todo módulo habitable, `clasificacion-objetos.md`)
 // ---------------------------------------------------------------------------------------------
-
-/** Poste de aterrizaje a rayas amarillas y negras con luz del acento arriba (silueta de `SM_Landing_Light`). */
-export function crearPosteLuz(m: MaterialesColonia, acento: Acento | string, alto = 1.15, rayas: readonly [Tono, Tono] = ["amarillo", "negro"], base: Tono = "oscuro"): THREE.Group {
-  const g = grupo("Colony_LightPost", malla(cilindro(0.13, 0.16, 0.08, 8, base), m.kit, [0, 0.04, 0]));
-  const n = 4;
-  for (let i = 0; i < n; i++) g.add(malla(cilindro(0.045, 0.045, alto / n, 6, rayas[i % 2]!), m.kit, [0, 0.08 + (i + 0.5) * (alto / n), 0]));
-  g.add(malla(cilindro(0.09, 0.07, 0.05, 8, base), m.kit, [0, alto + 0.1, 0]));
-  g.add(parteLuz(luzCil(0.08, 0.12, 8, acento, 1.9), m, [0, alto + 0.19, 0]));
-  return g;
-}
-
-/** Franja de peligro amarilla y negra (`SM_Floor_Hazard_Edge`): `n` bandas a lo largo de x. */
-export function franjaPeligro(m: MaterialesColonia, ancho: number, alto: number, fondo: number, n: number, tonos: readonly [Tono, Tono] = ["amarillo", "negro"]): THREE.Group {
-  const g = new THREE.Group();
-  for (let i = 0; i < n; i++) g.add(malla(caja(ancho / n, alto, fondo, tonos[i % 2]!), m.kit, [-ancho / 2 + (i + 0.5) * (ancho / n), 0, 0]));
-  return g;
-}
 
 /** Barril (silueta de `SM_Fuel_Barrel`) del color del acento, con dos aros. */
 export function crearBarril(m: MaterialesColonia, acento: Acento): THREE.Group {
@@ -273,26 +223,36 @@ export function crearManguera(m: MaterialesColonia, a: V3, b: V3): THREE.Mesh {
   return malla(tonear(new THREE.TubeGeometry(curva, 10, 0.06, 5, false), "oscuro"), m.kit, [0, 0, 0]);
 }
 
+/** Medidas únicas de la esclusa (regla 8: misma forma, alto y ancho en toda la colonia). [E] */
+export const ESCLUSA = { ancho: 2.2, alto: 2.3, fondo: 1.25, puerta: [0.95, 1.9] as const } as const;
+
 /**
- * Entrada de un módulo habitable, con la puerta en el origen mirando a +z: porche de regolito sinterizado con franja de
- * peligro al borde, dos postes de luz del acento, barra de luz sobre la puerta (`altoPuerta`) y franja amarilla y negra
- * encima, como sobre la puerta del HDU.
+ * Esclusa pegada al módulo (referencias de organización: el domo de hielo de NASA y su esclusa en caja con rampa): caja
+ * blanca sobre zócalo gris, rejillas grafito a los costados, puerta en panel grafito con marco del acento del módulo (sin
+ * acento, grafito sin marco) y rampa a ras del suelo. La parte trasera (z = 0) se apoya en el módulo; la puerta mira a
+ * +z. `rampa`: geometría de `Ramp` del kit Quaternius.
  */
-export function crearEntrada(m: MaterialesColonia, acento: Acento, ancho = 2.0, altoPuerta = 2.0): THREE.Group {
-  const g = new THREE.Group();
-  g.name = "Colony_Entrance";
-  g.add(malla(caja(ancho, 0.06, 1.3, "oscuro"), m.regolito, [0, 0.03, 0.65]));
-  const borde = franjaPeligro(m, ancho, 0.02, 0.16, 8);
-  borde.position.set(0, 0.07, 1.2);
-  g.add(borde);
-  const arriba = franjaPeligro(m, ancho * 0.6, 0.12, 0.05, 6);
-  arriba.position.set(0, altoPuerta + 0.22, 0.04);
-  g.add(arriba);
-  g.add(parteLuz(luzCaja(ancho * 0.5, 0.07, 0.05, acento, 1.8), m, [0, altoPuerta + 0.06, 0.06]));
-  for (const s of [-1, 1]) {
-    const p = crearPosteLuz(m, acento);
-    p.position.set(s * (ancho / 2 + 0.25), 0, 1.15);
-    g.add(p);
+export function crearEsclusa(m: MaterialesColonia, acento: Acento | `#${string}` | null, rampa?: THREE.BufferGeometry): THREE.Group {
+  const { ancho, alto, fondo, puerta } = ESCLUSA;
+  const g = grupo(
+    "Colony_Airlock",
+    malla(caja(ancho + 0.1, 0.14, fondo + 0.1, "gris"), m.kit, [0, 0.07, fondo / 2]),
+    malla(caja(ancho, alto - 0.14, fondo, "blanco"), m.kit, [0, 0.14 + (alto - 0.14) / 2, fondo / 2]),
+    malla(caja(ancho + 0.08, 0.1, fondo + 0.08, "gris"), m.kit, [0, alto + 0.05, fondo / 2]),
+    malla(caja(puerta[0], puerta[1], 0.05, "grafito"), m.kit, [0, 0.14 + puerta[1] / 2, fondo + 0.03]),
+  );
+  if (acento) {
+    g.add(malla(caja(puerta[0] + 0.16, 0.08, 0.06, acento), m.kit, [0, 0.14 + puerta[1] + 0.04, fondo + 0.03]));
+    for (const s of [-1, 1]) g.add(malla(caja(0.08, puerta[1], 0.06, acento), m.kit, [s * (puerta[0] / 2 + 0.04), 0.14 + puerta[1] / 2, fondo + 0.03]));
+  }
+  for (const s of [-1, 1]) for (let i = 0; i < 4; i++) g.add(malla(caja(0.03, 0.9, 0.08, "grafito"), m.kit, [s * (ancho / 2 + 0.01), 1.0, 0.3 + i * 0.2]));
+  if (rampa) {
+    // Rampa del kit Quaternius (1,87 × 1,39 × 3,11 m) aplastada a un escalón de 14 cm frente a la puerta.
+    const r = new THREE.Mesh(rampa, m.quat);
+    r.scale.set(1.1 / 1.87, 0.14 / 1.39, 1.0 / 3.11);
+    r.position.set(0, 0, fondo + 0.55);
+    r.castShadow = r.receiveShadow = true;
+    g.add(r);
   }
   return g;
 }

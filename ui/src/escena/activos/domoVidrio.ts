@@ -10,13 +10,17 @@
  * Frente (esclusa) hacia +z, base en y = 0, medidas en metros. [E]
  */
 import * as THREE from "three";
-import { caja, crearPosteLuz, franjaPeligro, grupo, luzCaja, parteKit, parteLuz, parteMarco, pintar, tonear, type MaterialesColonia } from "./coloniaPiezas";
+import { ESCLUSA, caja, crearEsclusa, grupo, luzCaja, parteKit, parteLuz, parteMarco, pintar, tonear, type MaterialesColonia } from "./coloniaPiezas";
 import { PALETA } from "./polvoKit";
 
 export interface OpcionesDomo {
   radio: number;
   /** Estantes de cultivo adentro (cuántos). */
   estantes: number;
+  /** Esclusa al frente (la misma de toda la colonia; el invernadero no tiene acento). Por defecto, sí. */
+  esclusa?: boolean;
+  /** Rampa del kit Quaternius para la esclusa. */
+  rampa?: THREE.BufferGeometry | undefined;
 }
 
 /** Meridianos y paralelos del marco (la referencia tiene 16 gajos y 5 anillos). */
@@ -71,27 +75,11 @@ export function crearDomoVidrio(m: MaterialesColonia, o: OpcionesDomo): THREE.Gr
   for (const b of barras) g.add(parteMarco(tonear(b, PALETA.blanco), m, [0, 0, 0]));
   g.add(parteMarco(tonear(new THREE.CylinderGeometry(r * 1.03, r * 1.05, 0.32, 16, 1, true), PALETA.gris), m, [0, 0.16, 0]));
   g.add(parteMarco(tonear(new THREE.CylinderGeometry(0.5, 0.5, 0.12, 10), PALETA.blanco), m, [0, r, 0]));
-  // Esclusa: caja blanca con zócalo gris, puerta en panel grafito sin marco (sin acento) y luz cálida encima.
-  const ex = Math.min(1.7, r * 0.55);
-  const puerta = { ancho: 0.9, alto: 1.9 } as const;
-  const esclusa = grupo(
-    "Dome_Airlock",
-    parteMarco(caja(ex, ex * 0.95, ex, PALETA.blanco), m, [0, (ex * 0.95) / 2, 0]),
-    parteMarco(caja(ex + 0.06, 0.16, ex + 0.06, PALETA.gris), m, [0, 0.08, 0]),
-    parteKit(caja(Math.min(puerta.ancho, ex * 0.6), Math.min(puerta.alto, ex * 0.8), 0.05, PALETA.grafito), m, [0, Math.min(puerta.alto, ex * 0.8) / 2 + 0.02, ex / 2 + 0.02]),
-    parteLuz(luzCaja(ex * 0.45, 0.05, 0.05, PALETA.luzCalida, 1.6), m, [0, Math.min(puerta.alto, ex * 0.8) + 0.12, ex / 2 + 0.04]),
-  );
-  const franja = franjaPeligro(m, ex * 0.9, 0.02, 0.14, 6, [PALETA.amarillo, PALETA.grafito]);
-  franja.position.set(0, 0.03, ex / 2 + 0.3);
-  esclusa.add(franja);
-  esclusa.position.z = r * 0.92;
-  g.add(esclusa);
-  if (r > 3) {
-    for (const s of [-1, 1]) {
-      const p = crearPosteLuz(m, PALETA.luzCalida, 1.0, [PALETA.amarillo, PALETA.grafito], PALETA.gris);
-      p.position.set(s * (ex / 2 + 0.4), 0, r * 0.92 + ex / 2 + 0.5);
-      g.add(p);
-    }
+  // Esclusa única de la colonia (sin acento: puerta grafito sin marco), apoyada en el vidrio.
+  if (o.esclusa !== false) {
+    const e = crearEsclusa(m, null, o.rampa);
+    e.position.z = Math.sqrt(Math.max(0, r * r - (ESCLUSA.alto * 0.6) ** 2)) - 0.35;
+    g.add(e);
   }
   // Estantes de cultivo en fila por el centro, bajo la parte alta del domo.
   const alto = Math.min(1.7, r * 0.6);
@@ -100,5 +88,21 @@ export function crearDomoVidrio(m: MaterialesColonia, o: OpcionesDomo): THREE.Gr
     e.position.set((i - (o.estantes - 1) / 2) * 1.35, 0.05, -r * 0.1);
     g.add(e);
   }
+  return g;
+}
+
+/**
+ * Emisor del escudo (módulo `escudo`, huella 2,2 × 4,0): el escudo es la cúpula que rodea la base
+ * (`sistemas/escudoTormenta.ts`, pedido de María Paula del 18 nov), así que en su anclaje va el mismo domo de vidrio en
+ * chico, sobre un anillo gris, con un núcleo de luz azul claro que proyecta la cúpula. Sin caja ni generador sueltos. [E]
+ */
+export function crearEmisorEscudo(m: MaterialesColonia): THREE.Group {
+  const g = grupo("Shield_Emitter");
+  g.add(parteMarco(tonear(new THREE.CylinderGeometry(1.15, 1.25, 0.28, 16), PALETA.gris), m, [0, 0.14, 0]));
+  g.add(parteMarco(tonear(new THREE.CylinderGeometry(1.0, 1.0, 0.06, 16), PALETA.blanco), m, [0, 0.31, 0]));
+  const domo = crearDomoVidrio(m, { radio: 0.95, estantes: 0, esclusa: false });
+  domo.position.y = 0.3;
+  g.add(domo);
+  g.add(parteLuz(pintar(new THREE.IcosahedronGeometry(0.32, 1), new THREE.Color(PALETA.azulClaro).multiplyScalar(1.8)), m, [0, 0.72, 0]));
   return g;
 }

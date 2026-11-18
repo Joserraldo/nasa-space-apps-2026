@@ -27,7 +27,8 @@ import {
   crearBarril,
   crearCarrete,
   crearContenedor,
-  crearEntrada,
+  crearEsclusa,
+  ESCLUSA,
   crearEstacionMeteo,
   crearLosa,
   crearManguera,
@@ -38,6 +39,7 @@ import {
   parteLuz,
   puntosBerma,
   type MaterialesColonia,
+  type PiezasQuaternius,
 } from "./coloniaPiezas";
 import { crearDomoVidrio } from "./domoVidrio";
 import { crearPanelSolar, geometriaCeldas, geometriaCuerpoPanel } from "./panelSolar";
@@ -58,6 +60,20 @@ export type PiezaKit = (typeof PIEZAS_KIT)[number];
 export type KitColonia = Readonly<Record<PiezaKit, THREE.BufferGeometry>>;
 
 /** Geometrías del GLB del kit (`construir_modelos.py` nombra cada malla `Kit_<pieza>`). */
+/** Geometrías de `quaternius.glb` por pieza (`Q_<pieza>` sin el prefijo). */
+export function quaterniusDesdeGltf(raiz: THREE.Object3D): PiezasQuaternius {
+  const q: Record<string, THREE.BufferGeometry> = {};
+  raiz.traverse((o) => {
+    if (!(o instanceof THREE.Mesh)) return;
+    const nombre = [o.name, o.parent?.name ?? ""].find((n) => n.startsWith("Q_"));
+    if (nombre) q[nombre.slice(2)] = o.geometry;
+  });
+  return q;
+}
+
+/** Rover Quaternius estacionado junto al taller, fuera de senderos (referencias de organización). [E] */
+export const ROVER_COLONIA = { x: -9.6, z: 2.6, giro: 2.3, escala: 0.62, radio: 1.7 } as const;
+
 export function kitDesdeGltf(raiz: THREE.Object3D): KitColonia {
   const kit: Partial<Record<PiezaKit, THREE.BufferGeometry>> = {};
   raiz.traverse((o) => {
@@ -223,10 +239,6 @@ export const BERMAS: readonly (readonly [string, number, number, number, number]
   ["refugio", 2.9, 0.75, Math.PI * 2 - 0.75, 3],
   ["torre", 3.5, 1.3, 2.5, 2],
   ["torre", 3.5, -2.5, -1.3, 2],
-  ["comedor", 2.8, 2.2, 4.1, 2],
-  ["laboratorio", 2.8, 2.2, 4.1, 2],
-  ["enfermeria", 2.8, 2.2, 4.1, 2],
-  ["capsula", 3.0, 2.2, 4.1, 2],
 ];
 
 function bermas(m: MaterialesColonia, nodos: NodoColonia[]): THREE.Group {
@@ -249,7 +261,13 @@ function bermas(m: MaterialesColonia, nodos: NodoColonia[]): THREE.Group {
 export function huellasColonia(): Huella[] {
   const nodos = nodosColonia();
   const por = (id: string) => nodos.find((n) => n.id === id)!;
-  const h: Huella[] = [{ id: "colonia:habitat", x: HABITAT_COLONIA.x, z: HABITAT_COLONIA.z, r: HABITAT_COLONIA.ancho / 2 - 0.25 }];
+  const fondoEsclusa = HABITAT_COLONIA.z + PUERTA_HABITAT.z;
+  const h: Huella[] = [
+    { id: "colonia:habitat", x: HABITAT_COLONIA.x, z: HABITAT_COLONIA.z, r: HABITAT_COLONIA.ancho / 2 - 0.25 },
+    // Esclusa del hábitat: su puerta queda a medio metro del puesto del jugador.
+    { id: "colonia:esclusa_habitat", x: HABITAT_COLONIA.x, z: fondoEsclusa + ESCLUSA.fondo / 2, ancho: ESCLUSA.ancho + 0.1, fondo: ESCLUSA.fondo, giro: 0 },
+    { id: "colonia:rover", x: ROVER_COLONIA.x, z: ROVER_COLONIA.z, r: ROVER_COLONIA.radio },
+  ];
   for (const [a, b] of CORREDORES) {
     const t = tramoCorredor(por(a), por(b));
     if (a === CORREDOR_ELEVADO.a && b === CORREDOR_ELEVADO.b) {
@@ -359,7 +377,15 @@ function puesto(id: LugarId): { x: number; z: number; giro: number } {
 export interface PiezasExtra {
   /** Procedural que queda fuera de los dos encuadres (plataforma con la cápsula de llegada). */
   quedan: THREE.Object3D[];
+  /** Piezas del kit Quaternius (rampa, rover). */
+  q: PiezasQuaternius;
 }
+
+/**
+ * Esclusa del hábitat: su fondo se apoya en el domo (z local desde el centro del hábitat) y cubre la puerta del modelo;
+ * su puerta queda a 0,5 m del puesto del jugador (0; −4,3). [E]
+ */
+export const PUERTA_HABITAT = { z: 2.6 } as const;
 
 /** Materiales de los paneles decorativos (bastidor y celdas, estas sin polvo del evento). */
 export interface MaterialesPanel {
@@ -367,13 +393,13 @@ export interface MaterialesPanel {
   celdas: THREE.Material;
 }
 
-/** Entrada del hábitat y detalles de vida al lado (foto del HDU): barriles azules, carrete y manguera al domo. */
-function vidaHabitat(m: MaterialesColonia): THREE.Group {
+/** Esclusa del hábitat (marco cian) y detalles de vida al lado: barriles azules, carrete y manguera al domo. */
+function vidaHabitat(m: MaterialesColonia, q: PiezasQuaternius): THREE.Group {
   const g = new THREE.Group();
   const r = HABITAT_COLONIA.ancho / 2;
-  const entrada = crearEntrada(m, "cian", 2.0, 1.95);
-  entrada.position.z = r - 0.05;
-  g.add(entrada);
+  const esclusa = crearEsclusa(m, "cian", q.Ramp);
+  esclusa.position.z = PUERTA_HABITAT.z;
+  g.add(esclusa);
   const barriles = [[2.1, r - 0.2], [2.6, r - 0.75], [2.75, r - 0.05]] as const;
   for (const [x, z] of barriles) {
     const b = crearBarril(m, "azul");
@@ -400,7 +426,7 @@ export function armarColonia(kit: KitColonia, m: MaterialesColonia, panel: Mater
     todo.add(x);
   }
   for (const d of DOMOS_FONDO) {
-    const domo = crearDomoVidrio(m, { radio: d.radio, estantes: d.estantes });
+    const domo = crearDomoVidrio(m, { radio: d.radio, estantes: d.estantes, rampa: extra.q.Ramp });
     const n = nodos.find((x) => x.id === d.id)!;
     domo.position.set(n.x, 0, n.z);
     domo.rotation.y = n.giro;
@@ -408,13 +434,22 @@ export function armarColonia(kit: KitColonia, m: MaterialesColonia, panel: Mater
   }
   const por = (id: string) => nodos.find((p) => p.id === id)!;
   for (const [a, b] of CORREDORES) todo.add(corredor(kit, m, por(a), por(b), a === CORREDOR_ELEVADO.a && b === CORREDOR_ELEVADO.b));
-  todo.add(bermas(m, nodos), vidaHabitat(m));
-  // Torre de comunicaciones: luz roja que parpadea arriba (la anima `coloniaEscena`) va aparte; aquí su entrada roja.
+  todo.add(bermas(m, nodos), vidaHabitat(m, extra.q));
+  // Torre de comunicaciones: la misma esclusa con marco rojo (la luz roja que parpadea arriba la pone `coloniaEscena`).
   const torre = por("torre");
-  const entradaTorre = crearEntrada(m, "rojo", 1.6, 1.6);
-  entradaTorre.position.set(torre.x + Math.sin(torre.giro) * (torre.radio + 0.1), 0, torre.z + Math.cos(torre.giro) * (torre.radio + 0.1));
-  entradaTorre.rotation.y = torre.giro;
-  todo.add(entradaTorre);
+  const esclusaTorre = crearEsclusa(m, "rojo", extra.q.Ramp);
+  const dz = torre.radio - 0.9;
+  esclusaTorre.position.set(torre.x + Math.sin(torre.giro) * dz, 0, torre.z + Math.cos(torre.giro) * dz);
+  esclusaTorre.rotation.y = torre.giro;
+  todo.add(esclusaTorre);
+  // Rover del kit Quaternius estacionado junto al taller.
+  if (extra.q.Rover) {
+    const rover = new THREE.Mesh(extra.q.Rover, m.quat);
+    rover.scale.setScalar(ROVER_COLONIA.escala);
+    rover.position.set(ROVER_COLONIA.x, 0, ROVER_COLONIA.z);
+    rover.rotation.y = ROVER_COLONIA.giro;
+    todo.add(rover);
+  }
   // Terminales en poste (mesa y taller) e instrumentos automáticos (puesto de la Meteoróloga).
   for (const id of ["mesa", "taller"] as const) {
     const p = puesto(id);
@@ -463,13 +498,17 @@ export function armarColonia(kit: KitColonia, m: MaterialesColonia, panel: Mater
     p.scale.setScalar(0.62);
     paneles.add(p);
   }
+  // Campo solar en cuadrícula (referencias de organización): dos hileras de la fila de energía, una detrás de otra.
   const f = FILA_PANELES;
-  for (let i = 0; i < f.n; i++) {
-    const t = (i - (f.n - 1) / 2) * f.paso;
-    const p = crearPanelSolar(panel.cuerpo, panel.celdas, geos);
-    p.position.set(f.x + Math.cos(f.giro) * t, 0, f.z - Math.sin(f.giro) * t);
-    p.rotation.y = f.giro;
-    paneles.add(p);
+  for (const fila of [0, 1]) {
+    for (let i = 0; i < f.n; i++) {
+      const t = (i - (f.n - 1) / 2) * f.paso;
+      const atras = fila * 2.6;
+      const p = crearPanelSolar(panel.cuerpo, panel.celdas, geos);
+      p.position.set(f.x + Math.cos(f.giro) * t - Math.sin(f.giro) * atras, 0, f.z - Math.sin(f.giro) * t - Math.cos(f.giro) * atras);
+      p.rotation.y = f.giro;
+      paneles.add(p);
+    }
   }
   salida.add(fusionar(paneles, "Colony_Panels"));
   geos.cuerpo.dispose();

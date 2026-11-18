@@ -23,9 +23,9 @@ import { crearTaller } from "./activos/interiores/taller";
 import { fusionar } from "./activos/fusionar";
 import { crearPerseverance } from "./activos/perseverance";
 import { fusionarConUV } from "./activos/colonia";
-import { berma, crearEscudoColonia } from "./activos/coloniaPiezas";
-import { crearDomoVidrio } from "./activos/domoVidrio";
-import { crearPaleta, materialKit, materialLuces, materialMarco, materialRegolito, materialVidrio } from "./activos/polvoKit";
+import { berma } from "./activos/coloniaPiezas";
+import { crearDomoVidrio, crearEmisorEscudo } from "./activos/domoVidrio";
+import { crearPaleta, materialKit, materialLuces, materialMarco, materialQuaternius, materialRegolito, materialVidrio } from "./activos/polvoKit";
 import { crearEscena3D } from "./escena3d";
 import { colorToken, crearMateriales } from "./materiales";
 import { LUGARES, type LugarId } from "./mundo";
@@ -201,17 +201,17 @@ const SALAS_PREVIA = {
   // Etapa D3: escudo de sacos de regolito con su generador y una berma de arco, con los materiales de la colonia.
   escudo: () => {
     const paleta = crearPaleta();
-    const m = { kit: materialKit(paleta), regolito: materialRegolito(), luz: materialLuces(), vidrio: materialVidrio(), marco: materialMarco(paleta) };
+    const m = { kit: materialKit(paleta), regolito: materialRegolito(), luz: materialLuces(), vidrio: materialVidrio(), marco: materialMarco(paleta), quat: materialQuaternius() };
     const g = new THREE.Group();
     const b = berma(m, 3.2, 2.4, 3.9, 3, 5);
     b.position.set(-1, 0, 2.6);
-    g.add(crearEscudoColonia(m), b);
+    g.add(crearEmisorEscudo(m), b);
     return { raiz: g, camara: [-4.4, 2.1, 3.2] as const, mira: [0, 0.4, 0.4] as const, luz: [-3, 5, 4] as const };
   },
   // Etapa D3: invernadero (pieza de aprobación de la paleta), en el ángulo de `dome/all.png`.
   invernadero: () => {
     const paleta = crearPaleta();
-    const m = { kit: materialKit(paleta), regolito: materialRegolito(), luz: materialLuces(), vidrio: materialVidrio(), marco: materialMarco(paleta) };
+    const m = { kit: materialKit(paleta), regolito: materialRegolito(), luz: materialLuces(), vidrio: materialVidrio(), marco: materialMarco(paleta), quat: materialQuaternius() };
     return { raiz: crearDomoVidrio(m, { radio: 2.65, estantes: 2 }), camara: [-4.6, 4.2, 6.4] as const, mira: [0, 1.0, 0] as const, luz: [-3, 6, 4] as const };
   },
   perseverance: () => ({ raiz: crearPerseverance(), camara: [3.0, 2.3, 4.2] as const, mira: [0, 0.8, 0] as const, luz: [3, 6, 4] as const }),

@@ -38,6 +38,11 @@ function modelosFalsos(): ModelosModulos {
     capsula: malla("capsula", new THREE.MeshStandardMaterial({ name: "Capsule_VC", vertexColors: true })),
     ingenuity: rotores,
     tripulante: malla("tripulante", new THREE.MeshStandardMaterial({ name: "Suit" })),
+    quaternius: (() => {
+      const g = new THREE.Group();
+      for (const n of ["Q_Ramp", "Q_Rover"]) g.add(Object.assign(new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1), new THREE.MeshStandardMaterial()), { name: n }));
+      return g;
+    })(),
   };
 }
 

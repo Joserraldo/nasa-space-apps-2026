@@ -11,9 +11,9 @@ import type { Materiales } from "../materiales";
 import { liberarEscena } from "../liberar";
 import { decorado, alCentro } from "./baseExterior";
 import { ANILLO } from "./caminos";
-import { HABITAT_COLONIA, TORRE_COLONIA, armarColonia, fusionarConUV, kitDesdeGltf } from "./colonia";
-import { colorLuz, crearEscudoColonia, crearTuberias, type MaterialesColonia } from "./coloniaPiezas";
-import { crearDomoVidrio } from "./domoVidrio";
+import { HABITAT_COLONIA, TORRE_COLONIA, armarColonia, fusionarConUV, kitDesdeGltf, quaterniusDesdeGltf } from "./colonia";
+import { colorLuz, crearTuberias, type MaterialesColonia } from "./coloniaPiezas";
+import { crearDomoVidrio, crearEmisorEscudo } from "./domoVidrio";
 import type { ModelosModulos } from "./modelosModulos";
 import { reemplazarSolido, type ModuloArmado } from "./modulosArmados";
 import type { ModuloBase } from "./modulos";
@@ -22,7 +22,7 @@ import { colocar } from "./modulos";
 import { fusionar } from "./fusionar";
 import { materialCeldasPanel, materialCuerpoPanel } from "./panelSolar";
 import { crearPerseverance } from "./perseverance";
-import { PALETA, conPolvo, crearPaleta, materialKit, materialLuces, materialMarco, materialRegolito, materialVidrio, type OpcionesPolvo } from "./polvoKit";
+import { PALETA, conPolvo, crearPaleta, materialKit, materialLuces, materialMarco, materialQuaternius, materialRegolito, materialVidrio, type OpcionesPolvo } from "./polvoKit";
 
 /** Sitio de aterrizaje donde se ven los vehículos de NASA (`missions/src/jezero.ts`). */
 export const SITIO_PERSEVERANCE = "cerca-de-perseverance";
@@ -164,7 +164,15 @@ export function ponerColonia(
 ): ColoniaViva {
   const kit = kitDesdeGltf(modelos.kit);
   const paleta = crearPaleta();
-  const m: MaterialesColonia = { kit: materialKit(paleta), regolito: materialRegolito(), luz: materialLuces(), vidrio: materialVidrio(), marco: materialMarco(paleta) };
+  const m: MaterialesColonia = {
+    kit: materialKit(paleta),
+    regolito: materialRegolito(),
+    luz: materialLuces(),
+    vidrio: materialVidrio(),
+    marco: materialMarco(paleta),
+    quat: materialQuaternius(),
+  };
+  const q = quaterniusDesdeGltf(modelos.quaternius);
   // Viejo: decorado fusionado (menos las lomas), balizas con tapa cian y placas octogonales.
   const viejo = base.getObjectByName("Base_Buildings");
   const lomas = viejo?.getObjectByName("Mounds");
@@ -186,7 +194,7 @@ export function ponerColonia(
   capsula.rotation.y = alCentro(nave.x, nave.z);
   quedan.push(capsula);
   const panel = { cuerpo: conPolvo(materialCuerpoPanel(), { base: 0.1, suelo: 0.5, arriba: 0.3, chorreado: 0 }), celdas: materialCeldasPanel("Colony_PanelCells") };
-  base.add(armarColonia(kit, m, panel, { quedan }));
+  base.add(armarColonia(kit, m, panel, { quedan, q }));
 
   // Hábitat (refugio de la tormenta) y torre de comunicaciones: CC BY tal cual, con polvo mate.
   const habitat = prepararModelo(modelos.habitat, POLVO_CCBY, false, true);
@@ -207,8 +215,9 @@ export function ponerColonia(
   base.add(habitat, torre, baliza);
 
   // Módulos: invernadero de vidrio con estantes y luz, escudo de sacos y reciclador CC BY con su tubería al hábitat.
-  reemplazarSolido(modulos.invernadero, fusionarConUV(crearDomoVidrio(m, { radio: 2.65, estantes: 2 }), "Module_Greenhouse"), [0, 2.72, 0]);
-  reemplazarSolido(modulos.escudo, fusionarConUV(crearEscudoColonia(m), "Module_Shield"), [0.3, 1.47, 1.3]);
+  reemplazarSolido(modulos.invernadero, fusionarConUV(crearDomoVidrio(m, { radio: 2.65, estantes: 2, rampa: q.Ramp }), "Module_Greenhouse"), [0, 2.72, 0]);
+  // Escudo: emisor en forma de domo chico; la protección es la cúpula de `escudoTormenta.ts`.
+  reemplazarSolido(modulos.escudo, fusionarConUV(crearEmisorEscudo(m), "Module_Shield"), [0, 1.3, 0]);
   const reciclador = new THREE.Group();
   const estacion = prepararModelo(modelos.reciclador);
   estacion.scale.setScalar(RECICLADOR.escala);

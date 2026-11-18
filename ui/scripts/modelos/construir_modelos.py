@@ -6,7 +6,7 @@ Convención de salida: base en y = 0, centro en planta en el origen, frente haci
 import bpy, bmesh, sys, math, mathutils
 a = sys.argv[sys.argv.index("--") + 1:]
 SALIDA = a[0]
-SECCIONES = set(a[1:]) or {"antena", "panel", "kit", "ccby", "ingenuity"}
+SECCIONES = set(a[1:]) or {"antena", "panel", "kit", "ccby", "ingenuity", "quaternius"}
 DESCARGAS = "C:/Users/mpaul/Downloads/"
 NASA = "C:/Users/mpaul/Documents/ss-referencias/nasa3d/"
 CRAFT = "C:/Users/mpaul/Documents/ss-fuentes/craftpix/"
@@ -259,3 +259,52 @@ if "ingenuity" in SECCIONES:
         c.z = 0
         o.data.transform(mathutils.Matrix.Translation(-c)); o.location = c
     exportar_vc(piezas, "ingenuity")
+
+# ---------------- Quaternius Ultimate Space Kit (CC0, poly.pizza): piezas sueltas en un GLB, a la paleta ----------------
+# El color sale del atlas compartido (muestreado en el centro UV de cada cara) y se lleva a la paleta: claros a blanco,
+# medios a gris, oscuros a grafito y los saturados al acento más cercano. Sin textura ni material: la escena pone uno.
+QUAT = "C:/Users/mpaul/Documents/ss-fuentes/quaternius-space/"
+PIEZAS_Q = {"Rover": 0.25, "SolarPanel_Ground": 1, "Roof_Antenna": 1, "Roof_Radar": 1, "Ramp": 1, "MetalSupport": 1, "House_Long": 1, "House_Cylinder": 1}
+ACENTOS_Q = {"azul": lineal("#5BA9C9"), "amarillo": lineal("#F2B705"), "rojo": lineal("#E0453A"), "cian": lineal("#4FD1E0")}
+if "quaternius" in SECCIONES:
+    import colorsys
+    reset()
+    piezas = []
+    for n, ratio in PIEZAS_Q.items():
+        objs = importar(QUAT + n + ".glb")
+        aplicar(objs)
+        o = unir(objs, "Q_" + n)
+        img = next((nd.image for s in o.material_slots if s.material and s.material.use_nodes for nd in s.material.node_tree.nodes if nd.type == "TEX_IMAGE" and nd.image), None)
+        px = list(img.pixels) if img else None
+        w, h = (img.size[0], img.size[1]) if img else (1, 1)
+        uv = o.data.uv_layers.active.data if o.data.uv_layers.active else None
+        attr = o.data.color_attributes.new("Col", "FLOAT_COLOR", "CORNER")
+        for p in o.data.polygons:
+            c = (0.6, 0.6, 0.6)
+            if px and uv:
+                u = sum(uv[i].uv.x for i in p.loop_indices) / len(p.loop_indices) % 1.0
+                v = sum(uv[i].uv.y for i in p.loop_indices) / len(p.loop_indices) % 1.0
+                k = (int(v * h) * w + int(u * w)) * 4
+                c = tuple(px[k:k + 3])
+            hh, ss, vv = colorsys.rgb_to_hsv(*[x ** (1 / 2.2) for x in c])
+            if ss > 0.45 and vv > 0.3:
+                destino = min(ACENTOS_Q.values(), key=lambda a: abs(colorsys.rgb_to_hsv(*[x ** (1 / 2.2) for x in a])[0] - hh))
+            else:
+                destino = a_paleta(c)
+            for li in p.loop_indices: attr.data[li].color = (*destino, 1)
+        o.data.materials.clear()
+        if ratio < 1:
+            mod = o.modifiers.new("dec", "DECIMATE"); mod.ratio = ratio
+            bpy.context.view_layer.objects.active = o; bpy.ops.object.modifier_apply(modifier="dec")
+        # Base en y = 0 y centro en planta (las piezas de techo vienen a 4 m de alto).
+        mn, mx = caja([o])
+        o.data.transform(mathutils.Matrix.Translation(((mn.x + mx.x) / -2, (mn.y + mx.y) / -2, -mn.z)))
+        piezas.append(o)
+    m = bpy.data.materials.new("Quaternius_VC"); m.use_nodes = True
+    b = m.node_tree.nodes["Principled BSDF"]; b.inputs["Roughness"].default_value = 0.85
+    vc = m.node_tree.nodes.new("ShaderNodeVertexColor"); vc.layer_name = "Col"
+    m.node_tree.links.new(vc.outputs["Color"], b.inputs["Base Color"])
+    for o in piezas: o.data.materials.append(m)
+    exportar_vc(piezas, "quaternius")
+    for o in piezas:
+        mn, mx = caja([o]); print("Q", o.name, "tris", tris(o), "dims", [round(mx[i] - mn[i], 2) for i in range(3)])

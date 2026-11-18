@@ -217,3 +217,14 @@ export function materialMarco(paleta: THREE.Texture): THREE.MeshStandardMaterial
     color: PALETA.polvo,
   });
 }
+
+/** Piezas del kit Quaternius (CC0): color por vértice ya llevado a la paleta, mate y con polvo desde abajo. */
+export function materialQuaternius(): THREE.MeshStandardMaterial {
+  return conPolvo(new THREE.MeshStandardMaterial({ name: "Colony_Quaternius", vertexColors: true, roughness: 0.85, metalness: 0.05 }), {
+    base: 0.08,
+    suelo: 0.45,
+    arriba: 0.3,
+    chorreado: 0.1,
+    color: PALETA.polvo,
+  });
+}

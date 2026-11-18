@@ -8,6 +8,20 @@
  */
 import * as THREE from "three";
 import type { ContextoSistema, SistemaEscena } from "../escena3d";
+import { PALETA } from "../activos/polvoKit";
+
+/**
+ * Colores del domo en la paleta del sistema estético (`clasificacion-objetos.md`, pedido de María Paula del 18 nov: el
+ * escudo es la cúpula alrededor de la base y tiene que verse como el resto): vidrio azul claro, red blanca cálida y
+ * aviso en el amarillo de energía (sin naranja ni cian saturado).
+ */
+const COLOR_RED = new THREE.Color(PALETA.blanco);
+const COLOR_ARO = new THREE.Color(PALETA.azulClaro);
+const COLOR_ALERTA = new THREE.Color(PALETA.amarillo);
+const glsl = (hex: string) => {
+  const c = new THREE.Color(hex);
+  return `vec3(${c.r.toFixed(3)}, ${c.g.toFixed(3)}, ${c.b.toFixed(3)})`;
+};
 
 const CENTRO_X = 0.0;
 const CENTRO_Z = -3.2;
@@ -56,13 +70,13 @@ export function crearSistema(): SistemaEscena {
     estadoHaz[k + 4] = vy;
     estadoHaz[k + 5] = vz;
 
-    // Color solar ámbar/dorado intenso
-    colHaces[k] = 1.0;
-    colHaces[k + 1] = 0.55;
-    colHaces[k + 2] = 0.12;
+    // Partículas solares en el amarillo de la paleta (cabeza) que se aclara hacia la cola (sin naranja).
+    colHaces[k] = COLOR_ALERTA.r;
+    colHaces[k + 1] = COLOR_ALERTA.g;
+    colHaces[k + 2] = COLOR_ALERTA.b;
     colHaces[k + 3] = 1.0;
-    colHaces[k + 4] = 0.82;
-    colHaces[k + 5] = 0.35;
+    colHaces[k + 4] = 0.9;
+    colHaces[k + 5] = 0.55;
   }
 
   return {
@@ -104,10 +118,10 @@ export function crearSistema(): SistemaEscena {
             float hex = smoothstep(0.88, 0.97, abs(sin(vP.x * 1.35)) * abs(sin(vP.z * 1.35)) * abs(cos(vP.y * 1.35)));
             float onda = smoothstep(0.6, 1.0, sin(vP.y * 1.6 - uT * 7.0)) * uHit;
             float baseRim = 1.0 - smoothstep(0.0, 0.14, hNorm);
-            vec3 cBase = vec3(0.02, 0.52, 0.82);
-            vec3 cBrillo = vec3(0.28, 0.94, 1.0);
+            vec3 cBase = ${glsl(PALETA.azul)};
+            vec3 cBrillo = ${glsl(PALETA.azulClaro)};
             vec3 col = mix(cBase, cBrillo, clamp(fres * 0.65 + hex * 0.45 + frente * 0.9 + onda * 0.7 + baseRim * 0.5, 0.0, 1.0));
-            float alpha = clamp(fres * 0.42 + hex * 0.18 + frente * 0.55 + onda * 0.35 + baseRim * 0.38 + 0.05, 0.0, 0.62);
+            float alpha = clamp(fres * 0.4 + hex * 0.12 + frente * 0.5 + onda * 0.3 + baseRim * 0.3 + 0.06, 0.0, 0.55);
             gl_FragColor = vec4(col, alpha);
           }
         `,
@@ -144,7 +158,7 @@ export function crearSistema(): SistemaEscena {
       gRed.setAttribute("position", new THREE.Float32BufferAttribute(segs, 3));
       geos.push(gRed);
       redMat = new THREE.LineBasicMaterial({
-        color: 0x00e5ff,
+        color: COLOR_RED,
         transparent: true,
         opacity: 0,
         depthWrite: false,
@@ -157,7 +171,7 @@ export function crearSistema(): SistemaEscena {
       const gAro = new THREE.RingGeometry(RADIO_ESCUDO - 0.22, RADIO_ESCUDO + 0.08, 64);
       geos.push(gAro);
       aroMat = new THREE.MeshBasicMaterial({
-        color: 0x00e5ff,
+        color: COLOR_ARO,
         transparent: true,
         opacity: 0,
         side: THREE.DoubleSide,
@@ -173,7 +187,7 @@ export function crearSistema(): SistemaEscena {
       const gAlerta = new THREE.RingGeometry(1.3, 1.75, 40);
       geos.push(gAlerta);
       alertaMat = new THREE.MeshBasicMaterial({
-        color: 0xff9d2e,
+        color: COLOR_ALERTA,
         transparent: true,
         opacity: 0,
         side: THREE.DoubleSide,
@@ -239,7 +253,7 @@ export function crearSistema(): SistemaEscena {
           shieldMat.uniforms.uHit!.value = uHitActual;
           shieldMat.uniforms.uT!.value = t;
         }
-        redMat.opacity = (hayTormenta ? 0.42 : 0.24) * despliegue;
+        redMat.opacity = (hayTormenta ? 0.7 : 0.5) * despliegue;
         aroMat.opacity = (0.45 + 0.25 * uHitActual) * despliegue;
       }
 
