@@ -40,7 +40,7 @@ export function zonaTaller() {
 }
 
 /** Estante de baterías: marco con 2 filas de 3 baterías, cada una con su tapa cian. */
-function estanteBaterias(m: Materiales): THREE.Group {
+export function estanteBaterias(m: Materiales): THREE.Group {
   const x = grupo(
     "Workshop_BatteryRack",
     parte(m, "SuitBase", chaflan(2.0, 2.1, 0.6, 0.2), [0, 1.05, 0], "Rack_Frame"),
@@ -56,7 +56,7 @@ function estanteBaterias(m: Materiales): THREE.Group {
 }
 
 /** Banco de trabajo con cajones, panel de herramientas en la pared y un medidor. */
-function banco(m: Materiales): THREE.Group {
+export function banco(m: Materiales): THREE.Group {
   const x = grupo(
     "Workshop_Bench",
     parte(m, "SuitBase", chaflan(2.0, 0.12, 0.8, 0.04), [0, 0.86, 0], "Bench_Top"),
@@ -79,7 +79,7 @@ function banco(m: Materiales): THREE.Group {
 }
 
 /** Dock de Iris: nicho con arco, base baja y aro cian en el piso (lámina: el robot se carga ahí). */
-function dock(m: Materiales): THREE.Group {
+export function dock(m: Materiales): THREE.Group {
   const aro = geometriaBase("int-dock-aro", () => new THREE.RingGeometry(0.5, 0.6, 16).rotateX(-Math.PI / 2));
   return grupo(
     "Workshop_IrisDock",
