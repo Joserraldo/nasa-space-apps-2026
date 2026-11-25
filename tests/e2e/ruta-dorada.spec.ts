@@ -310,7 +310,12 @@ async function irYUsarConE(page: Page, lugar: RegExp, aviso: RegExp) {
   await liberarMundo(page);
   await page.getByRole("button", { name: "Map", exact: true }).click();
   await page.getByRole("list", { name: "Places" }).getByRole("button", { name: lugar }).click();
-  await expect(page.getByRole("button", { name: aviso }).first()).toBeVisible({ timeout: 60_000 });
+  // El reloj simulado corre mientras el niño camina: en una máquina lenta pasa un turno, su aviso pausa
+  // el juego y tapa [E]. Se cierra durante la espera, como lo haría el jugador.
+  await expect(async () => {
+    await liberarMundo(page);
+    await expect(page.getByRole("button", { name: aviso }).first()).toBeVisible({ timeout: 1_000 });
+  }).toPass({ timeout: 60_000 });
   // Los efectos de React esperan a que corra el reloj simulado (en pausa: ningún turno pasa).
   await page.clock.runFor(100);
   await page.keyboard.press("e");
