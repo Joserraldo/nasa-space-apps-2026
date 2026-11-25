@@ -170,6 +170,14 @@ describe("caminos de losas", () => {
     for (const [x, z] of ANILLO) expect(Math.hypot(x, z)).toBeLessThan(TERRENO.limite);
   });
 
+  it("conecta el sector de ciencia del este con el anillo exterior", () => {
+    const sensor = LUGARES.find(l => l.id === "sensor")!;
+    expect(CAMINOS.some(tramo =>
+      tramo[0]?.[0] === sensor.x && tramo[0]?.[1] === sensor.z
+      && tramo.some(([x, z]) => ANILLO.some(([ax, az]) => x === ax && z === az)),
+    )).toBe(true);
+  });
+
   it("la plataforma abarca la consola de la mesa y el punto donde se para el jugador", () => {
     const mesa = LUGARES.find(l => l.id === "mesa")!;
     expect(mesa.mx - 1.2).toBeGreaterThan(PLAZA.x0);
