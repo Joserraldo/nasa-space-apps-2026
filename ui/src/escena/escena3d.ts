@@ -252,7 +252,10 @@ export const CAMARAS: Readonly<Record<CamaraEscena, { pos: [number, number, numb
  */
 export const CAMARA_TERCERA = {
   apaisado: { distancia: 5.8, inclinacion: 0.44, adelante: 3.2, hombro: 0.35 },
-  vertical: { distancia: 6.2, inclinacion: 0.48, adelante: 6.0, hombro: 0 },
+  // A10 (#18): en celular vertical la cámara mira más abajo (inclinación 0,48 → 0,8; distancia y mirada de
+  // la cámara maqueta de #405 sin cambios), como `mundo/03` "Portrait — explore": el cielo baja de ~36 % a ~27 %
+  // del alto y el niño queda entero abajo, con la base.
+  vertical: { distancia: 6.2, inclinacion: 0.8, adelante: 6.0, hombro: 0 },
   /** Aspecto del encuadre vertical de referencia (390×844). */
   aspectoVertical: 390 / 844,
   /** Rueda y pellizco: factor sobre la distancia del encuadre. */
