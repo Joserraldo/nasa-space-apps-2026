@@ -37,6 +37,10 @@
   "agentes.meteorologa.pronostico.preparar": "Prepárate antes de que llegue: el refugio protege mejor a la tripulación, y el escudo también ayuda pero gasta energía.",
   "agentes.meteorologa.pronostico.medida": "Ese día, la radiación en Marte subió unas {factor} veces comparada con un día normal.",
   "agentes.meteorologa.evento.destelloNube": "El destello es luz y llega rapidísimo. La nube de partículas viene después, y esa es la que hay que esperar con el escudo.",
+  "agentes.aviso.meteorologa.sensor": "¡Mi sensor acaba de ver una nube solar saliendo del Sol!",
+  "agentes.aviso.meteorologa.nube": "Una nube solar puede tardar días en llegar. Esta viene hacia nosotros.",
+  "agentes.aviso.doctora.contar": "La radiación no se ve, así que yo la cuento.",
+  "agentes.aviso.ingeniera.escudo": "Un escudo gasta energía. Los paneles la producen.",
   "agentes.matematico.calculo": "Déjame calcular qué pasaría, antes de que lo hagas.",
   "agentes.matematico.cual": "¿Qué quieres que calcule? Dime la acción.",
   "agentes.ia_base.ayuda": "Creo que deberías llamar {expertoKey}.",
@@ -361,5 +365,6 @@
   "agentes.recuerdo.meteorologa.reparar": "Elegiste reparar la antena. Revisemos el enlace.",
   "agentes.recuerdo.meteorologa.esperar": "Elegiste esperar. ¿Qué mostrará el sensor?",
   "agentes.recuerdo.meteorologa.enviar_telemetria": "Enviaste nuestros datos a la Tierra. ¿Qué descubrirán?",
-  "agentes.iris.acompana.danada.verificar": "Bzzt... verifiquemos con la Ingeniera."
+  "agentes.iris.acompana.danada.verificar": "Bzzt... verifiquemos con la Ingeniera.",
+  "agentes.aviso.meteorologa.real": "Esta tormenta es real. Pasó de verdad el {fecha}."
 }

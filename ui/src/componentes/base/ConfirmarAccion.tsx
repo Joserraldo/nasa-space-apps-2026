@@ -1,9 +1,10 @@
 import { useEffect, useRef } from "react";
 import type { BaseAction, GameState } from "@solar-shield/contracts";
-import { costoDe, puedeAplicar } from "@solar-shield/engine";
+import { costoDe, puedeAplicar, tormentaActiva } from "@solar-shield/engine";
 import { MISION_JEZERO, type Mision } from "@solar-shield/missions";
 import { useT } from "../../i18n.js";
 import { describirAccion } from "../Dialogos.js";
+import { DosisEstimada } from "../DosisEstimada.js";
 import { FacetButton } from "./FacetButton.js";
 import { CostRow } from "./Piezas.js";
 import "./facetas.css";
@@ -45,6 +46,7 @@ export function ConfirmarAccion({ estado, accion, mision = MISION_JEZERO, onCanc
           {estado.pausado && <span className="confirmar-pausa">{t("ui.comun.pausado")}</span>}
         </div>
         <CostRow inmediato={inmediato} retrasado={retrasado} />
+        {tormentaActiva(estado, mision) && <DosisEstimada estado={estado} accion={accion} mision={mision} />}
         <div className="confirmar-botones">
           <FacetButton variant="primary" icon="check" labelKey="ui.comun.confirmar" disabled={!permiso.ok} disabledReasonKey={motivoKey}
             onClick={() => onConfirmar(accion)} />

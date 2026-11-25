@@ -36,3 +36,26 @@ describe("HUD progresivo (E3, PLAN-JUGABILIDAD §1)", () => {
     for (const texto of [">Crew<", ">Map<", "Speed 1x"]) expect(h).toContain(texto);
   });
 });
+
+describe("plazo de la telemetría en el HUD", () => {
+  it("con plazo, el turno se muestra con su límite", () => {
+    const h = html(<HudBase estado={partidaDorada()} plazo={{ limite: 10 }} />);
+    expect(h).toContain("Turn 0 of 10");
+  });
+  it("sin plazo, solo el turno", () => {
+    const h = html(<HudBase estado={partidaDorada()} />);
+    expect(h).toContain("Turn 0");
+    expect(h).not.toContain(" of 10");
+  });
+  it("si enviar ahora llega a tiempo, dice en qué turno responde la Tierra", () => {
+    const h = html(<HudBase estado={partidaDorada()} plazo={{ limite: 10, llegadaSiEnvia: 6 }} />);
+    expect(h).toContain("Earth&#x27;s answer arrives at turn 6 of 10");
+    expect(h).not.toContain("Too late");
+  });
+  it("si ya no llega a tiempo, el texto lo dice (no solo el color)", () => {
+    const h = html(<HudBase estado={partidaDorada()} plazo={{ limite: 10, llegadaSiEnvia: 12 }} />);
+    expect(h).toContain("Too late");
+    expect(h).toContain("hud-plazo-tarde");
+  });
+});
+

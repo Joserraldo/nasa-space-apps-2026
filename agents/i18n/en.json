@@ -37,6 +37,10 @@
   "agentes.meteorologa.pronostico.preparar": "Get ready before it arrives: the shelter protects the crew best, and the shield helps too but uses energy.",
   "agentes.meteorologa.pronostico.medida": "That day, radiation on Mars went up about {factor} times compared to a normal day.",
   "agentes.meteorologa.evento.destelloNube": "The flash is light, and it gets here super fast. The particle cloud comes later, and that's the one to wait for with the shield.",
+  "agentes.aviso.meteorologa.sensor": "My sensor just spotted a solar cloud leaving the Sun!",
+  "agentes.aviso.meteorologa.nube": "A solar cloud can take days to arrive. This one is coming.",
+  "agentes.aviso.doctora.contar": "You can't see radiation, so I count it.",
+  "agentes.aviso.ingeniera.escudo": "A shield uses energy. Panels make it.",
   "agentes.matematico.calculo": "Let me calculate what would happen, before you do it.",
   "agentes.matematico.cual": "What do you want me to calculate? Tell me the action.",
   "agentes.ia_base.ayuda": "I think you should call {expertoKey}.",
@@ -361,5 +365,6 @@
   "agentes.recuerdo.meteorologa.reparar": "You chose to repair the antenna. Let’s check the link.",
   "agentes.recuerdo.meteorologa.esperar": "You chose to wait. I wonder what the sensor will show.",
   "agentes.recuerdo.meteorologa.enviar_telemetria": "You sent our data to Earth. What might they discover?",
-  "agentes.iris.acompana.danada.verificar": "Bzzt... let’s check with the Engineer."
+  "agentes.iris.acompana.danada.verificar": "Bzzt... let’s check with the Engineer.",
+  "agentes.aviso.meteorologa.real": "This storm is real. It really happened on {fecha}."
 }

@@ -1,0 +1,41 @@
+import { it } from "vitest";
+import { writeFileSync } from "node:fs";
+import type { Equipment, GameState, BaseAction } from "@solar-shield/contracts";
+import { MISION_JEZERO as m } from "@solar-shield/missions";
+import { aplicarAccion, aterrizar, avanzarTick } from "./acciones.js";
+import { partidaDorada, paso } from "./dorada.js";
+import { dosisMaximaTripulacion } from "./radiacion.js";
+const REF: BaseAction = { tipo: "refugiarse" }, ESC: BaseAction = { tipo: "subir_escudo", nivel: 2 }, ESC1: BaseAction = { tipo: "subir_escudo", nivel: 1 };
+type Plan = { nombre: string; en: Record<number, BaseAction[]> };
+const planes: Plan[] = [
+  { nombre: "nada", en: {} },
+  { nombre: "refugio@3", en: { 3: [REF] } },
+  { nombre: "refugio@2", en: { 2: [REF] } },
+  { nombre: "refugio@1", en: { 1: [REF] } },
+  { nombre: "refugio@3+refugio@5", en: { 3: [REF], 5: [REF] } },
+  { nombre: "escudo2@3", en: { 3: [ESC] } },
+  { nombre: "escudo2@2", en: { 2: [ESC] } },
+  { nombre: "escudo2@1", en: { 1: [ESC] } },
+  { nombre: "escudo1@3", en: { 3: [ESC1] } },
+  { nombre: "escudo2@1+refugio@3", en: { 1: [ESC], 3: [REF] } },
+  { nombre: "escudo2@2+refugio@4", en: { 2: [ESC], 4: [REF] } },
+  { nombre: "escudo2@3+refugio@3", en: { 3: [ESC, REF] } },
+  { nombre: "refugio@2+escudo2@4", en: { 2: [REF], 4: [ESC] } },
+];
+const pares: [Equipment, Equipment][] = [["panel_solar","escudo"],["panel_solar","reciclador_agua"],["panel_solar","antena"],["reciclador_agua","escudo"],["escudo","antena"],["reciclador_agua","antena"]];
+function causa(s: GameState) { if (s.resultado==="exito") return "-"; const r=(["energia","soporte_vital","blindaje"] as const).find(k=>s.recursos[k]<=0); if (r) return "recurso_"+r; if (s.causas.some(c=>c.descripcionKey==="causa.limite_radiacion")) return "dosis"; return "plazo"; }
+it("tiempos", () => {
+  const rows = ["sitio,par,plan,resultado,tick,E,V,B,dosis,causa"];
+  for (const sitio of m.sitiosCandidatos.map(x=>x.id)) for (const par of pares) for (const p of planes) {
+    let s = aterrizar(partidaDorada(), sitio, m);
+    for (const mo of par) s = paso(s, { tipo: "colocar_modulo", modulo: mo }, m);
+    let enviado = false;
+    while (s.resultado==="en_curso" && s.tick < m.fin.tickLimite) {
+      for (const a of p.en[s.tick] ?? []) s = aplicarAccion(s, a, m);
+      if (!enviado && s.tick >= m.tickTormenta) { s = aplicarAccion(s, { tipo: "enviar_telemetria" }, m); enviado = true; }
+      s = avanzarTick(s, m);
+    }
+    rows.push([sitio,par.join("+"),p.nombre,s.resultado,s.tick,Math.round(s.recursos.energia),Math.round(s.recursos.soporte_vital),Math.round(s.recursos.blindaje),dosisMaximaTripulacion(s).toFixed(2),causa(s)].join(","));
+  }
+  writeFileSync(".rev0/tiempos.csv", rows.join("\n"));
+});

@@ -1,5 +1,5 @@
-import { useCallback, useEffect, useRef, useState } from "react";
-import { conversar } from "@solar-shield/agents";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { avisosAntesDeModulos, conversar } from "@solar-shield/agents";
 import type { Equipment, GameState, Resource } from "@solar-shield/contracts";
 import { referenciaDosis } from "@solar-shield/data";
 import { costoDe, puedeAplicar } from "@solar-shield/engine";
@@ -43,7 +43,7 @@ function iconoDe(modulo: Equipment) {
 
 type Tarjeta = { tipo: "elegir" } | { tipo: "modulo"; modulo: Equipment };
 
-export function PantallaModulos({ estado, colocados, onColocar, onListo, bienvenida }: {
+export function PantallaModulos({ estado, colocados, onColocar, onListo, bienvenida, onAviso }: {
   estado: GameState;
   colocados: Equipment[];
   onColocar: (m: Equipment) => void;
@@ -53,6 +53,8 @@ export function PantallaModulos({ estado, colocados, onColocar, onListo, bienven
    * toques) y, mientras está abierta, no se abre otra tarjeta: una a la vez (E1).
    */
   bienvenida?: { onExplorar(): void } | undefined;
+  /** Se llama una vez, cuando aparece el primer aviso de tormenta (abre el HUD de Crew). */
+  onAviso?: () => void;
 }) {
   const { t } = useT();
   const total = mision.modulosAColocar;
@@ -63,6 +65,16 @@ export function PantallaModulos({ estado, colocados, onColocar, onListo, bienven
   const tarjeta = useTarjetaUnica<Tarjeta>();
   const elegido = tarjeta.abierta?.tipo === "modulo" ? tarjeta.abierta.modulo : null;
   const mostrada = tarjeta.mostrada;
+  // Aviso de tormenta antes de elegir módulos (paso 4): tres diálogos, uno detrás de otro.
+  const avisos = useMemo(() => avisosAntesDeModulos(estado), [estado.tormenta]);
+  const [avisoIdx, setAvisoIdx] = useState(0);
+  const avisoActual = !bienvenida && !tarjeta.abierta && colocados.length === 0 ? avisos[avisoIdx] : undefined;
+  const avisoAnunciado = useRef(false);
+  useEffect(() => {
+    if (!avisoActual || avisoIdx !== 0 || avisoAnunciado.current) return;
+    avisoAnunciado.current = true;
+    onAviso?.();
+  }, [avisoActual, avisoIdx, onAviso]);
   const botonera = useRef<HTMLDivElement>(null);
   // El botón que abrió la tarjeta se oculta mientras está abierta: si el foco se perdió al cerrar, va al
   // primer botón disponible de la base (invariante 3: abrir y cerrar devuelve el foco).
@@ -211,7 +223,14 @@ export function PantallaModulos({ estado, colocados, onColocar, onListo, bienven
         )}
       </div>
 
-      {dialogoExperta && !tarjeta.abierta && (
+      {avisoActual ? (
+        <div className="dialogo-franja-abajo">
+          <DialogoExperto d={avisoActual} irisDanada={false} soloTexto={false}
+            onPlan={() => setAvisoIdx((i) => i + 1)}
+            onOtra={() => setAvisoIdx((i) => i + 1)}
+            onCerrar={() => setAvisoIdx((i) => i + 1)} />
+        </div>
+      ) : dialogoExperta && !tarjeta.abierta && (
         <div className="dialogo-franja-abajo">
           <DialogoExperto d={dialogoExperta} irisDanada={false} soloTexto={false}
             onPlan={() => tarjeta.abrir({ tipo: "elegir" })}

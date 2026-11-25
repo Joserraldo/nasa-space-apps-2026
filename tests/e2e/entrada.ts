@@ -12,4 +12,10 @@ export async function llegarYExplorar(page: Page) {
   if (await saltar.isVisible()) await saltar.click();
   await explorar.click();
   await expect(explorar).toHaveCount(0);
+  // Aviso de tormenta antes de elegir módulos: se pasa con "Continue" hasta que no quede ninguno.
+  const continuar = page.locator(".dialogo-experto").getByRole("button", { name: "Continue", exact: true });
+  for (let i = 0; i < 4 && (await continuar.isVisible()); i++) {
+    await continuar.click();
+    await page.waitForTimeout(100);
+  }
 }
