@@ -16,6 +16,7 @@ import { AJUSTE_CALIDAD, MAS_BAJA } from "./calidad";
 import { LUZ, type Cielo } from "./cielo";
 import type { ActorId, Interactivo, PedidoEscena } from "./frontera";
 import { irisGuiaAlObjetivo } from "../juego/pedidoEscena";
+import { reaccionDe } from "./coreografia";
 import { crearMateriales, type Materiales } from "./materiales";
 import { liberarCache, liberarEscena, liberarMateriales } from "./liberar";
 import { crearContorno } from "./contorno";
@@ -251,7 +252,10 @@ export const CAMARAS: Readonly<Record<CamaraEscena, { pos: [number, number, numb
  */
 export const CAMARA_TERCERA = {
   apaisado: { distancia: 5.8, inclinacion: 0.44, adelante: 3.2, hombro: 0.35 },
-  vertical: { distancia: 6.2, inclinacion: 0.48, adelante: 6.0, hombro: 0 },
+  // A10 (#18): en celular vertical la cámara mira más abajo (inclinación 0,48 → 0,8; distancia y mirada de
+  // la cámara maqueta de #405 sin cambios), como `mundo/03` "Portrait — explore": el cielo baja de ~36 % a ~27 %
+  // del alto y el niño queda entero abajo, con la base.
+  vertical: { distancia: 6.2, inclinacion: 0.8, adelante: 6.0, hombro: 0 },
   /** Aspecto del encuadre vertical de referencia (390×844). */
   aspectoVertical: 390 / 844,
   /** Rueda y pellizco: factor sobre la distancia del encuadre. */
@@ -1076,6 +1080,9 @@ export function crearEscena3D(canvas: HTMLCanvasElement, opciones: OpcionesEscen
         if (vistos.has(e.id)) continue; // cada evento se anima una sola vez
         vistos.add(e.id);
         if (e.tipo === "averia" && (MODULOS_BASE as readonly string[]).includes(e.equipo)) armada.pulsar(e.equipo as ModuloBase, ahora);
+        // A7: la tripulación reacciona con el cuerpo (una vez por evento, como la animación del módulo).
+        const reaccion = reaccionDe(e);
+        if (reaccion) tripulacion.actores.reaccion = { tipo: reaccion, desdeMs: ahora };
       }
     },
     fijarCamara(c) {
@@ -1117,6 +1124,7 @@ export function crearEscena3D(canvas: HTMLCanvasElement, opciones: OpcionesEscen
       ctx.pedido = pedido;
       // A2: Iris rueda delante del niño hacia el objetivo cuando señala; en `pistas` solo acompaña.
       mov.guiarIrisA(irisGuiaAlObjetivo(pedido) ? pedido.objetivo!.lugar : null);
+      tripulacion.actores.hablando = pedido.hablando ?? null;
       tripulacion.actores.errorIris = pedido.iris?.cara === "error";
     },
     agregarSistema(s) {

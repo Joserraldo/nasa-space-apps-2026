@@ -1,0 +1,34 @@
+import { expect, test } from "@playwright/test";
+import { arrancarEnCalidadBaja } from "./calidad";
+import { llegarYExplorar } from "./entrada";
+test.beforeEach(async ({ page }) => arrancarEnCalidadBaja(page));
+test("crew muestra a Iris dañada antes de la revelación?", async ({ page }) => {
+  test.setTimeout(180_000);
+  await page.clock.install();
+  await page.goto("/");
+  await page.getByRole("button",{name:"Play as guest",exact:true}).click();
+  await page.getByRole("button", { name: "Start mission" }).click();
+  await page.getByRole("button", { name: "Skip intro" }).click();
+  await page.getByRole("button", { name: "Skip", exact: true }).click();
+  await page.getByRole("button", { name: "Continue" }).click();
+  await page.getByRole("button", { name: "Land here" }).first().click();
+  await expect(page.getByRole("heading", { name: "Arriving at Jezero" })).toBeVisible();
+  await page.getByRole("button", { name: "Skip", exact: true }).click();
+  await page.getByRole("button", { name: "Explore the base" }).click();
+  const preguntar = page.getByRole("button", { name: "Ask the Engineer" });
+  const tarjeta = page.locator('[role="dialog"].tc');
+  for (let i = 0; i < 2; i++) { await preguntar.click(); await tarjeta.locator("ul button:not([disabled])").first().click(); await page.getByRole("button", { name: "Place", exact: true }).click(); }
+  await page.getByRole("button", { name: "Base ready. Start the clock!" }).click();
+  const tick0 = await page.locator(".hud-dia").innerText();
+  await page.getByRole("button", { name: "Pause", exact: true }).click();
+  await page.getByRole("button", { name: "Map", exact: true }).click();
+  await page.getByRole("list", { name: "Places" }).getByRole("button", { name: /Radiation sensor/ }).click();
+  await page.getByRole("button", { name: "Ask the Solar Meteorologist" }).click({ timeout: 90_000 });
+  await page.keyboard.press("Escape");
+  const crew = page.getByRole("button", { name: "Crew", exact: true });
+  await expect(crew).toBeVisible();
+  await crew.click();
+  const visible = await page.getByText("Iris is damaged by radiation").count();
+  console.log("RESULTADO tick-al-pausar=", tick0, " 'Iris is damaged' visible en Crew =", visible, " Estado mostrado:", await page.locator(".base-iris").innerText());
+  await page.screenshot({ path: ".rev0/crew-iris.png" });
+});

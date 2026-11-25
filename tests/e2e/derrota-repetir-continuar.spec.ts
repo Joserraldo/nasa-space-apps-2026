@@ -35,12 +35,13 @@ async function llegarALaBase(page: Page) {
 }
 
 /**
- * E3, HUD progresivo: Crew llega con la primera conversación. Con el reloj en pausa (CI no tiene GPU y
- * la caminata es lenta), el niño va al sensor y habla con la Meteoróloga.
+ * E3, HUD progresivo: Crew llega con la primera conversación, que ahora es el aviso de tormenta de los
+ * módulos (Jezero v2). Con el reloj en pausa (CI no tiene GPU y la caminata es lenta), el niño va al
+ * sensor y habla con la Meteoróloga.
  */
 async function primeraConversacion(page: Page) {
   const crew = page.getByRole("button", { name: "Crew", exact: true });
-  await expect(crew).toHaveCount(0);
+  await expect(crew).toBeVisible();
   await page.getByRole("button", { name: "Pause", exact: true }).click();
   await page.getByRole("button", { name: "Map", exact: true }).click();
   await page.getByRole("list", { name: "Places" }).getByRole("button", { name: /Radiation sensor/ }).click();

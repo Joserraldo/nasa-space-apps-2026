@@ -27,6 +27,8 @@ import { cargarAjustes, guardarAjustes, type CalidadGrafica, type CamaraJugador 
 import { Menu } from "./componentes/Menu.js";
 import { almacenDelNavegador } from "./juego/guardado.js";
 import { inicial, reducir } from "./juego/reductor.js";
+import { useDosimetro } from "./juego/dosis.js";
+import { plazoTelemetria } from "./juego/plazo.js";
 import { tocar } from "./juego/sonido.js";
 
 /** Módulos que tienen pregunta de Iris nivel 2 al colocarlos. */
@@ -155,6 +157,8 @@ function Pantalla({ sesion, onSalir, idioma, setIdioma, sonido, setSonido, grafi
   const continuar = () => { if (guardada) { tocar("confirmar", sonido); setProgreso({ conversado: true, objetivo: true }); enviar({ tipo: "restaurar", juego: guardada }); } };
 
   const reloj = enBase ? { velocidad, onPausa: () => enviar({ tipo: "pausa", pausado: !j.estado.pausado }), onVelocidad: setVelocidad } : undefined;
+  const dosimetro = useDosimetro(j.estado, MISION_JEZERO);
+  const plazo = plazoTelemetria(j.estado, MISION_JEZERO);
   const objetivo = j.fase === "modulos" ? { labelKey: "ui.comun.hud.objetivo.modulos", vars: { n: MISION_JEZERO.modulosAColocar } }
     : { labelKey: j.fase === "tormenta" ? "ui.comun.hud.objetivo.tormenta" : "ui.comun.hud.objetivo.base" };
 
@@ -167,7 +171,7 @@ function Pantalla({ sesion, onSalir, idioma, setIdioma, sonido, setSonido, grafi
         <FacetButton labelKey={sesion.usuario?'ui.cuenta.salir':'ui.cuenta.volver'} busy={saliendo} onClick={()=>void salir()} />
       </aside>
       {/* En la base el HUD lo pone la pantalla, que es dueña de la fila de abajo (Crew, Map, [E], [V]). */}
-      {((j.fase === "modulos" && !llegando) || j.fase === "tormenta") && <HudBase estado={j.estado} ultimas={null} objetivo={objetivo} onMenu={abrirMenu} />}
+      {((j.fase === "modulos" && !llegando) || j.fase === "tormenta") && <HudBase estado={j.estado} ultimas={null} objetivo={objetivo} onMenu={abrirMenu} dosimetro={dosimetro} plazo={plazo} />}
 
       <main>
         {enMundo ? (
@@ -178,7 +182,8 @@ function Pantalla({ sesion, onSalir, idioma, setIdioma, sonido, setSonido, grafi
               {j.fase === "modulos" && (
                 <>
                   <PantallaModulos estado={j.estado} colocados={j.colocados} onColocar={(m) => { tocar("confirmar", sonido); enviar({ tipo: "modulo", modulo: m }); }} onListo={() => enviar({ tipo: "fase", fase: "base" })}
-                    bienvenida={entrada === "listo" ? { onExplorar: () => setEntrada(null) } : undefined} />
+                    bienvenida={entrada === "listo" ? { onExplorar: () => setEntrada(null) } : undefined}
+                    onAviso={() => avanzarHud({ conversado: true })} />
                   {TEMAS_IRIS.find((m) => m === j.colocados.at(-1)) && <PreguntaDeIris key={j.colocados.length} tema={j.colocados.at(-1) as TemaPregunta} nivel={j.estado.iaBase} />}
                 </>
               )}
@@ -188,7 +193,7 @@ function Pantalla({ sesion, onSalir, idioma, setIdioma, sonido, setSonido, grafi
                   onConverso={() => avanzarHud({ conversado: true })} />
               )}
               {enBase && (
-                <PantallaBase estado={j.estado} colocados={j.colocados} ultimas={j.ultimas} hud={{ reloj, onMenu: abrirMenu }} progreso={progreso} onProgreso={avanzarHud} memoria={memoria} onMemoria={setMemoria}
+                <PantallaBase estado={j.estado} colocados={j.colocados} ultimas={j.ultimas} hud={{ reloj, onMenu: abrirMenu, dosimetro, plazo }} progreso={progreso} onProgreso={avanzarHud} memoria={memoria} onMemoria={setMemoria}
                   vistos={vistos} onVisto={(id) => setVistos((v) => (v.includes(id) ? v : [...v, id]))}
                   onAccion={accion} onReanudar={() => enviar({ tipo: "pausa", pausado: false })} />
               )}

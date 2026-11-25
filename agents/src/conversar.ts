@@ -3,7 +3,7 @@ import { clasificarConAtajos } from "./atajos.js";
 import type { Dialogo, ReferenciaDosis } from "./dialogo.js";
 import { vistaVisible } from "./director.js";
 import { responder } from "./expertos.js";
-import { irisDanada } from "./iris.js";
+import { averiaDeSitio, irisDanada, lecturaFalsa, verificarIris } from "./iris.js";
 
 /**
  * Una sola entrada para el panel de tripulación de ui (#59): botón de experto o texto libre
@@ -50,6 +50,7 @@ function sinAveriaVisible(v: ReturnType<typeof vistaVisible>): ReturnType<typeof
 export function conversar(entrada: Entrada, estado: GameState, o: OpcionesConversar): Dialogo {
   const visible = vistaVisible(estado, o.tormentaActiva);
   const v = visible.iaBase === "danada" && o.averiaRevelada === false ? sinAveriaVisible(visible) : visible;
+  const averia = averiaDeSitio(estado.sitio);
   // Texto que nadie entiende → aclaración con botones (confianza 0), nunca un silencio.
   const salida =
     "clasificacion" in entrada
@@ -57,9 +58,25 @@ export function conversar(entrada: Entrada, estado: GameState, o: OpcionesConver
       : "texto" in entrada
       ? clasificarConAtajos(entrada.texto) ?? { version: "0", experto: "ia_base", accion: "fuera_de_tema", parametros: {}, confianza: 0, fuente: "regex" }
       : preguntaDelBoton(entrada.experto);
+  // El experto que repara a Iris la verifica contra el medidor real antes de responder.
+  if (
+    v.iaBase === "danada" &&
+    o.averiaRevelada === true &&
+    salida.experto === averia.reparaCon &&
+    salida.confianza >= CONFIDENCE_THRESHOLD &&
+    salida.accion !== "repartir_energia" &&
+    salida.accion !== "reparar"
+  ) {
+    const recurso = averia.recursoMalLeido;
+    const valorReal = Math.round(v.recursos[recurso]);
+    return verificarIris({ forma: "numero_falso", recurso, valorReal, valorDicho: lecturaFalsa(valorReal, averia.errorLectura) }, v, averia);
+  }
   // A Iris dañada no se le puede creer: cualquier cosa que se le pida a ella sale con su falla.
   if (salida.experto === "ia_base" && v.iaBase === "danada" && salida.confianza >= CONFIDENCE_THRESHOLD && salida.accion !== "saludo" && salida.accion !== "fuera_de_tema") {
-    return irisDanada(v, o.vecesFallaIris ?? 0);
+    return irisDanada(v, o.vecesFallaIris ?? 0, averia);
   }
-  return responder(salida, v, o.dosisMarte ? { dosisMarte: o.dosisMarte } : {});
+  // P0.4: antes de activarse, la tormenta ya está en el estado y la Meteoróloga la anuncia.
+  const pronostico = !o.tormentaActiva && estado.tormenta !== null ? estado.tormenta : undefined;
+  const contexto = { ...(o.dosisMarte ? { dosisMarte: o.dosisMarte } : {}), ...(pronostico ? { pronostico } : {}) };
+  return responder(salida, v, contexto);
 }

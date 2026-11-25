@@ -6,6 +6,7 @@ import { costoDe, puedeAplicar, tormentaActiva } from "@solar-shield/engine";
 import { MISION_JEZERO } from "@solar-shield/missions";
 import { useT } from "../i18n.js";
 import { describirAccion } from "../componentes/Dialogos.js";
+import { DosisEstimada } from "../componentes/DosisEstimada.js";
 import { TarjetaFuente } from "../componentes/TarjetaFuente.js";
 import { ExpertPortrait } from "../componentes/base/ExpertPortrait.js";
 import { FacetButton } from "../componentes/base/FacetButton.js";
@@ -48,10 +49,11 @@ export function PantallaTormenta({ estado, colocados, registro, onSeguir, onDeci
   /** Hablar con una experta cuenta como la primera conversación del HUD progresivo (E3). */
   onConverso?: () => void }) {
   const { t } = useT();
-  const [dialogo, setDialogo] = useState<Dialogo | null>(null);
+  // Revelación (Jezero v2): al llegar la tormenta Iris falla a la vista, con un número que no coincide con el medidor del HUD.
+  const [dialogo, setDialogo] = useState<Dialogo | null>(() => revelacionDeIris(estado));
   const [elegido, setElegido] = useState<string | null>(null);
   const [texto, setTexto] = useState("");
-  const [fallasIris, setFallasIris] = useState(0);
+  const [fallasIris, setFallasIris] = useState(() => (revelacionDeIris(estado) ? 1 : 0));
   const [plan, setPlan] = useState<{ experta: Experto; opcionId: string } | null>(null);
   const [conservada, setConservada] = useState<string | undefined>(undefined);
   const [verificando, setVerificando] = useState(false);
@@ -62,11 +64,12 @@ export function PantallaTormenta({ estado, colocados, registro, onSeguir, onDeci
   // Cada panel (elegir, comparar, verificar, decisión) empieza arriba: el título no queda tapado.
   const cara = useRef<HTMLDivElement>(null);
   const vistaPanel = registro ? "decision" : plan ? (verificando ? "verificar" : "comparar") : "elegir";
-  useEffect(() => { cara.current?.scrollTo?.({ top: 0 }); }, [vistaPanel]);
+  // También al cambiar la respuesta: va arriba y no debe quedar fuera de pantalla.
+  useEffect(() => { cara.current?.scrollTo?.({ top: 0 }); }, [vistaPanel, dialogo]);
   useAltoHoja(cara, true);
 
   function hablar(entrada: Entrada) {
-    const d = conversar(entrada, estado, { tormentaActiva: tormentaActiva(estado), dosisMarte: referenciaDosis("marte-superficie"), vecesFallaIris: fallasIris });
+    const d = conversar(entrada, estado, { tormentaActiva: tormentaActiva(estado), dosisMarte: referenciaDosis("marte-superficie"), vecesFallaIris: fallasIris, averiaRevelada: true });
     if ("falla" in d) setFallasIris((n) => n + 1);
     setDialogo(d);
     onConverso?.();
@@ -97,31 +100,12 @@ export function PantallaTormenta({ estado, colocados, registro, onSeguir, onDeci
             onVerificar={() => setVerificando(true)} onOtra={() => { setConservada(plan.opcionId); setElegido(null); setPlan(null); }} onAtras={() => { setConservada(undefined); setElegido(null); setPlan(null); }} onDecidir={onDecidir} /> : <>
           <p className="tormenta-guia">{t("ui.tormenta.guia")}</p>
 
-          <ul className="tormenta-expertos">
-            {EXPERTOS.map((p) => (
-              <li key={p}>
-                <ExpertPortrait persona={p} seleccionado={elegido === p}
-                  onElegir={() => { setElegido(p); hablar({ experto: p }); comparar(p); }} />
-              </li>
-            ))}
-          </ul>
-
-          <form className="tormenta-preguntar" onSubmit={enviar}>
-            <label className="oculto-visual" htmlFor="tormenta-campo">{t("ui.base.tripulacion.campo")}</label>
-            <input id="tormenta-campo" type="text" value={texto} onChange={(e) => setTexto(e.target.value)} placeholder={t("ui.base.tripulacion.campo")} />
-            <FacetButton type="submit" icon="avion_papel" labelKey="ui.tripulacion.enviar" onClick={NADA} />
-          </form>
-
-          <ul className="tormenta-preguntas" aria-label={t("ui.base.charla.opciones")}>
-            <li><ChipPregunta icono="escudo" labelKey="ui.tormenta.pregunta.proteger" onClick={() => { setElegido(null); hablar({ texto: t("ui.tormenta.pregunta.proteger") }); }} /></li>
-            <li><ChipPregunta icono="sol" labelKey="ui.tormenta.pregunta.sensor" onClick={() => { setElegido(null); hablar({ texto: t("ui.tormenta.pregunta.sensor") }); }} /></li>
-          </ul>
-
+          {/* La respuesta va arriba: el panel hace scroll y debajo de los chips quedaría fuera de pantalla. */}
           {dialogo && (
             <div className="fc">
               <div className="fc-cara tormenta-respuesta" role="status" aria-live="polite">
                 <h3>{t(`agentes.titulo.${dialogo.experto}`)}</h3>
-                {dialogo.experto === "ia_base" && <p className="tormenta-respuesta-aviso">{t("ui.tormenta.irisAviso")}</p>}
+                {"falla" in dialogo && <p className="tormenta-respuesta-aviso">{t("ui.tormenta.irisAviso")}</p>}
                 {dialogo.lineas.map((l, i) => <p key={i}>{t(l.clave, l.vars)}</p>)}
                 {dialogo.fuente && <TarjetaFuente fuente={dialogo.fuente} />}
                 <div className="tormenta-respuesta-acciones">
@@ -140,11 +124,40 @@ export function PantallaTormenta({ estado, colocados, registro, onSeguir, onDeci
               </div>
             </div>
           )}
+
+          <ul className="tormenta-expertos">
+            {EXPERTOS.map((p) => (
+              <li key={p}>
+                <ExpertPortrait persona={p} seleccionado={elegido === p}
+                  onElegir={() => { setElegido(p); hablar({ experto: p }); comparar(p); }} />
+              </li>
+            ))}
+          </ul>
+
+          <form className="tormenta-preguntar" onSubmit={enviar}>
+            <label className="oculto-visual" htmlFor="tormenta-campo">{t("ui.base.tripulacion.campo")}</label>
+            <input id="tormenta-campo" type="text" value={texto} onChange={(e) => setTexto(e.target.value)} placeholder={t("ui.base.tripulacion.campo")} />
+            <FacetButton type="submit" icon="avion_papel" labelKey="ui.tripulacion.enviar" onClick={NADA} />
+          </form>
+
+          <ul className="tormenta-preguntas" aria-label={t("ui.base.charla.opciones")}>
+            <li><ChipPregunta icono="escudo" labelKey="ui.tormenta.pregunta.proteger" onClick={() => { setElegido(null); hablar({ texto: t("ui.tormenta.pregunta.proteger") }); }} /></li>
+            <li><ChipPregunta icono="sol" labelKey="ui.tormenta.pregunta.sensor" onClick={() => { setElegido(null); hablar({ texto: t("ui.tormenta.pregunta.sensor") }); }} /></li>
+            {estado.iaBase === "danada" && <li><ChipPregunta icono="llave" labelKey="ui.tormenta.pregunta.iris" onClick={() => { setElegido(null); hablar({ experto: "ingeniera" }); }} /></li>}
+          </ul>
+
           </>}
         </div>
       </div>
     </section>
   );
+}
+
+/** Lo que dice Iris al llegar la tormenta si está dañada (su primera falla: un número que no coincide con el medidor). */
+function revelacionDeIris(estado: GameState): Dialogo | null {
+  if (estado.iaBase !== "danada") return null;
+  const d = conversar({ experto: "ia_base" }, estado, { tormentaActiva: tormentaActiva(estado), dosisMarte: referenciaDosis("marte-superficie"), vecesFallaIris: 0, averiaRevelada: true });
+  return "falla" in d ? d : null;
 }
 
 /** Suma los números del motor: el costo de la acción y, si hay invernadero, la comida que `elegirDilema` le quita. */
@@ -174,6 +187,7 @@ function PlanComparado({ estado, colocados, plan, dialogo, onOtra, onVerificar, 
       <div className="tormenta-plan-accion">
         <span className="fc"><span className="fc-cara fc-chico tormenta-pieza"><span>{o.accion.tipo === "redistribuir_energia" ? t("ui.accion.redistribuir") : describirAccion(o.accion, t)}</span></span></span>
         <CostRow inmediato={inmediato} retrasado={retrasado} />
+        <DosisEstimada estado={estado} accion={o.accion} mision={MISION_JEZERO} />
         <div className="tormenta-plan-botones">
           <FacetButton variant="primary" icon="check" labelKey="ui.comun.confirmar" disabled={!permiso.ok || !onDecidir}
             disabledReasonKey={permiso.ok ? undefined : `ui.comun.motivo.${permiso.motivo}${permiso.recurso ? `.${permiso.recurso}` : ""}`}

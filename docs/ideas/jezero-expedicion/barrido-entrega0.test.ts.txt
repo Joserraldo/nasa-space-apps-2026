@@ -1,0 +1,35 @@
+import { it } from "vitest";
+import { writeFileSync } from "node:fs";
+import type { Equipment, GameState } from "@solar-shield/contracts";
+import { MISION_JEZERO as m } from "@solar-shield/missions";
+import { aplicarAccion, aterrizar, avanzarTick } from "./acciones.js";
+import { elegirDilema } from "./dilema.js";
+import { partidaDorada, paso } from "./dorada.js";
+import { dosisMaximaTripulacion } from "./radiacion.js";
+const pares: [Equipment, Equipment][] = [];
+const mods = m.modulosDisponibles;
+for (let i = 0; i < mods.length; i++) for (let j = i + 1; j < mods.length; j++) pares.push([mods[i]!, mods[j]!]);
+const ops = ["refugio_y_apagar_invernadero", "subir_escudo", "aguantar", "nada"];
+function causa(s: GameState): string {
+  if (s.resultado === "exito") return "-";
+  const r = (["energia","soporte_vital","blindaje"] as const).find(k => s.recursos[k] <= 0);
+  if (r) return "recurso_" + r;
+  if (s.causas.some(c => c.descripcionKey === "causa.limite_radiacion")) return "dosis";
+  return "plazo";
+}
+it("barrido", () => {
+  const rows = ["sitio,par,opcion,telTick,resultado,tick,E,V,B,dosis,causa"];
+  for (const sitio of m.sitiosCandidatos.map(x => x.id)) for (const par of pares) for (const op of ops) for (const tt of [3,4,5,6]) {
+    let s = aterrizar(partidaDorada(), sitio, m);
+    for (const mo of par) s = paso(s, { tipo: "colocar_modulo", modulo: mo }, m);
+    while (s.tick < m.tickTormenta && s.resultado === "en_curso") s = avanzarTick(s, m);
+    if (op !== "nada" && s.resultado === "en_curso") s = elegirDilema(s, op, m);
+    let enviado = false;
+    while (s.resultado === "en_curso" && s.tick < m.fin.tickLimite) {
+      if (!enviado && s.tick >= tt) { s = aplicarAccion(s, { tipo: "enviar_telemetria" }, m); enviado = true; }
+      s = avanzarTick(s, m);
+    }
+    rows.push([sitio, par.join("+"), op, tt, s.resultado, s.tick, Math.round(s.recursos.energia), Math.round(s.recursos.soporte_vital), Math.round(s.recursos.blindaje), dosisMaximaTripulacion(s).toFixed(2), causa(s)].join(","));
+  }
+  writeFileSync(".rev0/barrido.csv", rows.join("\n"));
+});

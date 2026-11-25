@@ -27,6 +27,15 @@ async function avanzarHasta(page: Page, listo: () => Promise<boolean>, maxTurnos
   throw new Error(`No se cumplió la condición en ${maxTurnos} turnos`);
 }
 
+/** Pasa el aviso de tormenta (Meteoróloga, Doctora, Ingeniera) antes de elegir módulos, con "Continue". */
+async function pasarAviso(page: Page) {
+  const continuar = page.locator(".dialogo-experto").getByRole("button", { name: "Continue", exact: true });
+  for (let i = 0; i < 4 && (await continuar.isVisible()); i++) {
+    await continuar.click();
+    await page.waitForTimeout(100);
+  }
+}
+
 test("ruta dorada: de la órbita al resumen, en inglés", async ({ page }) => {
   // Recorre la misión entera con la escena 3D: en CI (sin GPU, dos trabajadores) tarda cerca de 90 s, el
   // límite general, y se pasaba según la carga de la otra prueba. Mismo margen que "seguir a Iris". Las
@@ -91,6 +100,7 @@ test("ruta dorada: de la órbita al resumen, en inglés", async ({ page }) => {
   await expect(page.getByText("Jump: Space")).toHaveCount(0);
   await page.getByRole("button", { name: "Explore the base" }).click();
   await expect(page.getByRole("heading", { name: "Your crew is ready" })).toHaveCount(0);
+  await pasarAviso(page);
 
   // Paso 4: colocar 2 módulos, cada uno con costo ahora y beneficio después.
   await expect(page.getByRole("heading", { name: "Place 2 modules" })).toBeVisible();
@@ -130,9 +140,9 @@ test("ruta dorada: de la órbita al resumen, en inglés", async ({ page }) => {
   const crew = page.getByRole("button", { name: "Crew", exact: true });
   // A2 + #344: la guía de Iris llega a la escena; su globo sobre el rover dice adónde ir (el taller).
   await expect(page.locator('.globo-escena[data-actor="iris"]')).toContainText("workshop");
-  // E3, HUD progresivo: al entrar a la base no se ve Crew (llega con la primera conversación); Map y
-  // Pause sí, porque ya hay un objetivo.
-  await expect(crew).toHaveCount(0);
+  // E3, HUD progresivo: Crew llega con la primera conversación, que ahora es el aviso de tormenta de los
+  // módulos (Jezero v2, antes de elegir módulos); Map y Pause sí, porque ya hay un objetivo.
+  await expect(crew).toBeVisible();
   await expect(page.getByRole("button", { name: "Map", exact: true })).toBeVisible();
 
   // Acercarse a un lugar nunca cobra: [E] abre el plan del lugar y "Back" no cambia nada.
@@ -149,8 +159,8 @@ test("ruta dorada: de la órbita al resumen, en inglés", async ({ page }) => {
   await page.getByRole("dialog").getByRole("button", { name: "Back", exact: true }).click();
   await expect(page.getByRole("dialog")).toHaveCount(0);
   expect(await page.getByRole("meter", { name: "Energy" }).getAttribute("aria-valuenow")).toBe(energiaAntes);
-  // Primera conversación en el mundo: caminar al sensor y hablar con la Meteoróloga trae Crew al HUD (E3).
-  await expect(crew).toHaveCount(0);
+  // Conversación en el mundo: caminar al sensor y hablar con la Meteoróloga (Crew ya está desde el aviso).
+  await expect(crew).toBeVisible();
   await page.getByRole("button", { name: "Map", exact: true }).click();
   await page.getByRole("list", { name: "Places" }).getByRole("button", { name: /Radiation sensor/ }).click();
   await page.getByRole("button", { name: "Ask the Solar Meteorologist" }).click({ timeout: 60_000 });
@@ -180,6 +190,14 @@ test("ruta dorada: de la órbita al resumen, en inglés", async ({ page }) => {
   await avanzarHasta(page, () => tormenta.isVisible());
   await expect(tormenta).toBeVisible();
   await expect(page.getByText("Paused", { exact: true })).toBeVisible();
+  // Jezero v2: el plazo es visible (el turno con su límite) y, sin telemetría enviada, el HUD pide enviarla.
+  await expect(page.getByText(/Turn \d+ of 10/)).toBeVisible();
+  await expect(page.getByText(/Send now: Earth's answer arrives at turn \d+ of 10/)).toBeVisible();
+  // Jezero v2: el dosímetro aparece al llegar la tormenta, sin hablar con la Doctora, con el límite de entrenamiento y la tasa.
+  const dosimetro = page.getByRole("status").filter({ hasText: /Radiation \d/ });
+  await expect(dosimetro).toContainText(/training limit 4/);
+  await expect(dosimetro).toContainText(/\+\d(\.\d)? this turn/);
+  await expect(page.getByText(/budget/i)).toHaveCount(0);
   // La tormenta se ve sobre el mismo mundo y sin repetir los medidores en su panel.
   await expect(canvasE5).toHaveCount(1);
   await expect(page.getByRole("meter", { name: "Energy" })).toHaveCount(1);
@@ -188,6 +206,9 @@ test("ruta dorada: de la órbita al resumen, en inglés", async ({ page }) => {
   await page.getByRole("button", { name: /Engineer/ }).click();
   await expect(page.getByRole("heading", { name: "Compare your plan" })).toBeVisible();
   await expect(page.getByText("Costs now").first()).toBeVisible();
+  // Jezero v2: la dosis proyectada de la opción, rotulada como estimación, y cuánto ahorra frente a esperar.
+  await expect(page.getByText(/Estimate for the next 2 turns: radiation \d/)).toBeVisible();
+  await expect(page.getByText(/less radiation than waiting/)).toBeVisible();
 
   // "Check the source": la Doctora (refugio) y la Ingeniera (escudo nivel 2) se contradicen y la fuente NASA es real, no en vivo.
   await page.getByRole("button", { name: "Check the source" }).click();
@@ -261,10 +282,10 @@ test("ruta dorada: de la órbita al resumen, en inglés", async ({ page }) => {
  * talk to Earth?"): textos de `agents/i18n/en.json`.
  */
 const DESTINOS: { pide: RegExp; lugar: RegExp; aviso: RegExp }[] = [
-  { pide: /fix me|Who fixes machines|check with the Engineer/, lugar: /^Workshop/, aviso: /Repair Iris/ },
+  { pide: /fix me|Who fixes machines|check with the Engineer/, lugar: /^Workshop/, aviso: /Engineer|workshop/i },
   { pide: /send our news back home|How do we talk to Earth/, lugar: /^Mission control/, aviso: /Send telemetry from the console/ },
   { pide: /protect the crew|shield is weak|shield looks thin|Life support is low|safe place|air and water/, lugar: /^Habitat/, aviso: /shelter/ },
-  { pide: /Energy is low|how much energy|smells like energy|eats energy/, lugar: /^Workshop/, aviso: /Engineer|Repair Iris/ },
+  { pide: /Energy is low|how much energy|smells like energy|eats energy/, lugar: /^Workshop/, aviso: /Engineer|workshop/i },
   { pide: /what the Sun is doing|who reads the sky/, lugar: /^Radiation sensor/, aviso: /Meteorologist/ },
 ];
 /** El globo del final: Iris pide verse en la consola para repasar la misión. */
@@ -333,7 +354,7 @@ test("seguir a Iris del paso 4 al 8 sin abrir Crew, con el mapa y la tecla E", a
   // Paso 4: Iris pide ir al taller a preguntarle a la Ingeniera.
   const globoIris = page.locator('.globo-escena[data-actor="iris"]');
   await expect(globoIris).toContainText("workshop");
-  await irYUsarConE(page, /^Workshop/, /Engineer|Repair Iris/);
+  await irYUsarConE(page, /^Workshop/, /Engineer|workshop/i);
   await decidirOCerrar(page);
 
   // Pasos 5 y 6: llega la tormenta y se decide con la Ingeniera (panel de la tormenta, no Crew).

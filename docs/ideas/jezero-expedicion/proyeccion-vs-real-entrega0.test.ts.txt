@@ -1,0 +1,52 @@
+import { it } from "vitest";
+import { writeFileSync } from "node:fs";
+import type { Equipment, GameState } from "@solar-shield/contracts";
+import { MISION_JEZERO as m } from "@solar-shield/missions";
+import { RETRASO_POR_DIFICULTAD } from "@solar-shield/design";
+import { aplicarAccion, aterrizar, avanzarTick, costoDe, puedeAplicar, queEsSi } from "./acciones.js";
+import { elegirDilema } from "./dilema.js";
+import { partidaDeMision, paso } from "./dorada.js";
+import { dosisMaximaTripulacion, dosisDelTurno, factorEscudo, enRefugio } from "./radiacion.js";
+const pares: [Equipment, Equipment][] = [["panel_solar","escudo"],["reciclador_agua","invernadero"],["panel_solar","invernadero"],["escudo","antena"]];
+const alTick3 = (sitio: string, par: [Equipment, Equipment], semilla: string): GameState => {
+  let s = aterrizar(partidaDeMision(m, semilla), sitio, m);
+  for (const mo of par) s = paso(s, { tipo: "colocar_modulo", modulo: mo }, m);
+  while (s.tick < m.tickTormenta && s.resultado === "en_curso") s = avanzarTick(s, m);
+  return s;
+};
+const r1 = (x: number) => Math.round(x * 100) / 100;
+it("C: queEsSi vs real", () => {
+  const H = RETRASO_POR_DIFICULTAD[m.dificultad].max;
+  const rows = ["semilla,sitio,par,opcion,dosisProy,dosisReal,Eproy,Ereal,Vproy,Vreal,Bproy,Breal,difV"];
+  let n = 0, difDosis = 0, difE = 0, difV = 0, difB = 0;
+  for (const semilla of ["jezero-2024-05-20", "s1", "s2", "s3", "s4", "s5"]) for (const sitio of m.sitiosCandidatos.map(x=>x.id)) for (const par of pares) {
+    const s = alTick3(sitio, par, semilla);
+    if (s.resultado !== "en_curso") continue;
+    for (const o of m.dilemaPaso6.opciones) {
+      const proy = queEsSi(s, o.accion, m);
+      let real = elegirDilema(s, o.id, m); for (let i = 0; i < H; i++) real = avanzarTick(real, m);
+      const d = (a: number, b: number) => Math.abs(a - b) > 0.0005;
+      n++; if (d(dosisMaximaTripulacion(proy), dosisMaximaTripulacion(real))) difDosis++;
+      if (d(proy.recursos.energia, real.recursos.energia)) difE++;
+      if (d(proy.recursos.soporte_vital, real.recursos.soporte_vital)) difV++;
+      if (d(proy.recursos.blindaje, real.recursos.blindaje)) difB++;
+      rows.push([semilla,sitio,par.join("+"),o.id,dosisMaximaTripulacion(proy).toFixed(2),dosisMaximaTripulacion(real).toFixed(2),r1(proy.recursos.energia),r1(real.recursos.energia),r1(proy.recursos.soporte_vital),r1(real.recursos.soporte_vital),r1(proy.recursos.blindaje),r1(real.recursos.blindaje),r1(real.recursos.soporte_vital-proy.recursos.soporte_vital)].join(","));
+    }
+  }
+  writeFileSync(".rev0/proy-vs-real.csv", rows.join("\n"));
+  console.log(`RES-C horizonte=${H} comparaciones=${n} difieren: dosis=${difDosis} energia=${difE} soporte=${difV} blindaje=${difB}`);
+  // horizonte por dificultad
+  console.log("RES-C horizonte por dificultad:", JSON.stringify(Object.fromEntries(Object.entries(RETRASO_POR_DIFICULTAD).map(([k,v])=>[k,v.max]))));
+  // tasa: dosisDelTurno(estado con tick+1) vs incremento real
+  const s = alTick3("cerca-de-perseverance", ["panel_solar","escudo"], "jezero-2024-05-20");
+  for (const [nom, base] of [["sin accion", s], ["tras refugio", aplicarAccion(s, {tipo:"refugiarse"}, m)], ["tras escudo2", aplicarAccion(s, {tipo:"subir_escudo",nivel:2}, m)]] as const) {
+    let x = base; const inc: number[] = [], tasaPrev: number[] = [], protec: string[] = [];
+    for (let i = 0; i < 4; i++) { const a = dosisMaximaTripulacion(x); const nxt = avanzarTick(x, m); inc.push(r1(dosisMaximaTripulacion(nxt) - a)); tasaPrev.push(r1(dosisDelTurno({ ...x, tick: x.tick + 1 }, m))); protec.push(`ref=${enRefugio({causas:x.causas,tick:x.tick+1})} esc=${r1(factorEscudo({causas:x.causas,tick:x.tick+1}))}`); x = nxt; }
+    console.log(`RES-C tasa ${nom}: incremento real por turno=${JSON.stringify(inc)} dosisDelTurno(tick+1) previa=${JSON.stringify(tasaPrev)} | ${protec.join(" ; ")}`);
+  }
+  // 4 magnitudes por opcion en el caso dorado
+  const base = s; const des = (o: { id: string; accion: any }) => { const p = queEsSi(base, o.accion, m); return { id: o.id, costoInmediato: JSON.stringify(costoDe(o.accion, m).inmediato), dosisProy: r1(dosisMaximaTripulacion(p)), E: r1(p.recursos.energia), B: r1(p.recursos.blindaje), V: r1(p.recursos.soporte_vital) }; };
+  const ag = des(m.dilemaPaso6.opciones.find(o=>o.id==="aguantar")!);
+  for (const o of m.dilemaPaso6.opciones) { const d = des(o); console.log(`RES-C opcion ${d.id}: costoInmediato=${d.costoInmediato} dosisProy2=${d.dosisProy} E2=${d.E} B2=${d.B} V2=${d.V} | vs aguantar: dosis ${r1(d.dosisProy-ag.dosisProy)}, energia ${r1(d.E-ag.E)}, blindaje ${r1(d.B-ag.B)}`); }
+  const e1 = queEsSi(base, {tipo:"subir_escudo",nivel:1}, m); console.log(`RES-C escudo nivel1: dosis=${r1(dosisMaximaTripulacion(e1))} E=${r1(e1.recursos.energia)} B=${r1(e1.recursos.blindaje)}`);
+});

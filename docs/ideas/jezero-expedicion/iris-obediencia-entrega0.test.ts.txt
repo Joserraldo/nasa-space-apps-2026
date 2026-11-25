@@ -1,0 +1,69 @@
+import { it } from "vitest";
+import type { Equipment, GameState } from "@solar-shield/contracts";
+import { MISION_JEZERO as m } from "@solar-shield/missions";
+import { aplicarAccion, aterrizar, avanzarTick, costoDe, puedeAplicar, queEsSi } from "./acciones.js";
+import { elegirDilema } from "./dilema.js";
+import { partidaDeMision, paso } from "./dorada.js";
+import { dosisMaximaTripulacion } from "./radiacion.js";
+import { irisDanada, formaFalla, averiaDeSitio, verificarIris } from "../../agents/src/iris.js";
+import { vistaVisible } from "../../agents/src/director.js";
+const alTick3 = (sitio: string, par: [Equipment, Equipment], semilla = "jezero-2024-05-20"): GameState => {
+  let s = aterrizar(partidaDeMision(m, semilla), sitio, m);
+  for (const mo of par) s = paso(s, { tipo: "colocar_modulo", modulo: mo }, m);
+  while (s.tick < m.tickTormenta && s.resultado === "en_curso") s = avanzarTick(s, m);
+  return s;
+};
+const r1 = (x: number) => Math.round(x * 100) / 100;
+const resumen = (s: GameState) => `t${s.tick} E${r1(s.recursos.energia)} V${r1(s.recursos.soporte_vital)} B${r1(s.recursos.blindaje)} ☢${dosisMaximaTripulacion(s).toFixed(2)} ${s.resultado} ia:${s.iaBase}`;
+function jugar(s0: GameState, acciones: Record<number, any[]>, hastaTick = m.fin.tickLimite): GameState {
+  let s = s0, env = false;
+  while (s.resultado === "en_curso" && s.tick < hastaTick) {
+    for (const a of acciones[s.tick] ?? []) s = a === "dilema:refugio" ? elegirDilema(s, "refugio_y_apagar_invernadero", m) : aplicarAccion(s, a, m);
+    if (!env && s.tick >= m.tickTormenta) { s = aplicarAccion(s, { tipo: "enviar_telemetria" }, m); env = true; }
+    s = avanzarTick(s, m);
+  }
+  return s;
+}
+it("D1: costoDe energia exacto + proyeccion por elegirDilema", () => {
+  let n = 0, okCosto = 0, okElegir = 0;
+  for (const semilla of ["jezero-2024-05-20","s1","s2","s3","s4","s5"]) for (const sitio of m.sitiosCandidatos.map(x=>x.id)) for (const par of [["panel_solar","escudo"],["reciclador_agua","invernadero"]] as [Equipment,Equipment][]) {
+    const s = alTick3(sitio, par, semilla); if (s.resultado !== "en_curso") continue;
+    for (const o of m.dilemaPaso6.opciones) { n++;
+      const after = elegirDilema(s, o.id, m); const c = costoDe(o.accion, m).inmediato;
+      if (Math.abs((after.recursos.energia - s.recursos.energia) - (c.energia ?? 0)) < 1e-9) okCosto++;
+      let real = after; real = avanzarTick(avanzarTick(real, m), m);
+      let proy = elegirDilema(s, o.id, m); proy = avanzarTick(avanzarTick(proy, m), m);
+      if (resumen(real) === resumen(proy)) okElegir++; }
+  }
+  console.log(`RES-D1 n=${n} costoDe.inmediato.energia = delta real: ${okCosto}/${n}; proyeccion via elegirDilema = real: ${okElegir}/${n}`);
+});
+it("D2: obedecer a Iris dañada", () => {
+  const sitio = "cerca-de-perseverance";
+  for (const par of [["panel_solar","escudo"],["reciclador_agua","invernadero"]] as [Equipment,Equipment][]) {
+    const s = alTick3(sitio, par); const v = vistaVisible(s, true); const averia = averiaDeSitio(s.sitio);
+    console.log(`RES-D2 ## ${par.join("+")} al llegar la tormenta: ${resumen(s)} | medidor blindaje=${r1(s.recursos.blindaje)} errorLectura=${averia.errorLectura}`);
+    const formas = new Set<string>();
+    for (let vez = 0; vez < 8; vez++) {
+      const f = formaFalla(s.rngEstado, vez); if (formas.has(f)) continue; formas.add(f);
+      const d = irisDanada({ ...v, rngEstado: s.rngEstado }, vez, averia);
+      const claves = d.lineas.map(l => l.clave).join(" | "); const vars = JSON.stringify(d.lineas.map(l=>l.vars).filter(Boolean));
+      const perm = d.accion ? puedeAplicar(s, d.accion, m) : null;
+      console.log(`RES-D2 forma=${f} (vez ${vez}) lineas=[${claves}] vars=${vars} accion=${JSON.stringify(d.accion ?? null)} puedeAplicar=${JSON.stringify(perm)}`);
+      if (d.accion && perm?.ok) { const a = aplicarAccion(s, d.accion, m); console.log(`RES-D2   tras obedecer: ${resumen(a)}`); }
+    }
+    const ver = verificarIris({ forma: "numero_falso", recurso: averia.recursoMalLeido, valorReal: Math.round(s.recursos.blindaje), valorDicho: Math.round(s.recursos.blindaje)+20 }, v as any, averia);
+    console.log(`RES-D2 verificarIris -> experto=${ver.experto} accion=${JSON.stringify(ver.accion)} lineas=${ver.lineas.map(l=>l.clave).join(" | ")}`);
+    // obedecer lo que la lectura falsa sugiere: no actuar (creer que el escudo está bien)
+    console.log(`RES-D2 CREER la lectura falsa (no actuar, solo telemetría): ${resumen(jugar(s, {}))}`);
+    console.log(`RES-D2 CREER y luego CORREGIR a tiempo (refugio en el mismo turno): ${resumen(jugar(s, {3:["dilema:refugio"]}))}`);
+    console.log(`RES-D2 CREER, y corregir tarde (refugio en tick 4): ${resumen(jugar(s, {4:[{tipo:"refugiarse"}]}))}`);
+    console.log(`RES-D2 reparar a Iris (E-10 V-4) y refugio, mismo turno: ${resumen(jugar(s, {3:[{tipo:"reparar",equipo:"ia_base"},"dilema:refugio"]}))}`);
+    console.log(`RES-D2 solo reparar a Iris y esperar: ${resumen(jugar(s, {3:[{tipo:"reparar",equipo:"ia_base"}]}))}`);
+  }
+  // variante propuesta peligrosa con energía alta: ¿hay algún estado de tormenta donde sea ejecutable?
+  const acc = { tipo: "redistribuir_energia", hacia: "soporte_vital", cantidad: 50 } as const;
+  let max = -1, ejecutable = 0, total = 0;
+  for (const semilla of ["jezero-2024-05-20","s1","s2","s3"]) for (const sitio of m.sitiosCandidatos.map(x=>x.id)) for (const par of [["panel_solar","escudo"],["panel_solar","reciclador_agua"],["panel_solar","antena"],["reciclador_agua","escudo"]] as [Equipment,Equipment][]) {
+    const s = alTick3(sitio, par, semilla); if (s.resultado!=="en_curso") continue; total++; max = Math.max(max, s.recursos.energia); if (puedeAplicar(s, acc, m).ok) ejecutable++; }
+  console.log(`RES-D2 accion_peligrosa (redistribuir 50 energia→soporte) ejecutable al llegar la tormenta: ${ejecutable}/${total}; energia maxima observada=${r1(max)} (la accion necesita > 54)`);
+});

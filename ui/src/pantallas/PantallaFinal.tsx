@@ -48,6 +48,7 @@ export function PantallaFinal({ estado, onOtra, onOtraSemilla }: {
                 {t(exito ? "ui.final.exito" : "ui.final.fallo")}
               </h2>
               <p className="final-animo">{t(exito ? "ui.final.animo.exito" : "ui.final.animo.fallo")}</p>
+              {r.causaTerminal && <p className="final-motivo"><strong>{t("ui.final.motivo")}:</strong> {t(r.causaTerminal.descripcionKey)}</p>}
               <dl className="final-datos">
                 <div><dt>{t("ui.final.puntaje")}</dt><dd>{r.puntaje} <span className="final-rango">{t(r.rangoKey)}</span></dd></div>
                 <div><dt>{t("ui.final.dias")}</dt><dd>{r.dias}</dd></div>
