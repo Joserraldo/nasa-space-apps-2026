@@ -12,6 +12,8 @@ import "./molecules/hud-stepper.css";
 import "./molecules/hud-choice.css";
 import "./molecules/hud-hold-gate.css";
 import "./organisms/settings-menu.css";
+import "./organisms/phase1.css";
+import "./organisms/loading.css";
 
 import { registerAvatarAtoms } from "./atoms/avatar";
 import { registerButtonAtom } from "./atoms/button";
@@ -34,6 +36,9 @@ import { registerHudStepper } from "./molecules/hud-stepper";
 import { registerHudChoice } from "./molecules/hud-choice";
 import { registerHudHoldGate } from "./molecules/hud-hold-gate";
 import { registerSettingsMenu } from "./organisms/settings-menu";
+import { registerChapterCard } from "./organisms/chapter-card";
+import { registerLoading } from "./organisms/loading";
+import { registerMainMenu } from "./organisms/main-menu";
 import { UIRegistry } from "./registry";
 
 export function createUIRegistry(): UIRegistry {
@@ -59,6 +64,9 @@ export function createUIRegistry(): UIRegistry {
   registerHudChoice(registry);
   registerHudHoldGate(registry);
   registerSettingsMenu(registry);
+  registerChapterCard(registry);
+  registerLoading(registry);
+  registerMainMenu(registry);
   return registry;
 }
 
@@ -120,3 +128,6 @@ export * from "./molecules/hud-choice";
 export * from "./molecules/hud-hold-gate";
 export * from "./organisms/settings-menu";
 export * from "./state/settings";
+export * from "./organisms/chapter-card";
+export * from "./organisms/loading";
+export * from "./organisms/main-menu";

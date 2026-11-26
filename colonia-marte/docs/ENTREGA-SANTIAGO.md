@@ -149,3 +149,20 @@ Si Santiago necesita un cambio en un contrato o en el aspecto de un componente, 
 | B7 Contenedor propio en `src/game/` | Santiago | Sin cambios en la vista |
 
 **Verificado en esta versión:** build, tipos, **163/163 tests** y validate:pieces en salida 0. Las rutas de la tabla se abrieron en Chromium con ventana visible, sin errores de consola. Con el panel en primer plano, la escena exterior marca 96 fps en su propio contador.
+
+## 9. Actualización: fase 1 de UI y lote 1 del exterior
+
+| Qué | Ruta | Estado |
+|---|---|---|
+| **Menú principal**: Continue (si hay progreso), New game y Settings | `/menu` | Pasa todos los chequeos (73/73). Pendiente del visto bueno de María Paula |
+| **Pantalla de carga** con Iris y un dato de Marte con voz (`src/ui/content/mars-facts.ts`) | `/menu` al arrancar | Pinta en menos de 100 ms, CLS de 0.01 o menos |
+| **Tarjetas de capítulo** (inicio y completo, un ícono por objetivo, sin números en Easy) | `src/ui/organisms/chapter-card.ts`, textos en `src/ui/content/chapters.ts` | Ídem |
+| **Ajustes con la selección corregida** (la opción elegida va oscura con borde cian y check) | `/hud-preview?settings=play` | 158/158 en su script |
+| **MV-09 aprobada**: Orion acoplada al hábitat Deep Space Transport de NASA, con propulsores Hall azules | `/space` | Aprobada por María Paula. Es la toma 1 de la intro |
+| NX-02 balizas de pista y NX-04 entrada de esclusa en la fachada | `/exterior-pilot?view=3` y `?view=4` | Exterior: 114 draw calls, 133/162 fps |
+
+**En curso:** lote 2 del exterior (invernadero largo, calles, postes, domo, tanque, torre de mando, residencias), con OpenCode. Carbon con NW-12, NW-09 y NW-08. Cuando María Paula apruebe la fase 1, la sesión de UI sigue con **B1 (idioma)**, B5 (`update(state)`) y B4 (caminar).
+
+**Para B1:** pásame la lista de claves de texto que armes en `src/game/i18n.ts`, así los componentes usan las mismas claves.
+
+**Verificado en esta versión:** build, tipos, **176/176 tests** y validate:pieces. Las rutas `/menu`, `/hud-preview`, `/hud-preview?settings=play`, `/exterior-pilot?view=1` y `?view=4`, `/space` y `/room/nw-17` se abrieron en Chromium con ventana visible, sin errores de consola.

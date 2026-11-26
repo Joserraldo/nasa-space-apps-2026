@@ -5,11 +5,13 @@ import { chromium } from "playwright";
 
 const base = process.argv[2] ?? "http://127.0.0.1:5192";
 const out = process.argv[3] ?? "docs/capturas";
+const regressionOut = process.argv[4] ?? out;
 const settingsKey = "colonia.settings.v1";
 const pauseSelector = "dialog.ui-pause:not(.ui-settings)";
 const settingsSelector = "dialog.ui-settings";
 const tabs = [["sound", "Sound"], ["play", "Play"], ["grownups", "Grown-ups"]];
 await mkdir(out, { recursive: true });
+await mkdir(regressionOut, { recursive: true });
 const browser = await chromium.launch({
   headless: false, args: ["--use-angle=d3d11", "--ignore-gpu-blocklist"],
 });
@@ -111,14 +113,60 @@ async function unlock(page, settings, key) {
   }
 }
 
-async function shot(page, name) {
+async function shot(page, name, directory = out) {
   await settle(page);
-  await page.screenshot({ path: join(out, `${name}.png`) });
+  await page.screenshot({ path: join(directory, `${name}.png`) });
+}
+
+async function checkSelection(page, label, selector, attribute) {
+  await settle(page);
+  const states = await page.locator(selector).evaluateAll((nodes, attr) => {
+    const luminance = color => {
+      const channels = color.match(/[\d.]+/g)?.slice(0, 3).map(Number) ?? [];
+      return channels.reduce((sum, value, index) => {
+        const s = value / 255;
+        return sum + [0.2126, 0.7152, 0.0722][index] * (s <= 0.04045 ? s / 12.92 : ((s + 0.055) / 1.055) ** 2.4);
+      }, 0);
+    };
+    return nodes.map(el => ({
+      selected: el.getAttribute(attr) === "true",
+      fill: luminance(getComputedStyle(el, "::after").backgroundColor),
+      check: Boolean(el.querySelector(".ui-settings__check:not([hidden])")),
+    }));
+  }, attribute);
+  const chosen = states.filter(state => state.selected);
+  const other = states.filter(state => !state.selected);
+  check(`${label}: selected fill has lower luminance`, chosen.length === 1 && other.length > 0 &&
+    other.every(state => chosen[0].fill < state.fill));
+  check(`${label}: check glyph is only visible on selection`, states.every(state => state.check === state.selected));
+}
+
+async function captureGate(page, settings, name) {
+  const gate = settings.getByRole("button", { name: "Hold for 3 seconds" });
+  const meter = settings.getByRole("progressbar");
+  await shot(page, `${name}-locked`);
+  await gate.focus();
+  const sample = async () => Number(await meter.getAttribute("aria-valuenow"));
+  await page.keyboard.down("Space");
+  try {
+    await page.waitForFunction(() => {
+      const progress = Number(document.querySelector(".ui-settings[open] [role=progressbar]")?.getAttribute("aria-valuenow"));
+      return progress >= 40 && progress <= 60;
+    }, null, { timeout: 3000 });
+    const before = await sample();
+    await page.screenshot({ path: join(out, `${name}.png`) });
+    const after = await sample();
+    check(`${name}: mid-hold capture still locked`, await gate.isVisible() && before >= 40 && after <= 60,
+      `${before}–${after}%`);
+  } finally {
+    await page.keyboard.up("Space");
+  }
 }
 
 try {
   for (const [size, width, height, target] of [["desktop", 1280, 720, 64], ["mobile", 812, 375, 48]]) {
     const page = await browser.newPage({ viewport: { width, height }, deviceScaleFactor: 2 });
+    await page.bringToFront();
     const errors = [];
     page.on("console", message => { if (message.type() === "error") errors.push(message.text()); });
     page.on("pageerror", error => errors.push(error.message));
@@ -133,6 +181,7 @@ try {
       let settings = await openSettings(page);
       check(`${size}: pause Settings opens native dialog`, await settings.evaluate(el => el.matches(":modal")));
       await measure(page, `${size} Sound`, `${settingsSelector}[open]`, target);
+      await checkSelection(page, `${size} Sound tab`, ".ui-settings [role=tab]", "aria-selected");
       await shot(page, `ui-v3-settings-sound-${size}`);
       const volume = settings.getByRole("meter", { name: "Music volume" });
       await settings.getByRole("button", { name: "Music louder" }).click();
@@ -149,11 +198,17 @@ try {
       check(`${size}: Left Arrow selects Sound`, await settings.getByRole("tab", { name: "Sound" }).getAttribute("aria-selected") === "true");
       await play.click();
       await measure(page, `${size} Play`, `${settingsSelector}[open]`, target);
+      await checkSelection(page, `${size} Play tab`, ".ui-settings [role=tab]", "aria-selected");
+      for (const [index, name] of ["Challenge", "Big text", "Joystick"].entries()) {
+        await checkSelection(page, `${size} ${name}`, `.ui-settings [role=tabpanel]:not([hidden]) .ui-hud-choice__options >> nth=${index} >> button`, "aria-pressed");
+      }
       await shot(page, `ui-v3-settings-play-${size}`);
       await settings.getByRole("tab", { name: "Grown-ups" }).click();
       const gate = settings.getByRole("button", { name: "Hold for 3 seconds" });
       const reset = settings.getByRole("button", { name: "Reset progress" });
       await measure(page, `${size} Grown-ups locked`, `${settingsSelector}[open]`, target);
+      await checkSelection(page, `${size} Grown-ups tab`, ".ui-settings [role=tab]", "aria-selected");
+      await captureGate(page, settings, `ui-v3-settings-gate-${size}`);
       await gate.click();
       check(`${size}: clicking the gate does not unlock`, await gate.isVisible() &&
         !await reset.isVisible() && await settings.getByRole("progressbar").getAttribute("aria-valuenow") === "0");
@@ -181,15 +236,27 @@ try {
       await play.click();
       await playPanel.getByRole("button", { name: "Right" }).click();
       await playPanel.getByRole("group", { name: "Big text" }).getByRole("button", { name: "On" }).click();
+      await page.keyboard.press("Escape");
+      const pause = page.locator(`${pauseSelector}[open]`);
+      const settingsItem = pause.getByRole("button", { name: "Settings", exact: true });
+      await settings.waitFor({ state: "hidden" });
+      check(`${size}: Esc after changing Big text closes only Settings`, await settingsItem.evaluate(el =>
+        el === document.activeElement && el.closest("dialog").matches(":modal")));
+      await settingsItem.click();
+      await settings.waitFor();
       for (const [id, name] of tabs) {
         await settings.getByRole("tab", { name }).click();
         await measure(page, `${size} Big text ${id}`, `${settingsSelector}[open]`, target);
+        if (id === "grownups") {
+          await captureGate(page, settings, `ui-v3-settings-gate-${size}-big`);
+          await unlock(page, settings, "Space");
+          await measure(page, `${size} Big text grownups unlocked`, `${settingsSelector}[open]`, target);
+        }
+        await shot(page, `ui-v3-settings-${id}-${size}-big`);
       }
       const scale = await settings.locator(".ui-pause__status-word").evaluate(el => parseFloat(getComputedStyle(el).fontSize));
       check(`${size}: Settings text scales by 1.25`, Math.abs(scale - originalSizes.settings * 1.25) < 0.02);
       await page.keyboard.press("Escape");
-      const pause = page.locator(`${pauseSelector}[open]`);
-      const settingsItem = pause.getByRole("button", { name: "Settings", exact: true });
       check(`${size}: Esc restores Settings focus in pause`, await settingsItem.evaluate(el => el === document.activeElement));
       await measure(page, `${size} Big text pause`, `${pauseSelector}[open]`, target);
       const pauseFont = await pause.locator(".ui-pause__status-word").evaluate(el => parseFloat(getComputedStyle(el).fontSize));
@@ -200,7 +267,7 @@ try {
       await page.keyboard.press("Escape");
       await pause.waitFor({ state: "hidden" });
       await measure(page, `${size} Big text HUD`, ".ui-game-hud", target);
-      await shot(page, `ui-v3-bigtext-hud-${size}`);
+      await shot(page, `ui-v3-bigtext-hud-${size}`, regressionOut);
       const hudFont = await page.locator(".ui-hud-zone__name").evaluate(el => parseFloat(getComputedStyle(el).fontSize));
       check(`${size}: HUD text scales by 1.25`, Math.abs(hudFont - originalSizes.hud * 1.25) < 0.02);
 
@@ -230,7 +297,7 @@ try {
       });
       check(`${size}: dialogue text scales by 1.25`, Math.abs(dialogueFont.large - dialogueFont.normal * 1.25) < 0.02);
       await measure(page, `${size} Big text dialogue page 1`, ".ui-crew-dialogue", target);
-      await shot(page, `ui-v3-bigtext-dialogue-${size}`);
+      await shot(page, `ui-v3-bigtext-dialogue-${size}`, regressionOut);
       await page.getByRole("button", { name: "Next", exact: true }).click();
       await measure(page, `${size} Big text dialogue replies`, ".ui-crew-dialogue", target);
 

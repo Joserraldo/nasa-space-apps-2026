@@ -1,4 +1,4 @@
-import { createHudTab, type UIHudGlyph } from "../atoms/hud-atoms";
+import { createHudGlyph, createHudTab, type UIHudGlyph } from "../atoms/hud-atoms";
 import { createHudReply } from "../organisms/crew-dialogue";
 import type { UIRegistry } from "../registry";
 
@@ -21,15 +21,22 @@ export function createHudChoice<T>({ label, glyph, value, options, onChange }: H
   const buttons = options.flatMap(option => {
     if (!option) return [];
     const button = createHudReply({ glyph: "none", label: option.label, voiceLine: option.voiceLine ?? option.label });
+    const check = createHudGlyph("check", "ui-hud-reply__glyph ui-settings__check");
+    button.prepend(check);
     button.addEventListener("click", () => { if (value !== option.value) onChange(option.value); });
     choices.append(button);
-    return [{ button, value: option.value }];
+    return [{ button, check, value: option.value }];
   });
   root.append(createHudTab({ label, glyph }), choices);
 
   function setValue(next: T): void {
     value = next;
-    for (const option of buttons) option.button.setAttribute("aria-pressed", String(option.value === next));
+    for (const option of buttons) {
+      const selected = option.value === next;
+      option.button.setAttribute("aria-pressed", String(selected));
+      if (selected) option.check.removeAttribute("hidden");
+      else option.check.setAttribute("hidden", "");
+    }
   }
   setValue(value);
   return { root, setValue };
