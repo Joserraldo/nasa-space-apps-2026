@@ -1,0 +1,139 @@
+{
+  "tomas": [
+    {
+      "id": "espacio",
+      "musica": "calma",
+      "efecto": "motor",
+      "lineas": [
+        {
+          "en": 0.6,
+          "hablante": null,
+          "linea": "intro.familias"
+        }
+      ]
+    },
+    {
+      "id": "puente",
+      "musica": "calma",
+      "efecto": "pulso",
+      "lineas": [
+        {
+          "en": 0.4,
+          "hablante": null,
+          "linea": "intro.primero"
+        }
+      ]
+    },
+    {
+      "id": "iris",
+      "musica": "calma",
+      "efecto": "iris",
+      "lineas": [
+        {
+          "en": 0.8,
+          "hablante": "iris",
+          "linea": "intro.iris"
+        }
+      ]
+    },
+    {
+      "id": "tripulacion",
+      "musica": "calma",
+      "efecto": "clic",
+      "lineas": [
+        {
+          "en": 0.4,
+          "hablante": "tess",
+          "linea": "intro.tess"
+        },
+        {
+          "en": 3.6,
+          "hablante": "nia",
+          "linea": "intro.nia"
+        },
+        {
+          "en": 6.8,
+          "hablante": "vera",
+          "linea": "intro.vera"
+        }
+      ]
+    },
+    {
+      "id": "mapa",
+      "musica": "curiosa",
+      "efecto": "mapa",
+      "lineas": [
+        {
+          "en": 0.3,
+          "hablante": "iris",
+          "linea": "intro.soles"
+        },
+        {
+          "en": 3.2,
+          "hablante": "iris",
+          "linea": "intro.sol"
+        }
+      ]
+    },
+    {
+      "id": "alarma",
+      "musica": "tension",
+      "efecto": "alerta",
+      "fuente": {
+        "clave": "fuente.donki",
+        "aviso": "intro.fuente"
+      },
+      "lineas": [
+        {
+          "en": 0.8,
+          "hablante": "vera",
+          "linea": "intro.alarma"
+        }
+      ]
+    },
+    {
+      "id": "decision",
+      "musica": "tension",
+      "efecto": "confirmar",
+      "lineas": [
+        {
+          "en": 0.4,
+          "hablante": "vera",
+          "linea": "mision.viaje.plan.pregunta"
+        }
+      ],
+      "decision": [
+        {
+          "id": "refugio",
+          "texto": "historia.plan.refugio",
+          "icono": "home"
+        },
+        {
+          "id": "escudo",
+          "texto": "historia.plan.escudo",
+          "icono": "shield"
+        }
+      ]
+    }
+  ],
+  "despues": {
+    "refugio": [
+      {
+        "hablante": "nia",
+        "linea": "mision.viaje.plan.refugio"
+      }
+    ],
+    "escudo": [
+      {
+        "hablante": "tess",
+        "linea": "mision.viaje.plan.escudo"
+      }
+    ],
+    "cierre": [
+      {
+        "hablante": "iris",
+        "linea": "intro.cierre"
+      }
+    ]
+  }
+}

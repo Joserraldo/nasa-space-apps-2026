@@ -1,0 +1,262 @@
+{
+  "version": 1,
+  "id": "intro",
+  "shots": [
+    {
+      "id": "espacio",
+      "position": [
+        [
+          8.8,
+          2.2,
+          -23
+        ],
+        [
+          8.2,
+          2.35,
+          -21.4
+        ]
+      ],
+      "target": [
+        [
+          -1.45,
+          3.55,
+          0
+        ],
+        [
+          -1.45,
+          3.55,
+          0
+        ]
+      ],
+      "fov": 38,
+      "duration": 6,
+      "easing": "smoothstep",
+      "environment": "AMB-01",
+      "zone": "space",
+      "transition": {
+        "type": "cut"
+      }
+    },
+    {
+      "id": "puente",
+      "position": [
+        [
+          6.2,
+          1.9,
+          5.4
+        ],
+        [
+          6.7,
+          1.78,
+          4.2
+        ]
+      ],
+      "target": [
+        [
+          6.4,
+          1.5,
+          0.2
+        ],
+        [
+          8.2,
+          1.6,
+          0.0
+        ]
+      ],
+      "fov": 56,
+      "duration": 6,
+      "easing": "smoothstep",
+      "environment": "AMB-02",
+      "zone": "nw-15",
+      "transition": {
+        "type": "fade",
+        "duration": 0.5
+      }
+    },
+    {
+      "id": "iris",
+      "position": [
+        [
+          6.7,
+          1.75,
+          7.1
+        ],
+        [
+          7.5,
+          1.45,
+          6.3
+        ]
+      ],
+      "target": [
+        [
+          9.1,
+          0.9,
+          4.6
+        ],
+        [
+          9.18,
+          0.95,
+          4.65
+        ]
+      ],
+      "fov": 50,
+      "duration": 8,
+      "easing": "smoothstep",
+      "environment": "AMB-02",
+      "zone": "nw-16",
+      "transition": {
+        "type": "fade",
+        "duration": 0.5
+      }
+    },
+    {
+      "id": "tripulacion",
+      "position": [
+        [
+          3.2,
+          1.85,
+          7.1
+        ],
+        [
+          4.4,
+          1.82,
+          6.95
+        ],
+        [
+          5.8,
+          1.82,
+          6.9
+        ]
+      ],
+      "target": [
+        [
+          5.2,
+          1.15,
+          3.4
+        ],
+        [
+          6.6,
+          1.15,
+          3.3
+        ]
+      ],
+      "fov": 55,
+      "duration": 10,
+      "easing": "smoothstep",
+      "environment": "AMB-02",
+      "zone": "nw-16",
+      "transition": {
+        "type": "fade",
+        "duration": 0.5
+      }
+    },
+    {
+      "id": "mapa",
+      "position": [
+        [
+          8.2,
+          2.6,
+          6.3
+        ],
+        [
+          7.4,
+          2.45,
+          5.7
+        ]
+      ],
+      "target": [
+        [
+          6,
+          0.95,
+          3.85
+        ],
+        [
+          6,
+          0.95,
+          3.85
+        ]
+      ],
+      "fov": 46,
+      "duration": 6,
+      "easing": "smoothstep",
+      "environment": "AMB-02",
+      "zone": "nw-16",
+      "transition": {
+        "type": "fade",
+        "duration": 0.5
+      }
+    },
+    {
+      "id": "alarma",
+      "position": [
+        [
+          3.2,
+          1.8,
+          7.1
+        ],
+        [
+          4.1,
+          1.75,
+          6.3
+        ]
+      ],
+      "target": [
+        [
+          6.6,
+          1.3,
+          2.2
+        ],
+        [
+          6.4,
+          1.4,
+          2.0
+        ]
+      ],
+      "fov": 58,
+      "duration": 8,
+      "easing": "smoothstep",
+      "environment": "AMB-03",
+      "zone": "nw-16",
+      "transition": {
+        "type": "fade",
+        "duration": 0.3
+      }
+    },
+    {
+      "id": "decision",
+      "position": [
+        [
+          3.0,
+          1.66,
+          7.15
+        ],
+        [
+          3.0,
+          1.62,
+          6.4
+        ]
+      ],
+      "target": [
+        [
+          3.0,
+          1.25,
+          1.35
+        ],
+        [
+          3.0,
+          1.25,
+          1.35
+        ]
+      ],
+      "fov": 62,
+      "duration": 8,
+      "easing": "smoothstep",
+      "environment": "AMB-03",
+      "zone": "nw-17",
+      "transition": {
+        "type": "fade",
+        "duration": 0.5
+      }
+    }
+  ]
+}
