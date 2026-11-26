@@ -2,7 +2,7 @@ name: CI
 
 on:
   pull_request:
-    branches: [develop, main, feat/ui-escenarios]
+    branches: [develop, main, feat/ui-escenarios, "feat/**"]
   push:
     branches: [develop, main, feat/ui-escenarios]
 
@@ -47,7 +47,14 @@ jobs:
         with:
           node-version: 22
           cache: npm
-          cache-dependency-path: colonia-marte/package-lock.json
+          cache-dependency-path: |
+            package-lock.json
+            colonia-marte/package-lock.json
+
+      # El juego importa el motor y las misiones desde la raíz, que traen sus propias dependencias.
+      - name: Instalar dependencias del monorepo
+        run: npm ci
+        working-directory: .
 
       # App independiente (fuera de los workspaces): tiene su propio lockfile.
       - name: Instalar dependencias
