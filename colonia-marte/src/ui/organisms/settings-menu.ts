@@ -1,4 +1,4 @@
-import { createHudFrame, createHudTab, hudFrameContent, voiceText, type UIHudGlyph } from "../atoms/hud-atoms";
+import { createHudFrame, createHudGlyph, createHudTab, hudFrameContent, voiceText, type UIHudGlyph } from "../atoms/hud-atoms";
 import { CREDITS } from "../content/credits";
 import { createHudChoice, type HudChoiceOption } from "../molecules/hud-choice";
 import { createHudHoldGate } from "../molecules/hud-hold-gate";
@@ -73,6 +73,9 @@ export function createSettingsMenu(initial: SettingsState, callbacks: SettingsCa
 
   const tabs = TABS.map(tab => {
     const button = action(tab.label, tab.glyph, () => activate(tab.id));
+    const glyph = button.querySelector<HTMLElement>(".ui-hud-reply__glyph");
+    const check = createHudGlyph("check", "ui-hud-reply__glyph ui-settings__check");
+    button.prepend(check);
     button.id = `${id}-${tab.id}-tab`;
     button.setAttribute("role", "tab");
     const panel = element("section", "ui-settings__panel");
@@ -81,7 +84,7 @@ export function createSettingsMenu(initial: SettingsState, callbacks: SettingsCa
     panel.setAttribute("aria-labelledby", button.id);
     tablist.append(button);
     panels.append(panel);
-    return { ...tab, button, panel };
+    return { ...tab, button, panel, glyph, check };
   });
   const [sound, play, adult] = tabs;
   tablist.addEventListener("keydown", event => {
@@ -188,6 +191,8 @@ export function createSettingsMenu(initial: SettingsState, callbacks: SettingsCa
     for (const tab of tabs) {
       const selected = tab.id === active;
       tab.button.setAttribute("aria-selected", String(selected));
+      tab.check.hidden = !selected;
+      if (tab.glyph) tab.glyph.hidden = selected;
       tab.button.tabIndex = selected ? 0 : -1;
       if (selected) tab.button.setAttribute("autofocus", "");
       else tab.button.removeAttribute("autofocus");

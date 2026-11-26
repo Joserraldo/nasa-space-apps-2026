@@ -4,9 +4,6 @@
   color: var(--ui-text-white-primary);
   background: var(--ui-surface-void);
 }
-* { box-sizing: border-box; }
-html, body { margin: 0; height: 100%; overflow: hidden; }
-#app { height: 100vh; height: 100dvh; display: grid; grid-template-rows: auto minmax(0, 1fr); }
 .eyebrow {
   margin: 0;
   color: var(--ui-info-300);

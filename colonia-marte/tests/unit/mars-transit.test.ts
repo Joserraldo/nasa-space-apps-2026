@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { Color, InstancedMesh, LOD, Matrix4, Mesh, SRGBColorSpace, Vector3 } from "three";
+import { Color, InstancedMesh, LOD, Matrix4, Mesh, Raycaster, SRGBColorSpace, Vector3 } from "three";
 import { createProductionRegistry } from "../../src/kit/pieces";
 import { paletteUV } from "../../src/materials/atlas";
 import { paletteHex } from "../../src/materials/palette";
@@ -40,6 +40,40 @@ describe("the transit intro shot", () => {
         if (part instanceof Mesh) expect(part.geometry.type).not.toBe("TorusGeometry");
       });
     }
+  });
+
+  it("keeps the crew capsule's conical flank straight between the two shoulder bevels", () => {
+    const registry = createProductionRegistry();
+    for (const detail of ["near", "middle", "far"] as const) {
+      const capsule = registry.build("MV-09", { detail }).getObjectByName("orion-crew-module")!;
+      const shell = capsule.children.find(part => part instanceof Mesh && !(part instanceof InstancedMesh)) as Mesh;
+      const positions = shell.geometry.getAttribute("position");
+      const uv = shell.geometry.getAttribute("uv");
+      const [u, v] = paletteUV(detail === "far" ? "white" : "hull");
+      const shoulders = new Map<number, number>();
+      for (let i = 0; i < positions.count; i++) {
+        const x = positions.getX(i);
+        if (x < -13.45 || x > -10.41 || u !== uv.getX(i) || v !== uv.getY(i)) continue;
+        const radius = Math.hypot(positions.getY(i), positions.getZ(i));
+        shoulders.set(Math.round(x * 100), radius);
+      }
+      expect([...shoulders.keys()].sort((a, b) => a - b)).toEqual([-1339, -1047]);
+      expect(shoulders.get(-1339)).toBeGreaterThan(2.4);
+      expect(shoulders.get(-1047)).toBeLessThan(1.0);
+    }
+  });
+
+  it("uses four instanced stern vents with recessed openings between cross ribs", () => {
+    const vents = createProductionRegistry().build("MV-09").getObjectByName("stern-vent-grilles") as InstancedMesh;
+    expect(vents).toBeInstanceOf(InstancedMesh);
+    expect(vents.count).toBe(4);
+    const grille = new Mesh(vents.geometry, vents.material);
+    const heightAt = (x: number, z: number) => {
+      const ray = new Raycaster(new Vector3(x, 3, z), new Vector3(0, -1, 0));
+      return ray.intersectObject(grille)[0].point.y;
+    };
+    expect(heightAt(0.095, 0) - heightAt(0, 0)).toBeGreaterThan(0.035);
+    expect(heightAt(0, 0.085) - heightAt(0, 0)).toBeGreaterThan(0.035);
   });
 
   it("instances four hollow emissive Hall channels in the blue xenon range at every LOD", () => {
