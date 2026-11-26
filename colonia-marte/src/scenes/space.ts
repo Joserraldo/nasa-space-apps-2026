@@ -17,7 +17,8 @@ export function mountSpace(): void {
   const rendering = createRendering(viewport);
   const { renderer, scene, camera, composer, stats } = rendering;
   const capture = new URLSearchParams(location.search).get("capture");
-  const shot = createSpaceShot(createProductionRegistry(), camera.aspect, capture === "detail");
+  const captureAngle = capture === "detail" || capture === "thrusters" ? capture : undefined;
+  const shot = createSpaceShot(createProductionRegistry(), camera.aspect, captureAngle);
   camera.copy(shot.camera);
   camera.updateMatrixWorld();
   applyEnvironment(rendering, shot.preset);
@@ -51,7 +52,7 @@ export function mountSpace(): void {
   renderer.domElement.setAttribute("aria-label", "A transit ship departs, with a small blue Earth in the background");
   stats.dom.hidden = true;
 
-  const still = capture === "1" || capture === "detail" || matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const still = capture === "1" || captureAngle !== undefined || matchMedia("(prefers-reduced-motion: reduce)").matches;
   let time = still ? 0.8 : 0;
   const metrics = {
     preset: shot.preset.id,

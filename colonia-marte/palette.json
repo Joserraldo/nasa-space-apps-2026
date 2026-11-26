@@ -217,10 +217,10 @@
     },
     {
       "id": "xenonGlow",
-      "role": "Muted blue-violet plasma",
+      "role": "Blue xenon plasma",
       "observed": {"hex":null,"frame":null,"region":null},
-      "base": "#4F30A8",
-      "baseReason": "Design swatch for the dim blue-violet discharge in the DST electric thrusters.",
+      "base": "#3D8BFF",
+      "baseReason": "Design swatch based on the blue ionized-xenon glow in NASA/JPL's Psyche firing test (PIA23879), not a photo color sample.",
       "usage": "MV-09 electric propulsion only",
       "emissive": true,
       "source": "design:MV-09"
