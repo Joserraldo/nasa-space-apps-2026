@@ -3,6 +3,7 @@ import {
   NearestFilter, RGBAFormat, ShaderMaterial, SRGBColorSpace, Vector2, Vector3, type Material,
 } from "three";
 import { atlas } from "./atlas";
+import { M_hallPlume } from "./hall-discharge";
 import { paletteHex } from "./palette";
 import { SPACE_SKY_FRAGMENT, spaceSkyUniforms } from "./space-backdrop";
 import { TERRAIN_STONE_FRAGMENT_PARS } from "./terrain-stone-glsl";
@@ -150,6 +151,6 @@ const M_hologram = new MeshBasicMaterial({
 });
 const M_screen = new MeshBasicMaterial({ color: "#FFFFFF" });
 
-export const materials = { M_palette, M_glass, M_sky, M_terrain, M_hologram, M_screen };
+export const materials = { M_palette, M_glass, M_sky, M_terrain, M_hologram, M_screen, M_hallPlume };
 Object.entries(materials).forEach(([name, material]) => { material.name = name; });
 export const sharedMaterials = new Set<Material>(Object.values(materials));

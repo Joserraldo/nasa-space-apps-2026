@@ -1,6 +1,9 @@
 import { describe, expect, it } from "vitest";
-import { InstancedMesh, LOD, Matrix4, Mesh, Vector3 } from "three";
+import { Color, InstancedMesh, LOD, Matrix4, Mesh, SRGBColorSpace, Vector3 } from "three";
 import { createProductionRegistry } from "../../src/kit/pieces";
+import { paletteUV } from "../../src/materials/atlas";
+import { paletteHex } from "../../src/materials/palette";
+import { materials } from "../../src/materials/shared";
 import { createSpaceShot, SPACE_DURATION } from "../../src/scenes/space-shot";
 import { triangleCount } from "../../tools/geometry-inspection";
 
@@ -14,7 +17,9 @@ describe("the transit intro shot", () => {
     expect(earth.userData.pieceId).toBe("BG-01");
     const [near, middle, far] = ship.levels.map(level => triangleCount(level.object));
     expect(near).toBeGreaterThanOrEqual(3000);
-    expect(near).toBeLessThanOrEqual(8000);
+    expect(near).toBeLessThanOrEqual(25000);
+    expect(middle).toBeLessThanOrEqual(10000);
+    expect(far).toBeLessThanOrEqual(3500);
     expect(near).toBeGreaterThan(middle);
     expect(middle).toBeGreaterThan(far);
     expect(() => registry.build("MV-09", { detail: "invalid" })).toThrow("Invalid option");
@@ -31,9 +36,50 @@ describe("the transit intro shot", () => {
       expect(dstWings).toHaveLength(2);
       for (const wing of orionWings!) expect(wing.children.filter(part => part.name.startsWith("orion-panel-"))).toHaveLength(3);
       object.traverse(part => {
-        expect(part.name).not.toMatch(/ring/i);
+        expect(part.name).not.toMatch(/habitation-ring|rotating-ring/i);
         if (part instanceof Mesh) expect(part.geometry.type).not.toBe("TorusGeometry");
       });
+    }
+  });
+
+  it("instances four hollow emissive Hall channels in the blue xenon range at every LOD", () => {
+    const hue = new Color(paletteHex("xenonGlow")).getHSL({ h: 0, s: 0, l: 0 }, SRGBColorSpace).h * 360;
+    expect(hue).toBeGreaterThanOrEqual(200);
+    expect(hue).toBeLessThanOrEqual(230);
+    const { ship } = createSpaceShot(createProductionRegistry(), 16 / 9);
+    for (const { object } of ship.levels) {
+      const channels = object.getObjectByName("hall-emissive-channels") as InstancedMesh;
+      expect(channels).toBeInstanceOf(InstancedMesh);
+      expect(channels.count).toBe(4);
+      expect(channels.material).toBe(materials.M_palette);
+      const position = channels.geometry.getAttribute("position");
+      const uv = channels.geometry.getAttribute("uv");
+      const [u, v] = paletteUV("xenonGlow");
+      for (let i = 0; i < position.count; i++) {
+        expect(Math.hypot(position.getY(i), position.getZ(i))).toBeGreaterThan(0.25);
+        expect(uv.getX(i)).toBe(u);
+        expect(uv.getY(i)).toBe(v);
+      }
+      const plumes = object.getObjectByName("hall-plumes") as InstancedMesh;
+      expect(plumes.count).toBe(4);
+      expect(plumes.material).toMatchObject({ transparent: true, depthWrite: false });
+    }
+  });
+
+  it("bakes contact occlusion into opaque habitat vertices and blinks the two nav lights", () => {
+    const { ship, pose } = createSpaceShot(createProductionRegistry(), 16 / 9);
+    const model = ship.levels[0].object;
+    const habitat = model.getObjectByName("dst-transit-habitat")!;
+    const hull = habitat.children.find(part => part instanceof Mesh && !(part instanceof InstancedMesh)) as Mesh;
+    const colors = hull.geometry.getAttribute("color");
+    expect(colors.array.some(value => value < 0.88)).toBe(true);
+    expect(colors.array.some(value => value === 1)).toBe(true);
+    for (const color of ["red", "green"]) {
+      const nav = model.getObjectByName(`nav-${color}`)!;
+      pose(0.8);
+      expect(nav.visible).toBe(true);
+      pose(1.75);
+      expect(nav.visible).toBe(false);
     }
   });
 

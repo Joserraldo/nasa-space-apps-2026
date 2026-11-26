@@ -3,7 +3,7 @@ import type { Object3D } from "three";
 export const triangleBudgets = {
   prop: [50, 400], furniture: [300, 1500], largeFurniture: [1500, 4000],
   architecture: [100, 1200], capsule: [1000, 2500], building: [3000, 12000],
-  vehicle: [3000, 8000], character: [2500, 5000], terrain: [0, 150000],
+  vehicle: [3000, 8000], transitSpacecraft: [3000, 25000], character: [2500, 5000], terrain: [0, 150000],
 } as const;
 export type PieceCategory = keyof typeof triangleBudgets;
 export type Pivot = "base-center" | "module-corner" | "hinge" | "axle-center";
