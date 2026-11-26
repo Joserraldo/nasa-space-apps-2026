@@ -153,8 +153,8 @@ export function coberturaCaja(k: Caja): Circulo[] {
 }
 
 /** Terreno de movimiento: rampa, plataforma y límite de `TERRENO`, con los círculos reales. */
-export function terrenoMovimiento(s: Solidos, limite = TERRENO.limite): Terreno {
-  return { limite, rampas: TERRENO.rampas, plataformas: TERRENO.plataformas, capsulas: [], circulos: s.circulos };
+export function terrenoMovimiento(s: Solidos, limite = TERRENO.limite, relieve?: Terreno["relieve"]): Terreno {
+  return { limite, rampas: TERRENO.rampas, plataformas: TERRENO.plataformas, capsulas: [], circulos: s.circulos, ...(relieve ? { relieve } : {}) };
 }
 
 /** Terreno para `planearRuta`: los círculos reales más la cobertura de cada caja. */
@@ -235,6 +235,8 @@ export interface OpcionesMovimiento {
   rumbo?: number;
   /** Radio caminable máximo (por defecto `TERRENO.limite`). */
   limite?: number;
+  /** Relieve del suelo que siguen los pies (microrrelieve del claro). */
+  relieve?: Terreno["relieve"];
 }
 
 export interface Movimiento {
@@ -276,7 +278,7 @@ export interface Movimiento {
 
 export function crearMovimiento(solidos: Solidos, o: OpcionesMovimiento = {}): Movimiento {
   const limiteMapa = o.limite ?? TERRENO.limite;
-  let tMov = terrenoMovimiento(solidos, limiteMapa);
+  let tMov = terrenoMovimiento(solidos, limiteMapa, o.relieve);
   let tRuta: Terreno | null = null;
   let cajas = solidos.cajas;
   const inicio = o.inicio ?? INICIO_JUGADOR;
@@ -467,7 +469,7 @@ export function crearMovimiento(solidos: Solidos, o: OpcionesMovimiento = {}): M
       return ruta;
     },
     fijarSolidos(s) {
-      tMov = terrenoMovimiento(s, limiteMapa);
+      tMov = terrenoMovimiento(s, limiteMapa, o.relieve);
       cajas = s.cajas;
       tRuta = null;
       // Un módulo recién construido puede caer encima: sale por el borde más cercano.
