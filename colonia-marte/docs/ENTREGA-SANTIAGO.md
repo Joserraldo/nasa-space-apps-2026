@@ -166,3 +166,40 @@ Si Santiago necesita un cambio en un contrato o en el aspecto de un componente, 
 **Para B1:** pásame la lista de claves de texto que armes en `src/game/i18n.ts`, así los componentes usan las mismas claves.
 
 **Verificado en esta versión:** build, tipos, **176/176 tests** y validate:pieces. Las rutas `/menu`, `/hud-preview`, `/hud-preview?settings=play`, `/exterior-pilot?view=1` y `?view=4`, `/space` y `/room/nw-17` se abrieron en Chromium con ventana visible, sin errores de consola.
+
+## 10. Nuevo reparto: María Paula el exterior, Santiago las salas
+
+Decisión de María Paula (26 nov): **ella se encarga del exterior** y **Santiago de las salas que faltan**. Esto cambia la sección 7:
+
+| Dueño | Carpetas nuevas o que cambian de dueño |
+|---|---|
+| **Santiago** | `data/layouts/rooms/` (salas nuevas), `src/kit/pieces/station/` (muebles y props de sala), `src/scenes/nw*-room.ts` y sus rutas `/room/*`, la colonia por capítulo (T5.5: qué salas existen y cómo se conectan) y B6 (la tripulación colocada en NW-16) |
+| **María Paula** (con Carbon y OpenCode) | `src/kit/pieces/mars/`, `data/layouts/colonies/`, `src/scenes/exterior-pilot.ts`, `src/scenes/space*.ts`, la UI (`src/ui/`) y las ilustraciones 2D de la intro y la portada |
+| **Compartido, con aviso** | `src/kit/primitives/`, `src/kit/registry.ts`, `src/materials/`, `palette.json`, `src/core/`. Si una sala necesita un material o una primitiva nueva, se pide |
+
+### Salas que faltan
+
+| Sala | Capítulo | Notas |
+|---|---|---|
+| `NW-12` Centro de mando | C2 en adelante | Reutiliza `CR-01/02/03` |
+| `NW-09` Energía | C2, C4 | Paneles y baterías; ligada a la mecánica de energía |
+| `NW-08` Soporte vital | C2 en adelante | Aire, agua y reciclaje |
+| `NW-03`, `NW-04`, `NW-06`, `NW-07`, `NW-10`, `NW-18`, `NW-19` | C4 y C5 (T5.3) | Ver sus filas en `docs/INVENTARIO.md` |
+| Atrio, gimnasio, entretenimiento, departamentos, baño, lavandería, bar | Vida diaria (T5.4) | Mobiliario `AT-*`, `GY-*`, `EN-*`, `AP-*`, `BT-*`, `LD-*`, `BA-*` del inventario |
+
+Para la primera versión (intro, C1 y C2) alcanza con **NW-12, NW-09 y NW-08**. Lo demás puede esperar.
+
+### Cómo se hace una sala (así trabajó Carbon, con salas aprobadas)
+
+1. **Layout JSON** en `data/layouts/rooms/<id>.json`: celdas de 2 m, piezas por ID del registro, rotación, parámetros, puertas y vistas de cámara. Se valida con el esquema de `src/catalog/layout.ts`. Las salas de ejemplo son `nw-15.json`, `nw-16.json` y `nw-17.json`.
+2. **Solo piezas del registro.** Las que falten se crean en `src/kit/pieces/station/` con su ID del inventario (`NW-xx-*`, `CR-*`...), parámetros tipados y `M_palette`. **Sin materiales propios** ni geometría de relleno, y pasan `npm run validate:pieces`.
+3. **AO por vértice**, horneado al construir (`src/core/bake-vertex-ao.ts`), como en las salas existentes.
+4. **Escena y ruta:** `src/scenes/nwXX-room.ts`, que llama `mountInteriorRoom`, y una línea `/room/nw-xx` en `src/main.ts`.
+5. **Reglas visuales medidas** (de `docs/restricciones-visuales.md`; leerlo antes de empezar):
+   - blancos neutros: R−B menor a 8 en un panel blanco sin LED; el cian vive solo en las tiras LED;
+   - brillo medio de la captura dentro de ±15 del de su referencia, con un máximo de 25 % de píxeles con luminancia menor a 50 (rechazo de «se ve muy negro» en NW-14);
+   - nada de beige ni crema: blanco luminoso con grises fríos.
+6. **Captura** `docs/capturas/t52-<id>.jpg` con la cámara del juego, **junto a su referencia**, más draw calls, triángulos y fps con la ventana visible.
+7. Antes de cada commit: build, tsc, vitest y validate:pieces en salida 0.
+
+**Referencias visuales:** las salas se hacen comparando con fotogramas de referencia que **no están en el repo público** por derechos (sección 6). María Paula te los pasa por un canal privado. Cada fila del inventario dice qué fotograma usar (`v1-t016.10`, `v2-t059.80`...).
