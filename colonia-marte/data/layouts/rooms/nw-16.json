@@ -1,0 +1,118 @@
+{
+  "id": "nw-16",
+  "name": "NW-16 Transit Ship Common Room",
+  "module": 2,
+  "size": [6, 4],
+  "clearHeight": 2.98,
+  "environment": "AMB-02",
+  "walls": {
+    "north": [
+      { "id": "ST-W07", "params": { "pattern": "chevron" } },
+      { "id": "ST-W01", "params": { "style": "standard" } },
+      { "id": "ST-W04", "params": { "mode": "mars" } },
+      "skip",
+      { "id": "ST-W01", "params": { "style": "standard" } },
+      { "id": "ST-W07", "params": { "pattern": "stepped" } }
+    ],
+    "south": [
+      { "id": "ST-W07", "params": { "pattern": "stepped" } },
+      { "id": "ST-W01", "params": { "style": "standard" } },
+      { "id": "ST-D01", "params": { "opening": "standard", "state": "cyan" } },
+      { "id": "ST-D01", "params": { "opening": "standard", "state": "cyan" } },
+      { "id": "ST-W01", "params": { "style": "standard" } },
+      { "id": "ST-W07", "params": { "pattern": "chevron" } }
+    ],
+    "west": [
+      { "id": "ST-W02", "params": { "mode": "vertical", "accent": "cyan" } },
+      { "id": "ST-W01", "params": { "style": "alcove" } },
+      { "id": "ST-W01", "params": { "style": "banded" } },
+      { "id": "ST-W02", "params": { "mode": "vertical", "accent": "cyan" } }
+    ],
+    "east": [
+      { "id": "ST-W02", "params": { "mode": "vertical", "accent": "cyan" } },
+      { "id": "ST-W01", "params": { "style": "standard" } },
+      { "id": "ST-W01", "params": { "style": "standard" } },
+      { "id": "ST-W03", "params": { "style": "standard" } }
+    ]
+  },
+  "floor": {
+    "default": { "id": "ST-F01", "params": { "style": "standard" } },
+    "overrides": [
+      { "cell": [2, 1], "span": [2, 2], "id": "ST-F04", "params": { "accent": "cyan" } },
+      { "cell": [0, 0], "id": "ST-F01", "params": { "style": "quad" } },
+      { "cell": [1, 0], "id": "ST-F01", "params": { "style": "accent" } },
+      { "cell": [4, 0], "id": "ST-F01", "params": { "style": "accent" } },
+      { "cell": [5, 0], "id": "ST-F01", "params": { "style": "quad" } },
+      { "cell": [0, 1], "id": "ST-F01", "params": { "style": "quad" } },
+      { "cell": [5, 1], "id": "ST-F01", "params": { "style": "quad" } },
+      { "cell": [1, 3], "id": "ST-F01", "params": { "style": "quad" } },
+      { "cell": [4, 3], "id": "ST-F01", "params": { "style": "quad" } }
+    ]
+  },
+  "ceiling": {
+    "default": { "id": "ST-R01", "params": { "layout": "twin" } },
+    "overrides": [
+      { "cell": [2, 1], "span": [2, 2], "id": "ST-R03", "params": { "tone": "cyan" } },
+      { "cell": [1, 0], "id": "ST-R04", "params": { "tone": "warm" } },
+      { "cell": [4, 0], "id": "ST-R04", "params": { "tone": "warm" } },
+      { "cell": [0, 2], "id": "ST-R04", "params": { "tone": "warm" } },
+      { "cell": [5, 2], "id": "ST-R04", "params": { "tone": "warm" } }
+    ]
+  },
+  "pieces": [
+    { "id": "ST-C01", "position": [4.0, 0, 0.34], "rot": 0, "params": { "accent": "cyan" } },
+    { "id": "ST-C01", "position": [8.0, 0, 0.34], "rot": 0, "params": { "accent": "cyan" } },
+    { "id": "ST-C01", "position": [0.34, 0, 2.0], "rot": 90, "params": { "accent": "cyan" } },
+    { "id": "ST-C01", "position": [11.66, 0, 0.42], "rot": -90, "params": { "accent": "cyan" } },
+
+    { "id": "NW-01-D", "position": [6.0, 0.08, 3.85], "rot": 0, "params": { "topic": "common" } },
+    { "id": "DN-02", "position": [6.0, 0.08, 2.28], "rot": 0, "params": { "cushion": "blue" } },
+    { "id": "DN-02", "position": [7.38, 0.08, 3.05], "rot": -60, "params": { "cushion": "teal" } },
+    { "id": "DN-02", "position": [7.38, 0.08, 4.65], "rot": -120, "params": { "cushion": "blue" } },
+    { "id": "DN-02", "position": [6.0, 0.08, 5.42], "rot": 180, "params": { "cushion": "teal" } },
+    { "id": "DN-02", "position": [4.62, 0.08, 4.65], "rot": 120, "params": { "cushion": "blue" } },
+    { "id": "DN-02", "position": [4.62, 0.08, 3.05], "rot": 60, "params": { "cushion": "teal" } },
+
+    { "id": "NW-03-A", "position": [9.48, 0, 4.55], "rot": -72, "params": { "mode": "iris" } },
+    { "id": "CH-09", "position": [9.18, 0.045, 4.65], "rot": -72, "params": { "expression": "happy" } },
+
+    { "id": "BA-02", "position": [2.25, 0, 1.35], "rot": 22, "params": { "cushion": "blue" } },
+    { "id": "BA-02", "position": [1.55, 0, 4.75], "rot": 90, "params": { "cushion": "teal" } },
+    { "id": "DN-01", "position": [2.62, 0, 4.75], "rot": 90, "params": { "size": "compact" } },
+    { "id": "DN-06", "position": [2.62, 0.78, 4.75], "rot": 0, "params": { "tone": "cyan" } },
+
+    { "id": "DN-04", "position": [0.68, 0, 3.0], "rot": 90, "params": { "screen": "coffee" } },
+    { "id": "CF-03", "position": [11.35, 0, 2.95], "rot": -90, "params": { "style": "standard" } },
+    { "id": "BR-04", "position": [11.78, 1.16, 2.95], "rot": -90, "params": { "screen": "colony-map" } },
+    { "id": "PR-05", "position": [8.95, 2.15, 0.22], "rot": 0, "params": { "screen": "solar-alert", "mount": "wall" } },
+
+    { "id": "PR-02", "position": [3.55, 0, 0.85], "rot": 0, "params": { "style": "octagonal" } },
+    { "id": "PR-01", "position": [3.55, 0.42, 0.85], "rot": 25, "params": { "fullness": "standard", "seed": 4 } },
+    { "id": "PR-02", "position": [10.85, 0, 1.35], "rot": 0, "params": { "style": "octagonal" } },
+    { "id": "PR-01", "position": [10.85, 0.42, 1.35], "rot": -35, "params": { "fullness": "lush", "seed": 9 } }
+  ],
+  "lights": [
+    { "position": [6.0, 2.48, 3.85], "color": "#faf8ff", "intensity": 4.2, "distance": 12.5, "decay": 2 },
+    { "position": [2.6, 2.42, 3.2], "color": "#faf8ff", "intensity": 3.4, "distance": 10.5, "decay": 2 },
+    { "position": [9.4, 2.42, 3.6], "color": "#faf8ff", "intensity": 3.4, "distance": 10.5, "decay": 2 },
+    { "position": [6.0, 2.38, 6.4], "color": "#faf8ff", "intensity": 3.0, "distance": 9.8, "decay": 2 },
+    { "position": [6.0, 0.22, 3.85], "color": "#20e0ff", "intensity": 0.95, "distance": 1.55, "decay": 2 },
+    { "position": [9.25, 0.22, 4.6], "color": "#20e0ff", "intensity": 0.9, "distance": 1.5, "decay": 2 }
+  ],
+  "views": [
+    {
+      "id": "common-main",
+      "label": "View 1 (Ship Common Room: Round Holo-Table, Crew Seats & Docked Iris)",
+      "position": [3.15, 1.72, 7.18],
+      "target": [6.85, 1.18, 2.35],
+      "fov": 58
+    },
+    {
+      "id": "common-iris-dock",
+      "label": "View 2 (Iris Docking Station, Round Holo-Table & Lounge)",
+      "position": [10.45, 1.62, 6.45],
+      "target": [5.65, 1.12, 2.65],
+      "fov": 56
+    }
+  ]
+}

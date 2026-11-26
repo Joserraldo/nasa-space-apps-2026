@@ -1,0 +1,187 @@
+/* Sci-fi UI Kit — /ui Interactive Design System Showcase */
+
+.ui-showcase-layout {
+  display: grid;
+  grid-template-columns: 320px minmax(0, 1fr);
+  min-height: 0;
+  height: 100%;
+  background: var(--ui-surface-void);
+}
+
+.ui-showcase-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ui-space-4);
+  padding: var(--ui-space-5);
+  background: var(--ui-surface-panel);
+  border-right: 1px solid var(--ui-border-subtle);
+  overflow-y: auto;
+  min-height: 0;
+}
+
+.ui-showcase-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ui-space-2);
+}
+
+.ui-toast-triggers {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--ui-space-2);
+}
+
+.ui-showcase-index {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.ui-showcase-index a {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--ui-space-2);
+  padding: 6px 8px;
+  font-family: var(--ui-font-mono);
+  font-size: 0.75rem;
+  color: var(--ui-neutral-200);
+  text-decoration: none;
+  border-left: 2px solid transparent;
+}
+
+.ui-showcase-index a:hover {
+  color: var(--ui-text-white-primary);
+  background: rgba(255, 255, 255, 0.05);
+  border-left-color: var(--ui-primary-400);
+}
+
+.ui-showcase-main {
+  overflow-y: auto;
+  min-height: 0;
+  padding: var(--ui-space-6);
+  display: flex;
+  flex-direction: column;
+  gap: var(--ui-space-6);
+}
+
+.ui-showcase-hero {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--ui-space-4);
+  padding-bottom: var(--ui-space-4);
+  border-bottom: 1px solid var(--ui-border-subtle);
+}
+
+.ui-showcase-hero h2 {
+  margin: 4px 0 0;
+  font-family: var(--ui-font-display);
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--ui-text-white-primary);
+}
+
+.ui-showcase-hero p {
+  margin: 6px 0 0;
+  font-family: var(--ui-font-body);
+  font-size: 0.9375rem;
+  color: var(--ui-neutral-200);
+  max-width: 68ch;
+}
+
+.ui-component-card {
+  position: relative;
+  border: 1px solid var(--ui-border-subtle);
+  background: linear-gradient(180deg, rgba(24, 32, 42, 0.72), rgba(17, 22, 29, 0.92));
+  padding: var(--ui-space-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--ui-space-4);
+}
+
+.ui-component-card::before {
+  content: "";
+  position: absolute;
+  top: -1px;
+  left: -1px;
+  width: 24px;
+  height: 3px;
+  background: var(--ui-primary-500);
+}
+
+.ui-component-card__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--ui-space-3);
+  padding-bottom: var(--ui-space-3);
+  border-bottom: 1px solid var(--ui-border-subtle);
+}
+
+.ui-component-card__title {
+  margin: 0;
+  font-family: var(--ui-font-display);
+  font-size: 1.125rem;
+  color: var(--ui-text-white-primary);
+}
+
+.ui-component-card__desc {
+  margin: 4px 0 0;
+  font-family: var(--ui-font-body);
+  font-size: 0.8125rem;
+  color: var(--ui-neutral-300);
+}
+
+.ui-component-card__meta {
+  display: flex;
+  align-items: center;
+  gap: var(--ui-space-2);
+}
+
+.ui-variants-grid {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: var(--ui-space-5);
+}
+
+.ui-variant-box {
+  flex: 1 1 260px;
+  min-width: min(100%, 240px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(9, 12, 16, 0.65);
+  padding: var(--ui-space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--ui-space-3);
+}
+
+.ui-variant-box--wide {
+  flex-basis: 100%;
+}
+
+.ui-variant-name {
+  font-family: var(--ui-font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ui-info-300);
+}
+
+@media (max-width: 860px) {
+  .ui-showcase-layout {
+    grid-template-columns: 1fr;
+    grid-template-rows: minmax(0, 38%) minmax(0, 1fr);
+  }
+
+  .ui-showcase-sidebar {
+    border-right: 0;
+    border-bottom: 1px solid var(--ui-border-subtle);
+  }
+}

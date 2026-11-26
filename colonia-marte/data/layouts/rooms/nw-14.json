@@ -1,0 +1,103 @@
+{
+  "id": "nw-14",
+  "name": "NW-14 Colony Radiation Storm Shelter",
+  "module": 2,
+  "size": [4, 3],
+  "clearHeight": 2.98,
+  "environment": "AMB-03",
+  "walls": {
+    "north": [
+      { "id": "ST-W06", "params": { "mode": "shield" } },
+      { "id": "ST-W06", "params": { "mode": "shield" } },
+      { "id": "ST-W01", "params": { "style": "alcove" } },
+      { "id": "ST-D02", "params": { "state": "sealed" } }
+    ],
+    "south": [
+      { "id": "ST-W06", "params": { "mode": "shield" } },
+      { "id": "ST-D02", "params": { "state": "sealed" } },
+      { "id": "ST-W02", "params": { "mode": "horizontal", "accent": "warning" } },
+      { "id": "ST-W06", "params": { "mode": "shield" } }
+    ],
+    "west": [
+      { "id": "ST-W06", "params": { "mode": "shield" } },
+      { "id": "ST-W01", "params": { "style": "alcove" } },
+      { "id": "ST-W06", "params": { "mode": "shield" } }
+    ],
+    "east": [
+      { "id": "ST-W02", "params": { "mode": "vertical", "accent": "warning" } },
+      { "id": "ST-W06", "params": { "mode": "shield" } },
+      { "id": "ST-W05", "params": { "mode": "vent" } }
+    ]
+  },
+  "floor": {
+    "default": { "id": "ST-F01", "params": { "style": "standard" } },
+    "overrides": [
+      { "cell": [0, 0], "id": "ST-F01", "params": { "style": "quad" } },
+      { "cell": [1, 0], "id": "ST-F01", "params": { "style": "quad" } },
+      { "cell": [3, 0], "id": "ST-F03", "params": { "pattern": "angular" } },
+      { "cell": [1, 1], "id": "ST-F01", "params": { "style": "accent" } },
+      { "cell": [2, 1], "id": "ST-F01", "params": { "style": "accent" } },
+      { "cell": [2, 2], "id": "ST-F03", "params": { "pattern": "angular" } }
+    ]
+  },
+  "ceiling": {
+    "default": { "id": "ST-R01", "params": { "layout": "single" } },
+    "overrides": [
+      { "cell": [1, 1], "id": "ST-R04", "params": { "tone": "warm" } },
+      { "cell": [2, 1], "id": "ST-R04", "params": { "tone": "warm" } },
+      { "cell": [0, 0], "id": "ST-R04", "params": { "tone": "warm" } },
+      { "cell": [3, 0], "id": "ST-R05", "params": { "mode": "bright" } }
+    ]
+  },
+  "pieces": [
+    { "id": "ST-C01", "position": [0.36, 0, 0.36], "rot": 0, "params": { "accent": "warning" } },
+    { "id": "ST-C01", "position": [4.0, 0, 0.36], "rot": 0, "params": { "accent": "warning" } },
+    { "id": "ST-C01", "position": [6.0, 0, 0.36], "rot": 0, "params": { "accent": "warning" } },
+    { "id": "ST-C01", "position": [0.36, 0, 4.0], "rot": 90, "params": { "accent": "warning" } },
+    { "id": "ST-C01", "position": [7.64, 0, 2.0], "rot": -90, "params": { "accent": "warning" } },
+
+    { "id": "NW-02-C", "position": [1.35, 0, 0.78], "rot": 0, "params": { "level": "full" } },
+    { "id": "NW-02-C", "position": [2.65, 0, 0.78], "rot": 0, "params": { "level": "full" } },
+    { "id": "NW-02-C", "position": [0.78, 0, 1.55], "rot": 90, "params": { "level": "full" } },
+
+    { "id": "NW-01-C", "position": [1.65, 2.38, 0.78], "rot": 0, "params": { "shape": "elbow" } },
+    { "id": "NW-01-C", "position": [3.35, 2.54, 0.78], "rot": 0, "params": { "shape": "straight" } },
+
+    { "id": "AP-02", "position": [0.68, 0, 3.0], "rot": 90, "params": { "state": "deployed" } },
+    { "id": "AP-02", "position": [5.0, 0, 0.52], "rot": 0, "params": { "state": "folded" } },
+    { "id": "AP-02", "position": [7.32, 0, 3.25], "rot": -90, "params": { "state": "deployed" } },
+
+    { "id": "NW-05-A", "position": [7.48, 0, 1.05], "rot": -90, "params": { "state": "sealed" } },
+    { "id": "NW-05-B", "position": [6.38, 0, 0.36], "rot": 0, "params": { "status": "alert" } },
+    { "id": "PR-05", "position": [5.0, 2.48, 0.22], "rot": 0, "params": { "screen": "solar-alert", "mount": "wall" } },
+
+    { "id": "AT-04", "position": [3.85, 0, 3.15], "rot": 180, "params": { "style": "eva" } },
+    { "id": "MI-11", "position": [2.65, 0, 1.85], "rot": 15, "params": { "state": "alert" } },
+    { "id": "MI-11", "position": [3.08, 0, 1.88], "rot": -10, "params": { "state": "standby" } },
+    { "id": "MI-09", "position": [0.85, 0, 5.15], "rot": 90, "params": { "style": "hazard" } }
+  ],
+  "lights": [
+    { "position": [4.0, 2.52, 3.1], "color": "#f6f4ff", "intensity": 4.2, "distance": 11.5, "decay": 2 },
+    { "position": [2.2, 2.38, 1.5], "color": "#f6f4ff", "intensity": 2.9, "distance": 8.2, "decay": 2 },
+    { "position": [6.3, 2.38, 1.6], "color": "#f6f4ff", "intensity": 2.9, "distance": 8.2, "decay": 2 },
+    { "position": [0.85, 1.18, 3.0], "color": "#ffb020", "intensity": 1.45, "distance": 1.6, "decay": 2 },
+    { "position": [7.15, 1.18, 3.25], "color": "#ffb020", "intensity": 1.45, "distance": 1.6, "decay": 2 },
+    { "position": [2.0, 1.15, 1.25], "color": "#28e4ff", "intensity": 0.95, "distance": 1.8, "decay": 2 }
+  ],
+  "views": [
+    {
+      "id": "shelter-main",
+      "label": "View 1 (Radiation Shelter: Water-Shield Walls, Folding Bunks & Blast Door)",
+      "position": [5.2, 1.56, 5.48],
+      "target": [4.05, 1.28, 0.92],
+      "fov": 64
+    },
+    {
+      "id": "shelter-blast-door",
+      "label": "View 2 (Heavy Blast Hatch & Solar Storm Telemetry)",
+      "position": [1.85, 1.52, 4.85],
+      "target": [6.4, 1.32, 0.85],
+      "fov": 56
+    }
+  ]
+}
