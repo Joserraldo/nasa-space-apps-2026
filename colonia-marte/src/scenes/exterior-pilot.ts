@@ -22,6 +22,7 @@ import { createNavigation } from "../navigation/mode-controller";
 import { createButton } from "../ui";
 import { buildColonyGroup, parseColonyLayout, type ColonyLayout, type ColonyViewSpec } from "./colony-layout";
 import { countColonyTriangles } from "./colony-batches";
+import { composeColonyLayout } from "./colony-district";
 
 export { buildColonyGroup, parseColonyLayout };
 
@@ -101,7 +102,7 @@ export async function mountExteriorPilot(input: unknown = colonyJson): Promise<v
   camera.updateProjectionMatrix();
 
   const registry = createProductionRegistry();
-  const layout = parseColonyLayout(input, registry);
+  const layout = composeColonyLayout(parseColonyLayout(input, registry), registry);
   document.title = `${layout.name} | Mars Colony`;
 
   const dem = layout.biome === "jezero" ? await loadExteriorDEM() : undefined;
@@ -132,6 +133,8 @@ export async function mountExteriorPilot(input: unknown = colonyJson): Promise<v
   if (layout.biome === "jezero") applyExteriorLightingCalibration(rendering);
   // Depth-aware upsampling keeps contact shadows without running AO at the full viewport size.
   rendering.ao.configuration.halfRes = true;
+  // The colony is static. Reuse converged AO until the camera or visible geometry changes.
+  rendering.ao.configuration.accumulate = true;
 
   const colony = buildColonyGroup(layout, registry, dem);
   scene.add(colony);
@@ -163,6 +166,8 @@ export async function mountExteriorPilot(input: unknown = colonyJson): Promise<v
   const viewParam = Number(query.get("view") ?? "1");
   const initialIdx = Number.isInteger(viewParam) && viewParam >= 1 ? viewParam - 1 : 0;
   applyView(layout.views[initialIdx] ?? layout.views[0]);
+  // The wide final shot sees almost every building; tight pilot shots benefit from per-object culling.
+  if (["c4", "c5", "final"].includes(layout.id)) colony.optimizeStaticRender(camera);
 
   const controls = document.getElementById("controls");
   if (controls) {
@@ -238,7 +243,10 @@ export async function mountExteriorPilot(input: unknown = colonyJson): Promise<v
     stats.begin();
     navigation.update(dt);
     camera.updateMatrixWorld();
-    if (colony.updateLods(camera)) renderer.shadowMap.needsUpdate = true;
+    if (colony.updateLods(camera)) {
+      renderer.shadowMap.needsUpdate = true;
+      rendering.ao.firstFrame();
+    }
     skyMesh.position.copy(camera.position);
     composer.render(dt);
     stats.end();

@@ -16,9 +16,11 @@ export function mountSpace(): void {
 
   const rendering = createRendering(viewport);
   const { renderer, scene, camera, composer, stats } = rendering;
-  const capture = new URLSearchParams(location.search).get("capture");
+  const query = new URLSearchParams(location.search);
+  const capture = query.get("capture");
   const captureAngle = capture === "detail" || capture === "thrusters" ? capture : undefined;
-  const shot = createSpaceShot(createProductionRegistry(), camera.aspect, captureAngle);
+  const shot = createSpaceShot(createProductionRegistry(), camera.aspect, captureAngle,
+    query.get("ship") === "mv-10" ? "MV-10" : "MV-09");
   camera.copy(shot.camera);
   camera.updateMatrixWorld();
   applyEnvironment(rendering, shot.preset);

@@ -16,6 +16,6 @@
     {"id": "MI-05", "at": [8.8, -6.6], "yOffset": -0.1, "rot": -26}
   ],
   "views": [
-    {"id": "chapter-overview", "label": "Chapter overview", "position": [45, 37, 54], "target": [3, 0, 3], "fov": 53}
+    {"id": "chapter-overview", "label": "Chapter overview", "position": [34, 20, 39], "target": [9, 0.8, 2], "fov": 51}
   ]
 }

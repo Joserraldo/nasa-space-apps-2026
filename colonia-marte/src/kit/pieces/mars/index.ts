@@ -1,6 +1,7 @@
 import type { PieceRegistry } from "../../registry";
 import { registerMarsBuildings } from "./buildings";
 import { registerOpenFrameDome } from "./open-frame-dome";
+import { registerBiodome } from "./biodome";
 import { registerCommandTower } from "./command-tower";
 import { registerResidentialBlock } from "./residential-block";
 import { registerMarsCommsDish } from "./comms-dish";
@@ -13,6 +14,7 @@ import { registerMarsInfrastructure } from "./infrastructure";
 import { registerMarsRocks } from "./rocks";
 import { registerMarsReconBuggy } from "./recon-buggy";
 import { registerMarsRoverTruck } from "./rover-truck";
+import { registerRoverTracks } from "./rover-tracks";
 import { registerMarsStrandedRover } from "./stranded-rover";
 import { registerMarsTransit } from "./transit";
 import { registerMarsVehicleGarage } from "./vehicle-garage";
@@ -27,6 +29,7 @@ export function registerMarsPieces(registry: PieceRegistry): void {
   registerGreenhouse(registry);
   registerMarsBuildings(registry);
   registerOpenFrameDome(registry);
+  registerBiodome(registry);
   registerCommandTower(registry);
   registerResidentialBlock(registry);
   registerMarsIndustrial(registry);
@@ -34,6 +37,7 @@ export function registerMarsPieces(registry: PieceRegistry): void {
   registerMarsCommsDish(registry);
   registerMarsTransit(registry);
   registerMarsRoverTruck(registry);
+  registerRoverTracks(registry);
   registerMarsStrandedRover(registry);
   registerMarsReconBuggy(registry);
   registerMarsVehicleGarage(registry);

@@ -109,12 +109,14 @@ describe("Main entrance and paved core", () => {
     expect(layout.placements.filter(part => part.id === "NX-04" && part.params?.principal)).toHaveLength(1);
   });
 
-  it("builds the real Carbon entrance pieces and leaves the west district free", () => {
+  it("keeps the real Carbon entrance pieces and declares the western sublayout", () => {
     const layout = parseColonyLayout(pilot, registry);
     expect(layout.placements.find(part => part.id === "MB-14")?.at).toEqual([-14.62, 32.51]);
     expect(layout.placements.find(part => part.id === "MV-01")?.at).toEqual([-4.31, 29.02]);
     expect(layout.reservations.map(slot => slot.id)).not.toContain("MB-14");
-    expect(layout.reservedAreas).toContainEqual({ id: "base-district", at: [-69, -2], size: [60, 40] });
+    expect(layout.reservedAreas).toContainEqual({
+      id: "base-district", at: [-66, 11], size: [60, 52], sublayout: "base-district", rot: 90,
+    });
     expect(() => parseColonyLayout({ ...pilot, reservations: [{ id: "FAKE-99", at: [0, 0] }] }, registry))
       .toThrow(/Invalid reserved/);
     expect(() => parseColonyLayout({ ...pilot, reservedAreas: [{ id: "base-district", at: [0, 0], size: [-1, 40] }] }, registry))

@@ -150,7 +150,17 @@ const M_hologram = new MeshBasicMaterial({
   depthWrite: false, side: DoubleSide,
 });
 const M_screen = new MeshBasicMaterial({ color: "#FFFFFF" });
+const M_roverTracks = new MeshBasicMaterial({
+  color: paletteHex("black"),
+  transparent: true, depthWrite: false, polygonOffset: true, polygonOffsetFactor: -1, polygonOffsetUnits: -1,
+});
+M_roverTracks.onBeforeCompile = shader => {
+  shader.vertexShader = `attribute float treadCoverage;\nvarying float vTreadCoverage;\n${shader.vertexShader}`
+    .replace("#include <begin_vertex>", "#include <begin_vertex>\nvTreadCoverage = treadCoverage;");
+  shader.fragmentShader = `varying float vTreadCoverage;\n${shader.fragmentShader}`
+    .replace("#include <color_fragment>", "#include <color_fragment>\ndiffuseColor.a *= vTreadCoverage;");
+};
 
-export const materials = { M_palette, M_glass, M_sky, M_terrain, M_hologram, M_screen, M_hallPlume };
+export const materials = { M_palette, M_glass, M_sky, M_terrain, M_hologram, M_screen, M_hallPlume, M_roverTracks };
 Object.entries(materials).forEach(([name, material]) => { material.name = name; });
 export const sharedMaterials = new Set<Material>(Object.values(materials));

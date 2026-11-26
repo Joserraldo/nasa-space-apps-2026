@@ -1,4 +1,4 @@
-import { BatchedMesh, InstancedMesh, LOD, Mesh, PerspectiveCamera, PlaneGeometry } from "three";
+import { BatchedMesh, BoxGeometry, Group, InstancedMesh, LOD, Mesh, MeshBasicMaterial, PerspectiveCamera, PlaneGeometry } from "three";
 import { describe, expect, it } from "vitest";
 import colonyJson from "../../data/layouts/colonies/exterior-pilot.json";
 import { createProductionRegistry } from "../../src/kit/pieces";
@@ -8,7 +8,7 @@ import { drawDecalSticker } from "../../src/materials/decal-stickers";
 import { decalScreenGeometry, decalTypes, SCREEN_HEIGHT, SCREEN_WIDTH } from "../../src/materials/screens";
 import { materials } from "../../src/materials/shared";
 import { buildColonyGroup, parseColonyLayout } from "../../src/scenes/exterior-pilot";
-import { countColonyTriangles } from "../../src/scenes/colony-batches";
+import { ColonyGroup, countColonyTriangles } from "../../src/scenes/colony-batches";
 import { validateRegistry } from "../../tools/validate-pieces";
 
 const requiredIds = [
@@ -17,6 +17,45 @@ const requiredIds = [
 ] as const;
 
 describe("T3.1 Mars colony exterior pilot pieces, decals, and layout", () => {
+  it("fuses active static levels by material without doubling instances or moving the geometry", () => {
+    const colony = new ColonyGroup();
+    const material = new MeshBasicMaterial();
+    for (const offset of [0, 3]) {
+      const lod = new LOD();
+      lod.position.x = offset;
+      for (const [distance, count] of [[0, 2], [20, 1]]) {
+        const model = new Group();
+        for (let index = 0; index < count; index++) {
+          const panel = new Mesh(new BoxGeometry(1, 1, 1), material);
+          panel.position.y = index;
+          model.add(panel);
+        }
+        lod.addLevel(model, distance);
+      }
+      colony.addLOD(lod);
+    }
+    const camera = new PerspectiveCamera();
+    const visible = () => {
+      const meshes: Mesh[] = [];
+      colony.traverseVisible(node => {
+        if (node instanceof Mesh && node.layers.test(camera.layers)) meshes.push(node);
+      });
+      return meshes;
+    };
+    colony.optimizeStaticRender();
+    colony.updateLods(camera);
+    expect(visible()).toHaveLength(1);
+    expect(countColonyTriangles(visible()[0])).toBe(48);
+    camera.position.z = 50;
+    camera.updateMatrixWorld();
+    expect(colony.updateLods(camera)).toBe(true);
+    expect(visible()).toHaveLength(1);
+    expect(countColonyTriangles(visible()[0])).toBe(24);
+    expect(colony.updateLods(camera)).toBe(false);
+    colony.dispose();
+    material.dispose();
+  });
+
   it("fuses the dome per material at each of its three distance levels", () => {
     const registry = createProductionRegistry();
     const layout = parseColonyLayout(colonyJson, registry);
@@ -57,7 +96,7 @@ describe("T3.1 Mars colony exterior pilot pieces, decals, and layout", () => {
       child instanceof InstancedMesh && child.count === 4 && child.material === materials.M_glass)).toBe(true);
     const additions = layout.placements.filter(piece =>
       ["MI-07", "NX-04", "MB-11", "MI-01", "MI-02", "MI-10", "MB-05", "MB-09", "MB-08",
-        "MB-14", "MV-01", "MV-03", "MV-11", "NX-01", "MI-05"].includes(piece.id) ||
+        "MB-06", "MB-14", "MV-01", "MV-03", "MV-11", "NX-01", "NX-03", "MI-05"].includes(piece.id) ||
       (piece.id === "MI-03" || piece.id === "MI-09") && piece.at[1] > 20);
     const newPieces = additions.reduce((total, spec) =>
       total + countColonyTriangles(registry.build(spec.id, spec.params)), 0);
