@@ -46,11 +46,11 @@ describe("atlas UV and shared material boundary", () => {
     expect(ledStrip().getAttribute("uv").getY(0)).toBe(paletteUV("cyan")[1]);
     expect(() => coloredGeometry(source, "missing")).toThrow();
   });
-  it("exposes exactly six singleton materials, including a single palette material for LEDs", () => {
+  it("shares one atlas material for solid emission and one additive Hall plume material", () => {
     expect(Object.keys(materials)).toEqual([
-      "M_palette", "M_glass", "M_sky", "M_terrain", "M_hologram", "M_screen",
+      "M_palette", "M_glass", "M_sky", "M_terrain", "M_hologram", "M_screen", "M_hallPlume",
     ]);
-    expect(sharedMaterials.size).toBe(6);
+    expect(sharedMaterials.size).toBe(7);
     expect(previewOpaque).toBe(materials.M_palette);
     expect(previewGlow).toBe(materials.M_palette);
     expect(materials.M_palette.map).toBe(paletteMap);
