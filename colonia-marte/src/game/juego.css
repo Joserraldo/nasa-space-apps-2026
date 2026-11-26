@@ -1,5 +1,7 @@
 /* Capas del juego: escenario 3D, velo de fundido y alerta, e interfaz. Colores de los tokens del HUD. */
-.juego { position: relative; grid-row: 1 / -1; min-height: 0; overflow: hidden; }
+/* El juego ocupa toda la ventana por sí mismo: no depende de los estilos base de las rutas de revisión. */
+.juego { position: fixed; inset: 0; overflow: hidden; }
+.juego, .juego *, .juego *::before, .juego *::after { box-sizing: border-box; }
 .juego__3d { position: absolute; inset: 0; }
 .juego__3d canvas { display: block; }
 .juego__velo { position: absolute; inset: 0; background: #000; opacity: 0; pointer-events: none; }

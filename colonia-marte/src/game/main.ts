@@ -269,9 +269,11 @@ export function mountJuego(): void {
     // El niño toca para hablar: antes de hacerlo ve los medidores y el objetivo.
     vista.interaction = { target: persona.name, action: t("juego.hablar"), voiceLine: `${t("juego.hablar")}: ${persona.name}.` };
 
+    /** El aviso de cierre llega después: así sabe a dónde ir. */
+    let irAlMenu = false;
     const menu = createPauseMenu(estadoPausa(vistaDe(actual), idioma), (id) => {
       if (id === "settings") ajustesMenu.open();
-      if (id === "menu") { menu.close(); inicio(); }
+      if (id === "menu") { irAlMenu = true; menu.close(); }
     });
     const ajustesMenu = createSettingsMenu(ajustes, {
       onChange: (nuevos) => {
@@ -284,7 +286,7 @@ export function mountJuego(): void {
     });
     menu.dialog.addEventListener("close", () => {
       mezclador.pausar(false);
-      if (juego) mostrar(); else inicio();
+      if (juego && !irAlMenu) mostrar(); else inicio();
     });
 
     const hud = createGameHud(vista, () => hablar(), () => { mezclador.pausar(true); menu.open(); });
