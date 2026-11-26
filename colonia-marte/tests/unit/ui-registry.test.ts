@@ -21,13 +21,13 @@ describe("UIRegistry and Sci-fi UI Kit Foundation", () => {
     installDomShim();
   });
 
-  it("registers all 43 Atomic UI modules across Foundation, Atoms, Molecules, and Organisms", () => {
+  it("registers all 46 Atomic UI modules across Foundation, Atoms, Molecules, and Organisms", () => {
     const registry = createUIRegistry();
-    expect(registry.ids()).toHaveLength(43);
+    expect(registry.ids()).toHaveLength(46);
     expect(registry.entries("foundation")).toHaveLength(4);
     expect(registry.entries("atom")).toHaveLength(19);
     expect(registry.entries("molecule")).toHaveLength(14);
-    expect(registry.entries("organism")).toHaveLength(6);
+    expect(registry.entries("organism")).toHaveLength(9);
 
     for (const entry of registry.entries()) {
       expect(entry.metadata.figmaNodeId.length).toBeGreaterThan(2);

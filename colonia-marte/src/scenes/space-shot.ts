@@ -45,7 +45,7 @@ export function createSpaceShot(registry: PieceRegistry, aspect: number, capture
   }
   pose(capture ? 0.8 : 0);
   if (capture === "detail") {
-    camera.position.set(12.0, 8.7, -18.0);
+    camera.position.set(7.2, 8.4, -19.5);
     camera.lookAt(-0.8, 3.0, 0.65);
     camera.zoom = 1.76;
   } else if (capture === "thrusters") {
