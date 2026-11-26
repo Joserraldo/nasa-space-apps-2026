@@ -78,7 +78,9 @@ export function crearReproductor(ctx: BaseAudioContext, destino: AudioNode): Rep
     },
     avanzar() {
       if (!actual) return;
-      while (actual.siguiente < ctx.currentTime + ADELANTO) {
+      // El tema final suena una vez; los demás se repiten.
+      const tope = actual.tema === "final" ? TEMAS.final.acordes.length : Infinity;
+      while (actual.n < tope && actual.siguiente < ctx.currentTime + ADELANTO) {
         programarCompas(ctx, actual.canal, actual.tema, actual.n, actual.siguiente);
         actual.siguiente += TEMAS[actual.tema].compas;
         actual.n++;
