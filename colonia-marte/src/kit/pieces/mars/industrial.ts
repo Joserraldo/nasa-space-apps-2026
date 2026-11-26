@@ -7,6 +7,7 @@ import {
 import {
   cyanEquipPod, stickerPlacard, valveRedBoxCenter, ventGrilleGroup, whiteBoxAt,
 } from "./mars-helpers";
+import { registerFuelTank } from "./fuel-tank";
 
 const bayStyles = ["utility", "hangar"] as const;
 interface UtilityBayParams { style: typeof bayStyles[number] }
@@ -45,6 +46,7 @@ function circularRoofHatch(x: number, y: number, z: number): Group {
 }
 
 export function registerMarsIndustrial(registry: PieceRegistry): void {
+  registerFuelTank(registry);
   registry.register<UtilityBayParams>("MB-10", {
     parse: parseUtilityBay,
     variants: {

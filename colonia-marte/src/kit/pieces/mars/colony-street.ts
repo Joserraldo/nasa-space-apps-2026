@@ -5,10 +5,11 @@ import { coloredGeometry } from "../../../materials/uv";
 import type { PieceRegistry } from "../../registry";
 import { alignBaseCenter, boxCenter, parseRecord } from "../station/helpers";
 import { fusedParts, location, repeatMesh } from "./transit-details";
+import { buildPlaza, plazaContains, plazaOutline, type Plaza } from "./colony-plaza";
 
 type Point = [number, number];
 type Height = (x: number, z: number) => number;
-interface Street { path: Point[]; access?: Point[] }
+interface Street { layout: "road"; path: Point[]; access?: Point[] }
 interface Section { center: Vector2; lateral: Vector2 }
 type Band = [offset: number, height: number];
 
@@ -32,8 +33,46 @@ function parsePath(path: unknown): Point[] {
 }
 
 export function parseStreet(input: unknown): Street {
-  const { path = standard, access } = parseRecord(input, ["path", "access"]);
-  return { path: parsePath(path), ...(access === undefined ? {} : { access: parsePath(access) }) };
+  const { layout = "road", path = standard, access } = parseRecord(input, ["layout", "path", "access"]);
+  if (layout !== "road") throw new Error("Street layout must be road");
+  return { layout, path: parsePath(path), ...(access === undefined ? {} : { access: parsePath(access) }) };
+}
+
+export function parseColonyPaving(input: unknown): Street | Plaza {
+  if (!input || typeof input !== "object" || !("layout" in input) || input.layout !== "plaza") {
+    return parseStreet(input);
+  }
+  const { size, lanes = [], outline } = parseRecord(input, ["layout", "size", "lanes", "outline"]);
+  if (!Array.isArray(size) || size.length !== 2 ||
+    !size.every(value => typeof value === "number" && Number.isFinite(value) && value >= 2 && value <= 64)) {
+    throw new Error("Plaza size must be a [width, depth] from 2 to 64 metres");
+  }
+  if (!Array.isArray(lanes) || lanes.length > 24) throw new Error("Invalid plaza lanes");
+  const spec: Plaza = { layout: "plaza", size: [size[0], size[1]], lanes: lanes.map(parsePath) };
+  if (outline !== undefined) {
+    const points = parsePath(outline);
+    if (points.length < 3 || new Set(points.map(point => point.join(","))).size !== points.length ||
+      points.some(([x, z]) => Math.abs(x) > size[0] / 2 || Math.abs(z) > size[1] / 2)) {
+      throw new Error("Invalid plaza outline");
+    }
+    spec.outline = points;
+  }
+  const boundary = plazaOutline(spec);
+  for (const path of spec.lanes) for (let i = 1; i < path.length; i++) {
+    const [x, z] = path[i - 1], [endX, endZ] = path[i];
+    const steps = Math.ceil(Math.hypot(endX - x, endZ - z) / 0.4);
+    for (let step = 0; step <= steps; step++) {
+      const t = step / steps;
+      if (!plazaContains(boundary, x + (endX - x) * t, z + (endZ - z) * t)) {
+        throw new Error("Plaza lanes must stay within the curb");
+      }
+    }
+  }
+  return spec;
+}
+
+export function buildColonyPaving(spec: Street | Plaza, height?: Height) {
+  return spec.layout === "plaza" ? buildPlaza(spec, height) : buildStreet(spec, height);
 }
 
 function rightOf(tangent: Vector2) {
@@ -172,7 +211,7 @@ function edgeDashes(sections: Section[], height: Height) {
   return dashes;
 }
 
-export function buildStreet({ path, access }: Street, height: Height = () => 0) {
+export function buildStreet({ path, access }: Omit<Street, "layout">, height: Height = () => 0) {
   const sections = streetSections(path);
   const shell = new Group();
   shell.add(curbShell(sections, halfWidth, height));
@@ -196,9 +235,12 @@ export function buildStreet({ path, access }: Street, height: Height = () => 0) 
 
 export function registerColonyStreet(registry: PieceRegistry) {
   registry.register("MI-01", {
-    parse: parseStreet,
-    variants: { standard: { path: standard } },
+    parse: parseColonyPaving,
+    variants: {
+      standard: { layout: "road", path: standard },
+      plaza: { layout: "plaza", size: [4.5, 4.5], lanes: [[[-1.22, -1.80], [-1.22, 1.80]]] },
+    },
     metadata: { category: "furniture", pivot: "base-center" },
-    build: spec => alignBaseCenter(buildStreet(spec)),
+    build: spec => alignBaseCenter(buildColonyPaving(spec)),
   });
 }

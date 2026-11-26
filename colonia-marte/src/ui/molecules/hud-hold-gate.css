@@ -1,4 +1,14 @@
 .ui-hud-hold-gate {
+  display: grid;
+  justify-items: center;
+  gap: 8px;
+}
+.ui-hud-hold-gate__label {
+  margin: 0;
+  font: 600 var(--ui-hud-text-title)/1.4 var(--ui-hud-font-body);
+  color: var(--ui-hud-panel-solid);
+}
+.ui-hud-hold-gate__controls {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -10,4 +20,4 @@
 .ui-hud-hold-gate .ui-hud-ring__outer,
 .ui-hud-hold-gate .ui-hud-ring__ticks line { stroke: var(--ui-hud-panel-solid); }
 .ui-hud-hold-gate .ui-hud-ring__arc { stroke-dasharray: var(--hold-progress) 100; }
-.ui-hud-hold-gate__button { touch-action: none; user-select: none; }
+.ui-hud-hold-gate__button { min-block-size: var(--ui-hud-target); touch-action: none; user-select: none; }

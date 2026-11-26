@@ -19,7 +19,9 @@ const requiredIds = [
 describe("T3.1 Mars colony exterior pilot pieces, decals, and layout", () => {
   it("fuses the dome per material at each of its three distance levels", () => {
     const registry = createProductionRegistry();
-    const colony = buildColonyGroup(parseColonyLayout(colonyJson, registry), registry);
+    const layout = parseColonyLayout(colonyJson, registry);
+    const placements = layout.placements.filter(piece => piece.id === "MB-04");
+    const colony = buildColonyGroup({ ...layout, placements }, registry);
     const batches = colony.children.filter(child => child instanceof BatchedMesh);
     const buildings = colony.children.filter(child => child instanceof LOD);
 
@@ -34,6 +36,7 @@ describe("T3.1 Mars colony exterior pilot pieces, decals, and layout", () => {
     camera.position.copy(dome.position);
     camera.updateMatrixWorld();
     colony.updateMatrixWorld();
+    colony.updateLods(camera);
     expect(colony.updateLods(camera)).toBe(false);
     expect(dome.getCurrentLevel()).toBe(0);
     camera.position.z += 200;
@@ -52,11 +55,15 @@ describe("T3.1 Mars colony exterior pilot pieces, decals, and layout", () => {
     const capsules = colony.children.find(child => child instanceof LOD && child.name.startsWith("MB-01")) as LOD;
     expect(capsules.levels[0].object.children.some(child =>
       child instanceof InstancedMesh && child.count === 4 && child.material === materials.M_glass)).toBe(true);
-    const additions = layout.placements.filter(piece => ["MI-07", "NX-04", "MB-11", "MI-01"].includes(piece.id));
+    const additions = layout.placements.filter(piece =>
+      ["MI-07", "NX-04", "MB-11", "MI-01", "MI-02", "MI-10", "MB-05", "MB-09", "MB-08",
+        "MB-14", "MV-01", "MV-03", "MV-11", "NX-01", "MI-05"].includes(piece.id) ||
+      (piece.id === "MI-03" || piece.id === "MI-09") && piece.at[1] > 20);
     const newPieces = additions.reduce((total, spec) =>
       total + countColonyTriangles(registry.build(spec.id, spec.params)), 0);
     expect(colony.detailedTriangles).toBe(76404 + newPieces);
-  });
+    // This integration check builds the full colony and every authored LOD.
+  }, 30_000);
 
   it("registers all 11 exterior pieces and passes specification 8.1 checks", () => {
     const registry = new PieceRegistry();

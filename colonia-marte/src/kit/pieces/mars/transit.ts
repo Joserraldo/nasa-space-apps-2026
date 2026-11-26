@@ -18,7 +18,7 @@ type Resolution = (typeof resolution)[TransitDetail];
 type Profile = [radius: number, x: number][];
 type TransitColor = PaletteKey | "nightSky" | "xenonGlow";
 
-function axialProfile(profile: Profile, segments: number, color: TransitColor, x = 0, y = 0, z = 0) {
+export function axialProfile(profile: Profile, segments: number, color: TransitColor, x = 0, y = 0, z = 0) {
   const geometry = new LatheGeometry(profile.map(([radius, axial]) => new Vector2(radius, axial)), segments);
   if (profile.some(([radius]) => radius === 0)) {
     const index = geometry.getIndex()!, stride = profile.length, triangles: number[] = [];

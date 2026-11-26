@@ -1,0 +1,190 @@
+import { BoxGeometry, BufferGeometry, Float32BufferAttribute, Group, Matrix4, Mesh, ShapeUtils, Vector2 } from "three";
+import { mergeGeometries, mergeVertices } from "three/addons/utils/BufferGeometryUtils.js";
+import { materials } from "../../../materials/shared";
+import { coloredGeometry } from "../../../materials/uv";
+import { boxCenter } from "../station/helpers";
+import { location, repeatMesh } from "./transit-details";
+
+type Point = [number, number];
+type Height = (x: number, z: number) => number;
+export interface Plaza { layout: "plaza"; size: Point; outline?: Point[]; lanes: Point[][] }
+
+const tilePitch = 1.42;
+const joint = 0.055;
+const tileThickness = 0.052;
+const top = 0.052;
+
+export function plazaOutline({ size: [w, d], outline }: Plaza): Point[] {
+  return outline ?? [[-w / 2, -d / 2], [w / 2, -d / 2], [w / 2, d / 2], [-w / 2, d / 2]];
+}
+
+export function plazaContains(outline: readonly Point[], x: number, z: number) {
+  let inside = false;
+  for (let i = 0, j = outline.length - 1; i < outline.length; j = i++) {
+    const [ax, az] = outline[j], [bx, bz] = outline[i];
+    if ((az > z) !== (bz > z) && x < ax + (bx - ax) * (z - az) / (bz - az)) inside = !inside;
+  }
+  return inside;
+}
+
+function surface(points: number[], faces: number[]) {
+  const geometry = new BufferGeometry();
+  geometry.setAttribute("position", new Float32BufferAttribute(points, 3));
+  geometry.setIndex(faces);
+  geometry.computeVertexNormals();
+  return geometry;
+}
+
+/** Clip one triangulated piece of the footprint against a rectangular cell or its inset. */
+function clip(polygon: Point[], axis: 0 | 1, limit: number, sense: number): Point[] {
+  const result: Point[] = [];
+  for (let i = 0; i < polygon.length; i++) {
+    const a = polygon[i], b = polygon[(i + 1) % polygon.length];
+    const da = (a[axis] - limit) * sense, db = (b[axis] - limit) * sense;
+    if (da >= 0) result.push(a);
+    if (da * db < 0) {
+      const t = da / (da - db);
+      result.push([a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t]);
+    }
+  }
+  return result;
+}
+
+function area(polygon: readonly Point[]) {
+  return polygon.reduce((sum, [x, z], i) => {
+    const [nextX, nextZ] = polygon[(i + 1) % polygon.length];
+    return sum + x * nextZ - z * nextX;
+  }, 0) / 2;
+}
+
+function addPatch(
+  vertices: number[], faces: number[], polygon: Point[], height: Height, lift: number,
+) {
+  if (Math.abs(area(polygon)) < 0.00001) return;
+  const first = vertices.length / 3;
+  const [a, ...rest] = area(polygon) < 0 ? polygon : polygon.slice().reverse();
+  for (const [x, z] of [a, ...rest]) vertices.push(x, height(x, z) + lift, z);
+  for (let i = 1; i < rest.length; i++) {
+    if (Math.abs(area([a, rest[i - 1], rest[i]])) > 0.000002) faces.push(first, first + i, first + i + 1);
+  }
+}
+
+function pavement(outline: Point[], width: number, depth: number, height: Height) {
+  const contour = outline.map(([x, z]) => new Vector2(x, z));
+  const triangles = ShapeUtils.triangulateShape(contour, []).map(face => face.map(index => outline[index]));
+  const columns = Math.ceil(width / tilePitch), rows = Math.ceil(depth / tilePitch);
+  const tileX = width / columns, tileZ = depth / rows;
+  const bases: number[] = [], baseFaces: number[] = [], edges: number[] = [], edgeFaces: number[] = [];
+  const mounts = [];
+  for (let row = 0; row < rows; row++) for (let col = 0; col < columns; col++) {
+    const x = col * tileX - width / 2, z = row * tileZ - depth / 2;
+    const parts = triangles.map(polygon => clip(
+      clip(clip(clip(polygon, 0, x, 1), 0, x + tileX, -1), 1, z, 1), 1, z + tileZ, -1,
+    )).filter(polygon => polygon.length >= 3);
+    const covered = parts.reduce((sum, part) => sum + Math.abs(area(part)), 0);
+    if (covered < 0.00001) continue;
+    if (covered >= tileX * tileZ - 0.00001) {
+      addPatch(bases, baseFaces, [[x, z], [x + tileX, z], [x + tileX, z + tileZ], [x, z + tileZ]], height, top - 0.026);
+      const cx = x + tileX / 2, cz = z + tileZ / 2;
+      mounts.push(location(cx, height(cx, cz) + top - tileThickness / 2, cz));
+      continue;
+    }
+    const inset = joint / 2;
+    for (const part of parts) {
+      addPatch(bases, baseFaces, part, height, top - 0.026);
+      const face = clip(clip(clip(clip(part, 0, x + inset, 1), 0, x + tileX - inset, -1),
+        1, z + inset, 1), 1, z + tileZ - inset, -1);
+      addPatch(edges, edgeFaces, face, height, top);
+    }
+  }
+  const slab = boxCenter([tileX - joint, tileThickness, tileZ - joint], "gray", [0, 0, 0], 0.014);
+  slab.geometry = slab.geometry.clone();
+  const paint = slab.geometry.getAttribute("color");
+  for (let i = 0; i < paint.count; i++) {
+    const tone = slab.geometry.attributes.position.getY(i) > 0.022 ? 1 : 0.76;
+    paint.setXYZ(i, tone, tone, tone);
+  }
+  const slabs = repeatMesh(slab, "Beveled plaza slab grid", mounts);
+  const transform = new Matrix4();
+  mounts.forEach(({ position: { x, z } }, index) => {
+    slabs.getMatrixAt(index, transform);
+    // Preserve the joint spacing on slopes.
+    transform.elements[1] = (height(x + tileX / 2, z) - height(x - tileX / 2, z)) / tileX;
+    transform.elements[9] = (height(x, z + tileZ / 2) - height(x, z - tileZ / 2)) / tileZ;
+    slabs.setMatrixAt(index, transform);
+  });
+  slabs.instanceMatrix.needsUpdate = true;
+  slabs.computeBoundingBox();
+  slabs.computeBoundingSphere();
+  return { slabs, bed: surface(bases, baseFaces), edgeSlabs: surface(edges, edgeFaces) };
+}
+
+function perimeter(outline: Point[], height: Height, bands: readonly Point[]) {
+  const edge = (area(outline) < 0 ? outline.slice().reverse() : outline).map(([x, z]) => new Vector2(x, z));
+  const points: number[] = [], faces: number[] = [];
+  const rows: Array<{ at: Vector2; outward: Vector2 }> = [];
+  const normals = edge.map((a, i) => {
+    const b = edge[(i + 1) % edge.length];
+    return new Vector2(b.y - a.y, a.x - b.x).normalize();
+  });
+  for (const [i, a] of edge.entries()) {
+    const normal = normals[i], before = normals.at(i - 1)!;
+    const b = edge[(i + 1) % edge.length], steps = Math.ceil(a.distanceTo(b) / 0.55);
+    rows.push({ at: a, outward: normal.clone().add(before).divideScalar(Math.max(0.40, 1 + normal.dot(before))) });
+    for (let j = 1; j < steps; j++) rows.push({ at: a.clone().lerp(b, j / steps), outward: normal });
+  }
+  for (const [i, { at, outward }] of rows.entries()) for (const [j, [offset, lift]] of bands.entries()) {
+    const { x, y: z } = at.clone().addScaledVector(outward, offset);
+    points.push(x, height(x, z) + lift, z);
+    if (j + 1 === bands.length) continue;
+    const a = i * bands.length + j, b = ((i + 1) % rows.length) * bands.length + j;
+    faces.push(a, b, a + 1, b, b + 1, a + 1);
+  }
+  return surface(points, faces);
+}
+
+function laneDashes(lanes: readonly Point[][], height: Height) {
+  const mounts = [];
+  for (const lane of lanes) {
+    let next = 0.38;
+    for (let i = 1; i < lane.length; i++) {
+      const [ax, az] = lane[i - 1], [bx, bz] = lane[i];
+      const dx = bx - ax, dz = bz - az, length = Math.hypot(dx, dz);
+      for (; next < length; next += 1.18) {
+        const x = ax + dx * next / length, z = az + dz * next / length;
+        const mount = location(x, height(x, z) + top + 0.012, z);
+        mount.rotation.y = Math.atan2(dx, dz);
+        mount.rotation.x = -Math.atan2(
+          height(x + dx / length * 0.18, z + dz / length * 0.18) -
+            height(x - dx / length * 0.18, z - dz / length * 0.18), 0.36,
+        );
+        mounts.push(mount);
+      }
+      next -= length;
+    }
+  }
+  return mounts;
+}
+
+export function buildPlaza(spec: Plaza, height: Height = () => 0) {
+  const outline = plazaOutline(spec);
+  const { slabs, bed, edgeSlabs } = pavement(outline, ...spec.size, height);
+  const curb = perimeter(outline, height, [[-0.086, top + 0.009], [0.03, top + 0.009], [0.108, 0.019]]);
+  const layers = [coloredGeometry(bed, "darkGray"), coloredGeometry(curb, "darkGray")];
+  if (edgeSlabs.index!.count) layers.push(coloredGeometry(edgeSlabs, "gray"));
+  const combinedPaving = mergeGeometries(layers)!;
+  const paving = mergeVertices(combinedPaving, 1e-6);
+  combinedPaving.dispose();
+  for (const geometry of [...layers, bed, curb, edgeSlabs]) geometry.dispose();
+  const bank = perimeter(outline, height, [[0.09, 0.018], [0.32, 0.014], [0.74, -0.018]]);
+  bank.setAttribute("iceMask", new Float32BufferAttribute(new Float32Array(bank.attributes.position.count), 1));
+  const group = new Group();
+  group.name = "MI-01 Paved colony platform";
+  group.add(new Mesh(paving, materials.M_palette), new Mesh(bank, materials.M_terrain), slabs);
+  const dashes = laneDashes(spec.lanes, height);
+  if (dashes.length) {
+    const lamp = new Mesh(coloredGeometry(new BoxGeometry(0.104, 0.012, 0.46), "cyan"), materials.M_palette);
+    group.add(repeatMesh(lamp, "Cyan plaza lane dashes", dashes));
+  }
+  return group;
+}

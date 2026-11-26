@@ -1,3 +1,5 @@
+import type { UILanguage } from "../i18n";
+
 export type Level = 0 | 1 | 2 | 3 | 4;
 
 export interface SettingsState {
@@ -8,6 +10,7 @@ export interface SettingsState {
   hardcore: boolean;
   bigText: boolean;
   joystickSide: "left" | "right";
+  language: UILanguage;
 }
 
 export type VolumeKey = "music" | "voice" | "sound";
@@ -15,7 +18,7 @@ export const SETTINGS_KEY = "colonia.settings.v1";
 const PROGRESS_PREFIX = "colonia.progress.";
 
 export const DEFAULT_SETTINGS: Readonly<SettingsState> = Object.freeze({
-  music: 3, voice: 4, sound: 3, difficulty: "easy", hardcore: false, bigText: false, joystickSide: "left",
+  music: 3, voice: 4, sound: 3, difficulty: "easy", hardcore: false, bigText: false, joystickSide: "left", language: "en",
 });
 
 export function effectiveDifficulty(state: SettingsState): SettingsState["difficulty"] | "hardcore" {
@@ -39,6 +42,9 @@ export function setSetting(state: SettingsState, key: keyof SettingsState, value
       break;
     case "joystickSide":
       if (value === "left" || value === "right") return { ...state, joystickSide: value };
+      break;
+    case "language":
+      if (value === "en" || value === "es") return { ...state, language: value };
       break;
     case "hardcore":
     case "bigText":

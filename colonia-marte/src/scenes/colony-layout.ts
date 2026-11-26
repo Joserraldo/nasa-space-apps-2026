@@ -3,9 +3,11 @@ import type { DEM } from "../environment/dem";
 import { terrainHeight, type Biome } from "../environment/terrain";
 import { inventoryIds } from "../kit/inventory";
 import { AIRLOCK_ENTRY_LODS } from "../kit/pieces/mars/airlock-entry";
-import { buildStreet, parseStreet } from "../kit/pieces/mars/colony-street";
+import { buildColonyPaving, parseColonyPaving } from "../kit/pieces/mars/colony-street";
+import { COLONY_BUILDING_LODS } from "../kit/pieces/mars/colony-building-details";
 import { GREENHOUSE_LODS } from "../kit/pieces/mars/greenhouse";
 import { LANDING_PAD_LODS } from "../kit/pieces/mars/landing-pad";
+import { vehicleDetailLevels } from "../kit/pieces/mars/rover-truck";
 import type { PieceRegistry } from "../kit/registry";
 import { materials } from "../materials/shared";
 import { ColonyGroup, countColonyTriangles, fuseColonyInfrastructure } from "./colony-batches";
@@ -34,6 +36,8 @@ export interface ColonyLayout {
   environment: string;
   terrainSeed: number;
   placements: ColonyPlacementSpec[];
+  reservations: Pick<ColonyPlacementSpec, "id" | "at" | "rot">[];
+  reservedAreas: { id: string; at: [number, number]; size: [number, number] }[];
   views: ColonyViewSpec[];
 }
 
@@ -76,6 +80,29 @@ export function parseColonyLayout(input: unknown, registry?: PieceRegistry): Col
     return { id: raw.id, at: raw.at, yOffset, rot, ...(params ? { params } : {}) };
   });
 
+  const slots = input.reservations ?? [];
+  if (!Array.isArray(slots)) throw new Error("Invalid reserved slots");
+  const reservations = slots.map(slot => {
+    if (!isObj(slot) || typeof slot.id !== "string" || !inventoryIds.has(slot.id) || !isVec2(slot.at)) {
+      throw new Error("Invalid reserved piece ID or coordinates");
+    }
+    if (slot.rot !== undefined && (typeof slot.rot !== "number" || !Number.isFinite(slot.rot))) {
+      throw new Error("Invalid reserved piece rotation");
+    }
+    return { id: slot.id, at: slot.at, rot: slot.rot ?? 0 };
+  });
+  const areas = input.reservedAreas ?? [];
+  if (!Array.isArray(areas)) throw new Error("Invalid reserved areas");
+  const areaIds = new Set<string>();
+  const reservedAreas = areas.map(area => {
+    if (!isObj(area) || typeof area.id !== "string" || !/^[a-z][a-z0-9-]*$/.test(area.id) ||
+      areaIds.has(area.id) || !isVec2(area.at) || !isVec2(area.size) || area.size.some(length => length <= 0)) {
+      throw new Error("Invalid reserved area ID, coordinates, or dimensions");
+    }
+    areaIds.add(area.id);
+    return { id: area.id, at: area.at, size: area.size };
+  });
+
   if (!Array.isArray(input.views) || input.views.length === 0) throw new Error("Colony layout requires views");
   const views: ColonyViewSpec[] = input.views.map(raw => {
     if (!isObj(raw) || typeof raw.id !== "string" || typeof raw.label !== "string" ||
@@ -90,7 +117,7 @@ export function parseColonyLayout(input: unknown, registry?: PieceRegistry): Col
   });
 
   return { id: input.id, name: input.name, biome: input.biome, environment: input.environment,
-    terrainSeed, placements, views };
+    terrainSeed, placements, reservations, reservedAreas, views };
 }
 
 export function buildColonyGroup(layout: ColonyLayout, registry: PieceRegistry, dem?: DEM) {
@@ -102,10 +129,14 @@ export function buildColonyGroup(layout: ColonyLayout, registry: PieceRegistry, 
   for (const item of layout.placements) {
     const [cx, cz] = item.at;
     if (item.id === "MI-01") {
-      const street = buildStreet(parseStreet(item.params ?? {}), (x, z) => terrainHeight(cx + x, cz + z, terrainOpts));
-      street.position.set(cx, item.yOffset ?? 0, cz);
-      colony.detailedTriangles += countColonyTriangles(street);
-      colony.add(street);
+      const spec = parseColonyPaving(item.params ?? {});
+      const angle = MathUtils.degToRad(item.rot ?? 0);
+      const c = Math.cos(angle), s = Math.sin(angle);
+      const paving = buildColonyPaving(spec, (x, z) => terrainHeight(cx + x * c + z * s, cz + z * c - x * s, terrainOpts));
+      paving.position.set(cx, item.yOffset ?? 0, cz);
+      paving.rotation.y = angle;
+      colony.detailedTriangles += countColonyTriangles(paving);
+      colony.add(paving);
       continue;
     }
     const piece = registry.build(item.id, item.params ?? {});
@@ -123,8 +154,11 @@ export function buildColonyGroup(layout: ColonyLayout, registry: PieceRegistry, 
     }
     piece.position.set(cx, groundY + (item.yOffset ?? 0), cz);
     if (item.rot) piece.rotation.y = MathUtils.degToRad(item.rot);
+    const isNewBuilding = ["MB-05", "MB-08", "MB-09"].includes(item.id);
+    const hasCarbonLevels = ["MB-14", "MV-01", "MV-03", "MV-11", "NX-01"].includes(item.id);
     const detailLevels = item.id === "MI-07" ? LANDING_PAD_LODS : item.id === "NX-04" ? AIRLOCK_ENTRY_LODS
-      : item.id === "MB-11" ? GREENHOUSE_LODS : null;
+      : item.id === "MB-11" ? GREENHOUSE_LODS
+      : isNewBuilding ? COLONY_BUILDING_LODS : hasCarbonLevels ? vehicleDetailLevels : null;
     if (detailLevels) {
       const lod = new LOD();
       lod.name = piece.name;
@@ -134,10 +168,12 @@ export function buildColonyGroup(layout: ColonyLayout, registry: PieceRegistry, 
       piece.position.set(0, 0, 0);
       piece.rotation.set(0, 0, 0);
       lod.addLevel(piece, 0);
+      const ranges = isNewBuilding ? [22, 38] : hasCarbonLevels ? [18, 37] : [62, 105];
       for (const [index, detail] of detailLevels.slice(1).entries()) {
-        const simplified = registry.build(item.id, { detail });
+        const simplified = registry.build(item.id,
+          item.id === "NX-04" || hasCarbonLevels ? { ...item.params, detail } : { detail });
         simplified.visible = false;
-        lod.addLevel(simplified, index === 0 ? 62 : 105, 0.12);
+        lod.addLevel(simplified, ranges[index], 0.12);
       }
       colony.addLOD(lod);
     } else if (item.id.startsWith("MB-") || item.id.startsWith("MV-")) {
@@ -153,7 +189,7 @@ export function buildColonyGroup(layout: ColonyLayout, registry: PieceRegistry, 
   colony.add(fuseColonyInfrastructure(infrastructure));
   colony.traverse(node => {
     if (node instanceof Mesh) {
-      node.castShadow = node.material !== materials.M_glass;
+      node.castShadow = node.material !== materials.M_glass && node.parent?.name !== "MI-01 Paved colony platform";
       node.receiveShadow = true;
     }
   });

@@ -1,4 +1,4 @@
-import { DirectionalLight, HemisphereLight, Mesh, SphereGeometry, type Material } from "three";
+import { DirectionalLight, HemisphereLight, MathUtils, Mesh, SphereGeometry, type Material } from "three";
 import colonyJson from "../../data/layouts/colonies/exterior-pilot.json";
 import demURL from "../../data/terrain/jezero-elevation.bin?url";
 import { startLoop } from "../core/loop";
@@ -10,7 +10,8 @@ import { presets } from "../environment/presets";
 import { createJezeroRockScatter, disposeRockScatter, type RockExclusionZone } from "../environment/rock-scatter";
 import { createTerrain, terrainHeight } from "../environment/terrain";
 import { createProductionRegistry } from "../kit/pieces";
-import { parseStreet, streetClearance } from "../kit/pieces/mars/colony-street";
+import { parseColonyPaving, streetClearance } from "../kit/pieces/mars/colony-street";
+import { plazaContains, plazaOutline } from "../kit/pieces/mars/colony-plaza";
 import { LANDING_PAD_CLEARANCE } from "../kit/pieces/mars/landing-pad";
 import { paletteHex } from "../materials/palette";
 import { getScreens } from "../materials/screens";
@@ -32,8 +33,21 @@ function buildColonyExclusions(layout: ColonyLayout): RockExclusionZone[] {
   for (const item of layout.placements) {
     if (item.id.startsWith("MT-")) continue;
     if (item.id === "MI-01") {
-      for (const { center, radius } of streetClearance(parseStreet(item.params ?? {}))) {
-        zones.push({ x: item.at[0] + center.x, z: item.at[1] + center.y, radius });
+      const spec = parseColonyPaving(item.params ?? {});
+      const angle = MathUtils.degToRad(item.rot ?? 0);
+      const c = Math.cos(angle), s = Math.sin(angle);
+      const addZone = (x: number, z: number, radius: number) =>
+        zones.push({ x: item.at[0] + x * c + z * s, z: item.at[1] + z * c - x * s, radius });
+      if (spec.layout === "plaza") {
+        const [width, depth] = spec.size;
+        const boundary = plazaOutline(spec);
+        const cols = Math.ceil(width / 2.8), rows = Math.ceil(depth / 2.8);
+        for (let i = 0; i < cols; i++) for (let j = 0; j < rows; j++) {
+          const x = width * ((i + 0.5) / cols - 0.5), z = depth * ((j + 0.5) / rows - 0.5);
+          if (plazaContains(boundary, x, z)) addZone(x, z, 2.35);
+        }
+      } else for (const { center, radius } of streetClearance(spec)) {
+        addZone(center.x, center.y, radius);
       }
       continue;
     }
@@ -42,8 +56,8 @@ function buildColonyExclusions(layout: ColonyLayout): RockExclusionZone[] {
       continue;
     }
     const radius = item.id === "MI-07" ? LANDING_PAD_CLEARANCE
-      : item.id === "MB-04" ? 7.8
-      : (item.id === "MB-10" || item.id === "MB-07" || item.id === "MB-02" || item.id === "MI-03" ? 5.6 : 3.4);
+      : ["MB-04", "MB-05"].includes(item.id) ? 7.8
+      : (["MB-10", "MB-09", "MB-08", "MB-07", "MB-02", "MI-03"].includes(item.id) ? 5.6 : 3.4);
     zones.push({ x: item.at[0], z: item.at[1], radius });
   }
   for (const view of layout.views) {
@@ -74,7 +88,7 @@ export function applyExteriorLightingCalibration(rendering: ReturnType<typeof cr
   rendering.bloom.intensity = 0.22;
 }
 
-export async function mountExteriorPilot(): Promise<void> {
+export async function mountExteriorPilot(input: unknown = colonyJson): Promise<void> {
   const shell = createShell(false);
   const query = new URLSearchParams(location.search);
   const rendering = createRendering(shell.viewport);
@@ -87,12 +101,10 @@ export async function mountExteriorPilot(): Promise<void> {
   camera.updateProjectionMatrix();
 
   const registry = createProductionRegistry();
-  const layout = parseColonyLayout(colonyJson, registry);
+  const layout = parseColonyLayout(input, registry);
   document.title = `${layout.name} | Mars Colony`;
 
-  const response = await fetch(demURL);
-  if (!response.ok) throw new Error(`DEM load failed: ${response.status}`);
-  const dem = decodeJezeroDEM(await response.arrayBuffer());
+  const dem = layout.biome === "jezero" ? await loadExteriorDEM() : undefined;
 
   const sky = new SphereGeometry(48000, 48, 24);
   const skyMesh = new Mesh(sky, materials.M_sky);
@@ -102,21 +114,24 @@ export async function mountExteriorPilot(): Promise<void> {
 
   const terrainOpts = { biome: layout.biome, seed: layout.terrainSeed, dem };
   const terrain = createTerrain(terrainOpts);
-  const rockScatter = createJezeroRockScatter({
+  const rockScatter = layout.biome === "jezero" ? createJezeroRockScatter({
     seed: layout.terrainSeed,
     lod: 0,
     dem,
     exclusions: buildColonyExclusions(layout),
-  });
-  terrainUniforms.biome.value = 0;
+  }) : undefined;
+  terrainUniforms.biome.value = layout.biome === "polar" ? 1 : 0;
   terrainUniforms.useMask.value = 1;
   terrainUniforms.oxide.value.set(paletteHex("oxide"));
   terrainUniforms.shade.value.set(paletteHex("regolithShade"));
-  scene.add(terrain, rockScatter);
+  scene.add(terrain);
+  if (rockScatter) scene.add(rockScatter);
 
   const preset = presets.find(p => p.id === layout.environment) ?? presets[3];
   applyEnvironment(rendering, preset);
-  applyExteriorLightingCalibration(rendering);
+  if (layout.biome === "jezero") applyExteriorLightingCalibration(rendering);
+  // Depth-aware upsampling keeps contact shadows without running AO at the full viewport size.
+  rendering.ao.configuration.halfRes = true;
 
   const colony = buildColonyGroup(layout, registry, dem);
   scene.add(colony);
@@ -171,7 +186,8 @@ export async function mountExteriorPilot(): Promise<void> {
   if (sideHeading) sideHeading.textContent = layout.name;
   const scopeNote = document.querySelector(".scope-note");
   if (scopeNote) {
-    scopeNote.textContent = `Jezero stylized stone (DV-07) + ${layout.environment} + ${layout.placements.length} assets.`;
+    const biomeLabel = layout.biome === "polar" ? "North polar terrain" : "Jezero stylized stone (DV-07)";
+    scopeNote.textContent = `${biomeLabel} + ${layout.environment} + ${layout.placements.length} assets.`;
   }
 
   shell.reset.onclick = () => applyView(layout.views[0]);
@@ -206,7 +222,7 @@ export async function mountExteriorPilot(): Promise<void> {
     calls: 0,
     triangles: 0,
     colonyTriangles: colony.detailedTriangles,
-    terrainTriangles: countColonyTriangles(terrain) + countColonyTriangles(rockScatter),
+    terrainTriangles: countColonyTriangles(terrain) + (rockScatter ? countColonyTriangles(rockScatter) : 0),
     materials: usedMats.size,
     fps: 0,
     frames: 0,
@@ -254,7 +270,7 @@ export async function mountExteriorPilot(): Promise<void> {
     navigation.dispose();
     joystick.dispose();
     sky.dispose();
-    disposeRockScatter(rockScatter);
+    if (rockScatter) disposeRockScatter(rockScatter);
     colony.dispose();
     rendering.dispose();
   }, { once: true });
@@ -275,6 +291,12 @@ export async function mountExteriorPilot(): Promise<void> {
       skyMesh.position.copy(camera.position);
     },
   };
+}
+
+async function loadExteriorDEM() {
+  const response = await fetch(demURL);
+  if (!response.ok) throw new Error(`DEM load failed: ${response.status}`);
+  return decodeJezeroDEM(await response.arrayBuffer());
 }
 
 declare global {

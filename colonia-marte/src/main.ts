@@ -1,7 +1,8 @@
 ﻿import "./ui/foundation/tokens.css";
 import "./ui/atoms/hud-atoms.css";
 import "./ui/organisms/loading.css";
-import { MARS_FACTS } from "./ui/content/mars-facts";
+import { MARS_FACTS, MARS_FACTS_ES } from "./ui/content/mars-facts";
+import { getUiStrings } from "./ui/i18n";
 import { createLoading } from "./ui/organisms/loading";
 import { DEFAULT_SETTINGS, loadSettings } from "./ui/state/settings";
 
@@ -30,10 +31,14 @@ if (path === "/menu") {
   performance.mark("menu-load-start");
   let storage: Storage | undefined;
   try { storage = localStorage; } catch { /* Storage may be unavailable. */ }
-  const settings = storage ? loadSettings(storage) : DEFAULT_SETTINGS;
+  const settings = storage ? loadSettings(storage) : { ...DEFAULT_SETTINGS };
+  const requestedLanguage = new URLSearchParams(location.search).get("language");
+  if (requestedLanguage === "en" || requestedLanguage === "es") settings.language = requestedLanguage;
   document.documentElement.classList.toggle("ui-big-text", settings.bigText);
-  const fact = MARS_FACTS[Math.floor(Math.random() * MARS_FACTS.length)];
-  const loading = createLoading(fact).root;
+  document.documentElement.lang = settings.language;
+  const facts = settings.language === "es" ? MARS_FACTS_ES : MARS_FACTS;
+  const fact = facts[Math.floor(Math.random() * facts.length)];
+  const loading = createLoading(fact, undefined, getUiStrings(settings.language)).root;
   document.body.append(loading);
   menu = { loading, settings, storage };
   performance.mark("menu-loader-mounted");
@@ -82,6 +87,18 @@ if (path === "/ui") {
 } else if (path === "/exterior-pilot") {
   const { mountExteriorPilot } = await import("./scenes/exterior-pilot");
   await mountExteriorPilot();
+} else if (path === "/colony") {
+  const [{ loadColonyChapter }, { mountExteriorPilot }] = await Promise.all([
+    import("./scenes/colony-chapters"),
+    import("./scenes/exterior-pilot"),
+  ]);
+  await mountExteriorPilot(await loadColonyChapter(new URLSearchParams(location.search)));
+} else if (path === "/vehicles") {
+  const { mountVehiclesReview } = await import("./scenes/vehicles-review");
+  await mountVehiclesReview();
+} else if (path === "/landmarks") {
+  const { mountLandmarksReview } = await import("./scenes/landmarks-review");
+  await mountLandmarksReview();
 } else if (path === "/space") {
   const { mountSpace } = await import("./scenes/space");
   mountSpace();

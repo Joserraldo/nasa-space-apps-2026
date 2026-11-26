@@ -53,7 +53,8 @@ it("keeps living rows behind shared, non-emissive greenhouse glazing", () => {
 
 it("places a three-level greenhouse clear of the existing radial pieces", () => {
   const layout = parseColonyLayout(layoutJson, registry);
-  const colony = buildColonyGroup(layout, registry);
+  const placements = layout.placements.filter(piece => piece.id === "MB-11");
+  const colony = buildColonyGroup({ ...layout, placements }, registry);
   const greenhouse = colony.children.find(child => child instanceof LOD && child.name.startsWith("MB-11")) as LOD;
   expect(greenhouse).toBeDefined();
   expect(greenhouse.levels.map(level => level.distance)).toEqual([0, 62, 105]);

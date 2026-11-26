@@ -16,7 +16,7 @@
 .ui-hud-pause__glyph { width: 26px; height: 26px; }
 .ui-hud-pause__glyph svg { stroke-width: 2.6; }
 .ui-hud-pause:hover { background: var(--ui-hud-accent); color: var(--ui-hud-panel-solid); }
-.ui-hud-pause:focus-visible { outline: 3px solid var(--ui-hud-accent); outline-offset: 4px; }
+.ui-hud-pause:focus-visible { outline: 3px solid var(--ui-hud-accent); outline-offset: -4px; }
 
 /* Molecules are absolutely positioned frames by default; inside slots they flow. */
 .ui-game-hud__slot > .ui-hud-frame { position: relative; }
@@ -50,7 +50,7 @@
   .ui-game-hud .ui-hud-resource__glyph { width: 16px; height: 16px; }
   .ui-game-hud .ui-hud-meter { height: 9px; gap: 3px; }
   /* Diegetic prompt: smaller on phones, still a 48 px target. */
-  .ui-game-hud .ui-hud-action { min-height: 48px; font-size: var(--ui-hud-text-label); padding: 0 18px 0 12px; gap: 8px; }
+  .ui-game-hud .ui-hud-action { min-height: 48px; font-size: var(--ui-hud-text-label); padding-inline: 15px; gap: 8px; }
   .ui-game-hud .ui-hud-action__glyph { width: 20px; height: 20px; }
   .ui-game-hud .ui-hud-interaction__target { font-size: var(--ui-hud-text-caption); padding: 5px 10px; }
   .ui-game-hud .ui-hud-reticle { width: 48px; height: 48px; }
@@ -70,16 +70,24 @@
 }
 
 /* /hud-preview: the viewport takes the whole window; review chrome and stats are hidden. */
+body.hud-preview #app > :not(main),
+body.hud-preview #app > main > aside,
+body.hud-preview .preview-column > footer { display: none; }
 body.hud-preview #viewport { position: fixed; inset: 0; z-index: 20; }
 body.hud-preview #viewport > div:not(.ui-game-hud, #joystick) { display: none; }
+body.hud-preview #viewport > canvas:focus-visible { outline: 3px solid var(--ui-hud-accent); outline-offset: -4px; }
 body.hud-preview[data-joystick-side="right"] #joystick { left: auto; right: 26px; }
 
-.ui-big-text .ui-game-hud :is(.ui-hud-tab, .ui-hud-objective__step, .ui-hud-status__name,
+.ui-game-hud :is(.ui-hud-tab, .ui-hud-objective__step, .ui-hud-status__name,
   .ui-hud-status__role, .ui-hud-resource__label, .ui-hud-zone__name, .ui-hud-zone__deck,
   .ui-hud-action, .ui-hud-interaction__target) { line-height: 1.4; }
 /* Give the enlarged heading room without enlarging the radar artwork. */
 .ui-big-text .ui-game-hud .ui-hud-minimap { width: 288px; }
 .ui-big-text .ui-game-hud .ui-hud-minimap__view { max-width: 230px; margin-inline: auto; }
+@media (min-height: 461px) {
+  .ui-big-text .ui-game-hud .ui-hud-resource { grid-template-columns: 26px minmax(78px, max-content) 1fr; }
+  .ui-big-text:lang(es) .ui-game-hud .ui-hud-resource { grid-template-columns: 26px minmax(84px, max-content) 1fr; }
+}
 @media (max-height: 460px) {
   .ui-big-text .ui-game-hud .ui-hud-minimap { width: 208px; }
   .ui-big-text .ui-game-hud .ui-hud-minimap__view { max-width: 158px; }

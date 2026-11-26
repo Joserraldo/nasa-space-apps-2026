@@ -39,7 +39,8 @@ it("cuts a constant-radius quarter circle tangent to both straight runs", () => 
 
 it("supports the dual edge dashes and grades the side strips into the existing ground", () => {
   const layout = parseColonyLayout(layoutJson, registry);
-  const group = buildColonyGroup(layout, registry);
+  const placements = layout.placements.filter(piece => piece.id === "MI-01" && piece.params?.layout !== "plaza");
+  const group = buildColonyGroup({ ...layout, placements }, registry);
   const lights = group.getObjectByName("Recessed lane dashes") as InstancedMesh;
   expect(lights).toBeInstanceOf(InstancedMesh);
   expect(lights.count).toBeGreaterThanOrEqual(4);
