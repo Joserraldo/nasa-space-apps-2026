@@ -85,3 +85,32 @@ Reglas para niños de 7 a 10 años que la UI ya respeta (`docs/DISENO-JUEGO.md` 
 Ver `CREDITS.md`. El paquete de mujeres de Quaternius es **CC-BY**: la atribución tiene que aparecer en el juego, y ya está en Ajustes, en Grown-ups, en Credits. Los demás paquetes usados son CC0. Las fuentes Chakra Petch y Exo 2 son OFL.
 
 Las imágenes de referencia de los videos (`docs/referencias/`) **no se incluyen** en esta entrega pública. Las capturas de `docs/capturas/` que comparan con esas referencias tampoco.
+
+## 7. Quién toca qué (la UI nueva reemplaza a la vieja)
+
+Decisión de María Paula: `colonia-marte/` **reemplaza** a la app React `ui/`. El juego final es esta app. Para trabajar en paralelo sin pisarse, cada uno es dueño de carpetas distintas y se comunican solo por los contratos de abajo.
+
+| Dueño | Carpetas | Notas |
+|---|---|---|
+| **Santiago** | `src/game/` (estado del juego, flujo de capítulos, adaptador del motor a la vista, contenedores de escena del juego), `src/audio/` (mezclador y efectos), `data/story/` (guiones y diálogos por capítulo en JSON), `data/shots/intro.json`, `public/audio/`, y en el monorepo: `package.json` raíz, `vitest.config.ts`, `.github/`, `infra/` y el retiro de `ui/` | Toda la lógica de juego vive aquí |
+| **María Paula, con Carbon, Codex y OpenCode** | `src/kit/`, `src/environment/`, `src/materials/`, `src/catalog/`, `src/scenes/`, `src/ui/`, `data/layouts/`, `data/environments.json`, `public/models/`, `public/ui/`, `palette.json` | Lo visual: salas, exterior, personajes y componentes de UI |
+| **Compartido, con aviso previo** | `src/main.ts` (rutas), `package.json` de `colonia-marte/` | Ver las reglas de abajo |
+
+**Contratos que Santiago consume y no edita** (se importan desde `src/ui/index.ts` y los módulos indicados):
+
+- `createGameHud(state, onUse, onPause)` y su estado: energía, aire, escudo, objetivo, paso, zona, mapa.
+- `createCrewDialogue(state, onReply)` con `CrewDialogueState`: hablante, línea, voz y de 1 a 3 respuestas con ícono.
+- `createPauseMenu(state, onChoose)` y `createSettingsMenu(state, callbacks)`.
+- `SettingsState`, `loadSettings`, `saveSettings`, `effectiveDifficulty` y `resetProgress` (`src/ui/state/settings.ts`). El progreso del juego se guarda con el prefijo `colonia.progress.`.
+- `mountInteriorRoom(layout, cacheKey, walkStart, hooks)` con `onReady` y `onFrame` (`src/scenes/room-viewer.ts`), y la escena exterior.
+- El esquema de tomas de cámara (`src/camera/schema.ts`) y su reproductor (`src/camera/player.ts`).
+
+Si Santiago necesita un cambio en un contrato o en el aspecto de un componente, **lo pide** (un issue con la etiqueta `bloquea:ui`) en lugar de editarlo. Los componentes aprobados no cambian de aspecto sin el visto bueno de María Paula.
+
+**Reglas para los puntos compartidos:**
+
+1. **Rutas (`src/main.ts`):** Santiago agrega **una sola rama**, `/play`, que importa `src/game/main.ts`. Todo el juego cuelga de ahí. Las rutas de revisión (`/room/*`, `/exterior-pilot`, `/hud-preview`, `/ui`...) siguen siendo nuestras. Al final, con la ruta dorada en verde, la raíz `/` apunta a `/play`, en un PR de una línea.
+2. **`src/scenes/hud-preview.ts` es una demo, no el juego.** Santiago arma sus propios contenedores en `src/game/`, copiando el patrón, sin editar la demo.
+3. **Dependencias:** quien agrega una dependencia a `colonia-marte/package.json` lo avisa, y con versión exacta. `three` queda fijo en 0.187.0.
+4. **Retiro de `ui/` (la app React vieja):** primero se lee `ui/src/juego/` y `ui/src/componentes/Intro.tsx` para entender cómo usa el motor, y se porta esa lógica a `src/game/`. `ui/` se borra **en un PR final aparte**, cuando el juego nuevo pase la ruta dorada en E2E. Hasta entonces no se toca, para no romper `develop` ni el despliegue.
+5. **Sincronización:** las entregas visuales llegan a `feat/ui-colonia-marte`. Santiago la fusiona seguido en su rama. Como nadie edita carpetas del otro, esas fusiones no deberían dar conflictos. Si aparece uno, esa es la señal de que alguien se salió de su carpeta.
