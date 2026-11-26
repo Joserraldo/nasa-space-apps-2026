@@ -10,6 +10,8 @@
  * repetidas se instancian, así cada familia cuesta 1 llamada por material (+1 de sombra).
  */
 import * as THREE from "three";
+import { muestraRocas, variarRocas } from "./activos/rocasVariadas";
+import { aplicarTexturasRocas, aplicarTexturasSuelo, texturasSueloActivas } from "./texturasSuelo";
 import { crearCielo, type Calidad, type Cielo } from "./cielo";
 import type { Materiales } from "./materiales";
 import { liberarEscena } from "./liberar";
@@ -216,6 +218,8 @@ export function armarEscena(
       }
       const claro = aplanarClaro(r, MALLA_JEZERO, CLARO.radio, CLARO.borde);
       const t = crearTerreno(materiales, { rejilla: claro.rejilla, malla: MALLA_JEZERO });
+      const conTexturas = texturasSueloActivas();
+      if (conTexturas) aplicarTexturasSuelo(t.malla);
       const rocas = crearRocas(materiales, t, ROCAS.n, ROCAS.semilla, { radioMin: ROCAS.radioMin, radio: ROCAS.radio });
       const grandes = instanciarRocas(materiales, rocasGrandes(claro.rejilla), "Rocks_Basalt_Large");
       const ocupado = [...huellasFijasDeBase(), ...huellasRocas(claro.rejilla)];
@@ -223,6 +227,18 @@ export function armarEscena(
         excluir: (x, z) => chocaConBase(x, z, 0.3) || sobreCamino(x, z, 0.2) || ocupado.some((h) => distanciaAHuella(h, x, z) < 0.3),
       });
       terreno.add(t.malla, rocas, grandes, gravilla);
+      // Medium and large rocks vary. New shapes are never wider than the original, so the large rocks'
+      // collision circles (huellasRocas) stay valid.
+      const variadas = conTexturas ? variarRocas([rocas, grandes]) : [];
+      terreno.add(...variadas);
+      if (import.meta.env.DEV && conTexturas && new URLSearchParams(location.search).get("rocas") === "muestra") {
+        const libre = (x: number, z: number) => !chocaConBase(x, z, 0.8) && !sobreCamino(x, z, 0.7) && ocupado.every((h) => distanciaAHuella(h, x, z) > 0.8);
+        const fila = muestraRocas(rocas.material, rocas.geometry, libre);
+        fila.position.y = claro.altura;
+        terreno.add(fila);
+        variadas.push(...(fila.children as THREE.InstancedMesh[]));
+      }
+      if (conTexturas) aplicarTexturasRocas([rocas, grandes, gravilla, primerPlano, ...variadas]);
       terreno.position.y = -claro.altura;
     },
     pulsar(id, ahora) {
