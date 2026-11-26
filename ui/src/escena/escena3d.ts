@@ -13,6 +13,7 @@ import type { CalidadGrafica } from "../juego/ajustes";
 import type { EventoFeedback } from "../juego/eventos";
 import { CLARO, MALLA_JEZERO, ROCAS_PRIMER_PLANO, armarEscena, huellasRocas, radioRoca, rejillaJezero, type EscenaArmada } from "./armado";
 import { AJUSTE_CALIDAD, MAS_BAJA } from "./calidad";
+import { toneMappingExterior } from "./atmosfera";
 import { LUZ, type Cielo } from "./cielo";
 import type { ActorId, Interactivo, PedidoEscena } from "./frontera";
 import { irisGuiaAlObjetivo } from "../juego/pedidoEscena";
@@ -549,7 +550,7 @@ export function crearEscena3D(canvas: HTMLCanvasElement, opciones: OpcionesEscen
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: AJUSTE_CALIDAD[calidad].antialias, powerPreference: "high-performance" });
   const materiales: Materiales = crearMateriales();
   const armada: EscenaArmada = armarEscena(materiales, null, null, calidad === "alta" ? "alta" : "baja");
-  armada.cielo.aplicarRenderer(renderer, calidad !== "baja");
+  armada.cielo.aplicarRenderer(renderer, AJUSTE_CALIDAD[calidad].gradacion);
   const { tripulacion } = armada;
 
   // --- Movimiento: el niño, Iris y los sólidos reales ---
@@ -672,8 +673,9 @@ export function crearEscena3D(canvas: HTMLCanvasElement, opciones: OpcionesEscen
   function aplicarCalidad(nivel: CalidadGrafica): void {
     const a = AJUSTE_CALIDAD[nivel];
     renderer.setPixelRatio(Math.min(globalThis.devicePixelRatio || 1, a.dpr));
-    const tono = nivel === "baja" ? THREE.NoToneMapping : THREE.AgXToneMapping;
-    const exp = nivel === "baja" ? 1 : LUZ.exposicion;
+    const tono = toneMappingExterior(a.gradacion);
+    const exp = a.gradacion ? LUZ.exposicion : 1;
+    armada.cielo.usarNieblaAltura(a.nieblaAltura);
     let recompilar = false;
     if (renderer.toneMapping !== tono || renderer.toneMappingExposure !== exp) {
       renderer.toneMapping = tono;
