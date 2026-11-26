@@ -1,13 +1,57 @@
-﻿import "./ui/index";
-import "./style.css";
+﻿import "./ui/foundation/tokens.css";
+import "./ui/atoms/hud-atoms.css";
+import "./ui/organisms/loading.css";
+import { MARS_FACTS } from "./ui/content/mars-facts";
+import { createLoading } from "./ui/organisms/loading";
+import { DEFAULT_SETTINGS, loadSettings } from "./ui/state/settings";
+
+function waitForLoaderPaint(): Promise<void> {
+  if (!globalThis.PerformanceObserver?.supportedEntryTypes.includes("paint") || document.hidden) {
+    return new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(() => resolve())));
+  }
+  return new Promise(resolve => {
+    function finish() {
+      clearTimeout(fallback);
+      observer.disconnect();
+      resolve();
+    }
+    const observer = new PerformanceObserver(entries => {
+      if (entries.getEntriesByName("first-contentful-paint").length > 0) finish();
+    });
+    // Paint reporting can be throttled when a browser window loses visibility.
+    const fallback = setTimeout(finish, 1000);
+    observer.observe({ type: "paint", buffered: true });
+  });
+}
 
 const path = location.pathname.replace(/\/$/, "");
+let menu;
+if (path === "/menu") {
+  performance.mark("menu-load-start");
+  let storage: Storage | undefined;
+  try { storage = localStorage; } catch { /* Storage may be unavailable. */ }
+  const settings = storage ? loadSettings(storage) : DEFAULT_SETTINGS;
+  document.documentElement.classList.toggle("ui-big-text", settings.bigText);
+  const fact = MARS_FACTS[Math.floor(Math.random() * MARS_FACTS.length)];
+  const loading = createLoading(fact).root;
+  document.body.append(loading);
+  menu = { loading, settings, storage };
+  performance.mark("menu-loader-mounted");
+  await waitForLoaderPaint();
+  performance.mark("menu-content-request");
+}
+
+await Promise.all([import("./ui/index"), import("./style.css")]);
+
 if (path === "/ui") {
   const { mountUIShowcase } = await import("./ui/showcase");
   mountUIShowcase();
 } else if (path === "/hud-preview") {
   const { mountHudPreview } = await import("./scenes/hud-preview");
   mountHudPreview();
+} else if (menu) {
+  const { mountMenuPreview } = await import("./scenes/menu-preview");
+  await mountMenuPreview(menu);
 } else if (path === "/room/canteen") {
   const { mountCanteenRoom } = await import("./scenes/canteen-room");
   mountCanteenRoom();

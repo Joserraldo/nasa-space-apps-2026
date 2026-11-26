@@ -100,11 +100,14 @@ describe("settings controls", () => {
     const [off, on] = Array.from(control.root.querySelectorAll("button"));
     expect(off.getAttribute("aria-pressed")).toBe("true");
     expect(on.getAttribute("aria-pressed")).toBe("false");
+    expect(off.querySelector(".ui-settings__check")?.hasAttribute("hidden")).toBe(false);
+    expect(on.querySelector(".ui-settings__check")?.hasAttribute("hidden")).toBe(true);
     on.click();
     expect(change).toHaveBeenCalledWith(true);
     control.setValue(true);
     expect(off.getAttribute("aria-pressed")).toBe("false");
     expect(on.getAttribute("aria-pressed")).toBe("true");
+    expect(on.querySelector(".ui-settings__check")?.hasAttribute("hidden")).toBe(false);
   });
 
   it("cancels early holds and unlocks once after a full keyboard hold", () => {
