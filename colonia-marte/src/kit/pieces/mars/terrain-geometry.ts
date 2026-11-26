@@ -36,7 +36,7 @@ function pushFacet(
   }
 }
 
-/** Open-bottom stratified low-poly rock column or mesa cliff geometry. */
+/** Watertight stratified low-poly rock column or mesa cliff geometry with outward normals. */
 export function stratifiedRockGeometry(
   keyTag: string,
   seed: number,
@@ -75,19 +75,27 @@ export function stratifiedRockGeometry(
       const upper = rings[r + 1];
       for (let i = 0; i < sides; i++) {
         const next = (i + 1) % sides;
-        pushFacet(positions, normals, lower[i], lower[next], upper[next]);
-        pushFacet(positions, normals, lower[i], upper[next], upper[i]);
+        pushFacet(positions, normals, lower[i], upper[next], lower[next]);
+        pushFacet(positions, normals, lower[i], upper[i], upper[next]);
       }
     }
     const topRing = rings[rings.length - 1];
     const apex = new Vector3(
       (rng() - 0.5) * radius * 0.08,
-      height,
+      height + height * 0.02,
       (rng() - 0.5) * radius * 0.08,
     );
     for (let i = 0; i < sides; i++) {
       const next = (i + 1) % sides;
-      pushFacet(positions, normals, topRing[i], topRing[next], apex);
+      pushFacet(positions, normals, topRing[i], apex, topRing[next]);
+    }
+
+    // Close bottom ring at Y=0 with downward (-Y) outward normals.
+    const bottomRing = rings[0];
+    const baseCenter = new Vector3(0, 0, 0);
+    for (let i = 0; i < sides; i++) {
+      const next = (i + 1) % sides;
+      pushFacet(positions, normals, baseCenter, bottomRing[i], bottomRing[next]);
     }
 
     const geometry = new BufferGeometry();
@@ -126,11 +134,25 @@ export function boulderGeometry(
         v.z * factor,
       );
     };
+    const rimMap = new Map<string, Vector3>();
     for (let i = 0; i < pos.count; i += 3) {
       const a = deform(new Vector3().fromBufferAttribute(pos, i));
       const b = deform(new Vector3().fromBufferAttribute(pos, i + 1));
       const c = deform(new Vector3().fromBufferAttribute(pos, i + 2));
       pushFacet(positions, normals, a, b, c);
+      for (const v of [a, b, c]) {
+        if (v.y <= 1e-4) {
+          rimMap.set(`${v.x.toFixed(4)},${v.z.toFixed(4)}`, new Vector3(v.x, 0, v.z));
+        }
+      }
+    }
+    const rim = [...rimMap.values()].sort((u, v) => Math.atan2(u.z, u.x) - Math.atan2(v.z, v.x));
+    if (rim.length >= 3) {
+      const baseOrigin = new Vector3(0, 0, 0);
+      for (let i = 0; i < rim.length; i++) {
+        const next = (i + 1) % rim.length;
+        pushFacet(positions, normals, baseOrigin, rim[i], rim[next]);
+      }
     }
     source.dispose();
     const geometry = new BufferGeometry();

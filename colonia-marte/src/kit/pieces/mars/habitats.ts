@@ -211,19 +211,26 @@ export function registerMarsHabitats(registry: PieceRegistry): void {
       roofCap.rotation.x = -Math.PI / 2;
       group.add(plinth, bodyLow, bodyHigh, roofRim, roofCap);
 
+      // Colony hub docks tunnels on sides {0, 1, 4, 6, 7}; industrial rear hub docks on {0, 2, 6}.
+      // Keep external decals, shutoff valves, grilles, and equipment pods strictly on undocked faces!
+      const dockedSides = style === "colony"
+        ? new Set([0, 1, 4, 6, 7])
+        : new Set([0, 2, 6]);
+
       for (let side = 0; side < 8; side++) {
         const angle = (side / 8) * Math.PI * 2;
+        const isDocked = dockedSides.has(side);
         const spoke = new Group();
         spoke.add(whiteBoxAt([1.86, 1.94, 0.42], [0, 0.22, 3.24], 0.035, ["bottom"]));
-        spoke.add(boxAt([1.48, 1.56, 0.28], "darkGray", [0, 0.34, 3.42], 0.025));
+        spoke.add(boxAt([1.48, 1.56, 0.24], "darkGray", [0, 0.34, 3.40], 0.025));
         spoke.add(boxAt([0.92, 0.055, 0.055], accent, [0, 2.02, 3.38], 0.01));
 
-        // Recessed intake grille + 4 curved upper manifold pipes matching v3-t054.60
-        spoke.add(boxCenter([1.14, 0.32, 0.12], "black", [0, 2.18, 3.12], 0.015));
+        // Manifold block seated on spoke ledge; 4 pipes emerge vertically from its top face (zero front/bottom overlap)
+        spoke.add(boxAt([1.16, 0.16, 0.22], "black", [0, 2.15, 3.16], 0.015));
         for (const rx of [-0.42, -0.14, 0.14, 0.42]) {
           const rib = new Mesh(
             weldedColoredGeometry(
-              pipeRun([[rx, 2.14, 3.18], [rx, 2.54, 3.05], [rx, 2.74, 2.72]], 0.044, 6),
+              pipeRun([[rx, 2.24, 3.16], [rx, 2.40, 3.15], [rx, 2.60, 3.04], [rx, 2.78, 2.74]], 0.044, 6),
               "gray",
             ),
             materials.M_palette,
@@ -231,28 +238,29 @@ export function registerMarsHabitats(registry: PieceRegistry): void {
           spoke.add(rib);
         }
 
-        if (side % 2 === 0) {
-          const grille = ventGrilleGroup(0.72, 0.38, 3);
-          grille.position.set(1.22, 1.42, 3.04);
-          grille.rotation.y = 0.39;
-          spoke.add(grille);
-        } else {
-          const pod = cyanEquipPod(0.54, 0.42, 0.22);
-          pod.position.set(-1.18, 1.24, 3.06);
-          pod.rotation.y = -0.39;
-          spoke.add(pod);
+        if (!isDocked) {
+          if (side % 2 === 0) {
+            const grille = ventGrilleGroup(0.72, 0.38, 3);
+            grille.position.set(0, 1.48, 3.55);
+            spoke.add(grille);
+          } else {
+            const pod = cyanEquipPod(0.54, 0.42, 0.20);
+            pod.position.set(0, 1.48, 3.58);
+            spoke.add(pod);
+          }
         }
 
-        if (side === 7 || side === 3 || (style === "industrial" && side === 0)) {
+        if ((style === "colony" && (side === 2 || side === 5))
+          || (style === "industrial" && (side === 3 || side === 5))) {
           const valve = twinPostRedValve();
-          valve.position.set(1.42, 0, 3.56);
-          valve.rotation.y = 0.39;
+          valve.position.set(0, 0, 3.76);
           spoke.add(valve);
         }
 
-        if (side === 0 || side === 4) {
-          const crest = stickerPlacard(0.74, 0.44, side === 0 ? "hub-crest" : "hazard-airlock", "black");
-          crest.position.set(0, 1.38, 3.57);
+        if ((style === "colony" && side === 3)
+          || (style === "industrial" && (side === 1 || side === 7))) {
+          const crest = stickerPlacard(0.74, 0.44, side === 3 ? "hub-crest" : "hazard-airlock", "black");
+          crest.position.set(0, 0.86, 3.55);
           spoke.add(crest);
         }
         spoke.rotation.y = angle;

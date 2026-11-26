@@ -3,7 +3,7 @@ import { Box3, Mesh, Vector3 } from "three";
 import { createProductionRegistry } from "../../src/kit/pieces";
 import { irisExpressions } from "../../src/materials/iris-faces";
 import { parseIris } from "../../src/kit/pieces/crew/iris";
-import { validateRegistry } from "../../tools/validate-pieces";
+import { validatePiece } from "../../tools/validate-pieces";
 
 describe("CH-09 Iris", () => {
   const registry = createProductionRegistry();
@@ -18,6 +18,7 @@ describe("CH-09 Iris", () => {
     expect(size.x).toBeCloseTo(0.74); expect(size.y).toBeCloseTo(0.444);
     expect(size.x / 0.8).toBeGreaterThan(0.9);
   });
+  // Validation traverses the entire production registry, whose cost grows with each piece.
   it("registers five expressions with distinct screen regions and validates all variants", () => {
     const regions = irisExpressions.map(expression => {
       const root = registry.build("CH-09", { expression });
@@ -26,12 +27,14 @@ describe("CH-09 Iris", () => {
       return Array.from(face.geometry.getAttribute("uv").array).join(",");
     });
     expect(new Set(regions).size).toBe(5);
-    for (const result of validateRegistry(registry).filter(p => p.id === "CH-09")) {
-      expect(result.issues, result.variant).toEqual([]);
+    const irisEntry = registry.entries().find(e => e.id === "CH-09")!;
+    for (const [variant, params] of Object.entries(irisEntry.variants)) {
+      const result = validatePiece("CH-09", irisEntry.metadata, () => registry.build("CH-09", params, true));
+      expect(result.issues, variant).toEqual([]);
     }
     expect(() => parseIris({ expression: "angry" })).toThrow();
     expect(() => parseIris({ gameState: 1 })).toThrow();
-  });
+  }, 30000);
   it("places all four wheel pivots at wheel centers, on their X rotation axes", () => {
     const root = registry.build("CH-09");
     const wheels = root.children.filter(node => node.name === "wheel_axle");

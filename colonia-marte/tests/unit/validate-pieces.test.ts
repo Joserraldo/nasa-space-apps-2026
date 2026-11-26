@@ -20,11 +20,12 @@ describe("specification 8.1", () => {
     console.log("PIECE_COUNTS",JSON.stringify(results));
     for (const result of results) expect(result.issues,`${result.id}/${result.variant}`).toEqual([]);
   });
+  // Rebuilding and checking every production variant takes longer as the registry grows.
   it("validates every production piece (WS3/WS4) with the same checks", () => {
     const results = validateRegistry(createProductionRegistry());
     console.log("PRODUCTION_PIECE_COUNTS", JSON.stringify(results));
     for (const result of results) expect(result.issues, `${result.id}/${result.variant}`).toEqual([]);
-  });
+  }, 30000);
   const broken: [Check, () => Object3D, PieceMetadata?, string?][] = [
     ["triangles",() => { const root=registry.build("DN-01"); root.clear(); return root; }],
     ["duplicates",() => altered((_root,mesh) => {

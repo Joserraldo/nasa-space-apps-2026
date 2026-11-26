@@ -10,7 +10,7 @@ Igual que en `docs/prompts/codex-ui-ajustes.md`, sección 0:
 - textos y código en inglés;
 - sin emojis.
 
-El trabajo de Ajustes sigue sin commitear en la carpeta: se parte de ahí.
+El trabajo de Ajustes ya está commiteado como checkpoint (`f527a6c`): se parte de ahí.
 
 Siguen vigentes **todas** las reglas de las secciones 1, 3 y 4 de `codex-ui-ajustes.md`:
 

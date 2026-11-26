@@ -14,20 +14,14 @@ export interface TerrainOptions { biome: Biome; seed: number; lod?: 0 | 1 | 2; d
 const blend = (value: number) => { const t = Math.max(0, Math.min(1, value)); return t * t * (3 - 2 * t); };
 
 function jezeroNearStoneRelief(x: number, z: number, radius: number, seed: number): number {
-  if (radius >= 48) return 0;
-  const nearFade = 1 - blend((radius - 28) / 20);
-  const wx = x + (noise(x / 9, z / 9, seed + 23) - 0.5) * 4.2;
-  const wz = z + (noise(x / 9, z / 9, seed + 29) - 0.5) * 4.2;
-  const u = wx * 0.91 + wz * 0.41;
-  const v = -wx * 0.41 + wz * 0.91;
-  const shelfRaw = noise(u / 12.5, v / 5.6, seed + 5) * 0.64 + noise(u / 4.8, v / 2.9, seed + 9) * 0.36;
-  const levels = 3.5;
-  const idx = Math.floor(shelfRaw * levels);
-  const frac = shelfRaw * levels - idx;
-  const terraced = (idx + blend((frac - 0.36) / 0.24)) / levels;
-  const outcropMound = Math.max(0, noise(wx / 8.5, wz / 6.8, seed + 37) - 0.52) * 1.45;
-  const hubPad = 0.40 + 0.60 * blend((radius - 6) / 7);
-  return ((terraced - 0.46) * 1.18 + outcropMound) * nearFade * hubPad;
+  if (radius >= 54) return 0;
+  const nearFade = 1 - blend((radius - 30) / 24);
+  // Smooth, gentle organic undulations around the colony (INVENTARIO 0.3: smooth terrain,
+  // zero stair-step Math.floor trenches that crease the polar mesh).
+  const swell = (noise(x / 18, z / 18, seed + 5) - 0.5) * 0.52
+    + (noise(x / 9.5, z / 9.5, seed + 9) - 0.5) * 0.18;
+  const colonyPad = blend((radius - 13) / 10);
+  return swell * nearFade * colonyPad;
 }
 
 export function terrainHeight(x: number, z: number, options: TerrainOptions): number {

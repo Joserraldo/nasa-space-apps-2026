@@ -450,7 +450,7 @@ las decisiones de `DISENO-JUEGO.md` sección 9.
 |---|---|---|---|
 | CH-09 | **Iris**, rover de 4 ruedas con pantalla de cara | Chasis biselado, 4 ruedas como hijos, mástil con pantalla; cara en textura generada por código con expresiones (feliz, curiosa, preocupada, dañada con glitch, apagada) | P1 |
 | CH-10 | Jugador (niña o niño) estilo A, personalizable | Mismo esqueleto del estilo A, proporción infantil (cabeza mayor); casco y traje con colores elegibles | P1 |
-| MV-09 | Nave de tránsito (exterior) | Cuerpo modular, anillo habitable, paneles; para tomas de la intro y C1 | P1 |
+| MV-09 | Orion acoplada al Deep Space Transport (exterior) | Reconstrucción del concepto DST: Orion con cuatro alas en X, hábitat fijo y módulo eléctrico con dos alas desplegables; para la intro y C1 | P1 |
 | MV-10 | Nave de las familias (final) | Variante de MV-09 con más módulos y luces de aterrizaje | P2 |
 | MV-11 | Rover varado para rescatar (C4) | Rover pequeño de 6 ruedas con paneles cubiertos de polvo (diseño propio) | P2 |
 | NX-05 | Cultivos con estados de crecimiento visibles | Extiende `NW-02-B` a 4 etapas: semilla, brote, planta, cosecha | P1 |
@@ -467,6 +467,12 @@ las decisiones de `DISENO-JUEGO.md` sección 9.
 | AMB-06 | Tormenta de polvo | C4 |
 | AMB-07 | Polo norte | C5 |
 | AMB-08 | Noche con la Tierra visible | Fin de capítulo, final |
+
+Fondo de la primera toma (pieza independiente del preset):
+
+| ID | Pieza | Uso |
+|---|---|---|
+| BG-01 | Tierra distante | Disco azul, continentes estilizados y nubes; fondo de la intro con AMB-01 |
 
 ### 7.5 Conteo de la ampliación por campaña
 

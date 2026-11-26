@@ -32,9 +32,15 @@ if (path === "/ui") {
 } else if (path === "/room/nw-16") {
   const { mountShipCommonRoom } = await import("./scenes/nw16-room");
   mountShipCommonRoom();
+} else if (path === "/room/nw-17") {
+  const { mountShipShelterRoom } = await import("./scenes/nw17-room");
+  mountShipShelterRoom();
 } else if (path === "/exterior-pilot") {
   const { mountExteriorPilot } = await import("./scenes/exterior-pilot");
   await mountExteriorPilot();
+} else if (path === "/space") {
+  const { mountSpace } = await import("./scenes/space");
+  mountSpace();
 } else if (path === "/diagnostics/k1") {
   const { mountK1Review } = await import("./scenes/k1-review");
   mountK1Review();

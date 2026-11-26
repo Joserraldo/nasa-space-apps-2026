@@ -4,6 +4,7 @@ import {
 } from "three";
 import { atlas } from "./atlas";
 import { paletteHex } from "./palette";
+import { SPACE_SKY_FRAGMENT, spaceSkyUniforms } from "./space-backdrop";
 import { TERRAIN_STONE_FRAGMENT_PARS } from "./terrain-stone-glsl";
 
 function atlasTexture(pixels: Uint8Array): DataTexture {
@@ -37,6 +38,7 @@ const vertexShader = `
 `;
 const M_sky = new ShaderMaterial({
   uniforms: {
+    ...spaceSkyUniforms,
     zenith: { value: new Color(paletteHex("skyZenith")) },
     horizon: { value: new Color(paletteHex("skyHorizon")) },
     sunHalo: { value: new Color(paletteHex("sunHalo")) },
@@ -59,8 +61,8 @@ const M_sky = new ShaderMaterial({
     uniform float haloSize;
     varying vec2 surfaceUV;
     varying vec3 skyDirection;
-    void main() {
-      vec3 direction = normalize(skyDirection);
+    ${SPACE_SKY_FRAGMENT}
+    vec3 computePresetSky(vec3 direction) {
       vec3 day = mix(horizon, zenith, pow(clamp(direction.y, 0.0, 1.0), 0.65));
       float halo = 1.0 - smoothstep(0.0, haloSize, distance(direction, sunDirection));
       day = mix(day, sunHalo, halo);
@@ -72,7 +74,11 @@ const M_sky = new ShaderMaterial({
       vec3 color = day + vec3(0.75, 0.85, 1.0) * point * stars * step(0.02, direction.y);
       float earthPoint = 1.0 - smoothstep(0.001, 0.004, distance(direction, normalize(vec3(-0.12, 0.18, -1.0))));
       color += earthColor * earthPoint * earth * 2.0;
-      gl_FragColor = vec4(color, 1.0);
+      return color;
+    }
+    void main() {
+      vec3 direction = normalize(skyDirection);
+      gl_FragColor = vec4(spaceMode > 0.5 ? computeSpaceSky(direction) : computePresetSky(direction), 1.0);
       #include <tonemapping_fragment>
       #include <colorspace_fragment>
     }
@@ -137,7 +143,7 @@ M_terrain.onBeforeCompile = shader => {
     diffuseColor.rgb *= mix(regolith, ice, mask);
   `);
 };
-M_terrain.customProgramCacheKey = () => "WS2_terrain_biome_v10";
+M_terrain.customProgramCacheKey = () => "WS2_terrain_biome_v15";
 const M_hologram = new MeshBasicMaterial({
   color: paletteHex("cyan"), transparent: true, opacity: 0.5, blending: AdditiveBlending,
   depthWrite: false, side: DoubleSide,

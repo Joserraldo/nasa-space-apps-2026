@@ -6,7 +6,7 @@ import { coloredGeometry } from "../../../materials/uv";
 import { boostVertexLuminance, createRng, parseChoice, parseRecord, parseSeed } from "../station/helpers";
 
 function garnetRockGeometry(geo: BufferGeometry): BufferGeometry {
-  return boostVertexLuminance(coloredGeometry(geo, "oxide"), [0.70, 0.64, 0.66]);
+  return boostVertexLuminance(coloredGeometry(geo, "oxide"), [0.75, 0.69, 0.71]);
 }
 import {
   boulderGeometry, centerOnGround, irregularCapShape, stratifiedRockGeometry,
@@ -55,16 +55,16 @@ export function registerMarsRocks(registry: PieceRegistry): void {
     metadata: { category: "terrain", pivot: "base-center" },
     build: ({ seed, biome, scale }) => {
       const group = new Group();
-      const totalH = scale === "tall" ? 4.4 : 3.2;
+      const totalH = scale === "tall" ? 3.55 : 2.65;
       const profile: [number, number][] = [
-        [0, 1.0], [0.28, 0.74], [0.54, 0.86], [0.8, 0.62], [0.96, 0.48], [1, 0.22],
+        [0, 1.06], [0.24, 0.88], [0.5, 0.78], [0.76, 0.64], [0.94, 0.48], [1, 0.26],
       ];
-      const mainGeo = stratifiedRockGeometry("hoodoo", seed, 0.95, totalH, 10, profile, 0.18);
+      const mainGeo = stratifiedRockGeometry("hoodoo", seed, 0.92, totalH, 10, profile, 0.14);
       group.add(new Mesh(garnetRockGeometry(mainGeo), materials.M_palette));
 
-      const spurGeo = boulderGeometry(seed + 17, 0.62, 1.35, 1);
+      const spurGeo = boulderGeometry(seed + 17, 0.62, 1.22, 1);
       const spur = new Mesh(garnetRockGeometry(spurGeo), materials.M_palette);
-      spur.position.set(0.55, 0, 0.28);
+      spur.position.set(0.52, 0, 0.26);
       group.add(spur);
 
       if (biome === "polar") {
@@ -140,33 +140,33 @@ export function registerMarsRocks(registry: PieceRegistry): void {
     build: ({ seed, biome }) => {
       const group = new Group();
       const profile: [number, number][] = [
-        [0, 1.08], [0.35, 0.98], [0.78, 0.92], [0.97, 0.86], [1, 0.78],
+        [0, 1.08], [0.32, 0.96], [0.68, 0.86], [0.92, 0.76], [1, 0.66],
       ];
-      const cliffGeo = stratifiedRockGeometry("mesa", seed, 3.2, 1.65, 16, profile, 0.1);
+      const cliffGeo = stratifiedRockGeometry("mesa", seed, 2.05, 1.38, 12, profile, 0.1);
       group.add(new Mesh(garnetRockGeometry(cliffGeo), materials.M_palette));
 
       const terrace = new Mesh(
-        garnetRockGeometry(boulderGeometry(seed + 19, 1.35, 0.58, 1)),
+        garnetRockGeometry(boulderGeometry(seed + 19, 0.95, 0.56, 1)),
         materials.M_palette,
       );
-      terrace.position.set(2.35, 0, 0.9);
+      terrace.position.set(1.48, 0, 0.62);
       group.add(terrace);
 
       if (biome === "polar") {
-        const snowCapShape = irregularCapShape(seed + 71, 2.58, 14, 0.09);
+        const snowCapShape = irregularCapShape(seed + 71, 1.48, 12, 0.09);
         const snowCap = new Mesh(
-          coloredGeometry(extrudeProfile(snowCapShape, 0.2, 0.035), "ice"),
+          coloredGeometry(extrudeProfile(snowCapShape, 0.18, 0.03), "ice"),
           materials.M_palette,
         );
         snowCap.rotation.x = -Math.PI / 2;
-        snowCap.position.set(0, 1.62, 0);
+        snowCap.position.set(0, 1.36, 0);
         group.add(snowCap);
       } else {
         const rimRock = new Mesh(
-          garnetRockGeometry(boulderGeometry(seed + 83, 0.58, 0.55, 1)),
+          garnetRockGeometry(boulderGeometry(seed + 83, 0.48, 0.52, 1)),
           materials.M_palette,
         );
-        rimRock.position.set(-1.2, 1.48, 0.65);
+        rimRock.position.set(-0.78, 1.24, 0.42);
         group.add(rimRock);
       }
       return centerOnGround(group);

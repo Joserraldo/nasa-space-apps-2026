@@ -1,10 +1,11 @@
-import { Group, MathUtils, Mesh } from "three";
-import { batchStatic } from "../core/batching";
+import { LOD, MathUtils, Mesh, type Object3D } from "three";
 import type { DEM } from "../environment/dem";
 import { terrainHeight, type Biome } from "../environment/terrain";
 import { inventoryIds } from "../kit/inventory";
+import { LANDING_PAD_LODS } from "../kit/pieces/mars/landing-pad";
 import type { PieceRegistry } from "../kit/registry";
 import { materials } from "../materials/shared";
+import { ColonyGroup, countColonyTriangles, fuseColonyInfrastructure } from "./colony-batches";
 
 export interface ColonyPlacementSpec {
   id: string;
@@ -89,23 +90,60 @@ export function parseColonyLayout(input: unknown, registry?: PieceRegistry): Col
     terrainSeed, placements, views };
 }
 
-export function buildColonyGroup(layout: ColonyLayout, registry: PieceRegistry, dem?: DEM): Group {
-  const raw = new Group();
-  raw.name = `colony_${layout.id}`;
+export function buildColonyGroup(layout: ColonyLayout, registry: PieceRegistry, dem?: DEM) {
+  const colony = new ColonyGroup();
+  colony.name = `colony_${layout.id}`;
+  const infrastructure: Object3D[] = [];
+  const buildings = new Map<string, Object3D[]>();
   const terrainOpts = { biome: layout.biome, seed: layout.terrainSeed, dem };
   for (const item of layout.placements) {
     const piece = registry.build(item.id, item.params ?? {});
-    const groundY = terrainHeight(item.at[0], item.at[1], terrainOpts);
-    piece.position.set(item.at[0], groundY + (item.yOffset ?? 0), item.at[1]);
+    colony.detailedTriangles += countColonyTriangles(piece);
+    const cx = item.at[0], cz = item.at[1];
+    let groundY = terrainHeight(cx, cz, terrainOpts);
+    if (item.id.startsWith("MT-")) {
+      const footR = item.id === "MT-T06" ? 1.9 : item.id === "MT-T04" ? 1.0 : 0.7;
+      groundY = Math.min(
+        groundY,
+        terrainHeight(cx + footR, cz, terrainOpts),
+        terrainHeight(cx - footR, cz, terrainOpts),
+        terrainHeight(cx, cz + footR, terrainOpts),
+        terrainHeight(cx, cz - footR, terrainOpts),
+      );
+    }
+    piece.position.set(cx, groundY + (item.yOffset ?? 0), cz);
     if (item.rot) piece.rotation.y = MathUtils.degToRad(item.rot);
-    raw.add(piece);
+    if (item.id === "MI-07") {
+      const lod = new LOD();
+      lod.name = piece.name;
+      lod.autoUpdate = false;
+      lod.position.copy(piece.position);
+      lod.rotation.copy(piece.rotation);
+      piece.position.set(0, 0, 0);
+      piece.rotation.set(0, 0, 0);
+      lod.addLevel(piece, 0);
+      for (const [index, detail] of LANDING_PAD_LODS.slice(1).entries()) {
+        const simplified = registry.build(item.id, { detail });
+        simplified.visible = false;
+        lod.addLevel(simplified, index === 0 ? 62 : 105, 0.12);
+      }
+      colony.addLOD(lod);
+    } else if (item.id.startsWith("MB-") || item.id.startsWith("MV-")) {
+      const repeated = buildings.get(item.id) ?? [];
+      repeated.push(piece);
+      buildings.set(item.id, repeated);
+    } else infrastructure.push(piece);
   }
-  const batched = batchStatic(raw);
-  batched.traverse(node => {
+  for (const pieces of buildings.values()) {
+    if (pieces.length > 3) colony.addBuildings(pieces);
+    else for (const piece of pieces) colony.addBuildings([piece]);
+  }
+  colony.add(fuseColonyInfrastructure(infrastructure));
+  colony.traverse(node => {
     if (node instanceof Mesh) {
       node.castShadow = node.material !== materials.M_glass;
       node.receiveShadow = true;
     }
   });
-  return batched;
+  return colony;
 }

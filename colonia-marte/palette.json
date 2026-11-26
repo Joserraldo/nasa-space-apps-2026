@@ -216,6 +216,16 @@
       "source": "design:INVENTARIO:6.5"
     },
     {
+      "id": "xenonGlow",
+      "role": "Muted blue-violet plasma",
+      "observed": {"hex":null,"frame":null,"region":null},
+      "base": "#4F30A8",
+      "baseReason": "Design swatch for the dim blue-violet discharge in the DST electric thrusters.",
+      "usage": "MV-09 electric propulsion only",
+      "emissive": true,
+      "source": "design:MV-09"
+    },
+    {
       "id": "skyZenith",
       "role": "Daytime sky zenith",
       "observed": {"hex":"#C79465","frame":null,"region":null},

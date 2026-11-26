@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { batchStatic } from "../../src/core/batching";
-import { createProductionRegistry } from "../../src/kit/pieces";
+import { registerStationPieces } from "../../src/kit/pieces/station";
+import { PieceRegistry } from "../../src/kit/registry";
 import {
   buildDiningTableSet, buildHydroponicRackSet, buildPlanterSet,
 } from "../../src/kit/sets";
@@ -14,7 +15,8 @@ const verticalSliceIds = [
 ] as const;
 
 describe("T4.3 server, hydroponic, airlock pieces, and reusable sets", () => {
-  const registry = createProductionRegistry();
+  const registry = new PieceRegistry();
+  registerStationPieces(registry);
 
   it("registers all remaining P1 vertical-slice pieces and passes specification 8.1", () => {
     expect(registry.ids().length).toBeGreaterThanOrEqual(31);

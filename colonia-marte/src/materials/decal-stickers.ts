@@ -113,12 +113,35 @@ function drawHexagon(ctx: CanvasRenderingContext2D, cx: number, cy: number, r: n
   ctx.closePath();
 }
 
+function drawFittedText(
+  ctx: CanvasRenderingContext2D,
+  text: string,
+  x: number,
+  y: number,
+  maxRight: number,
+  weight: "bold" | "normal",
+  basePx: number,
+  family: "sans-serif" | "monospace",
+): void {
+  const avail = Math.max(40, maxRight - x);
+  let px = basePx;
+  ctx.font = `${weight} ${px}px ${family}`;
+  const measured = ctx.measureText(text).width;
+  if (measured > avail) {
+    px = Math.max(9, Math.floor(((px * avail) / measured) * 10) / 10);
+    ctx.font = `${weight} ${px}px ${family}`;
+  }
+  ctx.fillText(text, x, y, avail);
+}
+
 export function drawDecalSticker(
   ctx: CanvasRenderingContext2D,
   type: DecalType,
   w: number,
   h: number,
 ): void {
+  const safeRight = w - 24;
+
   if (type.startsWith("hab-")) {
     const num = type.slice(4);
     const names: Record<string, string> = {
@@ -129,132 +152,148 @@ export function drawDecalSticker(
     };
     drawPlateBase(ctx, w, h, "#AEB6C0", "#2C3540", Number(num));
 
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect(15, 15, w - 30, h - 30);
+    ctx.clip();
+
     ctx.fillStyle = "#1E2630";
-    ctx.fillRect(20, 24, 108, h - 48);
+    ctx.fillRect(22, 24, 98, h - 48);
     ctx.fillStyle = "#C6CFD8";
-    ctx.font = "bold 66px sans-serif";
-    ctx.fillText(num, 34, 114);
+    drawFittedText(ctx, num, 32, 112, 114, "bold", 62, "sans-serif");
     ctx.fillStyle = "#B87A24";
-    ctx.fillRect(20, h - 34, 108, 10);
+    ctx.fillRect(22, h - 34, 98, 10);
 
     ctx.fillStyle = "#1E2630";
-    ctx.font = "bold 17px monospace";
-    ctx.fillText(names[num] ?? "HAB MODULE", 140, 48);
+    drawFittedText(ctx, names[num] ?? "HAB MODULE", 132, 48, safeRight, "bold", 14, "monospace");
     ctx.fillStyle = "#394450";
-    ctx.font = "bold 12px monospace";
-    ctx.fillText("PRESSURE  101.3 kPa", 140, 74);
-    ctx.fillText("SECTOR    JEZERO-N4", 140, 94);
-    ctx.fillText(`SERIAL    MC-H${num}-2034`, 140, 114);
+    drawFittedText(ctx, "PRESSURE  101.3 kPa", 132, 74, safeRight, "bold", 11.5, "monospace");
+    drawFittedText(ctx, "SECTOR    JEZERO-N4", 132, 94, safeRight, "bold", 11.5, "monospace");
+    drawFittedText(ctx, `SERIAL    MC-H${num}-2034`, 132, 114, safeRight, "bold", 11.5, "monospace");
 
-    drawHazardStripes(ctx, 140, 126, 92, 16, "#B57B24", "#202730");
-    drawBarcode(ctx, 242, 122, 56, 24, "#202730");
+    drawHazardStripes(ctx, 132, 126, 92, 16, "#B57B24", "#202730");
+    drawBarcode(ctx, 234, 122, 58, 24, "#202730");
+    ctx.restore();
     return;
   }
 
   if (type === "hub-crest") {
     drawPlateBase(ctx, w, h, "#222A34", "#7C8794", 11);
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect(15, 15, w - 30, h - 30);
+    ctx.clip();
+
     ctx.fillStyle = "#161D24";
-    drawHexagon(ctx, 74, h / 2, 54);
+    drawHexagon(ctx, 72, h / 2, 52);
     ctx.fill();
     ctx.strokeStyle = "#B87E28";
     ctx.lineWidth = 3.5;
-    drawHexagon(ctx, 74, h / 2, 54);
+    drawHexagon(ctx, 72, h / 2, 52);
     ctx.stroke();
 
     ctx.fillStyle = "#8C4843";
     ctx.beginPath();
-    ctx.arc(74, h / 2 + 2, 24, 0, Math.PI * 2);
+    ctx.arc(72, h / 2 + 2, 23, 0, Math.PI * 2);
     ctx.fill();
     ctx.strokeStyle = "#AEBAC6";
     ctx.lineWidth = 2.5;
     ctx.beginPath();
-    ctx.ellipse(74, h / 2 + 2, 38, 13, -0.38, 0, Math.PI * 2);
+    ctx.ellipse(72, h / 2 + 2, 36, 12, -0.38, 0, Math.PI * 2);
     ctx.stroke();
 
     ctx.fillStyle = "#C4CDD6";
-    ctx.font = "bold 20px sans-serif";
-    ctx.fillText("ARES-IV", 142, 52);
+    drawFittedText(ctx, "ARES-IV", 138, 52, safeRight, "bold", 20, "sans-serif");
     ctx.fillStyle = "#8FA0B0";
-    ctx.font = "bold 13px monospace";
-    ctx.fillText("JEZERO CENTRAL HUB", 142, 76);
+    drawFittedText(ctx, "JEZERO CENTRAL HUB", 138, 76, safeRight, "bold", 12.5, "monospace");
     ctx.fillStyle = "#B87E28";
-    ctx.fillRect(142, 88, 152, 4);
+    ctx.fillRect(138, 88, 148, 4);
     ctx.fillStyle = "#A8B3BE";
-    ctx.font = "12px monospace";
-    ctx.fillText("AIRLOCK SEAL NOMINAL", 142, 112);
-    ctx.fillText("NODE ID // HUB-02-A", 142, 132);
-    drawBarcode(ctx, 142, 144, 140, 18, "#8FA0B0");
+    drawFittedText(ctx, "AIRLOCK SEAL NOMINAL", 138, 112, safeRight, "normal", 11.5, "monospace");
+    drawFittedText(ctx, "NODE ID // HUB-02-A", 138, 132, safeRight, "normal", 11.5, "monospace");
+    drawBarcode(ctx, 138, 144, 140, 18, "#8FA0B0");
+    ctx.restore();
     return;
   }
 
   if (type === "hazard-airlock") {
     drawPlateBase(ctx, w, h, "#A8B0BA", "#232A32", 23);
-    drawHazardStripes(ctx, 16, 18, w - 32, 30, "#BA8222", "#1C2229");
-    drawHazardStripes(ctx, 16, h - 48, w - 32, 30, "#BA8222", "#1C2229");
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect(15, 15, w - 30, h - 30);
+    ctx.clip();
+
+    drawHazardStripes(ctx, 18, 20, w - 36, 28, "#BA8222", "#1C2229");
+    drawHazardStripes(ctx, 18, h - 48, w - 36, 28, "#BA8222", "#1C2229");
 
     ctx.fillStyle = "#9C362E";
     ctx.beginPath();
-    ctx.moveTo(56, 62);
-    ctx.lineTo(26, 118);
-    ctx.lineTo(86, 118);
+    ctx.moveTo(52, 62);
+    ctx.lineTo(24, 118);
+    ctx.lineTo(80, 118);
     ctx.closePath();
     ctx.fill();
     ctx.fillStyle = "#D0D6DC";
-    ctx.font = "bold 32px sans-serif";
-    ctx.fillText("!", 50, 111);
+    ctx.font = "bold 30px sans-serif";
+    ctx.fillText("!", 46, 110);
 
     ctx.fillStyle = "#1B2229";
-    ctx.font = "bold 19px sans-serif";
-    ctx.fillText("CAUTION // PRESSURIZED", 98, 82);
-    ctx.font = "bold 12px monospace";
+    drawFittedText(ctx, "CAUTION // PRESSURIZED", 90, 81, safeRight, "bold", 14.5, "sans-serif");
     ctx.fillStyle = "#313B46";
-    ctx.fillText("O2 / CRYO TRANSFER LINE", 98, 103);
-    ctx.fillText("LOCK VALVES BEFORE EVA", 98, 121);
+    drawFittedText(ctx, "O2 / CRYO TRANSFER LINE", 90, 102, safeRight, "bold", 11.5, "monospace");
+    drawFittedText(ctx, "LOCK VALVES BEFORE EVA", 90, 120, safeRight, "bold", 11.5, "monospace");
+    ctx.restore();
     return;
   }
 
   if (type === "tower-comm") {
     drawPlateBase(ctx, w, h, "#192B35", "#6C8E9B", 37);
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect(15, 15, w - 30, h - 30);
+    ctx.clip();
+
     ctx.fillStyle = "#2A8499";
-    ctx.fillRect(20, 22, 12, h - 44);
+    ctx.fillRect(22, 24, 10, h - 48);
     ctx.fillStyle = "#B8CBD4";
-    ctx.font = "bold 46px sans-serif";
-    ctx.fillText("T-07", 44, 76);
+    drawFittedText(ctx, "T-07", 42, 76, 206, "bold", 44, "sans-serif");
     ctx.fillStyle = "#76A8B8";
-    ctx.font = "bold 14px monospace";
-    ctx.fillText("ORBITAL RELAY TOWER", 44, 104);
+    drawFittedText(ctx, "ORBITAL RELAY TOWER", 42, 104, 214, "bold", 13, "monospace");
     ctx.fillStyle = "#96B2BC";
-    ctx.font = "12px monospace";
-    ctx.fillText("ARRAY BAND  X / Ka-LINK", 44, 128);
-    ctx.fillText("ELEVATION   +18.4 M", 44, 148);
+    drawFittedText(ctx, "ARRAY BAND  X / Ka-LINK", 42, 128, 214, "normal", 11.5, "monospace");
+    drawFittedText(ctx, "ELEVATION   +18.4 M", 42, 148, 214, "normal", 11.5, "monospace");
 
     ctx.strokeStyle = "#5CA2B5";
     ctx.lineWidth = 3;
-    for (const r of [16, 30, 44]) {
+    for (const r of [15, 28, 41]) {
       ctx.beginPath();
-      ctx.arc(254, 72, r, -2.2, -0.9);
+      ctx.arc(252, 72, r, -2.2, -0.9);
       ctx.stroke();
     }
-    drawBarcode(ctx, 222, 124, 72, 26, "#76A8B8");
+    drawBarcode(ctx, 222, 124, 70, 26, "#76A8B8");
+    ctx.restore();
     return;
   }
 
   drawPlateBase(ctx, w, h, "#B2B9C2", "#2B333C", 53);
+  ctx.save();
+  ctx.beginPath();
+  ctx.rect(15, 15, w - 30, h - 30);
+  ctx.clip();
+
   ctx.fillStyle = "#252D36";
-  ctx.fillRect(20, 22, w - 40, 34);
+  ctx.fillRect(22, 22, w - 44, 34);
   ctx.fillStyle = "#C6CFD8";
-  ctx.font = "bold 18px monospace";
-  ctx.fillText("UTILITY BAY // SEC-10", 32, 45);
+  drawFittedText(ctx, "UTILITY BAY // SEC-10", 32, 45, w - 32, "bold", 16.5, "monospace");
 
   ctx.fillStyle = "#222A33";
-  ctx.font = "bold 36px sans-serif";
-  ctx.fillText("M-10", 28, 102);
-  ctx.font = "bold 12px monospace";
+  drawFittedText(ctx, "M-10", 24, 102, 114, "bold", 32, "sans-serif");
   ctx.fillStyle = "#38424D";
-  ctx.fillText("ATMOS SCRUBBER & CARGO", 132, 80);
-  ctx.fillText("MAX PAYLOAD  12,500 KG", 132, 100);
-  ctx.fillText("ROOF HATCHES SEALED", 132, 120);
+  drawFittedText(ctx, "ATMOS SCRUBBER & CARGO", 120, 80, safeRight, "bold", 11.5, "monospace");
+  drawFittedText(ctx, "MAX PAYLOAD  12,500 KG", 120, 100, safeRight, "bold", 11.5, "monospace");
+  drawFittedText(ctx, "ROOF HATCHES SEALED", 120, 120, safeRight, "bold", 11.5, "monospace");
 
-  drawHazardStripes(ctx, 24, 134, 108, 20, "#B47C22", "#202730");
-  drawBarcode(ctx, 146, 132, 144, 22, "#252D36");
+  drawHazardStripes(ctx, 24, 134, 104, 20, "#B47C22", "#202730");
+  drawBarcode(ctx, 140, 132, 148, 22, "#252D36");
+  ctx.restore();
 }

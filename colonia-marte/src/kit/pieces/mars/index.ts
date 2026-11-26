@@ -5,6 +5,7 @@ import { registerMarsHabitats } from "./habitats";
 import { registerMarsIndustrial } from "./industrial";
 import { registerMarsInfrastructure } from "./infrastructure";
 import { registerMarsRocks } from "./rocks";
+import { registerMarsTransit } from "./transit";
 
 /**
  * WS2/WS3 exterior pieces (MT-T04/05/06, MB-01/02/03/04/07/10, MI-03/04/06/09/11).
@@ -17,4 +18,5 @@ export function registerMarsPieces(registry: PieceRegistry): void {
   registerMarsIndustrial(registry);
   registerMarsInfrastructure(registry);
   registerMarsCommsDish(registry);
+  registerMarsTransit(registry);
 }

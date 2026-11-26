@@ -12,6 +12,7 @@ import nw13Json from "../../data/layouts/rooms/nw-13.json";
 import nw14Json from "../../data/layouts/rooms/nw-14.json";
 import nw15Json from "../../data/layouts/rooms/nw-15.json";
 import nw16Json from "../../data/layouts/rooms/nw-16.json";
+import nw17Json from "../../data/layouts/rooms/nw-17.json";
 import { createProductionRegistry } from "../../src/kit/pieces";
 import { catalogPage } from "../../src/catalog/pagination";
 import { createDemoRegistry } from "../../src/core/demo-pieces";
@@ -135,6 +136,11 @@ describe("room layout schema and canteen pilot layout (T5.1)", () => {
     const common = parseRoomLayout(nw16Json, registry);
     expect(common.id).toBe("nw-16");
     expect(buildRoomFromLayout(common, registry).pieceCount).toBeGreaterThan(65);
+
+    const shipShelter = parseRoomLayout(nw17Json, registry);
+    expect(shipShelter.id).toBe("nw-17");
+    expect(shipShelter.environment).toBe("AMB-03");
+    expect(buildRoomFromLayout(shipShelter, registry).pieceCount).toBeGreaterThan(50);
   });
 
   it("rejects unknown or unregistered piece IDs and invalid parameters", () => {

@@ -171,14 +171,23 @@ export function createJezeroRockScatter(options: JezeroRockScatterOptions): Grou
       const baseScale = tier.scaleMin + (tier.scaleMax - tier.scaleMin) * rng();
       if (isExcluded(x, z, baseScale * 0.9, exclusions)) continue;
 
-      const y = terrainHeight(x, z, { biome: "jezero", seed: options.seed, dem: options.dem }) - tier.sink * baseScale;
+      const tOpts = { biome: "jezero" as const, seed: options.seed, dem: options.dem };
+      const footR = baseScale * (tier.pieceId === "MT-T06" ? 1.85 : tier.pieceId === "MT-T04" ? 0.95 : 0.62);
+      const minGroundY = Math.min(
+        terrainHeight(x, z, tOpts),
+        terrainHeight(x + footR, z, tOpts),
+        terrainHeight(x - footR, z, tOpts),
+        terrainHeight(x, z + footR, tOpts),
+        terrainHeight(x, z - footR, tOpts),
+      );
+      const y = minGroundY - tier.sink * baseScale - 0.06;
       pos.set(x, y, z);
-      rot.set((rng() - 0.5) * 0.14, rng() * Math.PI * 2, (rng() - 0.5) * 0.14);
+      rot.set((rng() - 0.5) * 0.08, rng() * Math.PI * 2, (rng() - 0.5) * 0.08);
       quat.setFromEuler(rot);
       scl.set(
-        baseScale * (0.88 + rng() * 0.26),
-        baseScale * (0.82 + rng() * 0.32),
-        baseScale * (0.88 + rng() * 0.26),
+        baseScale * (0.90 + rng() * 0.22),
+        baseScale * (0.85 + rng() * 0.26),
+        baseScale * (0.90 + rng() * 0.22),
       );
       mat.compose(pos, quat, scl);
       mesh.setMatrixAt(placed, mat);
@@ -186,10 +195,10 @@ export function createJezeroRockScatter(options: JezeroRockScatterOptions): Grou
       // Muted earthy garnet-oxide rocks slightly darker than surrounding soil (sat <= 0.45, R > B >= G)
       const shadeMix = rng();
       if (shadeMix < 0.5) {
-        const d = 0.80 + shadeMix * 0.22;
+        const d = 0.86 + shadeMix * 0.16;
         tint.setRGB(d * 1.0, d * 0.96, d * 0.97);
       } else {
-        const d = 0.92 + rng() * 0.16;
+        const d = 0.95 + rng() * 0.12;
         tint.setRGB(d * 1.0, d * 0.97, d * 0.98);
       }
       mesh.setColorAt(placed, tint);

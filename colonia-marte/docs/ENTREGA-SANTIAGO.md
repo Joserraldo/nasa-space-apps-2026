@@ -114,3 +114,38 @@ Si Santiago necesita un cambio en un contrato o en el aspecto de un componente, 
 3. **Dependencias:** quien agrega una dependencia a `colonia-marte/package.json` lo avisa, y con versión exacta. `three` queda fijo en 0.187.0.
 4. **Retiro de `ui/` (la app React vieja):** primero se lee `ui/src/juego/` y `ui/src/componentes/Intro.tsx` para entender cómo usa el motor, y se porta esa lógica a `src/game/`. `ui/` se borra **en un PR final aparte**, cuando el juego nuevo pase la ruta dorada en E2E. Hasta entonces no se toca, para no romper `develop` ni el despliegue.
 5. **Sincronización:** las entregas visuales llegan a `feat/ui-colonia-marte`. Santiago la fusiona seguido en su rama. Como nadie edita carpetas del otro, esas fusiones no deberían dar conflictos. Si aparece uno, esa es la señal de que alguien se salió de su carpeta.
+
+## 8. Actualización del 26 nov (respuesta al plan de Fase 1)
+
+**Lo que trae esta actualización:**
+
+| Qué | Ruta | Estado |
+|---|---|---|
+| NW-16, sala común de la nave, con Iris acoplada | `/room/nw-16` | Hecha y medida (brillo dentro de ±15 de su referencia) |
+| NW-17, refugio de la nave (B3) | `/room/nw-17` | Hecha y medida |
+| NW-14, refugio de la colonia, más claro | `/room/nw-14` | Corregida tras el rechazo «se ve muy negro» |
+| Exterior optimizado | `/exterior-pilot` | 262 → 99 draw calls, con fps iguales o mejores que antes |
+| MI-07, plataforma de aterrizaje | `/exterior-pilot?view=3` | Aprobada por el revisor |
+| Arreglos de Carbon en el exterior | `/exterior-pilot` | Arco de tuberías MI-03, layout radial, suelo sin costuras, stickers |
+| Escena del espacio con la Tierra (B3, toma 1) | `/space` | La escena funciona. **La nave MV-09 de esta versión fue rechazada**: se está rehaciendo como Orion acoplada al hábitat Deep Space Transport de NASA. La escena y su API no cambian; solo cambia el modelo |
+| Ajustes | `/hud-preview?settings=play` | Checkpoint. La corrección de la selección llega con la fase 1 de UI |
+
+**En curso, llega en la próxima actualización:**
+
+- **UI, fase 1:** menú principal (`/menu`), pantalla de carga, tarjetas de inicio y fin de capítulo, y la corrección de la selección en Ajustes. Pasa todos los chequeos salvo un desplazamiento mínimo de layout en celular, que se está corrigiendo.
+- **MV-09, segunda ronda:** la nave real, con la calidad del resto del juego.
+- **Carbon:** NW-12 (mando), NW-09 (energía) y NW-08 (soporte vital).
+
+**Tus pedidos de la sección 6 del plan:**
+
+| Id | Quién | Cuándo |
+|---|---|---|
+| B1 Idioma en Ajustes y textos por parámetro | Sesión de UI | Apenas se apruebe la fase 1 de UI. Te paso el contrato de claves de texto |
+| B2 Retratos de Iris y Mission Control | María Paula | Después de B1 |
+| B3 `/space` y NW-17 | Ya están (la nave se está rehaciendo) | Esta actualización |
+| B4 Límites para caminar (`mode-controller.ts`) | Sesión de UI | Con B5 |
+| B5 `update(state)` en el HUD | Sesión de UI | Con B1 |
+| B6 Tripulación colocada en NW-16 con un gesto | Carbon | Después de NW-12/09/08 |
+| B7 Contenedor propio en `src/game/` | Santiago | Sin cambios en la vista |
+
+**Verificado en esta versión:** build, tipos, **163/163 tests** y validate:pieces en salida 0. Las rutas de la tabla se abrieron en Chromium con ventana visible, sin errores de consola. Con el panel en primer plano, la escena exterior marca 96 fps en su propio contador.

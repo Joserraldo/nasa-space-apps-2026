@@ -128,16 +128,16 @@ export function cyanEquipPod(width = 0.56, height = 0.42, depth = 0.22): Group {
 export function twinPostRedValve(): Group {
   const group = new Group();
   for (const x of [-0.58, 0.58]) {
-    const foot = extrudedMesh(polygonShape(0.28, 8), 0.30, 0.025, "black", [x, 0.15, 0]);
+    const foot = extrudedMesh(polygonShape(0.28, 8), 0.34, 0.025, "black", [x, 0.17, 0]);
     foot.rotation.x = -Math.PI / 2;
-    const post = extrudedMesh(polygonShape(0.20, 8), 1.16, 0.02, "darkGray", [x, 0.82, 0]);
+    const post = extrudedMesh(polygonShape(0.20, 8), 1.16, 0.02, "darkGray", [x, 0.86, 0]);
     post.rotation.x = -Math.PI / 2;
-    const cap = extrudedMesh(polygonShape(0.27, 8), 0.14, 0.02, "gray", [x, 1.44, 0]);
+    const cap = extrudedMesh(polygonShape(0.27, 8), 0.14, 0.02, "gray", [x, 1.48, 0]);
     cap.rotation.x = -Math.PI / 2;
     group.add(foot, post, cap);
   }
-  group.add(valveRedBoxCenter([1.22, 0.30, 0.32], [0, 1.04, 0], 0.035));
-  group.add(boxCenter([0.34, 0.38, 0.38], "black", [0, 1.04, 0], 0.03));
-  group.add(valveRedBoxCenter([0.22, 0.22, 0.48], [0, 1.12, 0.10], 0.025));
+  group.add(valveRedBoxCenter([1.02, 0.24, 0.24], [0, 1.06, 0], 0.025));
+  group.add(boxCenter([0.34, 0.34, 0.34], "black", [0, 1.06, 0], 0.025));
+  group.add(valveRedBoxCenter([0.20, 0.14, 0.22], [0, 1.30, 0], 0.02));
   return group;
 }

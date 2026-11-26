@@ -9,6 +9,7 @@ import { registerEvaGearPieces } from "./eva-gear";
 import { registerGreenhousePieces } from "./greenhouse-pieces";
 import { registerHydroponicPieces } from "./hydroponics";
 import { registerShipCommonPieces } from "./ship-common";
+import { registerShipShelterPieces } from "./ship-shelter";
 import { registerShelterPieces } from "./shelter-pieces";
 import { registerStationPortals } from "./portals";
 import { registerStationProps } from "./props";
@@ -33,6 +34,7 @@ export function registerStationPieces(registry: PieceRegistry): void {
   registerEvaGearPieces(registry);
   registerGreenhousePieces(registry);
   registerShipCommonPieces(registry);
+  registerShipShelterPieces(registry);
   registerShelterPieces(registry);
   registerStationProps(registry);
   registerTechAndAirlockPieces(registry);
