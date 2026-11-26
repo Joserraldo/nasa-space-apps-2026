@@ -2,7 +2,7 @@
   "id": "c4",
   "name": "C4: Storm and Rescue",
   "biome": "jezero",
-  "environment": "AMB-04",
+  "environment": "AMB-06",
   "terrainSeed": 42,
   "placements": [
     {"id": "MB-02", "at": [0, 0], "yOffset": -0.18, "rot": 22.5, "params": {"style": "colony"}},

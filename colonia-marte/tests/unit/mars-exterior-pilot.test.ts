@@ -52,6 +52,11 @@ describe("T3.1 Mars colony exterior pilot pieces, decals, and layout", () => {
     expect(visible()).toHaveLength(1);
     expect(countColonyTriangles(visible()[0])).toBe(24);
     expect(colony.updateLods(camera)).toBe(false);
+    colony.restoreStaticRender();
+    expect(visible()).toHaveLength(2);
+    colony.optimizeStaticRender(camera);
+    expect(visible()).toHaveLength(1);
+    expect(countColonyTriangles(visible()[0])).toBe(24);
     colony.dispose();
     material.dispose();
   });

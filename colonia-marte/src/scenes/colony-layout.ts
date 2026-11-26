@@ -7,7 +7,8 @@ import { buildColonyPaving, parseColonyPaving } from "../kit/pieces/mars/colony-
 import { COLONY_BUILDING_LODS } from "../kit/pieces/mars/colony-building-details";
 import { GREENHOUSE_LODS } from "../kit/pieces/mars/greenhouse";
 import { LANDING_PAD_LODS } from "../kit/pieces/mars/landing-pad";
-import { plazaContains, plazaOutline } from "../kit/pieces/mars/colony-plaza";
+import { buildPlaza, plazaContains, plazaOutline } from "../kit/pieces/mars/colony-plaza";
+import { coverSolarCells, lightHabitatInterior } from "./colony-environment";
 import { vehicleDetailLevels } from "../kit/pieces/mars/rover-truck";
 import { buildRoverTracks, parseRoverTracks } from "../kit/pieces/mars/rover-tracks";
 import type { PieceRegistry } from "../kit/registry";
@@ -181,16 +182,16 @@ function districtPlatformHeight(layout: ColonyLayout, sample: (x: number, z: num
   const [cx, cz] = pad.at;
   let max = sample(cx, cz);
   const points = [...boundary];
-  for (let x = -width / 2; x <= width / 2; x += 2) {
-    for (let z = -depth / 2; z <= depth / 2; z += 2) {
+  for (let x = -width / 2; x <= width / 2; x += 0.55) {
+    for (let z = -depth / 2; z <= depth / 2; z += 0.55) {
       if (plazaContains(boundary, x, z)) points.push([x, z]);
     }
   }
   for (const [x, z] of points) max = Math.max(max, sample(cx + x * c + z * s, cz + z * c - x * s));
-  return max + 0.14;
+  return max + 0.018;
 }
 
-export function buildColonyGroup(layout: ColonyLayout, registry: PieceRegistry, dem?: DEM) {
+export function buildColonyGroup(layout: ColonyLayout, registry: PieceRegistry, dem?: DEM, environment = layout.environment) {
   const colony = new ColonyGroup();
   colony.name = `colony_${layout.id}`;
   const infrastructure: Object3D[] = [];
@@ -234,7 +235,9 @@ export function buildColonyGroup(layout: ColonyLayout, registry: PieceRegistry, 
         : flatY !== null
           ? () => flatY + plazaTopLift - 0.06
           : ground;
-      const paving = buildColonyPaving(spec, heightFn);
+      const paving = item.platform && flatY !== null && spec.layout === "plaza"
+        ? buildPlaza({ ...spec, platformSkirt: false }, () => flatY, { grade: flatY, ground })
+        : buildColonyPaving(spec, heightFn);
       if (flatY !== null && spec.layout === "road") {
         const soil = paving.getObjectByName("Graded regolith shoulders");
         if (soil) {
@@ -249,6 +252,8 @@ export function buildColonyGroup(layout: ColonyLayout, registry: PieceRegistry, 
       continue;
     }
     const piece = registry.build(item.id, item.params ?? {});
+    if (environment === "AMB-06" && item.id === "MI-04") coverSolarCells(piece);
+    if (environment === "AMB-08" && item.id === "MB-01") lightHabitatInterior(piece);
     colony.detailedTriangles += countColonyTriangles(piece);
     let groundY = flatY !== null && !item.id.startsWith("MT-")
       ? flatY + plazaTopLift

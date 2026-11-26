@@ -6,7 +6,6 @@ import { createRendering } from "../core/rendering";
 import { createShell } from "../core/shell";
 import { applyEnvironment } from "../environment/apply";
 import { decodeJezeroDEM } from "../environment/dem";
-import { presets } from "../environment/presets";
 import { createJezeroRockScatter, disposeRockScatter, type RockExclusionZone } from "../environment/rock-scatter";
 import { createTerrain, terrainHeight } from "../environment/terrain";
 import { createProductionRegistry } from "../kit/pieces";
@@ -23,6 +22,8 @@ import { createButton } from "../ui";
 import { buildColonyGroup, parseColonyLayout, type ColonyLayout, type ColonyViewSpec } from "./colony-layout";
 import { countColonyTriangles } from "./colony-batches";
 import { composeColonyLayout } from "./colony-district";
+import { selectColonyEnvironment } from "./colony-environment";
+import { createFamilyArrival } from "./colony-arrival";
 
 export { buildColonyGroup, parseColonyLayout };
 
@@ -128,15 +129,15 @@ export async function mountExteriorPilot(input: unknown = colonyJson): Promise<v
   scene.add(terrain);
   if (rockScatter) scene.add(rockScatter);
 
-  const preset = presets.find(p => p.id === layout.environment) ?? presets[3];
+  const preset = selectColonyEnvironment(layout, query);
   applyEnvironment(rendering, preset);
-  if (layout.biome === "jezero") applyExteriorLightingCalibration(rendering);
+  if (preset.id === "AMB-04") applyExteriorLightingCalibration(rendering);
   // Depth-aware upsampling keeps contact shadows without running AO at the full viewport size.
   rendering.ao.configuration.halfRes = true;
   // The colony is static. Reuse converged AO until the camera or visible geometry changes.
   rendering.ao.configuration.accumulate = true;
 
-  const colony = buildColonyGroup(layout, registry, dem);
+  const colony = buildColonyGroup(layout, registry, dem, preset.id);
   scene.add(colony);
   // The light and terrain are static; refresh the shadow map only when a building changes detail.
   renderer.shadowMap.autoUpdate = false;
@@ -144,6 +145,11 @@ export async function mountExteriorPilot(input: unknown = colonyJson): Promise<v
 
   const joystick = createJoystick(shell.joystick);
   const navigation = createNavigation(camera, renderer.domElement, joystick.state);
+  const batchChapter = ["c4", "c5", "final"].includes(layout.id);
+  const landingPad = layout.id === "final" ? layout.placements.find(item => item.id === "MI-07") : undefined;
+  const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)");
+  let arrival: ReturnType<typeof createFamilyArrival> | undefined;
+  let arrivalAltitude: number | null = null;
 
   const applyView = (view: ColonyViewSpec) => {
     navigation.setMode("orbit");
@@ -155,6 +161,17 @@ export async function mountExteriorPilot(input: unknown = colonyJson): Promise<v
     navigation.orbit.target.fromArray(view.target);
     camera.updateProjectionMatrix();
     navigation.orbit.update();
+    const landing = view.id === "family-arrival";
+    if (landing && landingPad && !arrival) {
+      arrival = createFamilyArrival(landingPad, terrainHeight(...landingPad.at, terrainOpts), registry);
+      scene.add(arrival.ship);
+    }
+    const altitude = arrival?.show(landing, reducedMotion.matches);
+    arrivalAltitude = landing ? altitude ?? null : null;
+    if (batchChapter || view.id === "main-entrance") colony.optimizeStaticRender(camera);
+    else colony.restoreStaticRender();
+    renderer.shadowMap.needsUpdate = true;
+    rendering.ao.firstFrame();
     skyMesh.position.copy(camera.position);
     joystick.setVisible(false);
     shell.orbit.setAttribute("aria-pressed", "true");
@@ -166,8 +183,6 @@ export async function mountExteriorPilot(input: unknown = colonyJson): Promise<v
   const viewParam = Number(query.get("view") ?? "1");
   const initialIdx = Number.isInteger(viewParam) && viewParam >= 1 ? viewParam - 1 : 0;
   applyView(layout.views[initialIdx] ?? layout.views[0]);
-  // The wide final shot sees almost every building; tight pilot shots benefit from per-object culling.
-  if (["c4", "c5", "final"].includes(layout.id)) colony.optimizeStaticRender(camera);
 
   const controls = document.getElementById("controls");
   if (controls) {
@@ -192,12 +207,18 @@ export async function mountExteriorPilot(input: unknown = colonyJson): Promise<v
   const scopeNote = document.querySelector(".scope-note");
   if (scopeNote) {
     const biomeLabel = layout.biome === "polar" ? "North polar terrain" : "Jezero stylized stone (DV-07)";
-    scopeNote.textContent = `${biomeLabel} + ${layout.environment} + ${layout.placements.length} assets.`;
+    const notice = preset.id === "solar-alert" ? " Cyan particles symbolize the alert, not visible radiation." : "";
+    scopeNote.textContent = `${biomeLabel} + ${preset.name} + ${layout.placements.length} assets.${notice}`;
   }
 
   shell.reset.onclick = () => applyView(layout.views[0]);
   shell.orbit.onclick = () => applyView(layout.views[0]);
   shell.walk.onclick = () => {
+    if (!batchChapter) colony.restoreStaticRender();
+    arrival?.show(false, false);
+    arrivalAltitude = null;
+    renderer.shadowMap.needsUpdate = true;
+    rendering.ao.firstFrame();
     const y = terrainHeight(-5.2, 20.8, terrainOpts) + 1.5;
     camera.position.set(-5.2, y, 20.8);
     navigation.setMode("walk");
@@ -233,6 +254,8 @@ export async function mountExteriorPilot(input: unknown = colonyJson): Promise<v
     frames: 0,
     pixelRatio: renderer.getPixelRatio(),
     pieceCount: layout.placements.length,
+    environment: preset.id,
+    get arrivalAltitude() { return arrivalAltitude; },
     visibility: document.visibilityState,
   };
 
@@ -245,6 +268,11 @@ export async function mountExteriorPilot(input: unknown = colonyJson): Promise<v
     camera.updateMatrixWorld();
     if (colony.updateLods(camera)) {
       renderer.shadowMap.needsUpdate = true;
+      rendering.ao.firstFrame();
+    }
+    const nextAltitude = arrival?.advance(dt);
+    if (typeof nextAltitude === "number") {
+      arrivalAltitude = nextAltitude;
       rendering.ao.firstFrame();
     }
     skyMesh.position.copy(camera.position);
@@ -320,6 +348,8 @@ declare global {
         frames: number;
         pixelRatio: number;
         pieceCount: number;
+        environment: string;
+        arrivalAltitude: number | null;
         visibility: DocumentVisibilityState;
       };
       setView: (index: number) => void;

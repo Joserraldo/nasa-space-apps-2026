@@ -53,7 +53,11 @@ export class ColonyRenderBatches extends Group {
   }
 
   dispose(): void {
-    for (const cell of this.cells) this.clearCell(cell);
+    for (const cell of this.cells) {
+      for (const levels of cell.meshes) for (const sources of levels)
+        for (const { mesh } of sources) mesh.layers.enable(0);
+      this.clearCell(cell);
+    }
   }
 
   private clearCell(cell: Cell): void {

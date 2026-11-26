@@ -33,6 +33,13 @@ export class ColonyGroup extends Group {
     this.renderBatches.refresh();
   }
 
+  restoreStaticRender(): void {
+    if (!this.renderBatches) return;
+    this.renderBatches.dispose();
+    this.remove(this.renderBatches);
+    this.renderBatches = undefined;
+  }
+
   updateLods(camera: Camera): boolean {
     let changed = false;
     for (const lod of this.lods) {

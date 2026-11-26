@@ -18,6 +18,10 @@ const districtViews: ColonyViewSpec[] = [
     position: [-15.95, 1.5, 36.8], target: [-59, 1.8, 19], fov: 53,
   },
 ];
+const arrivalView: ColonyViewSpec = {
+  id: "family-arrival", label: "Family arrival",
+  position: [37.4, 8.1, 3.8], target: [20.2, 4.6, -7.35], fov: 57,
+};
 
 function road(at: PlanPoint, points: PlanPoint[], districtConnector: "arterial" | "hub"): ColonyPlacementSpec {
   const path = points.map(([x, z]) => [x - at[0], z - at[1]]);
@@ -35,7 +39,8 @@ export function composeColonyLayout(layout: ColonyLayout, registry?: PieceRegist
   const c = Math.cos(angle), s = Math.sin(angle);
   const world = ([x, z]: PlanPoint): PlanPoint => [ox + x * c + z * s, oz + z * c - x * s];
   const imported = source.placements.map((part): ColonyPlacementSpec => ({
-    ...part, at: world(part.at), rot: (part.rot ?? 0) + rotation,
+    ...part, id: part.id === "MB-14" ? "MB-13" : part.id,
+    at: world(part.at), rot: (part.rot ?? 0) + rotation,
     ...(source.flatPlatform ? { platform: "base-district" } : {}),
   }));
 
@@ -62,13 +67,13 @@ export function composeColonyLayout(layout: ColonyLayout, registry?: PieceRegist
   // The west entrance appears with the district, even in chapters before the final colony.
   const entrances = pilot.placements.filter(part =>
     (part.id === "MI-01" && part.params?.layout === "plaza" && part.at[1] > 20) ||
-    part.id === "MB-05" || (part.id === "NX-04" && part.params?.principal === true));
+    part.id === "MB-05" || part.id === "MB-14" || (part.id === "NX-04" && part.params?.principal === true));
   const missingEntrances = entrances.filter(part => !layout.placements.some(existing =>
     existing.id === part.id && existing.at[0] === part.at[0] && existing.at[1] === part.at[1]));
   const views = layout.views.length === 1 ? [layout.views[0], ...pilot.views.slice(1)] : layout.views;
   return {
     ...layout,
     placements: [...layout.placements, ...missingEntrances, ...imported, entranceRoad, hubRoad],
-    views: [...views, ...districtViews],
+    views: layout.id === "final" ? [...views, ...districtViews, arrivalView] : [...views, ...districtViews],
   };
 }

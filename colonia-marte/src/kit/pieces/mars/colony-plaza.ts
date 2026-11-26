@@ -133,7 +133,7 @@ function pavement(outline: Point[], width: number, depth: number, height: Height
   return { slabs, bed: surface(bases, baseFaces), edgeSlabs: surface(edges, edgeFaces) };
 }
 
-function perimeter(outline: Point[], height: Height, bands: readonly Point[]) {
+function perimeter(outline: Point[], height: (x: number, z: number, offset: number) => number, bands: readonly Point[]) {
   const edge = (area(outline) < 0 ? outline.slice().reverse() : outline).map(([x, z]) => new Vector2(x, z));
   const points: number[] = [], faces: number[] = [];
   const rows: Array<{ at: Vector2; outward: Vector2 }> = [];
@@ -149,7 +149,7 @@ function perimeter(outline: Point[], height: Height, bands: readonly Point[]) {
   }
   for (const [i, { at, outward }] of rows.entries()) for (const [j, [offset, lift]] of bands.entries()) {
     const { x, y: z } = at.clone().addScaledVector(outward, offset);
-    points.push(x, height(x, z) + lift, z);
+    points.push(x, height(x, z, offset) + lift, z);
     if (j + 1 === bands.length) continue;
     const a = i * bands.length + j, b = ((i + 1) % rows.length) * bands.length + j;
     faces.push(a, b, a + 1, b, b + 1, a + 1);
@@ -305,10 +305,11 @@ function buildDistrictFloorDetails(spec: Plaza, outline: Point[], height: Height
   return extras;
 }
 
-export function buildPlaza(spec: Plaza, height: Height = () => 0) {
+export function buildPlaza(spec: Plaza, height: Height = () => 0, embankment?: { grade: number; ground: Height }) {
   const outline = plazaOutline(spec);
   const { slabs, bed, edgeSlabs } = pavement(outline, ...spec.size, height);
-  const curb = perimeter(outline, height, [[-0.086, top + 0.009], [0.03, top + 0.009], [0.108, 0.019]]);
+  const curb = perimeter(outline, embankment ? () => embankment.grade : height,
+    [[-0.086, top + 0.009], [0.03, top + 0.009], [0.108, 0.019]]);
   const layers: BufferGeometry[] = [
     coloredGeometry(bed, "black"),
     tintGeometry(coloredGeometry(curb, "darkGray"), 0.52, 0.54, 0.58),
@@ -322,11 +323,18 @@ export function buildPlaza(spec: Plaza, height: Height = () => 0) {
   const paving = mergeVertices(combinedPaving, 1e-6);
   combinedPaving.dispose();
   for (const geometry of [...layers, bed, curb, edgeSlabs]) geometry.dispose();
-  const bank = perimeter(outline, height, [[0.09, 0.018], [0.32, 0.014], [0.74, -0.018]]);
+  const bank = embankment
+    ? perimeter(outline, (x, z, offset) => {
+      const t = (offset - 0.09) / 4.11;
+      return (1 - t) * embankment.grade + t * embankment.ground(x, z);
+    }, [[0.09, 0.018], [0.8, 0.015], [1.7, 0.011], [2.8, 0.002], [4.2, -0.018]])
+    : perimeter(outline, height, [[0.09, 0.018], [0.32, 0.014], [0.74, -0.018]]);
   bank.setAttribute("iceMask", new Float32BufferAttribute(new Float32Array(bank.attributes.position.count), 1));
   const group = new Group();
   group.name = "MI-01 Paved colony platform";
-  group.add(new Mesh(paving, materials.M_palette), new Mesh(bank, materials.M_terrain), slabs);
+  const bankMesh = new Mesh(bank, materials.M_terrain);
+  if (embankment) bankMesh.name = "District compacted regolith bank";
+  group.add(new Mesh(paving, materials.M_palette), bankMesh, slabs);
   const dashes = laneDashes(spec.lanes, height);
   if (dashes.length) {
     const lamp = new Mesh(coloredGeometry(new BoxGeometry(0.104, 0.012, 0.46), "cyan"), materials.M_palette);

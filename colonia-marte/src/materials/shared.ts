@@ -47,6 +47,9 @@ const M_sky = new ShaderMaterial({
     sunDirection: { value: new Vector3(-0.4, 0.6, -0.7).normalize() },
     haloSize: { value: 0.08 }, earth: { value: 0 },
     earthColor: { value: new Color(paletteHex("duskHalo")) },
+    atmosphereEvent: { value: 0 },
+    eventDust: { value: new Color(paletteHex("regolithShade")) },
+    eventSolar: { value: new Color(paletteHex("cyan")) },
   },
   vertexShader,
   side: DoubleSide,
@@ -60,6 +63,9 @@ const M_sky = new ShaderMaterial({
     uniform vec3 earthColor;
     uniform float earth;
     uniform float haloSize;
+    uniform float atmosphereEvent;
+    uniform vec3 eventDust;
+    uniform vec3 eventSolar;
     varying vec2 surfaceUV;
     varying vec3 skyDirection;
     ${SPACE_SKY_FRAGMENT}
@@ -75,6 +81,17 @@ const M_sky = new ShaderMaterial({
       vec3 color = day + vec3(0.75, 0.85, 1.0) * point * stars * step(0.02, direction.y);
       float earthPoint = 1.0 - smoothstep(0.001, 0.004, distance(direction, normalize(vec3(-0.12, 0.18, -1.0))));
       color += earthColor * earthPoint * earth * 2.0;
+      if (atmosphereEvent == 1.0) {
+        float azimuth = atan(direction.z, direction.x);
+        float arc = 0.042 + 0.014 * sin(azimuth * 3.0);
+        float bands = exp(-90.0 * abs(direction.y - arc)) +
+          0.45 * exp(-135.0 * abs(direction.y - arc * 0.42));
+        color = mix(color, eventDust, 0.33 * bands);
+      }
+      if (atmosphereEvent == 2.0) {
+        float streak = 1.0 - smoothstep(0.06, 0.32, length((fract(starUV) - 0.5) * vec2(0.55, 3.0)));
+        color += eventSolar * streak * step(0.996, seed) * smoothstep(0.03, 0.27, direction.y) * 1.2;
+      }
       return color;
     }
     void main() {
