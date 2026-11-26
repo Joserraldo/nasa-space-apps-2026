@@ -120,18 +120,25 @@ function orionWing(index: number, detail: Resolution, tier: TransitDetail) {
   return wing;
 }
 
+const orionFlank: Profile = [[2.47, -13.39], [0.90, -10.47]];
+const [[orionBaseRadius, orionBaseX], [orionNoseRadius, orionNoseX]] = orionFlank;
+const orionFlankSlope = (orionNoseRadius - orionBaseRadius) / (orionNoseX - orionBaseX);
+const orionFlankRadius = (x: number) => orionBaseRadius + orionFlankSlope * (x - orionBaseX);
+
 function orion(detail: Resolution, tier: TransitDetail) {
   const { body, small } = detail;
   const nose = new Group(), service = new Group(), structure = new Group();
   structure.name = "orion";
   // Capsule apex docks to the habitat; the broad heat shield faces the service module.
   nose.add(
-    axialProfile([[2.50, -13.52], [2.46, -13.39], [2.30, -13.10], [0.92, -10.55], [0.78, -10.30]], body, tier === "far" ? "white" : "hull"),
-    axialProfile([[1.92, -13.74], [2.38, -13.66], [2.50, -13.52], [2.48, -13.39]], body, "darkGray"),
+    axialProfile([[2.50, -13.52], ...orionFlank, [0.80, -10.33]], body, tier === "far" ? "white" : "hull"),
+    axialProfile([[1.93, -13.78], [2.36, -13.71], [2.52, -13.57], [2.50, -13.52]], body, "darkGray"),
     cylinder(-10.37, -9.75, 0.73, small, "hull"),
     cylinder(-9.90, -9.59, 0.65, small, "darkGray"),
   );
-  if (tier === "near") for (const angle of [-1.00, -1.41]) nose.add(windowFrame(-11.40, 1.50, angle, 0.53, 0.37, 0.48));
+  if (tier === "near") for (const angle of [-1.00, -1.41]) {
+    nose.add(windowFrame(-11.40, orionFlankRadius(-11.40) + 0.05, angle, 0.53, 0.37, -Math.atan(orionFlankSlope)));
+  }
   if (tier !== "far") for (const angle of [-2.2, -0.9, 0.9, 2.2]) {
     const dot = block([0.12, 0.07, 0.073], "cyan", [-9.91, 0.73 * Math.cos(angle), 0.73 * Math.sin(angle)]);
     dot.rotation.x = angle;
@@ -155,10 +162,10 @@ function orion(detail: Resolution, tier: TransitDetail) {
     service.add(rcs);
   }
   const crewTiles = tier === "near" ? blankets([
-    { start: -13.36, end: -12.49, radiusA: 2.45, radiusB: 1.97 },
-    { start: -12.42, end: -11.40, radiusA: 1.94, radiusB: 1.38 },
-    { start: -11.33, end: -10.48, radiusA: 1.34, radiusB: 0.87 },
-  ], 10, "white", false) : [];
+    [-13.36, -12.49], [-12.42, -11.40], [-11.33, -10.48],
+  ].map(([start, end]) => ({
+    start, end, radiusA: orionFlankRadius(start), radiusB: orionFlankRadius(end),
+  })), 10, "white", false) : [];
   const serviceTiles = tier === "far" ? [] : blankets([
     { start: -16.34, end: -15.27, radiusA: 2.25, radiusB: 2.25 },
     { start: -15.21, end: -13.81, radiusA: 2.25, radiusB: 2.25 },
@@ -288,6 +295,20 @@ function hallThrusters(segments: number, tier: TransitDetail) {
   return mount;
 }
 
+function sternVentGrilles() {
+  const parts = new Group();
+  parts.add(boxCenter([0.88, 0.12, 0.80], "darkGray", [0, 2.36, 0], 0.036));
+  for (const pitch of [-3, -1, 1, 3]) {
+    parts.add(
+      strip([0.046, 0.078, 0.56], "gray", [pitch * 0.095, 2.445, 0]),
+      strip([0.64, 0.074, 0.046], "gray", [0, 2.452, pitch * 0.085]),
+    );
+  }
+  const grille = fusedParts("stern-vent", parts, true).children[0] as Mesh;
+  return repeatMesh(grille, "stern-vent-grilles",
+    Array.from({ length: 4 }, (_, i) => location(14.48, 0, 0, Math.PI / 4 + i * Math.PI / 2)));
+}
+
 function propulsion(detail: Resolution, tier: TransitDetail) {
   const { body, small } = detail;
   const parts = new Group();
@@ -309,15 +330,9 @@ function propulsion(detail: Resolution, tier: TransitDetail) {
     }
     if (tier === "near") {
       parts.add(beam([10.53, y * 1.73, z * 1.73], [10.53, Math.cos(next) * 1.73, Math.sin(next) * 1.73], 0.16, "hull"));
-      const grille = location(14.48, 0, 0, angle);
-      grille.add(boxCenter([0.93, 0.12, 0.82], "darkGray", [0, 2.36, 0], 0.036));
-      for (const x of [-0.30, -0.15, 0, 0.15, 0.30]) {
-        grille.add(strip([0.052, 0.075, 0.69], "hull", [x, 2.45, 0]));
-      }
-      parts.add(grille);
     }
   }
-  const module = fusedParts("dst-electric-propulsion", parts, tier !== "far");
+  const module = fusedParts("dst-electric-propulsion", parts, tier !== "far", tier === "near" ? [sternVentGrilles()] : []);
   module.add(hallThrusters(tier === "far" ? 5 : small, tier));
   for (let i = 0; i < 2; i++) {
     const wing = new Group(), support = new Group();

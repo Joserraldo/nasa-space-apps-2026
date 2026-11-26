@@ -6,6 +6,7 @@
   "terrainSeed": 42,
   "placements": [
     { "id": "MB-02", "at": [0, 0], "yOffset": -0.18, "rot": 22.5, "params": { "style": "colony" } },
+    { "id": "NX-04", "at": [0, 4.48], "yOffset": -0.075 },
 
     { "id": "MB-03", "at": [-4.99, 2.07], "yOffset": -0.18, "rot": -67.5, "params": { "style": "lit" } },
     { "id": "MB-03", "at": [-2.07, 4.99], "yOffset": -0.18, "rot": -22.5, "params": { "style": "standard" } },
@@ -35,7 +36,7 @@
     { "id": "MI-06", "at": [-6.95, 7.35], "yOffset": -0.14, "rot": 18, "params": { "tone": "cyan" } },
     { "id": "MI-06", "at": [6.40, -18.80], "yOffset": -0.14, "rot": -22, "params": { "tone": "cyan" } },
     { "id": "MI-06", "at": [-9.60, -18.60], "yOffset": -0.14, "rot": 35, "params": { "tone": "cyan" } },
-    { "id": "MI-07", "at": [20.20, -7.35], "yOffset": -0.26, "rot": -12, "params": { "detail": "near" } },
+    { "id": "MI-07", "at": [20.20, -7.35], "yOffset": -0.26, "rot": -12, "params": { "detail": "near", "edgeLights": true } },
 
     { "id": "MI-04", "at": [-18.80, 3.20], "yOffset": -0.18, "rot": 24, "params": { "mode": "tracking" } },
     { "id": "MI-04", "at": [16.40, 1.60], "yOffset": -0.18, "rot": -20, "params": { "mode": "tracking" } },
@@ -78,6 +79,13 @@
       "label": "Landing pad",
       "position": [27.5, 7.8, 3.2],
       "target": [19.7, 1.15, -7.55],
+      "fov": 48
+    },
+    {
+      "id": "airlock-review",
+      "label": "Airlock",
+      "position": [0.95, 3.14, 9.46],
+      "target": [0, 1.43, 4.96],
       "fov": 48
     }
   ]
