@@ -10,6 +10,7 @@
  * repetidas se instancian, así cada familia cuesta 1 llamada por material (+1 de sombra).
  */
 import * as THREE from "three";
+import { limitarSombras } from "./sombras";
 import { crearCielo, type Calidad, type Cielo } from "./cielo";
 import type { Materiales } from "./materiales";
 import { liberarEscena } from "./liberar";
@@ -254,5 +255,6 @@ export function armarEscena(
   };
   if (vista) armada.aplicarVista(vista);
   if (rejilla) armada.ponerTerreno(rejilla);
+  limitarSombras(escena);
   return armada;
 }
