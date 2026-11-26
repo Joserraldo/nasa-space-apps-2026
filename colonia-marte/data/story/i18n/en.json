@@ -168,5 +168,22 @@
   "intro.cierre": "Every choice costs something. Let's begin!",
   "intro.fuente": "A real storm from May 2024. Not live.",
   "intro.saltar": "Skip",
-  "intro.empezar": "Start"
+  "intro.empezar": "Start",
+  "juego.sinRecursos": "Not enough left. Keep going",
+  "juego.titulo": "Mars Colony",
+  "juego.nueva": "New game",
+  "juego.continuar": "Continue",
+  "juego.cargando": "Getting the ship ready…",
+  "juego.error": "Something went wrong. Reload the page.",
+  "juego.hablar": "Tap to talk",
+  "juego.noEnVivo": "Real data, not live",
+  "juego.idioma": "Language",
+  "juego.voz.prueba": "This is my voice.",
+  "juego.terminado": "You finished the first two chapters!",
+  "juego.terminado.mas": "More chapters are coming soon.",
+  "juego.motivo.energia": "The power ran out.",
+  "juego.motivo.soporte_vital": "The air ran out.",
+  "juego.motivo.blindaje": "The shield broke.",
+  "juego.motivo.radiacion": "The crew took too much radiation.",
+  "juego.motivo.plazo": "Time ran out."
 }

@@ -1,14 +1,10 @@
 # Estado: juego (src/game, src/audio, data/story)
-Actualizado: 26 nov 2026 · Santiago · Rama: `feat/ui-audio-colonia`.
+Actualizado: 26 nov 2026 · Santiago · Rama: `feat/ui-play-colonia` · PR en cadena #462 a #468.
 ## Hecho
-- Puente al motor (`motor.ts`), idioma EN/ES y contrato de textos de B1 (`docs/CLAVES-UI.md`).
-- Adaptador motor → HUD, diálogo, pausa y tarjeta de capítulo, con tests.
-- Guion de C1 y C2 (`data/story/`) con validación, e HISTORIA.md al día.
-- Intro: 7 tomas (`data/shots/intro.json`), guion y contenedor 3D; sin choques y vistas en navegador.
-- Audio: mezclador de 3 canales, voz del navegador, música y efectos generados.
-- CI instala también la raíz antes de comprobar colonia-marte.
+- `/play`: intro, tarjetas, C1 y C2 con el motor real, audio, pausa, ajustes y guardado.
+- Idioma EN/ES, adaptador, guion, intro y mezclador (PRs #463 a #467).
 ## Qué sigue / bloqueos
-- `/play`: conectar el audio, la pestaña oculta y la pausa.
-- La tripulación no está en NW-16 (B6) y la alarma casi no se nota: se resuelve con retratos y un tinte en `/play`.
-- Retratos de Iris y Control (B2): hoy son provisionales. La tarjeta de capítulo aún no tiene vista.
-- B1: falta `SettingsState.language` y que los componentes reciban sus textos.
+- B1: textos de los componentes y `SettingsState.language` (hoy se guarda en `colonia.idioma`).
+- B2 (retratos de Iris y Control), B6 (tripulación en NW-16), pantallas de menú, carga y capítulo.
+- Medium y Hard van por turnos: falta decidir el reloj (A6).
+- Falta E2E en CI, pantalla final con la cadena de causas y prueba en celular físico.

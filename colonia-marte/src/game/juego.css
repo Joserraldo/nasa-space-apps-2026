@@ -1,0 +1,40 @@
+/* Capas del juego: escenario 3D, velo de fundido y alerta, e interfaz. Colores de los tokens del HUD. */
+.juego { position: relative; grid-row: 1 / -1; min-height: 0; overflow: hidden; }
+.juego__3d { position: absolute; inset: 0; }
+.juego__3d canvas { display: block; }
+.juego__velo { position: absolute; inset: 0; background: #000; opacity: 0; pointer-events: none; }
+.juego__velo--alerta { background: transparent; opacity: 1 !important; box-shadow: inset 0 0 140px 30px rgb(255 150 40 / 0.6);
+  animation: juego-alerta 2.4s ease-in-out infinite; }
+@keyframes juego-alerta { 50% { box-shadow: inset 0 0 90px 12px rgb(255 150 40 / 0.35); } }
+@media (prefers-reduced-motion: reduce) { .juego__velo--alerta { animation: none; } }
+.juego__capa { position: absolute; inset: 0; z-index: 5; pointer-events: none; font-family: var(--ui-hud-font-body); color: var(--ui-hud-ink); }
+/* Los menús son diálogos nativos: deben recibir toques aunque la capa no los reciba. */
+.juego__capa dialog { pointer-events: auto; }
+.juego__panel { position: absolute; left: 50%; top: 50%; translate: -50% -50%; display: grid; justify-items: center; gap: 14px;
+  width: min(620px, calc(100% - 24px)); max-height: calc(100% - 16px); overflow: auto; padding: 22px; pointer-events: auto;
+  text-align: center; background: var(--ui-hud-panel); border: 1.5px solid var(--ui-hud-line); border-radius: 8px; }
+.juego__titulo { margin: 0; font: 700 clamp(24px, 4vw, 38px)/1.15 var(--ui-hud-font-display); }
+.juego__texto { margin: 0; font: 600 var(--ui-hud-text-dialogue)/1.35 var(--ui-hud-font-body); }
+.juego__boton { pointer-events: auto; min-height: 64px; min-width: 200px; }
+.juego__idiomas { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; }
+.juego__idiomas .juego__boton { min-width: 150px; }
+.juego__idiomas [aria-pressed="true"] { outline: 3px solid var(--ui-hud-accent); outline-offset: 2px; }
+.juego__abajo { position: absolute; left: 12px; right: 12px; bottom: 16px; display: grid; justify-items: center; gap: 12px; }
+.juego__subtitulo { display: flex; align-items: center; gap: 14px; max-width: min(820px, 100%); padding: 12px 20px; pointer-events: auto;
+  background: var(--ui-hud-panel); border: 1.5px solid var(--ui-hud-line); border-radius: 8px; }
+.juego__retrato { width: 72px; height: 72px; object-fit: cover; }
+.juego__linea { margin: 0; font: 600 var(--ui-hud-text-dialogue)/1.3 var(--ui-hud-font-body); }
+.juego__opciones { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; }
+.juego__saltar { position: absolute; top: 14px; right: 14px; min-width: 0; }
+.juego__fuente { position: absolute; left: 50%; top: 96px; translate: -50% 0; z-index: 6; margin: 0; max-width: min(560px, calc(100% - 24px));
+  padding: 6px 14px; text-align: center; font-size: 14px; pointer-events: auto; background: var(--ui-hud-panel); border-radius: 6px; }
+.juego__fuente[hidden] { display: none; }
+/* Durante el juego la fuente va bajo la pausa, sin tapar el objetivo. */
+.ui-game-hud .juego__fuente { top: 128px; max-width: min(420px, calc(100% - 24px)); }
+@media (max-height: 460px) {
+  .juego__panel { gap: 8px; padding: 12px; }
+  .juego__boton { min-height: 48px; }
+  .juego__retrato { width: 48px; height: 48px; }
+  .juego__fuente { top: 66px; font-size: 12px; }
+  .ui-game-hud .juego__fuente { left: 12px; top: 12px; translate: none; max-width: calc(50% - 56px); }
+}

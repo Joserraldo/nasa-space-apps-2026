@@ -11,7 +11,7 @@ import type { SettingsState } from "../ui/state/settings";
 import { muestraNumeros } from "./dificultad";
 import { hablante, type HablanteId } from "./hablantes";
 import { traducir, type Idioma, type Vars } from "./i18n";
-import type { BaseAiLevel, GameState, Mision, Resource } from "./motor";
+import { resumenPartida, type BaseAiLevel, type GameState, type Mision, type Resource } from "./motor";
 import { SALAS, type SalaId } from "./salas";
 
 /** Lo que el flujo del juego sabe y el motor no: capítulo, paso de la historia y sala. */
@@ -133,12 +133,22 @@ export interface EstadoTarjeta {
   voiceLine: string;
 }
 
+/** Clave del motivo de una derrota, para explicar la causa sin tecnicismos. */
+export function motivoDe(partida: GameState): string | null {
+  const causa = resumenPartida(partida).causaTerminal?.descripcionKey;
+  if (!causa) return null;
+  const agotado = causa.startsWith("causa.recurso_agotado.") ? causa.slice("causa.recurso_agotado.".length) : null;
+  return `juego.motivo.${agotado ?? (causa === "causa.limite_radiacion" ? "radiacion" : "plazo")}`;
+}
+
 export function estadoTarjeta(juego: EstadoJuego, idioma: Idioma): EstadoTarjeta {
   const resultado = juego.partida.resultado;
   const tipo = resultado === "en_curso" ? "inicio" : resultado;
   const id = tipo === "inicio" ? "empezar" : tipo === "exito" ? "seguir" : "repetir";
   const capitulo = nombreCapitulo(juego, idioma);
-  const texto = traducir(idioma, `juego.capitulo.c${juego.capitulo}.${tipo}`);
+  const motivo = motivoDe(juego.partida);
+  const base = traducir(idioma, `juego.capitulo.c${juego.capitulo}.${tipo}`);
+  const texto = motivo ? `${traducir(idioma, motivo)} ${base}` : base;
   const label = traducir(idioma, `juego.accion.${id}`);
   return { tipo, capitulo, texto, accion: { id, label, voiceLine: label }, voiceLine: `${capitulo}. ${texto}` };
 }

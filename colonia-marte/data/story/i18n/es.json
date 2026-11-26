@@ -168,5 +168,22 @@
   "intro.cierre": "Cada decisión cuesta algo. ¡Empecemos!",
   "intro.fuente": "Tormenta real de mayo de 2024. No es en vivo.",
   "intro.saltar": "Saltar",
-  "intro.empezar": "Empezar"
+  "intro.empezar": "Empezar",
+  "juego.sinRecursos": "No alcanza. Sigamos",
+  "juego.titulo": "Colonia en Marte",
+  "juego.nueva": "Juego nuevo",
+  "juego.continuar": "Continuar",
+  "juego.cargando": "Preparando la nave…",
+  "juego.error": "Algo salió mal. Recarga la página.",
+  "juego.hablar": "Toca para hablar",
+  "juego.noEnVivo": "Dato real, no en vivo",
+  "juego.idioma": "Idioma",
+  "juego.voz.prueba": "Esta es mi voz.",
+  "juego.terminado": "¡Terminaste los dos primeros capítulos!",
+  "juego.terminado.mas": "Pronto llegan más capítulos.",
+  "juego.motivo.energia": "Se acabó la energía.",
+  "juego.motivo.soporte_vital": "Se acabó el aire.",
+  "juego.motivo.blindaje": "El escudo se rompió.",
+  "juego.motivo.radiacion": "La tripulación recibió demasiada radiación.",
+  "juego.motivo.plazo": "Se acabó el tiempo."
 }
