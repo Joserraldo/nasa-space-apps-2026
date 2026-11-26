@@ -5,6 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" type="image/svg+xml" sizes="any" href="/favicon.svg" />
     <title>Mars Colony — WS0 Kit</title>
+    <!-- Base layout rules inline: style.css loads asynchronously, and these must apply before the first paint. -->
+    <style>
+      * { box-sizing: border-box; }
+      html, body { margin: 0; height: 100%; overflow: hidden; }
+      #app { height: 100vh; height: 100dvh; display: grid; grid-template-rows: auto minmax(0, 1fr); }
+    </style>
   </head>
   <body>
     <div id="app"></div>
