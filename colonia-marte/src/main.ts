@@ -93,6 +93,9 @@ if (path === "/ui") {
     import("./scenes/exterior-pilot"),
   ]);
   await mountExteriorPilot(await loadColonyChapter(new URLSearchParams(location.search)));
+} else if (path === "/base-district") {
+  const { mountBaseDistrict } = await import("./scenes/base-district");
+  await mountBaseDistrict();
 } else if (path === "/vehicles") {
   const { mountVehiclesReview } = await import("./scenes/vehicles-review");
   await mountVehiclesReview();

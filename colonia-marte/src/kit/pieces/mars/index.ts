@@ -8,6 +8,7 @@ import { registerGreenhouse } from "./greenhouse";
 import { registerMarsEntranceTower } from "./entrance-tower";
 import { registerMarsHabitats } from "./habitats";
 import { registerMarsIndustrial } from "./industrial";
+import { registerMarsIndustrial03 } from "./industrial-03";
 import { registerMarsInfrastructure } from "./infrastructure";
 import { registerMarsRocks } from "./rocks";
 import { registerMarsReconBuggy } from "./recon-buggy";
@@ -37,4 +38,5 @@ export function registerMarsPieces(registry: PieceRegistry): void {
   registerMarsReconBuggy(registry);
   registerMarsVehicleGarage(registry);
   registerMarsEntranceTower(registry);
+  registerMarsIndustrial03(registry);
 }

@@ -7,7 +7,20 @@ import { location, repeatMesh } from "./transit-details";
 
 type Point = [number, number];
 type Height = (x: number, z: number) => number;
-export interface Plaza { layout: "plaza"; size: Point; outline?: Point[]; lanes: Point[][] }
+export interface PlazaMarking {
+  at: Point;
+  rot?: number;
+  kind?: "arrow" | "pad";
+}
+export interface Plaza {
+  layout: "plaza";
+  size: Point;
+  outline?: Point[];
+  lanes: Point[][];
+  platformSkirt?: boolean;
+  grates?: [number, number, number?][];
+  markings?: PlazaMarking[];
+}
 
 const tilePitch = 1.42;
 const joint = 0.055;
@@ -97,12 +110,13 @@ function pavement(outline: Point[], width: number, depth: number, height: Height
       addPatch(edges, edgeFaces, face, height, top);
     }
   }
+  // Palette `gray` modulated to true mid-gray slate (`Y ~ 115..124` under AMB-04 sun, never near-white!)
   const slab = boxCenter([tileX - joint, tileThickness, tileZ - joint], "gray", [0, 0, 0], 0.014);
   slab.geometry = slab.geometry.clone();
   const paint = slab.geometry.getAttribute("color");
   for (let i = 0; i < paint.count; i++) {
-    const tone = slab.geometry.attributes.position.getY(i) > 0.022 ? 1 : 0.76;
-    paint.setXYZ(i, tone, tone, tone);
+    const isTop = slab.geometry.attributes.position.getY(i) > 0.022;
+    paint.setXYZ(i, isTop ? 0.36 : 0.26, isTop ? 0.38 : 0.28, isTop ? 0.42 : 0.31);
   }
   const slabs = repeatMesh(slab, "Beveled plaza slab grid", mounts);
   const transform = new Matrix4();
@@ -166,12 +180,144 @@ function laneDashes(lanes: readonly Point[][], height: Height) {
   return mounts;
 }
 
+function tintGeometry(geo: BufferGeometry, r: number, g: number, b: number): BufferGeometry {
+  const c = geo.getAttribute("color");
+  if (c) {
+    for (let i = 0; i < c.count; i++) c.setXYZ(i, r, g, b);
+  }
+  return geo;
+}
+
+function buildDistrictFloorDetails(spec: Plaza, outline: Point[], height: Height): BufferGeometry[] {
+  const extras: BufferGeometry[] = [];
+  const pushMesh = (mesh: Mesh, x: number, y: number, z: number, rotY = 0) => {
+    const g = mesh.geometry.clone();
+    if (rotY !== 0) g.rotateY(rotY);
+    g.translate(x, y, z);
+    extras.push(g);
+  };
+
+  // 1. Raised colony platform border & structural dark truss skirt (`§1.8`, `v3-t050.10` edge)
+  if (spec.platformSkirt) {
+    const lip = perimeter(outline, height, [
+      [-0.14, top + 0.024],
+      [0.08, top + 0.024],
+      [0.14, top - 0.02],
+      [0.16, -0.46],
+    ]);
+    extras.push(tintGeometry(coloredGeometry(lip, "darkGray"), 0.58, 0.60, 0.64));
+    lip.dispose();
+
+    const edge = (area(outline) < 0 ? outline.slice().reverse() : outline).map(([x, z]) => new Vector2(x, z));
+    for (let i = 0; i < edge.length; i++) {
+      const a = edge[i], b = edge[(i + 1) % edge.length];
+      const len = a.distanceTo(b);
+      const dir = b.clone().sub(a).normalize();
+      const out = new Vector2(dir.y, -dir.x);
+      const yaw = Math.atan2(dir.x, dir.y);
+      const count = Math.max(1, Math.floor(len / 2.4));
+      for (let k = 0; k < count; k++) {
+        const pt = a.clone().lerp(b, (k + 0.5) / count).addScaledVector(out, 0.14);
+        const hy = height(pt.x, pt.y);
+        const post = boxCenter([0.12, 0.44, 0.16], "black", [0, 0, 0], 0.015);
+        pushMesh(post, pt.x, hy - 0.20, pt.y, yaw);
+        const brace = boxCenter([0.07, 0.08, 1.45], "darkGray", [0, 0, 0], 0.012);
+        const bg = brace.geometry.clone();
+        bg.rotateX(0.26);
+        bg.rotateY(yaw);
+        bg.translate(pt.x, hy - 0.18, pt.y);
+        extras.push(tintGeometry(bg, 0.45, 0.47, 0.50));
+      }
+    }
+  }
+
+  // 2. Maintenance floor grates & linear storm/dust drains (`§1.3` & `§2.4`, `v3-t050.10` / `v3-t074.80`)
+  if (spec.grates?.length) {
+    for (const [gx, gz, rotDeg = 0] of spec.grates) {
+      const yaw = (rotDeg * Math.PI) / 180;
+      const gy = height(gx, gz) + top;
+      const frame = boxCenter([1.28, 0.020, 2.24], "darkGray", [0, 0, 0], 0.006);
+      frame.geometry = tintGeometry(frame.geometry.clone(), 0.42, 0.44, 0.48);
+      pushMesh(frame, gx, gy + 0.005, gz, yaw);
+
+      const well = boxCenter([1.08, 0.024, 2.02], "black", [0, 0, 0], 0.005);
+      pushMesh(well, gx, gy + 0.008, gz, yaw);
+
+      for (let s = -4; s <= 4; s++) {
+        const bar = boxCenter([0.98, 0.026, 0.08], "gray", [0, 0, s * 0.20], 0.005);
+        const bg = tintGeometry(bar.geometry.clone(), 0.36, 0.38, 0.42);
+        bg.translate(0, 0, s * 0.20);
+        if (yaw !== 0) bg.rotateY(yaw);
+        bg.translate(gx, gy + 0.010, gz);
+        extras.push(bg);
+      }
+    }
+  }
+
+  // 3. Painted floor arrows & hangar threshold `[ + ]` amber/white bay pads (`v3-t074.80`)
+  if (spec.markings?.length) {
+    for (const { at: [mx, mz], rot = 0, kind = "arrow" } of spec.markings) {
+      const yaw = (rot * Math.PI) / 180;
+      const my = height(mx, mz) + top + 0.010;
+      if (kind === "arrow") {
+        const stem = boxCenter([0.22, 0.014, 1.35], "white", [0, 0, 0], 0.004);
+        pushMesh(stem, mx, my, mz - 0.15 * Math.cos(yaw), yaw);
+        for (const sx of [-1, 1] as const) {
+          const wing = boxCenter([0.18, 0.014, 0.86], "white", [0, 0, 0], 0.004);
+          const wg = wing.geometry.clone();
+          wg.rotateY(sx * 0.68);
+          wg.translate(sx * 0.24, 0, 0.42);
+          wg.rotateY(yaw);
+          wg.translate(mx, my, mz);
+          extras.push(wg);
+        }
+      } else {
+        // Hangar threshold `[ + ]` amber/yellow floor target pad (`v3-t074.80` depot entrance!)
+        for (const sx of [-1, 1] as const) {
+          for (const sz of [-1, 1] as const) {
+            const c1 = boxCenter([0.52, 0.015, 0.09], "warning", [0, 0, 0], 0.004);
+            const g1 = c1.geometry.clone();
+            g1.translate(sx * 0.68, 0, sz * 0.94);
+            g1.rotateY(yaw);
+            g1.translate(mx, my, mz);
+            extras.push(g1);
+
+            const c2 = boxCenter([0.09, 0.015, 0.52], "warning", [0, 0, 0], 0.004);
+            const g2 = c2.geometry.clone();
+            g2.translate(sx * 0.94, 0, sz * 0.68);
+            g2.rotateY(yaw);
+            g2.translate(mx, my, mz);
+            extras.push(g2);
+          }
+        }
+        // Central cross
+        for (const r of [0, Math.PI / 2]) {
+          const cross = boxCenter([0.09, 0.016, 0.96], "cyan", [0, 0, 0], 0.004);
+          const cg = cross.geometry.clone();
+          cg.rotateY(yaw + r);
+          cg.translate(mx, my + 0.001, mz);
+          extras.push(cg);
+        }
+      }
+    }
+  }
+
+  return extras;
+}
+
 export function buildPlaza(spec: Plaza, height: Height = () => 0) {
   const outline = plazaOutline(spec);
   const { slabs, bed, edgeSlabs } = pavement(outline, ...spec.size, height);
   const curb = perimeter(outline, height, [[-0.086, top + 0.009], [0.03, top + 0.009], [0.108, 0.019]]);
-  const layers = [coloredGeometry(bed, "darkGray"), coloredGeometry(curb, "darkGray")];
-  if (edgeSlabs.index!.count) layers.push(coloredGeometry(edgeSlabs, "gray"));
+  const layers: BufferGeometry[] = [
+    coloredGeometry(bed, "black"),
+    tintGeometry(coloredGeometry(curb, "darkGray"), 0.52, 0.54, 0.58),
+  ];
+  if (edgeSlabs.index!.count) {
+    layers.push(tintGeometry(coloredGeometry(edgeSlabs, "gray"), 0.36, 0.38, 0.42));
+  }
+  const extraLayers = buildDistrictFloorDetails(spec, outline, height);
+  layers.push(...extraLayers);
   const combinedPaving = mergeGeometries(layers)!;
   const paving = mergeVertices(combinedPaving, 1e-6);
   combinedPaving.dispose();

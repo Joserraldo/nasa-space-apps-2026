@@ -13,7 +13,7 @@ export const screenTypes = [
 export type ScreenType = typeof screenTypes[number];
 export const SCREEN_WIDTH = 320;
 export const SCREEN_HEIGHT = 192;
-export const SCREEN_ROWS = 7;
+export const SCREEN_ROWS = 8;
 const MEAL_CELL_OFFSET = screenTypes.length + irisExpressions.length;
 const DECAL_CELL_OFFSET = MEAL_CELL_OFFSET + mealScreenTypes.length;
 let cached: ReturnType<typeof buildScreens> | undefined;

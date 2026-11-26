@@ -138,7 +138,7 @@ describe("T3.4 Mars exterior vehicles (MV-01, MV-11, and MV-03)", () => {
     expect(frY).toBeLessThan(flY - 0.22);
   });
 
-  it("builds NX-01 3-bay vehicle charging garage with 3 LODs, NW-03-A integration, and clearance for MV-01, MV-03, and MV-11", () => {
+  it("builds NX-01 outdoor 3-bay vehicle charging apron with 3 LODs, NW-03-A docks, bay decals, and clearance for MV-01, MV-03, and MV-11", () => {
     const prodReg = createProductionRegistry();
     const lod = buildVehicleLOD(prodReg, "NX-01", {}, [0, 38, 88]);
     expect(lod.levels).toHaveLength(3);
@@ -158,22 +158,19 @@ describe("T3.4 Mars exterior vehicles (MV-01, MV-11, and MV-03)", () => {
       expect(check.issues, `NX-01/${detail}`).toEqual([]);
     }
 
-    const garage = prodReg.build("NX-01", { detail: "near" }, true);
-    const gSize = new Box3().setFromObject(garage).getSize(new Vector3());
+    const apron = prodReg.build("NX-01", { detail: "near" }, true);
+    const gSize = new Box3().setFromObject(apron).getSize(new Vector3());
     const mv01Size = new Box3().setFromObject(prodReg.build("MV-01")).getSize(new Vector3());
     const mv03Size = new Box3().setFromObject(prodReg.build("MV-03")).getSize(new Vector3());
     const mv11Size = new Box3().setFromObject(prodReg.build("MV-11", { state: "rescued" })).getSize(new Vector3());
-    // Garage width accommodates all 3 vehicles side by side with pier clearances, and height clears MV-01 truck
+    // Outdoor 3-bay charging apron accommodates all 3 vehicles side by side with open sky above (no shed roof!)
     expect(gSize.x).toBeGreaterThan(mv01Size.x + mv03Size.x + mv11Size.x + 4.0);
-    expect(gSize.y).toBeGreaterThan(mv01Size.y + 0.5);
-    expect(gSize.z).toBeGreaterThan(mv01Size.z + 3.0);
-
-    garage.traverse(node => {
-      if (node instanceof Mesh) expect(node.material).toBe(materials.M_palette);
-    });
+    expect(gSize.y).toBeLessThan(2.6);
+    expect(gSize.z).toBeGreaterThan(mv01Size.z + 2.0);
+    expect(apron.getObjectByName("nx01-apron-screens")).toBeDefined();
   });
 
-  it("builds MB-14 illuminated entrance tower with 3 LODs, >20m landmark height, white/light-gray panels, and cyan strips only", () => {
+  it("builds MB-14 slender illuminated entrance tower with 3 LODs, >22m height, and full-height glowing cyan vertical panels", () => {
     const lod = buildVehicleLOD(registry, "MB-14", {}, [0, 55, 130]);
     expect(lod.levels).toHaveLength(3);
     const [nearTris, midTris, farTris] = lod.levels.map(l => triangleCount(l.object));
@@ -194,10 +191,10 @@ describe("T3.4 Mars exterior vehicles (MV-01, MV-11, and MV-03)", () => {
 
     const tower = registry.build("MB-14", { detail: "near" }, true);
     const tSize = new Box3().setFromObject(tower).getSize(new Vector3());
-    expect(tSize.y).toBeGreaterThan(20.0);
+    expect(tSize.y).toBeGreaterThan(22.0);
+    expect(tSize.x).toBeLessThan(7.2);
 
     const yellowUv = paletteUV("yellow");
-    const tealUv = paletteUV("teal");
     const cyanUv = paletteUV("cyan");
     let cyanMatches = 0;
     tower.traverse(node => {
@@ -208,10 +205,60 @@ describe("T3.4 Mars exterior vehicles (MV-01, MV-11, and MV-03)", () => {
         const u = uv.getX(i);
         const v = uv.getY(i);
         expect(Math.abs(u - yellowUv[0]) < 1e-5 && Math.abs(v - yellowUv[1]) < 1e-5).toBe(false);
-        expect(Math.abs(u - tealUv[0]) < 1e-5 && Math.abs(v - tealUv[1]) < 1e-5).toBe(false);
         if (Math.abs(u - cyanUv[0]) < 1e-5 && Math.abs(v - cyanUv[1]) < 1e-5) cyanMatches += 1;
       }
     });
-    expect(cyanMatches).toBeGreaterThan(80);
+    // Full-height glowing cyan vertical panel bays yield > 1000 cyan vertices across the 4 facades
+    expect(cyanMatches).toBeGreaterThan(1000);
+  });
+
+  it("builds MB-10 large depot, workshop, and skylight storage variants with 3 LODs inside 3000..12000", () => {
+    for (const style of ["depot", "workshop", "skylight", "skylightOpen"] as const) {
+      const lod = buildVehicleLOD(registry, "MB-10", { style }, [0, 38, 88]);
+      const [nearTris, midTris, farTris] = lod.levels.map(l => triangleCount(l.object));
+      expect(nearTris, `MB-10/${style}`).toBeGreaterThanOrEqual(3000);
+      expect(nearTris, `MB-10/${style}`).toBeLessThanOrEqual(12000);
+      expect(nearTris).toBeGreaterThan(midTris);
+      expect(midTris).toBeGreaterThan(farTris);
+
+      const entry = registry.entries().find(e => e.id === "MB-10")!;
+      for (const detail of vehicleDetailLevels) {
+        const check = validatePiece(
+          "MB-10",
+          detail === "near" ? entry.metadata : { category: "terrain", pivot: "base-center" },
+          () => registry.build("MB-10", { style, detail }, true),
+        );
+        expect(check.issues, `MB-10/${style}/${detail}`).toEqual([]);
+      }
+    }
+    const depotSize = new Box3().setFromObject(registry.build("MB-10", { style: "depot" })).getSize(new Vector3());
+    expect(depotSize.x).toBeGreaterThan(15.0);
+    expect(depotSize.z).toBeGreaterThan(11.0);
+  });
+
+  it("builds MB-13 stepped industrial 03 building with 3 LODs, vertex AO, and shared M_screen 03 decal", () => {
+    const lod = buildVehicleLOD(registry, "MB-13", {}, [0, 45, 110]);
+    const [nearTris, midTris, farTris] = lod.levels.map(l => triangleCount(l.object));
+    expect(nearTris).toBeGreaterThanOrEqual(3000);
+    expect(nearTris).toBeLessThanOrEqual(12000);
+    expect(nearTris).toBeGreaterThan(midTris);
+    expect(midTris).toBeGreaterThan(farTris);
+
+    const entry = registry.entries().find(e => e.id === "MB-13")!;
+    for (const detail of vehicleDetailLevels) {
+      const check = validatePiece(
+        "MB-13",
+        detail === "near" ? entry.metadata : { category: "terrain", pivot: "base-center" },
+        () => registry.build("MB-13", { detail }, true),
+      );
+      expect(check.issues, `MB-13/${detail}`).toEqual([]);
+    }
+
+    const near = registry.build("MB-13", { detail: "near" }, true);
+    const size = new Box3().setFromObject(near).getSize(new Vector3());
+    expect(size.y).toBeGreaterThan(15.0);
+    const decalMesh = near.getObjectByName("mb13-decal-03") as Mesh | undefined;
+    expect(decalMesh).toBeDefined();
+    expect(decalMesh!.material).toBe(materials.M_screen);
   });
 });

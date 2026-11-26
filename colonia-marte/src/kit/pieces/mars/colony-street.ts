@@ -42,13 +42,51 @@ export function parseColonyPaving(input: unknown): Street | Plaza {
   if (!input || typeof input !== "object" || !("layout" in input) || input.layout !== "plaza") {
     return parseStreet(input);
   }
-  const { size, lanes = [], outline } = parseRecord(input, ["layout", "size", "lanes", "outline"]);
+  const { size, lanes = [], outline, platformSkirt, grates, markings } = parseRecord(
+    input,
+    ["layout", "size", "lanes", "outline", "platformSkirt", "grates", "markings"],
+  );
   if (!Array.isArray(size) || size.length !== 2 ||
-    !size.every(value => typeof value === "number" && Number.isFinite(value) && value >= 2 && value <= 64)) {
-    throw new Error("Plaza size must be a [width, depth] from 2 to 64 metres");
+    !size.every(value => typeof value === "number" && Number.isFinite(value) && value >= 2 && value <= 84)) {
+    throw new Error("Plaza size must be a [width, depth] from 2 to 84 metres");
   }
-  if (!Array.isArray(lanes) || lanes.length > 24) throw new Error("Invalid plaza lanes");
+  if (!Array.isArray(lanes) || lanes.length > 36) throw new Error("Invalid plaza lanes");
   const spec: Plaza = { layout: "plaza", size: [size[0], size[1]], lanes: lanes.map(parsePath) };
+  if (platformSkirt !== undefined) {
+    if (typeof platformSkirt !== "boolean") throw new Error("Invalid platformSkirt");
+    spec.platformSkirt = platformSkirt;
+  }
+  if (grates !== undefined) {
+    if (
+      !Array.isArray(grates) ||
+      !grates.every(
+        g =>
+          Array.isArray(g) &&
+          (g.length === 2 || g.length === 3) &&
+          g.every(n => typeof n === "number" && Number.isFinite(n)),
+      )
+    ) {
+      throw new Error("Invalid plaza grates");
+    }
+    spec.grates = grates as [number, number, number?][];
+  }
+  if (markings !== undefined) {
+    if (!Array.isArray(markings)) throw new Error("Invalid plaza markings");
+    spec.markings = markings.map(m => {
+      const rec = parseRecord(m, ["at", "rot", "kind"]);
+      if (
+        !Array.isArray(rec.at) ||
+        rec.at.length !== 2 ||
+        !rec.at.every(n => typeof n === "number" && Number.isFinite(n))
+      ) {
+        throw new Error("Invalid plaza marking coordinates");
+      }
+      const kind = rec.kind === undefined ? "arrow" : rec.kind;
+      if (kind !== "arrow" && kind !== "pad") throw new Error("Invalid plaza marking kind");
+      const rot = rec.rot === undefined ? 0 : Number(rec.rot);
+      return { at: [rec.at[0], rec.at[1]], rot, kind };
+    });
+  }
   if (outline !== undefined) {
     const points = parsePath(outline);
     if (points.length < 3 || new Set(points.map(point => point.join(","))).size !== points.length ||
@@ -171,9 +209,14 @@ function pave(shell: Group, sections: Section[], edge: number, columns: number, 
     const pitch = 2 * edge / columns;
     for (let col = 0; col < columns; col++) {
       const offset = -edge + (col + 0.5) * pitch;
-      const plate = boxCenter([pitch - 0.038, 0.062, length - 0.047], "hull", [0, 0, 0], 0.018);
+      const plate = boxCenter([pitch - 0.038, 0.062, length - 0.047], "gray", [0, 0, 0], 0.018);
       // Each warped plate needs its own geometry; the palette primitive buffers are shared.
       plate.geometry = plate.geometry.clone();
+      const plateColor = plate.geometry.getAttribute("color");
+      for (let k = 0; k < plateColor.count; k++) {
+        const isTop = plate.geometry.attributes.position.getY(k) > 0.024;
+        plateColor.setXYZ(k, isTop ? 0.46 : 0.33, isTop ? 0.48 : 0.35, isTop ? 0.52 : 0.38);
+      }
       const { position } = plate.geometry.attributes;
       for (let k = 0; k < position.count; k++) {
         const x = offset + position.getX(k), t = 0.5 + position.getZ(k) / length;

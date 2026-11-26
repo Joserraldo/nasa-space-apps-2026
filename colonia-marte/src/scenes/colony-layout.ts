@@ -7,6 +7,7 @@ import { buildColonyPaving, parseColonyPaving } from "../kit/pieces/mars/colony-
 import { COLONY_BUILDING_LODS } from "../kit/pieces/mars/colony-building-details";
 import { GREENHOUSE_LODS } from "../kit/pieces/mars/greenhouse";
 import { LANDING_PAD_LODS } from "../kit/pieces/mars/landing-pad";
+import { plazaContains, plazaOutline } from "../kit/pieces/mars/colony-plaza";
 import { vehicleDetailLevels } from "../kit/pieces/mars/rover-truck";
 import type { PieceRegistry } from "../kit/registry";
 import { materials } from "../materials/shared";
@@ -35,6 +36,7 @@ export interface ColonyLayout {
   biome: Biome;
   environment: string;
   terrainSeed: number;
+  flatPlatform?: boolean;
   placements: ColonyPlacementSpec[];
   reservations: Pick<ColonyPlacementSpec, "id" | "at" | "rot">[];
   reservedAreas: { id: string; at: [number, number]; size: [number, number] }[];
@@ -116,8 +118,37 @@ export function parseColonyLayout(input: unknown, registry?: PieceRegistry): Col
     };
   });
 
-  return { id: input.id, name: input.name, biome: input.biome, environment: input.environment,
-    terrainSeed, placements, reservations, reservedAreas, views };
+  const flatPlatform = input.flatPlatform === undefined
+    ? undefined
+    : (typeof input.flatPlatform === "boolean" ? input.flatPlatform : (() => {
+      throw new Error("Invalid flatPlatform");
+    })());
+
+  return {
+    id: input.id,
+    name: input.name,
+    biome: input.biome,
+    environment: input.environment,
+    terrainSeed,
+    ...(flatPlatform !== undefined ? { flatPlatform } : {}),
+    placements,
+    reservations,
+    reservedAreas,
+    views,
+  };
+}
+
+const CARBON_LOD_STYLES = new Set(["depot", "workshop", "skylight", "skylightOpen"]);
+
+export function computeFlatPlatformHeight(layout: ColonyLayout, dem?: DEM): number {
+  const terrainOpts = { biome: layout.biome, seed: layout.terrainSeed, dem };
+  let maxGround = terrainHeight(0, 0, terrainOpts);
+  for (let x = -24; x <= 24; x += 6) {
+    for (let z = -24; z <= 24; z += 6) {
+      maxGround = Math.max(maxGround, terrainHeight(x, z, terrainOpts));
+    }
+  }
+  return maxGround + 0.14;
 }
 
 export function buildColonyGroup(layout: ColonyLayout, registry: PieceRegistry, dem?: DEM) {
@@ -126,13 +157,36 @@ export function buildColonyGroup(layout: ColonyLayout, registry: PieceRegistry, 
   const infrastructure: Object3D[] = [];
   const buildings = new Map<string, Object3D[]>();
   const terrainOpts = { biome: layout.biome, seed: layout.terrainSeed, dem };
+  const flatY = layout.flatPlatform ? computeFlatPlatformHeight(layout, dem) : null;
+  const plazaTopLift = 0.052;
+
   for (const item of layout.placements) {
     const [cx, cz] = item.at;
     if (item.id === "MI-01") {
       const spec = parseColonyPaving(item.params ?? {});
       const angle = MathUtils.degToRad(item.rot ?? 0);
       const c = Math.cos(angle), s = Math.sin(angle);
-      const paving = buildColonyPaving(spec, (x, z) => terrainHeight(cx + x * c + z * s, cz + z * c - x * s, terrainOpts));
+      const heightFn = flatY !== null && spec.layout === "plaza"
+        ? (() => {
+          const boundary = plazaOutline(spec);
+          return (x: number, z: number) => {
+            if (plazaContains(boundary, x, z)) return flatY;
+            const wx = cx + x * c + z * s;
+            const wz = cz + z * c - x * s;
+            return Math.min(flatY, terrainHeight(wx, wz, terrainOpts));
+          };
+        })()
+        : flatY !== null
+          ? () => flatY + plazaTopLift - 0.06
+          : (x: number, z: number) => terrainHeight(cx + x * c + z * s, cz + z * c - x * s, terrainOpts);
+      const paving = buildColonyPaving(spec, heightFn);
+      if (flatY !== null && spec.layout === "road") {
+        const soil = paving.getObjectByName("Graded regolith shoulders");
+        if (soil) {
+          if (soil instanceof Mesh) soil.geometry.dispose();
+          paving.remove(soil);
+        }
+      }
       paving.position.set(cx, item.yOffset ?? 0, cz);
       paving.rotation.y = angle;
       colony.detailedTriangles += countColonyTriangles(paving);
@@ -141,7 +195,9 @@ export function buildColonyGroup(layout: ColonyLayout, registry: PieceRegistry, 
     }
     const piece = registry.build(item.id, item.params ?? {});
     colony.detailedTriangles += countColonyTriangles(piece);
-    let groundY = terrainHeight(cx, cz, terrainOpts);
+    let groundY = flatY !== null && !item.id.startsWith("MT-")
+      ? flatY + plazaTopLift
+      : terrainHeight(cx, cz, terrainOpts);
     if (item.id.startsWith("MT-")) {
       const footR = item.id === "MT-T06" ? 1.9 : item.id === "MT-T04" ? 1.0 : 0.7;
       groundY = Math.min(
@@ -155,10 +211,13 @@ export function buildColonyGroup(layout: ColonyLayout, registry: PieceRegistry, 
     piece.position.set(cx, groundY + (item.yOffset ?? 0), cz);
     if (item.rot) piece.rotation.y = MathUtils.degToRad(item.rot);
     const isNewBuilding = ["MB-05", "MB-08", "MB-09"].includes(item.id);
-    const hasCarbonLevels = ["MB-14", "MV-01", "MV-03", "MV-11", "NX-01"].includes(item.id);
+    const isCarbon3Lod =
+      ["MB-13", "MB-14", "NX-01", "MV-01", "MV-03", "MV-11"].includes(item.id) ||
+      (item.id === "MB-10" && CARBON_LOD_STYLES.has(String(item.params?.style ?? "")));
     const detailLevels = item.id === "MI-07" ? LANDING_PAD_LODS : item.id === "NX-04" ? AIRLOCK_ENTRY_LODS
       : item.id === "MB-11" ? GREENHOUSE_LODS
-      : isNewBuilding ? COLONY_BUILDING_LODS : hasCarbonLevels ? vehicleDetailLevels : null;
+      : isNewBuilding ? COLONY_BUILDING_LODS
+      : isCarbon3Lod ? vehicleDetailLevels : null;
     if (detailLevels) {
       const lod = new LOD();
       lod.name = piece.name;
@@ -168,10 +227,10 @@ export function buildColonyGroup(layout: ColonyLayout, registry: PieceRegistry, 
       piece.position.set(0, 0, 0);
       piece.rotation.set(0, 0, 0);
       lod.addLevel(piece, 0);
-      const ranges = isNewBuilding ? [22, 38] : hasCarbonLevels ? [18, 37] : [62, 105];
+      const ranges = isNewBuilding ? [22, 38] : item.id.startsWith("MV-") ? [46, 92] : isCarbon3Lod ? [18, 37] : [62, 105];
+      const keepParams = item.id === "NX-04" || isCarbon3Lod;
       for (const [index, detail] of detailLevels.slice(1).entries()) {
-        const simplified = registry.build(item.id,
-          item.id === "NX-04" || hasCarbonLevels ? { ...item.params, detail } : { detail });
+        const simplified = registry.build(item.id, keepParams ? { ...item.params, detail } : { detail });
         simplified.visible = false;
         lod.addLevel(simplified, ranges[index], 0.12);
       }

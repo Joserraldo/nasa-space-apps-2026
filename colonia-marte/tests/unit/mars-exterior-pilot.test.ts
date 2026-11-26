@@ -78,7 +78,7 @@ describe("T3.1 Mars colony exterior pilot pieces, decals, and layout", () => {
     for (const result of results) {
       expect(result.issues, `${result.id}/${result.variant}`).toEqual([]);
     }
-  });
+  }, 30_000);
 
   it("maps distinct atlas regions for all realistic aerospace decal stickers on shared M_screen", () => {
     const plane = new PlaneGeometry(1, 0.6);

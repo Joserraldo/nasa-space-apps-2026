@@ -1,0 +1,178 @@
+{
+  "id": "base-district",
+  "name": "Jezero Colony Base District (T3.5)",
+  "biome": "jezero",
+  "environment": "AMB-04",
+  "terrainSeed": 42,
+  "flatPlatform": true,
+  "placements": [
+    {
+      "id": "MI-01",
+      "at": [0, 2.0],
+      "params": {
+        "layout": "plaza",
+        "size": [52, 54],
+        "platformSkirt": true,
+        "outline": [
+          [-24.8, -19.5],
+          [-21.5, -24.8],
+          [20.5, -24.8],
+          [24.8, -20.5],
+          [24.8, 23.5],
+          [21.5, 26.2],
+          [-18.5, 26.2],
+          [-24.8, 21.5]
+        ],
+        "lanes": [
+          [[-6.8, -10.8], [-4.8, -10.8], [-4.8, -5.0], [-6.8, -5.0]],
+          [[-6.8, 7.6], [-2.8, 7.6]],
+          [[2.4, 7.6], [9.4, 7.6]],
+          [[8.8, 12.8], [10.9, 14.8], [10.9, 16.4]],
+          [[13.6, 12.8], [15.8, 14.8], [15.8, 16.4]],
+          [[18.4, 12.8], [20.5, 14.8], [20.5, 16.4]],
+          [[-12.0, -14.0], [-13.6, -14.0]],
+          [[-12.0, -6.6], [-13.6, -6.6]],
+          [[-12.0, 17.8], [-12.0, 22.8]]
+        ],
+        "grates": [
+          [-5.8, -12.6, 0],
+          [-5.8, 0.2, 0],
+          [-4.2, 13.8, 90],
+          [5.4, 13.8, 90],
+          [15.8, 13.8, 90],
+          [-12.4, -9.8, 0],
+          [-12.4, 6.2, 0]
+        ],
+        "markings": [
+          { "at": [-5.5, -9.6], "rot": 90, "kind": "pad" },
+          { "at": [-5.5, -6.0], "rot": 90, "kind": "pad" },
+          { "at": [-0.35, 6.6], "rot": 0, "kind": "pad" },
+          { "at": [9.45, 6.6], "rot": 0, "kind": "pad" },
+          { "at": [4.2, 10.4], "rot": 90, "kind": "arrow" },
+          { "at": [13.2, 10.4], "rot": 90, "kind": "arrow" },
+          { "at": [-9.2, 18.2], "rot": 180, "kind": "arrow" },
+          { "at": [-9.2, -1.5], "rot": 180, "kind": "arrow" }
+        ]
+      }
+    },
+
+    {
+      "id": "MI-01",
+      "at": [-9.2, 2.0],
+      "params": {
+        "layout": "road",
+        "path": [[0, -24.2], [0, 24.8]]
+      }
+    },
+    {
+      "id": "MI-01",
+      "at": [0, 12.4],
+      "params": {
+        "layout": "road",
+        "path": [[-6.8, 0], [23.2, 0]]
+      }
+    },
+
+    { "id": "MB-10", "at": [1.8, -5.8], "rot": -90, "params": { "style": "depot" } },
+    { "id": "MV-01", "at": [-3.35, -5.8], "rot": -90 },
+
+    { "id": "MB-10", "at": [-1.8, 6.4], "rot": 0, "params": { "style": "workshop" } },
+    { "id": "MV-03", "at": [-0.35, 8.45], "rot": 0 },
+
+    { "id": "MB-10", "at": [8.0, 6.4], "rot": 0, "params": { "style": "workshop" } },
+    { "id": "MB-10", "at": [-1.8, -18.0], "rot": 180, "params": { "style": "workshop" } },
+
+    { "id": "MB-13", "at": [16.8, -7.2], "rot": -90 },
+    { "id": "MB-10", "at": [15.8, -18.2], "rot": 0, "params": { "style": "utility" } },
+    { "id": "MI-05", "at": [-14.2, 17.6], "rot": 28, "params": { "mode": "tracking" } },
+
+    { "id": "NX-01", "at": [15.8, 20.6], "rot": 180 },
+    { "id": "MV-03", "at": [20.48, 20.5], "yOffset": 0.065, "rot": 180 },
+    { "id": "MV-11", "at": [11.12, 20.5], "yOffset": 0.065, "rot": 180, "params": { "state": "rescued" } },
+
+    { "id": "MB-10", "at": [-0.2, 18.2], "rot": 0, "params": { "style": "skylight" } },
+    { "id": "MB-10", "at": [-0.2, 24.8], "rot": 0, "params": { "style": "skylight" } },
+
+    { "id": "MB-10", "at": [-18.2, -11.4], "rot": 0, "params": { "style": "skylightOpen" } },
+    { "id": "MB-10", "at": [-18.2, -4.0], "rot": 0, "params": { "style": "skylightOpen" } },
+    { "id": "MB-10", "at": [-18.2, 3.4], "rot": 0, "params": { "style": "skylight" } },
+
+    { "id": "MB-14", "at": [-14.2, -20.8], "rot": 0 },
+
+    { "id": "MI-10", "at": [-19.4, 12.2], "rot": 0 },
+    { "id": "MI-10", "at": [7.2, 17.6], "rot": 90 },
+    { "id": "MI-10", "at": [7.4, -17.6], "rot": 0 },
+
+    { "id": "MI-09", "at": [6.8, 22.0], "rot": 0, "params": { "style": "hazard" } },
+    { "id": "MI-09", "at": [6.8, 23.3], "rot": 0, "params": { "style": "standard" } },
+    { "id": "MI-09", "at": [6.8, 22.0], "yOffset": 0.96, "rot": 6, "params": { "style": "hazard" } },
+    { "id": "MI-09", "at": [5.4, 22.6], "rot": 90, "params": { "style": "hazard" } },
+    { "id": "MI-09", "at": [22.8, 16.8], "rot": -90, "params": { "style": "hazard" } },
+    { "id": "MI-09", "at": [22.8, 18.2], "rot": -90, "params": { "style": "standard" } },
+    { "id": "MI-09", "at": [22.8, 16.8], "yOffset": 0.96, "rot": -84, "params": { "style": "hazard" } },
+    { "id": "MI-09", "at": [-15.2, -12.0], "yOffset": 0.74, "rot": 90, "params": { "style": "hazard" } },
+    { "id": "MI-09", "at": [-15.2, -4.6], "yOffset": 0.74, "rot": 90, "params": { "style": "standard" } },
+    { "id": "MI-09", "at": [-14.2, 12.2], "rot": 0, "params": { "style": "standard" } },
+    { "id": "MI-09", "at": [-14.2, 13.5], "rot": 0, "params": { "style": "hazard" } },
+    { "id": "MI-09", "at": [9.6, -1.6], "rot": 0, "params": { "style": "standard" } },
+    { "id": "MI-09", "at": [9.6, -0.3], "rot": 0, "params": { "style": "hazard" } },
+    { "id": "MI-09", "at": [-4.8, -13.4], "rot": 90, "params": { "style": "standard" } },
+
+    { "id": "MI-11", "at": [3.1, 7.6], "rot": 0, "params": { "state": "alert" } },
+    { "id": "MI-11", "at": [13.2, 7.8], "rot": -25, "params": { "state": "standby" } },
+    { "id": "MI-11", "at": [-13.2, 8.8], "rot": 15, "params": { "state": "alert" } },
+    { "id": "MI-11", "at": [8.6, 15.8], "rot": 0, "params": { "state": "standby" } },
+
+    { "id": "MI-06", "at": [-6.4, 24.4], "rot": 0, "params": { "tone": "cyan" } },
+    { "id": "MI-06", "at": [-12.0, 24.4], "rot": 0, "params": { "tone": "cyan" } },
+    { "id": "MI-06", "at": [-6.4, -1.2], "rot": -90, "params": { "tone": "cyan" } },
+
+    { "id": "MI-02", "at": [-6.6, 21.5], "rot": 90 },
+    { "id": "MI-02", "at": [-6.6, 15.4], "rot": 90 },
+    { "id": "MI-02", "at": [-6.6, 9.2], "rot": 90 },
+    { "id": "MI-02", "at": [-6.6, 1.8], "rot": 90 },
+    { "id": "MI-02", "at": [-6.6, -10.2], "rot": 90 },
+    { "id": "MI-02", "at": [-6.6, -17.5], "rot": 90 },
+    { "id": "MI-02", "at": [-11.8, 21.5], "rot": 90 },
+    { "id": "MI-02", "at": [-11.8, 15.4], "rot": 90 },
+    { "id": "MI-02", "at": [-11.8, 7.8], "rot": 90 },
+    { "id": "MI-02", "at": [-11.8, -0.8], "rot": 90 },
+    { "id": "MI-02", "at": [-11.8, -8.4], "rot": 90 },
+    { "id": "MI-02", "at": [-11.8, -16.8], "rot": 90 },
+    { "id": "MI-02", "at": [4.2, 9.8], "rot": 0 },
+    { "id": "MI-02", "at": [13.8, 9.8], "rot": 0 },
+    { "id": "MI-02", "at": [6.8, 15.0], "rot": 0 },
+    { "id": "MI-02", "at": [22.2, 15.0], "rot": 0 }
+  ],
+  "reservations": [],
+  "views": [
+    {
+      "id": "v3-t050",
+      "label": "District v3-t050",
+      "position": [-16.4, 9.8, 25.4],
+      "target": [3.8, 1.6, 8.6],
+      "fov": 37
+    },
+    {
+      "id": "v3-t074",
+      "label": "District v3-t074",
+      "position": [-19.4, 13.4, 16.2],
+      "target": [0.8, 2.3, -1.8],
+      "fov": 38
+    },
+    {
+      "id": "parking",
+      "label": "Parking & Charging (NX-01)",
+      "position": [6.2, 11.4, 5.4],
+      "target": [15.4, 1.4, 20.2],
+      "fov": 42
+    },
+    {
+      "id": "street-landmark",
+      "label": "Main Street & MB-14",
+      "position": [-9.2, 3.8, 23.5],
+      "target": [-10.6, 7.8, -18.5],
+      "fov": 46
+    }
+  ]
+}

@@ -116,9 +116,9 @@ export async function mountLandmarksReview(): Promise<void> {
     {
       id: "mb-14",
       label: "MB-14 Entrance Tower",
-      // Balanced 3/4 landmark perspective framing full 21.8 m tower across Jezero horizon & caramel sky
-      offset: [-14.8, baseY + 12.75, -23.4],
-      target: [0.0, baseY + 10.4, 0.0],
+      // Balanced 3/4 landmark perspective framing full 23.6 m slender glowing-panel tower across Jezero horizon
+      offset: [-15.4, baseY + 13.6, -24.8],
+      target: [0.0, baseY + 11.2, 0.0],
       fov: 45,
     },
     {
