@@ -1,8 +1,8 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { crearEfectos, EFECTOS, MAXIMO_SIMULTANEOS } from "../../src/audio/efectos";
 import { crearMezclador, GANANCIAS, MUSICA_CON_VOZ, type Entorno } from "../../src/audio/mezclador";
-import { TEMAS } from "../../src/audio/musica";
-import { elegirVoz, lineaDeVoz } from "../../src/audio/voz";
+import { crearReproductor, TEMAS } from "../../src/audio/musica";
+import { conectarVoz, elegirVoz, lineaDeVoz, type Voz } from "../../src/audio/voz";
 import { cargarIntro } from "../../src/game/intro";
 import { DEFAULT_SETTINGS } from "../../src/ui/state/settings";
 
@@ -119,6 +119,29 @@ describe("efectos, música y voz", () => {
     for (const toma of cargarIntro().tomas) {
       expect(EFECTOS[toma.efecto], toma.efecto).toBeDefined();
       expect(TEMAS[toma.musica], toma.musica).toBeDefined();
+    }
+  });
+
+  it("lee lo tocado antes de que el botón actúe, para no cortar la línea nueva", () => {
+    vi.stubGlobal("MutationObserver", class { observe() {} disconnect() {} });
+    const escuchas: [string, unknown][] = [];
+    const raiz = { querySelectorAll: () => [], addEventListener: (t: string, _: unknown, captura: unknown) => escuchas.push([t, captura]), removeEventListener() {} };
+    conectarVoz(raiz as unknown as HTMLElement, { decir: () => true, callar() {} } as unknown as Voz)();
+    expect(escuchas).toEqual([["click", true]]);
+    vi.unstubAllGlobals();
+  });
+
+  it("el tema final suena una vez y los demás se repiten", () => {
+    for (const [tema, veces] of [["final", TEMAS.final.acordes.length], ["calma", 10]] as const) {
+      const { ctx, ganancias } = contextoFalso();
+      let osciladores = 0;
+      const contado = { ...ctx, createOscillator: () => { osciladores++; return ctx.createOscillator(); } };
+      const r = crearReproductor(contado as unknown as AudioContext, {} as AudioNode);
+      r.poner(tema);
+      const porCompas = osciladores;
+      for (let i = 1; i < 10; i++) { contado.currentTime = i * TEMAS[tema].compas; r.avanzar(); }
+      expect(osciladores / porCompas, tema).toBeCloseTo(veces, 0);
+      expect(ganancias.length).toBeGreaterThan(0);
     }
   });
 

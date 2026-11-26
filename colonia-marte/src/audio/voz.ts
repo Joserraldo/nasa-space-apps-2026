@@ -103,7 +103,9 @@ export function conectarVoz(raiz: HTMLElement, voz: Voz): () => void {
   };
   const observador = new MutationObserver(revisar);
   observador.observe(raiz, { subtree: true, childList: true, attributes: true, attributeFilter: ["data-voice-line"] });
-  raiz.addEventListener("click", tocar);
+  // En captura: se lee lo tocado antes de que el botón cambie la pantalla, y la línea nueva lo reemplaza.
+  // Al revés, el nombre del botón cortaba lo que dice el personaje.
+  raiz.addEventListener("click", tocar, true);
   revisar();
-  return () => { observador.disconnect(); raiz.removeEventListener("click", tocar); voz.callar(); };
+  return () => { observador.disconnect(); raiz.removeEventListener("click", tocar, true); voz.callar(); };
 }
