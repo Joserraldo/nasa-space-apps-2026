@@ -1,0 +1,84 @@
+{
+  "id": "exterior-pilot",
+  "name": "Jezero Colony Exterior Pilot (T3.1)",
+  "biome": "jezero",
+  "environment": "AMB-04",
+  "terrainSeed": 42,
+  "placements": [
+    { "id": "MB-02", "at": [0, 0], "yOffset": -0.18, "rot": 22.5, "params": { "style": "colony" } },
+
+    { "id": "MB-03", "at": [-4.99, 2.07], "yOffset": -0.18, "rot": -67.5, "params": { "style": "lit" } },
+    { "id": "MB-03", "at": [-2.07, 4.99], "yOffset": -0.18, "rot": -22.5, "params": { "style": "standard" } },
+    { "id": "MB-03", "at": [2.07, 4.99], "yOffset": -0.18, "rot": 22.5, "params": { "style": "standard" } },
+    { "id": "MB-03", "at": [4.99, 2.07], "yOffset": -0.18, "rot": 67.5, "params": { "style": "lit" } },
+
+    { "id": "MB-01", "at": [-9.15, 3.79], "yOffset": -0.20, "rot": -67.5, "params": { "mode": "warm", "unit": "01" } },
+    { "id": "MB-01", "at": [-3.79, 9.15], "yOffset": -0.20, "rot": -22.5, "params": { "mode": "standard", "unit": "02" } },
+    { "id": "MB-01", "at": [3.79, 9.15], "yOffset": -0.20, "rot": 22.5, "params": { "mode": "warm", "unit": "03" } },
+    { "id": "MB-01", "at": [9.15, 3.79], "yOffset": -0.20, "rot": 67.5, "params": { "mode": "standard", "unit": "04" } },
+
+    { "id": "MB-03", "at": [-2.07, -4.99], "yOffset": -0.18, "rot": -157.5, "params": { "style": "lit" } },
+    { "id": "MB-02", "at": [-4.13, -9.98], "yOffset": -0.18, "rot": 22.5, "params": { "style": "industrial" } },
+    { "id": "MB-03", "at": [-9.21, -7.88], "yOffset": -0.18, "rot": -67.5, "params": { "style": "lit" } },
+    { "id": "MB-03", "at": [0.95, -12.08], "yOffset": -0.18, "rot": 112.5, "params": { "style": "lit" } },
+
+    { "id": "MB-10", "at": [-14.71, -5.60], "yOffset": -0.22, "rot": 22.5, "params": { "style": "utility" } },
+    { "id": "MB-10", "at": [6.45, -14.36], "yOffset": -0.22, "rot": 202.5, "params": { "style": "hangar" } },
+
+    { "id": "MB-04", "at": [-21.50, -18.80], "yOffset": -0.26, "rot": 36, "params": { "mode": "standard" } },
+    { "id": "MB-07", "at": [13.80, -21.80], "yOffset": -0.26, "rot": -24, "params": { "style": "teal" } },
+
+    { "id": "MI-03", "at": [-5.74, -13.86], "yOffset": -0.10, "rot": 22.5, "params": { "layout": "bridge" } },
+    { "id": "MI-03", "at": [-14.17, -10.37], "yOffset": -0.10, "rot": 22.5, "params": { "layout": "ground" } },
+    { "id": "MI-03", "at": [2.69, -17.35], "yOffset": -0.10, "rot": 22.5, "params": { "layout": "ground" } },
+
+    { "id": "MI-06", "at": [-6.95, 7.35], "yOffset": -0.14, "rot": 18, "params": { "tone": "cyan" } },
+    { "id": "MI-06", "at": [6.40, -18.80], "yOffset": -0.14, "rot": -22, "params": { "tone": "cyan" } },
+    { "id": "MI-06", "at": [-9.60, -18.60], "yOffset": -0.14, "rot": 35, "params": { "tone": "cyan" } },
+    { "id": "MI-07", "at": [20.20, -7.35], "yOffset": -0.26, "rot": -12, "params": { "detail": "near" } },
+
+    { "id": "MI-04", "at": [-18.80, 3.20], "yOffset": -0.18, "rot": 24, "params": { "mode": "tracking" } },
+    { "id": "MI-04", "at": [16.40, 1.60], "yOffset": -0.18, "rot": -20, "params": { "mode": "tracking" } },
+    { "id": "MI-04", "at": [-11.80, -25.60], "yOffset": -0.18, "rot": 10, "params": { "mode": "tracking" } },
+
+    { "id": "MI-09", "at": [-6.20, -2.60], "yOffset": -0.14, "rot": 22.5, "params": { "style": "standard" } },
+    { "id": "MI-09", "at": [4.40, -4.80], "yOffset": -0.14, "rot": -22.5, "params": { "style": "hazard" } },
+    { "id": "MI-11", "at": [-1.85, 11.90], "yOffset": -0.10, "rot": -18, "params": { "state": "alert" } },
+    { "id": "MI-11", "at": [6.75, 8.60], "yOffset": -0.10, "rot": -40, "params": { "state": "alert" } },
+    { "id": "MI-11", "at": [2.05, -2.65], "yOffset": -0.10, "rot": 22.5, "params": { "state": "standby" } },
+
+    { "id": "MT-T04", "at": [-12.80, -24.50], "yOffset": -0.16, "rot": 35, "params": { "biome": "jezero", "scale": "tall", "seed": 3 } },
+    { "id": "MT-T04", "at": [21.50, -26.00], "yOffset": -0.16, "rot": 120, "params": { "biome": "jezero", "scale": "standard", "seed": 7 } },
+    { "id": "MT-T04", "at": [-15.20, 9.20], "yOffset": -0.14, "rot": 55, "params": { "biome": "jezero", "scale": "standard", "seed": 11 } },
+    { "id": "MT-T06", "at": [-31.00, -34.00], "yOffset": -0.16, "rot": 15, "params": { "biome": "jezero", "seed": 5 } },
+    { "id": "MT-T06", "at": [-13.40, 15.20], "yOffset": -0.14, "rot": 48, "params": { "biome": "jezero", "seed": 8 } },
+    { "id": "MT-T06", "at": [12.80, 13.20], "yOffset": -0.14, "rot": 135, "params": { "biome": "jezero", "seed": 12 } },
+    { "id": "MT-T05", "at": [-9.60, 13.80], "yOffset": -0.08, "rot": 40, "params": { "biome": "jezero", "formation": "cluster", "seed": 2 } },
+    { "id": "MT-T05", "at": [7.80, 13.40], "yOffset": -0.08, "rot": 110, "params": { "biome": "jezero", "formation": "cluster", "seed": 9 } },
+    { "id": "MT-T05", "at": [-1.20, 15.80], "yOffset": -0.08, "rot": 75, "params": { "biome": "jezero", "formation": "cluster", "seed": 4 } }
+  ],
+  "views": [
+    {
+      "id": "pilot-overview",
+      "label": "View 1 (Elevated Overview / v3-t054.60)",
+      "position": [-1.9, 12.8, 25.6],
+      "target": [-1.8, 2.6, -6.2],
+      "fov": 50
+    },
+    {
+      "id": "pilot-eye",
+      "label": "View 2 (Eye Height 1.5 m)",
+      "position": [-5.2, 1.5, 20.8],
+      "eyeHeight": 1.5,
+      "target": [-1.6, 2.6, -5.0],
+      "fov": 54
+    },
+    {
+      "id": "landing-pad-review",
+      "label": "Landing pad",
+      "position": [27.5, 7.8, 3.2],
+      "target": [19.7, 1.15, -7.55],
+      "fov": 48
+    }
+  ]
+}

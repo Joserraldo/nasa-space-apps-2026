@@ -1,0 +1,13 @@
+.ui-hud-hold-gate {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+.ui-hud-hold-gate .ui-hud-ring { width: var(--ui-hud-target); height: var(--ui-hud-target); color: var(--ui-hud-panel-solid); }
+.ui-hud-hold-gate .ui-hud-ring__track,
+.ui-hud-hold-gate .ui-hud-ring__core,
+.ui-hud-hold-gate .ui-hud-ring__outer,
+.ui-hud-hold-gate .ui-hud-ring__ticks line { stroke: var(--ui-hud-panel-solid); }
+.ui-hud-hold-gate .ui-hud-ring__arc { stroke-dasharray: var(--hold-progress) 100; }
+.ui-hud-hold-gate__button { touch-action: none; user-select: none; }

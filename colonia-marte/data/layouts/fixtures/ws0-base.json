@@ -1,0 +1,18 @@
+{
+  "id": "ws0-kit-fixture",
+  "pieces": [
+    { "id": "ST-F01", "position": [0, 0, 0] },
+    { "id": "ST-F01", "position": [2, 0, 0] },
+    { "id": "ST-F01", "position": [4, 0, 0] },
+    { "id": "ST-F01", "position": [0, 0, 2] },
+    { "id": "ST-F01", "position": [2, 0, 2] },
+    { "id": "ST-F01", "position": [4, 0, 2] },
+    { "id": "ST-F01", "position": [0, 0, 4] },
+    { "id": "ST-F01", "position": [2, 0, 4] },
+    { "id": "ST-F01", "position": [4, 0, 4] },
+    { "id": "DN-01", "position": [1.5, 0.2, 1.5] },
+    { "id": "DN-01", "position": [4.5, 0.2, 1.5] },
+    { "id": "DN-01", "position": [1.5, 0.2, 4.5] },
+    { "id": "DN-01", "position": [4.5, 0.2, 4.5] }
+  ]
+}

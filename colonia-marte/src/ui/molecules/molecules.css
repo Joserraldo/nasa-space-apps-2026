@@ -1,0 +1,216 @@
+/* Sci-fi UI Kit — Molecules: SearchBar, ContentSwitcher, Breadcrumbs, Pagination */
+
+/* 1. SearchBar (106:170) */
+.ui-search {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.ui-search__form {
+  display: flex;
+  align-items: stretch;
+  width: 100%;
+  gap: 0;
+}
+
+.ui-search__frame {
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 32px;
+  border-right: 0;
+}
+
+.ui-search__submit {
+  height: 32px;
+  padding: 0 var(--ui-space-3);
+  font-size: 0.75rem;
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%);
+}
+
+/* 2. ContentSwitcher / Segmented Tabs (4042:548) */
+.ui-switcher-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ui-space-3);
+  width: 100%;
+}
+
+.ui-switcher {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: stretch;
+  max-width: 100%;
+}
+
+.ui-tab {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--ui-space-1);
+  min-height: 32px;
+  padding: var(--ui-space-1) var(--ui-space-3);
+  font-family: var(--ui-font-body);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ui-neutral-200);
+  background: var(--ui-surface-panel);
+  border: 1px solid var(--ui-border-strong);
+  border-radius: 0;
+  margin-left: -1px;
+  cursor: pointer;
+  transition: background-color 120ms ease, color 120ms ease;
+}
+
+.ui-tab:first-child {
+  margin-left: 0;
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 6px 100%, 0 calc(100% - 6px));
+}
+
+.ui-tab:last-child {
+  clip-path: polygon(0 0, calc(100% - 6px) 0, 100% 6px, 100% 100%, 0 100%);
+}
+
+.ui-tab:hover {
+  color: var(--ui-text-white-primary);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+/* Non-color active indicator shape + fill (WCAG 1.4.1 / modern-web-guidance: tabs) */
+.ui-tab[aria-selected="true"] {
+  z-index: 1;
+  color: var(--ui-text-white-primary);
+  background: var(--ui-primary-600);
+  border-color: var(--ui-primary-300);
+}
+
+.ui-tab[aria-selected="true"]::after {
+  content: "";
+  position: absolute;
+  left: 6px;
+  right: 6px;
+  bottom: 2px;
+  height: 2.5px;
+  background: var(--ui-text-white-primary);
+}
+
+.ui-tab-panel__inner {
+  border: 1px solid var(--ui-border-subtle);
+  background: var(--ui-surface-panel);
+  padding: var(--ui-space-3);
+  font-family: var(--ui-font-body);
+  font-size: 0.875rem;
+  color: var(--ui-neutral-200);
+}
+
+/* 3. Breadcrumbs (133:965) */
+.ui-breadcrumbs__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--ui-space-1);
+  font-family: var(--ui-font-body);
+  font-size: 0.8125rem;
+}
+
+.ui-breadcrumbs__item {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ui-space-1);
+  color: var(--ui-neutral-300);
+}
+
+.ui-breadcrumbs__current {
+  color: var(--ui-neutral-400);
+  padding: 2px 4px;
+}
+
+.ui-breadcrumbs__ellipsis {
+  border: 1px solid var(--ui-border-subtle);
+  background: transparent;
+  color: var(--ui-neutral-200);
+  padding: 0 6px;
+  height: 22px;
+  font-family: var(--ui-font-mono);
+  font-size: 0.75rem;
+  cursor: pointer;
+}
+
+/* 4. Pagination (134:540) */
+.ui-pagination {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--ui-space-2);
+  width: 100%;
+}
+
+.ui-pagination__bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: var(--ui-space-1);
+}
+
+.ui-page-btn {
+  min-width: 28px;
+  height: 26px;
+  padding: 0 var(--ui-space-2);
+  border: 1px solid var(--ui-border-subtle);
+  border-radius: 0;
+  background: var(--ui-surface-panel);
+  color: var(--ui-text-white-secondary);
+  font-family: var(--ui-font-body);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.ui-page-btn:hover:not(:disabled) {
+  border-color: var(--ui-primary-400);
+  color: var(--ui-text-white-primary);
+}
+
+.ui-page-btn[aria-current="page"] {
+  background: var(--ui-primary-500);
+  border-color: var(--ui-primary-300);
+  color: var(--ui-text-white-primary);
+}
+
+.ui-page-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.ui-pagination__ellipsis {
+  padding: 0 4px;
+  color: var(--ui-neutral-400);
+  font-family: var(--ui-font-mono);
+  font-size: 0.75rem;
+}
+
+.ui-pagination__jump {
+  height: 26px;
+  min-width: 52px;
+  padding: 0 var(--ui-space-2);
+  border: 1px solid var(--ui-border-subtle);
+  background: var(--ui-surface-panel);
+  color: var(--ui-text-white-primary);
+  font-family: var(--ui-font-mono);
+  font-size: 0.75rem;
+}
+
+.ui-pagination__status {
+  margin: 0;
+  font-family: var(--ui-font-body);
+  font-size: 0.75rem;
+  color: var(--ui-neutral-300);
+}

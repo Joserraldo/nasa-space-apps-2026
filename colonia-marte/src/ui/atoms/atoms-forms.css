@@ -1,0 +1,389 @@
+/* Sci-fi UI Kit — Selection & Form Input Atoms */
+
+/* 1. Selection Controls: Checkbox (52:506), Radio (57:1108), Toggle Switch (65:645) */
+.ui-check-row,
+.ui-toggle-row,
+.ui-radio-option {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ui-space-3);
+  min-height: 32px;
+  cursor: pointer;
+  color: var(--ui-text-white-primary);
+  font-family: var(--ui-font-body);
+  font-size: 0.875rem;
+}
+
+.ui-check-row--disabled,
+.ui-toggle-row--disabled,
+.ui-radio-option--disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.ui-native-choice {
+  position: absolute;
+  opacity: 0;
+  width: 32px;
+  height: 32px;
+  margin: 0;
+  cursor: inherit;
+}
+
+/* Checkbox: 1px square reticle + 4px inset solid square fill */
+.ui-checkbox-box {
+  position: relative;
+  width: 20px;
+  height: 20px;
+  border: 1.5px solid var(--ui-border-strong);
+  background: rgba(255, 255, 255, 0.03);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: border-color 120ms ease, background-color 120ms ease;
+}
+
+.ui-checkbox-box::after {
+  content: "";
+  width: 10px;
+  height: 10px;
+  background: var(--ui-primary-500);
+  transform: scale(0);
+  transition: transform 120ms ease;
+}
+
+.ui-native-choice:checked + .ui-checkbox-box {
+  border-color: var(--ui-primary-400);
+}
+
+.ui-native-choice:checked + .ui-checkbox-box::after {
+  transform: scale(1);
+}
+
+.ui-native-choice:indeterminate + .ui-checkbox-box::after {
+  width: 10px;
+  height: 2px;
+  background: var(--ui-info-300);
+  transform: scale(1);
+}
+
+/* Radio: 24x24 pointy-top hexagon ring + inner hexagon core (57:1108) */
+.ui-radio-fieldset {
+  border: 1px solid var(--ui-border-subtle);
+  padding: var(--ui-space-3) var(--ui-space-4);
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--ui-space-2);
+}
+
+.ui-radio-legend {
+  padding: 0 var(--ui-space-2);
+  font-family: var(--ui-font-display);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ui-neutral-200);
+}
+
+.ui-radio-hex {
+  width: 22px;
+  height: 22px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--ui-border-strong);
+  flex-shrink: 0;
+}
+
+.ui-radio-hex__core {
+  opacity: 0;
+  fill: var(--ui-primary-500);
+  transition: opacity 120ms ease;
+}
+
+.ui-native-choice:checked + .ui-radio-hex {
+  color: var(--ui-primary-400);
+}
+
+.ui-native-choice:checked + .ui-radio-hex .ui-radio-hex__core {
+  opacity: 1;
+}
+
+/* Toggle Switch: 40x22 chamfered octagonal track + hexagonal thumb (65:645) */
+.ui-toggle-track {
+  position: relative;
+  width: 40px;
+  height: 22px;
+  border: 1.5px solid var(--ui-border-strong);
+  background: rgba(255, 255, 255, 0.04);
+  clip-path: polygon(5px 0, calc(100% - 5px) 0, 100% 5px, 100% calc(100% - 5px), calc(100% - 5px) 100%, 5px 100%, 0 calc(100% - 5px), 0 5px);
+  display: inline-flex;
+  align-items: center;
+  padding: 0 3px;
+  flex-shrink: 0;
+  transition: background-color 140ms ease, border-color 140ms ease;
+}
+
+.ui-toggle-thumb {
+  width: 12px;
+  height: 13px;
+  background: var(--ui-neutral-300);
+  clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%);
+  transform: translateX(0);
+  transition: transform 150ms ease, background-color 150ms ease;
+}
+
+.ui-native-choice:checked + .ui-toggle-track {
+  background: rgba(202, 53, 53, 0.28);
+  border-color: var(--ui-primary-400);
+}
+
+.ui-native-choice:checked + .ui-toggle-track .ui-toggle-thumb {
+  background: var(--ui-text-white-primary);
+  transform: translateX(18px);
+}
+
+.ui-native-choice:focus-visible + .ui-checkbox-box,
+.ui-native-choice:focus-visible + .ui-radio-hex,
+.ui-native-choice:focus-visible + .ui-toggle-track {
+  outline: 2px solid var(--ui-focus-ring);
+  outline-offset: 2px;
+}
+
+/* 2. TextField (55:913) & Dropdown (57:1855) */
+.ui-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ui-space-1);
+  width: 100%;
+  max-width: 100%;
+}
+
+.ui-field__label {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-family: var(--ui-font-display);
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--ui-text-white-primary);
+}
+
+.ui-field__req { color: var(--ui-error-300); }
+
+.ui-field__hint {
+  font-family: var(--ui-font-body);
+  font-size: 0.75rem;
+  color: var(--ui-neutral-300);
+}
+
+.ui-field__frame {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--ui-space-2);
+  height: 34px;
+  padding: 0 var(--ui-space-3);
+  border: 1px solid var(--ui-border-subtle);
+  background: var(--ui-surface-panel);
+  color: var(--ui-text-white-primary);
+  transition: border-color 130ms ease, background-color 130ms ease;
+}
+
+.ui-field__frame--lg { height: 42px; }
+
+/* Sci-fi vertical side bracket bars from Figma 55:913 & 57:1855 */
+.ui-field__frame::before,
+.ui-field__frame::after {
+  content: "";
+  position: absolute;
+  top: 4px;
+  bottom: 4px;
+  width: 2px;
+  background: var(--ui-border-strong);
+  pointer-events: none;
+}
+
+.ui-field__frame::before { left: 2px; }
+.ui-field__frame::after { right: 2px; }
+
+.ui-field__frame:focus-within {
+  border-color: var(--ui-focus-ring);
+  background: var(--ui-surface-elevated);
+}
+
+.ui-field__frame:has(:is(:user-invalid, .user-invalid-fallback)) {
+  border-color: var(--ui-error-300);
+}
+
+.ui-field__frame:has(:is(:user-invalid, .user-invalid-fallback))::before,
+.ui-field__frame:has(:is(:user-invalid, .user-invalid-fallback))::after {
+  background: var(--ui-error-500);
+}
+
+.ui-input,
+.ui-select {
+  flex: 1 1 auto;
+  min-width: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  background: transparent;
+  color: var(--ui-text-white-primary);
+  font-family: var(--ui-font-body);
+  font-size: 0.875rem;
+  outline: none;
+}
+
+.ui-input::placeholder { color: var(--ui-neutral-400); }
+
+.ui-field__clear {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px;
+  border: 0;
+  background: transparent;
+  color: var(--ui-neutral-300);
+  cursor: pointer;
+}
+
+.ui-field__error {
+  font-family: var(--ui-font-body);
+  font-size: 0.75rem;
+  color: var(--ui-error-300);
+}
+
+/* Progressive enhancement: appearance: base-select (branded-select-styling) */
+.ui-select {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.ui-select option {
+  background: var(--ui-surface-panel);
+  color: var(--ui-text-white-primary);
+}
+
+@supports (appearance: base-select) {
+  .ui-select,
+  .ui-select::picker(select) {
+    appearance: base-select;
+  }
+
+  .ui-field__chevron {
+    display: none;
+  }
+
+  .ui-select {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .ui-select::picker(select) {
+    border: 1px solid var(--ui-primary-400);
+    background: var(--ui-surface-panel);
+    color: var(--ui-text-white-primary);
+    padding: var(--ui-space-1);
+  }
+
+  .ui-select option {
+    padding: var(--ui-space-2) var(--ui-space-3);
+  }
+
+  .ui-select option:hover {
+    background: rgba(202, 53, 53, 0.24);
+  }
+
+  .ui-select option:checked {
+    background: var(--ui-primary-700);
+    color: var(--ui-text-white-primary);
+  }
+}
+
+/* 3. Slider (65:985) */
+.ui-slider {
+  --ui-slider-pct: 50%;
+  display: flex;
+  flex-direction: column;
+  gap: var(--ui-space-2);
+  width: 100%;
+}
+
+.ui-slider__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  font-family: var(--ui-font-display);
+  font-size: 0.8125rem;
+  color: var(--ui-text-white-primary);
+}
+
+.ui-slider__value {
+  font-family: var(--ui-font-mono);
+  font-size: 0.75rem;
+  color: var(--ui-info-300);
+}
+
+.ui-slider__input {
+  appearance: none;
+  width: 100%;
+  height: 20px;
+  margin: 0;
+  background: transparent;
+  cursor: pointer;
+}
+
+.ui-slider__input::-webkit-slider-runnable-track {
+  height: 6px;
+  border: 1px solid var(--ui-border-strong);
+  background: linear-gradient(
+    90deg,
+    var(--ui-primary-500) 0%,
+    var(--ui-primary-500) var(--ui-slider-pct),
+    rgba(255, 255, 255, 0.06) var(--ui-slider-pct),
+    rgba(255, 255, 255, 0.06) 100%
+  );
+}
+
+.ui-slider__input::-webkit-slider-thumb {
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  margin-top: -6px;
+  background: var(--ui-text-white-primary);
+  border: 2px solid var(--ui-primary-500);
+  box-shadow: 0 0 0 2px var(--ui-surface-void);
+}
+
+.ui-slider__input::-moz-range-track {
+  height: 6px;
+  border: 1px solid var(--ui-border-strong);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.ui-slider__input::-moz-range-progress {
+  height: 6px;
+  background: var(--ui-primary-500);
+}
+
+.ui-slider__input::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border-radius: 0;
+  background: var(--ui-text-white-primary);
+  border: 2px solid var(--ui-primary-500);
+}
+
+@media (forced-colors: active) {
+  .ui-native-choice:checked + .ui-toggle-track,
+  .ui-native-choice:checked + .ui-checkbox-box::after {
+    background-color: Highlight;
+  }
+}

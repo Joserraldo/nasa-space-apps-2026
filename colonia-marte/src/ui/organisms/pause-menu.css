@@ -1,0 +1,97 @@
+/* Pause menu organism (UI v3). */
+.ui-pause {
+  position: fixed; inset: 0; width: 100%; height: 100%; max-width: none; max-height: none; margin: 0; padding: 0;
+  border: 0; background: transparent; color: var(--ui-hud-panel-solid); overflow: hidden;
+  font-family: var(--ui-hud-font-body); font-size-adjust: from-font;
+  opacity: 0;
+  transition-property: opacity, display, overlay; transition-duration: 0.3s; transition-timing-function: ease-out;
+  transition-behavior: allow-discrete;
+}
+.ui-pause[open] { opacity: 1; display: grid; grid-template-columns: minmax(0, 58fr) minmax(0, 42fr); align-items: center; }
+@starting-style { .ui-pause[open] { opacity: 0; } }
+.ui-pause::backdrop {
+  background: rgb(6 11 16 / 0); backdrop-filter: blur(0);
+  transition-property: background-color, backdrop-filter, display, overlay; transition-duration: 0.3s;
+  transition-behavior: allow-discrete;
+}
+.ui-pause[open]::backdrop { background: rgb(6 11 16 / 0.55); backdrop-filter: blur(6px); }
+@starting-style { .ui-pause[open]::backdrop { background: rgb(6 11 16 / 0); backdrop-filter: blur(0); } }
+
+/* Hex field, very faint, only on the right half (reference). */
+.ui-pause__hex { position: absolute; inset: 0 0 0 46%; pointer-events: none; opacity: 0.16;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='97' viewBox='0 0 56 97'%3E%3Cpath d='M28 1 55 16.5v31L28 63 1 47.5v-31z M28 63v34' fill='none' stroke='%23eef7f9' stroke-width='1.2'/%3E%3C/svg%3E");
+  background-size: 56px 97px;
+  mask-image: radial-gradient(ellipse at 70% 50%, #000 0 35%, transparent 75%); }
+
+/* Diagonal slab. */
+.ui-pause__slab {
+  position: relative; align-self: stretch; display: flex; flex-direction: column; justify-content: center;
+  padding: 0 14% 0 clamp(32px, 6vw, 96px);
+  background: var(--ui-hud-ink);
+  clip-path: polygon(0 0, 100% 0, 78% 100%, 0 100%);
+  translate: 0 0; transition: translate 0.35s ease-out;
+}
+@media (prefers-reduced-motion: no-preference) {
+  @starting-style { .ui-pause[open] .ui-pause__slab { translate: -8% 0; } }
+}
+/* Thin black offset lines along the diagonal (reference). */
+.ui-pause__slab::before, .ui-pause__slab::after { content: ""; position: absolute; top: 0; bottom: 0; width: 3px;
+  background: var(--ui-hud-panel-solid); transform-origin: top; }
+.ui-pause__slab::before { right: 11%; transform: skewX(12.3deg); opacity: 0.85; }
+.ui-pause__slab::after { right: 13.5%; width: 1px; transform: skewX(12.3deg); opacity: 0.5; }
+
+.ui-pause__title { margin: 0 0 clamp(20px, 4vh, 40px); display: flex; align-items: center; gap: 18px; color: var(--ui-hud-panel-solid);
+  font: 700 var(--ui-hud-text-pause-title)/1 var(--ui-hud-font-display); letter-spacing: 0.06em; text-transform: uppercase; font-style: italic; }
+.ui-pause__title-rule { flex: 1; max-width: 200px; height: 10px;
+  background: linear-gradient(90deg, var(--ui-hud-panel-solid) 0 70%, transparent 70% 76%, var(--ui-hud-accent) 76%);
+  transform: skewX(-30deg); }
+
+.ui-pause__list { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
+.ui-pause__list li { padding-left: calc(var(--step) * 4.2%); }
+.ui-pause__item {
+  display: inline-flex; align-items: center; gap: 16px; min-height: 76px; min-width: min(440px, 100%);
+  padding: 0 32px 0 22px; border: 0; cursor: pointer; background: transparent; color: var(--ui-hud-panel-solid);
+  font: 700 var(--ui-hud-text-pause-item)/1 var(--ui-hud-font-display); letter-spacing: 0.12em; text-transform: uppercase;
+  clip-path: polygon(14px 0, 100% 0, calc(100% - 14px) 100%, 0 100%);
+  transition: background-color 0.15s ease-out, color 0.15s ease-out, padding 0.15s ease-out;
+}
+.ui-pause__glyph { width: 30px; height: 30px; flex: none; }
+.ui-pause svg { display: block; width: 100%; height: 100%; fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; }
+.ui-pause__glyph svg { stroke-width: 2.2; }
+.ui-pause__item:hover, .ui-pause__item:focus {
+  background: var(--ui-hud-panel-solid); color: var(--ui-hud-ink); padding-left: 30px; outline: none;
+}
+.ui-pause__item:focus-visible { box-shadow: inset 6px 0 0 var(--ui-hud-accent); }
+.ui-pause__item:hover .ui-pause__glyph, .ui-pause__item:focus .ui-pause__glyph { color: var(--ui-hud-accent); }
+@media (prefers-reduced-motion: reduce) { .ui-pause__item, .ui-pause__slab { transition: none; } }
+
+/* Right column: status word + mission card. */
+.ui-pause__side { position: relative; display: grid; gap: 28px; justify-items: start; padding: 0 clamp(24px, 5vw, 80px) 0 4%;
+  color: var(--ui-hud-ink); }
+.ui-pause__status { display: grid; gap: 6px; }
+.ui-pause__status-label { font: 600 var(--ui-hud-text-label)/1 var(--ui-hud-font-display); letter-spacing: 0.3em;
+  text-transform: uppercase; color: var(--ui-hud-ink-dim); border-bottom: 1px solid var(--ui-hud-line-soft); padding-bottom: 8px; }
+.ui-pause__status-word { font: 700 var(--ui-hud-text-pause-status)/0.95 var(--ui-hud-font-display); letter-spacing: 0.08em;
+  text-transform: uppercase; font-style: italic; }
+.ui-pause__mission { position: relative; width: min(420px, 100%); }
+.ui-pause__mission-body { padding: 10px 24px 18px; }
+.ui-pause__chapter { margin: 0 0 6px; font: 600 var(--ui-hud-text-label)/1 var(--ui-hud-font-display); letter-spacing: 0.18em;
+  text-transform: uppercase; color: var(--ui-hud-accent); }
+.ui-pause__objective { margin: 0; font: 600 var(--ui-hud-text-title)/1.25 var(--ui-hud-font-body); }
+
+/* Landscape phones. */
+@media (max-height: 460px) {
+  .ui-pause[open] { grid-template-columns: minmax(0, 60fr) minmax(0, 40fr); }
+  .ui-pause__title { font-size: var(--ui-hud-text-pause-title-compact); margin-bottom: 14px; }
+  .ui-pause__list { gap: 6px; }
+  .ui-pause__item { min-height: 64px; min-width: 0; font-size: var(--ui-hud-text-body); }
+  .ui-pause__status-word { font-size: var(--ui-hud-text-pause-status-compact); }
+  .ui-pause__mission { display: none; }
+}
+
+/* Registry showcase: render inline instead of in the top layer. */
+.ui-pause-showcase { position: relative; width: 1100px; height: 560px; background: #39424a; overflow: hidden; }
+.ui-pause-showcase .ui-pause { position: absolute; }
+
+.ui-big-text .ui-pause :is(.ui-pause__title, .ui-pause__item, .ui-pause__status-label,
+  .ui-pause__status-word, .ui-pause__chapter, .ui-pause__mission .ui-hud-tab) { line-height: 1.4; }
