@@ -13,6 +13,7 @@ Registro breve del rol diseño (Santiago y Camilo). Una hipótesis no es una dec
 | DD-07 | La batería da +2 de blindaje | No tiene base física; parece puesta para cumplir "cada acción mueve dos medidores" | `design/src/recursos.ts` (`MODULOS.bateria`) | **Pendiente** (no se cambió) | Camilo |
 | DD-08 | Los cuatro eventos del mazo y sus números | Hoy están quemados en el motor, no en diseño | `engine/src/acciones.ts` (`MALA_SUERTE`) | **Pendiente** | Camilo |
 | DD-09 | Tres niveles de mejora por módulo | El contrato no guarda nivel de módulo: hace falta un issue `contrato` | `contracts/src/game-state.ts`, `contracts/src/action.ts` | **Pendiente** | Camilo, con Jaime |
+| DD-10 | Balance de C1 `viaje-marte`: módulos propios de la nave, costos extra del plan y del sacrificio, límite de 10 mSv (valor de juego) | Simulado con zona × par de módulos × plan × sacrificio, 30 semillas: sin plan casi nunca se gana, refugio y escudo quedan parejos y cada sacrificio es el mejor en algún caso (reforzar paredes, en muy pocos) | `missions/src/viaje-marte.ts`, `engine/src/viaje-marte.test.ts` | **Pendiente** (el reparto A2 y A3 del plan está aprobado; los números no) | Santiago |
 
 ## DD-06: cálculo de la duración (D9)
 
