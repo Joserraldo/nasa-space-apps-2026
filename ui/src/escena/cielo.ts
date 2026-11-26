@@ -1,18 +1,21 @@
 /**
  * Cielo y luz de Marte: constantes y funciones puras arriba; `crearCielo` (Three.js) al final.
  *
- * Fuente: docs/referenciapau/MARTE.md §4 (cielo) y §5 (luz). Son propuestas de estilo [E]
- * a calibrar en la cámara del juego; los valores viven aquí para cambiarlos en un solo sitio.
+ * Etapa A (luz, atmósfera y color, 17 nov). Hechos que guían el arte (PROMPT-MARTE-POR-ETAPAS, Parte 1):
+ * - De día el cielo de Marte es caramelo/ocre por el polvo; las sombras son más suaves y tintadas que en
+ *   la Tierra. Al atardecer hay un halo azulado alrededor del Sol. De noche, estrellas y sin bruma.
+ * - Una tormenta SOLAR (radiación) no cambia el cielo: la alerta va en la UI y en luces locales ámbar.
  *
- * Reglas:
- * - Nunca el cielo azul de las láminas `mundo/`: Marte de día es salmón y caramelo (MARTE.md §4).
- * - Una tormenta SOLAR (radiación) no cambia el cielo: la alerta va en la UI y en luces locales
- *   ámbar. Por eso no hay ambiente "tormenta" aquí (MARTE.md §4, fila "Alerta / tormenta solar").
+ * El domo es un shader por píxel (gradiente, halo, disco del Sol). El mismo shader, con el suelo de
+ * regolito debajo del horizonte y su propia escala, se dibuja en `escenaEntorno` para el `envMap` (PMREM):
+ * metal y vidrio reflejan este cielo y el cielo rellena las sombras. Los colores son radiancia lineal de
+ * escena: pasan por AgX y la gradación (`atmosfera.ts`) como todo lo demás.
  */
 
 import * as THREE from "three";
+import { DENSIDAD_NIEBLA, instalarAtmosfera, toneMappingExterior } from "./atmosfera";
 
-export type Ambiente = "dia" | "atardecer";
+export type Ambiente = "dia" | "atardecer" | "noche";
 export type Calidad = "alta" | "baja";
 export type Rgb = [number, number, number];
 
@@ -23,40 +26,52 @@ export interface PaletaCielo {
   horizonte: string;
   /** Halo alrededor del Sol. */
   halo: string;
-  /** Color de la niebla de distancia. */
+  /** Color de la niebla de distancia (perspectiva aérea). */
   niebla: string;
+  /** Brillo del cielo (multiplica cénit, horizonte y niebla; radiancia lineal antes de AgX). [E] */
+  brillo: number;
 }
 
 export const PALETA_CIELO: Readonly<Record<Ambiente, Readonly<PaletaCielo>>> = {
-  // MARTE.md §4, fila "Día en Marte" (por defecto).
+  // Día: caramelo/ocre (panorámicas de Perseverance en Jezero y Curiosity en Gale). Horizonte más claro y
+  // amarillo por el polvo, cénit más oscuro y rojizo. Nunca blanco lechoso ni azul.
   dia: {
-    cenit: "#D9A38A", // salmón pastel
-    horizonte: "#F2CDB0", // caramelo claro
-    halo: "#DCE6EC", // halo pequeño junto al Sol
-    niebla: "#F2CDB0", // "igual al horizonte"
+    cenit: "#B27D57",
+    horizonte: "#DCAA78",
+    halo: "#F2DCC2", // de día el brillo junto al Sol es blanco cálido
+    niebla: "#F0C38F", // polvo: igual al horizonte con su banda clara, así lo lejano se funde con el cielo
+    brillo: 1.15,
   },
-  // MARTE.md §4, fila "Atardecer exterior".
+  // Atardecer: el resto del cielo se apaga a pardo y el halo junto al Sol es azul.
   atardecer: {
-    cenit: "#7A5A80", // ciruela suave
-    horizonte: "#E8A27A", // ámbar
-    halo: "#8FB6D9", // halo azul más grande (el atardecer azul de Marte, solo junto al Sol)
-    // "Ámbar desaturado": #E8A27A mezclado al 50 % con su gris de luminancia (≈ #AEAEAE).
-    niebla: "#CBA894",
+    cenit: "#4A3438",
+    horizonte: "#C98A5E",
+    halo: "#6E9EE0",
+    niebla: "#C9906A", // polvo cálido iluminado de canto, no pardo apagado
+    brillo: 0.85,
+  },
+  // Noche: cielo casi negro con un resto pardo en el horizonte; sin bruma.
+  noche: {
+    cenit: "#05060C",
+    horizonte: "#1B1820",
+    halo: "#000000",
+    niebla: "#141219",
+    brillo: 0.35,
   },
 };
 
-/** Tamaño relativo del halo junto al Sol (MARTE.md §4: pequeño de día, más grande al atardecer). [E] */
-export const TAMANO_HALO: Readonly<Record<Ambiente, number>> = { dia: 1, atardecer: 2.5 };
+/** Tamaño relativo del halo junto al Sol (pequeño de día, más grande al atardecer). [E] */
+export const TAMANO_HALO: Readonly<Record<Ambiente, number>> = { dia: 1, atardecer: 0.9, noche: 0 };
 
 /** Tokens de DISEÑO.md §2.3 que usa la luz. */
 export const REGOLITO_MEDIO = "#9E5340";
 /** Sombras teñidas de lila, nunca negras (DISEÑO.md §2.3 `sombra-suelo`, §3.3). */
 export const SOMBRA_SUELO = "#F8B9B2";
 /**
- * Relleno de la hemisférica de día: `lila` más saturado (cambio #1 del bloque 1) para dar contraste
- * cálido/frío sin lavar los blancos.
+ * Relleno de la hemisférica (sin entorno, calidad baja): malva apagado entre el caramelo del cielo y el
+ * lila de DISEÑO; las sombras quedan levemente frías sin lavar los blancos.
  */
-export const LILA_RELLENO = "#D9C6E3";
+export const LILA_RELLENO = "#B8A3A8";
 /** Marfil de referencia para calibrar la exposición (MARTE.md §5). */
 export const MARFIL_CALIBRACION = "#F3EEE5";
 
@@ -66,26 +81,26 @@ function normalizar(v: Rgb): Rgb {
 }
 
 /**
- * Parámetros de luz (MARTE.md §5). Convención de ejes de Three: +x derecha, +y arriba,
- * +z hacia la cámara. `direccionSol` apunta DESDE la escena HACIA el Sol.
+ * Parámetros de luz. Convención de ejes de Three: +x derecha, +y arriba, +z hacia la cámara.
+ * `direccionSol` apunta DESDE la escena HACIA el Sol.
  */
 export const LUZ = {
   direccionSol: normalizar([-0.8, 0.65, 0.2]),
-  /** Direccional: blanco cálido, más débil y blanco que en la Tierra (DISEÑO.md §3.3). [E] */
-  colorSol: "#FFEAD2",
-  /** Hemisférica: suelo = `regolito-medio` (MARTE.md §5); cielo de día = `lila` (relleno frío), al atardecer = horizonte. */
+  /** Direccional: Sol cálido y fuerte. [E] */
+  colorSol: "#FFE8D0",
+  /** Sol rasante del atardecer: luz cálida (el polvo filtra el azul en el camino largo por la atmósfera). [E] */
+  colorSolAtardecer: "#FFA866",
+  /** Hemisférica: suelo = `regolito-medio` (rebote cálido); cielo de día = relleno malva, al atardecer = horizonte. */
   hemisferica: {
     dia: { cielo: LILA_RELLENO, suelo: REGOLITO_MEDIO },
     atardecer: { cielo: PALETA_CIELO.atardecer.horizonte, suelo: REGOLITO_MEDIO },
+    noche: { cielo: "#6A7BB0", suelo: "#3E2E2C" },
   } as Readonly<Record<Ambiente, { cielo: string; suelo: string }>>,
   /** `mapSize` de la sombra: 2048 en alta y 1024 en media/baja para bordes nítidos (bloque 1). */
   tamanoSombra: { alta: 2048, baja: 1024 } as Readonly<Record<Calidad, number>>,
-  /**
-   * Tone mapping AgX (DISEÑO §3.4 permite activarlo cuando la escena se ve plana): evita quemar el
-   * marfil y recupera el volumen entre caras al sol y caras en sombra.
-   */
+  /** Curva base de la gradación (`atmosfera.ts`): AgX, con curva en S, tono partido y saturación encima. */
   toneMapping: "AgX" as const,
-  exposicion: 1.05,
+  exposicion: 1.0,
   /** Puntuales activas como máximo (pantallas, balizas, faros de Iris). */
   maxPuntuales: 2,
 } as const;
@@ -110,9 +125,8 @@ export function hexALineal(hex: string): Rgb {
 }
 
 /**
- * Color del cielo a la altura `t` (0 = horizonte, 1 = cénit) para un ambiente.
- * Convierte los dos extremos de sRGB a lineal e interpola en lineal; devuelve [r, g, b]
- * LINEAL 0–1 (el espacio de trabajo de Three). En t=0 y t=1 da exactamente los extremos.
+ * Color del cielo a la altura `t` (0 = horizonte, 1 = cénit) para un ambiente, sin el brillo.
+ * Interpola en lineal; devuelve [r, g, b] LINEAL 0–1. En t=0 y t=1 da exactamente los extremos.
  */
 export function colorCielo(t: number, ambiente: Ambiente = "dia"): Rgb {
   const p = PALETA_CIELO[ambiente];
@@ -123,25 +137,28 @@ export function colorCielo(t: number, ambiente: Ambiente = "dia"): Rgb {
 }
 
 // ---------------------------------------------------------------------------------------------
-// Wrapper Three.js (MARTE.md §4–§5, DISEÑO.md §3.3). Valores [E] a calibrar con la cámara real.
+// Wrapper Three.js. Valores [E] a calibrar con la cámara real.
 // ---------------------------------------------------------------------------------------------
 
 /** Radio del domo del cielo (u = m). Debe quedar dentro del `far` de la cámara. [E] */
 export const RADIO_DOMO = 450;
-/**
- * Niebla lineal: deja el claro y el suelo cercano con su color pleno y aclara las capas de la
- * cordillera (radios 215–300: de ~30 % a ~50 % de niebla), perspectiva atmosférica de MARTE §3. [E]
- */
+/** Niebla lineal de respaldo (sin `nieblaAltura`): la misma de antes de la Etapa A. [E] */
 export const NIEBLA = { cerca: 80, lejos: 520 } as const;
 /** Radio angular (rad) del halo de día; se multiplica por `TAMANO_HALO`. [E] */
-export const RADIO_HALO = 0.2;
+export const RADIO_HALO = 0.16;
+/** Radio angular del disco del Sol (rad). Desde Marte el Sol mide ~2/3 del que se ve desde la Tierra; aquí algo mayor para leerse. [E] */
+export const RADIO_DISCO_SOL = 0.009;
 /**
- * Intensidades (luces físicas de Three r160, sin tone mapping). En r160 el blanco pleno de un
- * material mate pide irradiancia π: suelo llano al sol ≈ (sol·0,62 + hemi·lila) / π ≈ 0,95 de su
- * token (`regolito-claro` lee naranja saturado) y en sombra ≈ 0,45, teñido de lila (DISEÑO §3.3).
- * Antes: sol 2,8 y hemisférica 0,9 con ACES, que lavaba el suelo. [E] a aprobar por María Paula.
+ * Intensidades (luces físicas de Three r160). Etapa A: Sol más fuerte y relleno más oscuro; con entorno
+ * el cielo (PMREM) rellena las sombras y la hemisférica baja a `hemisfericaConEntorno`. Objetivo: sombra
+ * de suelo al 20-30 % del suelo al sol (luminancia lineal de pantalla). [E] a aprobar por María Paula.
  */
-export const INTENSIDAD = { sol: 2.5, hemisferica: 1.0 } as const;
+export const INTENSIDAD = { sol: 3.4, hemisferica: 0.75, hemisfericaConEntorno: 0.12, noche: 0.7 } as const;
+/**
+ * Escala del cielo cuando se dibuja para el entorno (PMREM): separa cuánto rellena el cielo las sombras de
+ * cuán claro se ve el domo. Y el brillo del regolito debajo del horizonte (rebote cálido). [E]
+ */
+export const ENTORNO = { escalaCielo: 0.55, suelo: REGOLITO_MEDIO, brilloSuelo: 0.32 } as const;
 /** Media caja de la cámara de sombras alrededor de la base, cuando nada la mueve. [E] */
 const CAJA_SOMBRA = 40;
 /** Distancia del Sol al centro de la caja de sombra (m); el rango de profundidad va de 100 a 200. [E] */
@@ -203,68 +220,209 @@ export function seguirConSombra(sol: THREE.DirectionalLight, centro: THREE.Vecto
 /** Lo mínimo del renderer que toca el cielo (así se prueba sin WebGL). */
 export type RendererCielo = Pick<THREE.WebGLRenderer, "toneMapping" | "toneMappingExposure" | "shadowMap">;
 
-export interface Cielo {
-  domo: THREE.Mesh;
-  sol: THREE.DirectionalLight;
-  hemisferica: THREE.HemisphereLight;
-  niebla: THREE.Fog;
-  /** Tone mapping AgX en media/alta (o sin tone mapping en baja sin GPU) y sombras suaves. */
-  aplicarRenderer(renderer: RendererCielo, conTono?: boolean): void;
-  /** Quita todo de la escena y libera el domo. */
-  quitar(): void;
+/** Estado del cielo en un momento: lo calcula `estadoCielo` y lo aplica `Cielo.pintar`. */
+export interface EstadoCielo {
+  /** 0 = día, 1 = atardecer. */
+  mezcla: number;
+  /** 0 = sin noche, 1 = noche cerrada (estrellas visibles). */
+  noche: number;
+  /** Dirección hacia el Sol (normalizada). */
+  dirSol: Readonly<{ x: number; y: number; z: number }>;
 }
+
+/** Colores y brillos del cielo (lineales, con el brillo ya aplicado) para un estado. Funciones puras. */
+export interface ColoresCielo {
+  cenit: Rgb;
+  horizonte: Rgb;
+  halo: Rgb;
+  niebla: Rgb;
+  /** Radio angular del halo (rad). */
+  radioHalo: number;
+  /** Intensidad del halo y del disco del Sol (0 de noche o con el Sol bajo el horizonte). */
+  brilloHalo: number;
+  brilloDisco: number;
+  densidadNiebla: number;
+}
+
+const mezclar = (a: Rgb, b: Rgb, k: number): Rgb => [a[0] + (b[0] - a[0]) * k, a[1] + (b[1] - a[1]) * k, a[2] + (b[2] - a[2]) * k];
+const escalar = (a: Rgb, k: number): Rgb => [a[0] * k, a[1] * k, a[2] * k];
 
 function suave(a: number, b: number, x: number): number {
   const t = Math.min(1, Math.max(0, (x - a) / (b - a)));
   return t * t * (3 - 2 * t);
 }
 
-const mezclar = (a: Rgb, b: Rgb, k: number): Rgb => [a[0] + (b[0] - a[0]) * k, a[1] + (b[1] - a[1]) * k, a[2] + (b[2] - a[2]) * k];
+/** Colores del cielo de un ambiente con su brillo. */
+function paleta(amb: Ambiente) {
+  const p = PALETA_CIELO[amb];
+  return {
+    cenit: escalar(hexALineal(p.cenit), p.brillo),
+    horizonte: escalar(hexALineal(p.horizonte), p.brillo),
+    halo: hexALineal(p.halo),
+    niebla: escalar(hexALineal(p.niebla), p.brillo),
+  };
+}
+
+/** Mezcla día → atardecer (`mezcla`) y luego → noche (`noche`). */
+export function coloresCielo(e: EstadoCielo): ColoresCielo {
+  const d = paleta("dia"), a = paleta("atardecer"), n = paleta("noche");
+  const k = Math.min(1, Math.max(0, e.mezcla));
+  const q = Math.min(1, Math.max(0, e.noche));
+  const tarde = <K extends keyof typeof d>(c: K) => mezclar(mezclar(d[c], a[c], k), n[c], q);
+  // El halo y el disco se apagan cuando el Sol cruza el horizonte.
+  const sobre = suave(-0.06, 0.02, e.dirSol.y);
+  return {
+    cenit: tarde("cenit"),
+    horizonte: tarde("horizonte"),
+    halo: mezclar(d.halo, a.halo, k),
+    niebla: tarde("niebla"),
+    radioHalo: RADIO_HALO * (TAMANO_HALO.dia + (TAMANO_HALO.atardecer - TAMANO_HALO.dia) * k),
+    // Halo: más chico y más intenso al atardecer, para que el azul se vea alrededor del Sol.
+    brilloHalo: (1.1 + 0.6 * k) * sobre * (1 - q),
+    brilloDisco: 40 * (1 - 0.5 * k) * sobre * (1 - q),
+    densidadNiebla:
+      DENSIDAD_NIEBLA.dia + (DENSIDAD_NIEBLA.atardecer - DENSIDAD_NIEBLA.dia) * k + (DENSIDAD_NIEBLA.noche - DENSIDAD_NIEBLA.atardecer) * q,
+  };
+}
+
+/** Domo y entorno: un solo shader; `uEntorno` = 1 pinta regolito debajo del horizonte y quita el disco del Sol. */
+const CIELO_VERTEX = /* glsl */ `
+varying vec3 vDir;
+void main() {
+	vDir = ( modelMatrix * vec4( position, 0.0 ) ).xyz;
+	gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
+}
+`;
+
+const CIELO_FRAGMENT = /* glsl */ `
+uniform vec3 uCenit;
+uniform vec3 uHorizonte;
+uniform vec3 uHalo;
+uniform vec3 uSuelo;
+uniform vec3 uSol;
+uniform float uRadioHalo;
+uniform float uBrilloHalo;
+uniform float uBrilloDisco;
+uniform float uEntorno;
+uniform float uEscala;
+varying vec3 vDir;
+void main() {
+	vec3 d = normalize( vDir );
+	// Banda clara ancha junto al horizonte: sqrt abre el gradiente hacia arriba.
+	float t = pow( max( d.y, 0.0 ), 0.65 );
+	vec3 col = mix( uHorizonte, uCenit, t );
+	// Banda de bruma clara pegada al horizonte (el polvo suspendido se ve más denso de canto).
+	col += uHorizonte * 0.32 * exp( - max( d.y, 0.0 ) * 14.0 );
+	float cosA = clamp( dot( d, uSol ), -1.0, 1.0 );
+	float ang = acos( cosA );
+	// Polvo: dispersión hacia adelante. Un brillo amplio hacia el Sol y el halo cercano con su color.
+	col *= 1.0 + 0.35 * uBrilloHalo * pow( max( cosA, 0.0 ), 8.0 );
+	float halo = exp( - ( ang * ang ) / ( uRadioHalo * uRadioHalo ) );
+	// El halo tiñe el cielo junto al Sol (mezcla, no suma: sumado sobre un cielo claro se lavaba a blanco).
+	col = mix( col, uHalo * ( 0.35 + 0.65 * uBrilloHalo ), clamp( halo * min( uBrilloHalo, 1.0 ), 0.0, 0.85 ) );
+	float disco = 1.0 - smoothstep( ${RADIO_DISCO_SOL.toFixed(4)}, ${(RADIO_DISCO_SOL * 1.25).toFixed(4)}, ang );
+	col += vec3( 1.0, 0.96, 0.9 ) * disco * uBrilloDisco * ( 1.0 - uEntorno );
+	// Debajo del horizonte: el domo sigue el horizonte (la niebla lo tapa); el entorno ve regolito.
+	float bajo = smoothstep( 0.0, 0.06, - d.y );
+	col = mix( col, mix( uHorizonte, uSuelo, uEntorno ), bajo );
+	gl_FragColor = vec4( col * uEscala, 1.0 );
+	#include <tonemapping_fragment>
+	#include <colorspace_fragment>
+}
+`;
+
+export interface Cielo {
+  domo: THREE.Mesh;
+  sol: THREE.DirectionalLight;
+  hemisferica: THREE.HemisphereLight;
+  /** Niebla activa (de altura o lineal según `usarNieblaAltura`); comparten el mismo color. */
+  niebla: THREE.FogExp2 | THREE.Fog;
+  /** Grupo de estrellas del cielo nocturno (vacío por ahora). Invisible de día. */
+  estrellas: THREE.Group;
+  /** Escena del cielo para generar el entorno (PMREM). Solo cielo y suelo, sin la base. */
+  escenaEntorno: THREE.Scene;
+  /** Último estado pintado (para saber si el entorno quedó viejo). */
+  readonly estado: Readonly<EstadoCielo>;
+  /** Pinta domo, entorno, niebla y fondo para un estado. */
+  pintar(estado: EstadoCielo): void;
+  /** Niebla de altura (`FogExp2` con los chunks de `atmosfera.ts`) o la lineal de antes. */
+  usarNieblaAltura(si: boolean): void;
+  /** Tone mapping con gradación en media/alta (o sin tone mapping en baja sin GPU) y sombras suaves. */
+  aplicarRenderer(renderer: RendererCielo, conTono?: boolean): void;
+  /** Quita todo de la escena y libera el domo. */
+  quitar(): void;
+}
 
 /**
- * Pinta el domo con el gradiente horizonte→cénit y el halo junto al Sol, mezclando el ambiente de día
- * (`k` = 0) con el de atardecer (`k` = 1) en lineal; `dir` es la dirección hacia el Sol (normalizada).
+ * Pinta los colores de vértice de un domo con el gradiente horizonte→cénit (compatibilidad de pruebas
+ * y respaldo sin shader). El juego usa `Cielo.pintar`.
  */
 export function pintarDomo(geo: THREE.BufferGeometry, k: number, dir: Readonly<{ x: number; y: number; z: number }>): void {
   const pos = geo.getAttribute("position");
   let atributo = geo.getAttribute("color") as THREE.BufferAttribute | undefined;
   if (!atributo) geo.setAttribute("color", (atributo = new THREE.BufferAttribute(new Float32Array(pos.count * 3), 3)));
   const colores = atributo.array as Float32Array;
-  const halo = mezclar(hexALineal(PALETA_CIELO.dia.halo), hexALineal(PALETA_CIELO.atardecer.halo), k);
-  const radioHalo = RADIO_HALO * (TAMANO_HALO.dia + (TAMANO_HALO.atardecer - TAMANO_HALO.dia) * k);
+  const c = coloresCielo({ mezcla: k, noche: 0, dirSol: dir });
   for (let i = 0; i < pos.count; i++) {
-    const x = pos.getX(i) / RADIO_DOMO, y = pos.getY(i) / RADIO_DOMO, z = pos.getZ(i) / RADIO_DOMO;
-    // Banda clara ancha junto al horizonte: sqrt abre el gradiente hacia arriba.
-    const t = Math.sqrt(Math.max(0, y));
-    const base = mezclar(colorCielo(t, "dia"), colorCielo(t, "atardecer"), k);
-    const angulo = Math.acos(Math.min(1, Math.max(-1, x * dir.x + y * dir.y + z * dir.z)));
-    const w = 1 - suave(0, radioHalo, angulo);
-    for (let c = 0; c < 3; c++) colores[i * 3 + c] = (1 - w) * base[c]! + w * halo[c]!;
+    const x = pos.getX(i), y = pos.getY(i), z = pos.getZ(i);
+    const n = Math.hypot(x, y, z) || 1;
+    const t = Math.sqrt(Math.max(0, y / n));
+    const base = mezclar(c.horizonte, c.cenit, t);
+    const angulo = Math.acos(Math.min(1, Math.max(-1, (x * dir.x + y * dir.y + z * dir.z) / n)));
+    const w = Math.exp(-(angulo * angulo) / (c.radioHalo * c.radioHalo)) * c.brilloHalo;
+    for (let j = 0; j < 3; j++) colores[i * 3 + j] = base[j]! + w * c.halo[j]!;
   }
   atributo.needsUpdate = true;
 }
 
-/** Domo en gradiente horizonte→cénit con el halo junto al Sol pintado en color de vértice. */
-function crearDomo(ambiente: Ambiente): THREE.Mesh {
-  const geo = new THREE.SphereGeometry(RADIO_DOMO, 48, 24);
-  const [sx, sy, sz] = LUZ.direccionSol;
-  pintarDomo(geo, ambiente === "dia" ? 0 : 1, { x: sx, y: sy, z: sz });
-  const mat = new THREE.MeshBasicMaterial({ vertexColors: true, side: THREE.BackSide, fog: false, depthWrite: false, toneMapped: false });
-  const domo = new THREE.Mesh(geo, mat);
-  domo.name = "Sky_Dome";
-  domo.renderOrder = -1;
-  return domo;
-}
-
 /**
- * Monta cielo, niebla y luces de Marte en `escena`: 1 direccional cálida arriba a la izquierda
- * con sombras (1024, 512 en baja) + 1 hemisférica (cielo = horizonte, suelo = regolito-medio).
- * Las sombras salen teñidas de lila/caramelo porque la hemisférica rellena lo que el Sol no toca.
+ * Monta cielo, niebla y luces de Marte en `escena`: 1 direccional cálida con sombras + 1 hemisférica
+ * (relleno de cielo y rebote cálido del suelo) + domo por shader + estrellas (vacías hasta la noche).
  */
 export function crearCielo(escena: THREE.Scene, ambiente: Ambiente = "dia", calidad: Calidad = "alta"): Cielo {
-  const p = PALETA_CIELO[ambiente];
-  const domo = crearDomo(ambiente);
-  const niebla = new THREE.Fog(new THREE.Color(p.niebla), NIEBLA.cerca, NIEBLA.lejos);
+  instalarAtmosfera();
+  const uniformes = {
+    uCenit: { value: new THREE.Vector3() },
+    uHorizonte: { value: new THREE.Vector3() },
+    uHalo: { value: new THREE.Vector3() },
+    uSuelo: { value: new THREE.Vector3() },
+    uSol: { value: new THREE.Vector3(...LUZ.direccionSol) },
+    uRadioHalo: { value: RADIO_HALO },
+    uBrilloHalo: { value: 1 },
+    uBrilloDisco: { value: 0 },
+  };
+  const materialCielo = (entorno: boolean) =>
+    new THREE.ShaderMaterial({
+      name: entorno ? "Sky_Env" : "Sky",
+      uniforms: { ...uniformes, uEntorno: { value: entorno ? 1 : 0 }, uEscala: { value: entorno ? ENTORNO.escalaCielo : 1 } },
+      vertexShader: CIELO_VERTEX,
+      fragmentShader: CIELO_FRAGMENT,
+      side: THREE.BackSide,
+      depthWrite: false,
+      fog: false,
+    });
+
+  const domo = new THREE.Mesh(new THREE.SphereGeometry(RADIO_DOMO, 48, 24), materialCielo(false));
+  domo.name = "Sky_Dome";
+  domo.renderOrder = -2;
+  domo.frustumCulled = false;
+  domo.castShadow = false;
+  domo.receiveShadow = false;
+
+  const escenaEntorno = new THREE.Scene();
+  escenaEntorno.name = "Sky_Env_Scene";
+  const domoEntorno = new THREE.Mesh(new THREE.SphereGeometry(10, 32, 16), materialCielo(true));
+  escenaEntorno.add(domoEntorno);
+
+  const estrellas = new THREE.Group();
+  estrellas.name = "Sky_Stars";
+  estrellas.visible = false;
+
+  const nieblaAltura = new THREE.FogExp2(0x000000, DENSIDAD_NIEBLA.dia);
+  const nieblaLineal = new THREE.Fog(0x000000, NIEBLA.cerca, NIEBLA.lejos);
+  nieblaLineal.color = nieblaAltura.color; // un solo color para las dos
+  let niebla: THREE.FogExp2 | THREE.Fog = nieblaAltura;
+
   const hemi = LUZ.hemisferica[ambiente];
   const hemisferica = new THREE.HemisphereLight(new THREE.Color(hemi.cielo), new THREE.Color(hemi.suelo), INTENSIDAD.hemisferica);
   hemisferica.name = "Light_Hemi";
@@ -284,29 +442,77 @@ export function crearCielo(escena: THREE.Scene, ambiente: Ambiente = "dia", cali
   sol.shadow.normalBias = 0.02;
 
   const fondoAnterior = escena.background;
-  const fondo = new THREE.Color(p.horizonte);
+  const fondo = new THREE.Color();
   escena.background = fondo;
   escena.fog = niebla;
-  escena.add(domo, hemisferica, sol, sol.target);
+  escena.add(domo, estrellas, hemisferica, sol, sol.target);
 
-  return {
+  const suelo = hexALineal(ENTORNO.suelo);
+  const estado: EstadoCielo = { mezcla: 0, noche: 0, dirSol: { x: dx, y: dy, z: dz } };
+
+  const cielo: Cielo = {
     domo,
     sol,
     hemisferica,
-    niebla,
+    get niebla() {
+      return niebla;
+    },
+    estrellas,
+    escenaEntorno,
+    estado,
+    pintar(e) {
+      estado.mezcla = e.mezcla;
+      estado.noche = e.noche;
+      estado.dirSol = { x: e.dirSol.x, y: e.dirSol.y, z: e.dirSol.z };
+      const c = coloresCielo(e);
+      uniformes.uCenit.value.set(...c.cenit);
+      uniformes.uHorizonte.value.set(...c.horizonte);
+      uniformes.uHalo.value.set(...c.halo);
+      uniformes.uSol.value.set(e.dirSol.x, e.dirSol.y, e.dirSol.z).normalize();
+      uniformes.uRadioHalo.value = c.radioHalo;
+      uniformes.uBrilloHalo.value = c.brilloHalo;
+      uniformes.uBrilloDisco.value = c.brilloDisco;
+      // Rebote del regolito: más claro cuanto más alto el Sol; casi nada de noche.
+      const luzSuelo = ENTORNO.brilloSuelo * Math.max(0.04, Math.max(0, e.dirSol.y) * 1.6) * (1 - 0.9 * e.noche);
+      uniformes.uSuelo.value.set(suelo[0] * luzSuelo, suelo[1] * luzSuelo, suelo[2] * luzSuelo);
+      nieblaAltura.color.setRGB(...c.niebla, THREE.LinearSRGBColorSpace);
+      nieblaAltura.density = c.densidadNiebla;
+      fondo.setRGB(...c.horizonte, THREE.LinearSRGBColorSpace);
+      estrellas.visible = e.noche > 0.02;
+      estrellas.userData.opacidad = Math.min(1, Math.max(0, (e.noche - 0.3) / 0.6));
+    },
+    usarNieblaAltura(si) {
+      const nueva = si ? nieblaAltura : nieblaLineal;
+      if (niebla === nueva) return;
+      const activa = escena.fog === niebla;
+      niebla = nueva;
+      if (activa) escena.fog = niebla;
+    },
     aplicarRenderer(renderer, conTono = true) {
-      renderer.toneMapping = conTono ? THREE.AgXToneMapping : THREE.NoToneMapping;
+      renderer.toneMapping = toneMappingExterior(conTono);
       renderer.toneMappingExposure = conTono ? LUZ.exposicion : 1;
       renderer.shadowMap.enabled = true;
       renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     },
     quitar() {
-      escena.remove(domo, hemisferica, sol, sol.target);
-      if (escena.fog === niebla) escena.fog = null;
+      escena.remove(domo, estrellas, hemisferica, sol, sol.target);
+      if (escena.fog === nieblaAltura || escena.fog === nieblaLineal) escena.fog = null;
       if (escena.background === fondo) escena.background = fondoAnterior;
       domo.geometry.dispose();
       (domo.material as THREE.Material).dispose();
+      domoEntorno.geometry.dispose();
+      (domoEntorno.material as THREE.Material).dispose();
+      estrellas.traverse((o) => {
+        const p = o as THREE.Points;
+        if (!p.isPoints) return;
+        p.geometry.dispose();
+        const m = p.material as THREE.PointsMaterial;
+        m.map?.dispose();
+        m.dispose();
+      });
       sol.dispose();
     },
   };
+  cielo.pintar({ mezcla: ambiente === "atardecer" ? 1 : 0, noche: ambiente === "noche" ? 1 : 0, dirSol: estado.dirSol });
+  return cielo;
 }

@@ -3,7 +3,7 @@ import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import * as THREE from "three";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { LILA_RELLENO, LUZ, PALETA_CIELO, REGOLITO_MEDIO, crearCielo, type RendererCielo } from "./cielo";
+import { LILA_RELLENO, LUZ, PALETA_CIELO, REGOLITO_MEDIO, crearCielo, hexALineal, pintarDomo, type RendererCielo } from "./cielo";
 import { SLOTS, TOKENS_TEMP, cacheGeometrias, crearMateriales, geometriaBase } from "./materiales";
 import { liberarCache, liberarEscena } from "./liberar";
 import {
@@ -124,13 +124,20 @@ describe("liberar", () => {
 });
 
 describe("cielo de Marte (Three)", () => {
-  it("el domo nunca es azul fuera del halo y la niebla es el horizonte", () => {
+  it("el cielo de día nunca es azul fuera del halo y la niebla de altura es caramelo", () => {
     const escena = new THREE.Scene();
     const cielo = crearCielo(escena, "dia");
-    expect(cielo.niebla.color.getHexString()).toBe(new THREE.Color(PALETA_CIELO.dia.horizonte).getHexString());
-    expect(PALETA_CIELO.dia.niebla).toBe(PALETA_CIELO.dia.horizonte);
-    const pos = cielo.domo.geometry.getAttribute("position");
-    const col = cielo.domo.geometry.getAttribute("color");
+    expect(escena.fog).toBeInstanceOf(THREE.FogExp2);
+    const p = PALETA_CIELO.dia;
+    const n = hexALineal(p.niebla);
+    const c = cielo.niebla.color;
+    expect([c.r, c.g, c.b].map((v) => v.toFixed(4))).toEqual(n.map((v) => (v * p.brillo).toFixed(4)));
+    expect(c.r).toBeGreaterThan(c.b);
+    // Mismo gradiente que el shader, en colores de vértice (`pintarDomo`).
+    const geo = new THREE.SphereGeometry(450, 48, 24);
+    pintarDomo(geo, 0, { x: LUZ.direccionSol[0], y: LUZ.direccionSol[1], z: LUZ.direccionSol[2] });
+    const pos = geo.getAttribute("position");
+    const col = geo.getAttribute("color");
     const sol = new THREE.Vector3(...LUZ.direccionSol);
     const v = new THREE.Vector3();
     let azules = 0;
@@ -142,7 +149,10 @@ describe("cielo de Marte (Three)", () => {
       }
     }
     expect(azules / pos.count).toBeLessThan(0.02);
-    expect((cielo.domo.material as THREE.MeshBasicMaterial).fog).toBe(false);
+    expect((cielo.domo.material as THREE.ShaderMaterial).fog).toBe(false);
+    cielo.usarNieblaAltura(false);
+    expect(escena.fog).toBeInstanceOf(THREE.Fog);
+    expect(cielo.niebla.color).toBe(c); // las dos nieblas comparten el color
   });
 
   it("luz: direccional arriba a la izquierda, sombras 2048/1024, hemisférica cielo=lila (sombras lilas) suelo=regolito", () => {
@@ -162,8 +172,8 @@ describe("cielo de Marte (Three)", () => {
     const cielo = crearCielo(escena);
     const renderer = { toneMapping: THREE.NoToneMapping, toneMappingExposure: 1, shadowMap: { enabled: false, type: THREE.BasicShadowMap } } as unknown as RendererCielo;
     cielo.aplicarRenderer(renderer);
-    expect(renderer.toneMapping).toBe(THREE.AgXToneMapping);
-    expect(renderer.toneMappingExposure).toBeCloseTo(1.05, 5);
+    expect(renderer.toneMapping).toBe(THREE.CustomToneMapping); // AgX + gradación (atmosfera.ts)
+    expect(renderer.toneMappingExposure).toBeCloseTo(LUZ.exposicion, 5);
     expect(renderer.shadowMap.enabled).toBe(true);
     cielo.quitar();
     expect(escena.children).toHaveLength(0);
