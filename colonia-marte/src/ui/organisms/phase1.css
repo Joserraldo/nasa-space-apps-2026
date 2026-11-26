@@ -1,0 +1,47 @@
+body.menu-preview #app > :not(main),
+body.menu-preview #app > main > aside,
+body.menu-preview .preview-column > footer { display: none; }
+
+.ui-main-menu__slab { padding-inline-end: 19%; }
+.ui-main-menu .ui-pause__item { line-height: 1.4; min-inline-size: var(--ui-hud-target); }
+.ui-main-menu__title { line-height: 1.4; }
+.ui-main-menu__lines { display: grid; justify-items: start; }
+.ui-main-menu__subtitle {
+  font: 600 var(--ui-hud-text-label)/1.4 var(--ui-hud-font-body);
+  letter-spacing: normal;
+  text-transform: none;
+}
+.ui-main-menu .ui-pause__mission { display: block; }
+.ui-main-menu__chapter {
+  margin: 0;
+  padding: 10px 24px 18px;
+  font: 600 var(--ui-hud-text-title)/1.4 var(--ui-hud-font-body);
+}
+.ui-main-menu .ui-hud-tab, .ui-chapter-card .ui-hud-tab { line-height: 1.4; }
+
+.ui-chapter-stage[open] { display: grid; grid-template-columns: minmax(0, 1fr); place-items: center; }
+.ui-chapter-stage > .ui-chapter-card { width: min(620px, calc(100% - 48px)); }
+.ui-chapter-card { position: relative; color: var(--ui-hud-ink); }
+.ui-chapter-card .ui-hud-frame__content { padding: 14px 24px 24px; display: grid; gap: 12px; }
+.ui-chapter-card__title { margin: 0; font: 700 var(--ui-hud-text-zone)/1.4 var(--ui-hud-font-display); }
+.ui-chapter-card__lesson, .ui-chapter-card__saved, .ui-chapter-card__count {
+  margin: 0;
+  font: 600 var(--ui-hud-text-body)/1.4 var(--ui-hud-font-body);
+}
+.ui-chapter-card__lesson, .ui-chapter-card__awards, .ui-chapter-card__actions { display: flex; align-items: center; gap: 12px; }
+.ui-chapter-card__awards { margin: 0; padding: 0; list-style: none; flex-wrap: wrap; }
+.ui-chapter-card__objective { display: inline-flex; align-items: center; gap: 6px; }
+.ui-chapter-card__objective-label { font: 600 var(--ui-hud-text-label)/1.4 var(--ui-hud-font-body); }
+.ui-chapter-card__glyph { inline-size: 32px; block-size: 32px; color: var(--ui-hud-accent); flex: none; }
+.ui-chapter-card__objective[data-earned="false"] .ui-chapter-card__glyph { color: var(--ui-hud-ink-dim); }
+.ui-chapter-card__glyph svg { display: block; inline-size: 100%; block-size: 100%; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.ui-chapter-card .ui-hud-reply { line-height: 1.4; min-inline-size: var(--ui-hud-target); min-block-size: var(--ui-hud-target); }
+.ui-chapter-card .ui-hud-reply:disabled { opacity: 0.45; cursor: default; }
+
+@media (max-height: 460px) {
+  .ui-main-menu, .ui-chapter-card { --ui-hud-target: var(--ui-hud-target-compact); }
+  .ui-main-menu .ui-pause__item { min-block-size: var(--ui-hud-target); }
+  .ui-main-menu__chapter { padding: 8px 16px 12px; }
+  .ui-chapter-card .ui-hud-frame__content { padding: 10px 18px 16px; gap: 8px; }
+  .ui-chapter-card .ui-hud-reply { min-height: var(--ui-hud-target); }
+}

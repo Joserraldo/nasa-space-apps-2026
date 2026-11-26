@@ -47,11 +47,16 @@ describe("T3.1 Mars colony exterior pilot pieces, decals, and layout", () => {
 
   it("uses shared capsule frames and panes while retaining the full near triangle count", () => {
     const registry = createProductionRegistry();
-    const colony = buildColonyGroup(parseColonyLayout(colonyJson, registry), registry);
+    const layout = parseColonyLayout(colonyJson, registry);
+    const colony = buildColonyGroup(layout, registry);
     const capsules = colony.children.find(child => child instanceof LOD && child.name.startsWith("MB-01")) as LOD;
     expect(capsules.levels[0].object.children.some(child =>
       child instanceof InstancedMesh && child.count === 4 && child.material === materials.M_glass)).toBe(true);
-    expect(colony.detailedTriangles).toBe(76404 + countColonyTriangles(registry.build("MI-07")));
+    const pad = layout.placements.find(piece => piece.id === "MI-07")!;
+    const entry = layout.placements.find(piece => piece.id === "NX-04")!;
+    const newPieces = [pad, entry].reduce((total, spec) =>
+      total + countColonyTriangles(registry.build(spec.id, spec.params)), 0);
+    expect(colony.detailedTriangles).toBe(76404 + newPieces);
   });
 
   it("registers all 11 exterior pieces and passes specification 8.1 checks", () => {
