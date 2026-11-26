@@ -1,0 +1,116 @@
+{
+  "id": "nw-15",
+  "name": "NW-15 Transit Ship Cockpit & Bridge",
+  "module": 2,
+  "size": [6, 4],
+  "clearHeight": 2.98,
+  "environment": "AMB-02",
+  "walls": {
+    "north": [
+      { "id": "ST-W03", "params": { "style": "reinforced" } },
+      { "id": "ST-W04", "params": { "mode": "space" } },
+      "skip",
+      { "id": "ST-W04", "params": { "mode": "mars" } },
+      "skip",
+      { "id": "ST-W03", "params": { "style": "reinforced" } }
+    ],
+    "south": [
+      { "id": "ST-W07", "params": { "pattern": "chevron" } },
+      { "id": "ST-W06", "params": { "mode": "emblem" } },
+      { "id": "ST-D01", "params": { "opening": "standard", "state": "cyan" } },
+      { "id": "ST-D01", "params": { "opening": "standard", "state": "cyan" } },
+      { "id": "ST-W06", "params": { "mode": "emblem" } },
+      { "id": "ST-W07", "params": { "pattern": "stepped" } }
+    ],
+    "west": [
+      { "id": "ST-W02", "params": { "mode": "vertical", "accent": "cyan" } },
+      { "id": "ST-W03", "params": { "style": "standard" } },
+      { "id": "ST-W01", "params": { "style": "alcove" } },
+      { "id": "ST-W07", "params": { "pattern": "chevron" } }
+    ],
+    "east": [
+      { "id": "ST-W02", "params": { "mode": "vertical", "accent": "cyan" } },
+      { "id": "ST-W03", "params": { "style": "standard" } },
+      { "id": "ST-W01", "params": { "style": "alcove" } },
+      { "id": "ST-W07", "params": { "pattern": "stepped" } }
+    ]
+  },
+  "floor": {
+    "default": { "id": "ST-F03", "params": { "pattern": "angular" } },
+    "overrides": [
+      { "cell": [2, 2], "span": [2, 2], "id": "ST-F04", "params": { "accent": "cyan" } },
+      { "cell": [1, 0], "id": "ST-F01", "params": { "style": "dark" } },
+      { "cell": [2, 0], "id": "ST-F01", "params": { "style": "dark" } },
+      { "cell": [3, 0], "id": "ST-F01", "params": { "style": "dark" } },
+      { "cell": [4, 0], "id": "ST-F01", "params": { "style": "dark" } },
+      { "cell": [1, 1], "id": "ST-F01", "params": { "style": "accent" } },
+      { "cell": [2, 1], "id": "ST-F01", "params": { "style": "accent" } },
+      { "cell": [3, 1], "id": "ST-F01", "params": { "style": "accent" } },
+      { "cell": [4, 1], "id": "ST-F01", "params": { "style": "accent" } },
+      { "cell": [0, 2], "id": "ST-F01", "params": { "style": "dark" } },
+      { "cell": [5, 2], "id": "ST-F01", "params": { "style": "dark" } }
+    ]
+  },
+  "ceiling": {
+    "default": { "id": "ST-R01", "params": { "layout": "twin" } },
+    "overrides": [
+      { "cell": [2, 1], "span": [2, 2], "id": "ST-R03", "params": { "tone": "cyan" } },
+      { "cell": [1, 0], "id": "ST-R04", "params": { "tone": "cyan" } },
+      { "cell": [4, 0], "id": "ST-R04", "params": { "tone": "cyan" } },
+      { "cell": [0, 2], "id": "ST-R05", "params": { "mode": "cyan" } },
+      { "cell": [5, 2], "id": "ST-R05", "params": { "mode": "cyan" } }
+    ]
+  },
+  "pieces": [
+    { "id": "ST-C01", "position": [2.0, 0, 0.34], "rot": 0, "params": { "accent": "cyan" } },
+    { "id": "ST-C01", "position": [6.0, 0, 0.34], "rot": 0, "params": { "accent": "cyan" } },
+    { "id": "ST-C01", "position": [10.0, 0, 0.34], "rot": 0, "params": { "accent": "cyan" } },
+    { "id": "ST-C01", "position": [0.34, 0, 2.0], "rot": 90, "params": { "accent": "cyan" } },
+    { "id": "ST-C01", "position": [11.66, 0, 2.0], "rot": -90, "params": { "accent": "cyan" } },
+
+    { "id": "AT-02", "position": [4.35, 0, 1.38], "rot": 192, "params": { "screen": "colony-map", "accent": "cyan" } },
+    { "id": "CR-02", "position": [4.55, 0, 2.28], "rot": 192, "params": { "accent": "cyan" } },
+
+    { "id": "AT-02", "position": [7.65, 0, 1.38], "rot": 168, "params": { "screen": "communications", "accent": "cyan" } },
+    { "id": "CR-02", "position": [7.45, 0, 2.28], "rot": 168, "params": { "accent": "cyan" } },
+
+    { "id": "CR-01", "position": [6.0, 0.08, 4.95], "rot": 180, "params": { "mode": "command" } },
+    { "id": "CR-02", "position": [6.0, 0.08, 5.92], "rot": 180, "params": { "accent": "cyan" } },
+    { "id": "CR-02", "position": [4.95, 0.08, 5.72], "rot": 158, "params": { "accent": "cyan" } },
+    { "id": "CR-02", "position": [7.05, 0.08, 5.72], "rot": 202, "params": { "accent": "cyan" } },
+
+    { "id": "NW-01-D", "position": [9.65, 0, 3.45], "rot": 0, "params": { "topic": "orbital" } },
+
+    { "id": "CR-03", "position": [1.18, 0, 4.95], "rot": 90, "params": { "screen": "energy" } },
+    { "id": "CF-02", "position": [1.96, 0, 4.95], "rot": -90, "params": { "accent": "cyan" } },
+    { "id": "CR-03", "position": [10.82, 0, 5.25], "rot": -90, "params": { "screen": "terminal" } },
+    { "id": "CF-02", "position": [10.04, 0, 5.25], "rot": 90, "params": { "accent": "cyan" } },
+
+    { "id": "PR-05", "position": [0.18, 1.66, 4.95], "rot": 90, "params": { "screen": "communications", "mount": "wall" } },
+    { "id": "PR-05", "position": [11.82, 1.66, 5.25], "rot": -90, "params": { "screen": "solar-alert", "mount": "wall" } }
+  ],
+  "lights": [
+    { "position": [6.0, 2.38, 4.2], "color": "#faf8ff", "intensity": 3.4, "distance": 11.5, "decay": 2 },
+    { "position": [2.8, 2.25, 4.8], "color": "#faf8ff", "intensity": 2.4, "distance": 9.0, "decay": 2 },
+    { "position": [9.2, 2.25, 4.8], "color": "#faf8ff", "intensity": 2.4, "distance": 9.0, "decay": 2 },
+    { "position": [6.0, 0.16, 4.95], "color": "#20e0ff", "intensity": 1.15, "distance": 1.75, "decay": 2 },
+    { "position": [4.35, 0.16, 1.38], "color": "#20e0ff", "intensity": 1.05, "distance": 1.6, "decay": 2 },
+    { "position": [7.65, 0.16, 1.38], "color": "#20e0ff", "intensity": 1.05, "distance": 1.6, "decay": 2 }
+  ],
+  "views": [
+    {
+      "id": "bridge-main",
+      "label": "View 1 (Ship Cockpit & Bridge: Pilot Seats, Mars Bow Viewport & Consoles)",
+      "position": [9.55, 1.74, 7.15],
+      "target": [4.65, 1.42, 1.15],
+      "fov": 58
+    },
+    {
+      "id": "bridge-cockpit",
+      "label": "View 2 (Forward Pilot Stations & Growing Mars Window)",
+      "position": [6.0, 1.62, 4.15],
+      "target": [4.8, 1.56, 0.0],
+      "fov": 56
+    }
+  ]
+}

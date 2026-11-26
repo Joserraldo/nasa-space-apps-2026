@@ -1,0 +1,112 @@
+/* Crew dialogue (UI v3, second version): one cut-corner bar, following María Paula's reference. */
+.ui-crew-dialogue {
+  --speaker-accent: var(--ui-hud-accent);
+  position: absolute; left: var(--ui-hud-margin); right: var(--ui-hud-margin); bottom: var(--ui-hud-margin);
+  /* Width follows the content: short lines give a short bar, long ones grow up to the cap. */
+  width: fit-content; min-width: min(540px, 100%); max-width: min(900px, 100%); margin-inline: auto; pointer-events: auto;
+  opacity: 1; translate: 0 0; transition: opacity 0.35s ease-out, translate 0.35s ease-out;
+}
+@starting-style { .ui-crew-dialogue { opacity: 0; translate: 0 24px; } }
+@media (prefers-reduced-motion: reduce) {
+  .ui-crew-dialogue { translate: none; transition-duration: 0.1s; }
+  @starting-style { .ui-crew-dialogue { translate: none; } }
+}
+
+.ui-crew-dialogue__panel { position: relative; --c: 24px; --s: 1.5px; }
+.ui-crew-dialogue__panel .ui-hud-frame__stroke { background: rgb(238 247 249 / 0.92); }
+.ui-crew-dialogue__panel .ui-hud-frame__content { display: grid; grid-template-columns: 128px minmax(0, 1fr); align-items: center;
+  min-height: 0; padding: 10px 22px 14px 22px; }
+
+/* Thin diagonal ticks just outside the four cut corners, and a cyan progress segment on the top edge. */
+.ui-crew-dialogue__tick { position: absolute; width: 16px; height: 1.5px; background: var(--ui-hud-line); pointer-events: none; }
+.ui-crew-dialogue__tick--tl { left: -1px; top: 18px; rotate: -45deg; }
+.ui-crew-dialogue__tick--tr { right: -1px; top: 18px; rotate: 45deg; }
+.ui-crew-dialogue__tick--bl { left: -1px; bottom: 18px; rotate: 45deg; }
+.ui-crew-dialogue__tick--br { right: -1px; bottom: 18px; rotate: -45deg; }
+.ui-crew-dialogue__progress { position: absolute; left: 44px; top: 0; width: 170px; height: 3px; background: var(--ui-hud-accent);
+  box-shadow: 0 0 10px rgb(63 216 255 / 0.55); }
+
+/* Portrait on the panel, then a divider. */
+.ui-crew-dialogue__portrait { position: relative; align-self: stretch; display: flex; align-items: center; justify-content: center;
+  padding-right: 14px; margin-right: 20px; border-right: 1.5px solid var(--ui-hud-line-soft); }
+.ui-crew-dialogue__image { display: block; width: 112px; height: 112px; object-fit: cover; }
+
+.ui-crew-dialogue__head { display: flex; align-items: baseline; gap: 12px; min-width: 0; }
+.ui-crew-dialogue__name { flex: none; font: 700 var(--ui-hud-text-speaker)/1.2 var(--ui-hud-font-display); color: var(--speaker-accent); }
+.ui-crew-dialogue__role { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font: 500 var(--ui-hud-text-secondary)/1 var(--ui-hud-font-body); color: var(--ui-hud-ink-dim); }
+.ui-crew-dialogue__line { margin: 6px 0 12px; max-width: 38ch; font: 600 var(--ui-hud-text-dialogue)/1.3 var(--ui-hud-font-body); overflow-wrap: anywhere; color: var(--ui-hud-ink); }
+.ui-crew-dialogue__sentence { display: block; }
+.ui-crew-dialogue__replies { display: grid; grid-template-columns: repeat(var(--count, 3), minmax(160px, 1fr)); gap: 12px; }
+.ui-crew-dialogue__replies[hidden], .ui-crew-dialogue__pager[hidden] { display: none; }
+/* A single reply does not stretch across the bar. */
+.ui-crew-dialogue__replies[style*="--count: 1"] { grid-template-columns: minmax(200px, 320px); justify-content: end; }
+/* Pager for long lines: progress dots and a Next button, right-aligned. */
+.ui-crew-dialogue__pager { display: flex; align-items: center; justify-content: flex-end; gap: 16px; }
+.ui-crew-dialogue__dots { display: flex; gap: 6px; }
+.ui-crew-dialogue__dots i { width: 18px; height: 4px; background: var(--ui-hud-line-soft); transform: skewX(-25deg); }
+.ui-crew-dialogue__dots i.is-on { background: var(--speaker-accent); }
+.ui-crew-dialogue__next { min-width: 150px; }
+
+/* Reply: outlined with cut corners. The outline is a clipped layer (button background) under a clipped
+   fill (::before, inset by the stroke) so the diagonal corners keep their line. Large icon first. */
+.ui-hud-reply {
+  --rc: 9px; --rs: 1.5px;
+  --rshape: polygon(var(--rc) 0, calc(100% - var(--rc)) 0, 100% var(--rc), 100% calc(100% - var(--rc)),
+    calc(100% - var(--rc)) 100%, var(--rc) 100%, 0 calc(100% - var(--rc)), 0 var(--rc));
+  position: relative; isolation: isolate;
+  display: flex; align-items: center; gap: 12px; min-height: 64px; padding: 8px 16px; border: 0; cursor: pointer;
+  color: var(--ui-hud-ink); background: var(--ui-hud-line); clip-path: var(--rshape); text-align: left;
+  font: 600 var(--ui-hud-text-body)/1.15 var(--ui-hud-font-body); overflow-wrap: anywhere;
+  transition: background-color 0.15s ease-out, color 0.15s ease-out;
+}
+.ui-hud-reply::before { content: ""; position: absolute; inset: var(--rs); z-index: -1; clip-path: var(--rshape);
+  background: var(--ui-hud-panel-solid); transition: background-color 0.15s ease-out; }
+.ui-hud-reply__glyph { flex: none; width: 32px; height: 32px; }
+.ui-hud-reply__label { min-width: 0; }
+.ui-hud-reply__glyph svg { stroke-width: 1.8; }
+/* Hover: accent outline only. Focus (the selected reply): filled. Two replies never look selected at once. */
+.ui-hud-reply:hover { background: var(--ui-hud-accent); --rs: 2.5px; }
+.ui-hud-reply:hover::before { background: color-mix(in srgb, var(--ui-hud-panel-solid) 86%, var(--ui-hud-accent)); }
+.ui-hud-reply:focus { outline: none; color: var(--ui-hud-panel-solid); background: var(--ui-hud-accent); --rs: 2.5px; }
+.ui-hud-reply:focus::before { background: var(--ui-hud-ink); }
+@media (prefers-reduced-motion: reduce) { .ui-hud-reply, .ui-hud-reply::before { transition: none; } }
+
+/* While talking, the bottom HUD corners and the prompt step aside. */
+.ui-game-hud.is-dialogue .ui-game-hud__slot--bottom-left,
+.ui-game-hud.is-dialogue .ui-game-hud__slot--bottom-right,
+.ui-game-hud.is-dialogue .ui-hud-interaction { opacity: 0; visibility: hidden; transition: opacity 0.2s ease-out, visibility 0s 0.2s; }
+
+/* Landscape phones: a slim bar; the map also steps aside while talking. Replies stay >= 48 px (WCAG target). */
+@media (max-height: 460px) {
+  .ui-game-hud.is-dialogue .ui-game-hud__slot--top-left { opacity: 0; visibility: hidden; transition: opacity 0.2s ease-out, visibility 0s 0.2s; }
+  .ui-crew-dialogue { max-width: 640px; }
+  .ui-crew-dialogue__panel { --c: 14px; }
+  .ui-crew-dialogue__panel .ui-hud-frame__content { grid-template-columns: 64px minmax(0, 1fr); padding: 6px 12px 8px 12px; }
+  .ui-crew-dialogue__portrait { padding-right: 8px; margin-right: 12px; }
+  .ui-crew-dialogue__image { width: 56px; height: 56px; }
+  .ui-crew-dialogue__progress { left: 28px; width: 110px; height: 2px; }
+  .ui-crew-dialogue__tick { width: 10px; }
+  .ui-crew-dialogue__tick--tl, .ui-crew-dialogue__tick--tr { top: 11px; }
+  .ui-crew-dialogue__tick--bl, .ui-crew-dialogue__tick--br { bottom: 11px; }
+  .ui-crew-dialogue__name { font-size: var(--ui-hud-text-name-compact); }
+  .ui-crew-dialogue__role { font-size: var(--ui-hud-text-role-compact); }
+  .ui-crew-dialogue__line { font-size: var(--ui-hud-text-label); margin: 2px 0 6px; max-width: none; }
+  .ui-crew-dialogue__sentence { display: inline; }
+  .ui-crew-dialogue__sentence + .ui-crew-dialogue__sentence::before { content: " "; }
+  .ui-crew-dialogue__replies { gap: 8px; }
+  .ui-hud-reply { --rc: 7px; min-height: 48px; font-size: var(--ui-hud-text-label); gap: 8px; padding: 0 10px; }
+  .ui-hud-reply__glyph { width: 22px; height: 22px; }
+  .ui-crew-dialogue { min-width: min(440px, 100%); }
+  .ui-crew-dialogue__replies { grid-template-columns: repeat(var(--count, 3), minmax(110px, 1fr)); }
+  .ui-crew-dialogue__replies[style*="--count: 1"] { grid-template-columns: minmax(150px, 240px); justify-content: end; }
+  .ui-hud-reply { padding: 4px 10px; }
+  .ui-crew-dialogue__next { min-width: 110px; }
+  .ui-crew-dialogue__dots i { width: 12px; height: 3px; }
+}
+
+/* Registry showcase. */
+.ui-crew-dialogue-showcase { position: relative !important; width: 1100px; height: 300px; background: #39424a; }
+
+.ui-big-text .ui-crew-dialogue :is(.ui-crew-dialogue__name, .ui-crew-dialogue__role, .ui-hud-reply) {
+  line-height: 1.4;
+}

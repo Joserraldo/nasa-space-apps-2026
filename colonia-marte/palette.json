@@ -1,0 +1,384 @@
+{
+  "version": 2,
+  "measurement": "FFmpeg RGB24 crop, encoded sRGB area average; original-resolution coordinates",
+  "colors": [
+    {
+      "id": "white",
+      "role": "Warm panel white",
+      "observed": {"hex":"#D4D2C2","frame":"v2/v2-t017.10.jpg","region":[1600,440,180,60]},
+      "base": "#D4D2C2",
+      "baseReason": "matches observed",
+      "usage": "Interior panels and furniture",
+      "emissive": false,
+      "source": "measured"
+    },
+    {
+      "id": "offWhite",
+      "role": "Floor off-white",
+      "observed": {"hex":"#A8AFAB","frame":"v2/v2-t017.10.jpg","region":[800,1220,120,70]},
+      "base": "#CACDC5",
+      "baseReason": "Sunlit floor sample replaces the shaded observation; lighter than structural gray.",
+      "baseSample": {"hex":"#CACDC5","frame":"v2/v2-t017.10.jpg","region":[800,1340,200,70]},
+      "usage": "Floor tiles",
+      "emissive": false,
+      "source": "measured"
+    },
+    {
+      "id": "gray",
+      "role": "Structural gray",
+      "observed": {"hex":"#BEC3C1","frame":"v2/v2-t017.10.jpg","region":[400,100,90,70]},
+      "base": "#BEC3C1",
+      "baseReason": "matches observed",
+      "usage": "Structural housings",
+      "emissive": false,
+      "source": "measured"
+    },
+    {
+      "id": "darkGray",
+      "role": "Dark structural gray",
+      "observed": {"hex":"#757D78","frame":"v2/v2-t017.10.jpg","region":[600,260,80,40]},
+      "base": "#757D78",
+      "baseReason": "matches observed",
+      "usage": "Recesses and supports",
+      "emissive": false,
+      "source": "measured"
+    },
+    {
+      "id": "black",
+      "role": "Near black",
+      "observed": {"hex":"#1D2220","frame":"v2/v2-t017.10.jpg","region":[1800,600,100,40]},
+      "base": "#1D2220",
+      "baseReason": "matches observed",
+      "usage": "Joints and screen housings",
+      "emissive": false,
+      "source": "measured"
+    },
+    {
+      "id": "blue",
+      "role": "Upholstery blue",
+      "observed": {"hex":"#094C6D","frame":"v2/v2-t017.10.jpg","region":[1900,1100,50,80]},
+      "base": "#094C6D",
+      "baseReason": "matches observed",
+      "usage": "Seat cushions",
+      "emissive": false,
+      "source": "measured"
+    },
+    {
+      "id": "cyan",
+      "role": "Cyan LED",
+      "observed": {"hex":"#D3FDFC","frame":"v2/v2-t017.10.jpg","region":[1010,1027,45,4]},
+      "base": "#3FD8FF",
+      "baseReason": "Bloom clips the observed LED core; use the approved saturated cyan hue.",
+      "usage": "LED strips and interface accents",
+      "emissive": true,
+      "source": "measured"
+    },
+    {
+      "id": "ice",
+      "role": "Polar ice",
+      "observed": {"hex":"#A3A8B8","frame":"v3/v3-t054.60.jpg","region":[10,1300,120,100]},
+      "base": "#EEF1F6",
+      "baseReason": "Lit snow remains blue-gray; use the gate fallback for polar ice only.",
+      "baseSample": {"hex":"#B1B4BF","frame":"v3/v3-t005.10.jpg","region":[2420,310,60,60]},
+      "usage": "Polar biome only; no ice in Jezero",
+      "emissive": false,
+      "source": "measured"
+    },
+    {
+      "id": "oxide",
+      "role": "Rock oxide",
+      "observed": {"hex":"#3E232D","frame":"v3/v3-t054.60.jpg","region":[1040,245,80,80]},
+      "base": "#734F4F",
+      "baseReason": "DV-07 (revises DV-06): muted earthy garnet-oxide (R > B >= G, HSV saturation ~0.29 in game view) calibrated against v3-t079.90.jpg.",
+      "baseSample": {"hex":"#673C45","frame":"v3/v3-t079.90.jpg","region":[150,975,95,85]},
+      "usage": "Jezero soil and rocks",
+      "emissive": false,
+      "source": "measured"
+    },
+    {
+      "id": "hull",
+      "role": "Exterior hull gray",
+      "observed": {"hex":"#9A9DA8","frame":"v3/v3-t054.60.jpg","region":[600,1030,220,90]},
+      "base": "#9A9DA8",
+      "baseReason": "matches observed",
+      "usage": "Exterior habitat panels",
+      "emissive": false,
+      "source": "measured"
+    },
+    {
+      "id": "yellow",
+      "role": "Warm capsule LED",
+      "observed": {"hex":"#F8F9E5","frame":"v3/v3-t054.60.jpg","region":[1080,1450,20,20]},
+      "base": "#FFE08A",
+      "baseReason": "Bloom clips the observed LED core; use saturated warm yellow.",
+      "usage": "Habitat indicators",
+      "emissive": true,
+      "source": "measured"
+    },
+    {
+      "id": "skin",
+      "role": "Crew skin mid-tone",
+      "observed": {"hex":"#987054","frame":"v1/v1-t039.90.jpg","region":[1080,740,70,40]},
+      "base": "#987054",
+      "baseReason": "matches observed",
+      "usage": "Crew skin",
+      "emissive": false,
+      "source": "measured"
+    },
+    {
+      "id": "hair",
+      "role": "Crew dark hair",
+      "observed": {"hex":"#231E26","frame":"v1/v1-t039.90.jpg","region":[1120,640,60,30]},
+      "base": "#231E26",
+      "baseReason": "matches observed",
+      "usage": "Hair and eye bands",
+      "emissive": false,
+      "source": "measured"
+    },
+    {
+      "id": "red",
+      "role": "Crew uniform red",
+      "observed": {"hex":"#792B2C","frame":"v1/v1-t039.90.jpg","region":[870,1050,60,40]},
+      "base": "#792B2C",
+      "baseReason": "matches observed",
+      "usage": "Uniform panels",
+      "emissive": false,
+      "source": "measured"
+    },
+    {
+      "id": "teal",
+      "role": "Crew uniform teal",
+      "observed": {"hex":"#569888","frame":"v1/v1-t039.90.jpg","region":[1750,690,30,25]},
+      "base": "#569888",
+      "baseReason": "matches observed",
+      "usage": "Uniform accents and glass tint",
+      "emissive": false,
+      "source": "measured"
+    },
+    {
+      "id": "growLight",
+      "role": "Grow light",
+      "observed": {"hex":"#FF5FD2","frame":null,"region":null},
+      "base": "#FF5FD2",
+      "baseReason": "matches observed",
+      "usage": "Hydroponic racks",
+      "emissive": true,
+      "source": "design:INVENTARIO:6.5"
+    },
+    {
+      "id": "leaf",
+      "role": "Crop green",
+      "observed": {"hex":"#5DBB4C","frame":null,"region":null},
+      "base": "#5DBB4C",
+      "baseReason": "matches observed",
+      "usage": "Edible plants inside greenhouses",
+      "emissive": false,
+      "source": "design:INVENTARIO:6.5"
+    },
+    {
+      "id": "leafDark",
+      "role": "Crop dark green",
+      "observed": {"hex":"#3E8E3A","frame":null,"region":null},
+      "base": "#3E8E3A",
+      "baseReason": "matches observed",
+      "usage": "Crop shadow panels",
+      "emissive": false,
+      "source": "design:INVENTARIO:6.5"
+    },
+    {
+      "id": "warning",
+      "role": "Warning amber",
+      "observed": {"hex":"#FFB020","frame":null,"region":null},
+      "base": "#FFB020",
+      "baseReason": "matches observed",
+      "usage": "Airlocks and hangar markings",
+      "emissive": true,
+      "source": "design:INVENTARIO:6.5"
+    },
+    {
+      "id": "doorOpen",
+      "role": "Door safe",
+      "observed": {"hex":"#3DFF8A","frame":null,"region":null},
+      "base": "#3DFF8A",
+      "baseReason": "matches observed",
+      "usage": "Pressure panel safe state",
+      "emissive": true,
+      "source": "design:INVENTARIO:6.5"
+    },
+    {
+      "id": "doorClosed",
+      "role": "Door danger",
+      "observed": {"hex":"#FF4A4A","frame":null,"region":null},
+      "base": "#FF4A4A",
+      "baseReason": "matches observed",
+      "usage": "Pressure panel danger state",
+      "emissive": true,
+      "source": "design:INVENTARIO:6.5"
+    },
+    {
+      "id": "skyZenith",
+      "role": "Daytime sky zenith",
+      "observed": {"hex":"#C79465","frame":null,"region":null},
+      "base": "#D9A38A",
+      "baseReason": "MARTE.md section 4 day sky; replaces the legacy skyCaramel design value.",
+      "usage": "Daytime sky zenith",
+      "emissive": false,
+      "source": "canon:MARTE.md:4"
+    },
+    {
+      "id": "skyHorizon",
+      "role": "Daytime sky horizon",
+      "observed": {"hex":"#C79465","frame":null,"region":null},
+      "base": "#F2CDB0",
+      "baseReason": "MARTE.md section 4 day sky; replaces the legacy skyCaramel design value.",
+      "usage": "Daytime sky horizon",
+      "emissive": false,
+      "source": "canon:MARTE.md:4"
+    },
+    {
+      "id": "sunHalo",
+      "role": "Daytime solar halo",
+      "observed": {"hex":null,"frame":null,"region":null},
+      "base": "#DCE6EC",
+      "baseReason": "MARTE.md section 4 solar halo; no video measurement.",
+      "usage": "Daytime solar halo",
+      "emissive": false,
+      "source": "canon:MARTE.md:4"
+    },
+    {
+      "id": "regolithPreview", "role": "Sunlit Jezero dust compatibility alias",
+      "observed": {"hex":null,"frame":null,"region":null}, "base": "#734F4F",
+      "baseReason": "DV-07 (revises DV-06): compatibility alias of muted earthy garnet-oxide Jezero ground.",
+      "usage": "Legacy review token; new geometry uses oxide", "emissive": false,
+      "source": "canon:DV-07"
+    },
+    {
+      "id": "regolithShade", "role": "Jezero ground in partial shade",
+      "observed": {"hex":null,"frame":null,"region":null}, "base": "#4C3233",
+      "baseReason": "DV-07 (revises DV-06): muted deep earthy garnet-oxide shade (R > B >= G) calibrated against v3-t104.90.jpg.",
+      "baseSample": {"hex":"#60353C","frame":"v3/v3-t104.90.jpg","region":[3155,780,85,85]},
+      "usage": "Jezero terrain shadow-facing slopes and stone slabs", "emissive": false,
+      "source": "canon:DV-07"
+    },
+    {
+      "id": "duskZenith", "role": "Dusk zenith",
+      "observed": {"hex":null,"frame":null,"region":null}, "base": "#7A5A80",
+      "baseReason": "MARTE.md section 4 dusk canon.", "usage": "AMB-05", "emissive": false,
+      "source": "canon:MARTE.md:4"
+    },
+    {
+      "id": "duskHorizon", "role": "Dusk horizon",
+      "observed": {"hex":null,"frame":null,"region":null}, "base": "#E8A27A",
+      "baseReason": "MARTE.md section 4 dusk canon.", "usage": "AMB-05", "emissive": false,
+      "source": "canon:MARTE.md:4"
+    },
+    {
+      "id": "duskHalo", "role": "Dusk blue solar halo",
+      "observed": {"hex":null,"frame":null,"region":null}, "base": "#8FB6D9",
+      "baseReason": "MARTE.md section 4 dusk canon.", "usage": "AMB-05 and Earth point", "emissive": false,
+      "source": "canon:MARTE.md:4"
+    },
+    {
+      "id": "nightSky", "role": "Night sky",
+      "observed": {"hex":null,"frame":null,"region":null}, "base": "#050914",
+      "baseReason": "WS2 artistic night value pending gate.", "usage": "AMB-01/08", "emissive": false,
+      "source": "design:WS2"
+    },
+    {
+      "id": "dustSky", "role": "Dust storm sky",
+      "observed": {"hex":null,"frame":null,"region":null}, "base": "#84634B",
+      "baseReason": "WS2 ochre dust storm interpretation pending gate.", "usage": "AMB-06", "emissive": false,
+      "source": "design:WS2"
+    },
+    {
+      "id": "skin_warm_umber", "role": "Tess skin",
+      "observed": {"hex":null,"frame":null,"region":null}, "base": "#78503C",
+      "baseReason": "Tess character design tone.", "usage": "Crew skin", "emissive": false,
+      "source": "design:T6.2"
+    },
+    {
+      "id": "uniformWarning", "role": "Amber crew uniform",
+      "observed": {"hex":null,"frame":null,"region":null}, "base": "#FFB020",
+      "baseReason": "Warning hue without signal emission.", "usage": "Crew fabric", "emissive": false,
+      "source": "design:T6.2"
+    },
+    {
+      "id": "crewCharcoal", "role": "Crew uniform fabric",
+      "observed": {"hex":null,"frame":null,"region":null}, "base": "#333542",
+      "baseReason": "Neutral charcoal-violet fabric, distinct from the boot sole.", "usage": "Crew uniform", "emissive": false,
+      "source": "design:C4"
+    },
+    {
+      "id": "tessPanel", "role": "Tess suit panels",
+      "observed": {"hex":"#2C2A36","frame":"v1/v1-t018.50.jpg","region":[2112,954,8,8]}, "base": "#2C2A36",
+      "baseReason": "v1-t018.50.jpg suit, slightly darker panel tone (median of 8x8 patch, reviewer crop).", "usage": "Tess Q3", "emissive": false,
+      "source": "measured"
+    },
+    {
+      "id": "tessAmber", "role": "Tess amber accents",
+      "observed": {"hex":"#D9A04E","frame":"v1/v1-t018.50.jpg","region":[2214,722,8,8]}, "base": "#D9A04E",
+      "baseReason": "v1-t018.50.jpg shoulder and boot cuff (median of 8x8 patch, reviewer crop).", "usage": "Tess Q3", "emissive": false,
+      "source": "measured"
+    },
+    {
+      "id": "tessHair", "role": "Tess auburn hair",
+      "observed": {"hex":"#854C41","frame":"v1/v1-t018.50.jpg","region":[2142,599,8,8]}, "base": "#854C41",
+      "baseReason": "v1-t018.50.jpg hair (median of 8x8 patch, reviewer crop).", "usage": "Tess Q3", "emissive": false,
+      "source": "measured"
+    },
+    {
+      "id": "tessSkin", "role": "Tess skin",
+      "observed": {"hex":"#D29475","frame":"v1/v1-t018.50.jpg","region":[2127,664,8,8]}, "base": "#D29475",
+      "baseReason": "v1-t018.50.jpg face (median of 8x8 patch, reviewer crop).", "usage": "Tess Q3", "emissive": false,
+      "source": "measured"
+    },
+    {
+      "id": "tessBoot", "role": "Tess boots and gloves",
+      "observed": {"hex":"#211F2A","frame":"v1/v1-t018.50.jpg","region":[2092,1164,8,8]}, "base": "#211F2A",
+      "baseReason": "v1-t018.50.jpg boots (median of 8x8 patch, reviewer crop).", "usage": "Tess Q3", "emissive": false,
+      "source": "measured"
+    },
+    {
+      "id": "tessBrow", "role": "Tess brows",
+      "observed": {"hex":null,"frame":null,"region":null}, "base": "#4A2C24",
+      "baseReason": "Darker auburn for brows, derived from tessHair.", "usage": "Tess Q3", "emissive": false,
+      "source": "design:Q3"
+    },
+    {
+      "id": "niaAccent", "role": "Nia teal accents",
+      "observed": {"hex":"#75CEBA","frame":"v1/v1-t039.90.jpg","region":[1782,712,8,8]}, "base": "#75CEBA",
+      "baseReason": "Median of an 8x8 patch on the reference frame (reviewer crop).", "usage": "Crew Q3", "emissive": false,
+      "source": "measured"
+    },
+    {
+      "id": "niaHair", "role": "Nia dark hair",
+      "observed": {"hex":null,"frame":null,"region":null}, "base": "#2A2220",
+      "baseReason": "Near-black brown, distinct from the other crew hair.", "usage": "Crew Q3", "emissive": false,
+      "source": "design:Q3"
+    },
+    {
+      "id": "veraAccent", "role": "Vera red accents",
+      "observed": {"hex":"#7E312F","frame":"v1/v1-t045.20.jpg","region":[490,577,8,8]}, "base": "#7E312F",
+      "baseReason": "Median of an 8x8 patch on the reference frame (reviewer crop).", "usage": "Crew Q3", "emissive": false,
+      "source": "measured"
+    },
+    {
+      "id": "veraHair", "role": "Vera auburn hair",
+      "observed": {"hex":"#93462F","frame":"v1/v1-t045.20.jpg","region":[519,423,8,8]}, "base": "#93462F",
+      "baseReason": "Median of an 8x8 patch on the reference frame (reviewer crop).", "usage": "Crew Q3", "emissive": false,
+      "source": "measured"
+    },
+    {
+      "id": "teoAccent", "role": "Teo blue accents",
+      "observed": {"hex":"#566EA5","frame":"v1/v1-t045.20.jpg","region":[259,753,8,8]}, "base": "#566EA5",
+      "baseReason": "Median of an 8x8 patch on the reference frame (reviewer crop).", "usage": "Crew Q3", "emissive": false,
+      "source": "measured"
+    },
+    {
+      "id": "teoHair", "role": "Teo brown hair",
+      "observed": {"hex":"#3B2822","frame":"v1/v1-t045.20.jpg","region":[226,473,8,8]}, "base": "#3B2822",
+      "baseReason": "Median of an 8x8 patch on the reference frame (reviewer crop).", "usage": "Crew Q3", "emissive": false,
+      "source": "measured"
+    }
+  ]
+}
