@@ -5,16 +5,19 @@
 
 ## 0. Lo que hay que aprobar
 
+**Ya aprobado, no se vuelve a decidir:** campaña, premisa (preparar la colonia para las familias) y nombres de la tripulación (DV-01 y DV-02, 25 nov). Falta actualizar `docs/referenciapau/HISTORIA.md`.
+
 | # | Decisión | Recomendación |
 |---|---|---|
-| A1 | Premisa: `docs/DISENO-JUEGO.md` (colonia, nombres) choca con `HISTORIA.md` (entrenamiento, sin nombres) | Usar DISENO-JUEGO (DV-01, DV-02) y actualizar HISTORIA |
-| A2 | Edad: el diseño apunta a 7-10; el reto pide 7-12 | Textos para 7-10; 11-12 con Medium y Hard |
-| A3 | C1 reutiliza la misión `outpost-sorpresa`, cuya nave va a la **Luna** | Crear `missions/src/viaje-marte.ts` (misma mecánica, textos de viaje a Marte) |
-| A4 | `missions/`, `agents/`, `data/` e `engine/` no aparecen en el reparto | Quedan con Santiago; `contracts/` no cambia |
-| A5 | Voz: `AUDIO.md` la apaga por defecto; Ajustes la trae en 4 y R1 pide voz en todo | Encendida, según Ajustes |
-| A6 | Tiempo en Easy | El turno avanza con cada acción, sin reloj. Medium y Hard: reloj de 4 s como hoy |
-| A7 | Cuenta con progreso y chat con IA (existen en `ui/`) | Portarlos al final; no retirar `ui/` sin decidirlo |
-| A8 | Primer PR hacia `develop` | La capa visual con su CI (PR #461), para que los siguientes sean pequeños |
+| A1 | Edad: el diseño apunta a 7-10; el reto pide 7-12 | Textos para 7-10; 11-12 con Medium y Hard |
+| A2 | C1 reutilizaba `outpost-sorpresa`: va a la **Luna** y aguantar la tormenta es buena jugada | Misión nueva `viaje-marte` y rebalanceada (§5.1) |
+| A3 | La intro y C1 preguntaban dos veces "¿refugio o escudo?" | Se decide una sola vez, en la intro; la tormenta de C1 pregunta qué sacrificar (§5.1) |
+| A4 | `missions/`, `agents/`, `data/` e `engine/` no aparecen en el reparto | Quedan con Santiago; `contracts/` no cambia. `.github/CODEOWNERS` está desactualizado |
+| A5 | Voz: `AUDIO.md` la apaga por defecto; Ajustes la trae en 4 y R1 pide voz en todo | Encendida según Ajustes, después del primer toque |
+| A6 | Tiempo en Easy | El turno avanza con cada acción, sin reloj, con un botón para **dormir** (pasa un turno). Medium y Hard: reloj de 4 s |
+| A7 | Cuenta con progreso y chat con IA (existen en `ui/`) | La cuenta no se porta (el reto permite jugar sin cuenta). Chat solo si sobra tiempo |
+| A8 | Alcance de la primera versión | Intro, C1 y C2. C3 a C5 y Final, después |
+| A9 | Cuándo entra la capa visual a `develop` (PR #461, CI en verde) | Acordarlo: ahora, o cuando terminen las entregas en curso |
 
 ## 1. Migración
 
@@ -27,7 +30,7 @@
 | `juego/plazo.ts`, `calcularTasa` de `dosis.ts` | Plazo de telemetría y tasa de dosis | Portar (lógica pura) |
 | `useDosimetro` de `dosis.ts` | Hook de React | Reescribir sin React |
 | `juego/guardado.ts` | Partida en `localStorage`, validada | Portar con clave `colonia.progress.partida` |
-| `juego/cuenta.ts`, `useProgresoCuenta.ts` | Progreso en la nube | Portar al final (A7) |
+| `juego/cuenta.ts`, `useProgresoCuenta.ts` | Progreso en la nube | No se porta (A7) |
 | `i18n.ts` (`traducir`) | EN base y ES de respaldo | Portar a `src/game/i18n.ts` |
 | `juego/ajustes.ts` | Idioma, sonido, calidad, cámara | Lo cubre `SettingsState`; falta idioma (B1) |
 | `juego/sonido.ts` | Notas con Web Audio | Reusar las secuencias en `src/audio/` |
@@ -40,15 +43,15 @@
 
 ### 1.2 Orden (un PR por fila)
 
-1. CI de colonia-marte estable y scripts raíz.
+1. CI de colonia-marte (hecho en el PR #461) y scripts raíz.
 2. `src/game/`: puente al motor, i18n y adaptador, con tests.
 3. Flujo, eventos, plazo y guardado.
 4. Ruta `/play` con una sala y datos reales.
 5. Audio.
 6. Intro completa.
-7. C1 completo y E2E de su ruta.
-8. C2 a C5 y Final (uno por PR).
-9. Cuenta y chat.
+7. Misión `viaje-marte`, C1 completo y E2E de su ruta.
+8. C2 y su E2E. **Aquí termina la primera versión (A8).**
+9. C3 a C5 y Final (uno por PR). Chat, si sobra tiempo.
 10. Retiro de `ui/` y `/` hacia `/play`, solo con la ruta dorada nueva en verde.
 
 ### 1.3 Entrada al monorepo
@@ -66,7 +69,7 @@ Con la opción A:
 - **Instalación:** primero `npm ci` en la raíz (el motor toma `zod` de ahí) y luego en `colonia-marte/`.
 - **Typecheck:** script raíz `typecheck:colonia`; `typecheck` queda igual hasta el retiro.
 - **Vitest:** el `include` raíz no cambia (raíz usa 2.1; colonia, 5.1). Script `test:colonia`. En el retiro se quitan los patrones `ui/**`.
-- **CI:** job propio con `--testTimeout=30000`. En el PR #461 fallan en GitHub 3 tests de piezas 3D, los 3 por superar el límite de 5 s (`TestTimeoutError`).
+- **CI:** job propio con `--testTimeout=30000`, porque 3 tests de piezas 3D superaban en GitHub el límite de 5 s. Aplicado en el PR #461; los tres jobs pasan.
 - **Despliegue mientras `ui/` viva:** nuevo entorno `colonia` en `infra/worker/wrangler.jsonc` con assets `colonia-marte/dist` y base de datos de preview. Producción y preview actuales no cambian. No sirve una subcarpeta: la app usa rutas absolutas.
 - **Retiro:** los assets principales pasan a `colonia-marte/dist`, `/` apunta a `/play`, se borra `ui/` y se reescriben los E2E de `tests/e2e/`.
 
@@ -125,7 +128,7 @@ Se aplica al empezar un capítulo, pasando `{ ...mision, dificultad }` a `partid
 | Elegir zona o sitio | `aterrizar` |
 | Colocar módulo, usar objeto | `puedeAplicar`, luego `aplicarAccion` |
 | Respuesta de un dilema | `elegirDilema` |
-| Paso del tiempo | `avanzarTick` |
+| Paso del tiempo (reloj, acción o dormir) | `avanzarTick` |
 | Pausa | `pausar` |
 | "¿Y si...?" | `queEsSi` |
 
@@ -133,7 +136,7 @@ Si el motor rechaza una acción, se muestra el motivo con texto y voz.
 
 ## 3. Intro (60 s más el tiempo de decidir)
 
-Antes hay un botón **Start**: el navegador no deja sonar nada sin un toque. Siempre visible: **Skip**, que lleva a la decisión. La decisión llega a los **44 s**.
+Antes hay un botón **Start**: el navegador no deja sonar nada sin un toque. Siempre visible: **Skip**, que lleva a la decisión. La decisión llega a los **44 s** y es la única vez que se elige entre refugio y escudo (A3).
 
 Cámaras: metros `[x, y, z]`, inicio → fin, derivadas de las vistas de cada sala. **Sin probar en pantalla.**
 
@@ -156,7 +159,7 @@ Tras elegir:
 - **Refugio:** "Safer inside, but food and water are harder to reach." / "Más seguros adentro, pero cuesta alcanzar agua y comida." Motor: aire −6 y energía −3 ya; blindaje +12 después.
 - **Escudo:** "The shield is stronger, but it eats lots of energy." / "El escudo es más fuerte, pero gasta mucha energía." Motor: energía −16 ya; blindaje +20 después.
 
-Las dos tarjetas tienen ícono (`home`, `shield`) y voz. En pantalla durante la toma 6: "Real storm, May 2024. Not live." con la fuente (DONKI). La decisión se aplica a la partida de C1.
+Las dos tarjetas tienen ícono (`home`, `shield`) y voz. En pantalla durante la toma 6: "A real storm from May 2024, measured near Earth. Not live." con la fuente (DONKI). La decisión se aplica con `elegirDilema` al crear la partida de C1.
 
 **Formato.** `src/camera/schema.ts` no admite campos extra, así que:
 
@@ -191,12 +194,35 @@ Estructura: `data/story/cN.json` (escenas, hablantes, claves, respuestas) y `dat
 
 | Cap. | Decisión que enseña | Estado del motor | Diálogo | Qué falta |
 |---|---|---|---|---|
-| **C1 El viaje** | Blindaje: refugio, escudo o aguantar, y qué cuesta | Zona (`aterrizar`), 2 módulos, dilema, telemetría | Vera avisa; Nia y Tess discrepan; Iris falla | Misión nueva (A3) con tormenta curada `2024-05-10-gannon` |
+| **C1 El viaje** | Blindaje: protegerse cuesta, y no hacerlo cuesta más | Decisión de la intro, zona (`aterrizar`), 2 módulos, qué sacrificar en la tormenta, telemetría | Vera avisa; Nia y Tess discrepan; Iris falla | Misión nueva (§5.1) |
 | **C2 Jezero** | Energía y soporte vital: sitio y 2 módulos | `MISION_JEZERO` completa | Voces actuales de `agents` | Solo adaptar |
 | **C3 Comida** | Cultivar gasta energía y agua | Módulos `invernadero` y `reciclador_agua`; gana con `sobrevivir_hasta_tick` | Teo entra con "¿y si...?" | Misión nueva. El crecimiento de plantas es estado de campaña: el motor no tiene recurso comida |
 | **C4 Tormenta de polvo** | Racionar energía; salir a limpiar cuesta | `eventoPolvo`, `redistribuir_energia`, `salida_exterior` | Vera y Tess; Iris dañada | Verificar que el polvo se pueda forzar por misión (hoy es azar). Rescatar el rover no es una acción: solo relato, o cambio de contrato |
 | **C5 Silencio** | Mandar datos y planear antes de perder señal | `enviar_telemetria`, `retrasoComunicacionesTicks`; base en `marte-polo-norte` | Mission Control se calla; decide el niño | Escena del polo y textos de conjunción |
 | **Final** | Cadena de causas: decisiones frente a mala suerte | `resumenPartida` de cada capítulo guardado | La tripulación recuerda 2 o 3 decisiones | Guardar el resumen por capítulo |
+
+**Fechas.** C1 usa la tormenta del 10 de mayo de 2024 y C2 la del 20 de mayo, pero un viaje a Marte dura meses. La historia no las une en un calendario: cada una se presenta como una tormenta real del archivo, con su fecha y dónde se midió.
+
+### 5.1 C1: misión `viaje-marte`
+
+Prueba con el motor, 300 semillas por opción, usando una sola estrategia para lo demás (primer sitio, panel y batería, telemetría justo después del dilema). Partidas ganadas:
+
+| Misión y respuesta a la tormenta | Easy | Medium |
+|---|---|---|
+| `outpost-sorpresa`, aguantar | 300 | 297 |
+| `outpost-sorpresa`, refugio | 298 | 293 |
+| `outpost-sorpresa`, escudo | 252 | 218 |
+| `jezero`, aguantar | 0 | 0 |
+| `jezero`, refugio | 300 | 300 |
+| `jezero`, escudo | 296 | 292 |
+
+Copiar `outpost-sorpresa` enseñaría que protegerse no importa. La misión nueva:
+
+- Reutiliza el sitio `outpost_sorpresa` y las acciones actuales: `contracts/` no cambia.
+- **Intro:** refugio o escudo. **Tormenta:** qué sacrificar para sostener esa protección, con acciones existentes (por ejemplo `redistribuir_energia` hacia soporte vital o blindaje, `reparar`, o aguantar).
+- **Criterio de balance, probado con un test:** en Easy y Medium, no hacer nada ante la tormenta gana menos que cualquier respuesta que proteja, y ninguna opción es gratis.
+- Cambia los textos y tarjetas de la Luna (antena a un segundo, CRaTER, Artemis). La dosis en el viaje (`marte-crucero`) ya está en `data/`.
+- El retraso de comunicaciones se redacta para un viaje a Marte; el valor de juego se fija con el balance.
 
 Reglas en todos: texto con voz, 2 o 3 opciones, ícono primero, sin números en Easy, dato de NASA con fuente y sin presentarlo como en vivo. Las cifras de `DISENO-JUEGO.md` §4.1 se verifican con su fuente antes de escribirlas en el juego.
 
@@ -216,7 +242,7 @@ Reglas en todos: texto con voz, 2 o 3 opciones, ícono primero, sin números en 
 
 - **Idioma:** sin B1 el juego nuevo incumple la regla bilingüe; no se retira `ui/` antes.
 - **Rendimiento en celular:** sin medir.
-- **Alcance:** C3, C4 y C5 necesitan datos de misión nuevos. Si falta tiempo, publicar con C1 y C2.
+- **Alcance:** C3, C4 y C5 necesitan datos de misión nuevos; quedan fuera de la primera versión (A8).
 - **Retiro de `ui/`:** hay PRs abiertos que tocan `ui/src`; revisarlos antes.
 
 ## 8. Verificado y no verificado
@@ -226,9 +252,10 @@ Reglas en todos: texto con voz, 2 o 3 opciones, ícono primero, sin números en 
 | Comprobación | Resultado |
 |---|---|
 | Monorepo (`npm run typecheck`, `npm test`, `npm run build`) | correctos; 1211 tests |
-| colonia-marte (`tsc`, `vitest`, build) | correctos en local; 153 tests; 1 fallo intermitente en 1 de 4 corridas |
+| colonia-marte (`tsc`, `vitest`, build) | correctos en local; 153 tests |
 | Opciones A y B (§1.3) | probadas en copias desechables |
-| CI del PR #461 | falla el job de colonia-marte |
+| CI del PR #461 (`cd3463b`) | los tres jobs pasan |
+| Balance de misiones (§5.1) | simulación con script desechable, una estrategia |
 | Costos del motor citados (§3) | calculados desde `design/src/recursos.ts` y las opciones del dilema |
 
-**No verificado:** nada en el navegador; cámaras de la intro; voces del navegador; despliegue del entorno `colonia`; rendimiento en celular.
+**No verificado:** nada en el navegador; el balance de `viaje-marte` (aún no existe); cámaras de la intro; voces del navegador; despliegue del entorno `colonia`; rendimiento en celular.
