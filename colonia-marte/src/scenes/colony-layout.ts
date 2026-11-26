@@ -3,6 +3,8 @@ import type { DEM } from "../environment/dem";
 import { terrainHeight, type Biome } from "../environment/terrain";
 import { inventoryIds } from "../kit/inventory";
 import { AIRLOCK_ENTRY_LODS } from "../kit/pieces/mars/airlock-entry";
+import { buildStreet, parseStreet } from "../kit/pieces/mars/colony-street";
+import { GREENHOUSE_LODS } from "../kit/pieces/mars/greenhouse";
 import { LANDING_PAD_LODS } from "../kit/pieces/mars/landing-pad";
 import type { PieceRegistry } from "../kit/registry";
 import { materials } from "../materials/shared";
@@ -98,9 +100,16 @@ export function buildColonyGroup(layout: ColonyLayout, registry: PieceRegistry, 
   const buildings = new Map<string, Object3D[]>();
   const terrainOpts = { biome: layout.biome, seed: layout.terrainSeed, dem };
   for (const item of layout.placements) {
+    const [cx, cz] = item.at;
+    if (item.id === "MI-01") {
+      const street = buildStreet(parseStreet(item.params ?? {}), (x, z) => terrainHeight(cx + x, cz + z, terrainOpts));
+      street.position.set(cx, item.yOffset ?? 0, cz);
+      colony.detailedTriangles += countColonyTriangles(street);
+      colony.add(street);
+      continue;
+    }
     const piece = registry.build(item.id, item.params ?? {});
     colony.detailedTriangles += countColonyTriangles(piece);
-    const cx = item.at[0], cz = item.at[1];
     let groundY = terrainHeight(cx, cz, terrainOpts);
     if (item.id.startsWith("MT-")) {
       const footR = item.id === "MT-T06" ? 1.9 : item.id === "MT-T04" ? 1.0 : 0.7;
@@ -114,7 +123,8 @@ export function buildColonyGroup(layout: ColonyLayout, registry: PieceRegistry, 
     }
     piece.position.set(cx, groundY + (item.yOffset ?? 0), cz);
     if (item.rot) piece.rotation.y = MathUtils.degToRad(item.rot);
-    const detailLevels = item.id === "MI-07" ? LANDING_PAD_LODS : item.id === "NX-04" ? AIRLOCK_ENTRY_LODS : null;
+    const detailLevels = item.id === "MI-07" ? LANDING_PAD_LODS : item.id === "NX-04" ? AIRLOCK_ENTRY_LODS
+      : item.id === "MB-11" ? GREENHOUSE_LODS : null;
     if (detailLevels) {
       const lod = new LOD();
       lod.name = piece.name;

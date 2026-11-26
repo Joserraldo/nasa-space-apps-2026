@@ -1,6 +1,7 @@
 import type { PieceRegistry } from "../../registry";
 import { registerMarsBuildings } from "./buildings";
 import { registerMarsCommsDish } from "./comms-dish";
+import { registerGreenhouse } from "./greenhouse";
 import { registerMarsHabitats } from "./habitats";
 import { registerMarsIndustrial } from "./industrial";
 import { registerMarsInfrastructure } from "./infrastructure";
@@ -14,6 +15,7 @@ import { registerMarsTransit } from "./transit";
 export function registerMarsPieces(registry: PieceRegistry): void {
   registerMarsRocks(registry);
   registerMarsHabitats(registry);
+  registerGreenhouse(registry);
   registerMarsBuildings(registry);
   registerMarsIndustrial(registry);
   registerMarsInfrastructure(registry);

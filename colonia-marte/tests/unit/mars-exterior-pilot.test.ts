@@ -52,9 +52,8 @@ describe("T3.1 Mars colony exterior pilot pieces, decals, and layout", () => {
     const capsules = colony.children.find(child => child instanceof LOD && child.name.startsWith("MB-01")) as LOD;
     expect(capsules.levels[0].object.children.some(child =>
       child instanceof InstancedMesh && child.count === 4 && child.material === materials.M_glass)).toBe(true);
-    const pad = layout.placements.find(piece => piece.id === "MI-07")!;
-    const entry = layout.placements.find(piece => piece.id === "NX-04")!;
-    const newPieces = [pad, entry].reduce((total, spec) =>
+    const additions = layout.placements.filter(piece => ["MI-07", "NX-04", "MB-11", "MI-01"].includes(piece.id));
+    const newPieces = additions.reduce((total, spec) =>
       total + countColonyTriangles(registry.build(spec.id, spec.params)), 0);
     expect(colony.detailedTriangles).toBe(76404 + newPieces);
   });

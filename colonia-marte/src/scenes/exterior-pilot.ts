@@ -10,6 +10,7 @@ import { presets } from "../environment/presets";
 import { createJezeroRockScatter, disposeRockScatter, type RockExclusionZone } from "../environment/rock-scatter";
 import { createTerrain, terrainHeight } from "../environment/terrain";
 import { createProductionRegistry } from "../kit/pieces";
+import { parseStreet, streetClearance } from "../kit/pieces/mars/colony-street";
 import { LANDING_PAD_CLEARANCE } from "../kit/pieces/mars/landing-pad";
 import { paletteHex } from "../materials/palette";
 import { getScreens } from "../materials/screens";
@@ -30,6 +31,16 @@ function buildColonyExclusions(layout: ColonyLayout): RockExclusionZone[] {
   ];
   for (const item of layout.placements) {
     if (item.id.startsWith("MT-")) continue;
+    if (item.id === "MI-01") {
+      for (const { center, radius } of streetClearance(parseStreet(item.params ?? {}))) {
+        zones.push({ x: item.at[0] + center.x, z: item.at[1] + center.y, radius });
+      }
+      continue;
+    }
+    if (item.id === "MB-11") {
+      for (const offset of [-3.4, 0, 3.4]) zones.push({ x: item.at[0] + offset, z: item.at[1], radius: 3.05 });
+      continue;
+    }
     const radius = item.id === "MI-07" ? LANDING_PAD_CLEARANCE
       : item.id === "MB-04" ? 7.8
       : (item.id === "MB-10" || item.id === "MB-07" || item.id === "MB-02" || item.id === "MI-03" ? 5.6 : 3.4);

@@ -43,6 +43,11 @@
     { "id": "MI-04", "at": [-11.80, -25.60], "yOffset": -0.18, "rot": 10, "params": { "mode": "tracking" } },
 
     { "id": "MI-09", "at": [-6.20, -2.60], "yOffset": -0.14, "rot": 22.5, "params": { "style": "standard" } },
+    { "id": "MB-11", "at": [19.20, 6.95], "yOffset": -0.24 },
+    { "id": "MI-01", "at": [0, 5.90], "params": {
+      "path": [[11.74, 1.05], [13.94, 1.05]],
+      "access": [[0, 0.03], [0, 2.95], [1.53, 5.97], [3.50, 7.22], [11.90, 2.65]]
+    } },
     { "id": "MI-09", "at": [4.40, -4.80], "yOffset": -0.14, "rot": -22.5, "params": { "style": "hazard" } },
     { "id": "MI-11", "at": [-1.85, 11.90], "yOffset": -0.10, "rot": -18, "params": { "state": "alert" } },
     { "id": "MI-11", "at": [6.75, 8.60], "yOffset": -0.10, "rot": -40, "params": { "state": "alert" } },
