@@ -16,17 +16,17 @@
 
 ## 2. Personajes
 
-La primera vez se presentan con su rol; después, solo por el nombre.
+La primera vez se presentan con su rol; después, solo por el nombre. La tripulación es internacional y cada personaje conserva la misma voz en inglés y en español. La narración es una voz venezolana; Iris es un robot y no tiene país.
 
 | Personaje | Rol | Qué le importa |
 | --- | --- | --- |
 | **Tú** | La persona más joven de la tripulación | Aprender a decidir con recursos limitados |
-| **Tess** | Ingeniera: energía y reparaciones. Cuenta tornillos en voz alta | Que haya energía y los equipos funcionen |
-| **Nia** | Doctora de radiación. Les pone curitas hasta a los robots | Que nadie reciba más radiación de la necesaria |
-| **Vera** | Experta del Sol. Dramática, les pone nombre de mascota a las llamaradas | Avisar a tiempo y leer bien los datos |
+| **Tess** (México) | Ingeniera: energía y reparaciones. Cuenta tornillos en voz alta | Que haya energía y los equipos funcionen |
+| **Nia** (Colombia) | Doctora de radiación. Les pone curitas hasta a los robots | Que nadie reciba más radiación de la necesaria |
+| **Vera** (Argentina) | Experta del Sol. Dramática, les pone nombre de mascota a las llamaradas | Avisar a tiempo y leer bien los datos |
 | **Teo** | Matemático: «¿y si...?». Entra en C3 | Comparar antes de decidir |
 | **Iris** | Rover de cuatro ruedas con cara en pantalla. Guía, falla y aprende contigo | Ayudar, hasta que falla |
-| **Control de Misión** | La Tierra. Responde con retraso y se queda en silencio en C5 | Saber que la colonia está bien |
+| **Control de Misión** (voz venezolana) | La Tierra. Responde con retraso y se queda en silencio en C5 | Saber que la colonia está bien |
 
 Humor tierno, nunca contra quien juega. Las expertas pueden no estar de acuerdo: ese desacuerdo es el centro de las decisiones. Iris puede dar un número equivocado: se compara con el medidor.
 

@@ -154,3 +154,47 @@ describe("efectos, música y voz", () => {
     expect(lineaDeVoz({ closest: () => null })).toBeNull();
   });
 });
+
+describe("grabaciones en el mezclador", () => {
+  const lista = { voz: { en: { Hello: "voz/en/a.m4a" }, es: {} }, musica: {}, efectos: { boton: "efectos/boton.m4a" } };
+
+  function conGrabaciones() {
+    const f = entornoFalso();
+    const tocadas: unknown[] = [];
+    const pedidas: string[] = [];
+    Object.assign(f.ctx, {
+      decodeAudioData: async () => ({ duration: 1 }),
+      createBufferSource: () => { const n = { buffer: null as unknown, connect() {}, stop() {}, start() { tocadas.push(n.buffer); } }; return n; },
+    });
+    f.entorno.archivos = lista;
+    f.entorno.cargar = async (ruta) => { pedidas.push(ruta); return new ArrayBuffer(4); };
+    return { ...f, tocadas, pedidas };
+  }
+  const esperar = () => new Promise((r) => setTimeout(r, 0));
+
+  it("usa la grabación si existe y la voz del navegador si no", async () => {
+    const f = conGrabaciones();
+    const m = crearMezclador(DEFAULT_SETTINGS, f.entorno);
+    m.desbloquear();
+    expect(m.voz.decir("Hello")).toBe(true);
+    await esperar();
+    expect(f.pedidas).toContain("/audio/voz/en/a.m4a");
+    expect(f.tocadas).toHaveLength(1);
+    expect(f.dichas).toHaveLength(0);
+    m.voz.decir("Something else");
+    expect(f.dichas).toHaveLength(1);
+  });
+
+  it("si se calla antes de cargar no suena, y los efectos usan su archivo", async () => {
+    const f = conGrabaciones();
+    const m = crearMezclador(DEFAULT_SETTINGS, f.entorno);
+    m.desbloquear();
+    m.voz.decir("Hello");
+    m.voz.callar();
+    await esperar();
+    expect(f.tocadas).toHaveLength(0);
+    expect(m.efecto("boton")).toBe(true);
+    expect(f.tocadas).toEqual([{ duration: 1 }]);
+  });
+});
+

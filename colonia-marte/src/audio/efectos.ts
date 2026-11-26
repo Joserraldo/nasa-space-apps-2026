@@ -38,16 +38,21 @@ export const EFECTOS: Record<Efecto, { dura: number; receta: Receta }> = {
 export const MAXIMO_SIMULTANEOS = 3;
 
 /** Lleva la cuenta de lo que suena: como máximo tres efectos a la vez y ninguno repetido encima de sí. */
-export function crearEfectos(ctx: BaseAudioContext, destino: AudioNode) {
+export function crearEfectos(ctx: BaseAudioContext, destino: AudioNode, grabado: (efecto: Efecto) => AudioBuffer | null = () => null) {
   let sonando: { efecto: Efecto; fin: number }[] = [];
   return {
     tocar(efecto: Efecto): boolean {
       const ahora = ctx.currentTime;
       sonando = sonando.filter((s) => s.fin > ahora);
       if (sonando.length >= MAXIMO_SIMULTANEOS || sonando.some((s) => s.efecto === efecto)) return false;
-      const { dura, receta } = EFECTOS[efecto];
-      receta(ctx, destino, ahora + 0.01);
-      sonando.push({ efecto, fin: ahora + dura });
+      const audio = grabado(efecto);
+      if (audio) {
+        const fuente = ctx.createBufferSource();
+        fuente.buffer = audio;
+        fuente.connect(destino);
+        fuente.start(ahora + 0.01);
+      } else EFECTOS[efecto].receta(ctx, destino, ahora + 0.01);
+      sonando.push({ efecto, fin: ahora + (audio?.duration ?? EFECTOS[efecto].dura) });
       return true;
     },
   };

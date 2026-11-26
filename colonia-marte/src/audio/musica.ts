@@ -55,7 +55,25 @@ export interface Reproductor {
 
 const ADELANTO = 1;
 
-export function crearReproductor(ctx: BaseAudioContext, destino: AudioNode): Reproductor {
+/** Una vuelta de un tema grabado, con entrada y salida suaves para encadenar la siguiente. */
+function programarGrabado(ctx: BaseAudioContext, destino: AudioNode, audio: AudioBuffer, en: number): number {
+  const fuente = ctx.createBufferSource();
+  const gain = ctx.createGain();
+  const paso = Math.max(audio.duration / 2, audio.duration - FUNDIDO);
+  fuente.buffer = audio;
+  gain.gain.setValueAtTime(0.0001, en);
+  gain.gain.linearRampToValueAtTime(1, en + FUNDIDO);
+  gain.gain.setValueAtTime(1, en + paso);
+  gain.gain.linearRampToValueAtTime(0.0001, en + audio.duration);
+  fuente.connect(gain);
+  gain.connect(destino);
+  fuente.start(en);
+  return paso;
+}
+
+export function crearReproductor(
+  ctx: BaseAudioContext, destino: AudioNode, grabado: (tema: Tema) => AudioBuffer | null = () => null,
+): Reproductor {
   let actual: { tema: Tema; canal: GainNode; siguiente: number; n: number } | null = null;
   const reproductor: Reproductor = {
     get tema() { return actual?.tema ?? null; },
@@ -79,10 +97,14 @@ export function crearReproductor(ctx: BaseAudioContext, destino: AudioNode): Rep
     avanzar() {
       if (!actual) return;
       // El tema final suena una vez; los demás se repiten.
-      const tope = actual.tema === "final" ? TEMAS.final.acordes.length : Infinity;
+      const audio = grabado(actual.tema);
+      const tope = actual.tema !== "final" ? Infinity : audio ? 1 : TEMAS.final.acordes.length;
       while (actual.n < tope && actual.siguiente < ctx.currentTime + ADELANTO) {
-        programarCompas(ctx, actual.canal, actual.tema, actual.n, actual.siguiente);
-        actual.siguiente += TEMAS[actual.tema].compas;
+        if (audio) actual.siguiente += programarGrabado(ctx, actual.canal, audio, actual.siguiente);
+        else {
+          programarCompas(ctx, actual.canal, actual.tema, actual.n, actual.siguiente);
+          actual.siguiente += TEMAS[actual.tema].compas;
+        }
         actual.n++;
       }
     },

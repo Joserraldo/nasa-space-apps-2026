@@ -1,5 +1,7 @@
 # Guion de audio para generar
 
+**Generado el 26 nov 2026** con ElevenLabs. La lista final (con las opciones, las tarjetas de derrota y qué archivo corresponde a cada texto) está en `src/audio/archivos.json`. Si cambia un texto en pantalla, su audio deja de coincidir y se oye la voz del navegador hasta regenerarlo; `tests/unit/game-recordings.test.ts` lo avisa.
+
 43 líneas por idioma: 1610 caracteres en inglés y 1708 en español.
 
 Sin voces de niños ni imitaciones de personas o personajes reales. Inglés es el idioma base.
