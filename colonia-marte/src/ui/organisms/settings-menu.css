@@ -19,12 +19,40 @@
   gap: 6px;
 }
 .ui-settings__tabs .ui-hud-reply .ui-hud-reply__glyph { width: 22px; height: 22px; }
-.ui-settings__tabs [aria-selected="true"]::after {
+.ui-settings .ui-hud-reply,
+.ui-hud-choice .ui-hud-reply {
+  --settings-edge: var(--ui-hud-panel-solid);
+  --settings-fill: var(--ui-hud-ink);
+  --settings-stroke: 1.5px;
+  color: var(--ui-hud-panel-solid);
+  background: transparent;
+  clip-path: none;
+}
+:is(.ui-settings, .ui-hud-choice) .ui-hud-reply:is([aria-selected="true"], [aria-pressed="true"]) {
+  --settings-edge: var(--ui-hud-accent);
+  --settings-fill: var(--ui-hud-panel-solid);
+  --settings-stroke: 2.5px;
+  color: var(--ui-hud-ink);
+}
+:is(.ui-settings, .ui-hud-choice) .ui-hud-reply::before {
+  inset: 0;
+  background: var(--settings-edge);
+}
+:is(.ui-settings, .ui-hud-choice) .ui-hud-reply::after {
   content: "";
   position: absolute;
-  inset: auto 12px 4px;
-  border-block-end: 3px solid var(--ui-hud-accent);
+  inset: var(--settings-stroke);
+  z-index: -1;
+  clip-path: var(--rshape);
+  background: var(--settings-fill);
 }
+:is(.ui-settings, .ui-hud-choice) .ui-hud-reply:enabled:hover { --settings-edge: var(--ui-hud-accent); }
+:is(.ui-settings, .ui-hud-choice) .ui-hud-reply:focus-visible {
+  outline: 2px solid var(--ui-hud-accent);
+  outline-offset: 2px;
+}
+:is(.ui-settings, .ui-hud-choice) .ui-hud-reply:disabled { opacity: 0.45; cursor: default; }
+.ui-settings__check { color: var(--ui-hud-accent); }
 .ui-settings__row:not(button) {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 58%);

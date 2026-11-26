@@ -2,6 +2,7 @@ import { LOD, MathUtils, Mesh, type Object3D } from "three";
 import type { DEM } from "../environment/dem";
 import { terrainHeight, type Biome } from "../environment/terrain";
 import { inventoryIds } from "../kit/inventory";
+import { AIRLOCK_ENTRY_LODS } from "../kit/pieces/mars/airlock-entry";
 import { LANDING_PAD_LODS } from "../kit/pieces/mars/landing-pad";
 import type { PieceRegistry } from "../kit/registry";
 import { materials } from "../materials/shared";
@@ -113,7 +114,8 @@ export function buildColonyGroup(layout: ColonyLayout, registry: PieceRegistry, 
     }
     piece.position.set(cx, groundY + (item.yOffset ?? 0), cz);
     if (item.rot) piece.rotation.y = MathUtils.degToRad(item.rot);
-    if (item.id === "MI-07") {
+    const detailLevels = item.id === "MI-07" ? LANDING_PAD_LODS : item.id === "NX-04" ? AIRLOCK_ENTRY_LODS : null;
+    if (detailLevels) {
       const lod = new LOD();
       lod.name = piece.name;
       lod.autoUpdate = false;
@@ -122,7 +124,7 @@ export function buildColonyGroup(layout: ColonyLayout, registry: PieceRegistry, 
       piece.position.set(0, 0, 0);
       piece.rotation.set(0, 0, 0);
       lod.addLevel(piece, 0);
-      for (const [index, detail] of LANDING_PAD_LODS.slice(1).entries()) {
+      for (const [index, detail] of detailLevels.slice(1).entries()) {
         const simplified = registry.build(item.id, { detail });
         simplified.visible = false;
         lod.addLevel(simplified, index === 0 ? 62 : 105, 0.12);

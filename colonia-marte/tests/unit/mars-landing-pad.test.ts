@@ -32,6 +32,7 @@ describe("MI-07 landing pad", () => {
     const [near, middle, far] = pad.levels.map(({ object }) => countColonyTriangles(object));
     expect(near).toBeGreaterThan(middle);
     expect(middle).toBeGreaterThan(far);
-    expect(colony.detailedTriangles).toBe(76404 + near);
+    const entry = layout.placements.find(piece => piece.id === "NX-04")!;
+    expect(colony.detailedTriangles).toBe(76404 + near + countColonyTriangles(registry.build(entry.id, entry.params)));
   });
 });

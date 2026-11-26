@@ -1,0 +1,31 @@
+.ui-loading {
+  box-sizing: border-box;
+  position: fixed;
+  inset: 0;
+  z-index: 30;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: var(--ui-hud-panel-solid);
+  color: var(--ui-hud-ink);
+  text-align: center;
+}
+.ui-loading > .ui-hud-frame { position: relative; width: min(520px, 100%); }
+.ui-loading .ui-hud-frame__content { padding: 24px; display: grid; justify-items: center; gap: 12px; }
+.ui-loading__iris { inline-size: 48px; block-size: 48px; color: var(--ui-hud-accent); }
+.ui-loading__iris svg { display: block; inline-size: 100%; block-size: 100%; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.ui-loading__message,
+.ui-loading__fact { margin: 0; inline-size: 100%; }
+/* Latin x-height/em for Chakra Petch 700 and Exo 2 600, including before the web fonts register. */
+.ui-loading__message { font: 700 var(--ui-hud-text-zone)/1.4 var(--ui-hud-font-display); font-size-adjust: 0.498; }
+.ui-loading__fact { font: 600 var(--ui-hud-text-body)/1.4 var(--ui-hud-font-body); font-size-adjust: 0.491; min-block-size: 2lh; }
+.ui-loading__progress { inline-size: min(320px, 100%); block-size: 12px; accent-color: var(--ui-hud-accent); color-scheme: dark; }
+@media (prefers-reduced-motion: no-preference) {
+  .ui-loading__iris { animation: ui-loading-iris 2.4s ease-in-out infinite alternate; }
+}
+@keyframes ui-loading-iris { from { opacity: 0.68; } to { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) {
+  .ui-loading__progress:indeterminate { appearance: none; background: var(--ui-hud-accent-soft); border: 1px solid var(--ui-hud-accent); }
+  .ui-loading__progress:indeterminate::-webkit-progress-bar { background: transparent; }
+  .ui-loading__progress:indeterminate::-webkit-progress-value { background: transparent; }
+}
