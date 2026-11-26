@@ -34,6 +34,8 @@ export const HUD_GLYPHS = {
   minus: svg('<path d="M5 12h14"/>'),
   plus: svg('<path d="M5 12h14M12 5v14"/>'),
   back: svg('<path d="M19 12H5m6-6-6 6 6 6"/>'),
+  check: svg('<path d="m5 12 4 4L19 6"/>'),
+  rocket: svg('<path d="M9 16 8 12c2-5 6-8 12-8 0 6-3 10-8 12l-4-1M8 12H5l-2 5 5-1m4 0v3l-5 2 1-5m-3 3-2 2"/><circle cx="15.5" cy="8.5" r="1.5"/>'),
 } as const;
 export type UIHudGlyph = keyof typeof HUD_GLYPHS;
 const GLYPHS = Object.keys(HUD_GLYPHS) as UIHudGlyph[];
