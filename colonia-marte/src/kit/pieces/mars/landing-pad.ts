@@ -6,6 +6,7 @@ import type { PieceRegistry } from "../../registry";
 import {
   alignBaseCenter, boxCenter, extrudedMesh, parseChoice, parseRecord, weldedColoredGeometry, type PaletteKey,
 } from "../station/helpers";
+import { instanceRunwayEdge, registerRunwayBeacon } from "./runway-beacon";
 
 export const LANDING_PAD_LODS = ["near", "middle", "far"] as const;
 type PadDetail = typeof LANDING_PAD_LODS[number];
@@ -107,14 +108,21 @@ function buildStair(detail: PadDetail) {
 }
 
 export function registerLandingPad(registry: PieceRegistry): void {
-  registry.register<{ detail: PadDetail }>("MI-07", {
-    parse: input => ({ detail: parseChoice(parseRecord(input, ["detail"]).detail, LANDING_PAD_LODS, "near") }),
-    variants: { near: { detail: "near" } },
+  registerRunwayBeacon(registry);
+  registry.register<{ detail: PadDetail; edgeLights: boolean }>("MI-07", {
+    parse: input => {
+      const { detail, edgeLights = false } = parseRecord(input, ["detail", "edgeLights"]);
+      if (typeof edgeLights !== "boolean") throw new Error("edgeLights must be a boolean");
+      return { detail: parseChoice(detail, LANDING_PAD_LODS, "near"), edgeLights };
+    },
+    variants: { near: { detail: "near", edgeLights: false }, lit: { detail: "near", edgeLights: true } },
     metadata: { category: "largeFurniture", pivot: "base-center" },
-    build: ({ detail }) => {
+    build: ({ detail, edgeLights }) => {
       const pad = new Group();
       pad.add(buildDeck(detail), buildSupport(detail), buildStair(detail));
-      return alignBaseCenter(batchStatic(pad));
+      const batch = batchStatic(pad);
+      if (edgeLights && detail === "near") batch.add(instanceRunwayEdge(registry, apothem, surface));
+      return alignBaseCenter(batch);
     },
   });
 }

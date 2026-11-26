@@ -1,5 +1,6 @@
 import { PieceRegistry } from "../registry";
 import { registerMarsPieces } from "./mars";
+import { registerAirlockEntry } from "./mars/airlock-entry";
 import { registerStationPieces } from "./station";
 import { registerCrewPieces } from "./crew";
 
@@ -11,6 +12,7 @@ export function createProductionRegistry(): PieceRegistry {
   const registry = new PieceRegistry();
   registerStationPieces(registry);
   registerMarsPieces(registry);
+  registerAirlockEntry(registry);
   registerCrewPieces(registry);
   return registry;
 }
