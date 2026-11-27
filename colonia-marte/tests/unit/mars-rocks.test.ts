@@ -1,14 +1,14 @@
 import { Mesh } from "three";
 import { describe, expect, it } from "vitest";
 import { paletteUV } from "../../src/materials/atlas";
-import { registerMarsPieces } from "../../src/kit/pieces/mars";
+import { registerMarsRocks } from "../../src/kit/pieces/mars/rocks";
 import { PieceRegistry } from "../../src/kit/registry";
 import { geometryHash } from "../../tools/geometry-inspection";
 import { validateRegistry } from "../../tools/validate-pieces";
 
 describe("T2.4 Mars rocks, pillars, and mesa pieces", () => {
   const registry = new PieceRegistry();
-  registerMarsPieces(registry);
+  registerMarsRocks(registry);
 
   it("registers MT-T04, MT-T05, and MT-T06 and passes specification 8.1 validation", () => {
     const rockIds = ["MT-T04", "MT-T05", "MT-T06"];

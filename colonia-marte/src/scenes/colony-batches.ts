@@ -3,6 +3,7 @@ import {
   type BufferGeometry, type Camera, type Material, type Object3D,
 } from "three";
 import { mergeGeometries } from "three/addons/utils/BufferGeometryUtils.js";
+import { ColonyRenderBatches } from "./colony-render-batches";
 
 interface Part {
   owner: Object3D;
@@ -12,15 +13,31 @@ interface Part {
 
 export class ColonyGroup extends Group {
   private readonly lods: LOD[] = [];
+  private renderBatches?: ColonyRenderBatches;
   detailedTriangles = 0;
 
-  addBuildings(pieces: readonly Object3D[]): void {
-    this.addLOD(makeColonyLOD(pieces));
+  addBuildings(pieces: readonly Object3D[], ranges?: readonly [number, number]): void {
+    this.addLOD(makeColonyLOD(pieces, ranges));
   }
 
   addLOD(lod: LOD): void {
     this.lods.push(lod);
     this.add(lod);
+  }
+
+  optimizeStaticRender(camera?: Camera): void {
+    if (this.renderBatches) return;
+    if (camera) this.updateLods(camera);
+    this.renderBatches = new ColonyRenderBatches(this.lods);
+    this.add(this.renderBatches);
+    this.renderBatches.refresh();
+  }
+
+  restoreStaticRender(): void {
+    if (!this.renderBatches) return;
+    this.renderBatches.dispose();
+    this.remove(this.renderBatches);
+    this.renderBatches = undefined;
   }
 
   updateLods(camera: Camera): boolean {
@@ -30,10 +47,12 @@ export class ColonyGroup extends Group {
       lod.update(camera);
       if (lod.getCurrentLevel() !== previous) changed = true;
     }
+    if (changed) this.renderBatches?.refresh();
     return changed;
   }
 
   dispose(): void {
+    this.renderBatches?.dispose();
     this.traverse(node => {
       if (node instanceof InstancedMesh) node.dispose();
       else if (node instanceof Mesh) node.geometry.dispose();

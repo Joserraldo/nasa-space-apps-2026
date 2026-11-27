@@ -10,6 +10,8 @@ import {
 } from "../station/helpers";
 import { stickerPlacard, valveRedBoxCenter, whiteBoxAt } from "./mars-helpers";
 import { registerLandingPad } from "./landing-pad";
+import { registerColonyStreet } from "./colony-street";
+import { registerStreetLamp } from "./street-lamp";
 
 const pipeVariants = ["bridge", "ground"] as const;
 interface PipeInfraParams { layout: typeof pipeVariants[number] }
@@ -106,6 +108,8 @@ function addStraightCyanSleeveX(group: Group, cx: number, cy: number, tubeR: num
 }
 
 export function registerMarsInfrastructure(registry: PieceRegistry): void {
+  registerColonyStreet(registry);
+  registerStreetLamp(registry);
   registerLandingPad(registry);
   registry.register<PipeInfraParams>("MI-03", {
     parse: parsePipeInfra,

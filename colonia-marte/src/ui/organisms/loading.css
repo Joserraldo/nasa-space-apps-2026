@@ -19,13 +19,22 @@
 /* Latin x-height/em for Chakra Petch 700 and Exo 2 600, including before the web fonts register. */
 .ui-loading__message { font: 700 var(--ui-hud-text-zone)/1.4 var(--ui-hud-font-display); font-size-adjust: 0.498; }
 .ui-loading__fact { font: 600 var(--ui-hud-text-body)/1.4 var(--ui-hud-font-body); font-size-adjust: 0.491; min-block-size: 2lh; }
-.ui-loading__progress { inline-size: min(320px, 100%); block-size: 12px; accent-color: var(--ui-hud-accent); color-scheme: dark; }
+.ui-loading__track { position: relative; inline-size: min(320px, 100%); }
+.ui-loading__progress { display: block; inline-size: 100%; block-size: 12px; accent-color: var(--ui-hud-accent); color-scheme: dark; }
+.ui-loading__progress:indeterminate { appearance: none; background: var(--ui-hud-panel-solid); border: 1px solid var(--ui-hud-accent); }
+.ui-loading__progress:indeterminate::-webkit-progress-bar { background: transparent; }
+.ui-loading__segment { display: none; }
+.ui-loading__progress:indeterminate + .ui-loading__segment {
+  display: block;
+  position: absolute;
+  inset: 3px auto 3px 2%;
+  inline-size: 30%;
+  background: var(--ui-hud-accent);
+  pointer-events: none;
+}
 @media (prefers-reduced-motion: no-preference) {
   .ui-loading__iris { animation: ui-loading-iris 2.4s ease-in-out infinite alternate; }
+  .ui-loading__segment { animation: ui-loading-segment 1.6s ease-in-out infinite alternate; }
 }
 @keyframes ui-loading-iris { from { opacity: 0.68; } to { opacity: 1; } }
-@media (prefers-reduced-motion: reduce) {
-  .ui-loading__progress:indeterminate { appearance: none; background: var(--ui-hud-accent-soft); border: 1px solid var(--ui-hud-accent); }
-  .ui-loading__progress:indeterminate::-webkit-progress-bar { background: transparent; }
-  .ui-loading__progress:indeterminate::-webkit-progress-value { background: transparent; }
-}
+@keyframes ui-loading-segment { to { translate: 220%; } }
