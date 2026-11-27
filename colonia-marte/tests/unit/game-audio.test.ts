@@ -185,6 +185,17 @@ describe("grabaciones en el mezclador", () => {
     expect(f.dichas).toHaveLength(1);
   });
 
+  it("si el navegador no puede leer la grabación, lee la línea con su propia voz", async () => {
+    const f = conGrabaciones();
+    Object.assign(f.ctx, { decodeAudioData: async () => { throw new Error("formato sin soporte"); } });
+    const m = crearMezclador(DEFAULT_SETTINGS, f.entorno);
+    m.desbloquear();
+    m.voz.decir("Hello", "vera");
+    await esperar();
+    expect(f.tocadas).toHaveLength(0);
+    expect(f.dichas.map((x) => x.text)).toEqual(["Hello"]);
+  });
+
   it("si se calla antes de cargar no suena, y los efectos usan su archivo", async () => {
     const f = conGrabaciones();
     const m = crearMezclador(DEFAULT_SETTINGS, f.entorno);

@@ -56,7 +56,7 @@ export function crearMezclador(ajustesIniciales: SettingsState, entorno: Entorno
     volumen: () => GANANCIAS[ajustes.voice],
     idioma: () => idiomaDe(ajustes),
     alHablar: (estado) => { hablando = estado; ajustarVolumen(); },
-    grabada: (texto, idioma, alTerminar) => {
+    grabada: (texto, idioma, alTerminar, alFallar) => {
       const archivo = grabacionDe(texto, idioma, lista);
       // En pausa el audio está detenido: los menús los lee el navegador.
       if (!archivo || !motor?.almacen || pausado || oculto) return null;
@@ -65,7 +65,7 @@ export function crearMezclador(ajustesIniciales: SettingsState, entorno: Entorno
       let callada = false;
       void almacen.pedir(archivo).then((audio) => {
         if (callada) return;
-        if (!audio) { alTerminar(); return; }
+        if (!audio) { alFallar(); return; }
         fuente = ctx.createBufferSource();
         fuente.buffer = audio;
         fuente.connect(voces);

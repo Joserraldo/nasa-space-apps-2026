@@ -36,8 +36,11 @@ export function crearVoz(opciones: {
   idioma: () => Idioma;
   /** Para bajar la música mientras habla. */
   alHablar: (hablando: boolean) => void;
-  /** Reproduce la grabación del texto; devuelve cómo callarla, o null si no hay. */
-  grabada?: (texto: string, idioma: Idioma, alTerminar: () => void) => (() => void) | null;
+  /**
+   * Reproduce la grabación del texto; devuelve cómo callarla, o null si no hay.
+   * `alFallar` avisa que el archivo no cargó o este navegador no sabe leerlo.
+   */
+  grabada?: (texto: string, idioma: Idioma, alTerminar: () => void, alFallar: () => void) => (() => void) | null;
 }) {
   const { sintesis, crearFrase, volumen, idioma, alHablar, grabada } = opciones;
   let activa: SpeechSynthesisUtterance | null = null;
@@ -52,6 +55,27 @@ export function crearVoz(opciones: {
     sintesis?.cancel();
     alHablar(false);
   };
+  /** Lee con la voz del navegador. */
+  function sintetizar(texto: string, lengua: Idioma, quien?: HablanteId | null): boolean {
+    if (!sintesis) return false;
+    const frase = crearFrase(texto);
+    const voz = elegirVoz(sintesis.getVoices(), lengua);
+    // Con la lista cargada y sin voz del idioma se deja solo el texto, en vez de leerlo mal.
+    if (!voz && sintesis.getVoices().length) return false;
+    if (voz) frase.voice = voz as SpeechSynthesisVoice;
+    frase.lang = voz?.lang ?? (lengua === "es" ? "es-US" : "en-US");
+    const timbre = (quien && TIMBRES[quien]) || { tono: 1, ritmo: 0.9 };
+    frase.pitch = timbre.tono;
+    frase.rate = timbre.ritmo;
+    frase.volume = volumen();
+    const terminar = () => { if (activa === frase) { activa = null; alHablar(false); } };
+    frase.onend = terminar;
+    frase.onerror = terminar;
+    activa = frase;
+    alHablar(true);
+    sintesis.speak(frase);
+    return true;
+  }
   return {
     /** El primer toque del niño habilita la voz. */
     desbloquear() { abierta = true; },
@@ -62,26 +86,12 @@ export function crearVoz(opciones: {
       callar();
       const lengua = idioma();
       const mio = turno;
-      parar = grabada?.(texto, lengua, () => { if (mio === turno) { parar = null; alHablar(false); } }) ?? null;
+      parar = grabada?.(texto, lengua,
+        () => { if (mio === turno) { parar = null; alHablar(false); } },
+        () => { if (mio === turno) { parar = null; if (!sintetizar(texto, lengua, quien)) alHablar(false); } },
+      ) ?? null;
       if (parar) { alHablar(true); return true; }
-      if (!sintesis) return false;
-      const frase = crearFrase(texto);
-      const voz = elegirVoz(sintesis.getVoices(), lengua);
-      // Con la lista cargada y sin voz del idioma se deja solo el texto, en vez de leerlo mal.
-      if (!voz && sintesis.getVoices().length) return false;
-      if (voz) frase.voice = voz as SpeechSynthesisVoice;
-      frase.lang = voz?.lang ?? (lengua === "es" ? "es-US" : "en-US");
-      const timbre = (quien && TIMBRES[quien]) || { tono: 1, ritmo: 0.9 };
-      frase.pitch = timbre.tono;
-      frase.rate = timbre.ritmo;
-      frase.volume = volumen();
-      const terminar = () => { if (activa === frase) { activa = null; alHablar(false); } };
-      frase.onend = terminar;
-      frase.onerror = terminar;
-      activa = frase;
-      alHablar(true);
-      sintesis.speak(frase);
-      return true;
+      return sintetizar(texto, lengua, quien);
     },
   };
 }
