@@ -17,6 +17,7 @@ import { registerMarsRoverTruck } from "./rover-truck";
 import { registerRoverTracks } from "./rover-tracks";
 import { registerMarsStrandedRover } from "./stranded-rover";
 import { registerMarsTransit } from "./transit";
+import { registerFamilyLander } from "./family-lander";
 import { registerMarsVehicleGarage } from "./vehicle-garage";
 
 /**
@@ -36,6 +37,7 @@ export function registerMarsPieces(registry: PieceRegistry): void {
   registerMarsInfrastructure(registry);
   registerMarsCommsDish(registry);
   registerMarsTransit(registry);
+  registerFamilyLander(registry);
   registerMarsRoverTruck(registry);
   registerRoverTracks(registry);
   registerMarsStrandedRover(registry);

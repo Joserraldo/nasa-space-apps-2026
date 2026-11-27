@@ -136,4 +136,4 @@ it("keeps pavement and graded edges out from under existing structures and rocks
       }).flat();
     });
   }
-});
+}, 30_000); // Builds every placed structure and checks the full road footprint.

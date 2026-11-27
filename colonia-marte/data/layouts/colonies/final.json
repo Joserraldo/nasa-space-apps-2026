@@ -79,13 +79,13 @@
     {"id": "MT-T05", "at": [-1.2, 15.8], "yOffset": -0.08, "rot": 75, "params": {"biome": "jezero", "formation": "cluster", "seed": 4}}
   ],
   "reservations": [
-    {"id": "MV-10", "at": [20.2, -7.35], "rot": -12}
+    {"id": "MV-12", "at": [20.2, -7.35], "rot": -12}
   ],
   "reservedAreas": [
     {"id": "base-district", "at": [-66, 11], "size": [60, 52], "sublayout": "base-district", "rot": 90}
   ],
   "views": [
-    {"id": "chapter-overview", "label": "Chapter overview", "position": [13, 48, 91], "target": [-27, 0, 8], "fov": 54},
+    {"id": "chapter-overview", "label": "Chapter overview", "position": [13, 32, 91], "target": [-27, 12, 8], "fov": 54},
     {"id": "pilot-eye", "label": "View 2 (Eye Height 1.5 m)", "position": [-5.2, 1.5, 20.8], "eyeHeight": 1.5, "target": [-1.6, 2.6, -5.0], "fov": 54},
     {"id": "landing-pad-review", "label": "Landing pad", "position": [27.5, 7.8, 3.2], "target": [19.7, 1.15, -7.55], "fov": 48},
     {"id": "airlock-review", "label": "Airlock", "position": [0.95, 3.14, 9.46], "target": [0, 1.43, 4.96], "fov": 48},

@@ -20,7 +20,7 @@ const districtViews: ColonyViewSpec[] = [
 ];
 const arrivalView: ColonyViewSpec = {
   id: "family-arrival", label: "Family arrival",
-  position: [37.4, 8.1, 3.8], target: [20.2, 4.6, -7.35], fov: 57,
+  position: [31, 4.1, 4], target: [20.2, 5.1, -7.35], fov: 48,
 };
 
 function road(at: PlanPoint, points: PlanPoint[], districtConnector: "arterial" | "hub"): ColonyPlacementSpec {

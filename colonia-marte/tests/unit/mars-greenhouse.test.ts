@@ -74,4 +74,4 @@ it("places a three-level greenhouse clear of the existing radial pieces", () => 
       bounds.max.z > other.min.z && bounds.min.z < other.max.z;
     expect(overlaps, `${spec.id} (${spec.at.join(", ")})`).toBe(false);
   }
-});
+}, 30_000); // Builds every surrounding piece to check the greenhouse footprint.

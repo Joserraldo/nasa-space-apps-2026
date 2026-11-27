@@ -24,6 +24,7 @@ import { countColonyTriangles } from "./colony-batches";
 import { composeColonyLayout } from "./colony-district";
 import { selectColonyEnvironment } from "./colony-environment";
 import { createFamilyArrival } from "./colony-arrival";
+import { createOrbitalTransit } from "./colony-orbit";
 
 export { buildColonyGroup, parseColonyLayout };
 
@@ -147,6 +148,8 @@ export async function mountExteriorPilot(input: unknown = colonyJson): Promise<v
   const navigation = createNavigation(camera, renderer.domElement, joystick.state);
   const batchChapter = ["c4", "c5", "final"].includes(layout.id);
   const landingPad = layout.id === "final" ? layout.placements.find(item => item.id === "MI-07") : undefined;
+  const orbitalTransit = layout.id === "final" ? createOrbitalTransit(registry) : undefined;
+  if (orbitalTransit) scene.add(orbitalTransit.ship);
   const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)");
   let arrival: ReturnType<typeof createFamilyArrival> | undefined;
   let arrivalAltitude: number | null = null;
@@ -162,9 +165,10 @@ export async function mountExteriorPilot(input: unknown = colonyJson): Promise<v
     camera.updateProjectionMatrix();
     navigation.orbit.update();
     const landing = view.id === "family-arrival";
+    if (orbitalTransit) orbitalTransit.ship.visible = landing || view.id === "chapter-overview";
     if (landing && landingPad && !arrival) {
       arrival = createFamilyArrival(landingPad, terrainHeight(...landingPad.at, terrainOpts), registry);
-      scene.add(arrival.ship);
+      scene.add(arrival.ship, arrival.dust);
     }
     const altitude = arrival?.show(landing, reducedMotion.matches);
     arrivalAltitude = landing ? altitude ?? null : null;
@@ -216,6 +220,7 @@ export async function mountExteriorPilot(input: unknown = colonyJson): Promise<v
   shell.walk.onclick = () => {
     if (!batchChapter) colony.restoreStaticRender();
     arrival?.show(false, false);
+    if (orbitalTransit) orbitalTransit.ship.visible = false;
     arrivalAltitude = null;
     renderer.shadowMap.needsUpdate = true;
     rendering.ao.firstFrame();
@@ -308,6 +313,8 @@ export async function mountExteriorPilot(input: unknown = colonyJson): Promise<v
     sky.dispose();
     if (rockScatter) disposeRockScatter(rockScatter);
     colony.dispose();
+    arrival?.dispose();
+    orbitalTransit?.dispose();
     rendering.dispose();
   }, { once: true });
 
