@@ -7,12 +7,22 @@ import {
 import {
   cyanEquipPod, stickerPlacard, valveRedBoxCenter, ventGrilleGroup, whiteBoxAt,
 } from "./mars-helpers";
+import { registerFuelTank } from "./fuel-tank";
+import { buildDepotHangar, buildWorkshopGarage } from "./depot-hangar";
+import { buildSkylightStorage } from "./skylight-storage";
+import { vehicleDetailLevels, type VehicleDetail } from "./rover-truck";
 
-const bayStyles = ["utility", "hangar"] as const;
-interface UtilityBayParams { style: typeof bayStyles[number] }
+export const bayStyles = ["utility", "hangar", "depot", "workshop", "skylight", "skylightOpen"] as const;
+export interface UtilityBayParams {
+  style: typeof bayStyles[number];
+  detail: VehicleDetail;
+}
 function parseUtilityBay(input: unknown): UtilityBayParams {
-  const rec = parseRecord(input, ["style"]);
-  return { style: parseChoice(rec.style, bayStyles, "utility") };
+  const rec = parseRecord(input, ["style", "detail"]);
+  return {
+    style: parseChoice(rec.style, bayStyles, "utility"),
+    detail: parseChoice(rec.detail, vehicleDetailLevels, "near"),
+  };
 }
 
 const cargoStyles = ["standard", "hazard"] as const;
@@ -45,14 +55,23 @@ function circularRoofHatch(x: number, y: number, z: number): Group {
 }
 
 export function registerMarsIndustrial(registry: PieceRegistry): void {
+  registerFuelTank(registry);
   registry.register<UtilityBayParams>("MB-10", {
     parse: parseUtilityBay,
     variants: {
-      utility: { style: "utility" },
-      hangar: { style: "hangar" },
+      utility: { style: "utility", detail: "near" },
+      hangar: { style: "hangar", detail: "near" },
+      depot: { style: "depot", detail: "near" },
+      workshop: { style: "workshop", detail: "near" },
+      skylight: { style: "skylight", detail: "near" },
+      skylightOpen: { style: "skylightOpen", detail: "near" },
     },
     metadata: { category: "building", pivot: "base-center" },
-    build: ({ style }) => {
+    build: ({ style, detail }) => {
+      if (style === "depot") return buildDepotHangar(detail);
+      if (style === "workshop") return buildWorkshopGarage(detail);
+      if (style === "skylight") return buildSkylightStorage(detail, false);
+      if (style === "skylightOpen") return buildSkylightStorage(detail, true);
       const group = new Group();
       // Rectangular industrial bay module with 3x3 circular roof hatches matching v3-t054.60.
       const w = 7.2, h = 2.28, d = 5.4;

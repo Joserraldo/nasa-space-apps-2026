@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { Color, InstancedMesh, LOD, Matrix4, Mesh, Raycaster, SRGBColorSpace, Vector3 } from "three";
+import { Box3, Color, InstancedMesh, LOD, Matrix4, Mesh, Raycaster, SRGBColorSpace, Vector3 } from "three";
 import { createProductionRegistry } from "../../src/kit/pieces";
 import { paletteUV } from "../../src/materials/atlas";
 import { paletteHex } from "../../src/materials/palette";
@@ -8,6 +8,20 @@ import { createSpaceShot, SPACE_DURATION } from "../../src/scenes/space-shot";
 import { triangleCount } from "../../tools/geometry-inspection";
 
 describe("the transit intro shot", () => {
+  it("uses the longer family transport with two new cabins and landing lights", () => {
+    const registry = createProductionRegistry();
+    const { ship } = createSpaceShot(registry, 16 / 9, undefined, "MV-10");
+    expect(ship.name).toBe("MV-10");
+    const original = new Box3().setFromObject(registry.build("MV-09")).getSize(new Vector3());
+    for (const { object } of ship.levels) {
+      expect(object.getObjectByName("family-habitat-1")).toBeDefined();
+      expect(object.getObjectByName("family-habitat-2")).toBeDefined();
+      expect(object.getObjectByName("landing-lights")).toBeDefined();
+      expect(triangleCount(object)).toBeLessThanOrEqual(25000);
+    }
+    expect(new Box3().setFromObject(registry.build("MV-10")).getSize(new Vector3()).x).toBeGreaterThan(original.x + 5);
+  });
+
   it("uses registered parts and retains three descending ship detail levels", () => {
     const registry = createProductionRegistry();
     const { ship, earth, preset } = createSpaceShot(registry, 16 / 9);

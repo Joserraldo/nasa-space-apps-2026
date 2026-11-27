@@ -16,9 +16,14 @@ export function mountSpace(): void {
 
   const rendering = createRendering(viewport);
   const { renderer, scene, camera, composer, stats } = rendering;
-  const capture = new URLSearchParams(location.search).get("capture");
+  const query = new URLSearchParams(location.search);
+  const capture = query.get("capture");
   const captureAngle = capture === "detail" || capture === "thrusters" ? capture : undefined;
-  const shot = createSpaceShot(createProductionRegistry(), camera.aspect, captureAngle);
+  const requestedShip = query.get("ship");
+  const lander = requestedShip === "mv-12";
+  const shot = createSpaceShot(createProductionRegistry(), camera.aspect, captureAngle,
+    lander ? "MV-12" : requestedShip === "mv-10" ? "MV-10" : "MV-09");
+  if (lander) document.title = "Families' descent vehicle | Mars Colony";
   camera.copy(shot.camera);
   camera.updateMatrixWorld();
   applyEnvironment(rendering, shot.preset);
@@ -36,7 +41,7 @@ export function mountSpace(): void {
   rendering.ao.enabled = false;
   const backdrop = materials.M_sky;
   backdrop.uniforms.planetDirection.value.copy(shot.earthCenter).sub(camera.position).normalize();
-  backdrop.uniforms.planetRadius.value = shot.earth.scale.x / shot.earthCenter.distanceTo(camera.position);
+  backdrop.uniforms.planetRadius.value = lander ? 0 : shot.earth.scale.x / shot.earthCenter.distanceTo(camera.position);
   const sky = new Mesh(new SphereGeometry(475, 32, 16), backdrop);
   sky.position.copy(camera.position);
   sky.renderOrder = -10;
@@ -48,16 +53,19 @@ export function mountSpace(): void {
     backdrop.uniforms.spaceMode.value = 0;
     backdrop.uniformsNeedUpdate = true;
   };
-  scene.add(rim, sky, shot.earth, shot.ship);
-  renderer.domElement.setAttribute("aria-label", "A transit ship departs, with a small blue Earth in the background");
+  scene.add(rim, sky, shot.ship);
+  if (!lander) scene.add(shot.earth);
+  renderer.domElement.setAttribute("aria-label", lander
+    ? "The families' Mars descent vehicle"
+    : "A transit ship departs, with a small blue Earth in the background");
   stats.dom.hidden = true;
 
-  const still = capture === "1" || captureAngle !== undefined || matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const still = lander || capture === "1" || captureAngle !== undefined || matchMedia("(prefers-reduced-motion: reduce)").matches;
   let time = still ? 0.8 : 0;
   const metrics = {
     preset: shot.preset.id,
     lodTriangles: shot.ship.levels.map(({ object }) => countColonyTriangles(object)),
-    earthTriangles: countColonyTriangles(shot.earth),
+    earthTriangles: lander ? 0 : countColonyTriangles(shot.earth),
     frames: 0,
     calls: 0,
     triangles: 0,

@@ -7,6 +7,10 @@ export const decalTypes = [
   "hazard-airlock",
   "tower-comm",
   "bay-utility",
+  "sector-03",
+  "bay-01",
+  "bay-02",
+  "bay-03",
 ] as const;
 
 export type DecalType = typeof decalTypes[number];
@@ -271,6 +275,40 @@ export function drawDecalSticker(
       ctx.stroke();
     }
     drawBarcode(ctx, 222, 124, 70, 26, "#76A8B8");
+    ctx.restore();
+    return;
+  }
+
+  if (type === "sector-03") {
+    drawPlateBase(ctx, w, h, "#C7CED6", "#66717D", 61);
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect(15, 15, w - 30, h - 30);
+    ctx.clip();
+
+    // Clean painted architectural hull stencil ("03", v3-t010.60 & v3-t044.90)
+    ctx.fillStyle = "#1F262F";
+    drawFittedText(ctx, "03", 52, 134, safeRight, "bold", 118, "sans-serif");
+    ctx.fillStyle = "#485462";
+    drawFittedText(ctx, "SEC-03 // ATMOS", 56, 160, safeRight, "bold", 12, "monospace");
+    ctx.restore();
+    return;
+  }
+
+  if (type.startsWith("bay-0")) {
+    const bayNum = type.slice(4);
+    drawPlateBase(ctx, w, h, "#6B7278", "#C5922E", 70 + Number(bayNum));
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect(15, 15, w - 30, h - 30);
+    ctx.clip();
+
+    ctx.fillStyle = "#CFA038";
+    ctx.fillRect(22, 22, w - 44, 14);
+    ctx.fillStyle = "#D4D8DC";
+    drawFittedText(ctx, bayNum, 78, 126, safeRight, "bold", 94, "monospace");
+    ctx.fillStyle = "#CFA038";
+    drawFittedText(ctx, `CHARGE BAY ${bayNum}`, 44, 160, safeRight, "bold", 15, "monospace");
     ctx.restore();
     return;
   }
