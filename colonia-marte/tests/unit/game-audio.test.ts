@@ -59,9 +59,9 @@ describe("mezclador", () => {
     const m = crearMezclador(DEFAULT_SETTINGS, f.entorno);
     m.desbloquear();
     const [musica, efectos] = f.ganancias;
-    expect([musica!.value, efectos!.value]).toEqual([0.75, 0.75]);
+    expect([musica!.value, efectos!.value]).toEqual([GANANCIAS[3], GANANCIAS[3]]);
     m.ajustar({ ...DEFAULT_SETTINGS, music: 1, sound: 0, voice: 2 });
-    expect([musica!.objetivo, efectos!.objetivo]).toEqual([0.25, 0]);
+    expect([musica!.objetivo, efectos!.objetivo]).toEqual([GANANCIAS[1], 0]);
     expect(m.efecto("boton")).toBe(false);
     m.voz.decir("Hi");
     expect(f.dichas.at(-1)!.volume).toBe(GANANCIAS[2]);
@@ -72,9 +72,9 @@ describe("mezclador", () => {
     const m = crearMezclador(DEFAULT_SETTINGS, f.entorno);
     m.desbloquear();
     m.voz.decir("Hello", "vera");
-    expect(f.ganancias[0]!.objetivo).toBeCloseTo(0.75 * MUSICA_CON_VOZ);
+    expect(f.ganancias[0]!.objetivo).toBeCloseTo(GANANCIAS[3] * MUSICA_CON_VOZ);
     f.dichas.at(-1)!.onend!(new Event("end") as SpeechSynthesisEvent);
-    expect(f.ganancias[0]!.objetivo).toBe(0.75);
+    expect(f.ganancias[0]!.objetivo).toBe(GANANCIAS[3]);
   });
 
   it("la voz sigue el idioma y se calla en nivel 0", () => {
@@ -183,6 +183,17 @@ describe("grabaciones en el mezclador", () => {
     expect(f.dichas).toHaveLength(0);
     m.voz.decir("Something else");
     expect(f.dichas).toHaveLength(1);
+  });
+
+  it("si el navegador no puede leer la grabación, lee la línea con su propia voz", async () => {
+    const f = conGrabaciones();
+    Object.assign(f.ctx, { decodeAudioData: async () => { throw new Error("formato sin soporte"); } });
+    const m = crearMezclador(DEFAULT_SETTINGS, f.entorno);
+    m.desbloquear();
+    m.voz.decir("Hello", "vera");
+    await esperar();
+    expect(f.tocadas).toHaveLength(0);
+    expect(f.dichas.map((x) => x.text)).toEqual(["Hello"]);
   });
 
   it("si se calla antes de cargar no suena, y los efectos usan su archivo", async () => {

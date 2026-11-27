@@ -10,7 +10,7 @@ import type { HablanteId } from "./hablantes";
 
 export type Musica = "calma" | "curiosa" | "tension";
 export type EfectoIntro = "motor" | "pulso" | "iris" | "clic" | "mapa" | "alerta" | "confirmar";
-export type EscenarioId = "space" | "colonia" | "nw-14" | "nw-15" | "nw-16" | "nw-17";
+export type EscenarioId = "space" | "colonia" | "colonia-c2" | "nw-14" | "nw-15" | "nw-16" | "nw-17";
 
 export interface LineaIntro { en: number; hablante: HablanteId | null; linea: string }
 export interface TomaIntro {

@@ -9,7 +9,8 @@ import { ARCHIVOS, crearAlmacen, grabacionDe, type Almacen, type Archivos, type 
 import { apertura, crearReproductor, type Tema } from "./musica";
 import { crearVoz, type Sintesis } from "./voz";
 
-export const GANANCIAS: Record<Level, number> = { 0: 0, 1: 0.25, 2: 0.5, 3: 0.75, 4: 1 };
+/** Curva de volumen: el oído oye en escala logarítmica, así que los pasos bajos van más juntos. */
+export const GANANCIAS: Record<Level, number> = { 0: 0, 1: 0.1, 2: 0.3, 3: 0.6, 4: 1 };
 /** Cuánto queda la música mientras habla la voz. */
 export const MUSICA_CON_VOZ = 0.35;
 
@@ -55,7 +56,7 @@ export function crearMezclador(ajustesIniciales: SettingsState, entorno: Entorno
     volumen: () => GANANCIAS[ajustes.voice],
     idioma: () => idiomaDe(ajustes),
     alHablar: (estado) => { hablando = estado; ajustarVolumen(); },
-    grabada: (texto, idioma, alTerminar) => {
+    grabada: (texto, idioma, alTerminar, alFallar) => {
       const archivo = grabacionDe(texto, idioma, lista);
       // En pausa el audio está detenido: los menús los lee el navegador.
       if (!archivo || !motor?.almacen || pausado || oculto) return null;
@@ -64,7 +65,7 @@ export function crearMezclador(ajustesIniciales: SettingsState, entorno: Entorno
       let callada = false;
       void almacen.pedir(archivo).then((audio) => {
         if (callada) return;
-        if (!audio) { alTerminar(); return; }
+        if (!audio) { alFallar(); return; }
         fuente = ctx.createBufferSource();
         fuente.buffer = audio;
         fuente.connect(voces);

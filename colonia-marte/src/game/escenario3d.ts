@@ -3,6 +3,7 @@
  * vista, sin editarlas, y permite cambiar de escenario y liberar todo.
  */
 import { DirectionalLight, Group, HemisphereLight, InstancedMesh, Mesh, SphereGeometry, Vector3 } from "three";
+import coloniaC2 from "../../data/layouts/colonies/c2-inicio.json";
 import colonia from "../../data/layouts/colonies/exterior-pilot.json";
 import nw14 from "../../data/layouts/rooms/nw-14.json";
 import nw15 from "../../data/layouts/rooms/nw-15.json";
@@ -23,13 +24,17 @@ import { createProductionRegistry } from "../kit/pieces";
 import { paletteHex } from "../materials/palette";
 import { getScreens } from "../materials/screens";
 import { materials, terrainUniforms } from "../materials/shared";
+import { composeColonyLayout } from "../scenes/colony-district";
 import { buildColonyGroup, parseColonyLayout } from "../scenes/colony-layout";
 import { applyExteriorLightingCalibration } from "../scenes/exterior-pilot";
 import { applyInteriorCalibration } from "../scenes/room-viewer";
 import { createSpaceShot, SPACE_DURATION } from "../scenes/space-shot";
 import type { EscenarioId } from "./intro";
 
-const SALAS_3D: Record<Exclude<EscenarioId, "space" | "colonia">, unknown> = { "nw-14": nw14, "nw-15": nw15, "nw-16": nw16, "nw-17": nw17 };
+/** `colonia` es la completa (intro); `colonia-c2`, la base recién llegada del capítulo 2. */
+const COLONIAS = { colonia, "colonia-c2": coloniaC2 } as const;
+
+const SALAS_3D: Record<Exclude<EscenarioId, "space" | keyof typeof COLONIAS>, unknown> = { "nw-14": nw14, "nw-15": nw15, "nw-16": nw16, "nw-17": nw17 };
 
 /** Muestras de la oclusión por vértice: menos que en las rutas de revisión para que la carga sea corta. */
 const MUESTRAS_AO = 16;
@@ -63,8 +68,8 @@ export function crearEscenario3d(contenedor: HTMLElement): Escenario3d {
   let segundosEnEspacio = 0;
 
   /** La colonia en Jezero, armada como en /exterior-pilot pero sin su panel de revisión. */
-  async function prepararColonia(): Promise<Listo> {
-    const plano = parseColonyLayout(colonia, registry);
+  async function prepararColonia(id: keyof typeof COLONIAS): Promise<Listo> {
+    const plano = composeColonyLayout(parseColonyLayout(COLONIAS[id], registry), registry);
     const respuesta = await fetch(demURL);
     if (!respuesta.ok) throw new Error(`terreno: ${respuesta.status}`);
     const dem = decodeJezeroDEM(await respuesta.arrayBuffer());
@@ -89,7 +94,7 @@ export function crearEscenario3d(contenedor: HTMLElement): Escenario3d {
 
   async function preparar(id: EscenarioId): Promise<void> {
     if (listos.has(id)) return;
-    if (id === "colonia") { listos.set(id, await prepararColonia()); return; }
+    if (id === "colonia" || id === "colonia-c2") { listos.set(id, await prepararColonia(id)); return; }
     const grupo = new Group();
     if (id === "space") {
       const espacio = createSpaceShot(registry, camera.aspect);
