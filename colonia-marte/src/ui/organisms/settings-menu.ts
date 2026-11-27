@@ -1,5 +1,6 @@
 import { createHudFrame, createHudGlyph, createHudTab, hudFrameContent, voiceText, type UIHudGlyph } from "../atoms/hud-atoms";
 import { CREDITS } from "../content/credits";
+import { getUiStrings, uiText, type UIStrings } from "../i18n";
 import { createHudChoice, type HudChoiceOption } from "../molecules/hud-choice";
 import { createHudHoldGate } from "../molecules/hud-hold-gate";
 import { createHudStepper } from "../molecules/hud-stepper";
@@ -8,9 +9,9 @@ import { DEFAULT_SETTINGS, setSetting, stepSetting, type SettingsState, type Vol
 import { createHudReply, type UIHudReplyParams } from "./crew-dialogue";
 
 const TABS = [
-  { id: "sound", label: "Sound", glyph: "sound" },
-  { id: "play", label: "Play", glyph: "play" },
-  { id: "grownups", label: "Grown-ups", glyph: "shield" },
+  { id: "sound", key: "sonido", glyph: "sound" },
+  { id: "play", key: "jugar", glyph: "play" },
+  { id: "grownups", key: "adultos", glyph: "shield" },
 ] as const;
 export type SettingsTab = (typeof TABS)[number]["id"];
 export function isSettingsTab(value: string | null): value is SettingsTab {
@@ -24,7 +25,6 @@ export interface SettingsCallbacks {
   onBack?: () => void;
 }
 
-const ON_OFF = [{ value: false, label: "Off" }, { value: true, label: "On" }] as const;
 let nextId = 0;
 
 function element<K extends keyof HTMLElementTagNameMap>(tag: K, className: string): HTMLElementTagNameMap[K] {
@@ -39,25 +39,31 @@ function action(label: string, glyph: UIHudReplyParams["glyph"], run: () => void
   return button;
 }
 
-function buildCredits(): HTMLElement {
+function buildCredits(text: ReturnType<typeof uiText>): HTMLElement {
   const content = element("div", "ui-settings__credits");
   for (const { sources, license, details } of CREDITS) {
     const entry = element("section", "ui-settings__credit");
     for (const { title, author, url } of sources) {
-      const link = voiceText("a", "ui-settings__credit-source", `${title} by ${author}`);
+      const link = voiceText("a", "ui-settings__credit-source", text("componente.ajustes.creditos.autor", { title, author }));
       link.href = url;
       link.target = "_blank";
       link.rel = "noopener";
       entry.append(link);
     }
-    entry.append(voiceText("p", "ui-settings__license", license));
-    for (const line of details) entry.append(voiceText("p", "", line));
+    for (const [index, line] of [license, ...details].entries()) {
+      const paragraph = voiceText("p", index === 0 ? "ui-settings__license" : "", line);
+      paragraph.setAttribute("lang", "en");
+      entry.append(paragraph);
+    }
     content.append(entry);
   }
   return content;
 }
 
-export function createSettingsMenu(initial: SettingsState, callbacks: SettingsCallbacks = {}) {
+export function createSettingsMenu(initial: SettingsState, callbacks: SettingsCallbacks = {}, strings: UIStrings = getUiStrings(initial.language)) {
+  const text = uiText(strings);
+  const label = (key: string) => text(`componente.ajustes.${key}`);
+  const onOff = [{ value: false, label: label("no") }, { value: true, label: label("si") }] as const;
   let state = initial;
   let active: SettingsTab = "sound";
   let screen: "options" | "reset" | "credits" = "options";
@@ -67,12 +73,12 @@ export function createSettingsMenu(initial: SettingsState, callbacks: SettingsCa
   const slab = element("div", "ui-pause__slab ui-settings__slab");
   const tablist = element("div", "ui-settings__tabs");
   tablist.setAttribute("role", "tablist");
-  tablist.setAttribute("aria-label", "Settings sections");
+  tablist.setAttribute("aria-label", label("secciones"));
   const panels = element("div", "ui-settings__panels");
   const updates: ((next: SettingsState, previous: SettingsState) => void)[] = [];
 
   const tabs = TABS.map(tab => {
-    const button = action(tab.label, tab.glyph, () => activate(tab.id));
+    const button = action(label(tab.key), tab.glyph, () => activate(tab.id));
     const glyph = button.querySelector<HTMLElement>(".ui-hud-reply__glyph");
     const check = createHudGlyph("check", "ui-hud-reply__glyph ui-settings__check");
     button.prepend(check);
@@ -80,6 +86,7 @@ export function createSettingsMenu(initial: SettingsState, callbacks: SettingsCa
     button.setAttribute("role", "tab");
     const panel = element("section", "ui-settings__panel");
     panel.id = `${id}-${tab.id}-panel`;
+    button.setAttribute("aria-controls", panel.id);
     panel.setAttribute("role", "tabpanel");
     panel.setAttribute("aria-labelledby", button.id);
     tablist.append(button);
@@ -99,14 +106,14 @@ export function createSettingsMenu(initial: SettingsState, callbacks: SettingsCa
     tabs[index].button.focus();
   });
 
-  const volumeRows = [["music", "Music", "music"], ["voice", "Voices", "voice"], ["sound", "Sounds", "sound"]] as const;
-  for (const [key, label, glyph] of volumeRows) {
-    const stepper = createHudStepper({ label, glyph, level: state[key], onStep: delta => changeVolume(key, delta) });
+  const volumeRows = [["music", "musica", "music"], ["voice", "voces", "voice"], ["sound", "efectos", "sound"]] as const;
+  for (const [key, name, glyph] of volumeRows) {
+    const stepper = createHudStepper({ label: label(name), glyph, level: state[key], onStep: delta => changeVolume(key, delta), strings });
     updates.push((next, previous) => { if (next[key] !== previous[key]) stepper.setLevel(next[key]); });
     sound.panel.append(stepper.root);
   }
 
-  function choice<K extends "difficulty" | "bigText" | "joystickSide" | "hardcore">(
+  function choice<K extends "difficulty" | "bigText" | "joystickSide" | "hardcore" | "language">(
     key: K, label: string, glyph: UIHudGlyph,
     options: readonly [HudChoiceOption<SettingsState[K]>, HudChoiceOption<SettingsState[K]>, HudChoiceOption<SettingsState[K]>?],
   ) {
@@ -118,46 +125,51 @@ export function createSettingsMenu(initial: SettingsState, callbacks: SettingsCa
   }
 
   play.panel.append(
-    choice("difficulty", "Challenge", "objective", [
-      { value: "easy", label: "Easy", voiceLine: "Easy: no clock, no numbers." },
-      { value: "medium", label: "Medium", voiceLine: "Medium: numbers appear." },
-      { value: "hard", label: "Hard", voiceLine: "Hard: the clock runs." },
+    choice("difficulty", label("reto"), "objective", [
+      { value: "easy", label: label("facil"), voiceLine: label("facil.voz") },
+      { value: "medium", label: label("media"), voiceLine: label("media.voz") },
+      { value: "hard", label: label("dificil"), voiceLine: label("dificil.voz") },
     ]),
-    choice("bigText", "Big text", "text", ON_OFF),
-    choice("joystickSide", "Joystick side", "tap", [{ value: "left", label: "Left" }, { value: "right", label: "Right" }]),
+    choice("bigText", label("textoGrande"), "text", onOff),
+    choice("language", label("idioma"), "voice", [
+      { value: "en", label: label("idioma.en") }, { value: "es", label: label("idioma.es") },
+    ]),
   );
 
   const adultOptions = element("div", "ui-settings__options");
   adultOptions.hidden = true;
-  const hardcore = choice("hardcore", "Hardcore mode", "battery", ON_OFF);
+  const hardcore = choice("hardcore", label("hardcore"), "battery", onOff);
+  const joystick = choice("joystickSide", label("joystick"), "tap", [
+    { value: "left", label: label("izquierda") }, { value: "right", label: label("derecha") },
+  ]);
   const hold = createHudHoldGate(() => {
     hold.root.hidden = true;
     adultOptions.hidden = false;
     hardcore.querySelector<HTMLButtonElement>("button")?.focus();
-  });
-  const resetButton = action("Reset progress", "home", () => show("reset", keep));
-  const creditsButton = action("Credits", "iris", () => show("credits", creditsBack));
+  }, strings);
+  const resetButton = action(label("reiniciar"), "home", () => show("reset", keep));
+  const creditsButton = action(label("creditos"), "iris", () => show("credits", creditsBack));
   for (const button of [resetButton, creditsButton]) button.classList.add("ui-settings__row");
-  adultOptions.append(hardcore, resetButton, creditsButton);
+  adultOptions.append(hardcore, joystick, resetButton, creditsButton);
   adult.panel.append(hold.root, adultOptions);
 
   const reset = element("section", "ui-settings__detail");
-  const keep = action("Keep my game", "back", returnToAdult);
-  const erase = action("Erase everything", "none", () => {
+  const keep = action(label("conservar"), "back", returnToAdult);
+  const erase = action(label("borrar"), "none", () => {
     callbacks.onResetProgress?.();
     returnToAdult();
   });
-  const warning = voiceText("h2", "ui-settings__detail-title", "Erase your saved progress?");
+  const warning = voiceText("h2", "ui-settings__detail-title", label("reiniciar.pregunta"));
   warning.id = `${id}-reset-title`;
   keep.setAttribute("aria-describedby", warning.id);
   erase.setAttribute("aria-describedby", warning.id);
   reset.append(warning, keep, erase);
 
   const credits = element("section", "ui-settings__detail");
-  const creditsBack = action("Back to Grown-ups", "back", returnToAdult);
-  const creditsHeading = voiceText("h2", "ui-settings__detail-title", "Credits");
-  credits.append(creditsHeading, buildCredits(), creditsBack);
-  const back = action("Back", "back", () => {
+  const creditsBack = action(label("creditos.volver"), "back", returnToAdult);
+  const creditsHeading = voiceText("h2", "ui-settings__detail-title", label("creditos"));
+  credits.append(creditsHeading, buildCredits(text), creditsBack);
+  const back = action(label("volver"), "back", () => {
     if (screen === "options") close();
     else returnToAdult();
   });
@@ -165,11 +177,11 @@ export function createSettingsMenu(initial: SettingsState, callbacks: SettingsCa
   slab.append(tablist, panels, reset, credits, back);
 
   const side = element("div", "ui-pause__side");
-  const title = voiceText("h1", "ui-pause__status-word", "Settings");
+  const title = voiceText("h1", "ui-pause__status-word", label("titulo"));
   title.id = `${id}-title`;
   const card = createHudFrame({ corner: "top-left", double: true, accentEdge: true });
   card.classList.add("ui-pause__mission");
-  hudFrameContent(card).append(createHudTab({ label: "Changes save by themselves", glyph: "none" }));
+  hudFrameContent(card).append(createHudTab({ label: label("guardado"), glyph: "none" }));
   side.append(title, card);
   dialog.append(element("span", "ui-pause__hex"), slab, side);
 

@@ -12,7 +12,8 @@ export const LANDING_PAD_LODS = ["near", "middle", "far"] as const;
 type PadDetail = typeof LANDING_PAD_LODS[number];
 const radius = 5.65;
 const apothem = radius * Math.cos(Math.PI / 8);
-const surface = 1.58;
+export const LANDING_PAD_DECK_HEIGHT = 1.58;
+const surface = LANDING_PAD_DECK_HEIGHT;
 export const LANDING_PAD_CLEARANCE = 7.15;
 
 function crossBrace(from: Vector3, to: Vector3, width: number) {

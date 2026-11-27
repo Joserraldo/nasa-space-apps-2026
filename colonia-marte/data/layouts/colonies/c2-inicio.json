@@ -1,0 +1,19 @@
+{
+  "id": "c2-inicio",
+  "name": "C2: Arrival at Jezero",
+  "biome": "jezero",
+  "environment": "AMB-04",
+  "terrainSeed": 42,
+  "placements": [
+    {"id": "MB-02", "at": [0, 0], "yOffset": -0.18, "rot": 22.5, "params": {"style": "colony"}},
+    {"id": "NX-04", "at": [0, 4.48], "yOffset": -0.075},
+    {"id": "MB-01", "at": [3.79, 9.15], "yOffset": -0.2, "rot": 22.5, "params": {"mode": "warm", "unit": "03"}},
+    {"id": "MI-07", "at": [20.2, -7.35], "yOffset": -0.26, "rot": -12, "params": {"detail": "near", "edgeLights": true}},
+    {"id": "MI-04", "at": [16.4, 1.6], "yOffset": -0.18, "rot": -20, "params": {"mode": "tracking"}},
+    {"id": "MI-01", "at": [0, 0.4], "params": {"layout": "plaza", "size": [10, 9], "outline": [[-3.6, -4.5], [3.6, -4.5], [5, -3.1], [5, 3.1], [3.6, 4.5], [-3.6, 4.5], [-5, 3.1], [-5, -3.1]], "lanes": []}},
+    {"id": "MI-05", "at": [8.8, -6.6], "yOffset": -0.1, "rot": -26}
+  ],
+  "views": [
+    {"id": "chapter-overview", "label": "Chapter overview", "position": [37, 22, 42], "target": [8, 0.9, 1], "fov": 53}
+  ]
+}

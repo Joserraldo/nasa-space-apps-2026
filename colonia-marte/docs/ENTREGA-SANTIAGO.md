@@ -173,8 +173,8 @@ Decisión de María Paula (26 nov): **ella se encarga del exterior** y **Santiag
 
 | Dueño | Carpetas nuevas o que cambian de dueño |
 |---|---|
-| **Santiago** | `data/layouts/rooms/` (salas nuevas), `src/kit/pieces/station/` (muebles y props de sala), `src/scenes/nw*-room.ts` y sus rutas `/room/*`, la colonia por capítulo (T5.5: qué salas existen y cómo se conectan) y B6 (la tripulación colocada en NW-16) |
-| **María Paula** (con Carbon y OpenCode) | `src/kit/pieces/mars/`, `data/layouts/colonies/`, `src/scenes/exterior-pilot.ts`, `src/scenes/space*.ts`, la UI (`src/ui/`) y las ilustraciones 2D de la intro y la portada |
+| **Santiago** | `data/layouts/rooms/` (salas nuevas), `src/kit/pieces/station/` (muebles y props de sala), `src/scenes/nw*-room.ts` y sus rutas `/room/*`, qué salas interiores existen en cada capítulo y cómo se conectan (la parte interior de T5.5) y B6 (la tripulación colocada en NW-16) |
+| **María Paula** (con Carbon y OpenCode) | `src/kit/pieces/mars/`, `data/layouts/colonies/`, `src/scenes/exterior-pilot.ts`, `src/scenes/space*.ts`, **la colonia exterior por capítulo** (`data/layouts/colonies/c2-inicio.json` a `final.json`, ruta `/colony?chapter=`), la UI (`src/ui/`) y las ilustraciones 2D de la intro y la portada |
 | **Compartido, con aviso** | `src/kit/primitives/`, `src/kit/registry.ts`, `src/materials/`, `palette.json`, `src/core/`. Si una sala necesita un material o una primitiva nueva, se pide |
 
 ### Salas que faltan
@@ -203,3 +203,9 @@ Para la primera versión (intro, C1 y C2) alcanza con **NW-12, NW-09 y NW-08**. 
 7. Antes de cada commit: build, tsc, vitest y validate:pieces en salida 0.
 
 **Referencias visuales:** las salas se hacen comparando con fotogramas de referencia que **no están en el repo público** por derechos (sección 6). María Paula te los pasa por un canal privado. Cada fila del inventario dice qué fotograma usar (`v1-t016.10`, `v2-t059.80`...).
+
+### Corrección (26 nov): la colonia por capítulo se divide
+
+El exterior de cada capítulo lo hace María Paula (OpenCode): `data/layouts/colonies/c2-inicio.json` (la base inicial con la plataforma y los 2 primeros módulos), `c3.json`, `c4.json`, `c5.json` y `final.json`, con la ruta `/colony?chapter=c2|c3|c4|c5|final`. Tu `src/game/` elige cuál cargar según el capítulo. A ti te queda la parte interior: qué salas existen en cada capítulo y cómo se conectan (toda salida al exterior pasa por la esclusa NW-05).
+
+En curso en el exterior: la plataforma pavimentada de la colonia, la entrada principal, la zona de vehículos (hangares, estacionamiento, rovers) y los layouts por capítulo.

@@ -131,7 +131,7 @@ export function mountInteriorRoom(
   scene.add(skyDome, baked.group, built.lightsGroup);
 
   const joystick = createJoystick(shell.joystick);
-  const navigation = createNavigation(camera, renderer.domElement, joystick.state);
+  const navigation = createNavigation(camera, renderer.domElement, joystick.state, layout);
 
   const applyView = (view: RoomCameraView) => {
     navigation.setMode("orbit");

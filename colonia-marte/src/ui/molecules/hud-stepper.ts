@@ -2,21 +2,24 @@ import { createHudMeter, createHudTab, voiceText, type UIHudGlyph } from "../ato
 import { createHudReply } from "../organisms/crew-dialogue";
 import type { UIRegistry } from "../registry";
 import type { Level } from "../state/settings";
+import { uiText, type UIStrings } from "../i18n";
 
 export interface HudStepperParams {
   label: string;
   glyph: UIHudGlyph;
   level: Level;
   onStep: (delta: -1 | 1) => void;
+  strings?: UIStrings;
 }
 
-export function createHudStepper({ label, glyph, level, onStep }: HudStepperParams) {
+export function createHudStepper({ label, glyph, level, onStep, strings }: HudStepperParams) {
+  const text = uiText(strings);
   const root = document.createElement("div");
   root.className = "ui-settings__row ui-hud-stepper";
   const controls = document.createElement("div");
   controls.className = "ui-hud-stepper__controls";
   const stepButton = (delta: -1 | 1) => {
-    const name = `${label} ${delta < 0 ? "quieter" : "louder"}`;
+    const name = text(delta < 0 ? "componente.ajustes.bajar" : "componente.ajustes.subir", { label });
     const button = createHudReply({ glyph: delta < 0 ? "minus" : "plus", voiceLine: name });
     button.querySelector(".ui-hud-reply__label")?.remove();
     button.classList.add("ui-hud-stepper__button");
@@ -29,10 +32,10 @@ export function createHudStepper({ label, glyph, level, onStep }: HudStepperPara
   const meter = document.createElement("div");
   meter.className = "ui-hud-stepper__level";
   meter.setAttribute("role", "meter");
-  meter.setAttribute("aria-label", `${label} volume`);
+  meter.setAttribute("aria-label", text("componente.ajustes.volumen", { label }));
   meter.setAttribute("aria-valuemin", "0");
   meter.setAttribute("aria-valuemax", "4");
-  const off = voiceText("span", "ui-hud-stepper__off", "Off", `${label} is off.`);
+  const off = voiceText("span", "ui-hud-stepper__off", text("componente.ajustes.apagado"), text("componente.ajustes.apagado.voz", { label }));
   controls.append(minus, meter, plus);
   root.append(createHudTab({ label, glyph }), controls);
 
@@ -43,7 +46,7 @@ export function createHudStepper({ label, glyph, level, onStep }: HudStepperPara
     if (previous === minus && minus.disabled) plus.focus();
     if (previous === plus && plus.disabled) minus.focus();
     meter.setAttribute("aria-valuenow", String(value));
-    meter.setAttribute("aria-valuetext", value === 0 ? "Off" : `${value} of 4`);
+    meter.setAttribute("aria-valuetext", value === 0 ? text("componente.ajustes.apagado") : text("componente.ajustes.nivel", { value }));
     off.hidden = value !== 0;
     meter.replaceChildren(createHudMeter({ level: value / 4, cells: 5 }), off);
   }
