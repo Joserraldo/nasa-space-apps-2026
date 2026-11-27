@@ -1,5 +1,6 @@
 import { createHudFrame, createHudGlyph, createHudTab, hudFrameContent, voiceText, type UIHudGlyph } from "../atoms/hud-atoms";
 import type { UIRegistry } from "../registry";
+import { uiText, type UIStrings } from "../i18n";
 
 /**
  * Pause menu organism (UI v3). Layout language from the Polar Sci-Fi Facility pause menu (light diagonal
@@ -15,17 +16,18 @@ export interface PauseMenuState {
   voiceLine: string;
 }
 
-export function createPauseMenu(state: PauseMenuState, onChoose: (id: string) => void = () => {}) {
+export function createPauseMenu(state: PauseMenuState, onChoose: (id: string) => void = () => {}, strings?: UIStrings) {
+  const text = uiText(strings);
   const dialog = document.createElement("dialog");
   dialog.className = "ui-pause";
-  dialog.setAttribute("aria-label", "Game paused");
+  dialog.setAttribute("aria-label", text("componente.pausa.dialogo"));
   dialog.dataset.voiceLine = state.voiceLine;
 
   const slab = document.createElement("div");
   slab.className = "ui-pause__slab";
   const title = document.createElement("h2");
   title.className = "ui-pause__title";
-  title.append(voiceText("span", "ui-pause__title-text", "Options", "Options"));
+  title.append(voiceText("span", "ui-pause__title-text", text("componente.pausa.opciones")));
   const titleRule = document.createElement("span");
   titleRule.className = "ui-pause__title-rule";
   title.append(titleRule);
@@ -51,13 +53,14 @@ export function createPauseMenu(state: PauseMenuState, onChoose: (id: string) =>
   side.className = "ui-pause__side";
   const status = document.createElement("div");
   status.className = "ui-pause__status";
-  status.append(voiceText("span", "ui-pause__status-label", "Current status"), voiceText("strong", "ui-pause__status-word", "Paused", state.voiceLine));
+  status.append(voiceText("span", "ui-pause__status-label", text("componente.pausa.situacion")),
+    voiceText("strong", "ui-pause__status-word", text("componente.pausa.pausado"), state.voiceLine));
   const card = createHudFrame({ corner: "top-left", double: true, accentEdge: true });
   card.classList.add("ui-pause__mission");
   const body = document.createElement("div");
   body.className = "ui-pause__mission-body";
   body.append(voiceText("p", "ui-pause__chapter", state.chapter), voiceText("p", "ui-pause__objective", state.objective));
-  hudFrameContent(card).append(createHudTab({ label: "Mission", glyph: "objective" }), body);
+  hudFrameContent(card).append(createHudTab({ label: text("componente.pausa.mision"), glyph: "objective" }), body);
   side.append(status, card);
 
   const pattern = document.createElement("span");

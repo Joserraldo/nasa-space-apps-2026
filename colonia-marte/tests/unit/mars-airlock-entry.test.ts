@@ -28,7 +28,8 @@ describe("NX-04 exterior airlock", () => {
     const placement = layout.placements.find(piece => piece.id === "NX-04");
     expect(placement).toBeDefined();
     expect(layout.placements.find(piece => piece.id === "MB-02")?.at).toEqual([0, 0]);
-    const colony = buildColonyGroup(layout, registry);
+    const placements = layout.placements.filter(piece => piece.id === "NX-04" || piece.id === "MB-02");
+    const colony = buildColonyGroup({ ...layout, placements }, registry);
     const entry = colony.children.find(node => node instanceof LOD && node.name.startsWith("NX-04")) as LOD;
     expect(entry).toBeInstanceOf(LOD);
     expect(entry.levels).toHaveLength(3);

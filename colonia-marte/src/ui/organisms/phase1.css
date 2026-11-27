@@ -12,6 +12,7 @@ body.menu-preview .preview-column > footer { display: none; }
   text-transform: none;
 }
 .ui-main-menu .ui-pause__mission { display: block; }
+.ui-main-menu .ui-pause__side { padding-inline-start: var(--ui-hud-margin); }
 .ui-main-menu__chapter {
   margin: 0;
   padding: 10px 24px 18px;
@@ -19,7 +20,7 @@ body.menu-preview .preview-column > footer { display: none; }
 }
 .ui-main-menu .ui-hud-tab, .ui-chapter-card .ui-hud-tab { line-height: 1.4; }
 
-.ui-chapter-stage[open] { display: grid; grid-template-columns: minmax(0, 1fr); place-items: center; }
+.ui-pause.ui-chapter-stage[open] { display: grid; grid-template: minmax(0, 1fr) / minmax(0, 1fr); place-items: center; }
 .ui-chapter-stage > .ui-chapter-card { width: min(620px, calc(100% - 48px)); }
 .ui-chapter-card { position: relative; color: var(--ui-hud-ink); }
 .ui-chapter-card .ui-hud-frame__content { padding: 14px 24px 24px; display: grid; gap: 12px; }

@@ -1,12 +1,15 @@
 ﻿import { Euler, Vector3, type PerspectiveCamera } from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import type { JoystickState } from "./joystick";
+import type { RoomLayout } from "../catalog/layout";
 
 export type NavigationMode = "orbit" | "walk" | "tour";
 export interface TourDriver { update(dt: number): void; pause(): void; reset(): void }
+export type WalkLayout = Pick<RoomLayout, "module" | "size">;
+const WALL_MARGIN = .5;
 
 /** Prototype modes adapted to the kit; no game missions, doors or WS7 collision assumptions. */
-export function createNavigation(camera: PerspectiveCamera, canvas: HTMLCanvasElement, joystick: JoystickState) {
+export function createNavigation(camera: PerspectiveCamera, canvas: HTMLCanvasElement, joystick: JoystickState, layout?: WalkLayout) {
   const orbit = new OrbitControls(camera, canvas);
   orbit.enableDamping = true;
   const pressed = new Set<string>();
@@ -19,6 +22,14 @@ export function createNavigation(camera: PerspectiveCamera, canvas: HTMLCanvasEl
   let pointer: number | null = null;
   let lastX = 0;
   let lastY = 0;
+  const min = layout ? WALL_MARGIN : -1;
+  const maxX = layout ? layout.size[0] * layout.module - WALL_MARGIN : 7;
+  const maxZ = layout ? layout.size[1] * layout.module - WALL_MARGIN : 7;
+  const constrainToFloor = () => {
+    camera.position.x = Math.max(min, Math.min(maxX, camera.position.x));
+    camera.position.y = 1.5;
+    camera.position.z = Math.max(min, Math.min(maxZ, camera.position.z));
+  };
   const resetInput = () => { pressed.clear(); pointer = null; joystick.x = joystick.y = 0; };
   const setMode = (next: NavigationMode) => {
     resetInput();
@@ -26,7 +37,8 @@ export function createNavigation(camera: PerspectiveCamera, canvas: HTMLCanvasEl
     mode = next;
     orbit.enabled = next === "orbit";
     if (next === "walk") {
-      camera.position.y = 1.5;
+      if (layout) constrainToFloor();
+      else camera.position.y = 1.5;
       rotation.setFromQuaternion(camera.quaternion, "YXZ");
     }
     if (next === "orbit") {
@@ -95,9 +107,7 @@ export function createNavigation(camera: PerspectiveCamera, canvas: HTMLCanvasEl
       movement.copy(forward).multiplyScalar(y).addScaledVector(right, x)
         .multiplyScalar(2.2 * Math.min(1, length) / length * Math.min(dt, 0.05));
       camera.position.add(movement);
-      camera.position.y = 1.5;
-      camera.position.x = Math.max(-1, Math.min(7, camera.position.x));
-      camera.position.z = Math.max(-1, Math.min(7, camera.position.z));
+      constrainToFloor();
     },
     dispose() {
       orbit.dispose();
