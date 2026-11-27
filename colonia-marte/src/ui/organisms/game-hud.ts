@@ -9,6 +9,7 @@ import {
 } from "../molecules/hud-molecules";
 import { createHudGlyph } from "../atoms/hud-atoms";
 import type { UIRegistry } from "../registry";
+import { uiText, type UIStrings } from "../i18n";
 
 /**
  * Game HUD organism (UI v3): places the HUD molecules on the screen corners and keeps the
@@ -23,11 +24,12 @@ export interface GameHudState {
   interaction: Partial<UIHudInteractionParams>;
 }
 
-export function createGameHud(state: GameHudState, onUse: () => void = () => {}, onPause: () => void = () => {}) {
+export function createGameHud(state: GameHudState, onUse: () => void = () => {}, onPause: () => void = () => {}, strings?: UIStrings) {
+  const text = uiText(strings);
   const layer = document.createElement("div");
   layer.className = "ui-game-hud";
   layer.setAttribute("role", "region");
-  layer.setAttribute("aria-label", "Game HUD");
+  layer.setAttribute("aria-label", text("componente.hud.region"));
   const slot = (name: string, child: HTMLElement) => {
     const wrapper = document.createElement("div");
     wrapper.className = `ui-game-hud__slot ui-game-hud__slot--${name}`;
@@ -35,24 +37,35 @@ export function createGameHud(state: GameHudState, onUse: () => void = () => {},
     return wrapper;
   };
   const interaction = createHudInteraction(state.interaction);
+  const minimap = createHudMinimap(state.minimap, strings);
+  const objective = createHudObjective(state.objective, strings);
+  const status = createHudStatus(state.status, strings);
+  const zone = createHudZone(state.zone, strings);
   interaction.button.addEventListener("click", onUse);
   const pause = document.createElement("button");
   pause.type = "button";
   pause.className = "ui-hud-pause";
-  pause.setAttribute("aria-label", "Pause");
-  pause.dataset.voiceLine = "Pause the game.";
+  pause.setAttribute("aria-label", text("componente.hud.pausa"));
+  pause.dataset.voiceLine = text("componente.hud.pausa.voz");
   pause.append(createHudGlyph("pause", "ui-hud-pause__glyph"));
   pause.addEventListener("click", onPause);
   layer.append(
     slot("top-centre", pause),
-    slot("top-left", createHudMinimap(state.minimap)),
-    slot("top-right", createHudObjective(state.objective)),
-    slot("bottom-left", createHudStatus(state.status)),
-    slot("bottom-right", createHudZone(state.zone)),
+    slot("top-left", minimap),
+    slot("top-right", objective),
+    slot("bottom-left", status),
+    slot("bottom-right", zone),
     interaction.root,
   );
   return {
     layer,
+    update(partial: Partial<GameHudState>) {
+      if (partial.minimap) minimap.update(partial.minimap);
+      if (partial.objective) objective.update(partial.objective);
+      if (partial.status) status.update(partial.status);
+      if (partial.zone) zone.update(partial.zone);
+      if (partial.interaction) interaction.update(partial.interaction);
+    },
     /** "dialogue" hides the bottom corners and the prompt so the crew dialogue owns the bottom band. */
     setMode(mode: "explore" | "dialogue") { layer.classList.toggle("is-dialogue", mode === "dialogue"); },
     /** Anchor in CSS px inside the layer (null = off screen). Chooses a side that avoids the corners. */

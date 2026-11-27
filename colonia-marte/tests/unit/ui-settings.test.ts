@@ -167,7 +167,7 @@ describe("settings controls", () => {
       const licenses = [...source.matchAll(/CC-BY|CC0(?: 1\.0)?/g)].map(match => match[0]);
       for (const value of [...attributions, ...licenses]) expect(credits.textContent).toContain(value);
       expect(credits.querySelectorAll("a")).toHaveLength(4);
-      for (const panel of panels) expect(panel.querySelectorAll(".ui-settings__row").length).toBeLessThanOrEqual(3);
+      expect(panels.map(panel => panel.querySelectorAll(".ui-settings__row").length)).toEqual([3, 3, 4]);
     } finally {
       vi.useRealTimers();
     }

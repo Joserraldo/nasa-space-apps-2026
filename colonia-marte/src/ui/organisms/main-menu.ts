@@ -1,7 +1,8 @@
 import { createHudFrame, createHudGlyph, createHudTab, hudFrameContent, voiceText, type UIHudGlyph } from "../atoms/hud-atoms";
-import { CHAPTERS, isChapterId, type ChapterId } from "../content/chapters";
+import { chapterCopy, isChapterId, type ChapterId } from "../content/chapters";
 import type { UIRegistry } from "../registry";
 import { asRecord } from "../types";
+import { uiText, type UIStrings } from "../i18n";
 
 export const GAME_TITLE = "MARS COLONY";
 interface MenuActions {
@@ -10,16 +11,18 @@ interface MenuActions {
   onSettings?: () => void;
 }
 
-export function createMainMenu(saved?: ChapterId, actions: MenuActions = {}) {
+export function createMainMenu(saved?: ChapterId, actions: MenuActions = {}, strings?: UIStrings) {
+  const text = uiText(strings);
+  const titleText = text("componente.menu.titulo");
   const dialog = document.createElement("dialog");
   dialog.className = "ui-pause ui-main-menu";
-  dialog.setAttribute("aria-label", GAME_TITLE);
+  dialog.setAttribute("aria-label", titleText);
   dialog.addEventListener("cancel", event => event.preventDefault());
   const hex = document.createElement("div");
   hex.className = "ui-pause__hex";
   const slab = document.createElement("div");
   slab.className = "ui-pause__slab ui-main-menu__slab";
-  const title = voiceText("h1", "ui-pause__title ui-main-menu__title", GAME_TITLE);
+  const title = voiceText("h1", "ui-pause__title ui-main-menu__title", titleText);
   const list = document.createElement("ul");
   list.className = "ui-pause__list";
 
@@ -42,16 +45,16 @@ export function createMainMenu(saved?: ChapterId, actions: MenuActions = {}) {
   }
 
   if (saved) {
-    const { number, title } = CHAPTERS[saved];
-    item("Continue", "play", () => actions.onContinue?.(saved), `${number}. ${title}`);
+    const chapter = chapterCopy(saved, strings);
+    item(text("componente.menu.continuar"), "play", () => actions.onContinue?.(saved), `${chapter.number}. ${chapter.title}`);
   }
-  item("New game", "rocket", () => actions.onNewGame?.());
-  const settingsButton = item("Settings", "gear", () => actions.onSettings?.());
+  item(text("componente.menu.nuevo"), "rocket", () => actions.onNewGame?.());
+  const settingsButton = item(text("componente.ajustes.titulo"), "gear", () => actions.onSettings?.());
   const side = document.createElement("div");
   side.className = "ui-pause__side";
   const frame = createHudFrame({ corner: "octagon", double: false, detail: false });
   frame.classList.add("ui-pause__mission");
-  const chapter = CHAPTERS[saved ?? "C1"];
+  const chapter = chapterCopy(saved ?? "C1", strings);
   hudFrameContent(frame).append(createHudTab({ glyph: chapter.glyph, label: chapter.number }),
     voiceText("p", "ui-main-menu__chapter", chapter.title));
   side.append(frame);

@@ -67,8 +67,8 @@
 .ui-hud-reticle .dot { fill: var(--ui-hud-accent); stroke: none; }
 
 /* Action button: solid ink, chamfered, 64px target */
-.ui-hud-action { display: inline-flex; align-items: center; gap: 12px; min-height: var(--ui-hud-target);
-  padding: 0 28px 0 20px; border: 0; cursor: pointer; color: var(--ui-hud-panel-solid); background: var(--ui-hud-ink);
+.ui-hud-action { display: inline-flex; align-items: center; justify-content: center; gap: 12px; min-height: var(--ui-hud-target);
+  padding: 0 24px; border: 0; cursor: pointer; color: var(--ui-hud-panel-solid); background: var(--ui-hud-ink);
   font: 700 var(--ui-hud-text-body)/1 var(--ui-hud-font-display); letter-spacing: 0.12em; text-transform: uppercase; white-space: nowrap;
   clip-path: polygon(0 0, calc(100% - 16px) 0, 100% 16px, 100% 100%, 16px 100%, 0 calc(100% - 16px));
   transition: background-color 0.15s ease-out, scale 0.12s ease-out; }
@@ -76,7 +76,7 @@
 .ui-hud-action__glyph svg { stroke-width: 2; }
 .ui-hud-action:hover { background: var(--ui-hud-accent); }
 .ui-hud-action:active { scale: 0.97; }
-.ui-hud-action:focus-visible { outline: 3px solid var(--ui-hud-accent); outline-offset: 4px; }
+.ui-hud-action:focus-visible { outline: 3px solid var(--ui-hud-accent); outline-offset: -4px; }
 @media (prefers-reduced-motion: reduce) { .ui-hud-action { transition: none; } }
 
 /* Frame detailing (reference: HUD frame kit). Kept outside the panel so the content stays clean:
