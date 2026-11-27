@@ -1,3 +1,4 @@
+import { existsSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 import { estadoDialogo, estadoHud, estadoPausa, estadoTarjeta, type EstadoJuego, type LineaGuion } from "../../src/game/adaptador";
 import { dificultadDe, misionPara } from "../../src/game/dificultad";
@@ -101,7 +102,8 @@ describe("diálogo", () => {
     for (const id of HABLANTES)
       for (const idioma of IDIOMAS) {
         const h = hablante(id, idioma);
-        expect(h.portrait).toMatch(/^(\/ui\/portraits\/|data:image\/svg)/);
+        expect(h.portrait).toMatch(/^\/ui\/portraits\//);
+      expect(existsSync(`public${h.portrait}`), h.portrait).toBe(true);
         sinClaves([h.name, h.role]);
       }
   });

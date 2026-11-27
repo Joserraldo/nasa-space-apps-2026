@@ -4,12 +4,12 @@ import type { Idioma } from "../game/i18n";
 
 /** Variación leve para distinguir personajes; no imita a nadie. */
 const TIMBRES: Partial<Record<HablanteId, { tono: number; ritmo: number }>> = {
-  iris: { tono: 1.35, ritmo: 1 },
-  tess: { tono: 0.95, ritmo: 1 },
-  nia: { tono: 1.1, ritmo: 0.93 },
-  vera: { tono: 1.2, ritmo: 1.05 },
-  teo: { tono: 0.85, ritmo: 0.95 },
-  control: { tono: 0.9, ritmo: 0.9 },
+  iris: { tono: 1.35, ritmo: 0.95 },
+  tess: { tono: 0.95, ritmo: 0.92 },
+  nia: { tono: 1.1, ritmo: 0.9 },
+  vera: { tono: 1.2, ritmo: 0.95 },
+  teo: { tono: 0.85, ritmo: 0.9 },
+  control: { tono: 0.9, ritmo: 0.88 },
 };
 
 export interface Sintesis {
@@ -71,7 +71,7 @@ export function crearVoz(opciones: {
       if (!voz && sintesis.getVoices().length) return false;
       if (voz) frase.voice = voz as SpeechSynthesisVoice;
       frase.lang = voz?.lang ?? (lengua === "es" ? "es-US" : "en-US");
-      const timbre = (quien && TIMBRES[quien]) || { tono: 1, ritmo: 0.95 };
+      const timbre = (quien && TIMBRES[quien]) || { tono: 1, ritmo: 0.9 };
       frase.pitch = timbre.tono;
       frase.rate = timbre.ritmo;
       frase.volume = volumen();

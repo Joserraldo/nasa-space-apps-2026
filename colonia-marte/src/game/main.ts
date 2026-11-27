@@ -7,11 +7,13 @@ import { crearMezclador } from "../audio/mezclador";
 import { conectarVoz } from "../audio/voz";
 import { SequencePlayer } from "../camera/player";
 import { startLoop } from "../core/loop";
+import { isChapterId, type ChapterId } from "../ui/content/chapters";
 import { createCrewDialogue, createHudReply } from "../ui/organisms/crew-dialogue";
 import { createGameHud } from "../ui/organisms/game-hud";
+import { createMainMenu } from "../ui/organisms/main-menu";
 import { createPauseMenu } from "../ui/organisms/pause-menu";
 import { createSettingsMenu } from "../ui/organisms/settings-menu";
-import { loadSettings, resetProgress, saveSettings, type SettingsState } from "../ui/state/settings";
+import { loadSettings, resetProgress, saveSettings, SETTINGS_KEY, type SettingsState } from "../ui/state/settings";
 import { estadoDialogo, estadoHud, estadoPausa, estadoTarjeta } from "./adaptador";
 import { crearEscenario3d } from "./escenario3d";
 import {
@@ -19,17 +21,12 @@ import {
 } from "./flujo";
 import { borrar, cargar, guardar } from "./guardado";
 import { hablante, type HablanteId } from "./hablantes";
-import { idiomaDe, traducir, type Idioma } from "./i18n";
+import { idiomaDe, textosDeComponentes, traducir } from "./i18n";
 import { cargarIntro, momento, type EscenarioId } from "./intro";
 import { SALAS } from "./salas";
 
-/** Hasta que Ajustes tenga idioma (B1), la elección se guarda aparte. */
-const CLAVE_IDIOMA = "colonia.idioma";
-
-type Ajustes = SettingsState & { language: Idioma };
-
 function almacenSeguro(): Storage {
-  try { localStorage.getItem(CLAVE_IDIOMA); return localStorage; } catch {
+  try { localStorage.getItem(SETTINGS_KEY); return localStorage; } catch {
     const datos = new Map<string, string>();
     return { getItem: (k: string) => datos.get(k) ?? null, setItem: (k: string, v: string) => void datos.set(k, v),
       removeItem: (k: string) => void datos.delete(k), key: (i: number) => [...datos.keys()][i] ?? null,
@@ -49,8 +46,10 @@ function crear<K extends keyof HTMLElementTagNameMap>(tag: K, clase: string, tex
 
 export function mountJuego(): void {
   const almacen = almacenSeguro();
-  let ajustes: Ajustes = { ...loadSettings(almacen), language: almacen.getItem(CLAVE_IDIOMA) === "es" ? "es" : "en" };
+  let ajustes: SettingsState = loadSettings(almacen);
   const t = (clave: string) => traducir(idiomaDe(ajustes), clave);
+  /** Textos fijos de los componentes de la vista, en el idioma elegido. */
+  const textos = () => textosDeComponentes(idiomaDe(ajustes));
 
   const raiz = crear("div", "juego");
   const lienzo = crear("div", "juego__3d");
@@ -77,6 +76,26 @@ export function mountJuego(): void {
     document.documentElement.lang = ajustes.language;
     document.title = t("juego.titulo");
     mezclador.ajustar(ajustes);
+  }
+
+  /** Ajustes de la vista. `alCerrar` recibe si cambió el idioma, porque la pantalla debe repintarse. */
+  function crearAjustes(alCerrar: (cambioIdioma: boolean) => void) {
+    let idiomaAntes = ajustes.language;
+    const menu = createSettingsMenu(ajustes, {
+      onChange: (nuevos) => {
+        ajustes = nuevos;
+        saveSettings(almacen, nuevos);
+        aplicarAjustes();
+      },
+      onPreview: () => mezclador.voz.decir(t("juego.voz.prueba")),
+      onResetProgress: () => { resetProgress(almacen); juego = null; },
+      onBack: () => {
+        const cambio = ajustes.language !== idiomaAntes;
+        idiomaAntes = ajustes.language;
+        alCerrar(cambio);
+      },
+    }, textos());
+    return menu;
   }
 
   function limpiar(): void {
@@ -126,31 +145,28 @@ export function mountJuego(): void {
     mezclador.musica("calma");
     escenario.mostrar("space", "AMB-01");
     escenario.vista("space");
-    const panel = crear("div", "juego__panel");
-    panel.append(crear("h1", "juego__titulo", t("juego.titulo")));
     const guardada = cargar(almacen);
-    if (guardada) panel.append(boton(t("juego.continuar"), "play", () => { juego = guardada; mostrar(); }));
-    panel.append(boton(t(guardada ? "juego.nueva" : "intro.empezar"), guardada ? "home" : "play", () => {
-      borrar(almacen);
-      juego = nuevoJuego(ajustes);
-      void conCarga([...new Set(intro.tomas.map((x) => x.escenario))], verIntro);
-    }));
-    const idiomas = crear("div", "juego__idiomas");
-    idiomas.setAttribute("role", "group");
-    idiomas.setAttribute("aria-label", t("juego.idioma"));
-    for (const [id, nombre] of [["en", "English"], ["es", "Español"]] as const) {
-      const b = boton(nombre, "next", () => {
-        ajustes = { ...ajustes, language: id };
-        almacen.setItem(CLAVE_IDIOMA, id);
-        aplicarAjustes();
-        inicio();
-      });
-      b.setAttribute("aria-pressed", String(ajustes.language === id));
-      b.lang = id;
-      idiomas.append(b);
-    }
-    panel.append(idiomas);
-    capa.append(panel);
+    // Si se borra el avance o cambia el idioma, la portada se vuelve a pintar.
+    const ajustesMenu = crearAjustes((cambioIdioma) => {
+      if (cambioIdioma || Boolean(cargar(almacen)) !== Boolean(guardada)) inicio();
+    });
+    const portada = createMainMenu(guardada ? capituloDe(guardada) : undefined, {
+      onContinue: () => { mezclador.efecto("boton"); juego = guardada; mostrar(); },
+      onNewGame: () => {
+        mezclador.efecto("boton");
+        borrar(almacen);
+        juego = nuevoJuego(ajustes);
+        void conCarga([...new Set(intro.tomas.map((x) => x.escenario))], verIntro);
+      },
+      onSettings: () => { mezclador.efecto("boton"); ajustesMenu.open(); },
+    }, textos());
+    capa.append(portada.dialog, ajustesMenu.dialog);
+    portada.dialog.showModal();
+  }
+
+  function capituloDe(partida: Juego): ChapterId {
+    const id = `C${vistaDe(partida).capitulo}`;
+    return isChapterId(id) ? id : "C1";
   }
 
   function subtitulo(quien: HablanteId | null, clave: string): HTMLElement {
@@ -274,22 +290,15 @@ export function mountJuego(): void {
     const menu = createPauseMenu(estadoPausa(vistaDe(actual), idioma), (id) => {
       if (id === "settings") ajustesMenu.open();
       if (id === "menu") { irAlMenu = true; menu.close(); }
-    });
-    const ajustesMenu = createSettingsMenu(ajustes, {
-      onChange: (nuevos) => {
-        ajustes = { ...nuevos, language: ajustes.language };
-        saveSettings(almacen, nuevos);
-        aplicarAjustes();
-      },
-      onPreview: () => mezclador.voz.decir(t("juego.voz.prueba")),
-      onResetProgress: () => { resetProgress(almacen); juego = null; },
-    });
+    }, textos());
+    // Con idioma nuevo se cierra la pausa para repintar toda la pantalla.
+    const ajustesMenu = crearAjustes((cambioIdioma) => { if (cambioIdioma) menu.close(); });
     menu.dialog.addEventListener("close", () => {
       mezclador.pausar(false);
       if (juego && !irAlMenu) mostrar(); else inicio();
     });
 
-    const hud = createGameHud(vista, () => hablar(), () => { mezclador.pausar(true); menu.open(); });
+    const hud = createGameHud(vista, () => hablar(), () => { mezclador.pausar(true); menu.open(); }, textos());
     capa.append(hud.layer, menu.dialog, ajustesMenu.dialog);
     // Los diálogos nativos van junto al HUD y se quitan al cambiar de pantalla.
     salir = () => { menu.dialog.remove(); ajustesMenu.dialog.remove(); };
@@ -303,7 +312,7 @@ export function mountJuego(): void {
         if (paso.rechazada) return;
         juego = paso.juego;
         mostrar();
-      });
+      }, textos());
       dialogo.root.dataset.hablante = datos.hablante;
       hud.setMode("dialogue");
       hud.layer.append(dialogo.root);

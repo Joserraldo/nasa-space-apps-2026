@@ -34,6 +34,7 @@ describe("textos del juego", () => {
   it("entrega todos los textos fijos de los componentes", () => {
     expect(textosDeComponentes("es")["componente.pausa.opciones"]).toBe("Opciones");
     expect(Object.keys(textosDeComponentes("en")).length).toBeGreaterThan(50);
+    expect(textosDeComponentes("es")["componente.menu.nuevo"]).not.toBe(textosDeComponentes("en")["componente.menu.nuevo"]);
   });
 
   it("inglés es el idioma por defecto", () => {

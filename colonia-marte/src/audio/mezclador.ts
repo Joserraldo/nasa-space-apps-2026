@@ -9,7 +9,8 @@ import { ARCHIVOS, crearAlmacen, grabacionDe, type Almacen, type Archivos, type 
 import { apertura, crearReproductor, type Tema } from "./musica";
 import { crearVoz, type Sintesis } from "./voz";
 
-export const GANANCIAS: Record<Level, number> = { 0: 0, 1: 0.25, 2: 0.5, 3: 0.75, 4: 1 };
+/** Curva de volumen: el oído oye en escala logarítmica, así que los pasos bajos van más juntos. */
+export const GANANCIAS: Record<Level, number> = { 0: 0, 1: 0.1, 2: 0.3, 3: 0.6, 4: 1 };
 /** Cuánto queda la música mientras habla la voz. */
 export const MUSICA_CON_VOZ = 0.35;
 

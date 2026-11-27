@@ -11,6 +11,7 @@ import disenoEs from "../../../design/i18n/es.json";
 import juegoEn from "../../data/story/i18n/en.json";
 import juegoEs from "../../data/story/i18n/es.json";
 import { TEXTOS_JEZERO, TEXTOS_VIAJE_MARTE } from "../../../missions/src/textos";
+import { getUiStrings } from "../ui/i18n";
 
 export type Idioma = "en" | "es";
 export type Vars = Record<string, string | number>;
@@ -38,12 +39,16 @@ export function traducir(idioma: Idioma, clave: string, vars?: Vars): string {
   }, texto);
 }
 
-/** Los textos fijos de los componentes (contrato de B1, docs/CLAVES-UI.md). */
+/**
+ * Los textos fijos de los componentes (contrato de B1, docs/ui-i18n-contrato.md): el catálogo de la
+ * vista y, encima, los `componente.*` del juego.
+ */
 export function textosDeComponentes(idioma: Idioma): Record<string, string> {
-  return Object.fromEntries(Object.keys(juegoEn).filter((k) => k.startsWith("componente.")).map((k) => [k, traducir(idioma, k)]));
+  const propios = Object.keys(juegoEn).filter((k) => k.startsWith("componente.")).map((k) => [k, traducir(idioma, k)]);
+  return { ...getUiStrings(idioma), ...Object.fromEntries(propios) };
 }
 
-/** Idioma elegido. Mientras `SettingsState` no tenga `language` (B1), siempre es inglés. */
+/** Idioma elegido en Ajustes; cualquier otro valor es inglés. */
 export function idiomaDe(ajustes: object): Idioma {
   return (ajustes as { language?: unknown }).language === "es" ? "es" : "en";
 }

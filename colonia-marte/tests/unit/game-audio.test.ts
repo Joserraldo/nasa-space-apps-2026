@@ -59,9 +59,9 @@ describe("mezclador", () => {
     const m = crearMezclador(DEFAULT_SETTINGS, f.entorno);
     m.desbloquear();
     const [musica, efectos] = f.ganancias;
-    expect([musica!.value, efectos!.value]).toEqual([0.75, 0.75]);
+    expect([musica!.value, efectos!.value]).toEqual([GANANCIAS[3], GANANCIAS[3]]);
     m.ajustar({ ...DEFAULT_SETTINGS, music: 1, sound: 0, voice: 2 });
-    expect([musica!.objetivo, efectos!.objetivo]).toEqual([0.25, 0]);
+    expect([musica!.objetivo, efectos!.objetivo]).toEqual([GANANCIAS[1], 0]);
     expect(m.efecto("boton")).toBe(false);
     m.voz.decir("Hi");
     expect(f.dichas.at(-1)!.volume).toBe(GANANCIAS[2]);
@@ -72,9 +72,9 @@ describe("mezclador", () => {
     const m = crearMezclador(DEFAULT_SETTINGS, f.entorno);
     m.desbloquear();
     m.voz.decir("Hello", "vera");
-    expect(f.ganancias[0]!.objetivo).toBeCloseTo(0.75 * MUSICA_CON_VOZ);
+    expect(f.ganancias[0]!.objetivo).toBeCloseTo(GANANCIAS[3] * MUSICA_CON_VOZ);
     f.dichas.at(-1)!.onend!(new Event("end") as SpeechSynthesisEvent);
-    expect(f.ganancias[0]!.objetivo).toBe(0.75);
+    expect(f.ganancias[0]!.objetivo).toBe(GANANCIAS[3]);
   });
 
   it("la voz sigue el idioma y se calla en nivel 0", () => {
