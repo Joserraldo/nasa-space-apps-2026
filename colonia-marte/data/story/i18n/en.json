@@ -155,5 +155,18 @@
   "historia.dilema.aguantar": "Wait it out",
   "c2.dilema": "The storm is strong. What do we do?",
   "c2.telemetria": "Send your data so Earth can help.",
-  "c2.espera": "Light needs minutes to reach Earth."
+  "c2.espera": "Light needs minutes to reach Earth.",
+  "intro.familias": "Some families are getting ready for a long trip…",
+  "intro.primero": "…and you go first. That red dot is Mars!",
+  "intro.iris": "Hi! I'm Iris. I'll help you get the colony ready.",
+  "intro.tess": "Tess, the engineer.",
+  "intro.nia": "Nia, the doctor.",
+  "intro.vera": "Vera, the solar expert.",
+  "intro.soles": "The families land in 100 sols.",
+  "intro.sol": "A sol is one day on Mars.",
+  "intro.alarma": "Wait… the Sun is acting up!",
+  "intro.cierre": "Every choice costs something. Let's begin!",
+  "intro.fuente": "A real storm from May 2024. Not live.",
+  "intro.saltar": "Skip",
+  "intro.empezar": "Start"
 }
