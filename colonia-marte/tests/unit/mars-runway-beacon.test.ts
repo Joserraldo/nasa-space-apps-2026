@@ -15,7 +15,9 @@ describe("NX-02 runway edge beacons", () => {
 
   it("instances two deck-mounted fixtures per edge without blocking the MI-07 stair", () => {
     const registry = createProductionRegistry();
-    const colony = buildColonyGroup(parseColonyLayout(colonyJson, registry), registry);
+    const layout = parseColonyLayout(colonyJson, registry);
+    const placements = layout.placements.filter(piece => piece.id === "MI-07");
+    const colony = buildColonyGroup({ ...layout, placements }, registry);
     const pad = colony.children.find(child => child instanceof LOD && child.name.startsWith("MI-07")) as LOD;
     const beacons = pad.levels[0].object.children.find(child => child.name === "NX-02 runway edge") as InstancedMesh;
     expect(beacons).toBeInstanceOf(InstancedMesh);

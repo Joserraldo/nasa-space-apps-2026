@@ -6,3 +6,11 @@ export const MARS_FACTS = [
   "Mars is colder than Earth.",
   "Perseverance has explored Jezero Crater since 2021.",
 ] as const;
+
+export const MARS_FACTS_ES = [
+  "El cráter Jezero tuvo un lago.",
+  "Un día en Marte dura un poco más que en la Tierra.",
+  "Marte tiene menos gravedad que la Tierra.",
+  "Marte es más frío que la Tierra.",
+  "Perseverance explora el cráter Jezero desde 2021.",
+] as const;

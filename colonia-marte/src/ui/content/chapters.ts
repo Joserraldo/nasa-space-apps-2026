@@ -1,4 +1,5 @@
 import type { UIHudGlyph } from "../atoms/hud-atoms";
+import type { UIStrings } from "../i18n";
 
 export const CHAPTER_OBJECTIVES = {
   shield: { label: "Shield", glyph: "shield" },
@@ -29,6 +30,12 @@ export const CHAPTERS = {
 } as const satisfies Record<string, ChapterCopy>;
 
 export type ChapterId = keyof typeof CHAPTERS;
+export function chapterCopy(id: ChapterId, strings?: UIStrings): ChapterCopy {
+  const chapter = CHAPTERS[id];
+  const prefix = `componente.capitulo.${id}`;
+  return { ...chapter, number: strings?.[`${prefix}.numero`] ?? chapter.number,
+    title: strings?.[`${prefix}.titulo`] ?? chapter.title, lesson: strings?.[`${prefix}.leccion`] ?? chapter.lesson };
+}
 export const SAVED_CHAPTER_KEY = "colonia.progress.chapter";
 const order = Object.keys(CHAPTERS) as ChapterId[];
 

@@ -1,19 +1,24 @@
-import { createHudRing } from "../atoms/hud-atoms";
+import { createHudRing, voiceText } from "../atoms/hud-atoms";
 import { createHudReply } from "../organisms/crew-dialogue";
 import type { UIRegistry } from "../registry";
+import { uiText, type UIStrings } from "../i18n";
 
 const HOLD_MS = 3000;
 
-export function createHudHoldGate(onUnlock: () => void) {
+export function createHudHoldGate(onUnlock: () => void, strings?: UIStrings) {
+  const text = uiText(strings);
   const root = document.createElement("div");
   root.className = "ui-hud-hold-gate";
   const ring = createHudRing({ glyph: "shield", level: 1 });
   ring.setAttribute("role", "progressbar");
-  ring.setAttribute("aria-label", "Hold progress");
+  ring.setAttribute("aria-label", text("componente.ajustes.mantener.progreso"));
   ring.querySelector(".ui-hud-ring__arc")?.setAttribute("pathLength", "100");
-  const button = createHudReply({ glyph: "none", label: "Hold for 3 seconds" });
+  const button = createHudReply({ glyph: "none", label: text("componente.ajustes.mantener") });
   button.classList.add("ui-hud-hold-gate__button");
-  root.append(ring, button);
+  const controls = document.createElement("div");
+  controls.className = "ui-hud-hold-gate__controls";
+  controls.append(ring, button);
+  root.append(voiceText("p", "ui-hud-hold-gate__label", text("componente.ajustes.adultos.explicacion")), controls);
 
   let timer: ReturnType<typeof setTimeout> | undefined;
   let ticks: ReturnType<typeof setInterval> | undefined;

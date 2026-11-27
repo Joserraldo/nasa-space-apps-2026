@@ -18,7 +18,7 @@ type Resolution = (typeof resolution)[TransitDetail];
 type Profile = [radius: number, x: number][];
 type TransitColor = PaletteKey | "nightSky" | "xenonGlow";
 
-function axialProfile(profile: Profile, segments: number, color: TransitColor, x = 0, y = 0, z = 0) {
+export function axialProfile(profile: Profile, segments: number, color: TransitColor, x = 0, y = 0, z = 0) {
   const geometry = new LatheGeometry(profile.map(([radius, axial]) => new Vector2(radius, axial)), segments);
   if (profile.some(([radius]) => radius === 0)) {
     const index = geometry.getIndex()!, stride = profile.length, triangles: number[] = [];
@@ -354,19 +354,65 @@ function propulsion(detail: Resolution, tier: TransitDetail) {
   return module;
 }
 
-function buildTransit(tier: TransitDetail) {
+function familyHabitat(index: number, tier: TransitDetail) {
+  const parts = new Group();
+  const segments = resolution[tier].body;
+  parts.add(
+    cylinder(-0.25, 3.35, 1.67, segments, "darkGray"),
+    cylinder(0.10, 3.00, 2.40, segments, "hull"),
+    cylinder(0.18, 0.42, 2.45, segments, "gray"),
+    cylinder(2.68, 2.92, 2.45, segments, "gray"),
+  );
+  const bays = tier === "near" ? 8 : 4;
+  for (let i = 0; i < bays; i++) {
+    const angle = (i + 0.5) * 2 * Math.PI / bays;
+    const panel = location(1.55, 0, 0, angle);
+    panel.add(block([1.83, 0.16, 1.24], "offWhite", [0, 2.39, 0]));
+    if (tier !== "far") {
+      panel.add(block([1.19, 0.08, 0.40], "darkGray", [0, 2.48, 0]),
+        strip([0.88, 0.035, 0.17], "blue", [0, 2.53, 0]));
+    }
+    parts.add(panel);
+  }
+  const cabin = fusedParts(`family-habitat-${index + 1}`, parts, tier !== "far");
+  cabin.position.x = 7.48 + index * 3.4;
+  return cabin;
+}
+
+function landingLights() {
+  const lens = strip([0.42, 0.11, 0.25], "cyan", [0, 0, 0]);
+  const sockets = new Group();
+  const positions = [];
+  for (const x of [8.15, 10.0, 11.55, 13.40]) for (const z of [-1.55, 1.55]) {
+    sockets.add(block([0.62, 0.23, 0.44], "darkGray", [x, -1.92, z]));
+    positions.push(location(x, -2.04, z, 0));
+  }
+  const lights = fusedParts("family-landing-light-sockets", sockets);
+  lights.add(repeatMesh(lens, "landing-lights", positions));
+  return lights;
+}
+
+function buildTransit(tier: TransitDetail, family = false) {
   const ship = new Group(), detail = resolution[tier];
-  ship.add(orion(detail, tier), habitat(detail, tier), propulsion(detail, tier));
+  const engine = propulsion(detail, tier);
+  const habitatTier = family && tier === "near" ? "middle" : tier;
+  ship.add(orion(detail, tier), habitat(resolution[habitatTier], habitatTier), engine);
+  if (family) {
+    engine.position.x = 6.8;
+    ship.add(familyHabitat(0, tier), familyHabitat(1, tier), landingLights());
+  }
   return alignBaseCenter(ship);
 }
 
 export function registerMarsTransit(registry: PieceRegistry): void {
-  registry.register<{ detail: TransitDetail }>("MV-09", {
-    parse: input => ({ detail: parseChoice(parseRecord(input, ["detail"]).detail, detailLevels, "near") }),
-    variants: { near: { detail: "near" } },
-    metadata: { category: "transitSpacecraft", pivot: "base-center" },
-    build: ({ detail }) => buildTransit(detail),
-  });
+  for (const id of ["MV-09", "MV-10"]) {
+    registry.register<{ detail: TransitDetail }>(id, {
+      parse: input => ({ detail: parseChoice(parseRecord(input, ["detail"]).detail, detailLevels, "near") }),
+      variants: { near: { detail: "near" } },
+      metadata: { category: "transitSpacecraft", pivot: "base-center" },
+      build: ({ detail }) => buildTransit(detail, id === "MV-10"),
+    });
+  }
   registry.register("BG-01", {
     parse: input => parseRecord(input, []),
     variants: { standard: {} },

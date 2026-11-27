@@ -1,0 +1,23 @@
+{
+  "id": "c5-polar",
+  "name": "C5 · North Polar Ice Expedition",
+  "biome": "polar",
+  "environment": "AMB-07",
+  "terrainSeed": 42,
+  "placements": [
+    { "id": "MB-01", "at": [-7, 0], "yOffset": -0.2, "params": { "unit": "01" } },
+    { "id": "MI-04", "at": [-7, -7], "yOffset": -0.18, "rot": 20 },
+    { "id": "MI-05", "at": [-2, -5], "yOffset": -0.12, "rot": -25 },
+    { "id": "MI-10", "at": [2.9, 0], "yOffset": -0.22 },
+    { "id": "MI-03", "at": [4.0, 2.38], "yOffset": -0.13, "rot": 90, "params": { "layout": "ground" } },
+    { "id": "MI-03", "at": [6.35, 4.7], "yOffset": -0.10, "rot": 90, "params": { "layout": "bridge" } },
+    { "id": "MI-09", "at": [1.1, 4.8], "yOffset": -0.14 },
+    { "id": "MV-03", "at": [-2, 6.8], "rot": -35 }
+  ],
+  "reservations": [
+    { "id": "NW-19", "at": [8.7, 4.7] }
+  ],
+  "views": [
+    { "id": "polar-expedition", "label": "Polar expedition", "position": [13, 10, 23], "target": [0, 1.0, 0], "fov": 48 }
+  ]
+}

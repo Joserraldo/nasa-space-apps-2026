@@ -4,8 +4,9 @@ import type { PieceRegistry } from "../kit/registry";
 
 export const SPACE_DURATION = 6;
 export type SpaceCapture = "detail" | "thrusters";
+export type SpaceShip = "MV-09" | "MV-10" | "MV-12";
 
-export function createSpaceShot(registry: PieceRegistry, aspect: number, capture?: SpaceCapture) {
+export function createSpaceShot(registry: PieceRegistry, aspect: number, capture?: SpaceCapture, shipId: SpaceShip = "MV-09") {
   const preset = presets.find(({ id }) => id === "AMB-01");
   if (!preset) throw new Error("Missing AMB-01 space environment");
 
@@ -15,10 +16,10 @@ export function createSpaceShot(registry: PieceRegistry, aspect: number, capture
   camera.updateMatrixWorld();
 
   const ship = new LOD();
-  ship.name = "MV-09";
-  ship.scale.setScalar(0.29);
+  ship.name = shipId;
+  ship.scale.setScalar(shipId === "MV-12" ? 1 : shipId === "MV-10" ? 0.25 : 0.29);
   for (const [detail, distance] of [["near", 0], ["middle", 28], ["far", 30]] as const) {
-    const model = registry.build("MV-09", { detail });
+    const model = registry.build(shipId, { detail });
     model.position.y = -new Box3().setFromObject(model).getCenter(new Vector3()).y;
     ship.addLevel(model, distance, 0.07);
   }
@@ -33,6 +34,7 @@ export function createSpaceShot(registry: PieceRegistry, aspect: number, capture
   earth.position.y -= earth.scale.y;
   earth.rotation.y = 0.17;
   function pose(seconds: number) {
+    if (shipId === "MV-12") return;
     const t = Math.min(Math.max(seconds / SPACE_DURATION, 0), 1);
     camera.fov = 39 - 4.5 * t;
     camera.updateProjectionMatrix();
@@ -44,12 +46,18 @@ export function createSpaceShot(registry: PieceRegistry, aspect: number, capture
     ship.updateMatrixWorld();
   }
   pose(capture ? 0.8 : 0);
-  if (capture === "detail") {
+  if (shipId === "MV-12") {
+    camera.position.set(6.2, 2.7, 8.8);
+    camera.lookAt(0, -0.04, 0);
+    camera.zoom = 1.14;
+    camera.updateProjectionMatrix();
+    camera.updateMatrixWorld();
+  } else if (capture === "detail") {
     camera.position.set(7.2, 8.4, -19.5);
-    camera.lookAt(-0.8, 3.0, 0.65);
-    camera.zoom = 1.76;
+    camera.lookAt(-0.8, shipId === "MV-10" ? 2.35 : 3.0, 0.65);
+    camera.zoom = shipId === "MV-10" ? 1.34 : 1.76;
   } else if (capture === "thrusters") {
-    const target = ship.localToWorld(new Vector3(15.1, 0, 0));
+    const target = ship.localToWorld(new Vector3(shipId === "MV-10" ? 18.5 : 15.1, 0, 0));
     camera.position.copy(target).add(new Vector3(4.6, 1.85, -4.15));
     camera.lookAt(target.add(new Vector3(0.40, 0, 0)));
     camera.zoom = 2.1;

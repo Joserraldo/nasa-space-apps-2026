@@ -2,5 +2,5 @@
   display: flex;
   gap: 6px;
 }
-.ui-hud-choice__options > .ui-hud-reply { flex: 1 0 auto; justify-content: center; gap: 5px; padding-inline: 4px; white-space: nowrap; }
+.ui-hud-choice__options > .ui-hud-reply { flex: 1 0 auto; justify-content: center; gap: 5px; padding-inline: 10px; white-space: nowrap; }
 .ui-hud-choice__options .ui-settings__check { inline-size: 18px; block-size: 18px; }

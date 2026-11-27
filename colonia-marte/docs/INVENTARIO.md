@@ -453,6 +453,7 @@ las decisiones de `DISENO-JUEGO.md` sección 9.
 | MV-09 | Orion acoplada al Deep Space Transport (exterior) | Reconstrucción del concepto DST: Orion con cuatro alas en X, hábitat fijo y módulo eléctrico con dos alas desplegables; para la intro y C1 | P1 |
 | MV-10 | Nave de las familias (final) | Variante de MV-09 con más módulos y luces de aterrizaje | P2 |
 | MV-11 | Rover varado para rescatar (C4) | Rover pequeño de 6 ruedas con paneles cubiertos de polvo (diseño propio) | P2 |
+| MV-12 | Módulo de descenso de las familias (final) | Cápsula cónica ancha, escudo térmico, cuatro patas y retrocohetes. Inspirada en el concepto de baja sustentación de [NASA NTRS 20200002811, fig. 1](https://ntrs.nasa.gov/citations/20200002811) | P2 |
 | NX-05 | Cultivos con estados de crecimiento visibles | Extiende `NW-02-B` a 4 etapas: semilla, brote, planta, cosecha | P1 |
 
 ### 7.4 Estados de ambiente (presets de luz y postproceso)
