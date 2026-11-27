@@ -1,0 +1,299 @@
+{
+  "capitulo": 2,
+  "mision": "jezero-dorada",
+  "escenas": [
+    {
+      "id": "c2-satelite",
+      "paso": 1,
+      "sala": "colonia-exterior",
+      "hablante": "iris",
+      "linea": "c2.satelite",
+      "respuestas": [
+        {
+          "id": "ok",
+          "texto": "historia.satelite",
+          "icono": "tap",
+          "hace": {
+            "tipo": "seguir"
+          }
+        }
+      ]
+    },
+    {
+      "id": "c2-ruta",
+      "paso": 2,
+      "sala": "colonia-exterior",
+      "hablante": "control",
+      "linea": "c2.ruta",
+      "respuestas": [
+        {
+          "id": "ok",
+          "texto": "historia.listo",
+          "icono": "next",
+          "hace": {
+            "tipo": "seguir"
+          }
+        }
+      ],
+      "fuente": "fuente.marsTrek"
+    },
+    {
+      "id": "c2-sitio",
+      "paso": 3,
+      "sala": "colonia-exterior",
+      "hablante": "tess",
+      "linea": "c2.sitio",
+      "respuestas": [
+        {
+          "id": "llanura",
+          "texto": "historia.sitio.llanura-central",
+          "icono": "map",
+          "hace": {
+            "tipo": "aterrizar",
+            "sitio": "llanura-central"
+          }
+        },
+        {
+          "id": "rover",
+          "texto": "historia.sitio.cerca-de-perseverance",
+          "icono": "robot",
+          "hace": {
+            "tipo": "aterrizar",
+            "sitio": "cerca-de-perseverance"
+          }
+        },
+        {
+          "id": "pared",
+          "texto": "historia.sitio.pie-de-la-pared-sur",
+          "icono": "shield",
+          "hace": {
+            "tipo": "aterrizar",
+            "sitio": "pie-de-la-pared-sur"
+          }
+        }
+      ]
+    },
+    {
+      "id": "c2-modulo1",
+      "paso": 4,
+      "sala": "colonia-exterior",
+      "hablante": "tess",
+      "linea": "c2.modulo1",
+      "respuestas": [
+        {
+          "id": "panel_solar",
+          "texto": "historia.modulo.panel_solar",
+          "icono": "battery",
+          "hace": {
+            "tipo": "modulo",
+            "modulo": "panel_solar"
+          }
+        },
+        {
+          "id": "reciclador_agua",
+          "texto": "historia.modulo.reciclador_agua",
+          "icono": "soup",
+          "hace": {
+            "tipo": "modulo",
+            "modulo": "reciclador_agua"
+          }
+        },
+        {
+          "id": "escudo",
+          "texto": "historia.modulo.escudo",
+          "icono": "shield",
+          "hace": {
+            "tipo": "modulo",
+            "modulo": "escudo"
+          }
+        }
+      ]
+    },
+    {
+      "id": "c2-modulo2",
+      "paso": 4,
+      "sala": "colonia-exterior",
+      "hablante": "nia",
+      "linea": "c2.modulo2",
+      "respuestas": [
+        {
+          "id": "invernadero",
+          "texto": "historia.modulo.invernadero",
+          "icono": "soup",
+          "hace": {
+            "tipo": "modulo",
+            "modulo": "invernadero"
+          }
+        },
+        {
+          "id": "antena",
+          "texto": "historia.modulo.antena",
+          "icono": "map",
+          "hace": {
+            "tipo": "modulo",
+            "modulo": "antena"
+          }
+        },
+        {
+          "id": "panel_solar",
+          "texto": "historia.modulo.panel_solar",
+          "icono": "battery",
+          "hace": {
+            "tipo": "modulo",
+            "modulo": "panel_solar"
+          }
+        }
+      ]
+    },
+    {
+      "id": "c2-aviso",
+      "paso": 5,
+      "sala": "colonia-exterior",
+      "hablante": "vera",
+      "linea": "c2.aviso",
+      "respuestas": [
+        {
+          "id": "ok",
+          "texto": "historia.listo",
+          "icono": "next",
+          "hace": {
+            "tipo": "seguir"
+          }
+        }
+      ],
+      "antes": "tormenta",
+      "fuente": "fuente.radlab"
+    },
+    {
+      "id": "c2-nia",
+      "paso": 6,
+      "sala": "colonia-refugio",
+      "hablante": "nia",
+      "linea": "c2.nia",
+      "respuestas": [
+        {
+          "id": "ok",
+          "texto": "historia.listo",
+          "icono": "next",
+          "hace": {
+            "tipo": "seguir"
+          }
+        }
+      ]
+    },
+    {
+      "id": "c2-tess",
+      "paso": 6,
+      "sala": "colonia-refugio",
+      "hablante": "tess",
+      "linea": "c2.tess",
+      "respuestas": [
+        {
+          "id": "ok",
+          "texto": "historia.listo",
+          "icono": "next",
+          "hace": {
+            "tipo": "seguir"
+          }
+        }
+      ]
+    },
+    {
+      "id": "c2-iris",
+      "paso": 6,
+      "sala": "colonia-refugio",
+      "hablante": "iris",
+      "linea": "c2.iris",
+      "respuestas": [
+        {
+          "id": "revisar",
+          "texto": "historia.revisar",
+          "icono": "objective",
+          "hace": {
+            "tipo": "seguir"
+          }
+        },
+        {
+          "id": "reparar",
+          "texto": "historia.reparar",
+          "icono": "wrench",
+          "hace": {
+            "tipo": "reparar",
+            "equipo": "ia_base"
+          }
+        }
+      ]
+    },
+    {
+      "id": "c2-dilema",
+      "paso": 6,
+      "sala": "colonia-refugio",
+      "hablante": "vera",
+      "linea": "c2.dilema",
+      "respuestas": [
+        {
+          "id": "refugio_y_apagar_invernadero",
+          "texto": "historia.dilema.refugio_y_apagar_invernadero",
+          "icono": "home",
+          "hace": {
+            "tipo": "dilema",
+            "opcion": "refugio_y_apagar_invernadero"
+          }
+        },
+        {
+          "id": "subir_escudo",
+          "texto": "historia.dilema.subir_escudo",
+          "icono": "shield",
+          "hace": {
+            "tipo": "dilema",
+            "opcion": "subir_escudo"
+          }
+        },
+        {
+          "id": "aguantar",
+          "texto": "historia.dilema.aguantar",
+          "icono": "battery",
+          "hace": {
+            "tipo": "dilema",
+            "opcion": "aguantar"
+          }
+        }
+      ]
+    },
+    {
+      "id": "c2-telemetria",
+      "paso": 7,
+      "sala": "colonia-exterior",
+      "hablante": "control",
+      "linea": "c2.telemetria",
+      "respuestas": [
+        {
+          "id": "enviar",
+          "texto": "historia.enviar",
+          "icono": "iris",
+          "hace": {
+            "tipo": "telemetria"
+          }
+        }
+      ]
+    },
+    {
+      "id": "c2-espera",
+      "paso": 7,
+      "sala": "colonia-exterior",
+      "hablante": "iris",
+      "linea": "c2.espera",
+      "respuestas": [
+        {
+          "id": "dormir",
+          "texto": "historia.esperar",
+          "icono": "next",
+          "hace": {
+            "tipo": "esperar-final"
+          }
+        }
+      ],
+      "fuente": "fuente.nssdc"
+    }
+  ]
+}

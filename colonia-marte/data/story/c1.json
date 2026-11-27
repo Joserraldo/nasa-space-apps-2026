@@ -1,0 +1,308 @@
+{
+  "capitulo": 1,
+  "mision": "viaje-marte",
+  "escenas": [
+    {
+      "id": "c1-despertar",
+      "paso": 1,
+      "sala": "nave-puente",
+      "hablante": "iris",
+      "linea": "c1.despertar",
+      "respuestas": [
+        {
+          "id": "ok",
+          "texto": "historia.vamos",
+          "icono": "next",
+          "hace": {
+            "tipo": "seguir"
+          }
+        }
+      ]
+    },
+    {
+      "id": "c1-rumbo",
+      "paso": 2,
+      "sala": "nave-puente",
+      "hablante": "control",
+      "linea": "c1.rumbo",
+      "respuestas": [
+        {
+          "id": "ok",
+          "texto": "historia.listo",
+          "icono": "next",
+          "hace": {
+            "tipo": "seguir"
+          }
+        }
+      ]
+    },
+    {
+      "id": "c1-plan",
+      "paso": 3,
+      "sala": "nave-comun",
+      "hablante": "vera",
+      "linea": "c1.plan",
+      "respuestas": [
+        {
+          "id": "refugio",
+          "texto": "historia.plan.refugio",
+          "icono": "home",
+          "hace": {
+            "tipo": "elegir-plan",
+            "opcion": "refugio"
+          }
+        },
+        {
+          "id": "escudo",
+          "texto": "historia.plan.escudo",
+          "icono": "shield",
+          "hace": {
+            "tipo": "elegir-plan",
+            "opcion": "escudo"
+          }
+        }
+      ],
+      "si": "sin-plan"
+    },
+    {
+      "id": "c1-zona",
+      "paso": 3,
+      "sala": "nave-comun",
+      "hablante": "tess",
+      "linea": "c1.zona",
+      "respuestas": [
+        {
+          "id": "cabina",
+          "texto": "historia.sitio.cabina",
+          "icono": "map",
+          "hace": {
+            "tipo": "aterrizar",
+            "sitio": "cabina"
+          }
+        },
+        {
+          "id": "centro",
+          "texto": "historia.sitio.centro",
+          "icono": "home",
+          "hace": {
+            "tipo": "aterrizar",
+            "sitio": "centro"
+          }
+        },
+        {
+          "id": "fondo",
+          "texto": "historia.sitio.fondo",
+          "icono": "shield",
+          "hace": {
+            "tipo": "aterrizar",
+            "sitio": "fondo"
+          }
+        }
+      ]
+    },
+    {
+      "id": "c1-modulo1",
+      "paso": 4,
+      "sala": "nave-comun",
+      "hablante": "tess",
+      "linea": "c1.modulo1",
+      "respuestas": [
+        {
+          "id": "panel_solar",
+          "texto": "historia.modulo.panel_solar",
+          "icono": "battery",
+          "hace": {
+            "tipo": "modulo",
+            "modulo": "panel_solar"
+          }
+        },
+        {
+          "id": "bateria",
+          "texto": "historia.modulo.bateria",
+          "icono": "battery",
+          "hace": {
+            "tipo": "modulo",
+            "modulo": "bateria"
+          }
+        },
+        {
+          "id": "reciclador_agua",
+          "texto": "historia.modulo.reciclador_agua",
+          "icono": "soup",
+          "hace": {
+            "tipo": "modulo",
+            "modulo": "reciclador_agua"
+          }
+        }
+      ]
+    },
+    {
+      "id": "c1-modulo2",
+      "paso": 4,
+      "sala": "nave-comun",
+      "hablante": "tess",
+      "linea": "c1.modulo2",
+      "respuestas": [
+        {
+          "id": "escudo",
+          "texto": "historia.modulo.escudo",
+          "icono": "shield",
+          "hace": {
+            "tipo": "modulo",
+            "modulo": "escudo"
+          }
+        },
+        {
+          "id": "antena",
+          "texto": "historia.modulo.antena",
+          "icono": "map",
+          "hace": {
+            "tipo": "modulo",
+            "modulo": "antena"
+          }
+        },
+        {
+          "id": "panel_solar",
+          "texto": "historia.modulo.panel_solar",
+          "icono": "battery",
+          "hace": {
+            "tipo": "modulo",
+            "modulo": "panel_solar"
+          }
+        }
+      ]
+    },
+    {
+      "id": "c1-aviso",
+      "paso": 5,
+      "sala": "nave-puente",
+      "hablante": "vera",
+      "linea": "c1.aviso",
+      "respuestas": [
+        {
+          "id": "ok",
+          "texto": "historia.alPlan",
+          "icono": "next",
+          "hace": {
+            "tipo": "aplicar-plan"
+          }
+        }
+      ],
+      "antes": "tormenta",
+      "fuente": "fuente.donki"
+    },
+    {
+      "id": "c1-nia",
+      "paso": 6,
+      "sala": "nave-refugio",
+      "hablante": "nia",
+      "linea": "c1.nia",
+      "respuestas": [
+        {
+          "id": "ok",
+          "texto": "historia.listo",
+          "icono": "next",
+          "hace": {
+            "tipo": "seguir"
+          }
+        }
+      ]
+    },
+    {
+      "id": "c1-iris",
+      "paso": 6,
+      "sala": "nave-refugio",
+      "hablante": "iris",
+      "linea": "c1.iris",
+      "respuestas": [
+        {
+          "id": "revisar",
+          "texto": "historia.revisar",
+          "icono": "objective",
+          "hace": {
+            "tipo": "seguir"
+          }
+        },
+        {
+          "id": "reparar",
+          "texto": "historia.reparar",
+          "icono": "wrench",
+          "hace": {
+            "tipo": "reparar",
+            "equipo": "ia_base"
+          }
+        }
+      ]
+    },
+    {
+      "id": "c1-dilema",
+      "paso": 6,
+      "sala": "nave-refugio",
+      "hablante": "tess",
+      "linea": "c1.dilema",
+      "respuestas": [
+        {
+          "id": "energia_al_aire",
+          "texto": "historia.dilema.energia_al_aire",
+          "icono": "air",
+          "hace": {
+            "tipo": "dilema",
+            "opcion": "energia_al_aire"
+          }
+        },
+        {
+          "id": "energia_a_paredes",
+          "texto": "historia.dilema.energia_a_paredes",
+          "icono": "shield",
+          "hace": {
+            "tipo": "dilema",
+            "opcion": "energia_a_paredes"
+          }
+        },
+        {
+          "id": "guardar_energia",
+          "texto": "historia.dilema.guardar_energia",
+          "icono": "battery",
+          "hace": {
+            "tipo": "dilema",
+            "opcion": "guardar_energia"
+          }
+        }
+      ]
+    },
+    {
+      "id": "c1-telemetria",
+      "paso": 7,
+      "sala": "nave-puente",
+      "hablante": "control",
+      "linea": "c1.telemetria",
+      "respuestas": [
+        {
+          "id": "enviar",
+          "texto": "historia.enviar",
+          "icono": "iris",
+          "hace": {
+            "tipo": "telemetria"
+          }
+        }
+      ]
+    },
+    {
+      "id": "c1-espera",
+      "paso": 7,
+      "sala": "nave-puente",
+      "hablante": "iris",
+      "linea": "c1.espera",
+      "respuestas": [
+        {
+          "id": "dormir",
+          "texto": "historia.esperar",
+          "icono": "next",
+          "hace": {
+            "tipo": "esperar-final"
+          }
+        }
+      ]
+    }
+  ]
+}
