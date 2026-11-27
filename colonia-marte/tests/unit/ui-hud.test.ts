@@ -1,7 +1,8 @@
 import { readFileSync } from "node:fs";
-import { beforeEach, describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import {
   CANTEEN_HUD_STATE, createGameHud, createHudFrame, createHudMeter, createHudResource, createHudZone, createUIRegistry,
+  type GameHudState,
 } from "../../src/ui";
 import { installDomShim } from "./helpers/dom-shim";
 
@@ -34,6 +35,50 @@ function walk(root: Element): HTMLElement[] {
 
 describe("UI v3 game HUD", () => {
   beforeEach(() => { installDomShim(); });
+
+  it("updates content, preserving the nodes and leaving an equal update untouched", () => {
+    const hud = createGameHud(CANTEEN_HUD_STATE);
+    const title = hud.layer.querySelector<HTMLElement>(".ui-hud-objective__title")!;
+    const step = hud.layer.querySelector(".ui-hud-objective__step")!;
+    const zone = hud.layer.querySelector<HTMLElement>(".ui-hud-zone__name")!;
+    const map = hud.layer.querySelector(".ui-hud-minimap")!;
+    const resource = hud.layer.querySelector(".ui-hud-resource")!;
+    const cell = resource.querySelector("i")!;
+    const pause = hud.layer.querySelector<HTMLButtonElement>(".ui-hud-pause")!;
+    pause.focus();
+    hud.update({
+      objective: { title: CANTEEN_HUD_STATE.objective.title },
+      zone: { name: CANTEEN_HUD_STATE.zone.name },
+      interaction: { action: CANTEEN_HUD_STATE.interaction.action },
+    });
+    expect(title.dataset.voiceLine).toBe(CANTEEN_HUD_STATE.objective.voiceLine);
+    expect(zone.dataset.voiceLine).toBe(CANTEEN_HUD_STATE.zone.voiceLine);
+    expect(hud.layer.querySelector<HTMLElement>(".ui-hud-action")?.dataset.voiceLine)
+      .toBe(CANTEEN_HUD_STATE.interaction.voiceLine);
+    const update = {
+      objective: { title: "Open the door", step: "Step 2 of 3" },
+      zone: { name: "Bridge" },
+      minimap: { heading: 90, label: "Upper deck" },
+      status: { resources: [{ glyph: "battery", label: "Power", level: .1, tone: "Accent" }] as GameHudState["status"]["resources"] },
+    };
+    hud.update(update);
+    expect(title.textContent).toBe("Open the door");
+    expect(step.textContent).toBe("Step 2 of 3");
+    expect(zone.textContent).toBe("Bridge");
+    expect(map.querySelector(".ui-hud-tab__label")?.textContent).toBe("Upper deck");
+    expect(resource.getAttribute("aria-valuenow")).toBe("10");
+    expect(resource.querySelector("i")).toBe(cell);
+    expect(hud.layer.querySelector(".ui-hud-objective__title")).toBe(title);
+    expect(document.activeElement).toBe(pause);
+    expect(title.getAttribute("aria-live")).toBe("polite");
+    expect(step.getAttribute("aria-live")).toBe("polite");
+    expect(zone.getAttribute("aria-live")).toBeNull();
+    const writes = vi.spyOn(resource, "setAttribute");
+    const before = walk(hud.layer);
+    hud.update(structuredClone(update));
+    expect(writes).not.toHaveBeenCalled();
+    walk(hud.layer).forEach((node, index) => expect(node).toBe(before[index]));
+  });
 
   it("keeps HUD text and accent above WCAG AA on the panel colour", () => {
     // The panel is 84 % opaque near-black; contrast is checked against the solid panel tone (worst realistic case

@@ -55,11 +55,14 @@ export function paginateLine(text: string, maxChars = 96): string[] {
   return pages.length ? pages : [text];
 }
 
-export function createCrewDialogue(state: CrewDialogueState, onReply: (id: string) => void = () => {}) {
+import { uiText, type UIStrings } from "../i18n";
+
+export function createCrewDialogue(state: CrewDialogueState, onReply: (id: string) => void = () => {}, strings?: UIStrings) {
+  const text = uiText(strings);
   const root = document.createElement("section");
   root.className = "ui-crew-dialogue";
   root.setAttribute("role", "dialog");
-  root.setAttribute("aria-label", `${state.speaker.name} is talking`);
+  root.setAttribute("aria-label", text("componente.dialogo.habla", { name: state.speaker.name }));
   root.style.setProperty("--speaker-accent", state.speaker.accent);
 
   const panel = createHudFrame({ corner: "octagon", double: false, detail: false });
@@ -120,7 +123,7 @@ export function createCrewDialogue(state: CrewDialogueState, onReply: (id: strin
   dots.className = "ui-crew-dialogue__dots";
   dots.setAttribute("aria-hidden", "true");
   pages.forEach(() => dots.append(document.createElement("i")));
-  const next = createHudReply({ glyph: "next", label: "Next", voiceLine: "Next." });
+  const next = createHudReply({ glyph: "next", label: text("componente.dialogo.siguiente"), voiceLine: text("componente.dialogo.siguiente.voz") });
   next.classList.add("ui-crew-dialogue__next");
   pager.append(dots, next);
 

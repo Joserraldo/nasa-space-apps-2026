@@ -6,7 +6,7 @@ import { fusedParts } from "./transit-details";
 export const AIRLOCK_ENTRY_LODS = ["near", "middle", "far"] as const;
 type EntryDetail = typeof AIRLOCK_ENTRY_LODS[number];
 
-function pressureCollar(detail: EntryDetail) {
+function pressureCollar(detail: EntryDetail, principal: boolean) {
   const shell = new Group();
   shell.add(
     boxCenter([2.50, 0.27, 2.47], "darkGray", [0, 0.135, -0.06], 0.045),
@@ -33,19 +33,29 @@ function pressureCollar(detail: EntryDetail) {
   if (detail !== "far") {
     shell.add(boxCenter([1.84, 0.15, 0.14], "darkGray", [0, 2.74, 0.646], 0.022));
   }
+  if (principal) {
+    shell.add(
+      boxCenter([1.56, 0.23, 0.09], "darkGray", [0, 2.82, 0.75], 0.025),
+      boxCenter([1.32, 0.064, 0.025], "cyan", [0, 2.83, 0.805]),
+    );
+  }
   return fusedParts("Pressure collar", shell, detail === "near");
 }
 
 export function registerAirlockEntry(registry: PieceRegistry): void {
-  registry.register<{ detail: EntryDetail }>("NX-04", {
-    parse: input => ({ detail: parseChoice(parseRecord(input, ["detail"]).detail, AIRLOCK_ENTRY_LODS, "near") }),
-    variants: { standard: { detail: "near" } },
+  registry.register<{ detail: EntryDetail; principal: boolean }>("NX-04", {
+    parse: input => {
+      const { detail, principal } = parseRecord(input, ["detail", "principal"]);
+      if (principal !== undefined && typeof principal !== "boolean") throw new Error("principal must be a boolean");
+      return { detail: parseChoice(detail, AIRLOCK_ENTRY_LODS, "near"), principal: principal ?? false };
+    },
+    variants: { standard: { detail: "near", principal: false }, principal: { detail: "near", principal: true } },
     metadata: { category: "largeFurniture", pivot: "base-center" },
-    build: ({ detail }) => {
+    build: ({ detail, principal }) => {
       const entry = new Group();
       const hatch = registry.build("NW-05-A", { state: "sealed" });
       hatch.position.set(0, 0.22, 0.40);
-      entry.add(pressureCollar(detail), hatch);
+      entry.add(pressureCollar(detail, principal), hatch);
       return alignBaseCenter(entry);
     },
   });

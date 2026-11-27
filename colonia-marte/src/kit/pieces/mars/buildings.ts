@@ -28,7 +28,7 @@ function parseTower(input: unknown): TealTowerParams {
   return { style: parseChoice(rec.style, towerVariants, "teal") };
 }
 
-function cleanGeodesicDome(radius: number, detail: number): BufferGeometry {
+export function cleanGeodesicDome(radius: number, detail: number): BufferGeometry {
   return cachedGeometry(["cleanGeodesicDome", radius, detail], () => {
     const ico = new IcosahedronGeometry(radius, detail);
     const pos = ico.getAttribute("position");
@@ -67,7 +67,7 @@ function cleanGeodesicDome(radius: number, detail: number): BufferGeometry {
   });
 }
 
-function extractDomeEdgesAndNodes(radius: number, detail: number) {
+export function extractDomeEdgesAndNodes(radius: number, detail: number) {
   const geo = cleanGeodesicDome(radius, detail);
   const pos = geo.getAttribute("position");
   const idx = geo.index!;

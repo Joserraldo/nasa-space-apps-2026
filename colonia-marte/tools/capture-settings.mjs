@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { mkdir } from "node:fs/promises";
+import { mkdir, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import { chromium } from "playwright";
 
@@ -146,20 +146,36 @@ async function captureGate(page, settings, name) {
   const meter = settings.getByRole("progressbar");
   await shot(page, `${name}-locked`);
   await gate.focus();
-  const sample = async () => Number(await meter.getAttribute("aria-valuenow"));
-  await page.keyboard.down("Space");
+  const sample = () => meter.evaluate(el => Number(el.getAttribute("aria-valuenow")));
+  const inWindow = progress => progress >= 40 && progress <= 60;
+  const cdp = await page.context().newCDPSession(page);
+  const readings = [];
   try {
-    await page.waitForFunction(() => {
-      const progress = Number(document.querySelector(".ui-settings[open] [role=progressbar]")?.getAttribute("aria-valuenow"));
-      return progress >= 40 && progress <= 60;
-    }, null, { timeout: 3000 });
-    const before = await sample();
-    await page.screenshot({ path: join(out, `${name}.png`) });
-    const after = await sample();
-    check(`${name}: mid-hold capture still locked`, await gate.isVisible() && before >= 40 && after <= 60,
-      `${before}–${after}%`);
+    for (let attempt = 0; attempt < 2; attempt++) {
+      await page.keyboard.down("Space");
+      try {
+        const reading = await page.waitForFunction(() => {
+          const node = document.querySelector(".ui-settings[open] [role=progressbar]");
+          const progress = Number(node?.getAttribute("aria-valuenow"));
+          return progress >= 40 && progress <= 60 ? progress : false;
+        }, null, { timeout: 3000 });
+        const before = await reading.jsonValue();
+        // Bypass the font and animation settling of page.screenshot during the hold.
+        const { data } = await cdp.send("Page.captureScreenshot", { format: "png", captureBeyondViewport: false });
+        const after = await sample();
+        readings.push(`${before}–${after}%`);
+        if (inWindow(before) && inWindow(after) && await gate.isVisible()) {
+          await writeFile(join(out, `${name}.png`), Buffer.from(data, "base64"));
+          check(`${name}: mid-hold capture still locked`, true, readings.join("; "));
+          return;
+        }
+      } finally {
+        await page.keyboard.up("Space");
+      }
+    }
+    check(`${name}: mid-hold capture still locked`, false, readings.join("; "));
   } finally {
-    await page.keyboard.up("Space");
+    await cdp.detach();
   }
 }
 
@@ -199,7 +215,7 @@ try {
       await play.click();
       await measure(page, `${size} Play`, `${settingsSelector}[open]`, target);
       await checkSelection(page, `${size} Play tab`, ".ui-settings [role=tab]", "aria-selected");
-      for (const [index, name] of ["Challenge", "Big text", "Joystick"].entries()) {
+      for (const [index, name] of ["Challenge", "Big text", "Language"].entries()) {
         await checkSelection(page, `${size} ${name}`, `.ui-settings [role=tabpanel]:not([hidden]) .ui-hud-choice__options >> nth=${index} >> button`, "aria-pressed");
       }
       await shot(page, `ui-v3-settings-play-${size}`);
@@ -231,10 +247,10 @@ try {
       await measure(page, `${size} credits`, `${settingsSelector}[open]`, target);
       await page.keyboard.press("Escape");
       check(`${size}: Esc from credits returns to its trigger`, await credits.evaluate(el => el === document.activeElement));
+      await settings.getByRole("button", { name: "Right", exact: true }).click();
 
       const playPanel = settings.getByRole("tabpanel", { name: "Play" });
       await play.click();
-      await playPanel.getByRole("button", { name: "Right" }).click();
       await playPanel.getByRole("group", { name: "Big text" }).getByRole("button", { name: "On" }).click();
       await page.keyboard.press("Escape");
       const pause = page.locator(`${pauseSelector}[open]`);
@@ -275,8 +291,9 @@ try {
       const right = await page.locator("#joystick:visible").evaluate(el => el.getBoundingClientRect().left > innerWidth / 2);
       await page.locator("#orbit").evaluate(button => button.click());
       settings = await openSettings(page);
-      await settings.getByRole("tab", { name: "Play" }).click();
-      await playPanel.getByRole("button", { name: "Left" }).click();
+      await settings.getByRole("tab", { name: "Grown-ups" }).click();
+      await unlock(page, settings, "Space");
+      await settings.getByRole("button", { name: "Left", exact: true }).click();
       await page.keyboard.press("Escape");
       await page.keyboard.press("Escape");
       await pause.waitFor({ state: "hidden" });
@@ -316,6 +333,17 @@ try {
       } finally { await page.keyboard.up("Enter"); }
       await page.keyboard.press("Escape");
       check(`${size}: direct URL also restores Settings focus`, await settingsItem.evaluate(el => el === document.activeElement));
+
+      await ready(page, "?settings=play");
+      for (const [label, language, tab] of [["Español", "es", "Jugar"], ["English", "en", "Play"]]) {
+        await direct.getByRole("button", { name: label, exact: true }).click();
+        await page.waitForFunction(lang => document.documentElement.lang === lang, language);
+        const activeTab = direct.getByRole("tab", { name: tab, exact: true });
+        await activeTab.waitFor();
+        const saved = await page.evaluate(key => JSON.parse(localStorage.getItem(key)).language, settingsKey);
+        check(`${size}: ${label} persists, updates document language and reopens Play`,
+          saved === language && await activeTab.getAttribute("aria-selected") === "true");
+      }
     } catch (error) {
       check(`${size} browser flow`, false, error.stack ?? String(error));
     } finally {
