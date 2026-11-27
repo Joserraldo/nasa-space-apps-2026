@@ -2,7 +2,7 @@ name: CI
 
 on:
   pull_request:
-    branches: [develop, main, feat/ui-escenarios]
+    branches: [develop, main, feat/ui-escenarios, "feat/**"]
   push:
     branches: [develop, main, feat/ui-escenarios]
 
@@ -32,6 +32,43 @@ jobs:
 
       - name: Tests
         run: npm test
+
+  colonia:
+    name: Colonia en Marte (tipos, tests y build)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    defaults:
+      run:
+        working-directory: colonia-marte
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            colonia-marte/package-lock.json
+
+      # El juego importa el motor y las misiones desde la raíz, que traen sus propias dependencias.
+      - name: Instalar dependencias del monorepo
+        run: npm ci
+        working-directory: .
+
+      # App independiente (fuera de los workspaces): tiene su propio lockfile.
+      - name: Instalar dependencias
+        run: npm ci
+
+      - name: Comprobar tipos
+        run: npx tsc --noEmit
+
+      # Las piezas 3D tardan más de 5 s (el límite por defecto) en el equipo de GitHub.
+      - name: Tests
+        run: npm test -- --testTimeout=30000
+
+      - name: Construir
+        run: npm run build
 
   e2e:
     name: E2E ruta dorada
