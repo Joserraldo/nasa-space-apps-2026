@@ -48,9 +48,9 @@ describe("atlas UV and shared material boundary", () => {
   });
   it("shares one atlas material for solid emission and one additive Hall plume material", () => {
     expect(Object.keys(materials)).toEqual([
-      "M_palette", "M_glass", "M_sky", "M_terrain", "M_hologram", "M_screen", "M_hallPlume",
+      "M_palette", "M_glass", "M_sky", "M_terrain", "M_hologram", "M_screen", "M_hallPlume", "M_roverTracks",
     ]);
-    expect(sharedMaterials.size).toBe(7);
+    expect(sharedMaterials).toEqual(new Set(Object.values(materials)));
     expect(previewOpaque).toBe(materials.M_palette);
     expect(previewGlow).toBe(materials.M_palette);
     expect(materials.M_palette.map).toBe(paletteMap);

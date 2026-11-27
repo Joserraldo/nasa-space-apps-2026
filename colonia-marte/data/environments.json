@@ -38,10 +38,10 @@
     },
     {
       "id": "AMB-06", "name": "Dust storm", "context": "exterior",
-      "light": {"sun": "dustSky", "intensity": 0.35, "height": 0.6, "ambient": 1.2, "ground": "oxide"},
+      "light": {"sun": "sunHalo", "intensity": 1.92, "height": 0.6, "ambient": 1.54, "ground": "oxide", "sky": "skyHorizon"},
       "sky": {"zenith": "dustSky", "horizon": "dustSky", "halo": "skyHorizon", "size": 0.04, "stars": 0, "earth": 0},
-      "fog": {"color": "dustSky", "near": 5, "far": 140},
-      "post": {"exposure": 0.95, "bloom": 0.2, "ao": 1.2}, "shadows": true
+      "fog": {"color": "dustSky", "near": 58, "far": 240},
+      "post": {"exposure": 1.03, "bloom": 0.2, "ao": 1.2}, "shadows": true
     },
     {
       "id": "AMB-07", "name": "North pole / C5", "context": "exterior",

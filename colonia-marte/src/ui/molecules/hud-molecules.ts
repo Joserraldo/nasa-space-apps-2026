@@ -1,32 +1,45 @@
 import {
   createHudAction, createHudFrame, createHudGlyph, createHudHex, createHudMeter, createHudReticle, createHudRing,
-  createHudTab, hudFrameContent, voiceText, type UIHudGlyph,
+  createHudTab, hudFrameContent, updateVoiceText, voiceText, type UIHudGlyph,
 } from "../atoms/hud-atoms";
 import type { UIRegistry } from "../registry";
+import { uiText, type UIStrings } from "../i18n";
 import { asRecord, pickEnum, pickNumber, pickString } from "../types";
 
-/** HUD molecules (UI v3): compositions of HUD atoms only. Presentational; data through params. */
-
-// --- Objective card (R3) --------------------------------------------------------------------
 export interface UIHudObjectiveParams { title: string; step: string; voiceLine: string }
 export function parseHudObjectiveParams(input: unknown): UIHudObjectiveParams {
   const rec = asRecord(input);
   const title = pickString(rec.title, "Get lunch for the crew", "title");
   return { title, step: pickString(rec.step, "Step 1 of 3", "step"), voiceLine: pickString(rec.voiceLine, title, "voiceLine") };
 }
-export function createHudObjective(params: Partial<UIHudObjectiveParams> = {}): HTMLElement {
-  const parsed = parseHudObjectiveParams(params);
+export function createHudObjective(params: Partial<UIHudObjectiveParams> = {}, strings?: UIStrings) {
+  let current = params;
+  const parsed = parseHudObjectiveParams(current);
   const frame = createHudFrame({ corner: "top-left", double: true, accentEdge: true });
   frame.classList.add("ui-hud-objective");
-  frame.setAttribute("aria-label", "Objective");
+  const label = uiText(strings)("componente.hud.objetivo");
+  frame.setAttribute("aria-label", label);
   const body = document.createElement("div");
   body.className = "ui-hud-objective__body";
-  body.append(voiceText("p", "ui-hud-objective__title", parsed.title, parsed.voiceLine), voiceText("p", "ui-hud-objective__step", parsed.step));
-  hudFrameContent(frame).append(createHudTab({ label: "Objective", glyph: "objective" }), body);
-  return frame;
+  const title = voiceText("p", "ui-hud-objective__title", parsed.title, parsed.voiceLine);
+  const step = voiceText("p", "ui-hud-objective__step", parsed.step);
+  title.setAttribute("aria-live", "polite");
+  step.setAttribute("aria-live", "polite");
+  body.append(title, step);
+  hudFrameContent(frame).append(createHudTab({ label, glyph: "objective" }), body);
+  return Object.assign(frame, {
+    update(next: Partial<UIHudObjectiveParams>) {
+      current = { ...current, ...next };
+      if (next.title !== undefined && next.title !== title.textContent && next.voiceLine === undefined) {
+        current.voiceLine = next.title;
+      }
+      const values = parseHudObjectiveParams(current);
+      updateVoiceText(title, values.title, values.voiceLine);
+      updateVoiceText(step, values.step);
+    },
+  });
 }
 
-// --- Resource row ---------------------------------------------------------------------------
 const RESOURCE_GLYPHS = ["battery", "air", "shield"] as const;
 export interface UIHudResourceParams { glyph: (typeof RESOURCE_GLYPHS)[number]; label: string; level: number; tone: "Accent" | "Ink" | "Warning" }
 export function parseHudResourceParams(input: unknown): UIHudResourceParams {
@@ -38,7 +51,7 @@ export function parseHudResourceParams(input: unknown): UIHudResourceParams {
     tone: pickEnum(rec.tone, ["Accent", "Ink", "Warning"] as const, "Accent", "tone"),
   };
 }
-export function createHudResource(params: Partial<UIHudResourceParams> = {}): HTMLElement {
+export function createHudResource(params: Partial<UIHudResourceParams> = {}) {
   const parsed = parseHudResourceParams(params);
   const row = document.createElement("div");
   row.className = "ui-hud-resource";
@@ -47,13 +60,23 @@ export function createHudResource(params: Partial<UIHudResourceParams> = {}): HT
   row.setAttribute("aria-valuemin", "0");
   row.setAttribute("aria-valuemax", "100");
   row.setAttribute("aria-valuenow", String(Math.round(parsed.level * 100)));
-  const tone = parsed.level <= 0.25 ? "Warning" : parsed.tone;
-  row.append(createHudGlyph(parsed.glyph, "ui-hud-resource__glyph"), voiceText("span", "ui-hud-resource__label", parsed.label),
-    createHudMeter({ level: parsed.level, cells: 8, tone }));
-  return row;
+  const tone = (resource: UIHudResourceParams) => resource.level <= 0.25 ? "Warning" : resource.tone;
+  const glyph = createHudGlyph(parsed.glyph, "ui-hud-resource__glyph");
+  const label = voiceText("span", "ui-hud-resource__label", parsed.label);
+  const meter = createHudMeter({ level: parsed.level, cells: 8, tone: tone(parsed) });
+  row.append(glyph, label, meter);
+  return Object.assign(row, {
+    update(next: UIHudResourceParams) {
+      const percent = String(Math.round(next.level * 100));
+      if (row.getAttribute("aria-valuenow") !== percent) row.setAttribute("aria-valuenow", percent);
+      if (row.getAttribute("aria-label") !== next.label) row.setAttribute("aria-label", next.label);
+      glyph.updateGlyph(next.glyph);
+      updateVoiceText(label, next.label);
+      meter.updateMeter(next.level, tone(next));
+    },
+  });
 }
 
-// --- Companion status (ring + resources) ----------------------------------------------------
 export interface UIHudStatusParams { name: string; role: string; ringLevel: number; resources: UIHudResourceParams[] }
 export function parseHudStatusParams(input: unknown): UIHudStatusParams {
   const rec = asRecord(input);
@@ -65,21 +88,45 @@ export function parseHudStatusParams(input: unknown): UIHudStatusParams {
   return { name: pickString(rec.name, "Iris", "name"), role: pickString(rec.role, "Your companion", "role"),
     ringLevel: pickNumber(rec.ringLevel, 0.72, "ringLevel", 0, 1), resources };
 }
-export function createHudStatus(params: Partial<UIHudStatusParams> = {}): HTMLElement {
-  const parsed = parseHudStatusParams(params);
+export function createHudStatus(params: Partial<UIHudStatusParams> = {}, strings?: UIStrings) {
+  let current = params;
+  const parsed = parseHudStatusParams(current);
   // Companion gauge lives inside the card (left column), never overlapping the frame.
   const frame = createHudFrame({ corner: "top-right", double: true });
   frame.classList.add("ui-hud-status");
-  frame.setAttribute("aria-label", `${parsed.name} status`);
+  const text = uiText(strings);
+  frame.setAttribute("aria-label", text("componente.hud.estado", { name: parsed.name }));
   const gauge = document.createElement("div");
   gauge.className = "ui-hud-status__gauge";
-  gauge.append(createHudRing({ level: parsed.ringLevel, glyph: "iris" }), voiceText("strong", "ui-hud-status__name", parsed.name),
-    voiceText("span", "ui-hud-status__role", parsed.role));
+  const ring = createHudRing({ level: parsed.ringLevel, glyph: "iris" });
+  const name = voiceText("strong", "ui-hud-status__name", parsed.name);
+  const role = voiceText("span", "ui-hud-status__role", parsed.role);
+  gauge.append(ring, name, role);
   const meters = document.createElement("div");
   meters.className = "ui-hud-status__meters";
-  meters.append(...parsed.resources.map(createHudResource));
+  const rows = parsed.resources.map(createHudResource);
+  meters.append(...rows);
   hudFrameContent(frame).append(gauge, meters);
-  return frame;
+  return Object.assign(frame, {
+    update(next: Partial<UIHudStatusParams>) {
+      current = { ...current, ...next };
+      const values = parseHudStatusParams(current);
+      if (name.textContent !== values.name) frame.setAttribute("aria-label", text("componente.hud.estado", { name: values.name }));
+      updateVoiceText(name, values.name);
+      updateVoiceText(role, values.role);
+      ring.updateLevel(values.ringLevel);
+      if (!next.resources) return;
+      for (const [index, value] of values.resources.entries()) {
+        if (rows[index]) rows[index].update(value);
+        else {
+          const row = createHudResource(value);
+          rows.push(row);
+          meters.append(row);
+        }
+      }
+      for (const row of rows.splice(values.resources.length)) row.remove();
+    },
+  });
 }
 
 // --- Zone label (T7.5) ----------------------------------------------------------------------
@@ -91,18 +138,33 @@ export function parseHudZoneParams(input: unknown): UIHudZoneParams {
     glyph: pickEnum(rec.glyph, ["canteen", "map", "objective", "iris"] as const, "canteen", "glyph"),
     voiceLine: pickString(rec.voiceLine, `You are in the ${name.toLowerCase()}.`, "voiceLine") };
 }
-export function createHudZone(params: Partial<UIHudZoneParams> = {}): HTMLElement {
-  const parsed = parseHudZoneParams(params);
+export function createHudZone(params: Partial<UIHudZoneParams> = {}, strings?: UIStrings) {
+  let current = params;
+  const parsed = parseHudZoneParams(current);
   const frame = createHudFrame({ corner: "top-right", double: false });
   frame.classList.add("ui-hud-zone");
-  frame.setAttribute("aria-label", "Current zone");
+  frame.setAttribute("aria-label", uiText(strings)("componente.hud.zona"));
   const text = document.createElement("div");
   text.className = "ui-hud-zone__text";
-  text.append(voiceText("strong", "ui-hud-zone__name", parsed.name, parsed.voiceLine), voiceText("span", "ui-hud-zone__deck", parsed.deck));
+  const name = voiceText("strong", "ui-hud-zone__name", parsed.name, parsed.voiceLine);
+  const deck = voiceText("span", "ui-hud-zone__deck", parsed.deck);
+  text.append(name, deck);
   const bar = document.createElement("span");
   bar.className = "ui-hud-zone__bar";
-  hudFrameContent(frame).append(createHudHex({ glyph: parsed.glyph, size: "Large" }), text, bar);
-  return frame;
+  const glyph = createHudHex({ glyph: parsed.glyph, size: "Large" });
+  hudFrameContent(frame).append(glyph, text, bar);
+  return Object.assign(frame, {
+    update(next: Partial<UIHudZoneParams>) {
+      current = { ...current, ...next };
+      if (next.name !== undefined && next.name !== name.textContent && next.voiceLine === undefined) {
+        current.voiceLine = next.name;
+      }
+      const values = parseHudZoneParams(current);
+      updateVoiceText(name, values.name, values.voiceLine);
+      updateVoiceText(deck, values.deck);
+      glyph.updateGlyph(values.glyph);
+    },
+  });
 }
 
 // --- Minimap card ---------------------------------------------------------------------------
@@ -111,11 +173,11 @@ export function parseHudMinimapParams(input: unknown): UIHudMinimapParams {
   const rec = asRecord(input);
   return { label: pickString(rec.label, "Habitat deck 1", "label"), heading: pickNumber(rec.heading, 0, "heading", -360, 360) };
 }
-export function createHudMinimap(params: Partial<UIHudMinimapParams> = {}): HTMLElement {
+export function createHudMinimap(params: Partial<UIHudMinimapParams> = {}, strings?: UIStrings) {
   const parsed = parseHudMinimapParams(params);
   const frame = createHudFrame({ corner: "top-left", double: true });
   frame.classList.add("ui-hud-minimap");
-  frame.setAttribute("aria-label", "Map");
+  frame.setAttribute("aria-label", uiText(strings)("componente.hud.mapa"));
   const view = document.createElement("div");
   view.className = "ui-hud-minimap__view";
   // Radar read (reference: HUD frame kit radar): rings and crosshair centred on the player, soft sweep,
@@ -132,15 +194,26 @@ export function createHudMinimap(params: Partial<UIHudMinimapParams> = {}): HTML
     <rect class="room" x="40" y="60" width="22" height="26"/>
     <path class="door" d="M86 34v10M46 60h10"/>
     <circle class="target" cx="48" cy="24" r="3.4"/><circle class="target-ring" cx="48" cy="24" r="6.5"/>
-    <g transform="rotate(${parsed.heading} 52 50)"><path class="cone" d="M52 50 40 30h24z"/><path class="player" d="M52 44l-5 10 5-2.6 5 2.6z"/></g>
+    <g class="ui-hud-minimap__heading" transform="rotate(${parsed.heading} 52 50)"><path class="cone" d="M52 50 40 30h24z"/><path class="player" d="M52 44l-5 10 5-2.6 5 2.6z"/></g>
     <text class="north" x="112" y="12">N</text></svg>`;
-  hudFrameContent(frame).append(createHudTab({ label: parsed.label, glyph: "map" }), view);
+  const tab = createHudTab({ label: parsed.label, glyph: "map" });
+  const label = tab.querySelector<HTMLElement>(".ui-hud-tab__label")!;
+  const heading = view.querySelector(".ui-hud-minimap__heading");
+  hudFrameContent(frame).append(tab, view);
   for (const corner of ["tl", "br"]) {
     const cross = document.createElement("span");
     cross.className = `ui-hud-cross ui-hud-cross--${corner}`;
     frame.append(cross);
   }
-  return frame;
+  return Object.assign(frame, {
+    update(next: Partial<UIHudMinimapParams>) {
+      if (next.label !== undefined) updateVoiceText(label, next.label);
+      if (next.heading !== undefined) {
+        const value = `rotate(${parseHudMinimapParams(next).heading} 52 50)`;
+        if (heading && heading.getAttribute("transform") !== value) heading.setAttribute("transform", value);
+      }
+    },
+  });
 }
 
 // --- Diegetic interaction prompt ------------------------------------------------------------
@@ -162,10 +235,21 @@ export function createHudInteraction(params: Partial<UIHudInteractionParams> = {
   const card = document.createElement("div");
   card.className = "ui-hud-interaction__card";
   const button = createHudAction({ label: parsed.action, glyph: "tap", voiceLine: parsed.voiceLine });
-  card.append(voiceText("span", "ui-hud-interaction__target", parsed.target), button);
+  const target = voiceText("span", "ui-hud-interaction__target", parsed.target);
+  const action = button.querySelector<HTMLElement>(".ui-hud-action__label")!;
+  card.append(target, button);
   root.append(createHudReticle(), leader, card);
   return {
     root, button,
+    update(next: Partial<UIHudInteractionParams>) {
+      if (next.target !== undefined) updateVoiceText(target, next.target);
+      if (next.action !== undefined || next.voiceLine !== undefined) {
+        const label = next.action ?? action.textContent ?? "";
+        const voice = next.voiceLine ?? (label === action.textContent ? action.dataset.voiceLine : label) ?? label;
+        updateVoiceText(action, label, voice);
+        if (button.dataset.voiceLine !== voice) button.dataset.voiceLine = voice;
+      }
+    },
     /** Anchor in CSS px inside the HUD layer, or null when the object is off screen. */
     place(point: { x: number; y: number } | null, side: HudPromptSide) {
       root.hidden = point === null;

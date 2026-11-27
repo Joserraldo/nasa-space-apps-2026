@@ -3,6 +3,23 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+      html, body { margin: 0; height: 100%; overflow: hidden; }
+      * { box-sizing: border-box; }
+      #app { height: 100vh; height: 100dvh; display: grid; grid-template-rows: auto minmax(0, 1fr); }
+    </style>
+    <script>
+      // Apply the saved scale before the body or deferred stylesheet can paint.
+      if (/^\/(?:menu|hud-preview)\/?$/.test(location.pathname)) {
+        try {
+          if (JSON.parse(localStorage.getItem("colonia.settings.v1"))?.bigText === true) {
+            document.documentElement.classList.add("ui-big-text");
+          }
+        } catch {
+          // Invalid or unavailable storage uses the default scale.
+        }
+      }
+    </script>
     <link rel="icon" type="image/svg+xml" sizes="any" href="/favicon.svg" />
     <title>Mars Colony — WS0 Kit</title>
   </head>

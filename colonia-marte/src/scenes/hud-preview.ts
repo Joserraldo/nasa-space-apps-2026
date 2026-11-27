@@ -7,6 +7,8 @@ import { DIALOGUE_SAMPLES } from "../ui/organisms/crew-dialogue.samples";
 import { createSettingsMenu, isSettingsTab, type SettingsTab } from "../ui/organisms/settings-menu";
 import { DEFAULT_SETTINGS, loadSettings, resetProgress, saveSettings, type SettingsState } from "../ui/state/settings";
 import { mountInteriorRoom } from "./room-viewer";
+import { getUiStrings, reopenLocalizedSettings } from "../ui/i18n";
+import { CANTEEN_HUD_ES, PAUSE_STATE_ES, spanishDialogue } from "../ui/content/preview-es";
 
 /** Salad dispenser display (DN-04 at x 10.12): the diegetic prompt is anchored here. */
 const DISPENSER_ANCHOR = new Vector3(10.12, 1.75, 0.85);
@@ -16,6 +18,7 @@ function previewStorage(): Storage | undefined {
 }
 
 function applySettings(state: SettingsState): void {
+  document.documentElement.lang = state.language;
   if (state.bigText) document.documentElement.classList.add("ui-big-text");
   else document.documentElement.classList.remove("ui-big-text");
   document.body.dataset.joystickSide = state.joystickSide;
@@ -25,23 +28,32 @@ function applySettings(state: SettingsState): void {
 export function mountHudPreview(): void {
   document.body.classList.add("hud-preview");
   const storage = previewStorage();
-  const initial = storage ? loadSettings(storage) : DEFAULT_SETTINGS;
+  const initial = storage ? loadSettings(storage) : { ...DEFAULT_SETTINGS };
   const params = new URLSearchParams(location.search);
+  const requestedLanguage = params.get("language");
+  if (requestedLanguage === "en" || requestedLanguage === "es") initial.language = requestedLanguage;
+  const strings = getUiStrings(initial.language);
+  const spanish = initial.language === "es";
   applySettings(initial);
   let follow = () => {};
   mountInteriorRoom(canteenJson, "canteen-pilot-ao-v3", [11.5, 1.5, 4.2], {
     onReady: ({ camera, viewport }) => {
-      const pause = createPauseMenu(DEFAULT_PAUSE_STATE, id => { if (id === "settings") openSettings(); });
+      const pause = createPauseMenu(spanish ? PAUSE_STATE_ES : DEFAULT_PAUSE_STATE, id => { if (id === "settings") openSettings(); }, strings);
       const settingsItem = pause.dialog.querySelector<HTMLButtonElement>('[data-pause-action="settings"]');
       const settings = createSettingsMenu(initial, {
         onChange: state => {
+          let persisted = false;
+          try { if (storage) { saveSettings(storage, state); persisted = true; } } catch { /* Storage may be unavailable. */ }
+          if (state.language !== initial.language) {
+            reopenLocalizedSettings(state.language, persisted);
+            return;
+          }
           applySettings(state);
-          try { if (storage) saveSettings(storage, state); } catch { /* Keep in-memory changes usable. */ }
         },
         onResetProgress: () => {
           try { if (storage) resetProgress(storage); } catch { /* Storage may be unavailable in the preview. */ }
         },
-      });
+      }, strings);
       function openSettings(tab?: SettingsTab): void {
         pause.open();
         settingsItem?.focus();
@@ -53,14 +65,14 @@ export function mountHudPreview(): void {
       const talk = () => {
         if (talking) return;
         const state = (sampleKey && DIALOGUE_SAMPLES[sampleKey]) || TESS_DISPENSER_DIALOGUE;
-        talking = createCrewDialogue(state, () => {
+        talking = createCrewDialogue(spanish ? spanishDialogue(sampleKey ?? "medium", state) : state, () => {
           talking?.root.remove(); talking = null; hud.setMode("explore");
-        });
+        }, strings);
         hud.setMode("dialogue");
         hud.layer.append(talking.root);
         talking.focusFirstReply();
       };
-      const hud = createGameHud(CANTEEN_HUD_STATE, talk, () => pause.open());
+      const hud = createGameHud(spanish ? CANTEEN_HUD_ES : CANTEEN_HUD_STATE, talk, () => pause.open(), strings);
       viewport.append(hud.layer);
       if (sampleKey) talk();
       addEventListener("keydown", event => { if (event.key === "p" || event.key === "P") pause.open(); });
