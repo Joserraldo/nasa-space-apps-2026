@@ -4,4 +4,4 @@
  */
 export * from "../../../engine/src/index";
 export * from "../../../missions/src/index";
-export type { Difficulty, GameState, Equipment, Resource, Action, Expert, BaseAiLevel } from "../../../contracts/src/index";
+export type { Cause, Difficulty, GameState, Equipment, Resource, Action, Expert, BaseAiLevel } from "../../../contracts/src/index";

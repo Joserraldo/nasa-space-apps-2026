@@ -54,6 +54,7 @@ if (path === "/ui") {
 } else if (path === "/hud-preview") {
   const { mountHudPreview } = await import("./scenes/hud-preview");
   mountHudPreview();
+} else if (path === "/play") { (await import("./game/main")).mountJuego();
 } else if (menu) {
   const { mountMenuPreview } = await import("./scenes/menu-preview");
   await mountMenuPreview(menu);
