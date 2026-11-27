@@ -1,14 +1,14 @@
 import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
-import { TEXTOS_JEZERO, TEXTOS_LUNA_POLO_SUR, TEXTOS_MARTE_POLO_NORTE, TEXTOS_OUTPOST_SORPRESA, TEXTOS_LUNA_VISIBLE } from "./textos.js";
+import { TEXTOS_JEZERO, TEXTOS_LUNA_POLO_SUR, TEXTOS_MARTE_POLO_NORTE, TEXTOS_OUTPOST_SORPRESA, TEXTOS_LUNA_VISIBLE, TEXTOS_VIAJE_MARTE } from "./textos.js";
 
 const raiz = join(__dirname, "..", "..");
 const leer = (ruta: string): Record<string, string> => JSON.parse(readFileSync(join(raiz, ruta), "utf8"));
 
 // Textos de diseño en JSON; los de las misiones viven en missions/src/textos.ts (TEXTOS_JEZERO, de Camilo, y los de cada misión nueva).
-const en = { ...leer("design/i18n/en.json"), ...TEXTOS_JEZERO.en, ...TEXTOS_MARTE_POLO_NORTE.en, ...TEXTOS_LUNA_POLO_SUR.en, ...TEXTOS_OUTPOST_SORPRESA.en, ...TEXTOS_LUNA_VISIBLE.en };
-const es = { ...leer("design/i18n/es.json"), ...TEXTOS_JEZERO.es, ...TEXTOS_MARTE_POLO_NORTE.es, ...TEXTOS_LUNA_POLO_SUR.es, ...TEXTOS_OUTPOST_SORPRESA.es, ...TEXTOS_LUNA_VISIBLE.es };
+const en = { ...leer("design/i18n/en.json"), ...TEXTOS_JEZERO.en, ...TEXTOS_MARTE_POLO_NORTE.en, ...TEXTOS_LUNA_POLO_SUR.en, ...TEXTOS_OUTPOST_SORPRESA.en, ...TEXTOS_LUNA_VISIBLE.en, ...TEXTOS_VIAJE_MARTE.en };
+const es = { ...leer("design/i18n/es.json"), ...TEXTOS_JEZERO.es, ...TEXTOS_MARTE_POLO_NORTE.es, ...TEXTOS_LUNA_POLO_SUR.es, ...TEXTOS_OUTPOST_SORPRESA.es, ...TEXTOS_LUNA_VISIBLE.es, ...TEXTOS_VIAJE_MARTE.es };
 
 /** Claves que el motor, diseño y misiones escriben en el estado y que la pantalla debe poder traducir. */
 function clavesUsadas(): string[] {

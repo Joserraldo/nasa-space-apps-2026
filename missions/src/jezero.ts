@@ -124,6 +124,8 @@ export interface OpcionDilema {
   extra?: EfectoOpcion;
   /** Solo aplica `extra` si el jugador construyó este módulo. */
   extraSiTiene?: Equipment;
+  /** Clave i18n con la que `extra` aparece en la cadena de causas. Por defecto, apagar el invernadero. */
+  extraCausaKey?: string;
   /** Experto que defiende esta opción (o null si nadie la recomienda). */
   defiende: Expert | null;
   textoKey: string;
@@ -132,6 +134,15 @@ export interface OpcionDilema {
 /** Dilema del paso 6 (propuesta #88): dos expertos se contradicen con la tormenta encima. Ninguna opción es gratis. */
 export interface DilemaPaso6 {
   paso: 6;
+  preguntaKey: string;
+  opciones: OpcionDilema[];
+}
+
+/**
+ * Decisión que se toma antes de la tormenta (en C1 es la de la intro) y que el motor aplica cuando
+ * llega, con `elegirPlan`. Es distinta del dilema del paso 6. Ninguna opción es gratis.
+ */
+export interface DecisionInicial {
   preguntaKey: string;
   opciones: OpcionDilema[];
 }
@@ -203,6 +214,8 @@ export interface Mision {
   limiteDosisMSv?: number;
   /** Opcional: una misión sin polvo/panel dañado no debe inventar ese evento para usar el motor. */
   eventoPolvo?: EventoPolvo;
+  /** Opcional: solo las misiones que preguntan el plan antes de la tormenta. */
+  decisionInicial?: DecisionInicial;
   dilemaPaso6: DilemaPaso6;
   tarjetasCiencia: TarjetaCiencia[];
   preguntaFinal: PreguntaFinal;
