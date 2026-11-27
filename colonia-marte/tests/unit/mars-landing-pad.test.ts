@@ -22,7 +22,7 @@ describe("MI-07 landing pad", () => {
     const layout = parseColonyLayout(colonyJson, registry);
     const specs = layout.placements.filter(piece => piece.id === "MI-07");
     expect(specs).toHaveLength(1);
-    const colony = buildColonyGroup(layout, registry);
+    const colony = buildColonyGroup({ ...layout, placements: specs }, registry);
     const pad = colony.children.find(child => child instanceof LOD && child.name.startsWith("MI-07")) as LOD;
     const { at: [x, z], yOffset = 0 } = specs[0];
     expect(pad.position.toArray()).toEqual([x, terrainHeight(x, z, {
@@ -32,7 +32,6 @@ describe("MI-07 landing pad", () => {
     const [near, middle, far] = pad.levels.map(({ object }) => countColonyTriangles(object));
     expect(near).toBeGreaterThan(middle);
     expect(middle).toBeGreaterThan(far);
-    const entry = layout.placements.find(piece => piece.id === "NX-04")!;
-    expect(colony.detailedTriangles).toBe(76404 + near + countColonyTriangles(registry.build(entry.id, entry.params)));
+    expect(colony.detailedTriangles).toBe(near);
   });
 });

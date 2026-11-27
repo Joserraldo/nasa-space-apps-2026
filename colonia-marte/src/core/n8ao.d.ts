@@ -6,7 +6,9 @@ declare module "n8ao" {
     configuration: {
       aoRadius: number; distanceFalloff: number; intensity: number; color: Color;
       halfRes: boolean; gammaCorrection: boolean; aoSamples: number; denoiseSamples: number;
+      accumulate: boolean;
     };
+    firstFrame(): void;
     setQualityMode(mode: "Performance" | "Low" | "Medium" | "High" | "Ultra"): void;
   }
 }

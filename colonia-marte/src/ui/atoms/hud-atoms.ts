@@ -54,10 +54,21 @@ export function voiceText<K extends keyof HTMLElementTagNameMap>(tag: K, classNa
   return element;
 }
 
+export function updateVoiceText(element: HTMLElement, text: string, voiceLine = text) {
+  if (element.textContent !== text) element.textContent = text;
+  if (element.dataset.voiceLine !== voiceLine) element.dataset.voiceLine = voiceLine;
+}
+
 export function createHudGlyph(name: UIHudGlyph, className = "ui-hud-glyph") {
   const element = node("span", className);
   element.innerHTML = HUD_GLYPHS[name];
-  return element;
+  return Object.assign(element, {
+    updateGlyph(next: UIHudGlyph) {
+      if (name === next) return;
+      name = next;
+      element.innerHTML = HUD_GLYPHS[name];
+    },
+  });
 }
 
 // --- Frame ----------------------------------------------------------------------------------
@@ -123,12 +134,13 @@ export function parseHudHexParams(input: unknown): UIHudHexParams {
     size: pickEnum(rec.size, ["Medium", "Large"] as const, "Large", "size"),
   };
 }
-export function createHudHex(params: Partial<UIHudHexParams> = {}): HTMLElement {
+export function createHudHex(params: Partial<UIHudHexParams> = {}) {
   const parsed = parseHudHexParams(params);
   const hex = node("span", `ui-hud-hex ui-hud-hex--${parsed.size.toLowerCase()}`);
   hex.innerHTML = svg('<path class="ui-hud-hex__shape" d="M27 3 49 15.5v25L27 53 5 40.5v-25z"/>', "0 0 54 56");
-  hex.append(createHudGlyph(parsed.glyph, "ui-hud-hex__glyph"));
-  return hex;
+  const glyph = createHudGlyph(parsed.glyph, "ui-hud-hex__glyph");
+  hex.append(glyph);
+  return Object.assign(hex, { updateGlyph: glyph.updateGlyph });
 }
 
 // --- Segmented meter ------------------------------------------------------------------------
@@ -142,13 +154,27 @@ export function parseHudMeterParams(input: unknown): UIHudMeterParams {
   };
 }
 /** Resource as an object (R2): slanted cells, no number. */
-export function createHudMeter(params: Partial<UIHudMeterParams> = {}): HTMLElement {
+export function createHudMeter(params: Partial<UIHudMeterParams> = {}) {
   const parsed = parseHudMeterParams(params);
   const meter = node("span", `ui-hud-meter ui-hud-meter--${parsed.tone.toLowerCase()}`);
   meter.style.setProperty("--cells", String(parsed.cells));
-  const lit = Math.round(parsed.level * parsed.cells);
-  for (let i = 0; i < parsed.cells; i++) meter.append(node("i", i < lit ? "is-on" : ""));
-  return meter;
+  let lit = Math.round(parsed.level * parsed.cells);
+  let tone = parsed.tone;
+  const cells = Array.from({ length: parsed.cells }, (_, i) => node("i", i < lit ? "is-on" : ""));
+  meter.append(...cells);
+  return Object.assign(meter, {
+    updateMeter(level: number, nextTone: UIHudMeterParams["tone"]) {
+      const nextLit = Math.round(level * parsed.cells);
+      for (let i = Math.min(lit, nextLit); i < Math.max(lit, nextLit); i++) {
+        cells[i].className = i < nextLit ? "is-on" : "";
+      }
+      lit = nextLit;
+      if (tone === nextTone) return;
+      meter.classList.remove(`ui-hud-meter--${tone.toLowerCase()}`);
+      meter.classList.add(`ui-hud-meter--${nextTone.toLowerCase()}`);
+      tone = nextTone;
+    },
+  });
 }
 
 // --- Ring -----------------------------------------------------------------------------------
@@ -157,7 +183,7 @@ export function parseHudRingParams(input: unknown): UIHudRingParams {
   const rec = asRecord(input);
   return { level: pickNumber(rec.level, 0.72, "level", 0, 1), glyph: pickEnum(rec.glyph, GLYPHS, "iris", "glyph") };
 }
-export function createHudRing(params: Partial<UIHudRingParams> = {}): HTMLElement {
+export function createHudRing(params: Partial<UIHudRingParams> = {}) {
   const parsed = parseHudRingParams(params);
   const ring = node("span", "ui-hud-ring");
   const arc = (r: number, from: number, to: number) => {
@@ -175,7 +201,15 @@ export function createHudRing(params: Partial<UIHudRingParams> = {}): HTMLElemen
     <path class="ui-hud-ring__arc" d="${arc(40, 0, Math.max(1, parsed.level * 359.9))}"/>
     <circle class="ui-hud-ring__core" cx="60" cy="60" r="32"/>`, "0 0 120 120");
   ring.append(createHudGlyph(parsed.glyph, "ui-hud-ring__glyph"));
-  return ring;
+  let level = parsed.level;
+  const levelArc = ring.querySelector(".ui-hud-ring__arc");
+  return Object.assign(ring, {
+    updateLevel(next: number) {
+      if (level === next) return;
+      level = next;
+      levelArc?.setAttribute("d", arc(40, 0, Math.max(1, level * 359.9)));
+    },
+  });
 }
 
 // --- Reticle --------------------------------------------------------------------------------

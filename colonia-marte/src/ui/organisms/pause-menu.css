@@ -68,9 +68,9 @@
 /* Right column: status word + mission card. */
 .ui-pause__side { position: relative; display: grid; gap: 28px; justify-items: start; padding: 0 clamp(24px, 5vw, 80px) 0 4%;
   color: var(--ui-hud-ink); }
-.ui-pause__status { display: grid; gap: 6px; }
-.ui-pause__status-label { font: 600 var(--ui-hud-text-label)/1 var(--ui-hud-font-display); letter-spacing: 0.3em;
-  text-transform: uppercase; color: var(--ui-hud-ink-dim); border-bottom: 1px solid var(--ui-hud-line-soft); padding-bottom: 8px; }
+.ui-pause__status { display: grid; gap: 6px; justify-items: start; }
+.ui-pause__status-label { font: 600 var(--ui-hud-text-label)/1.4 var(--ui-hud-font-display); letter-spacing: 0.3em;
+  text-transform: uppercase; color: var(--ui-hud-ink); background: var(--ui-hud-panel-solid); padding: 4px 10px; }
 .ui-pause__status-word { font: 700 var(--ui-hud-text-pause-status)/0.95 var(--ui-hud-font-display); letter-spacing: 0.08em;
   text-transform: uppercase; font-style: italic; }
 .ui-pause__mission { position: relative; width: min(420px, 100%); }
@@ -93,5 +93,5 @@
 .ui-pause-showcase { position: relative; width: 1100px; height: 560px; background: #39424a; overflow: hidden; }
 .ui-pause-showcase .ui-pause { position: absolute; }
 
-.ui-big-text .ui-pause :is(.ui-pause__title, .ui-pause__item, .ui-pause__status-label,
+.ui-pause :is(.ui-pause__title, .ui-pause__item, .ui-pause__status-label,
   .ui-pause__status-word, .ui-pause__chapter, .ui-pause__mission .ui-hud-tab) { line-height: 1.4; }

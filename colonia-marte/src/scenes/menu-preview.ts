@@ -1,9 +1,10 @@
 import {
   createChapterCard, createMainMenu, createSettingsMenu,
-  effectiveDifficulty, GAME_TITLE, resetProgress, saveSettings, type ChapterCardState,
+  effectiveDifficulty, resetProgress, saveSettings, type ChapterCardState,
 } from "../ui";
 import { CHAPTERS, isChapterId, readSavedChapter, type ChapterId } from "../ui/content/chapters";
 import type { SettingsState } from "../ui/state/settings";
+import { getUiStrings, reopenLocalizedSettings, uiText } from "../ui/i18n";
 
 function nextFrame(): Promise<number> {
   return new Promise(resolve => requestAnimationFrame(resolve));
@@ -24,15 +25,22 @@ export async function mountMenuPreview({ loading, settings: initialSettings, sto
   } catch (error) {
     console.error("Menu backdrop did not load:", error);
   }
-  document.title = GAME_TITLE;
+  const strings = getUiStrings(initialSettings.language);
+  const text = uiText(strings);
+  document.title = text("componente.menu.titulo");
 
   let saved = readSavedChapter(storage);
   let progressReset = false;
   const preferences = createSettingsMenu(settings, {
     onChange: next => {
       settings = next;
+      let persisted = false;
+      try { if (storage) { saveSettings(storage, next); persisted = true; } } catch { /* Storage may be unavailable. */ }
+      if (next.language !== initialSettings.language) {
+        reopenLocalizedSettings(next.language, persisted);
+        return;
+      }
       document.documentElement.classList.toggle("ui-big-text", next.bigText);
-      try { if (storage) saveSettings(storage, next); } catch { /* Keep the current settings in memory. */ }
     },
     onResetProgress: () => {
       try {
@@ -49,18 +57,18 @@ export async function mountMenuPreview({ loading, settings: initialSettings, sto
       menu = buildMenu();
       showMenu(true);
     },
-  });
+  }, strings);
 
   const stage = document.createElement("dialog");
   stage.className = "ui-pause ui-chapter-stage";
-  stage.setAttribute("aria-label", "Chapter card");
+  stage.setAttribute("aria-label", text("componente.capitulo.tarjeta"));
   stage.addEventListener("close", () => { if (!menu.dialog.open) showMenu(); });
   function showChapter(state: ChapterCardState): void {
     stage.replaceChildren(createChapterCard(state, {
       onStart: chapter => location.assign(`/hud-preview?chapter=${chapter}`),
       onNext: chapter => showChapter({ chapter, mode: "start" }),
       onMap: chapter => stage.dispatchEvent(new CustomEvent("colony-map-request", { detail: { chapter }, bubbles: true })),
-    }));
+    }, strings));
     if (menu.dialog.open) menu.dialog.close();
     if (!stage.open) stage.showModal();
     stage.querySelector<HTMLButtonElement>("button:not([disabled])")?.focus();
@@ -71,7 +79,7 @@ export async function mountMenuPreview({ loading, settings: initialSettings, sto
       onContinue: chapter => showChapter({ chapter, mode: "start" }),
       onNewGame: () => showChapter({ chapter: "C1", mode: "start" }),
       onSettings: () => { menu.settingsButton.focus(); preferences.open(); },
-    });
+    }, strings);
   }
   let menu = buildMenu();
   function showMenu(focusSettings = false): void {
@@ -89,5 +97,9 @@ export async function mountMenuPreview({ loading, settings: initialSettings, sto
     showChapter({ chapter, mode: "complete", earned: CHAPTERS[chapter].objectives.slice(0, 1), difficulty: labels[effectiveDifficulty(settings)] });
   } else {
     showMenu();
+    if (query.get("settings") === "play") {
+      menu.settingsButton.focus();
+      preferences.open("play");
+    }
   }
 }

@@ -27,6 +27,7 @@ export function applyEnvironment(rendering: ReturnType<typeof createRendering>, 
   uniforms.sunHalo.value.set(paletteHex(preset.sky.halo));
   uniforms.sunDirection.value.copy(direction); uniforms.haloSize.value = preset.sky.size;
   uniforms.stars.value = preset.sky.stars; uniforms.earth.value = preset.sky.earth;
+  uniforms.atmosphereEvent.value = preset.id === "AMB-06" ? 1 : preset.id === "solar-alert" ? 2 : 0;
   terrainUniforms.sunDirection.value.copy(direction);
   renderer.toneMappingExposure = preset.post.exposure;
   bloom.intensity = preset.post.bloom; ao.configuration.intensity = preset.post.ao;
